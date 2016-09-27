@@ -1,6 +1,4 @@
-System.register(["angular2/platform/browser", 'angular2/core', "./components/app/app", 'angular2/router'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
+System.register(["angular2/platform/browser", 'angular2/core', "./components/app/app", 'angular2/router'], function(exports_1) {
     var browser_1, core_1, app_1, router_1;
     return {
         setters:[
@@ -17,7 +15,6 @@ System.register(["angular2/platform/browser", 'angular2/core', "./components/app
                 router_1 = router_1_1;
             }],
         execute: function() {
-            // enableProdMode();
             browser_1.bootstrap(app_1.App, [
                 router_1.ROUTER_PROVIDERS,
                 router_1.ROUTER_DIRECTIVES,
