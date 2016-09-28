@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { User } from './user';
 
 @Component({
+	moduleId: module.id, // @required : relative path
 	selector: 'my-user-detail',
 	template: `
 		<div *ngIf="user">
@@ -15,6 +16,6 @@ import { User } from './user';
 	`
 })
 export class UserDetailComponent {
-	@Input()	
+	@Input()
 	user: User;
 }

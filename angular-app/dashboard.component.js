@@ -9,23 +9,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var user_1 = require('./user');
-var UserDetailComponent = (function () {
-    function UserDetailComponent() {
+var user_service_1 = require('./user.service');
+var DashboardComponent = (function () {
+    function DashboardComponent(userService) {
+        this.userService = userService;
+        this.useres = [];
     }
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', user_1.User)
-    ], UserDetailComponent.prototype, "user", void 0);
-    UserDetailComponent = __decorate([
+    DashboardComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.userService.getUsers()
+            .then(function (useres) { return _this.useres = useres.slice(1, 5); });
+    };
+    DashboardComponent.prototype.gotoDetail = function (user) { };
+    DashboardComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'my-user-detail',
-            template: "\n\t\t<div *ngIf=\"user\">\n\t\t\t<h2>{{user.name}} details!</h2>\n\t\t\t<div><label>id: </label>{{user.id}}</div>\n\t\t\t<div>\n\t\t\t\t<label>name: </label>\n\t\t\t\t<input [(ngModel)]=\"user.name\" placeholder=\"name\"/>\n\t\t\t</div>\n\t\t</div>\n\t"
+            selector: 'my-dashboard',
+            templateUrl: 'dashboard.component.html'
         }), 
-        __metadata('design:paramtypes', [])
-    ], UserDetailComponent);
-    return UserDetailComponent;
+        __metadata('design:paramtypes', [user_service_1.UserService])
+    ], DashboardComponent);
+    return DashboardComponent;
 }());
-exports.UserDetailComponent = UserDetailComponent;
-//# sourceMappingURL=user-detail.component.js.map
+exports.DashboardComponent = DashboardComponent;
+//# sourceMappingURL=dashboard.component.js.map

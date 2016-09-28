@@ -8,21 +8,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("angular2/core");
-var Users = (function () {
-    function Users() {
-        this.users = [
-            "user1", "user2", "user3", "user4", "user5"
-        ];
+var core_1 = require('@angular/core');
+var mock_users_1 = require('./mock-users');
+var UserService = (function () {
+    function UserService() {
     }
-    Users = __decorate([
-        core_1.Component({
-            selector: "users",
-            template: "\n    <ul>\n        <li *ngFor=\"#user of users\">{{ user }}</li>\n    </ul>\n    "
-        }), 
+    UserService.prototype.getUsers = function () {
+        return Promise.resolve(mock_users_1.USERS);
+    };
+    UserService.prototype.getUsersSlowly = function () {
+        var _this = this;
+        return new Promise(function (resolve) { return setTimeout(resolve, 2000); }) // delay 2 seconds
+            .then(function () { return _this.getUsers(); });
+    };
+    UserService = __decorate([
+        core_1.Injectable(), 
         __metadata('design:paramtypes', [])
-    ], Users);
-    return Users;
+    ], UserService);
+    return UserService;
 }());
-exports.Users = Users;
-//# sourceMappingURL=component.js.map
+exports.UserService = UserService;
+//# sourceMappingURL=user.service.js.map
