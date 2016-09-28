@@ -30,7 +30,8 @@ var DashboardComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-dashboard',
-            templateUrl: 'dashboard.component.html'
+            templateUrl: 'dashboard.component.html',
+            styleUrls: ['dashboard.component.css']
         }), 
         __metadata('design:paramtypes', [router_1.Router, user_service_1.UserService])
     ], DashboardComponent);

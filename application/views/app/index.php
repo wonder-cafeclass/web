@@ -34,6 +34,7 @@ $service_root_path = get_service_root_path(4);
 
     <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 
+
     <?php
     if(!empty($service_root_path)) {
         // Polyfill(s) for older browsers
@@ -43,6 +44,8 @@ $service_root_path = get_service_root_path(4);
         echo "<script src=\"$service_root_path/node_modules/systemjs/dist/system.src.js\"></script>";
 
         echo "<script src=\"$service_root_path/systemjs.config.js\"></script>";
+
+        echo "<link rel=\"$service_root_path/stylesheet\" href=\"$service_root_path/styles.css\">";
     } else {
         // Polyfill(s) for older browsers
         echo "<script src=\"node_modules/core-js/client/shim.min.js\"></script>";
@@ -51,6 +54,8 @@ $service_root_path = get_service_root_path(4);
         echo "<script src=\"node_modules/systemjs/dist/system.src.js\"></script>";
 
         echo "<script src=\"systemjs.config.js\"></script>";
+
+        echo "<link rel=\"stylesheet\" href=\"styles.css\">";
     }
     ?>
     <script>

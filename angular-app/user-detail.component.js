@@ -39,7 +39,8 @@ var UserDetailComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-user-detail',
-            templateUrl: 'user-detail.component.html'
+            templateUrl: 'user-detail.component.html',
+            styleUrls: ['user-detail.component.css']
         }), 
         __metadata('design:paramtypes', [user_service_1.UserService, router_1.ActivatedRoute, common_1.Location])
     ], UserDetailComponent);

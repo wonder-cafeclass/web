@@ -9,7 +9,8 @@ import { User } from './user';
 @Component({
 	moduleId: module.id, // @required : relative path
 	selector: 'my-user-detail',
-	templateUrl: 'user-detail.component.html'
+	templateUrl: 'user-detail.component.html',
+	styleUrls: [ 'user-detail.component.css' ]
 })
 export class UserDetailComponent implements OnInit {
 	@Input() user: User;
