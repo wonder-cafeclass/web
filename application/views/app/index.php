@@ -1,32 +1,29 @@
 <html>
 
 <head>
-    <title>Angular 2 y Codeigniter 3</title>
 
-    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <title>CafeClass</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <script src="node_modules/rxjs/bundles/Rx.js"></script>
-    <script src="node_modules/angular2/bundles/angular2.js"></script>
-    <script src="node_modules/angular2/bundles/router.js"></script>
 
-
+    <script src="systemjs.config.js"></script>
     <script>
-        System.config({
-            packages: {
-                'angular-app': {
-                    format: 'register',
-                    defaultExtension: 'js'
-                }
-            }
-        });
-        System.import('angular-app/boot')
-                .then(null, console.error.bind(console));
+      System.import('app').catch(function(err){ console.log(err);console.error(err); });
     </script>
 
 </head>
 
 <body>
-    <angular2-codeigniter>Loading...</angular2-codeigniter>
+    <my-app>Loading...</my-app>
 </body>
 
 </html>

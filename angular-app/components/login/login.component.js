@@ -11,30 +11,27 @@ System.register(["angular2/core"], function(exports_1, context_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var Users;
+    var Login;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            Users = (function () {
-                function Users() {
-                    this.users = [
-                        "user1", "user2", "user3", "user4", "user5"
-                    ];
+            Login = (function () {
+                function Login() {
                 }
-                Users = __decorate([
+                Login = __decorate([
                     core_1.Component({
-                        selector: "users",
-                        template: "\n    <ul>\n        <li *ngFor=\"#user of users\">{{ user }}</li>\n    </ul>\n    "
+                        selector: "login",
+                        template: "\n    <h1>Login</h1>\n    "
                     }), 
                     __metadata('design:paramtypes', [])
-                ], Users);
-                return Users;
+                ], Login);
+                return Login;
             }());
-            exports_1("Users", Users);
+            exports_1("Login", Login);
         }
     }
 });
-//# sourceMappingURL=component.js.map
+//# sourceMappingURL=login.component.js.map

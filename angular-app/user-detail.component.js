@@ -1,4 +1,4 @@
-System.register(["angular2/core"], function(exports_1, context_1) {
+System.register(['@angular/core', './user'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,31 +10,35 @@ System.register(["angular2/core"], function(exports_1, context_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1;
-    var Users;
+    var core_1, user_1;
+    var UserDetailComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+            },
+            function (user_1_1) {
+                user_1 = user_1_1;
             }],
         execute: function() {
-            Users = (function () {
-                function Users() {
-                    this.users = [
-                        "user1", "user2", "user3", "user4", "user5"
-                    ];
+            UserDetailComponent = (function () {
+                function UserDetailComponent() {
                 }
-                Users = __decorate([
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', user_1.User)
+                ], UserDetailComponent.prototype, "user", void 0);
+                UserDetailComponent = __decorate([
                     core_1.Component({
-                        selector: "users",
-                        template: "\n    <ul>\n        <li *ngFor=\"#user of users\">{{ user }}</li>\n    </ul>\n    "
+                        selector: 'my-user-detail',
+                        template: "\n\t\t<div *ngIf=\"user\">\n\t\t\t<h2>{{user.name}} details!</h2>\n\t\t\t<div><label>id: </label>{{user.id}}</div>\n\t\t\t<div>\n\t\t\t\t<label>name: </label>\n\t\t\t\t<input [(ngModel)]=\"user.name\" placeholder=\"name\"/>\n\t\t\t</div>\n\t\t</div>\n\t"
                     }), 
                     __metadata('design:paramtypes', [])
-                ], Users);
-                return Users;
+                ], UserDetailComponent);
+                return UserDetailComponent;
             }());
-            exports_1("Users", Users);
+            exports_1("UserDetailComponent", UserDetailComponent);
         }
     }
 });
-//# sourceMappingURL=component.js.map
+//# sourceMappingURL=user-detail.component.js.map

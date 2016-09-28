@@ -1,4 +1,6 @@
-System.register(["angular2/core", "../users/component", "../movies/component", 'angular2/router'], function(exports_1) {
+System.register(["angular2/core", "../users/component", "../movies/component", "../login/login.component", 'angular2/router'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,7 +10,7 @@ System.register(["angular2/core", "../users/component", "../movies/component", '
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, component_1, component_2, router_1;
+    var core_1, component_1, component_2, login_component_1, router_1;
     var App;
     return {
         setters:[
@@ -21,6 +23,9 @@ System.register(["angular2/core", "../users/component", "../movies/component", '
             function (component_2_1) {
                 component_2 = component_2_1;
             },
+            function (login_component_1_1) {
+                login_component_1 = login_component_1_1;
+            },
             function (router_1_1) {
                 router_1 = router_1_1;
             }],
@@ -32,6 +37,7 @@ System.register(["angular2/core", "../users/component", "../movies/component", '
                     router_1.RouteConfig([
                         { path: '/users', name: 'Users', component: component_1.Users },
                         { path: '/movies', name: 'Movies', component: component_2.Movies },
+                        { path: '/login', name: 'Login', component: login_component_1.Login },
                         { path: '/', name: 'root', redirectTo: ['/Users'] }
                     ]),
                     core_1.Component({
@@ -42,7 +48,7 @@ System.register(["angular2/core", "../users/component", "../movies/component", '
                     __metadata('design:paramtypes', [])
                 ], App);
                 return App;
-            })();
+            }());
             exports_1("App", App);
         }
     }
