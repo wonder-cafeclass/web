@@ -13,6 +13,9 @@ var mock_users_1 = require('./mock-users');
 var UserService = (function () {
     function UserService() {
     }
+    UserService.prototype.getUser = function (id) {
+        return this.getUsers().then(function (users) { return users.find(function (user) { return user.id === id; }); });
+    };
     UserService.prototype.getUsers = function () {
         return Promise.resolve(mock_users_1.USERS);
     };

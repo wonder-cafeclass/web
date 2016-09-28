@@ -1,8 +1,9 @@
 import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { UsersComponent }      from './users.component';
-import { DashboardComponent }      from './dashboard.component';
+import { UsersComponent }		from './users.component';
+import { UserDetailComponent }	from './user-detail.component';
+import { DashboardComponent }	from './dashboard.component';
 
 const appRoutes: Routes = [
 	{
@@ -12,6 +13,10 @@ const appRoutes: Routes = [
 	{
 		path: 'dashboard',
 		component: DashboardComponent
+	},
+	{
+		path: 'detail/:id',
+		component: UserDetailComponent
 	},
 	{
 		path: '',

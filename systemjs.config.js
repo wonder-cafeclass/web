@@ -4,6 +4,7 @@
  */
 (function (global) {
 
+  // FIX ME : is it safe?
   var pathname = window.location.pathname;
 
   System.config({

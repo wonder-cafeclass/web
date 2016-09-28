@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from './user';
 import { UserService } from './user.service';
 
+import { Router } from '@angular/router';
+
 @Component({
 	moduleId: module.id, // @required : relative path
 	selector: 'my-dashboard',
@@ -10,15 +12,22 @@ import { UserService } from './user.service';
 })
 export class DashboardComponent implements OnInit {
 
-  useres: User[] = [];
+	users: User[] = [];
 
-  constructor(private userService: UserService) { }
+	constructor(
+		private router: Router,
+		private userService: UserService) {
+	}
+	
+	ngOnInit(): void {
+		this.userService.getUsers()
+		  .then(users => this.users = users.slice(1, 5));
+	}
 
-  ngOnInit(): void {
-	this.userService.getUsers()
-	  .then(useres => this.useres = useres.slice(1, 5));
-  }
+	gotoDetail(user: User): void {
+		let link = ['/detail', user.id];
+		this.router.navigate(link);
+	}
 
-  gotoDetail(user: User): void { /* not implemented yet */}
 }
 

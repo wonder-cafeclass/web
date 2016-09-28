@@ -63,7 +63,12 @@ import { UserService } from './user.service';
 				<span class="badge">{{user.id}}</span> {{user.name}}
 			</li>
 		</ul>
-		<my-user-detail [user]="selectedUser"></my-user-detail>
+		<div *ngIf="selectedUser">
+			<h2>
+				{{selectedUser.name | uppercase}} is my user
+			</h2>
+			<button (click)="gotoDetail()">View Details</button>
+		</div>
 	`,
 	providers: [UserService]
 })

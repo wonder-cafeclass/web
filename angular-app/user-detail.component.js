@@ -8,11 +8,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+// Keep the Input import for now, we'll remove it later:
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+var common_1 = require('@angular/common');
+var user_service_1 = require('./user.service');
 var user_1 = require('./user');
 var UserDetailComponent = (function () {
-    function UserDetailComponent() {
+    function UserDetailComponent(userService, route, location) {
+        this.userService = userService;
+        this.route = route;
+        this.location = location;
     }
+    UserDetailComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.route.params.forEach(function (params) {
+            var id = +params['id'];
+            _this.userService.getUser(id)
+                .then(function (user) { return _this.user = user; });
+        });
+    };
+    UserDetailComponent.prototype.goBack = function () {
+        this.location.back();
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', user_1.User)
@@ -21,9 +39,9 @@ var UserDetailComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-user-detail',
-            template: "\n\t\t<div *ngIf=\"user\">\n\t\t\t<h2>{{user.name}} details!</h2>\n\t\t\t<div><label>id: </label>{{user.id}}</div>\n\t\t\t<div>\n\t\t\t\t<label>name: </label>\n\t\t\t\t<input [(ngModel)]=\"user.name\" placeholder=\"name\"/>\n\t\t\t</div>\n\t\t</div>\n\t"
+            templateUrl: 'user-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [user_service_1.UserService, router_1.ActivatedRoute, common_1.Location])
     ], UserDetailComponent);
     return UserDetailComponent;
 }());

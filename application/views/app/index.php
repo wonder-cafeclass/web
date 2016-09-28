@@ -35,13 +35,23 @@ $service_root_path = get_service_root_path(4);
     <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 
     <?php
-    // Polyfill(s) for older browsers
-    echo "<script src=\"$service_root_path/node_modules/core-js/client/shim.min.js\"></script>";
-    echo "<script src=\"$service_root_path/node_modules/zone.js/dist/zone.js\"></script>";
-    echo "<script src=\"$service_root_path/node_modules/reflect-metadata/Reflect.js\"></script>";
-    echo "<script src=\"$service_root_path/node_modules/systemjs/dist/system.src.js\"></script>";
+    if(!empty($service_root_path)) {
+        // Polyfill(s) for older browsers
+        echo "<script src=\"$service_root_path/node_modules/core-js/client/shim.min.js\"></script>";
+        echo "<script src=\"$service_root_path/node_modules/zone.js/dist/zone.js\"></script>";
+        echo "<script src=\"$service_root_path/node_modules/reflect-metadata/Reflect.js\"></script>";
+        echo "<script src=\"$service_root_path/node_modules/systemjs/dist/system.src.js\"></script>";
 
-    echo "<script src=\"$service_root_path/systemjs.config.js\"></script>";
+        echo "<script src=\"$service_root_path/systemjs.config.js\"></script>";
+    } else {
+        // Polyfill(s) for older browsers
+        echo "<script src=\"node_modules/core-js/client/shim.min.js\"></script>";
+        echo "<script src=\"node_modules/zone.js/dist/zone.js\"></script>";
+        echo "<script src=\"node_modules/reflect-metadata/Reflect.js\"></script>";
+        echo "<script src=\"node_modules/systemjs/dist/system.src.js\"></script>";
+
+        echo "<script src=\"systemjs.config.js\"></script>";
+    }
     ?>
     <script>
       System.import('app').catch(function(err){ console.log(err);console.error(err); });
