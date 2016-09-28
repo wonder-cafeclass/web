@@ -31,6 +31,29 @@ var UsersComponent = (function () {
     UsersComponent.prototype.gotoDetail = function () {
         this.router.navigate(['/detail', this.selectedUser.id]);
     };
+    UsersComponent.prototype.add = function (name) {
+        var _this = this;
+        name = name.trim();
+        if (!name) {
+            return;
+        }
+        this.userService.create(name)
+            .then(function (user) {
+            _this.users.push(user);
+            _this.selectedUser = null;
+        });
+    };
+    UsersComponent.prototype.delete = function (user) {
+        var _this = this;
+        this.userService
+            .delete(user.id)
+            .then(function () {
+            _this.users = _this.users.filter(function (u) { return u !== user; });
+            if (_this.selectedUser === user) {
+                _this.selectedUser = null;
+            }
+        });
+    };
     UsersComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

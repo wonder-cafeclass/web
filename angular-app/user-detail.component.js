@@ -31,6 +31,11 @@ var UserDetailComponent = (function () {
     UserDetailComponent.prototype.goBack = function () {
         this.location.back();
     };
+    UserDetailComponent.prototype.save = function () {
+        var _this = this;
+        this.userService.update(this.user)
+            .then(function () { return _this.goBack(); });
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', user_1.User)
