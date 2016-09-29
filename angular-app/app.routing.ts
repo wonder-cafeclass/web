@@ -3,12 +3,17 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UsersComponent }		from './users.component';
 import { UserDetailComponent }	from './user-detail.component';
+import { UserListComponent }	from './user-list.component';
 import { DashboardComponent }	from './dashboard.component';
 
 const appRoutes: Routes = [
 	{
 		path: 'users',
 		component: UsersComponent
+	},
+	{
+		path: 'userlist',
+		component: UserListComponent
 	},
 	{
 		path: 'dashboard',
