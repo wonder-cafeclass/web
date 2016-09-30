@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS access_log;
 DROP TABLE IF EXISTS error_log;
 DROP TABLE IF EXISTS action_log;
 
+DROP TABLE IF EXISTS z_test_user;
+
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nickname` varchar(65) COLLATE utf8_bin NOT NULL,
@@ -66,3 +68,8 @@ CREATE TABLE `action_log` (
   INDEX `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
 
+CREATE TABLE `z_test_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(65) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test user';
