@@ -26,6 +26,9 @@ class Users extends REST_Controller {
         // Configure limits on our controller methods
         // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
         $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
+
+        // init database
+        $this->load->database();
     }
 
     public function list_get()
@@ -60,7 +63,19 @@ class Users extends REST_Controller {
             $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
         }
     }
-    
+
+    public function insert_post() {
+
+    }
+
+    public function update_post() {
+        
+    }
+
+    public function delete_post() {
+        
+    }
+
     // REMOVE ME
 /*
     public function users_post()
