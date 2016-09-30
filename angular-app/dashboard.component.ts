@@ -23,7 +23,8 @@ export class DashboardComponent implements OnInit {
 	
 	ngOnInit(): void {
 		this.userService.getUsers()
-		  .then(users => this.users = users.slice(1, 5));
+		  // .then(users => this.users = users.slice(1, 5));
+		  .then(users => this.users = users);
 	}
 
 	gotoDetail(user: User): void {

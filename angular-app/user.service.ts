@@ -10,7 +10,8 @@ import { Location } 	from '@angular/common';
 @Injectable()
 export class UserService {
 
-	private usersUrl = 'api/users';  // URL to web api
+	// private usersUrl = 'api/users';  // URL to web api
+	private usersUrl = 'index.php/api/users/list';  // URL to web api
 	private locationPath = "";
 
 	constructor(
@@ -36,10 +37,7 @@ export class UserService {
 	// New - XHR
 	// promise-based
 	getUsers (): Promise<User[]> {
-
-		let relativePath = this.getRelativeUrl(this.usersUrl);
-
-		return this.http.get(relativePath)
+		return this.http.get(this.usersUrl)
 		              .toPromise()
 		              .then(this.extractData)
 		              .catch(this.handleError);
@@ -106,6 +104,9 @@ export class UserService {
 	*/
 	private extractData(res: Response) {
 		let body = res.json();
+
+		console.log("extractData / body.data ::: ",body.data);
+
 		return body.data || { };
 	}
 

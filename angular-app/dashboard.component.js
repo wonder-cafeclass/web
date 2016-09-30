@@ -20,7 +20,7 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.userService.getUsers()
-            .then(function (users) { return _this.users = users.slice(1, 5); });
+            .then(function (users) { return _this.users = users; });
     };
     DashboardComponent.prototype.gotoDetail = function (user) {
         var link = ['/detail', user.id];

@@ -16,7 +16,8 @@ var UserService = (function () {
     function UserService(location, http) {
         this.location = location;
         this.http = http;
-        this.usersUrl = 'api/users'; // URL to web api
+        // private usersUrl = 'api/users';  // URL to web api
+        this.usersUrl = 'index.php/api/users/list'; // URL to web api
         this.locationPath = "";
         this.headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         this.locationPath = this.location.path();
@@ -36,8 +37,7 @@ var UserService = (function () {
     // New - XHR
     // promise-based
     UserService.prototype.getUsers = function () {
-        var relativePath = this.getRelativeUrl(this.usersUrl);
-        return this.http.get(relativePath)
+        return this.http.get(this.usersUrl)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -103,6 +103,7 @@ var UserService = (function () {
     */
     UserService.prototype.extractData = function (res) {
         var body = res.json();
+        console.log("extractData / body.data ::: ", body.data);
         return body.data || {};
     };
     UserService.prototype.getUser = function (id) {
