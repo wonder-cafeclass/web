@@ -34,11 +34,8 @@ class Users extends REST_Controller {
     public function list_get()
     {
         // Users from a data store e.g. database
-        $users = [
-            ['id' => 1, 'name' => 'John'],
-            ['id' => 2, 'name' => 'Jim'],
-            ['id' => 3, 'name' => 'Jane'],
-        ];
+        $query = $this->db->query('SELECT id, name FROM z_test_user');
+        $users = $query->result();
 
         if (!empty($users))
         {
