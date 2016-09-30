@@ -1,1 +1,75 @@
-// Mysql Table Queries
+## service - Mysql Table Queries
+## All table names sets lowercase for Windows.
+
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS access_log;
+DROP TABLE IF EXISTS error_log;
+DROP TABLE IF EXISTS action_log;
+
+DROP TABLE IF EXISTS z_test_user;
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(65) COLLATE utf8_bin NOT NULL,
+  `first_name` varchar(65) COLLATE utf8_bin NOT NULL,
+  `last_name` varchar(65) COLLATE utf8_bin NOT NULL,
+  `gender` varchar(32) NOT NULL DEFAULT "",
+  `locale` varchar(32) NOT NULL DEFAULT "",
+  `age_range` int(16) NOT NULL DEFAULT 0,
+  `thumbnail` varchar(255) NOT NULL DEFAULT "",
+  `status` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/N(Not in action)',
+  `permission` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
+  `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `fb_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `google_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Google recommend use user token key not using user id directly. We encode google user token by MD5',
+  `mobile` varchar(65) COLLATE utf8_bin DEFAULT NULL,
+  `email` varchar(65) COLLATE utf8_bin NOT NULL,
+  `password` varchar(65) COLLATE utf8_bin DEFAULT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_unique_id` (`kakao_id`,`fb_id`,`google_id`,`email`),
+  KEY `first_name` (`first_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service admin user';
+
+CREATE TABLE `access_log` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) NOT NULL,
+  `browser` varchar(255) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service access log';
+
+CREATE TABLE `error_log` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) NOT NULL,
+  `browser` varchar(255) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `type` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service error log';
+
+CREATE TABLE `action_log` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) COLLATE utf8_bin NOT NULL,
+  `browser` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ip` varchar(32) COLLATE utf8_bin NOT NULL,
+  `type` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text COLLATE utf8_bin,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
+
+CREATE TABLE `z_test_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(65) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test user';
