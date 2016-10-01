@@ -109,7 +109,8 @@ var UserService = (function () {
     };
     UserService.prototype.update = function (user) {
         var url = this.usersUpdateUrl + "/" + user.id;
-        console.log("HERE / 001");
+        // TODO - 파라미터 전송 전에 파라미터의 유효성 검증.
+        // API KEY 설정 - 외부에서 curl등으로 배치 호출로 들어왔을 경우에 대한 방어.
         return this.http
             .post(url, JSON.stringify({ name: user.name }), { headers: this.headers })
             .toPromise()
@@ -117,6 +118,7 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.create = function (name) {
+        // TODO - 파라미터 전송 전에 파라미터의 유효성 검증.
         return this.http
             .post(this.usersInsertUrl, JSON.stringify({ name: name }), { headers: this.headers })
             .toPromise()

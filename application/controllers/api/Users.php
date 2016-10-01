@@ -29,10 +29,17 @@ class Users extends REST_Controller {
 
         // init database
         $this->load->database();
+
+        // TEST
+        // init param checker
+        $this->load->library('paramChecker');
     }
 
     public function list_get()
     {
+        // TEST - PHPUnit test로 검증해야 함! wonder.jung
+        $check_result = $this->paramchecker->is_ok("user_id", 0);
+
         // Users from a data store e.g. database
         $query = $this->db->query('SELECT id, name FROM z_test_user');
         $users = $query->result();
@@ -43,6 +50,7 @@ class Users extends REST_Controller {
             $response_body = [
                 'status' => TRUE,
                 'message' => 'Success',
+                'check_result' => $check_result,
                 'data' => $users
             ];
 
@@ -55,6 +63,7 @@ class Users extends REST_Controller {
             $response_body = [
                 'status' => FALSE,
                 'message' => 'User could not be found',
+                'check_result' => $check_result,
                 'data' => $users
             ];
 
@@ -123,7 +132,7 @@ class Users extends REST_Controller {
             // 유효한 이름값을 넘겨주었다면 업데이트를 진행합니다.
             $query = $this->db->query("SELECT id, name FROM z_test_user WHERE id=" . $id);
             $user = $query->result();
-            
+
             $error = null;
             if ( is_null($error) && ! $this->db->simple_query("UPDATE z_test_user SET `name`=" . $name_escaped . " WHERE `id`=" . $id))
             {

@@ -6,6 +6,9 @@ final class Bootstrap extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
+        // init database
+        $this->load->database();
     }
     
     public function index()
