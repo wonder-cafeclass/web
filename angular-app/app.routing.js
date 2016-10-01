@@ -25,10 +25,6 @@ var appRoutes = [
         path: '',
         redirectTo: '/dashboard',
         pathMatch: 'full'
-    },
-    {
-        path: 'cafeclass',
-        component: dashboard_component_1.DashboardComponent
     }
 ];
 exports.routing = router_1.RouterModule.forRoot(appRoutes);

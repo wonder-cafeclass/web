@@ -16,15 +16,12 @@ var UserService = (function () {
     function UserService(location, http) {
         this.location = location;
         this.http = http;
-        // private usersUrl = 'api/users';  // URL to web api
-        this.usersUrl = 'index.php/api/users/list'; // URL to web api
-        this.locationPath = "";
+        this.usersUrl = 'index.php/api/users/list';
+        this.usersInsertUrl = 'index.php/api/users/insert';
+        this.usersUpdateUrl = 'index.php/api/users/update';
+        this.usersDeleteUrl = 'index.php/api/users/delete';
         this.headers = new http_1.Headers({ 'Content-Type': 'application/json' });
-        this.locationPath = this.location.path();
     }
-    UserService.prototype.getRelativeUrl = function (targetUrl) {
-        return this.locationPath + "/" + targetUrl;
-    };
     // Legacy - Mock Test
     /*
     getUsers(): Promise<User[]> {
@@ -55,7 +52,7 @@ var UserService = (function () {
         var body = JSON.stringify({ name: name });
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(this.usersUrl, body, options)
+        return this.http.post(this.usersInsertUrl, body, options)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -103,32 +100,34 @@ var UserService = (function () {
     */
     UserService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("extractData / body.data ::: ", body.data);
+        console.log("extractData / body ::: ", body);
+        // console.log("extractData / body.data ::: ",body.data);
         return body.data || {};
     };
     UserService.prototype.getUser = function (id) {
-        return this.getUsers().then(function (users) { return users.find(function (user) { return user.id === id; }); });
+        return this.getUsers().then(function (users) { return users.find(function (user) { return +user.id === id; }); });
     };
     UserService.prototype.update = function (user) {
-        var url = this.usersUrl + "/" + user.id;
+        var url = this.usersUpdateUrl + "/" + user.id;
+        console.log("HERE / 001");
         return this.http
-            .put(url, JSON.stringify(user), { headers: this.headers })
+            .post(url, JSON.stringify({ name: user.name }), { headers: this.headers })
             .toPromise()
-            .then(function () { return user; })
+            .then(this.extractData)
             .catch(this.handleError);
     };
     UserService.prototype.create = function (name) {
         return this.http
-            .post(this.usersUrl, JSON.stringify({ name: name }), { headers: this.headers })
+            .post(this.usersInsertUrl, JSON.stringify({ name: name }), { headers: this.headers })
             .toPromise()
-            .then(function (res) { return res.json().data; })
+            .then(this.extractData)
             .catch(this.handleError);
     };
     UserService.prototype.delete = function (id) {
-        var url = this.usersUrl + "/" + id;
-        return this.http.delete(url, { headers: this.headers })
+        var url = this.usersDeleteUrl + "/" + id;
+        return this.http.post(url, { headers: this.headers })
             .toPromise()
-            .then(function () { return null; })
+            .then(this.extractData)
             .catch(this.handleError);
     };
     UserService = __decorate([

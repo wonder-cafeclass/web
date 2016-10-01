@@ -39,6 +39,9 @@ var UsersComponent = (function () {
         }
         this.userService.create(name)
             .then(function (user) {
+            if (null == user || null == user.id || null == user.name) {
+                return;
+            }
             _this.users.push(user);
             _this.selectedUser = null;
         });
@@ -48,7 +51,7 @@ var UsersComponent = (function () {
         this.userService
             .delete(user.id)
             .then(function () {
-            _this.users = _this.users.filter(function (u) { return u !== user; });
+            _this.users = _this.users.filter(function (u) { return u.id !== user.id; });
             if (_this.selectedUser === user) {
                 _this.selectedUser = null;
             }

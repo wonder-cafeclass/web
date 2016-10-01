@@ -27,12 +27,7 @@ const appRoutes: Routes = [
 		path: '',
 		redirectTo: '/dashboard',
 		pathMatch: 'full'
-	},
-	{
-		path: 'cafeclass',
-		component: DashboardComponent
-	}	
-
+	}
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
