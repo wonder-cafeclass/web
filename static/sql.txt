@@ -15,7 +15,7 @@ CREATE TABLE `user` (
   `nickname` varchar(65) COLLATE utf8_bin NOT NULL,
   `first_name` varchar(65) COLLATE utf8_bin NOT NULL,
   `last_name` varchar(65) COLLATE utf8_bin NOT NULL,
-  `gender` char(1) NOT NULL DEFAULT "" COMMENT 'M(Male)/F(Female)', 
+  `gender` char(1) NOT NULL DEFAULT "" COMMENT 'M(Male)/F(Female)/U(Unknown)', 
   `locale` varchar(32) NOT NULL DEFAULT "" COMMENT 'subway station locale', 
   `birth_range` int(4) NOT NULL DEFAULT 0 COMMENT 'ex) 1980, 1990, 2000, 2010, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "",

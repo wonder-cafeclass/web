@@ -1,29 +1,33 @@
 {
 	"checker":{
 		"user_id":"is_natural_no_zero",
-		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/a-zA-Z가-힣0-9/]",
-		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/a-zA-Z가-힣0-9/]",
-		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/a-zA-Z가-힣0-9/]",
+		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
-		"user_locale":"is_str|||min_length[4]|||max_length[32]|||matches[user_locale_list]",
-		"user_birth_range":"is_natural_no_zero|||greater_than_equal_to[1900]",
+		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
+		"user_birth_range":"is_natural_no_zero|||greater_than_equal_to[1900]|||less_than_equal_to[2020]",
 		"user_thumbnail":"valid_url",
 		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
-		"user_permission":"is_str|||exact_length[1]|||matches[user_status_list]",
-		"user_mobile":"valid_mobile",
+		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
+		"user_mobile":"valid_mobile_kor",
 		"user_email":"valid_emails",
 		"user_password":"is_str|||exact_length[8]",
 
 		"z_test_user_id":"is_natural_no_zero",
-		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/a-zA-Z가-힣0-9/]",
+		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
 		"EOL":""
 	}
 	, "const":{
-		"user_gender_list":["M","F"],
-		"user_locale_list":["잠실역","성수역","그외"],
+		"user_gender_list":["M","F","U"],
+		"user_locale_list":["잠실역","성수역","개롱역","그외"],
 		"user_status_list":["A","B","F","N"],
+		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
+		"user_status_kor_list":["정상","블럭","휴면","중지"],
 		"user_permission_list":["U","T","A"],
+		"user_permission_eng_list":["User","Teacher","Admin"],
+		"user_permission_kor_list":["사용자","강사","운영자"],
 
 		"EOL":""
 	}

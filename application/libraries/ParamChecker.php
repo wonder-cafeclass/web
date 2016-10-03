@@ -14,8 +14,11 @@ class ParamChecker {
 
 	private $json_obj;
 	private $json_path="/static/param.json";
+	private $CI=null;
 
-    public function __construct()
+	public static $mysql_int_max = 2147483647;
+
+    public function __construct($CI=null)
     {
 
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
@@ -38,12 +41,81 @@ class ParamChecker {
 
     	} // end if
 
+    	$this->CI =& get_instance();
+
+        // init database
+        $this->CI->load->database();
+
     }
 
     // REMOVE ME
     public function get_json_obj() 
     {
     	return $this->json_obj;
+    }
+
+    public function get_const_map()
+    {
+    	if(isset($this->json_obj) && isset($this->json_obj->const)) {
+    		return $this->json_obj->const;	
+    	}
+
+    	return null;
+    }
+
+    public function extract_value_in_brackets($target_filter="", $result=null){
+
+    	$output = array();
+    	$output["extracted_value"] = "";
+
+    	if(empty($target_filter)) {
+    		$output["result"] = $result;
+    		return $output;
+    	}
+    	if(is_null($result)) {
+    		$output["result"] = $result;
+    		return $output;
+    	}
+
+		preg_match("/\[([^\]]*)\]/", $target_filter, $match);
+		if(empty($match)) 
+		{
+			$result["scope"]="extract_value_in_brackets";
+			$result["target_filter"]=$target_filter;
+    		$result["message"]="empty(\$match)";
+    		$output["result"] = $result;
+    		return $output;
+		}
+		else if(count($match) != 2)
+		{
+			// 반드시 검색해 포획한 2번째 인자, value가 있어야함.
+			$result["scope"]="extract_value_in_brackets";
+			$result["target_filter"]=$target_filter;
+    		$result["message"]="count(\$match) != 2";
+    		$output["result"] = $result;
+    		return $output;
+		}
+		$extracted_value = $match[1];
+		if(is_null($extracted_value)) 
+		{
+			$result["scope"]="extract_value_in_brackets";
+			$result["target_filter"]=$target_filter;
+    		$result["message"]="is_null(\$extracted_value)";
+    		$output["result"] = $result;
+    		return $output;
+		}
+		else if(empty($extracted_value)) 
+		{
+			$result["scope"]="extract_value_in_brackets";
+			$result["target_filter"]=$target_filter;
+    		$result["message"]="empty(\$extracted_value)";
+    		$output["result"] = $result;
+    		return $output;
+		}
+
+		$output["result"] = $result;
+		$output["extracted_value"] = $extracted_value;
+		return $output;
     }
 
     public function is_ok($key="", $value="")
@@ -56,8 +128,16 @@ class ParamChecker {
     		"value"=>$value,
     		"filter"=>"",
     		"success"=>false,
+    		"scope"=>"ParamChecker",
     		"message"=>""
     	];
+
+    	// mb_strlen
+    	if (!function_exists('mb_strlen')) 
+    	{
+    		$result["message"]="!function_exists('mb_strlen')";
+    		return $result;
+    	}
 
     	if(empty($key)) 
     	{
@@ -91,12 +171,12 @@ class ParamChecker {
     	for ($i=0; $i < count($filter_list); $i++) 
     	{ 
     		$filter = $filter_list[$i];
+    		$result["filter"]=$filter;
 
     		if(strcmp("is_natural_no_zero", $filter) == 0) 
     		{
     			if(empty($value)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$value)";
 		    		return $result;
     			}
@@ -104,16 +184,20 @@ class ParamChecker {
     			$value_int = intval($value);
     			if(!(0 < $value_int)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="!(0 < \$value_int)";
 		    		return $result;
     			}
+    			else if(self::$mysql_int_max < $value_int)
+    			{
+		    		$result["message"]="self::\$mysql_int_max < \$value_int";
+		    		return $result;
+    			}
+
     		}
     		else if(strcmp("valid_mobile", $filter) == 0) 
     		{
     			if(empty($value)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$value)";
 		    		return $result;
     			}
@@ -123,109 +207,135 @@ class ParamChecker {
 
     			if(empty($matches)) 
     			{
-		    		$result["filter"]=$filter;
+		    		$result["message"]="empty(\$matches)";
+		    		return $result;
+    			}
+    		}
+    		else if(strcmp("valid_mobile_kor", $filter) == 0) 
+    		{
+    			if(empty($value)) 
+    			{
+		    		$result["message"]="empty(\$value)";
+		    		return $result;
+    			}
+
+    			$pattern = '/^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/';
+    			preg_match($pattern, $value, $matches);
+
+    			if(empty($matches)) 
+    			{
 		    		$result["message"]="empty(\$matches)";
 		    		return $result;
     			}
     		}
     		else if(strcmp("valid_emails", $filter) == 0) 
     		{
-				if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) 
+				if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) 
 				{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="filter_var(\$email, FILTER_VALIDATE_EMAIL) === false";
+		    		$result["message"]="filter_var(\$value, FILTER_VALIDATE_EMAIL) === false";
 		    		return $result;
 				}
 			}
     		else if(strpos($filter, 'min_length') !== false) 
     		{
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
+    			$output = 
+    			$this->extract_value_in_brackets(
+					// $target_filter=""
+    				$filter
+					// $result=null
+    				, $result
+				);
+				$result = $output["result"];
+				$extracted_value = $output["extracted_value"];
+				if(empty($extracted_value)) {
 		    		return $result;
-    			}
+				}
 
-    			$min_length = intval($match[0]);
+    			$min_length = intval($extracted_value);
     			if($min_length < 0) 
     			{
-		    		$result["filter"]=$filter;
+
 		    		$result["message"]="\$min_length < 0";
 		    		return $result;
     			}
-    			else if(PHP_INT_MAX < $min_length) 
+    			else if(self::$mysql_int_max < $min_length) 
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="PHP_INT_MAX < \$min_length";
+		    		$result["message"]="self::\$mysql_int_max < \$min_length";
 		    		return $result;
     			}
 
-    			if(!($min_length <= strlen($value))) 
+    			$value_length = mb_strlen($value);
+    			if(!($min_length <= $value_length)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="!(\$min_length <= strlen(\$value))";
+		    		$result["value_length"]=$value_length;
 		    		return $result;
     			}
 			}
     		else if(strpos($filter, 'max_length') !== false) 
     		{
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
-		    		return $result;
-    			}
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }			
 
-    			$max_length = intval($match[0]);
+    			$max_length = intval($extracted_value);
     			if($max_length < 0) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="\$max_length < 0";
 		    		return $result;
     			}
-    			else if(PHP_INT_MAX < $max_length) 
+    			else if(self::$mysql_int_max < $max_length)
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="PHP_INT_MAX < \$max_length";
+		    		$result["message"]="self::\$mysql_int_max < \$max_length";
 		    		return $result;
     			}
 
-    			if(!(strlen($value) <= $max_length)) 
+    			$value_length = mb_strlen($value);
+    			if(!($value_length <= $max_length)) 
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="!(strlen(\$value) <= \$max_length)";
+		    		$result["message"]="!(\$value_length <= \$max_length)";
+		    		$result["value_length"]=$value_length;
 		    		return $result;
     			}
 			}
     		else if(strpos($filter, 'exact_length') !== false) 
     		{
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
-		    		return $result;
-    			}
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }
 
-    			$exact_length = intval($match[0]);
+    			$exact_length = intval($extracted_value);
     			if($exact_length < 0) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="\$exact_length < 0";
 		    		return $result;
     			}
-    			else if(PHP_INT_MAX < $exact_length) 
+    			else if(self::$mysql_int_max < $exact_length) 
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="PHP_INT_MAX < \$exact_length";
+		    		$result["message"]="self::\$mysql_int_max < \$exact_length";
 		    		return $result;
     			}
 
     			if(!(strlen($value) == $exact_length)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="!(strlen(\$value) == \$exact_length)";
 		    		return $result;
     			}
@@ -233,50 +343,105 @@ class ParamChecker {
 			}
     		else if(strpos($filter, 'greater_than_equal_to') !== false) 
     		{
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
-		    		return $result;
-    			}
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }
 
-    			$greater_than_equal_to = intval($match[0]);
+                $value_int = intval($value);
+
+    			$greater_than_equal_to = intval($extracted_value);
     			if($greater_than_equal_to < 0) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="\$greater_than_equal_to < 0";
 		    		return $result;
     			}
-    			else if(PHP_INT_MAX < $greater_than_equal_to) 
+    			else if(self::$mysql_int_max < $greater_than_equal_to) 
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="PHP_INT_MAX < \$greater_than_equal_to";
+		    		$result["message"]="self::\$mysql_int_max < \$greater_than_equal_to";
 		    		return $result;
     			}
 
-    			if(strlen($value) < $greater_than_equal_to) 
+    			if($value_int < $greater_than_equal_to) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="strlen(\$value) < \$greater_than_equal_to";
+		    		return $result;
+    			}
+    			else if(self::$mysql_int_max < $value_int) 
+    			{
+		    		$result["message"]="self::\$mysql_int_max < \$value_int";
 		    		return $result;
     			}
 
 			}
-    		else if(strpos($filter, 'matches') !== false) 
+    		else if(strpos($filter, 'less_than_equal_to') !== false) 
     		{
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }
+
+                $value_int = intval($value);
+
+    			$less_than_equal_to = intval($extracted_value);
+    			if($less_than_equal_to < 0) 
     			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
+		    		$result["message"]="\$less_than_equal_to < 0";
+		    		return $result;
+    			}
+    			else if(self::$mysql_int_max < $less_than_equal_to) 
+    			{
+		    		$result["message"]="self::\$mysql_int_max < \$less_than_equal_to";
 		    		return $result;
     			}
 
-    			$key_const = $match[0];
+    			if($less_than_equal_to < $value_int) 
+    			{
+		    		$result["message"]="$less_than_equal_to < $value_int";
+		    		return $result;
+    			}
+    			else if(self::$mysql_int_max < $value_int) 
+    			{
+		    		$result["message"]="self::\$mysql_int_max < \$value_int";
+		    		return $result;
+    			}
+
+			}			
+    		else if(strpos($filter, 'matches') !== false) 
+    		{
+ 
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }
+
+    			$key_const = $extracted_value;
     			if(empty($key_const)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$key_const)";
 		    		return $result;
     			}
@@ -284,15 +449,19 @@ class ParamChecker {
     			$const_list = $const_map->{$key_const};
     			if(empty($const_list)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$const_list)";
+		    		return $result;
+    			}
+    			else if(is_null($const_list)) 
+    			{
+		    		$result["message"]="is_null(\$const_list)";
 		    		return $result;
     			}
 
     			$has_it = false;
-    			for ($i=0; $i < count($const_list); $i++) 
+    			for ($j=0; $j < count($const_list); $j++) 
     			{ 
-    				$cur_const = $const_list[$i];
+    				$cur_const = $const_list[$j];
     				if($cur_const === $value) 
     				{
     					$has_it = true;
@@ -302,41 +471,35 @@ class ParamChecker {
 
     			if(!$has_it) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="!\$has_it";
 		    		return $result;
     			}
 			}
     		else if(strpos($filter, 'is_unique') !== false) 
     		{
-
-    			preg_match("/\[[^\]]*\]/", $value, $match);
-    			if(empty($match)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$match)";
-		    		return $result;
-    			}
-
-    			$table_n_column = $match[0];
-    			if(empty($table_n_column)) 
-    			{
-		    		$result["filter"]=$filter;
-		    		$result["message"]="empty(\$table_n_column)";
-		    		return $result;
-    			}
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) {
+                    return $result;
+                }
 
     			// ex) user.name -> table: user / column: name
+    			$table_n_column = $extracted_value;
     			$table_n_column_list = explode(".",$table_n_column);
     			if(empty($table_n_column_list)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$table_n_column_list)";
 		    		return $result;
     			}
     			else if(2 != count($table_n_column_list)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="2 != count(\$table_n_column_list)";
 		    		return $result;
     			}
@@ -344,36 +507,83 @@ class ParamChecker {
     			$table_name = $table_n_column_list[0];
     			$column_name = $table_n_column_list[1];
 
-    			// DB 커넥션이 필요.
+    			// DB - unique check
+    			$query_for_unique = 
+    			"SELECT COUNT(*) AS count FROM " . $table_name . " WHERE " . $column_name . "=\"" . $value . "\"";
+		        $query = $this->CI->db->query($query_for_unique);
+		        $row = $query->row();
+		        $count = intval($row->count);
 
+		        // wonder.jung - error check?
 
-
+		        $result["count"] = $count;
+		        if(0 < $count) {
+		    		$result["message"]="0 < \$count";
+		    		return $result;
+		        }
 			}
     		else if(strpos($filter, 'regex_match') !== false) 
     		{
-
-    			preg_match("/regex_match\[[^\]]*\]/", $filter, $match_in_filter);
+    			$pattern = "/regex_match\[(.+)\]$/";
+    			preg_match($pattern, $filter, $match_in_filter);
     			if(empty($match_in_filter)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$match_in_filter)";
+		    		$result["pattern"]=$pattern;
 		    		return $result;
     			}
 
-    			$regex = $match_in_filter[0];
-    			preg_match($regex, $value, $match_in_value);
+    			$pattern = $match_in_filter[1];
+    			preg_match($pattern, $value, $match_in_value);
     			if(empty($match_in_value)) 
     			{
-		    		$result["filter"]=$filter;
 		    		$result["message"]="empty(\$match_in_value)";
+		    		$result["pattern"]=$pattern;
 		    		return $result;
     			}
 
     			// CHECK!
+			} // valid_url
+    		else if(strpos($filter, 'valid_url') !== false) 
+    		{
+    			if(!is_string($value))
+    			{
+		    		$result["message"]="!is_string(\$value)";
+		    		return $result;
+    			}
+    			else if(empty($value))
+    			{
+		    		$result["message"]="empty(\$value)";
+		    		return $result;
+    			}
+    			
+    			$pattern = "/^(http|https|ftp):\/\/[^\/]+\/[^\/]+/";
+		    	$result["pattern"]=$pattern;
+    			preg_match($pattern, $value, $match);
+    			if(empty($match)) 
+    			{
+		    		$result["message"]="empty(\$match)";
+		    		return $result;
+    			}
+    			$result["match"]=$match;
+
+    			$url_sanitized = filter_var($value, FILTER_SANITIZE_URL);
+
+				if (filter_var($url_sanitized, FILTER_SANITIZE_URL) === false) {
+		    		$result["message"]="filter_var(\$url_sanitized, FILTER_SANITIZE_URL) === false";
+		    		return $result;
+				}
+    		}
+    		else if(strpos($filter, 'is_str') !== false) 
+    		{
+    			if(!is_string($value))
+    			{
+		    		$result["message"]="!is_string(\$value)";
+		    		return $result;
+    			}
     		}
     		else
     		{
-	    		$result["filter"]=$filter;
 	    		$result["message"]="no match filter!";
 	    		return $result;
     		}
