@@ -1,28 +1,31 @@
-<!DOCTYPE html>
 <html>
-  <head>
-  
+<head>
+
     <base href="/">
 
-    <title>Cafe Class</title>
+    <title>CafeClass</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
-    <!-- 1. Load libraries -->
-     <!-- Polyfill(s) for older browsers -->
+    
+    <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+    
     <script src="node_modules/core-js/client/shim.min.js"></script>
     <script src="node_modules/zone.js/dist/zone.js"></script>
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <!-- 2. Configure SystemJS -->
-    <script src="systemjs.config.js"></script>
-    <script>
-      System.import('app').catch(function(err){ console.error(err); });
-    </script>
-  </head>
-  <!-- 3. Display the application -->
-  <body>
-    <my-app>Loading...</my-app>
-  </body>
-</html>
 
+    <script src="systemjs.config.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+      System.import('app').catch(function(err){ console.log(err);console.error(err); });
+    </script>
+
+</head>
+
+<body>
+    <my-app>Loading...</my-app>
+</body>
+
+</html>

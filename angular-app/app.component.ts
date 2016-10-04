@@ -12,7 +12,7 @@ import './rxjs-operators';
 		<nav>
 			<a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
 			<a routerLink="/users" routerLinkActive="active">Users</a>
-			<a routerLink="/userlist" routerLinkActive="active">UserList</a>
+			<a routerLink="/users" routerLinkActive="active">UserList</a>
 		</nav>
 		<router-outlet></router-outlet>    
 	`

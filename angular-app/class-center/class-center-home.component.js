@@ -9,22 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-// Add the RxJS Observable operators we need in this app.
-require('./rxjs-operators');
-var AppComponent = (function () {
-    function AppComponent() {
-        this.title = 'user of cafeclass!!';
+var ClassCenterHomeComponent = (function () {
+    function ClassCenterHomeComponent() {
     }
-    AppComponent = __decorate([
+    ClassCenterHomeComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
-            selector: 'my-app',
-            styleUrls: ['app.component.css'],
-            template: "\n\t\t<h1>{{title}}</h1>\n\t\t<nav>\n\t\t\t<a routerLink=\"/dashboard\" routerLinkActive=\"active\">Dashboard</a>\n\t\t\t<a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\n\t\t\t<a routerLink=\"/users\" routerLinkActive=\"active\">UserList</a>\n\t\t</nav>\n\t\t<router-outlet></router-outlet>    \n\t"
+            template: "\n    <p>Welcome to the Class Center</p>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], ClassCenterHomeComponent);
+    return ClassCenterHomeComponent;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.ClassCenterHomeComponent = ClassCenterHomeComponent;
+//# sourceMappingURL=class-center-home.component.js.map

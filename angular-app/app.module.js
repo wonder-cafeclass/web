@@ -19,11 +19,10 @@ var http_1 = require('@angular/http');
 var app_component_1 = require('./app.component');
 var dashboard_component_1 = require('./dashboard.component');
 var users_component_1 = require('./users.component');
-var user_detail_component_1 = require('./user-detail.component');
 var user_service_1 = require('./user.service');
 var user_search_component_1 = require('./user-search.component');
-var user_list_component_1 = require('./user-list.component');
 var app_routing_1 = require('./app.routing');
+var users_module_1 = require('./users/users.module');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -35,18 +34,18 @@ var AppModule = (function () {
                 http_1.HttpModule,
                 http_1.JsonpModule,
                 // InMemoryWebApiModule.forRoot(InMemoryDataService),
-                app_routing_1.routing
+                app_routing_1.routing,
+                users_module_1.UsersModule
             ],
             declarations: [
                 app_component_1.AppComponent,
                 dashboard_component_1.DashboardComponent,
-                user_detail_component_1.UserDetailComponent,
                 users_component_1.UsersComponent,
                 user_search_component_1.UserSearchComponent,
-                user_list_component_1.UserListComponent
             ],
             providers: [
-                user_service_1.UserService
+                user_service_1.UserService,
+                app_routing_1.appRoutingProviders
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

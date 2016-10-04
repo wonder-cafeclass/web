@@ -139,4 +139,4 @@ var UserService = (function () {
     return UserService;
 }());
 exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+//# sourceMappingURL=class.service.js.map

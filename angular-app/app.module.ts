@@ -12,11 +12,11 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { AppComponent }  from './app.component';
 import { DashboardComponent } from './dashboard.component';
 import { UsersComponent } from './users.component';
-import { UserDetailComponent } from './user-detail.component';
 import { UserService } from './user.service';
 import { UserSearchComponent } from './user-search.component';
-import { UserListComponent } from './user-list.component';
-import { routing } from './app.routing';
+import { routing, appRoutingProviders } from './app.routing';
+
+import { UsersModule }         from './users/users.module';
 
 
 @NgModule({
@@ -26,18 +26,18 @@ import { routing } from './app.routing';
     HttpModule,
     JsonpModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
-  	routing
+  	routing,
+    UsersModule
   ],
   declarations: [ 
   	AppComponent,
   	DashboardComponent,
-  	UserDetailComponent,
   	UsersComponent,
     UserSearchComponent,
-    UserListComponent
   ],
   providers: [
-  	UserService
+  	UserService,
+    appRoutingProviders
   ],
   bootstrap: [ AppComponent ]
 })
