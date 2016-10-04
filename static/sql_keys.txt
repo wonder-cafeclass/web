@@ -1,0 +1,6 @@
+INSERT INTO `cafeclass`.`keys` (`key`,`level`) VALUES(MD5('cafeclass_API'),0);
+
+
+- https://github.com/chriskacerguis/codeigniter-restserver
+Example
+$ curl -X POST -H "X-API-KEY: b06a8af904c85ba064c9d05cfaf2e9df" -d "name=Brian" http://dev.cafeclass.kr/index.php/api/users/update/1

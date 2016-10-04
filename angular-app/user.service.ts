@@ -10,19 +10,14 @@ import { Location } 	from '@angular/common';
 @Injectable()
 export class UserService {
 
-	// private usersUrl = 'api/users';  // URL to web api
-	private usersUrl = 'index.php/api/users/list';  // URL to web api
-	private locationPath = "";
+	private usersUrl = 'index.php/api/users/list';
+	private usersInsertUrl = 'index.php/api/users/insert';
+	private usersUpdateUrl = 'index.php/api/users/update';
+	private usersDeleteUrl = 'index.php/api/users/delete';
 
 	constructor(
 		private location:Location,
 		private http: Http) {
-
-		this.locationPath = this.location.path();
-	}
-
-	getRelativeUrl(targetUrl):string{
-		return this.locationPath + "/" +  targetUrl;
 	}
 
 	// Legacy - Mock Test
@@ -55,7 +50,7 @@ export class UserService {
 		let body = JSON.stringify({ name });
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
-		return this.http.post(this.usersUrl, body, options)
+		return this.http.post(this.usersInsertUrl, body, options)
 		         .toPromise()
 		         .then(this.extractData)
 		         .catch(this.handleError);
@@ -105,7 +100,8 @@ export class UserService {
 	private extractData(res: Response) {
 		let body = res.json();
 
-		console.log("extractData / body.data ::: ",body.data);
+		console.log("extractData / body ::: ",body);
+		// console.log("extractData / body.data ::: ",body.data);
 
 		return body.data || { };
 	}
@@ -115,34 +111,43 @@ export class UserService {
 
 
 	getUser(id: number): Promise<User> {
-		return this.getUsers().then(users => users.find(user => user.id === id));
+		return this.getUsers().then(users => users.find(user => +user.id === id));
 	}
 
 	private headers = new Headers({'Content-Type': 'application/json'});
 
 	update(user: User): Promise<User> {
-	  const url = `${this.usersUrl}/${user.id}`;
-	  return this.http
-	    .put(url, JSON.stringify(user), {headers: this.headers})
-	    .toPromise()
-	    .then(() => user)
-	    .catch(this.handleError);
+
+		let url = `${this.usersUpdateUrl}/${user.id}`;
+
+		// TODO - 파라미터 전송 전에 파라미터의 유효성 검증.
+		// API KEY 설정 - 외부에서 curl등으로 배치 호출로 들어왔을 경우에 대한 방어.
+
+		return this.http
+				.post(url, JSON.stringify({name: user.name}), {headers: this.headers})
+				.toPromise()
+				.then(this.extractData)
+				.catch(this.handleError);
 	}
 
 	create(name: string): Promise<User> {
-	  return this.http
-	    .post(this.usersUrl, JSON.stringify({name: name}), {headers: this.headers})
-	    .toPromise()
-	    .then(res => res.json().data)
-	    .catch(this.handleError);
+
+		// TODO - 파라미터 전송 전에 파라미터의 유효성 검증.
+
+		return this.http
+			    .post(this.usersInsertUrl, JSON.stringify({name: name}), {headers: this.headers})
+			    .toPromise()
+			    .then(this.extractData)
+			    .catch(this.handleError);
 	}
 
 	delete(id: number): Promise<void> {
-		const url = `${this.usersUrl}/${id}`;
-		return this.http.delete(url, {headers: this.headers})
-		.toPromise()
-		.then(() => null)
-		.catch(this.handleError);
+		let url = `${this.usersDeleteUrl}/${id}`;
+
+		return this.http.post(url, {headers: this.headers})
+				.toPromise()
+				.then(this.extractData)
+				.catch(this.handleError);
 	}
 
 

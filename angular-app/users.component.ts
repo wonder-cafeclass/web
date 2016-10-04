@@ -43,8 +43,13 @@ export class UsersComponent implements OnInit {
 		if (!name) { return; }
 		this.userService.create(name)
 		.then(user => {
-		  this.users.push(user);
-		  this.selectedUser = null;
+
+			if(null == user || null == user.id || null == user.name) {
+				return;
+			}
+
+			this.users.push(user);
+			this.selectedUser = null;
 		});
 	}
 
@@ -52,7 +57,7 @@ export class UsersComponent implements OnInit {
 		this.userService
 		  .delete(user.id)
 		  .then(() => {
-		    this.users = this.users.filter(u => u !== user);
+		    this.users = this.users.filter(u => u.id !== user.id);
 		    if (this.selectedUser === user) { this.selectedUser = null; }
 		  });
 	}

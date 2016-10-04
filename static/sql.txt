@@ -1,24 +1,26 @@
 ## service - Mysql Table Queries
 ## All table names sets lowercase for Windows.
 
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS access_log;
-DROP TABLE IF EXISTS error_log;
-DROP TABLE IF EXISTS action_log;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `access_log`;
+DROP TABLE IF EXISTS `error_log`;
+DROP TABLE IF EXISTS `action_log`;
 
-DROP TABLE IF EXISTS z_test_user;
+DROP TABLE IF EXISTS `keys`;
+
+DROP TABLE IF EXISTS `z_test_user`;
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nickname` varchar(65) COLLATE utf8_bin NOT NULL,
   `first_name` varchar(65) COLLATE utf8_bin NOT NULL,
   `last_name` varchar(65) COLLATE utf8_bin NOT NULL,
-  `gender` varchar(32) NOT NULL DEFAULT "",
-  `locale` varchar(32) NOT NULL DEFAULT "",
-  `age_range` int(16) NOT NULL DEFAULT 0,
+  `gender` char(1) NOT NULL DEFAULT "" COMMENT 'M(Male)/F(Female)/U(Unknown)', 
+  `locale` varchar(32) NOT NULL DEFAULT "" COMMENT 'subway station locale', 
+  `birth_range` int(4) NOT NULL DEFAULT 0 COMMENT 'ex) 1980, 1990, 2000, 2010, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "",
-  `status` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/N(Not in action)',
-  `permission` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)',
+  `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
   `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `fb_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `google_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Google recommend use user token key not using user id directly. We encode google user token by MD5',
@@ -29,7 +31,8 @@ CREATE TABLE `user` (
   `date_updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_unique_id` (`kakao_id`,`fb_id`,`google_id`,`email`),
-  KEY `first_name` (`first_name`)
+  KEY `first_name` (`first_name`),
+  KEY `locale` (`locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service admin user';
 
 CREATE TABLE `access_log` (
@@ -67,6 +70,15 @@ CREATE TABLE `action_log` (
   PRIMARY KEY (`id`),
   INDEX `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
+
+CREATE TABLE `keys` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `key` VARCHAR(40) NOT NULL,
+    `level` INT(2) NOT NULL,
+    `ignore_limits` TINYINT(1) NOT NULL DEFAULT '0',
+    `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `z_test_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
