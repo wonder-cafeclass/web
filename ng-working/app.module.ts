@@ -6,12 +6,10 @@ import { AppComponent }         from './app.component';
 import { routing,
          appRoutingProviders }  from './app.routing';
 
-import { HeroesModule }         from './heroes/heroes.module';
 import { UsersModule }         from './users/users.module';
-import { CrisisCenterModule }   from './crisis-center/crisis-center.module';
+import { CClassCenterModule }   from './cclass-center/cclass-center.module';
 
 import { LoginComponent }       from './login/login.component';
-
 import { DialogService }        from './widget/dialog.service';
 
 @NgModule({
@@ -19,9 +17,8 @@ import { DialogService }        from './widget/dialog.service';
     BrowserModule,
     FormsModule,
     routing,
-    HeroesModule,
     UsersModule,
-    CrisisCenterModule
+    CClassCenterModule
   ],
   declarations: [
     AppComponent,

@@ -9,22 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var AppComponent = (function () {
-    function AppComponent() {
+var router_1 = require('@angular/router');
+var cclass_service_1 = require('./cclass.service');
+var CClassDetailResolve = (function () {
+    function CClassDetailResolve(cs, router) {
+        this.cs = cs;
+        this.router = router;
     }
-    AppComponent = __decorate([
-        core_1.Component({
-            selector: 'my-app',
-            template: "\n    <nav>\n      <a routerLink=\"/cclass-center\" routerLinkActive=\"active\">Class Center</a>\n      <a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\n      <a routerLink=\"/admin\" routerLinkActive=\"active\">Admin</a>\n      <a routerLink=\"/login\" routerLinkActive=\"active\">Login</a>\n    </nav>\n    <router-outlet></router-outlet>\n  "
-        }), 
-        __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    CClassDetailResolve.prototype.resolve = function (route) {
+        var _this = this;
+        var id = +route.params['id'];
+        return this.cs.getCClass(id).then(function (cclass) {
+            if (cclass) {
+                return cclass;
+            }
+            else {
+                _this.router.navigate(['/cclass-center']);
+                return false;
+            }
+        });
+    };
+    CClassDetailResolve = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [cclass_service_1.CClassService, router_1.Router])
+    ], CClassDetailResolve);
+    return CClassDetailResolve;
 }());
-exports.AppComponent = AppComponent;
+exports.CClassDetailResolve = CClassDetailResolve;
 /*
 Copyright 2016 Google Inc. All Rights Reserved.
 Use of this source code is governed by an MIT-style license that
 can be found in the LICENSE file at http://angular.io/license
 */ 
-//# sourceMappingURL=app.component.js.map
+//# sourceMappingURL=cclass-detail-resolve.service.js.map

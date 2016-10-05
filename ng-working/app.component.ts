@@ -4,8 +4,7 @@ import { Component } from '@angular/core';
   selector: 'my-app',
   template: `
     <nav>
-      <a routerLink="/crisis-center" routerLinkActive="active">Crisis Center</a>
-      <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+      <a routerLink="/cclass-center" routerLinkActive="active">Class Center</a>
       <a routerLink="/users" routerLinkActive="active">Users</a>
       <a routerLink="/admin" routerLinkActive="active">Admin</a>
       <a routerLink="/login" routerLinkActive="active">Login</a>
