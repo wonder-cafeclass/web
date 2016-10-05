@@ -5,21 +5,23 @@ import { FormsModule }    from '@angular/forms';
 import { ClassListComponent }    from './class-list.component';
 import { ClassDetailComponent }  from './class-detail.component';
 
-import { ClassesService } from './class.service';
-import { classesRouting } from './class.routing';
+import { ClassService } from './class.service';
+import { classCenterRouting } from './class-center.routing';
+import { ClassDetailResolve }  from './class-detail-resolve.service';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    classesRouting
+    classCenterRouting
   ],
   declarations: [
     ClassListComponent,
     ClassDetailComponent
   ],
   providers: [
-    ClassesService
+    ClassService,
+    ClassDetailResolve
   ]
 })
-export class ClasssModule {}
+export class ClassCenterModule {}

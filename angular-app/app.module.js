@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 require('./rxjs-extensions');
 var core_1 = require('@angular/core');
+var common_1 = require('@angular/common');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
@@ -17,36 +18,34 @@ var http_1 = require('@angular/http');
 // import { InMemoryWebApiModule } from 'angular2-in-memory-web-api';
 // import { InMemoryDataService }  from './in-memory-data.service';
 var app_component_1 = require('./app.component');
-var dashboard_component_1 = require('./dashboard.component');
-var users_component_1 = require('./users.component');
-var user_service_1 = require('./user.service');
-var user_search_component_1 = require('./user-search.component');
+// import { DashboardComponent } from './dashboard.component';
+// import { UsersComponent } from './users/users.component';
+// import { UserService } from './users/user.service';
+// import { UserSearchComponent } from './users/user-search.component';
+// import { routing } from './app.routing';
 var app_routing_1 = require('./app.routing');
-var users_module_1 = require('./users/users.module');
+// import { appRoutingProviders } from './app.routing';
+// import { UsersModule }         from './users/users.module';
+// import { ClassCenterModule }     from './class-center/class-center.module';
+// import { LoginComponent }       from './login.component';
+// import { DialogService }          from './dialog.service';
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
             imports: [
+                common_1.CommonModule,
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
-                http_1.HttpModule,
-                http_1.JsonpModule,
-                // InMemoryWebApiModule.forRoot(InMemoryDataService),
                 app_routing_1.routing,
-                users_module_1.UsersModule
+                http_1.HttpModule,
+                http_1.JsonpModule
             ],
             declarations: [
                 app_component_1.AppComponent,
-                dashboard_component_1.DashboardComponent,
-                users_component_1.UsersComponent,
-                user_search_component_1.UserSearchComponent,
             ],
-            providers: [
-                user_service_1.UserService,
-                app_routing_1.appRoutingProviders
-            ],
+            providers: [],
             bootstrap: [app_component_1.AppComponent]
         }), 
         __metadata('design:paramtypes', [])

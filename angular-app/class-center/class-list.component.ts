@@ -1,79 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-
-import { UserService } from './user.service';
-import { User } from './../user';
-
+import { Component, OnInit }      from '@angular/core';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+import { Class, ClassService } from './class.service';
 @Component({
-  moduleId: module.id, // @required : relative path
-  selector: 'my-user-list',
-  templateUrl: 'user-list.component.html'
+  template: `
+    <ul class="items">
+      <li *ngFor="let _class of crises"
+        [_class.selected]="isSelected(_class)"
+        (click)="onSelect(_class)">
+        <span class="badge">{{_class.id}}</span> {{_class.name}}
+      </li>
+    </ul>
+    <router-outlet></router-outlet>
+  `
 })
-
-export class UserListComponent implements OnInit {
-  errorMessage: string;
-  users: User[];
-  mode = 'Observable';
-
-  private selectedId: number;
-
-  constructor (
-    private userService: UserService,
+export class ClassListComponent implements OnInit {
+  crises: Class[];
+  public selectedId: number;
+  constructor(
+    private service: ClassService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
-  ngOnInit() { 
-    // Legacy
-    // this.getUsers(); 
-
-    // New
+  ) { }
+  isSelected(_class: Class) {
+    return _class.id === this.selectedId;
+  }
+  ngOnInit() {
     this.route.params.forEach((params: Params) => {
-      this.selectedId = +params['id'];
-      this.userService.getUsers()
-        .then(users => this.users = users);
-    });    
+      this.selectedId = params['id'];
+      this.service.getCrises()
+        .then(crises => this.crises = crises);
+    });
   }
-
-  isSelected(user: User) { return user.id === this.selectedId; }
-
-  // observable-based
-  /*
-  getUseres() {
-    this.userService.getUsers()
-                     .subscribe(
-                       users => this.users = users,
-                       error =>  this.errorMessage = <any>error);
+  onSelect(_class: Class) {
+    this.selectedId = _class.id;
+    // Navigate with relative link
+    this.router.navigate([_class.id], { relativeTo: this.route });
   }
-  */
-  // promise-based
-  getUsers() {
-    this.userService.getUsers()
-                     .then(
-                       users => this.users = users,
-                       error =>  this.errorMessage = <any>error);
-  } 
-
-  // observable-based
-  /* 
-  addUser (name: string) {
-    if (!name) { return; }
-    this.userService.addUser(name)
-                     .subscribe(
-                       user  => this.users.push(user),
-                       error =>  this.errorMessage = <any>error);
-  }
-  */
-  // promise-based
-  addUser (name: string) {
-    if (!name) { return; }
-    this.userService.addUser(name)
-                     .then(
-                       user  => this.users.push(user),
-                       error =>  this.errorMessage = <any>error);
-  }
-
-  onSelect(user: User) {
-    this.router.navigate(['/user', user.id]);
-  }  
-
 }

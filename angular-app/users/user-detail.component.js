@@ -13,7 +13,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var common_1 = require('@angular/common');
 var user_service_1 = require('./user.service');
-var user_1 = require('./../user');
+var user_1 = require('./user');
 var UserDetailComponent = (function () {
     function UserDetailComponent(route, router, location, userService) {
         this.route = route;
@@ -86,7 +86,7 @@ var UserDetailComponent = (function () {
     ], UserDetailComponent.prototype, "user", void 0);
     UserDetailComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
+            // moduleId: module.id, // @required : relative path
             selector: 'my-user-detail',
             templateUrl: 'user-detail.component.html',
             styleUrls: ['user-detail.component.css'],

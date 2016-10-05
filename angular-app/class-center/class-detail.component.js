@@ -8,88 +8,83 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-// Keep the Input import for now, we'll remove it later:
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var common_1 = require('@angular/common');
-var user_service_1 = require('./user.service');
-var user_1 = require('./../user');
-var UserDetailComponent = (function () {
-    function UserDetailComponent(route, router, location, userService) {
+var dialog_service_1 = require('../dialog.service');
+var ClassDetailComponent = (function () {
+    function ClassDetailComponent(route, router, dialogService) {
         this.route = route;
         this.router = router;
-        this.location = location;
-        this.userService = userService;
+        this.dialogService = dialogService;
     }
-    Object.defineProperty(UserDetailComponent.prototype, "routeAnimation", {
+    Object.defineProperty(ClassDetailComponent.prototype, "routeAnimation", {
         get: function () {
             return true;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserDetailComponent.prototype, "display", {
+    Object.defineProperty(ClassDetailComponent.prototype, "display", {
         get: function () {
             return 'block';
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserDetailComponent.prototype, "position", {
+    Object.defineProperty(ClassDetailComponent.prototype, "position", {
         get: function () {
             return 'absolute';
         },
         enumerable: true,
         configurable: true
     });
-    UserDetailComponent.prototype.ngOnInit = function () {
+    ClassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.route.params.forEach(function (params) {
-            var id = +params['id']; // (+) converts string 'id' to a number
-            _this.userService.getUser(id).then(function (user) { return _this.user = user; });
+        this.route.data.forEach(function (data) {
+            _this.editName = data._class.name;
+            _this._class = data._class;
         });
-        // snapshot
-        // (+) converts string 'id' to a number
-        // let id = +this.route.snapshot.params['id'];
-        // this.userService.getUser(id).then(user => this.user = user);	
     };
-    UserDetailComponent.prototype.goBack = function () {
-        this.location.back();
+    ClassDetailComponent.prototype.cancel = function () {
+        this.gotoCrises();
     };
-    UserDetailComponent.prototype.gotoUsers = function () {
-        // this.router.navigate(['/users']); 
-        var userId = this.user ? this.user.id : null;
-        // Pass along the hero id if available
-        // so that the HeroList component can select that hero.
-        this.router.navigate(['/users', { id: userId, foo: 'foo' }]);
+    ClassDetailComponent.prototype.save = function () {
+        this._class.name = this.editName;
+        this.gotoCrises();
     };
-    UserDetailComponent.prototype.save = function () {
-        var _this = this;
-        this.userService.update(this.user)
-            .then(function () { return _this.goBack(); });
+    ClassDetailComponent.prototype.canDeactivate = function () {
+        // Allow synchronous navigation (`true`) if no _class or the _class is unchanged
+        if (!this._class || this._class.name === this.editName) {
+            return true;
+        }
+        // Otherwise ask the user with the dialog service and return its
+        // promise which resolves to true or false when the user decides
+        return this.dialogService.confirm('Discard changes?');
+    };
+    ClassDetailComponent.prototype.gotoCrises = function () {
+        var classId = this._class ? this._class.id : null;
+        // Pass along the _class id if available
+        // so that the ClassListComponent can select that _class.
+        // Add a totally useless `foo` parameter for kicks.
+        // Relative navigation back to the crises
+        this.router.navigate(['../', { id: classId, foo: 'foo' }], { relativeTo: this.route });
     };
     __decorate([
         core_1.HostBinding('@routeAnimation'), 
         __metadata('design:type', Object)
-    ], UserDetailComponent.prototype, "routeAnimation", null);
+    ], ClassDetailComponent.prototype, "routeAnimation", null);
     __decorate([
         core_1.HostBinding('style.display'), 
         __metadata('design:type', Object)
-    ], UserDetailComponent.prototype, "display", null);
+    ], ClassDetailComponent.prototype, "display", null);
     __decorate([
         core_1.HostBinding('style.position'), 
         __metadata('design:type', Object)
-    ], UserDetailComponent.prototype, "position", null);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', user_1.User)
-    ], UserDetailComponent.prototype, "user", void 0);
-    UserDetailComponent = __decorate([
+    ], ClassDetailComponent.prototype, "position", null);
+    ClassDetailComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
-            selector: 'my-user-detail',
-            templateUrl: 'user-detail.component.html',
-            styleUrls: ['user-detail.component.css'],
+            template: "\n  <div *ngIf=\"_class\">\n    <h3>\"{{editName}}\"</h3>\n    <div>\n      <label>Id: </label>{{_class.id}}</div>\n    <div>\n      <label>Name: </label>\n      <input [(ngModel)]=\"editName\" placeholder=\"name\"/>\n    </div>\n    <p>\n      <button (click)=\"save()\">Save</button>\n      <button (click)=\"cancel()\">Cancel</button>\n    </p>\n  </div>\n  ",
+            styles: ['input {width: 20em}'],
             animations: [
                 core_1.trigger('routeAnimation', [
                     core_1.state('*', core_1.style({
@@ -112,10 +107,9 @@ var UserDetailComponent = (function () {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, common_1.Location, (typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
-    ], UserDetailComponent);
-    return UserDetailComponent;
-    var _a;
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, dialog_service_1.DialogService])
+    ], ClassDetailComponent);
+    return ClassDetailComponent;
 }());
-exports.UserDetailComponent = UserDetailComponent;
+exports.ClassDetailComponent = ClassDetailComponent;
 //# sourceMappingURL=class-detail.component.js.map

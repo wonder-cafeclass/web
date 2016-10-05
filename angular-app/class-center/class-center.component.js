@@ -14,7 +14,7 @@ var ClassCenterComponent = (function () {
     }
     ClassCenterComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
+            // moduleId: module.id, // @required : relative path
             template: "\n\t\t<h2>CLASS CENTER</h2>\n\t\t<router-outlet></router-outlet>\n\t"
         }), 
         __metadata('design:paramtypes', [])

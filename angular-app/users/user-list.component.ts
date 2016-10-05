@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { UserService } from './user.service';
-import { User } from './../user';
+import { User } from './user';
 
 @Component({
-  moduleId: module.id, // @required : relative path
+  // moduleId: module.id, // @required : relative path
   selector: 'my-user-list',
   templateUrl: 'user-list.component.html'
 })

@@ -14,28 +14,30 @@ var forms_1 = require('@angular/forms');
 var class_list_component_1 = require('./class-list.component');
 var class_detail_component_1 = require('./class-detail.component');
 var class_service_1 = require('./class.service');
-var class_routing_1 = require('./class.routing');
-var ClasssModule = (function () {
-    function ClasssModule() {
+var class_center_routing_1 = require('./class-center.routing');
+var class_detail_resolve_service_1 = require('./class-detail-resolve.service');
+var ClassCenterModule = (function () {
+    function ClassCenterModule() {
     }
-    ClasssModule = __decorate([
+    ClassCenterModule = __decorate([
         core_1.NgModule({
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
-                class_routing_1.classesRouting
+                class_center_routing_1.classCenterRouting
             ],
             declarations: [
                 class_list_component_1.ClassListComponent,
                 class_detail_component_1.ClassDetailComponent
             ],
             providers: [
-                class_service_1.ClassesService
+                class_service_1.ClassService,
+                class_detail_resolve_service_1.ClassDetailResolve
             ]
         }), 
         __metadata('design:paramtypes', [])
-    ], ClasssModule);
-    return ClasssModule;
+    ], ClassCenterModule);
+    return ClassCenterModule;
 }());
-exports.ClasssModule = ClasssModule;
+exports.ClassCenterModule = ClassCenterModule;
 //# sourceMappingURL=class-center.module.js.map

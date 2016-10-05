@@ -69,7 +69,7 @@ var UserListComponent = (function () {
     };
     UserListComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
+            // moduleId: module.id, // @required : relative path
             selector: 'my-user-list',
             templateUrl: 'user-list.component.html'
         }), 

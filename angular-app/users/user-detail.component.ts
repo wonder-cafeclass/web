@@ -7,11 +7,11 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location }                 from '@angular/common';
 
 import { UserService } from './user.service';
-import { User } from './../user';
+import { User } from './user';
 
 
 @Component({
-	moduleId: module.id, // @required : relative path
+	// moduleId: module.id, // @required : relative path
 	selector: 'my-user-detail',
 	templateUrl: 'user-detail.component.html',
 	styleUrls: [ 'user-detail.component.css' ],

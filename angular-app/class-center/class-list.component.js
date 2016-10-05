@@ -10,73 +10,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var user_service_1 = require('./user.service');
-var UserListComponent = (function () {
-    function UserListComponent(userService, route, router) {
-        this.userService = userService;
+var class_service_1 = require('./class.service');
+var ClassListComponent = (function () {
+    function ClassListComponent(service, route, router) {
+        this.service = service;
         this.route = route;
         this.router = router;
-        this.mode = 'Observable';
     }
-    UserListComponent.prototype.ngOnInit = function () {
-        // Legacy
-        // this.getUsers(); 
+    ClassListComponent.prototype.isSelected = function (_class) {
+        return _class.id === this.selectedId;
+    };
+    ClassListComponent.prototype.ngOnInit = function () {
         var _this = this;
-        // New
         this.route.params.forEach(function (params) {
-            _this.selectedId = +params['id'];
-            _this.userService.getUsers()
-                .then(function (users) { return _this.users = users; });
+            _this.selectedId = params['id'];
+            _this.service.getCrises()
+                .then(function (crises) { return _this.crises = crises; });
         });
     };
-    UserListComponent.prototype.isSelected = function (user) { return user.id === this.selectedId; };
-    // observable-based
-    /*
-    getUseres() {
-      this.userService.getUsers()
-                       .subscribe(
-                         users => this.users = users,
-                         error =>  this.errorMessage = <any>error);
-    }
-    */
-    // promise-based
-    UserListComponent.prototype.getUsers = function () {
-        var _this = this;
-        this.userService.getUsers()
-            .then(function (users) { return _this.users = users; }, function (error) { return _this.errorMessage = error; });
+    ClassListComponent.prototype.onSelect = function (_class) {
+        this.selectedId = _class.id;
+        // Navigate with relative link
+        this.router.navigate([_class.id], { relativeTo: this.route });
     };
-    // observable-based
-    /*
-    addUser (name: string) {
-      if (!name) { return; }
-      this.userService.addUser(name)
-                       .subscribe(
-                         user  => this.users.push(user),
-                         error =>  this.errorMessage = <any>error);
-    }
-    */
-    // promise-based
-    UserListComponent.prototype.addUser = function (name) {
-        var _this = this;
-        if (!name) {
-            return;
-        }
-        this.userService.addUser(name)
-            .then(function (user) { return _this.users.push(user); }, function (error) { return _this.errorMessage = error; });
-    };
-    UserListComponent.prototype.onSelect = function (user) {
-        this.router.navigate(['/user', user.id]);
-    };
-    UserListComponent = __decorate([
+    ClassListComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
-            selector: 'my-user-list',
-            templateUrl: 'user-list.component.html'
+            template: "\n    <ul class=\"items\">\n      <li *ngFor=\"let _class of crises\"\n        [_class.selected]=\"isSelected(_class)\"\n        (click)=\"onSelect(_class)\">\n        <span class=\"badge\">{{_class.id}}</span> {{_class.name}}\n      </li>\n    </ul>\n    <router-outlet></router-outlet>\n  "
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_1.ActivatedRoute, router_1.Router])
-    ], UserListComponent);
-    return UserListComponent;
-    var _a;
+        __metadata('design:paramtypes', [class_service_1.ClassService, router_1.ActivatedRoute, router_1.Router])
+    ], ClassListComponent);
+    return ClassListComponent;
 }());
-exports.UserListComponent = UserListComponent;
+exports.ClassListComponent = ClassListComponent;
 //# sourceMappingURL=class-list.component.js.map
