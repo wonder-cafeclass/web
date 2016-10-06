@@ -9,39 +9,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var platform_browser_1 = require('@angular/platform-browser');
+var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
-var app_component_1 = require('./app.component');
-var app_routing_1 = require('./app.routing');
-var users_module_1 = require('./users/users.module');
-var cclass_center_module_1 = require('./cclass-center/cclass-center.module');
-var login_component_1 = require('./login/login.component');
-var dialog_service_1 = require('./widget/dialog.service');
-var AppModule = (function () {
-    function AppModule() {
+var user_list_component_1 = require('./user-list.component');
+var user_detail_component_1 = require('./user-detail.component');
+var user_service_1 = require('./user.service');
+var users_routing_1 = require('./users.routing');
+var UsersModule = (function () {
+    function UsersModule() {
     }
-    AppModule = __decorate([
+    UsersModule = __decorate([
         core_1.NgModule({
             imports: [
-                platform_browser_1.BrowserModule,
+                common_1.CommonModule,
                 forms_1.FormsModule,
-                app_routing_1.routing,
-                users_module_1.UsersModule,
-                cclass_center_module_1.CClassCenterModule
+                users_routing_1.usersRouting
             ],
             declarations: [
-                app_component_1.AppComponent,
-                login_component_1.LoginComponent
+                user_list_component_1.UserListComponent,
+                user_detail_component_1.UserDetailComponent
             ],
             providers: [
-                app_routing_1.appRoutingProviders,
-                dialog_service_1.DialogService
-            ],
-            bootstrap: [app_component_1.AppComponent]
+                user_service_1.UserService
+            ]
         }), 
         __metadata('design:paramtypes', [])
-    ], AppModule);
-    return AppModule;
+    ], UsersModule);
+    return UsersModule;
 }());
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+exports.UsersModule = UsersModule;
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/ 
+//# sourceMappingURL=users.module.js.map

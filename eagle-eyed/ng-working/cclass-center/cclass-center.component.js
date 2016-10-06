@@ -9,17 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var AppComponent = (function () {
-    function AppComponent() {
+var CClassCenterComponent = (function () {
+    function CClassCenterComponent() {
     }
-    AppComponent = __decorate([
+    CClassCenterComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            template: "\n    <nav>\n      <a routerLink=\"/cclass-center\" routerLinkActive=\"active\">Class Center</a>\n      <a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\n      <a routerLink=\"/admin\" routerLinkActive=\"active\">Admin</a>\n      <a routerLink=\"/login\" routerLinkActive=\"active\">Login</a>\n    </nav>\n    <router-outlet></router-outlet>\n  "
+            template: "\n    <h2>CLASS CENTER</h2>\n    <router-outlet></router-outlet>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], CClassCenterComponent);
+    return CClassCenterComponent;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.CClassCenterComponent = CClassCenterComponent;
+//# sourceMappingURL=cclass-center.component.js.map
