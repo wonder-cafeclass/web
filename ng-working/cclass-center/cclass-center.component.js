@@ -14,7 +14,7 @@ var CClassCenterComponent = (function () {
     }
     CClassCenterComponent = __decorate([
         core_1.Component({
-            template: "\n    <h2>CLASS CENTER</h2>\n    <router-outlet></router-outlet>\n  "
+            template: "\n    <router-outlet></router-outlet>\n  "
         }), 
         __metadata('design:paramtypes', [])
     ], CClassCenterComponent);

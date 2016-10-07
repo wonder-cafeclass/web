@@ -1,0 +1,87 @@
+<!-- http://www.bootply.com/zoupRVbLG4 -->
+<div class="container">
+	<div class="row">
+
+		<div class="col-md-3 cc-div-col" *ngFor="let cclass of cclasses">
+			<div class="panel panel-default">
+				<div class="panel-heading cc-panel">
+					<img width="100%;" src="http://cafeclass.kr/wp-content/uploads/2016/09/초중급-영어회화_신천역_카페클래스.jpg" alt="TEST">
+				</div>
+				<div class="panel-body">
+					<a href="#" class="btn cc-btn" role="button">신청하기</a>
+					<a href="#" class="btn btn-default" role="button">
+						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+					</a>
+				</div>
+			</div>
+		</div>
+	  
+	</div>
+</div>
+
+<!-- Pinterest Version Init -->
+<!-- 
+
+
+/*
+*, *:before, *:after {box-sizing:  border-box !important;}
+
+.row {
+  -moz-column-width: 18em;
+  -webkit-column-width: 18em;
+  -moz-column-gap: 0em;
+  -webkit-column-gap: 0em;
+}
+
+.menu-category {
+  display: inline-block;
+  margin:  0.25rem;
+  padding:  1rem;
+  width:  100%; 
+}
+
+.cc-ul{
+  margin:0px;
+}
+
+.cc-thumbnail {
+  padding: 0px;
+}
+
+.cc-list-no-top-border {
+  border-top: 1px solid #fff;
+}
+
+.cc-list-padding {
+  padding: 10px;
+}
+
+.cc-btn {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+  margin-right: 5px;
+}
+*/
+
+<div class="container">
+	<div class="menu row">
+
+	    <ul class="menu-category list-group cc-ul" *ngFor="let cclass of cclasses">
+	        <li href="#" class="menu-item list-group-item cc-thumbnail">
+	        	<img width="100%;" src="http://cafeclass.kr/wp-content/uploads/2016/09/초중급-영어회화_신천역_카페클래스.jpg" alt="TEST">
+	        </li>
+	        <li href="#" class="menu-item list-group-item cc-list-no-top-border">{{cclass.id}}</li>
+	        <li href="#" class="menu-item list-group-item cc-list-no-top-border">{{cclass.name}}</li>
+	        <li href="#" class="menu-item list-group-item cc-list-no-top-border cc-list-padding">
+				<a href="#" class="btn btn-primary cc-btn" role="button">신청하기</a>
+				<a href="#" class="btn btn-default" role="button">장바구니</a>
+	        </li>
+	    </ul>
+
+	</div>
+</div>
+-->
+<!-- Pinterest Version Done -->
+
+<router-outlet></router-outlet>

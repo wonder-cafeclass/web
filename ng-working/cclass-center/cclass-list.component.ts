@@ -4,20 +4,11 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { CClass, CClassService } from './cclass.service';
 
 @Component({
-  template: `
-    <ul class="items">
-      <li *ngFor="let cclass of crises"
-        [class.selected]="isSelected(cclass)"
-        (click)="onSelect(cclass)">
-        <span class="badge">{{cclass.id}}</span> {{cclass.name}}
-      </li>
-    </ul>
-
-    <router-outlet></router-outlet>
-  `
+  styleUrls: ['./ng-working/cclass-center/cclass-list.component.css'],
+  templateUrl: './ng-working/cclass-center/cclass-list.component.html'
 })
 export class CClassListComponent implements OnInit {
-  crises: CClass[];
+  cclasses: CClass[];
   public selectedId: number;
 
   constructor(
@@ -33,8 +24,8 @@ export class CClassListComponent implements OnInit {
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
       this.selectedId = params['id'];
-      this.service.getCrises()
-        .then(crises => this.crises = crises);
+      this.service.getCClasses()
+        .then(cclasses => this.cclasses = cclasses);
     });
   }
 

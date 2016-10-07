@@ -2,14 +2,23 @@ export class CClass {
   constructor(public id: number, public name: string) { }
 }
 
-const CRISES = [
-  new CClass(1, 'Dragon Burning Cities'),
+const CCLASSES = [
+  new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
   new CClass(2, 'Sky Rains Great White Sharks'),
   new CClass(3, 'Giant Asteroid Heading For Earth'),
   new CClass(4, 'Procrastinators Meeting Delayed Again'),
+  new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
+  new CClass(2, 'Sky Rains Great White Sharks'),
+  new CClass(3, 'Giant Asteroid Heading For Earth'),
+  new CClass(4, 'Procrastinators Meeting Delayed Again'),
+  new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
+  new CClass(2, 'Sky Rains Great White Sharks'),
+  new CClass(3, 'Giant Asteroid Heading For Earth'),
+  new CClass(4, 'Procrastinators Meeting Delayed Again'),
+  
 ];
 
-let cclassesPromise = Promise.resolve(CRISES);
+let cclassesPromise = Promise.resolve(CCLASSES);
 
 import { Injectable } from '@angular/core';
 
@@ -18,7 +27,7 @@ export class CClassService {
 
   static nextCClassId = 100;
 
-  getCrises() { return cclassesPromise; }
+  getCClasses() { return cclassesPromise; }
 
   getCClass(id: number | string) {
     return cclassesPromise

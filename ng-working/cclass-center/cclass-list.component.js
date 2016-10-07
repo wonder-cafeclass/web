@@ -24,8 +24,8 @@ var CClassListComponent = (function () {
         var _this = this;
         this.route.params.forEach(function (params) {
             _this.selectedId = params['id'];
-            _this.service.getCrises()
-                .then(function (crises) { return _this.crises = crises; });
+            _this.service.getCClasses()
+                .then(function (cclasses) { return _this.cclasses = cclasses; });
         });
     };
     CClassListComponent.prototype.onSelect = function (cclass) {
@@ -35,7 +35,8 @@ var CClassListComponent = (function () {
     };
     CClassListComponent = __decorate([
         core_1.Component({
-            template: "\n    <ul class=\"items\">\n      <li *ngFor=\"let cclass of crises\"\n        [class.selected]=\"isSelected(cclass)\"\n        (click)=\"onSelect(cclass)\">\n        <span class=\"badge\">{{cclass.id}}</span> {{cclass.name}}\n      </li>\n    </ul>\n\n    <router-outlet></router-outlet>\n  "
+            styleUrls: ['./ng-working/cclass-center/cclass-list.component.css'],
+            templateUrl: './ng-working/cclass-center/cclass-list.component.html'
         }), 
         __metadata('design:paramtypes', [cclass_service_1.CClassService, router_1.ActivatedRoute, router_1.Router])
     ], CClassListComponent);

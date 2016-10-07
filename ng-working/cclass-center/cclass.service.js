@@ -16,18 +16,26 @@ var CClass = (function () {
     return CClass;
 }());
 exports.CClass = CClass;
-var CRISES = [
-    new CClass(1, 'Dragon Burning Cities'),
+var CCLASSES = [
+    new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
+    new CClass(2, 'Sky Rains Great White Sharks'),
+    new CClass(3, 'Giant Asteroid Heading For Earth'),
+    new CClass(4, 'Procrastinators Meeting Delayed Again'),
+    new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
+    new CClass(2, 'Sky Rains Great White Sharks'),
+    new CClass(3, 'Giant Asteroid Heading For Earth'),
+    new CClass(4, 'Procrastinators Meeting Delayed Again'),
+    new CClass(1, 'Dragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning CitiesDragon Burning Cities'),
     new CClass(2, 'Sky Rains Great White Sharks'),
     new CClass(3, 'Giant Asteroid Heading For Earth'),
     new CClass(4, 'Procrastinators Meeting Delayed Again'),
 ];
-var cclassesPromise = Promise.resolve(CRISES);
+var cclassesPromise = Promise.resolve(CCLASSES);
 var core_1 = require('@angular/core');
 var CClassService = (function () {
     function CClassService() {
     }
-    CClassService.prototype.getCrises = function () { return cclassesPromise; };
+    CClassService.prototype.getCClasses = function () { return cclassesPromise; };
     CClassService.prototype.getCClass = function (id) {
         return cclassesPromise
             .then(function (cclasses) { return cclasses.find(function (cclass) { return cclass.id === +id; }); });

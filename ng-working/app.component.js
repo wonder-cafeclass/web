@@ -15,7 +15,8 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: "\n    <nav>\n      <a routerLink=\"/cclass-center\" routerLinkActive=\"active\">Class Center</a>\n      <a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\n      <a routerLink=\"/admin\" routerLinkActive=\"active\">Admin</a>\n      <a routerLink=\"/login\" routerLinkActive=\"active\">Login</a>\n    </nav>\n    <router-outlet></router-outlet>\n  "
+            styleUrls: ['./ng-working/app.component.css'],
+            templateUrl: './ng-working/app.component.html'
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);
