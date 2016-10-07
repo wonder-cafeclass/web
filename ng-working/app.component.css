@@ -3,16 +3,20 @@
     background-color: #e85c41;	
 }
 
+.cc-logo-anchor {
+    padding: 17px;
+}
+
+.cc-logo-image {
+    height: 15px;
+}
+
 .navbar-nav li a {
     color: #e85c41;
 }
 
-.cc-body-bg {
-	background: #f9f9f9;
-}
-
 .cc-section {
-	padding-top: 65px;
+	padding-top: 70px;
 }
 
 .btn-signin {

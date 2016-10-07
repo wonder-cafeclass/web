@@ -23,6 +23,27 @@
 .cc-panel {
   padding: 0px;
 }
+.cc-no-box-shadow {
+  box-shadow: 0 0px 0px rgba(0,0,0,.0);
+}
+.cc-border {
+  border-color: #f2f2f2;
+}
+.cc-panel-bg {
+  background-color: #fff;
+}
+.cc-panel-filter {
+  border-color: rgba(232, 92, 65, 0.5);
+}
+.cc-panel-magnifier {
+  font-size: 20px;
+  padding: 10px;
+  color: #e85c41;  
+}
+.cc-img-filter {
+  height:40px;
+}
+
 .cc-btn {
   color: #fff;
   background-color: #e85c41;
@@ -32,4 +53,6 @@
 .cc-div-col{
   padding-right: 5px;
 }
+
+
 
