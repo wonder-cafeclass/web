@@ -41,7 +41,16 @@
 			"http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png"
 		],
 
-		"class_locale_list":[],
+		"class_locale_station_list":["잠실역","석촌역","신천역","송파역","방이역","개롱역","성수역"],
+		"class_locale_cafe_list":["할리스","탐앤탐스","투썸플레이스","스타벅스","프롬더빈"],
+		"class_locale_cafe_img_url_list":[
+			"assets/images/cafes/logo/hollys.svg"
+			,"assets/images/cafes/logo/tomntoms.svg"
+			,"assets/images/cafes/logo/twosomeplace.svg"
+			,"스타벅스"
+			,"프롬더빈"
+		],
+
 		"class_locale_img_url_list":[],
 
 		"EOL":""
