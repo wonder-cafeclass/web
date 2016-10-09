@@ -41,7 +41,7 @@ var CClassDetailComponent = (function () {
     CClassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.data.forEach(function (data) {
-            _this.editName = data.cclass.name;
+            _this.editTitle = data.cclass.title;
             _this.cclass = data.cclass;
         });
     };
@@ -49,12 +49,12 @@ var CClassDetailComponent = (function () {
         this.gotoCrises();
     };
     CClassDetailComponent.prototype.save = function () {
-        this.cclass.name = this.editName;
+        this.cclass.title = this.editTitle;
         this.gotoCrises();
     };
     CClassDetailComponent.prototype.canDeactivate = function () {
         // Allow synchronous navigation (`true`) if no cclass or the cclass is unchanged
-        if (!this.cclass || this.cclass.name === this.editName) {
+        if (!this.cclass || this.cclass.title === this.editTitle) {
             return true;
         }
         // Otherwise ask the user with the dialog service and return its
@@ -83,7 +83,7 @@ var CClassDetailComponent = (function () {
     ], CClassDetailComponent.prototype, "position", null);
     CClassDetailComponent = __decorate([
         core_1.Component({
-            template: "\n  <div *ngIf=\"cclass\">\n    <h3>\"{{editName}}\"</h3>\n    <div>\n      <label>Id: </label>{{cclass.id}}</div>\n    <div>\n      <label>Name: </label>\n      <input [(ngModel)]=\"editName\" placeholder=\"name\"/>\n    </div>\n    <p>\n      <button (click)=\"save()\">Save</button>\n      <button (click)=\"cancel()\">Cancel</button>\n    </p>\n  </div>\n  ",
+            template: "\n  <div *ngIf=\"cclass\">\n    <h3>\"{{editTitle}}\"</h3>\n    <div>\n      <label>Id: </label>{{cclass.id}}</div>\n    <div>\n      <label>Title: </label>\n      <input [(ngModel)]=\"editTitle\" placeholder=\"title\"/>\n    </div>\n    <p>\n      <button (click)=\"save()\">Save</button>\n      <button (click)=\"cancel()\">Cancel</button>\n    </p>\n  </div>\n  ",
             styles: ['input {width: 20em}'],
             animations: [
                 core_1.trigger('routeAnimation', [

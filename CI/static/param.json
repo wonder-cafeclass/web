@@ -29,6 +29,21 @@
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
 
+		"class_level":["B","E","P","I","U","A"],
+		"class_level_eng":["Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
+		"class_level_kor":["왕초급","초급","초중급","중급","중상급","상급"],
+		"class_level_img_url":[
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level1.png",
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level1.png",
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level2.png",
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level3.png",
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png",
+			"http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png"
+		],
+
+		"class_locale_list":[],
+		"class_locale_img_url_list":[],
+
 		"EOL":""
 	}
 }

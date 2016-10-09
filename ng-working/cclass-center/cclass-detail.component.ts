@@ -9,12 +9,12 @@ import { DialogService }  from '../widget/dialog.service';
 @Component({
   template: `
   <div *ngIf="cclass">
-    <h3>"{{editName}}"</h3>
+    <h3>"{{editTitle}}"</h3>
     <div>
       <label>Id: </label>{{cclass.id}}</div>
     <div>
-      <label>Name: </label>
-      <input [(ngModel)]="editName" placeholder="name"/>
+      <label>Title: </label>
+      <input [(ngModel)]="editTitle" placeholder="title"/>
     </div>
     <p>
       <button (click)="save()">Save</button>
@@ -61,7 +61,7 @@ export class CClassDetailComponent implements OnInit {
   }
 
   cclass: CClass;
-  editName: string;
+  editTitle: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,7 +71,7 @@ export class CClassDetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.forEach((data: { cclass: CClass }) => {
-      this.editName = data.cclass.name;
+      this.editTitle = data.cclass.title;
       this.cclass = data.cclass;
     });
   }
@@ -81,13 +81,13 @@ export class CClassDetailComponent implements OnInit {
   }
 
   save() {
-    this.cclass.name = this.editName;
+    this.cclass.title = this.editTitle;
     this.gotoCrises();
   }
 
   canDeactivate(): Promise<boolean> | boolean {
     // Allow synchronous navigation (`true`) if no cclass or the cclass is unchanged
-    if (!this.cclass || this.cclass.name === this.editName) {
+    if (!this.cclass || this.cclass.title === this.editTitle) {
       return true;
     }
     // Otherwise ask the user with the dialog service and return its
