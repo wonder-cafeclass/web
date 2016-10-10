@@ -47,14 +47,20 @@
 			"탐앤탐스",
 			"투썸플레이스",
 			"스타벅스",
-			"프롬더빈"
+			"프롬더빈",
+			"앤제리너스",
+			"카페베네",
+			"커핀그루나루"
 		],
 		"class_locale_cafe_img_url_list":[
 			"assets/images/cafes/logo/hollys.svg",
 			"assets/images/cafes/logo/tomntoms.svg",
 			"assets/images/cafes/logo/twosomeplace.svg",
 			"assets/images/cafes/logo/starbucks.svg",
-			"프롬더빈"
+			"assets/images/cafes/logo/fromthebean.svg",
+			"assets/images/cafes/logo/angelinus.svg",
+			"assets/images/cafes/logo/cafebene.svg",
+			"assets/images/cafes/logo/coffineGurunaru.svg"
 		],
 
 		"class_locale_img_url_list":[],
