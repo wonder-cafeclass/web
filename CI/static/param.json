@@ -21,10 +21,11 @@
 	}
 	, "const":{
 		"user_gender_list":["M","F","U"],
-		"user_locale_list":["잠실역","성수역","개롱역","그외"],
 		"user_status_list":["A","B","F","N"],
+
 		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
 		"user_status_kor_list":["정상","블럭","휴면","중지"],
+
 		"user_permission_list":["U","T","A"],
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
@@ -33,15 +34,35 @@
 		"class_level_eng":["Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
 		"class_level_kor":["왕초급","초급","초중급","중급","중상급","상급"],
 		"class_level_img_url":[
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level1.png",
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level1.png",
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level2.png",
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level3.png",
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png",
-			"http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png"
+			"assets/images/level/class_levels_beginner.svg",
+			"assets/images/level/class_levels_elementary.svg",
+			"assets/images/level/class_levels_pre_intermediate.svg",
+			"assets/images/level/class_levels_intermediate.svg",
+			"assets/images/level/class_levels_upper_intermediate.svg",
+			"assets/images/level/class_levels_advanced.svg"
+		],
+
+		"class_status_list":["N","O","S","C"],
+		"class_status_eng_list":["New","Open","Suspended","Closed"],
+		"class_status_kor_list":["신규","개강","중단","종료"],
+
+		"class_time_list":["오전","오후","저녁"],
+		"class_time_img_url_list":[
+			"assets/images/time/cafeclass_time_mn.png",
+			"assets/images/time/cafeclass_time_af.png",
+			"assets/images/time/cafeclass_time_ev.png"
 		],
 
 		"class_day_list":[
+			"mon",
+			"wed",
+			"tue",
+			"thu",
+			"fri",
+			"sat",
+			"sun"
+		],
+		"class_day_kor_list":[
 			"월",
 			"화",
 			"수",
@@ -93,7 +114,8 @@
 			"프롬더빈",
 			"앤제리너스",
 			"카페베네",
-			"커핀그루나루"
+			"커핀그루나루",
+			"세인트앤드류스"
 		],
 		"class_locale_cafe_img_url_list":[
 			"assets/images/cafes/logo/hollys.svg",
@@ -103,7 +125,8 @@
 			"assets/images/cafes/logo/fromthebean.svg",
 			"assets/images/cafes/logo/angelinus.svg",
 			"assets/images/cafes/logo/cafebene.svg",
-			"assets/images/cafes/logo/coffineGurunaru.svg"
+			"assets/images/cafes/logo/coffineGurunaru.svg",
+			"assets/images/cafes/logo/standrewscoffee.png"
 		],
 
 		"class_locale_img_url_list":[],

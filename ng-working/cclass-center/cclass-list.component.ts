@@ -3,6 +3,10 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 
 import { CClass, CClassService } from './cclass.service';
 
+// import { Observable }        from 'rxjs/Observable';
+// import { Subject }           from 'rxjs/Subject';
+
+
 @Component({
   styleUrls: ['./ng-working/cclass-center/cclass-list.component.css'],
   templateUrl: './ng-working/cclass-center/cclass-list.component.html'
@@ -35,6 +39,9 @@ export class CClassListComponent implements OnInit {
     // Navigate with relative link
     this.router.navigate([cclass.id], { relativeTo: this.route });
   }
+
+  // wonder.jung - Search component로 분리
+  // private searchTerms = new Subject<string>();
 }
 
 

@@ -1,0 +1,502 @@
+INSERT INTO `cafeclass`.`cclass`
+(
+	`title`
+	,`desc`
+	,`date_begin`
+	,`time_begin`
+	,`time_duration_minutes`
+
+	,`time_end`
+	,`level`
+	,`week_min`
+	,`week_max`
+	,`days`
+
+	,`class_per_week`
+	,`venue`
+	,`venue_subway_station`
+	,`venue_cafe`
+	,`venue_map_link`
+
+	,`status`
+	,`tags`
+	,`price`
+	,`class_img_url`
+)
+VALUES
+(
+	## `title`
+	## `desc`
+	## `date_begin`
+	## `time_begin`
+	## `time_duration`
+
+	"소수정예 초중급 영어회화"
+	,"틀려도 무조건 영어로 말하기 + 틀린 부분은 나중에 알려준다."
+	,"2016-10-08"
+	,"10:00"
+	,120
+
+	## `time_end`
+	## `level`
+	## `week_min`
+	## `week_max`
+	## `days`
+
+	,"12:00"
+	,"P"
+	,4
+	,12
+	,"sat"
+
+	## `class_per_week`
+	## `venue`
+	## `venue_subway_station`
+	## `venue_cafe`
+	## `venue_map_link`
+
+	,1
+	,"투썸플레이스 잠실역"
+	,"잠실역"
+	,"투썸플레이스"
+	,"http://map.naver.com/?pinId=35135795&pinType=site&dlevel=12&y=fdcd665902373b826efc0d6f5fe69206&x=500b0955451f6cc123cc867c010f2177&enc=b64"
+
+	## `status`
+	## `tags`
+	## `price`
+	## `class_img_url`
+
+	,"N"
+	,"모집|영어|잠실|석촌|토요일"
+	,65000
+	,"http://cafeclass.kr/wp-content/uploads/2016/10/영어회화_잠실_카페클래스.jpg"
+),
+(
+	## `title`
+	## `desc`
+	## `date_begin`
+	## `time_begin`
+	## `time_duration`
+
+	"매끄러운 영어, 초중급 영어회화"
+	,"하고 싶은 말을 영어로 매끄럽게"
+	,"2016-10-13"
+	,"19:30"
+	,120
+
+	## `time_end`
+	## `level`
+	## `week_min`
+	## `week_max`
+	## `days`
+
+	,"21:30"
+	,"E"
+	,4
+	,12
+	,"thu"
+
+	## `class_per_week`
+	## `venue`
+	## `venue_subway_station`
+	## `venue_cafe`
+	## `venue_map_link`
+
+	,1
+	,"종합운동장 신천역 세인트앤드류스"
+	,"신천역"
+	,"세인트앤드류스"
+	,"http://map.naver.com/?pinId=36432428&pinType=site&dlevel=12&y=bf1954ec3a182aea0826101150c84ceb&x=9f9fb57b478d2e6f7f8c19ccbfb5f6f4&enc=b64"
+
+	## `status`
+	## `tags`
+	## `price`
+	## `class_img_url`
+
+	,"N"
+	,"모집|영어|잠실|신촌|토요일"
+	,65000
+	,"http://cafeclass.kr/wp-content/uploads/2016/10/영어회화_잠실_카페클래스.jpg"
+),
+(
+	"영어 회화, 틀려도 무조건 영어로 말하기"
+	,"틀린 부분은 나중에 알려준다"
+	,"2016-10-12"
+	,"17:10"
+	,120
+	,"19:10"
+	,"P"
+	,4
+	,12
+	,"tue"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|영어|잠실|송파|수요일"
+	,65000
+	,"http://cafeclass.kr/wp-content/uploads/2016/07/영어회화-송파역_카페클래스.jpg"
+),
+(
+	"초중급 영어회화"
+	,"개롱역 투썸플레이스(화요일 저녁)"
+	,"2016-10-11"
+	,"19:30"
+	,120
+	,"21:30"
+	,"P"
+	,4
+	,12
+	,"wed"
+	,1
+	,"투썸플레이스 개롱역점"
+	,"개롱역"
+	,"투썸플레이스"
+	,"http://map.naver.com/?pinId=35678338&pinType=site&dlevel=12&y=5712a478e0ec7dcab2355ab29fc48d82&x=de6fd936364f215912f9e958915e209d&enc=b64"
+	,"N"
+	,"모집|영어|개롱|화요일"
+	,59000
+	,"http://cafeclass.kr/wp-content/uploads/2016/10/%EC%98%81%EC%96%B4%ED%9A%8C%ED%99%94-%EA%B0%9C%EB%A1%B1_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"초중급 영어회화"
+	,"개롱역 투썸플레이스(목요일 저녁)"
+	,"2016-10-13"
+	,"19:30"
+	,90
+	,"21:00"
+	,"P"
+	,4
+	,4
+	,"thu"
+	,1
+	,"투썸플레이스 개롱역점"
+	,"개롱역"
+	,"투썸플레이스"
+	,"http://map.naver.com/?pinId=35678338&pinType=site&dlevel=12&y=5712a478e0ec7dcab2355ab29fc48d82&x=de6fd936364f215912f9e958915e209d&enc=b64"
+	,"N"
+	,"모집|영어|개롱|목요일"
+	,59000
+	,"http://cafeclass.kr/wp-content/uploads/2016/10/%EA%B0%9C%EB%A1%B1%EC%97%AD-%EC%98%81%EC%96%B4%ED%9A%8C%ED%99%94_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"사고만 바꾸면 영어가 술술<초급>"
+	,"성수역 투썸플레이스(화요일 저녁)"
+	,"2016-10-11"
+	,"19:30"
+	,120
+	,"21:30"
+	,"E"
+	,4
+	,4
+	,"wed"
+	,1
+	,"투썸플레이스 성수역점"
+	,"성수역"
+	,"투썸플레이스"
+	,"http://map.naver.com/?pinId=36948846&pinType=site&dlevel=10&y=28aede6731d5cab71a84c14a3df3e116&x=87612cece0c5ae4b7d0835848afa9dd5&enc=b64"
+	,"N"
+	,"모집|영어|성동|성수|초급|화요일"
+	,65000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EA%B8%B0%EC%B4%88-%EC%98%81%EC%96%B4%ED%9A%8C%ED%99%94_%EC%84%B1%EC%88%98%EC%97%AD_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"미드영어+파워스피킹<초중급>"
+	,"성수역 투썸플레이스(수요일 저녁)"
+	,"2016-10-12"
+	,"19:30"
+	,120
+	,"21:30"
+	,"P"
+	,4
+	,4
+	,"tue"
+	,1
+	,"투썸플레이스 성수역점"
+	,"성수역"
+	,"투썸플레이스"
+	,"http://map.naver.com/?pinId=36948846&dlevel=10&enc=b64&pinType=site&y=28aede6731d5cab71a84c14a3df3e116&x=87612cece0c5ae4b7d0835848afa9dd5"
+	,"N"
+	,"모집|영어|성동|성수|초급|화요일"
+	,65000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EB%AF%B8%EB%93%9C-%EC%98%81%EC%96%B4%ED%9A%8C%ED%99%94_%EC%84%B1%EC%88%98%EC%97%AD_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"영어면접 완벽 준비 & 이력서 수정"
+	,"삼성역(목요일 저녁)"
+	,"2016-10-13"
+	,"19:30"
+	,90
+	,"21:00"
+	,"P"
+	,4
+	,4
+	,"thu"
+	,1
+	,"인근카페 삼성역"
+	,"삼성역"
+	,"미정"
+	,""
+	,"N"
+	,"모집|선릉|삼성|목요일|이력서|면접"
+	,72000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%98%81%EC%96%B4%EB%A9%B4%EC%A0%91-%EC%BD%94%EC%B9%AD_%EC%82%BC%EC%84%B1%EC%97%AD_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"mon"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"wed"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"tue"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"thu"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+	),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"fri"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"sat"
+	,1
+	,"송파역-스타벅스 송파사거리점"
+	,"송파역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"mon"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"wed"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"tue"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"thu"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"fri"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+),
+(
+	"\"꼬리치는\" 손뜨개 팔찌 클래스"
+	,"<레벨1> - 송파구 *수강료에 재료비가 포함되어 있습니다. *색깔 선택은 수업전에 별도로 연락드려요. 그때 정하시면 됩니다."
+	,"2016-10-11"
+	,"10:00"
+	,60
+	,"11:00"
+	,"E"
+	,2
+	,2
+	,"sat"
+	,1
+	,"잠실역-스타벅스 송파사거리점"
+	,"잠실역"
+	,"스타벅스"
+	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
+	,"N"
+	,"모집|핸드메이드|잠실|대바늘|손뜨개"
+	,50000
+	,"http://cafeclass.kr/wp-content/uploads/2016/09/%EC%86%90%EB%9C%A8%EA%B0%9C%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%8C%94%EC%B0%8C_%EC%B9%B4%ED%8E%98%ED%81%B4%EB%9E%98%EC%8A%A4.jpg"
+)
+;
+
+

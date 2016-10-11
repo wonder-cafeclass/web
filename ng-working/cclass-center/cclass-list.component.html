@@ -6,16 +6,24 @@
 		<div class="col-md-12 cc-div-col">
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
 				<div class="panel-body">
-					<!-- LEVEL -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png" alt="test" class="img-circle cc-img-filter">
-					<!-- PLACE -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_station_8th_sp.png" alt="test" class="img-circle cc-img-filter">
-					<!-- DATE -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" alt="test" class="img-circle cc-img-filter">
-					<!-- TIME -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" alt="test" class="img-circle cc-img-filter">
+	
 
+					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
+					<!-- LEVEL -->
+					<img src="assets/images/level/class_levels_intermediate.svg" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- PLACE -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_station_8th_sp.png" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- DATE -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- TIME -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" alt="test" class="img-circle cc-img-filter pull-left">
+
+					<!-- 검색 창 -->
+					<input class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox id="search-box" (keyup)="search(searchBox.value)">
+
+					<!-- 검색 로고 -->
 					<span class="glyphicon glyphicon-search pull-right cc-panel-magnifier" aria-hidden="true"></span>
+					
 
 				</div>
 			</div>
@@ -34,13 +42,15 @@
 					<div class="cc-class-filter">
 
 						<!-- LEVEL -->
-						<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_level4.png" alt="test" class="img-circle cc-img-filter">
-						<!-- PLACE -->
-						<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_station_8th_sp.png" alt="test" class="img-circle cc-img-filter">
-						<!-- DATE -->
-						<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" alt="test" class="img-circle cc-img-filter">
+						<img src="{{cclass.classLevelImgLink}}" alt="{{cclass.classLevel}}" class="img-circle cc-img-filter">
+						<!-- PLACE / SUBWAY STATION -->
+						<img src="{{cclass.venueSubwayStationImgLink}}" alt="{{cclass.venueSubwayStation}}" class="img-circle cc-img-filter">
+						<!-- DAY -->
+						<img src="{{cclass.classDayImgUrl}}" alt="{{cclass.classDay}}" class="img-circle cc-img-filter">
 						<!-- TIME -->
-						<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" alt="test" class="img-circle cc-img-filter">
+						<img src="{{cclass.timeBeginImgUrl}}" alt="{{cclass.timeBegin}}" class="img-circle cc-img-filter">
+						<!-- PLACE / CAFE -->
+						<img src="{{cclass.venueCafeLogoImgLink}}" alt="{{cclass.venueCafe}}" class="img-circle cc-img-filter">
 						
 					</div>
 					
