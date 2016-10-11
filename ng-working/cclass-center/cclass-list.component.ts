@@ -1,7 +1,8 @@
 import { Component, OnInit }      from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
-import { CClass, CClassService } from './cclass.service';
+import { CClassService } from './cclass.service';
+import { CClass } from './cclass';
 
 // import { Observable }        from 'rxjs/Observable';
 // import { Subject }           from 'rxjs/Subject';

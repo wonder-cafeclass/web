@@ -12,13 +12,17 @@ import { CClassCenterModule }   from './cclass-center/cclass-center.module';
 import { LoginComponent }       from './login/login.component';
 import { DialogService }        from './widget/dialog.service';
 
+import { HttpModule, JsonpModule } from '@angular/http';
+
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     routing,
     UsersModule,
-    CClassCenterModule
+    CClassCenterModule,
+    HttpModule,
+    JsonpModule
   ],
   declarations: [
     AppComponent,

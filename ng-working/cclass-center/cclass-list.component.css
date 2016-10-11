@@ -51,6 +51,8 @@
   margin: 3px;
   border: 0px;
   box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+  font-size: 20px;
+  color: #e85c41;  
 }
 .cc-panel-magnifier {
   font-size: 20px;

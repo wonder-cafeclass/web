@@ -17,6 +17,7 @@ var users_module_1 = require('./users/users.module');
 var cclass_center_module_1 = require('./cclass-center/cclass-center.module');
 var login_component_1 = require('./login/login.component');
 var dialog_service_1 = require('./widget/dialog.service');
+var http_1 = require('@angular/http');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -27,7 +28,9 @@ var AppModule = (function () {
                 forms_1.FormsModule,
                 app_routing_1.routing,
                 users_module_1.UsersModule,
-                cclass_center_module_1.CClassCenterModule
+                cclass_center_module_1.CClassCenterModule,
+                http_1.HttpModule,
+                http_1.JsonpModule
             ],
             declarations: [
                 app_component_1.AppComponent,

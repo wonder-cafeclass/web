@@ -4,7 +4,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH . '/libraries/REST_Controller.php';
-require APPPATH . '/models/CClass.php';
 
 /**
  * This is an example of a few basic user interaction methods you could use
@@ -17,7 +16,7 @@ require APPPATH . '/models/CClass.php';
  * @license         MIT
  * @link            https://github.com/chriskacerguis/codeigniter-restserver
  */
-class Classes extends REST_Controller {
+class CClasses extends REST_Controller {
 
     function __construct()
     {
@@ -34,39 +33,16 @@ class Classes extends REST_Controller {
         // TEST
         // init param checker
         $this->load->library('paramChecker');
-        
-        date_default_timezone_set('Asia/Seoul');
     }
 
     public function list_get()
     {
         // TEST - PHPUnit test로 검증해야 함! wonder.jung
-        // $check_result = $this->paramchecker->is_ok("user_id", 0);
+        $check_result = $this->paramchecker->is_ok("user_id", 0);
 
         // Classes from a data store e.g. database
         $query = $this->db->query('SELECT `id`,`title`,`desc`,`date_begin`,`time_begin`,`time_duration_minutes`,`time_end`,`level`,`week_min`,`week_max`,`days`,`class_per_week`,`venue`,`venue_subway_station`,`venue_cafe`,`venue_map_link`,`status`,`tags`,`price`,`class_img_url`,`date_created`,`date_updated` FROM cclass');
         $classes = $query->result();
-
-        $rows = $query->custom_result_object('CClass');
-
-        $output = array();
-        foreach ($rows as $row)
-        {
-            $row->time_begin_img_url($this->paramchecker->get_const_map());
-            $row->level_img_url($this->paramchecker->get_const_map());
-            $row->days_img_url($this->paramchecker->get_const_map());
-            $row->venue_subway_station_img_url($this->paramchecker->get_const_map());
-            $row->venue_cafe_logo_img_url($this->paramchecker->get_const_map());
-            $row->price_with_format();
-            $row->weeks_to_months();
-            
-            array_push($output, $row);
-
-            // break;
-        }        
-
-        // 추가할 정보들을 넣는다.
-        // wonder.jung
 
         if (!empty($classes))
         {
@@ -74,7 +50,8 @@ class Classes extends REST_Controller {
             $response_body = [
                 'status' => TRUE,
                 'message' => 'Success',
-                'data' => $output
+                'check_result' => $check_result,
+                'data' => $classes
             ];
 
             // OK (200) being the HTTP response code
@@ -85,7 +62,8 @@ class Classes extends REST_Controller {
             // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
             $response_body = [
                 'status' => FALSE,
-                'message' => 'Class could not be found',
+                'message' => 'User could not be found',
+                'check_result' => $check_result,
                 'data' => $classes
             ];
 

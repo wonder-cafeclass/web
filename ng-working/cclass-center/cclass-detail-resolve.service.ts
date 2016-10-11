@@ -2,7 +2,8 @@ import { Injectable }             from '@angular/core';
 import { Router, Resolve,
          ActivatedRouteSnapshot } from '@angular/router';
 
-import { CClass, CClassService } from './cclass.service';
+import { CClassService } from './cclass.service';
+import { CClass } from './cclass';
 
 @Injectable()
 export class CClassDetailResolve implements Resolve<CClass> {

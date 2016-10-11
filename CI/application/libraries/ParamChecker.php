@@ -23,9 +23,15 @@ class ParamChecker {
 
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
 
+        $path_info = $_SERVER['PATH_INFO'];
+
+        $http_host = $_SERVER['HTTP_HOST'];
+        $req_uri = $_SERVER['REQUEST_URI'];
+
     	// Fetch ParamChecker.json
     	$param_check_json_str = "";
-    	$target_path = $abs_path . $this->json_path;
+    	$target_path = FCPATH . $this->json_path;
+
     	if(file_exists($target_path)) 
     	{
 			$param_check_json_str = file_get_contents($target_path);

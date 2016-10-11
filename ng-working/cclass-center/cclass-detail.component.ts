@@ -3,8 +3,8 @@ import { Component, OnInit, HostBinding,
          animate, style, state }  from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { CClass }         from './cclass.service';
-import { DialogService }  from '../widget/dialog.service';
+import { CClass }                 from './cclass';
+import { DialogService }          from '../widget/dialog.service';
 
 @Component({
   template: `
