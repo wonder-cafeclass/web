@@ -6,8 +6,6 @@
 		<div class="col-md-12 cc-div-col">
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
 				<div class="panel-body">
-	
-
 					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
 					<!-- LEVEL -->
 					<img src="assets/images/level/class_levels_intermediate.svg" alt="test" class="img-circle cc-img-filter pull-left">
@@ -18,8 +16,8 @@
 					<!-- TIME -->
 					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" alt="test" class="img-circle cc-img-filter pull-left">
 
-					<!-- 검색 창 -->
-					<input class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox id="search-box" (keyup)="search(searchBox.value)">
+					<!-- 검색 창-->
+					<input id="search-box" class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox (keyup)="search(searchBox.value)">
 
 					<!-- 검색 로고 -->
 					<span class="glyphicon glyphicon-search pull-right cc-panel-magnifier" aria-hidden="true"></span>
@@ -32,6 +30,10 @@
 	</div>
 
 	<div class="row">
+
+		<div class="col-md-3 cc-div-col" *ngFor="let cclass of cclassesObservable">
+			<span>TEST</span>
+		</div>
 
 		<div class="col-md-3 cc-div-col" *ngFor="let cclass of cclasses">
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-border">

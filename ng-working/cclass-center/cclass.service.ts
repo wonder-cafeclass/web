@@ -1,6 +1,7 @@
+// import 'rxjs/add/operator/toPromise';
+
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
 import { Location }     from '@angular/common';
 
 import { CClass } from './cclass';
@@ -18,9 +19,6 @@ export class CClassService {
     constructor(private location:Location,private http: Http) {}
     
     getCClasses (): Promise<CClass[]> {
-
-        console.log("getCClasses / 2 / this.location ::: ",this.location);
-
         return this.http.get(this.location._baseHref + this.classesUrl)
                       .toPromise()
                       .then(this.extractData)
@@ -30,7 +28,7 @@ export class CClassService {
     private extractData(res: Response) {
         let body = res.json();
 
-        console.log("extractData / body ::: ",body);
+        console.log("CClassService / extractData / body ::: ",body);
         // console.log("extractData / body.data ::: ",body.data);
 
         return body.data || { };

@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
 var cclass_service_1 = require('./cclass.service');
+var cclass_search_service_1 = require('./cclass-search.service');
 var cclass_detail_resolve_service_1 = require('./cclass-detail-resolve.service');
 var cclass_center_component_1 = require('./cclass-center.component');
 var cclass_list_component_1 = require('./cclass-list.component');
@@ -36,6 +37,7 @@ var CClassCenterModule = (function () {
             ],
             providers: [
                 cclass_service_1.CClassService,
+                cclass_search_service_1.CClassSearchService,
                 cclass_detail_resolve_service_1.CClassDetailResolve
             ]
         }), 

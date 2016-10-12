@@ -31,10 +31,10 @@ class Classes extends REST_Controller {
         // init database
         $this->load->database();
 
-        // TEST
         // init param checker
         $this->load->library('paramChecker');
-        
+            
+        // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
     }
 
@@ -52,6 +52,7 @@ class Classes extends REST_Controller {
         $output = array();
         foreach ($rows as $row)
         {
+            // 추가할 정보들을 넣는다.
             $row->time_begin_img_url($this->paramchecker->get_const_map());
             $row->level_img_url($this->paramchecker->get_const_map());
             $row->days_img_url($this->paramchecker->get_const_map());
@@ -61,12 +62,7 @@ class Classes extends REST_Controller {
             $row->weeks_to_months();
             
             array_push($output, $row);
-
-            // break;
         }        
-
-        // 추가할 정보들을 넣는다.
-        // wonder.jung
 
         if (!empty($classes))
         {
@@ -92,6 +88,62 @@ class Classes extends REST_Controller {
             // NOT_FOUND (404) being the HTTP response code
             $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
         }
+    }
+
+    public function search_get() {
+        $q = $this->get('q');
+
+        $query = $this->db->query('SELECT * FROM cclass');
+        $classes = $query->result();
+
+        $rows = $query->custom_result_object('CClass');
+
+        $output = array();
+        foreach ($rows as $row)
+        {
+            // 추가할 정보들을 넣는다.
+            $row->time_begin_img_url($this->paramchecker->get_const_map());
+            $row->level_img_url($this->paramchecker->get_const_map());
+            $row->days_img_url($this->paramchecker->get_const_map());
+            $row->venue_subway_station_img_url($this->paramchecker->get_const_map());
+            $row->venue_cafe_logo_img_url($this->paramchecker->get_const_map());
+            $row->price_with_format();
+            $row->weeks_to_months();
+
+            // TEST
+            break;
+            
+            array_push($output, $row);
+        }        
+
+        if (!empty($classes))
+        {
+            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
+            $response_body = [
+                'status' => TRUE,
+                'message' => 'Success',
+                'data' => $output
+            ];
+
+            // OK (200) being the HTTP response code
+            $this->set_response($response_body, REST_Controller::HTTP_OK); 
+        }
+        else
+        {
+            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
+            $response_body = [
+                'status' => FALSE,
+                'message' => 'Class could not be found',
+                'data' => $classes
+            ];
+
+            // NOT_FOUND (404) being the HTTP response code
+            $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
+        }
+
+        // OK (200) being the HTTP response code
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        
     }
 
     public function insert_post() {

@@ -1,3 +1,4 @@
+// import 'rxjs/add/operator/toPromise';
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10,18 +11,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
+var common_1 = require('@angular/common');
 var CClassSearchService = (function () {
-    function CClassSearchService(http) {
+    function CClassSearchService(location, http) {
+        this.location = location;
         this.http = http;
+        this.searchUrl = '/CI/index.php/api/classes/search';
     }
+    // Legacy
     CClassSearchService.prototype.search = function (term) {
+        console.log("CClassSearchService / search2 / term ::: ", term);
+        var req_url = this.location._baseHref + this.searchUrl + ("?q=" + term);
+        console.log("CClassSearchService / search2 / req_url ::: ", req_url);
         return this.http
-            .get("CI/index.php/cclass/?name=" + term)
-            .map(function (r) { return r.json().data; });
+            .get(req_url)
+            .map(this.extractClasses);
+    };
+    /*
+    search (term: string): Promise<CClass[]> {
+
+        let req_url = this.location._baseHref + this.searchUrl + `?q=${term}`;
+
+        console.log("CClassSearchService / search2 / req_url ::: ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractClasses)
+                      .catch(this.handleError);
+    }
+    */
+    CClassSearchService.prototype.extractClasses = function (res) {
+        console.log("extractClasses / res :: ", res);
+        return res.json().data;
+        // res.json().data as CClass[]
+        // let cclasses = res.json().data as CClass[];
+        // return Observable.of<CClass[]>(cclasses);
+    };
+    CClassSearchService.prototype.extractData = function (res) {
+        var body = res.json();
+        console.log("CClassSearchService / extractData / body ::: ", body);
+        // console.log("extractData / body.data ::: ",body.data);
+        return body.data || {};
+    };
+    CClassSearchService.prototype.handleError = function (error) {
+        // In a real world app, we might use a remote logging infrastructure
+        // We'd also dig deeper into the error to get a better message
+        var errMsg = (error.message) ? error.message :
+            error.status ? error.status + " - " + error.statusText : 'Server error';
+        console.error(errMsg); // log to console instead
+        return Promise.reject(errMsg);
     };
     CClassSearchService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [common_1.Location, http_1.Http])
     ], CClassSearchService);
     return CClassSearchService;
 }());

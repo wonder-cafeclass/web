@@ -1,3 +1,4 @@
+// import 'rxjs/add/operator/toPromise';
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
-require('rxjs/add/operator/toPromise');
 var common_1 = require('@angular/common');
 var CClassService = (function () {
     // New - XHR
@@ -21,7 +21,6 @@ var CClassService = (function () {
         this.classesUrl = '/CI/index.php/api/classes/list';
     }
     CClassService.prototype.getCClasses = function () {
-        console.log("getCClasses / 2 / this.location ::: ", this.location);
         return this.http.get(this.location._baseHref + this.classesUrl)
             .toPromise()
             .then(this.extractData)
@@ -29,7 +28,7 @@ var CClassService = (function () {
     };
     CClassService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("extractData / body ::: ", body);
+        console.log("CClassService / extractData / body ::: ", body);
         // console.log("extractData / body.data ::: ",body.data);
         return body.data || {};
     };

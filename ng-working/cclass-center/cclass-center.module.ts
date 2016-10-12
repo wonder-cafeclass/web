@@ -2,8 +2,9 @@ import { NgModule }       from '@angular/core';
 import { FormsModule }    from '@angular/forms';
 import { CommonModule }   from '@angular/common';
 
-import { CClassService }        from './cclass.service';
-import { CClassDetailResolve }  from './cclass-detail-resolve.service';
+import { CClassService }              from './cclass.service';
+import { CClassSearchService }        from './cclass-search.service';
+import { CClassDetailResolve }        from './cclass-detail-resolve.service';
 
 import { CClassCenterComponent }     from './cclass-center.component';
 import { CClassListComponent }       from './cclass-list.component';
@@ -27,6 +28,7 @@ import { cclassCenterRouting } from './cclass-center.routing';
 
   providers: [
     CClassService,
+    CClassSearchService,
     CClassDetailResolve
   ]
 })

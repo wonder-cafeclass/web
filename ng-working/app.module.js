@@ -11,13 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
+var http_1 = require('@angular/http');
 var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
 var cclass_center_module_1 = require('./cclass-center/cclass-center.module');
 var login_component_1 = require('./login/login.component');
 var dialog_service_1 = require('./widget/dialog.service');
-var http_1 = require('@angular/http');
+require('./rxjs-extensions');
+require('./rxjs-operators');
 var AppModule = (function () {
     function AppModule() {
     }

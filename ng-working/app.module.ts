@@ -1,6 +1,7 @@
 import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
+import { HttpModule, JsonpModule } from '@angular/http';
 
 import { AppComponent }         from './app.component';
 import { routing,
@@ -12,7 +13,9 @@ import { CClassCenterModule }   from './cclass-center/cclass-center.module';
 import { LoginComponent }       from './login/login.component';
 import { DialogService }        from './widget/dialog.service';
 
-import { HttpModule, JsonpModule } from '@angular/http';
+import './rxjs-extensions';
+import './rxjs-operators';
+
 
 @NgModule({
   imports: [
