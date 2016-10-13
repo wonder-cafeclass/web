@@ -5,6 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/models/CClass.php';
+require APPPATH . '/models/KlassKeyword.php';
 
 /**
  * This is an example of a few basic user interaction methods you could use
@@ -91,55 +92,16 @@ class Classes extends REST_Controller {
     }
 
     public function search_get() {
+        
         $q = $this->get('q');
 
-        $query = $this->db->query('SELECT * FROM cclass');
-        $classes = $query->result();
+        $keyword_obj = new KlassKeyword(1, $q, $q);
 
-        $rows = $query->custom_result_object('CClass');
-
-        $output = array();
-        foreach ($rows as $row)
-        {
-            // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($this->paramchecker->get_const_map());
-            $row->level_img_url($this->paramchecker->get_const_map());
-            $row->days_img_url($this->paramchecker->get_const_map());
-            $row->venue_subway_station_img_url($this->paramchecker->get_const_map());
-            $row->venue_cafe_logo_img_url($this->paramchecker->get_const_map());
-            $row->price_with_format();
-            $row->weeks_to_months();
-
-            // TEST
-            break;
-            
-            array_push($output, $row);
-        }        
-
-        if (!empty($classes))
-        {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'data' => $output
-            ];
-
-            // OK (200) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
-        }
-        else
-        {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class could not be found',
-                'data' => $classes
-            ];
-
-            // NOT_FOUND (404) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
-        }
+        $response_body = [
+            'status' => TRUE,
+            'message' => 'Success',
+            'data' => array($keyword_obj,$keyword_obj)
+        ];
 
         // OK (200) being the HTTP response code
         $this->set_response($response_body, REST_Controller::HTTP_OK);

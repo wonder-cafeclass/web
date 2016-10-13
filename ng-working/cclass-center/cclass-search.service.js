@@ -1,4 +1,3 @@
-// import 'rxjs/add/operator/toPromise';
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -20,38 +19,14 @@ var CClassSearchService = (function () {
     }
     // Legacy
     CClassSearchService.prototype.search = function (term) {
-        console.log("CClassSearchService / search2 / term ::: ", term);
-        var req_url = this.location._baseHref + this.searchUrl + ("?q=" + term);
-        console.log("CClassSearchService / search2 / req_url ::: ", req_url);
+        var req_url = this.location._baseHref + "/CI/index.php/api/classes/search/?q=" + term;
         return this.http
             .get(req_url)
-            .map(this.extractClasses);
-    };
-    /*
-    search (term: string): Promise<CClass[]> {
-
-        let req_url = this.location._baseHref + this.searchUrl + `?q=${term}`;
-
-        console.log("CClassSearchService / search2 / req_url ::: ",req_url);
-
-        return this.http.get(req_url)
-                      .toPromise()
-                      .then(this.extractClasses)
-                      .catch(this.handleError);
-    }
-    */
-    CClassSearchService.prototype.extractClasses = function (res) {
-        console.log("extractClasses / res :: ", res);
-        return res.json().data;
-        // res.json().data as CClass[]
-        // let cclasses = res.json().data as CClass[];
-        // return Observable.of<CClass[]>(cclasses);
-    };
-    CClassSearchService.prototype.extractData = function (res) {
-        var body = res.json();
-        console.log("CClassSearchService / extractData / body ::: ", body);
-        // console.log("extractData / body.data ::: ",body.data);
-        return body.data || {};
+            .map(function (r) {
+            // TODO 필터링 및 후처리 작업을 여기서 수행합니다.
+            // FIXME - 에러 핸들링은 어떻게?
+            return r.json().data;
+        });
     };
     CClassSearchService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure

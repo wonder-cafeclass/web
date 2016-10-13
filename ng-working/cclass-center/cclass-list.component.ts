@@ -1,18 +1,19 @@
 import { Component, OnInit }               from '@angular/core';
 import { ActivatedRoute, Router, Params }  from '@angular/router';
 
-import { CClassService }                   from './cclass.service';
-import { CClassSearchService }             from './cclass-search.service';
-import { CClass }                          from './cclass';
-
 import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
+import { CClassService }                   from './cclass.service';
+import { CClassSearchService }             from './cclass-search.service';
+import { CClass }                          from './cclass';
+import { KlassKeyword }                    from './klass-keyword';
+
+
 @Component({
   styleUrls: ['./ng-working/cclass-center/cclass-list.component.css'],
-  templateUrl: './ng-working/cclass-center/cclass-list.component.html'
-  // ,
-  // providers: [CClassSearchService]
+  templateUrl: './ng-working/cclass-center/cclass-list.component.html',
+  providers: [CClassSearchService]
 })
 export class CClassListComponent implements OnInit {
 
@@ -20,7 +21,9 @@ export class CClassListComponent implements OnInit {
   public selectedId: number;
 
   // Search
-  cclassesObservable: Observable<CClass[]>;
+  klassKeywords: Observable<KlassKeyword[]>;
+  // klassKeywords: Observable<{}>;
+
   private searchTerms = new Subject<string>();
 
   constructor(
@@ -35,79 +38,47 @@ export class CClassListComponent implements OnInit {
   }
 
   search(term: string): void {
+    console.log("TEST / search / term :: ",term);
     this.searchTerms.next(term);
+  }
+
+  testSwitchMap(term: string, index:number): Observable<CClass[]> {
+
+    console.log("testSwitchMap / term ::: ",term);
+    console.log("testSwitchMap / index ::: ",index);
+
+    return Observable.of<CClass[]>([]);
+
   }
 
   ngOnInit(): void {
 
-    /*
     // get class list
     this.route.params.forEach((params: Params) => {
       this.selectedId = params['id'];
       this.service.getCClasses()
         .then(cclasses => this.cclasses = cclasses);
     });
-    */
 
     // search class with keyword
     // @ referer : http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/
-    this.cclassesObservable = 
+    this.klassKeywords = 
     this.searchTerms
     .debounceTime(300)
     .distinctUntilChanged()
-    .subscribe(
-      // TEST
-      // value => console.log('Received new subject value: ',value)
-
-      // term => term   
-      // // return the http search observable
-      // ? this.cclassSearchService.search(term)
-      // // or the observable of empty useres if no search term
-      // : Observable.of<CClass[]>([])
-
-      term => term
-      // return the http search observable
-      ? this.cclassSearchService.search(term)
-      // or the observable of empty useres if no search term
-      : Observable.of<CClass[]>([]),
-      err => {
-          // this.uiStateStore.endBackendAction();
-
-          // handling errors.
-      }      
-    )
-
-    /*
-    this.searchTerms
-    .debounceTime(300)        // wait for 300ms pause in events
-    .distinctUntilChanged()   // ignore if next search term is same as previous
     .switchMap(
-      this.test
-
-      // // switch to new observable each time
-      // term => term   
-      // // return the http search observable
-      // ? this.cclassSearchService.search(term)
-      // // or the observable of empty useres if no search term
-      // : Observable.of<CClass[]>([])
+      // this.testSwitchMap
+      term => term?this.cclassSearchService.search(term):Observable.of<KlassKeyword[]>([])
     )
     .catch(error => {
       // TODO: real error handling
       console.log(error);
-      return Observable.of<CClass[]>([]);
-    });
-    */
+      return Observable.of<KlassKeyword[]>([]);
+    })
+    ;
 
   }
 
-  test(term: string, index:number): Observable<CClass[]> {
-
-    console.log("TEST / term ::: ",term);
-    console.log("TEST / index ::: ",index);
-
-    return Observable.of<CClass[]>([]);
-
-  }
 
 
   // Legacy

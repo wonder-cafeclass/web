@@ -1,12 +1,10 @@
-// import 'rxjs/add/operator/toPromise';
-
 import { Injectable }     	from '@angular/core';
 import { Http, Response } 	from '@angular/http';
-import { Observable }		from 'rxjs';
-import { CClass } 			from './cclass';
+import { Location }         from '@angular/common';
+import { Observable }       from 'rxjs';
 
-import { Location }     from '@angular/common';
-
+import { CClass }           from './cclass';
+import { KlassKeyword }     from './klass-keyword';
 
 @Injectable()
 export class CClassSearchService {
@@ -16,55 +14,21 @@ export class CClassSearchService {
 	constructor(private location:Location,private http: Http) {}
 
 	// Legacy
-	search(term: string): Observable<CClass[]> {
+	search(term: string): Observable<KlassKeyword[]> {
 
-		console.log("CClassSearchService / search2 / term ::: ",term);
-
-        let req_url = this.location._baseHref + this.searchUrl + `?q=${term}`;
-
-        console.log("CClassSearchService / search2 / req_url ::: ",req_url);
+        let req_url = `${this.location._baseHref}/CI/index.php/api/classes/search/?q=${term}`;
 
 		return this.http
 		           .get(req_url)
-		           .map(this.extractClasses);
+                   .map((r: Response) => {
+
+                       // TODO 필터링 및 후처리 작업을 여기서 수행합니다.
+
+                       // FIXME - 에러 핸들링은 어떻게?
+
+                       return r.json().data as KlassKeyword[];
+                   });
 	}
-
-    /*
-    search (term: string): Promise<CClass[]> {
-
-        let req_url = this.location._baseHref + this.searchUrl + `?q=${term}`;
-
-        console.log("CClassSearchService / search2 / req_url ::: ",req_url);
-
-        return this.http.get(req_url)
-                      .toPromise()
-                      .then(this.extractClasses)
-                      .catch(this.handleError);
-    }
-    */
-
-    
-    private extractClasses(res: Response) : CClass[] {
-
-        console.log("extractClasses / res :: ",res);
-
-        return res.json().data as CClass[];
-
-        // res.json().data as CClass[]
-
-        // let cclasses = res.json().data as CClass[];
-        // return Observable.of<CClass[]>(cclasses);
-    } 
-
-
-    private extractData(res: Response) {
-        let body = res.json();
-
-        console.log("CClassSearchService / extractData / body ::: ",body);
-        // console.log("extractData / body.data ::: ",body.data);
-
-        return body.data || { };
-    }
 
     private handleError (error: any) {
         // In a real world app, we might use a remote logging infrastructure
