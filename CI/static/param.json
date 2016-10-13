@@ -30,10 +30,11 @@
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
 
-		"class_level_list":["B","E","P","I","U","A"],
-		"class_level_eng_list":["Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
-		"class_level_kor_list":["왕초급","초급","초중급","중급","중상급","상급"],
+		"class_level_list":["ALL","B","E","P","I","U","A"],
+		"class_level_eng_list":["All Levels","Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
+		"class_level_kor_list":["모든 레벨", "왕초급","초급","초중급","중급","중상급","상급"],
 		"class_level_img_url_list":[
+			"assets/images/level/class_levels_all.svg",
 			"assets/images/level/class_levels_beginner.svg",
 			"assets/images/level/class_levels_elementary.svg",
 			"assets/images/level/class_levels_pre_intermediate.svg",
@@ -46,8 +47,9 @@
 		"class_status_eng_list":["New","Open","Suspended","Closed"],
 		"class_status_kor_list":["신규","개강","중단","종료"],
 
-		"class_time_list":["오전","점심","오후","저녁"],
+		"class_time_list":["모든 시간","오전","점심","오후","저녁"],
 		"class_time_img_url_list":[
+			"assets/images/time/cafeclass_time_all.svg",
 			"assets/images/time/cafeclass_time_mn.png",
 			"assets/images/time/cafeclass_time_mn.png",
 			"assets/images/time/cafeclass_time_af.png",
@@ -55,6 +57,7 @@
 		],
 
 		"class_days_list":[
+			"all",
 			"mon",
 			"wed",
 			"tue",
@@ -64,6 +67,7 @@
 			"sun"
 		],
 		"class_days_eng_list":[
+			"All Days",
 			"Monday",
 			"Wednesday",
 			"Tuesday",
@@ -73,6 +77,7 @@
 			"Sunday"
 		],
 		"class_days_kor_list":[
+			"모든 요일",
 			"월",
 			"화",
 			"수",
@@ -82,6 +87,7 @@
 			"일"
 		],
 		"class_days_img_url_list":[
+			"assets/images/day/cafeclass_week_all.svg",
 			"assets/images/day/cafeclass_week_mon.png",
 			"assets/images/day/cafeclass_week_wed.png",
 			"assets/images/day/cafeclass_week_tue.png",
@@ -92,6 +98,7 @@
 		],
 
 		"class_venue_subway_station_list":[
+			"모든 장소",
 			"잠실역",
 			"신천역",
 			"선릉역",
@@ -104,6 +111,7 @@
 			"송파역"
 		],
 		"class_venue_subway_station_img_url_list":[
+			"assets/images/subway/cafeclass_station_all.svg",
 			"assets/images/subway/cafeclass_station_2nd_js.png",
 			"assets/images/subway/cafeclass_station_2nd_sc.png",
 			"assets/images/subway/cafeclass_station_2nd_sr.png",

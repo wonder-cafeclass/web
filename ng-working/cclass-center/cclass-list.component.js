@@ -20,7 +20,6 @@ var CClassListComponent = (function () {
         this.service = service;
         this.route = route;
         this.router = router;
-        // klassKeywords: Observable<{}>;
         this.searchTerms = new Subject_1.Subject();
     }
     CClassListComponent.prototype.isSelected = function (cclass) {
@@ -29,11 +28,6 @@ var CClassListComponent = (function () {
     CClassListComponent.prototype.search = function (term) {
         console.log("TEST / search / term :: ", term);
         this.searchTerms.next(term);
-    };
-    CClassListComponent.prototype.testSwitchMap = function (term, index) {
-        console.log("testSwitchMap / term ::: ", term);
-        console.log("testSwitchMap / index ::: ", index);
-        return Observable_1.Observable.of([]);
     };
     CClassListComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -49,14 +43,53 @@ var CClassListComponent = (function () {
             this.searchTerms
                 .debounceTime(300)
                 .distinctUntilChanged()
-                .switchMap(
-            // this.testSwitchMap
-            function (term) { return term ? _this.cclassSearchService.search(term) : Observable_1.Observable.of([]); })
+                .switchMap(function (term) { return term ? _this.cclassSearchService.search(term) : Observable_1.Observable.of([]); })
                 .catch(function (error) {
                 // TODO: real error handling
                 console.log(error);
                 return Observable_1.Observable.of([]);
             });
+        // 요걸 한번에 해결하는 API를 호출하자!
+        // 모든 레벨의 key를 가져온다.
+        // 모든 레벨의 이미지 주소를 가져온다.
+        // 모든 역의 key를 가져온다.
+        // 모든 역의 이미지 주소를 가져온다.
+        // 모든 요일의 key를 가져온다.
+        // 모든 요일의 이미지 주소를 가져온다.
+        // 모든 시간의 key를 가져온다.
+        // 모든 시간의 이미지 주소를 가져온다.
+    };
+    // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
+    CClassListComponent.prototype.changeLevel = function () {
+        console.log("TEST / changeLevel");
+        // 레벨이 변경된다.
+        // 변경된 레벨에 따라 수업 리스트가 달라져야 한다.
+        // 수업 리스트 API Call!
+    };
+    CClassListComponent.prototype.changeStation = function () {
+        console.log("TEST / changeStation");
+        // 지하철 역이 변경된다.
+        // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
+        // 수업 리스트 API Call!
+    };
+    CClassListComponent.prototype.changeDay = function () {
+        console.log("TEST / changeDay");
+        // 수업 요일이 변경된다.
+        // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
+        // 수업 리스트 API Call!
+    };
+    CClassListComponent.prototype.changeTime = function () {
+        console.log("TEST / changeTime");
+        // 수업 시간이 변경된다.
+        // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
+        // 수업 리스트 API Call!
+    };
+    CClassListComponent.prototype.onSelectKlass = function (cclass) {
+        // 유저가 수업을 선택했습니다.
+        // 수업 상세 페이지로 이동해야 합니다.
+        console.log("TEST / onSelectKlass / cclass :: ", cclass);
+        // Navigate with relative link
+        // this.router.navigate([cclass.id], { relativeTo: this.route });
     };
     CClassListComponent = __decorate([
         core_1.Component({

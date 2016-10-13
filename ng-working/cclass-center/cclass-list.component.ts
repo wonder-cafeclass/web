@@ -21,8 +21,8 @@ export class CClassListComponent implements OnInit {
   public selectedId: number;
 
   // Search
+  // TODO - 검색 관련 
   klassKeywords: Observable<KlassKeyword[]>;
-  // klassKeywords: Observable<{}>;
 
   private searchTerms = new Subject<string>();
 
@@ -42,15 +42,6 @@ export class CClassListComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  testSwitchMap(term: string, index:number): Observable<CClass[]> {
-
-    console.log("testSwitchMap / term ::: ",term);
-    console.log("testSwitchMap / index ::: ",index);
-
-    return Observable.of<CClass[]>([]);
-
-  }
-
   ngOnInit(): void {
 
     // get class list
@@ -67,7 +58,6 @@ export class CClassListComponent implements OnInit {
     .debounceTime(300)
     .distinctUntilChanged()
     .switchMap(
-      // this.testSwitchMap
       term => term?this.cclassSearchService.search(term):Observable.of<KlassKeyword[]>([])
     )
     .catch(error => {
@@ -77,18 +67,68 @@ export class CClassListComponent implements OnInit {
     })
     ;
 
+    // 요걸 한번에 해결하는 API를 호출하자!
+
+    // 모든 레벨의 key를 가져온다.
+    // 모든 레벨의 이미지 주소를 가져온다.
+
+    // 모든 역의 key를 가져온다.
+    // 모든 역의 이미지 주소를 가져온다.
+
+    // 모든 요일의 key를 가져온다.
+    // 모든 요일의 이미지 주소를 가져온다.
+
+    // 모든 시간의 key를 가져온다.
+    // 모든 시간의 이미지 주소를 가져온다.
+
   }
 
+  // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
 
+  changeLevel() :void {
+    console.log("TEST / changeLevel");
 
-  // Legacy
-  /*
-  onSelect(cclass: CClass) {
-    this.selectedId = cclass.id;
+    // 레벨이 변경된다.
+    // 변경된 레벨에 따라 수업 리스트가 달라져야 한다.
+
+    // 수업 리스트 API Call!
+  }
+
+  changeStation() :void {
+    console.log("TEST / changeStation");
+
+    // 지하철 역이 변경된다.
+    // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
+
+    // 수업 리스트 API Call!
+  }
+
+  changeDay() :void {
+    console.log("TEST / changeDay");
+
+    // 수업 요일이 변경된다.
+    // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
+
+    // 수업 리스트 API Call!
+  }
+
+  changeTime() :void {
+    console.log("TEST / changeTime");
+
+    // 수업 시간이 변경된다.
+    // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
+
+    // 수업 리스트 API Call!
+  }
+
+  onSelectKlass(cclass: CClass) {
+
+    // 유저가 수업을 선택했습니다.
+    // 수업 상세 페이지로 이동해야 합니다.
+    console.log("TEST / onSelectKlass / cclass :: ",cclass);
 
     // Navigate with relative link
     // this.router.navigate([cclass.id], { relativeTo: this.route });
   }
-  */
 
 }
