@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var user_service_1 = require('./user.service');
+var user_service_1 = require('./users/user.service');
 var router_1 = require('@angular/router');
 var DashboardComponent = (function () {
     function DashboardComponent(router, userService) {
@@ -23,12 +23,13 @@ var DashboardComponent = (function () {
             .then(function (users) { return _this.users = users; });
     };
     DashboardComponent.prototype.gotoDetail = function (user) {
-        var link = ['/detail', user.id];
+        // let link = ['/detail', user.id];
+        var link = ['/user', user.id];
         this.router.navigate(link);
     };
     DashboardComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
+            // moduleId: module.id, // @required : relative path
             selector: 'my-dashboard',
             templateUrl: 'dashboard.component.html',
             styleUrls: ['dashboard.component.css']

@@ -1,0 +1,76 @@
+.navbar-nav .active a {
+    color: #fff;
+    background-color: #e85c41;	
+}
+
+.cc-logo-anchor {
+    padding: 17px;
+}
+
+.cc-logo-image {
+    height: 15px;
+}
+
+.navbar-nav li a {
+    color: #e85c41;
+}
+
+.cc-section {
+	padding-top: 70px;
+}
+
+.btn-signin {
+	color: #fff;
+    background-color: #e85c41;
+    border-color: #e85c41;
+}
+
+.cc-navbar {
+    background-image: linear-gradient(to bottom,#fff 0,#fff 100%) !important;
+    box-shadow: 0 0 2px rgba(6,8,8,0.15);
+}
+
+.hide_overflow-x {
+    overflow-x: hidden !important;
+}
+
+.copyright {
+    font-size: 12px;
+    padding: 0;
+}
+
+.cc-logo-top {
+    margin: 12px;
+}
+.cc-margin-r-nav-btn {
+	margin-right: 8px;
+}
+
+.hide {
+    display: none;
+}
+
+.nav-link {
+    min-width: 85px;
+    text-align: center;
+    height: 62px;
+    line-height: 62px;
+    padding: 0 18px;	
+}
+
+.navigation {
+    width: 90%;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;	
+}
+
+.site-nav {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    box-sizing: border-box;	
+}
+

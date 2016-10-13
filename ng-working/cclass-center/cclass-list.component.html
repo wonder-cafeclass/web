@@ -1,0 +1,76 @@
+<!-- http://www.bootply.com/zoupRVbLG4 -->
+<div class="container">
+
+	<div class="row">
+
+		<div class="col-md-12 cc-div-col">
+			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
+				<div class="panel-body">
+					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
+					<!-- LEVEL -->
+					<img src="assets/images/level/class_levels_intermediate.svg" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- PLACE -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_station_8th_sp.png" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- DATE -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" alt="test" class="img-circle cc-img-filter pull-left">
+					<!-- TIME -->
+					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" alt="test" class="img-circle cc-img-filter pull-left">
+
+					<!-- 검색 창-->
+					<input id="search-box" class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox (keyup)="search(searchBox.value)">
+
+					<!-- 검색 로고 -->
+					<span class="glyphicon glyphicon-search pull-right cc-panel-magnifier" aria-hidden="true"></span>
+					
+
+				</div>
+			</div>
+		</div>
+	  
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-3 cc-div-col" *ngFor="let keyword of klassKeywords | async">
+			<span>{{keyword.name}}</span>
+		</div>
+
+		<div class="col-md-3 cc-div-col" *ngFor="let cclass of cclasses">
+			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-border">
+				<div class="panel-heading cc-panel">
+					
+					<img class="cc-img-class" width="100%;" src={{cclass.class_img_url}} alt={{cclass.title}}>
+
+					<div class="cc-class-filter">
+
+						<!-- LEVEL -->
+						<img src="{{cclass.level_img_url}}" alt="{{cclass.level_kor}}" class="img-circle cc-img-filter">
+						<!-- PLACE / SUBWAY STATION -->
+						<img src="{{cclass.venue_subway_station_img_url}}" alt="{{cclass.venue_subway_station}}" class="img-circle cc-img-filter">
+						<!-- DAY -->
+						<img src="{{cclass.days_img_url}}" alt="{{cclass.days_kor}}" class="img-circle cc-img-filter">
+						<!-- TIME -->
+						<img src="{{cclass.time_begin_img_url}}" alt="{{cclass.time_begin_name}}" class="img-circle cc-img-filter">
+						<!-- PLACE / CAFE -->
+						<img src="{{cclass.venue_cafe_logo_img_url}}" alt="{{cclass.venue_cafe}}" class="img-circle cc-img-filter">
+						
+					</div>
+					
+				</div>
+				<div class="panel-body cc-panel-class-bg">
+
+					<h4 class="pull-right cc-price">{{cclass.price_with_format}} &#8361;</h4>
+
+					<a href="#" class="btn cc-btn" role="button">신청하기</a>
+					<a href="#" class="btn btn-default" role="button">
+						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+					</a>
+
+				</div>
+			</div>
+		</div>
+	  
+	</div>
+</div>
+
+<router-outlet></router-outlet>

@@ -13,14 +13,13 @@ var core_1 = require('@angular/core');
 require('./rxjs-operators');
 var AppComponent = (function () {
     function AppComponent() {
-        this.title = 'user of cafeclass!!';
+        this.title = 'CafeClass';
     }
     AppComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
             selector: 'my-app',
-            styleUrls: ['app.component.css'],
-            template: "\n\t\t<h1>{{title}}</h1>\n\t\t<nav>\n\t\t\t<a routerLink=\"/dashboard\" routerLinkActive=\"active\">Dashboard</a>\n\t\t\t<a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\n\t\t\t<a routerLink=\"/userlist\" routerLinkActive=\"active\">UserList</a>\n\t\t</nav>\n\t\t<router-outlet></router-outlet>    \n\t"
+            styleUrls: ['angular-app/app.component.css'],
+            template: "\n\t\t<h1>{{title}}</h1>\n\t"
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);

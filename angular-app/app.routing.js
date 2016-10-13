@@ -1,31 +1,19 @@
 "use strict";
 var router_1 = require('@angular/router');
-var users_component_1 = require('./users.component');
-var user_detail_component_1 = require('./user-detail.component');
-var user_list_component_1 = require('./user-list.component');
-var dashboard_component_1 = require('./dashboard.component');
-var appRoutes = [
+var login_routing_1 = require('./login.routing');
+var can_deactivate_guard_service_1 = require('./can-deactivate-guard.service');
+var adminRoutes = [
     {
-        path: 'users',
-        component: users_component_1.UsersComponent
-    },
-    {
-        path: 'userlist',
-        component: user_list_component_1.UserListComponent
-    },
-    {
-        path: 'dashboard',
-        component: dashboard_component_1.DashboardComponent
-    },
-    {
-        path: 'detail/:id',
-        component: user_detail_component_1.UserDetailComponent
-    },
-    {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
+        path: 'admin',
+        loadChildren: 'app/admin/admin.module#AdminModule'
     }
 ];
+var appRoutes = login_routing_1.loginRoutes.concat(adminRoutes);
+exports.appRoutingProviders = [
+    login_routing_1.authProviders,
+    can_deactivate_guard_service_1.CanDeactivateGuard
+];
+// export const appRoutingProviders: any[] = [];
+// const appRoutes: Routes = [];
 exports.routing = router_1.RouterModule.forRoot(appRoutes);
 //# sourceMappingURL=app.routing.js.map

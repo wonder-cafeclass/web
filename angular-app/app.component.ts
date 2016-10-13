@@ -4,19 +4,23 @@ import { Component } from '@angular/core';
 import './rxjs-operators';
 
 @Component({
-	moduleId: module.id, // @required : relative path
 	selector: 'my-app',
-	styleUrls: ['app.component.css'],
+	styleUrls: ['angular-app/app.component.css'],
 	template: `
 		<h1>{{title}}</h1>
-		<nav>
-			<a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-			<a routerLink="/users" routerLinkActive="active">Users</a>
-			<a routerLink="/userlist" routerLinkActive="active">UserList</a>
-		</nav>
-		<router-outlet></router-outlet>    
 	`
 })
 export class AppComponent {
-  title = 'user of cafeclass!!';
+  title = 'CafeClass';
+
+  // 		<h1>{{title}}</h1>
+		// <nav>
+		// 	<a routerLink="/class-center" routerLinkActive="active">Classes Center</a>
+		// 	<a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+		// 	<a routerLink="/users" routerLinkActive="active">Users</a>
+		// 	<a routerLink="/admin" routerLinkActive="active">Admin</a>
+		// 	<a routerLink="/login" routerLinkActive="active">Login</a>
+		// </nav>
+		// <router-outlet></router-outlet>    
+
 }

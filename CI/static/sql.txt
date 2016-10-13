@@ -1,0 +1,121 @@
+## service - Mysql Table Queries
+## All table names sets lowercase for Windows.
+
+DROP TABLE IF EXISTS `cclass`;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `log_access`;
+DROP TABLE IF EXISTS `log_error`;
+DROP TABLE IF EXISTS `log_action`;
+
+DROP TABLE IF EXISTS `keys`;
+
+DROP TABLE IF EXISTS `z_test_user`;
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(65) COLLATE utf8_bin NOT NULL,
+  `first_name` varchar(65) COLLATE utf8_bin NOT NULL,
+  `last_name` varchar(65) COLLATE utf8_bin NOT NULL,
+  `gender` char(1) NOT NULL DEFAULT "" COMMENT 'M(Male)/F(Female)/U(Unknown)', 
+  `locale` varchar(32) NOT NULL DEFAULT "" COMMENT 'subway station locale', 
+  `birth_range` int(4) NOT NULL DEFAULT 0 COMMENT 'ex) 1980, 1990, 2000, 2010, ...', 
+  `thumbnail` varchar(255) NOT NULL DEFAULT "",
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)',
+  `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
+  `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `fb_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `google_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Google recommend use user token key not using user id directly. We encode google user token by MD5',
+  `mobile` varchar(65) COLLATE utf8_bin DEFAULT NULL,
+  `email` varchar(65) COLLATE utf8_bin NOT NULL,
+  `password` varchar(65) COLLATE utf8_bin DEFAULT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_unique_id` (`kakao_id`,`fb_id`,`google_id`,`email`,`mobile`),
+  KEY `first_name` (`first_name`),
+  KEY `locale` (`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
+
+CREATE TABLE `cclass` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업이름',
+  `desc` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업설명',
+  `date_begin` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '시작날짜 ex) 2016-10-10',
+  `time_begin` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '시작시간 ex) 19:00',
+  `time_duration_minutes` int(4) COLLATE utf8_bin NOT NULL COMMENT '수업시간 분으로 표시(minutes)ex) 120',
+  `time_end` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '수업종료시간 ex) 21:00',
+  `level` char(1) COLLATE utf8_bin NOT NULL DEFAULT "B" COMMENT '수업레벨 B(Beginner/왕초급),E(Elementary/초급),P(Pre-intermediate/초중급),I(Intermediate/중급),U(Upper-intermediate/중상급),A(Advanced/상급)',
+  `week_min` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 최소 수강 week 수 ex) 2 - 2주',
+  `week_max` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 최소 수강 week 수 ex) 4 - 4주',
+  `days` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "tue" COMMENT '수업요일 (mon/월),(wed/화),(tue/수),(thu/목),(fri/금),(sat/토),(sun/일); ex) mon|wed - 월,화 주 2회 수업',
+  `class_per_week` int(1) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '주당 수업 일수 ex) 2 - 주 2일 수업',
+  `venue` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업이름; 서비스에 노출되는 이름을 의미합니다. ex) 송파역-스타벅스 송파사거리점',
+  `venue_subway_station` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 - 지하철역; ex) 송파역',
+  `venue_cafe` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 - 카페; ex) 스타벅스',
+  `venue_map_link` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 맵링크 - 네이버맵 or 다음맵 링크;',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/신규),O(Open/개강),S(Suspended/중단),C(Closed/종료)',
+  `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
+  `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '월별 수강료. 최대 천만원 단위까지 표시.',
+  `class_img_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업을 안내하는 이미지 - 페이스북 광고에 사용되는 메인 이미지.',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `date_begin` (`date_begin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class';
+
+CREATE TABLE `log_access` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) NOT NULL,
+  `browser` varchar(255) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service access log';
+
+CREATE TABLE `log_error` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) NOT NULL,
+  `browser` varchar(255) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  `type` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service error log';
+
+CREATE TABLE `log_action` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `os` varchar(255) COLLATE utf8_bin NOT NULL,
+  `browser` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ip` varchar(32) COLLATE utf8_bin NOT NULL,
+  `type` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `msg` text COLLATE utf8_bin,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
+
+CREATE TABLE `keys` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `key` VARCHAR(40) NOT NULL,
+    `level` INT(2) NOT NULL,
+    `ignore_limits` TINYINT(1) NOT NULL DEFAULT '0',
+    `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `z_test_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(65) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test user';
+
+CREATE TABLE `z_test_class` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(65) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test class';

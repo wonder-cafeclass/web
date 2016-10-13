@@ -1,0 +1,146 @@
+{
+	"checker":{
+		"user_id":"is_natural_no_zero",
+		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
+		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
+		"user_birth_range":"is_natural_no_zero|||greater_than_equal_to[1900]|||less_than_equal_to[2020]",
+		"user_thumbnail":"valid_url",
+		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
+		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
+		"user_mobile":"valid_mobile_kor",
+		"user_email":"valid_emails",
+		"user_password":"is_str|||exact_length[8]",
+
+		"z_test_user_id":"is_natural_no_zero",
+		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+
+		"EOL":""
+	}
+	, "const":{
+		"user_gender_list":["M","F","U"],
+		"user_status_list":["A","B","F","N"],
+
+		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
+		"user_status_kor_list":["정상","블럭","휴면","중지"],
+
+		"user_permission_list":["U","T","A"],
+		"user_permission_eng_list":["User","Teacher","Admin"],
+		"user_permission_kor_list":["사용자","강사","운영자"],
+
+		"class_level_list":["B","E","P","I","U","A"],
+		"class_level_eng_list":["Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
+		"class_level_kor_list":["왕초급","초급","초중급","중급","중상급","상급"],
+		"class_level_img_url_list":[
+			"assets/images/level/class_levels_beginner.svg",
+			"assets/images/level/class_levels_elementary.svg",
+			"assets/images/level/class_levels_pre_intermediate.svg",
+			"assets/images/level/class_levels_intermediate.svg",
+			"assets/images/level/class_levels_upper_intermediate.svg",
+			"assets/images/level/class_levels_advanced.svg"
+		],
+
+		"class_status_list":["N","O","S","C"],
+		"class_status_eng_list":["New","Open","Suspended","Closed"],
+		"class_status_kor_list":["신규","개강","중단","종료"],
+
+		"class_time_list":["오전","점심","오후","저녁"],
+		"class_time_img_url_list":[
+			"assets/images/time/cafeclass_time_mn.png",
+			"assets/images/time/cafeclass_time_mn.png",
+			"assets/images/time/cafeclass_time_af.png",
+			"assets/images/time/cafeclass_time_ev.png"
+		],
+
+		"class_days_list":[
+			"mon",
+			"wed",
+			"tue",
+			"thu",
+			"fri",
+			"sat",
+			"sun"
+		],
+		"class_days_eng_list":[
+			"Monday",
+			"Wednesday",
+			"Tuesday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+			"Sunday"
+		],
+		"class_days_kor_list":[
+			"월",
+			"화",
+			"수",
+			"목",
+			"금",
+			"토",
+			"일"
+		],
+		"class_days_img_url_list":[
+			"assets/images/day/cafeclass_week_mon.png",
+			"assets/images/day/cafeclass_week_wed.png",
+			"assets/images/day/cafeclass_week_tue.png",
+			"assets/images/day/cafeclass_week_thu.png",
+			"assets/images/day/cafeclass_week_fri.png",
+			"assets/images/day/cafeclass_week_sat.png",
+			"assets/images/day/cafeclass_week_sun.png"
+		],
+
+		"class_venue_subway_station_list":[
+			"잠실역",
+			"신천역",
+			"선릉역",
+			"삼성역",
+			"성수역",
+			"방이역",
+			"개롱역",
+			"오금역",
+			"석촌역",
+			"송파역"
+		],
+		"class_venue_subway_station_img_url_list":[
+			"assets/images/subway/cafeclass_station_2nd_js.png",
+			"assets/images/subway/cafeclass_station_2nd_sc.png",
+			"assets/images/subway/cafeclass_station_2nd_sr.png",
+			"assets/images/subway/cafeclass_station_2nd_ss.png",
+			"assets/images/subway/cafeclass_station_2nd_ssu.png",
+			"assets/images/subway/cafeclass_station_5th_bi.png",
+			"assets/images/subway/cafeclass_station_5th_gr.png",
+			"assets/images/subway/cafeclass_station_5th_og.png",
+			"assets/images/subway/cafeclass_station_8th_sc.png",
+			"assets/images/subway/cafeclass_station_8th_sp.png"
+		],
+
+		"class_venue_cafe_list":[
+			"할리스",
+			"탐앤탐스",
+			"투썸플레이스",
+			"스타벅스",
+			"프롬더빈",
+			"앤제리너스",
+			"카페베네",
+			"커핀그루나루",
+			"세인트앤드류스"
+		],
+		"class_venue_cafe_img_url_list":[
+			"assets/images/cafes/logo/hollys.svg",
+			"assets/images/cafes/logo/tomntoms.svg",
+			"assets/images/cafes/logo/twosomeplace.svg",
+			"assets/images/cafes/logo/starbucks.svg",
+			"assets/images/cafes/logo/fromthebean.svg",
+			"assets/images/cafes/logo/angelinus.svg",
+			"assets/images/cafes/logo/cafebene.svg",
+			"assets/images/cafes/logo/coffineGurunaru.svg",
+			"assets/images/cafes/logo/standrewscoffee.png"
+		],
+
+		"class_venue_img_url_list":[],
+
+		"EOL":""
+	}
+}

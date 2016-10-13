@@ -1,0 +1,37 @@
+<header class="main-navigation">
+	<nav class="navbar navbar-default navbar-fixed-top cc-navbar">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display / box-shadow: 0 0 2px rgba(6,8,8,0.15);-->
+	    <div class="navbar-header">
+	      <a class="navbar-brand cc-logo-anchor" href="#">
+	      	<img class="cc-logo-image" alt="Brand" src="./assets/images/cafeclass_logo_text_only.svg">
+	      </a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+	        <li class="active">
+	        	<a routerLink="/cclass-center" routerLinkActive="active">클래스</a>
+	        </li>
+	        <li>
+	        	<a routerLink="/users" routerLinkActive="active">학생들</a>
+	        </li>
+	        <li>
+	        	<a routerLink="/admin" routerLinkActive="active">운영자</a>
+	        </li>
+	      </ul>
+	      <ul class="nav navbar-nav navbar-right">
+	        <li><button type="button" class="btn btn-signin navbar-btn cc-margin-r-nav-btn">Sign in</button></li>
+	        <li><a routerLink="/login" routerLinkActive="active">Log in</a></li>
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+</header>
+
+<section class="hide_overflow-x cc-section" id="home">
+	<router-outlet></router-outlet>
+</section>
+
+<footer aria-label="Footer: Copyright, Privacy and Terms" class="copyright" role="contentinfo">FOOTER</footer>

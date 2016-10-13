@@ -1,34 +1,30 @@
 import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { UsersComponent }		from './users.component';
-import { UserDetailComponent }	from './user-detail.component';
-import { UserListComponent }	from './user-list.component';
-import { DashboardComponent }	from './dashboard.component';
+import { loginRoutes, authProviders }  from './login.routing';
 
+import { CanDeactivateGuard } from './can-deactivate-guard.service';
+import { AuthGuard }          from './auth-guard.service';
+
+const adminRoutes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: 'app/admin/admin.module#AdminModule'
+  }
+];
 const appRoutes: Routes = [
-	{
-		path: 'users',
-		component: UsersComponent
-	},
-	{
-		path: 'userlist',
-		component: UserListComponent
-	},
-	{
-		path: 'dashboard',
-		component: DashboardComponent
-	},
-	{
-		path: 'detail/:id',
-		component: UserDetailComponent
-	},
-	{
-		path: '',
-		redirectTo: '/dashboard',
-		pathMatch: 'full'
-	}
+  ...loginRoutes,
+  ...adminRoutes
 ];
 
+
+
+export const appRoutingProviders: any[] = [
+	authProviders,
+	CanDeactivateGuard
+];
+
+// export const appRoutingProviders: any[] = [];
+// const appRoutes: Routes = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
 
