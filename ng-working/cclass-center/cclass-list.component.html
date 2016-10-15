@@ -8,9 +8,9 @@
 				<div class="panel-body">
 					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
 					<!-- Level -->
-					<img src="assets/images/level/class_levels_intermediate.svg" (click)="changeLevel()" alt="test" class="img-circle cc-img-filter pull-left">
+					<img *ngIf=(klassLevelSelected) src={{klassLevelSelected.img_url}} (click)="nextLevel()" alt="test" class="img-circle cc-img-filter pull-left">
 					<!-- Station -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_station_8th_sp.png" (click)="changeStation()" alt="test" class="img-circle cc-img-filter pull-left">
+					<img *ngIf=(klassStationSelected) src={{klassStationSelected.img_url}} (click)="nextStation()" alt="test" class="img-circle cc-img-filter pull-left">
 					<!-- Day -->
 					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" (click)="changeDay()" alt="test" class="img-circle cc-img-filter pull-left">
 					<!-- Time -->
@@ -39,7 +39,7 @@
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-border">
 				<div class="panel-heading cc-panel">
 					
-					<img class="cc-img-class" width="100%;" src={{cclass.class_img_url}} alt={{cclass.title}}>
+					<img class="cc-img-class" width="100%;" src={{cclass.class_img_url}} onerror="./assets/images/error.png" alt={{cclass.title}}>
 
 					<div class="cc-class-filter">
 

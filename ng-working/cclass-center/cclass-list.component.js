@@ -20,6 +20,8 @@ var CClassListComponent = (function () {
         this.service = service;
         this.route = route;
         this.router = router;
+        // Day
+        // Time
         this.searchTerms = new Subject_1.Subject();
     }
     CClassListComponent.prototype.isSelected = function (cclass) {
@@ -34,8 +36,7 @@ var CClassListComponent = (function () {
         // get class list
         this.route.params.forEach(function (params) {
             _this.selectedId = params['id'];
-            _this.service.getCClasses()
-                .then(function (cclasses) { return _this.cclasses = cclasses; });
+            _this.service.getCClasses().then(function (cclasses) { return _this.cclasses = cclasses; });
         });
         // search class with keyword
         // @ referer : http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/
@@ -52,22 +53,75 @@ var CClassListComponent = (function () {
         // 요걸 한번에 해결하는 API를 호출하자!
         // 모든 레벨의 key를 가져온다.
         // 모든 레벨의 이미지 주소를 가져온다.
+        this.service.getKlassLevel().then(function (klassLevels) {
+            _this.klassLevels = klassLevels;
+            if (!_this.klassLevelSelected) {
+                // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
+                _this.klassLevelSelected = _this.klassLevels[0];
+            }
+        });
         // 모든 역의 key를 가져온다.
         // 모든 역의 이미지 주소를 가져온다.
+        this.service.getKlassStation().then(function (klassStations) {
+            _this.klassStations = klassStations;
+            if (!_this.klassStationSelected) {
+                // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+                _this.klassStationSelected = _this.klassStations[0];
+            }
+        });
         // 모든 요일의 key를 가져온다.
         // 모든 요일의 이미지 주소를 가져온다.
         // 모든 시간의 key를 가져온다.
         // 모든 시간의 이미지 주소를 가져온다.
     };
     // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
-    CClassListComponent.prototype.changeLevel = function () {
-        console.log("TEST / changeLevel");
-        // 레벨이 변경된다.
-        // 변경된 레벨에 따라 수업 리스트가 달라져야 한다.
-        // 수업 리스트 API Call!
+    CClassListComponent.prototype.getSelectedIdx = function (targetList, key, value) {
+        var selectedIdx = -1;
+        for (var i = 0; i < targetList.length; i++) {
+            var element = targetList[i];
+            if (element[key] === value) {
+                selectedIdx = i;
+                break;
+            }
+        }
+        return selectedIdx;
     };
-    CClassListComponent.prototype.changeStation = function () {
+    CClassListComponent.prototype.getNextElement = function (targetList, prevIdx) {
+        var nextElement = null;
+        if (prevIdx === (targetList.length - 1)) {
+            nextElement = targetList[0];
+        }
+        else {
+            nextElement = targetList[prevIdx + 1];
+        }
+        return nextElement;
+    };
+    CClassListComponent.prototype.nextLevel = function () {
+        var selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
+        this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
+        // 수업 리스트 API Call!
+        // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
+    };
+    CClassListComponent.prototype.nextStation = function () {
         console.log("TEST / changeStation");
+        var selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
+        this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
+        /*
+            let selectedIdx = -1;
+            for (var i = 0; i < this.klassStations.length; i++) {
+              let klassStation = this.klassStations[i];
+              if(klassStation.key === this.klassStationSelected.key) {
+                selectedIdx = i;
+                break;
+              }
+            }
+        
+            if(selectedIdx === (this.klassStations.length - 1)) {
+              this.klassStationSelected = this.klassStations[0];
+            } else {
+              this.klassStationSelected = this.klassStations[selectedIdx + 1];
+            }
+        */
         // 지하철 역이 변경된다.
         // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
         // 수업 리스트 API Call!

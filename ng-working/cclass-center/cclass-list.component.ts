@@ -8,6 +8,8 @@ import { CClassService }                   from './cclass.service';
 import { CClassSearchService }             from './cclass-search.service';
 import { CClass }                          from './cclass';
 import { KlassKeyword }                    from './klass-keyword';
+import { KlassLevel }                      from './klass-level';
+import { KlassStation }                      from './klass-station';
 
 
 @Component({
@@ -23,6 +25,15 @@ export class CClassListComponent implements OnInit {
   // Search
   // TODO - 검색 관련 
   klassKeywords: Observable<KlassKeyword[]>;
+  // Level
+  klassLevels: KlassLevel[];
+  klassLevelSelected: KlassLevel; // 사용자가 선택한 클래스 레벨
+  // Station
+  klassStations: KlassStation[];
+  klassStationSelected: KlassStation; // 사용자가 선택한 클래스 레벨
+
+  // Day
+  // Time
 
   private searchTerms = new Subject<string>();
 
@@ -47,8 +58,7 @@ export class CClassListComponent implements OnInit {
     // get class list
     this.route.params.forEach((params: Params) => {
       this.selectedId = params['id'];
-      this.service.getCClasses()
-        .then(cclasses => this.cclasses = cclasses);
+      this.service.getCClasses().then(cclasses => this.cclasses = cclasses);
     });
 
     // search class with keyword
@@ -71,9 +81,23 @@ export class CClassListComponent implements OnInit {
 
     // 모든 레벨의 key를 가져온다.
     // 모든 레벨의 이미지 주소를 가져온다.
+    this.service.getKlassLevel().then(klassLevels => {
+      this.klassLevels = klassLevels;
+      if(!this.klassLevelSelected) {
+        // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
+        this.klassLevelSelected = this.klassLevels[0];
+      }
+    });
 
     // 모든 역의 key를 가져온다.
     // 모든 역의 이미지 주소를 가져온다.
+    this.service.getKlassStation().then(klassStations => {
+      this.klassStations = klassStations;
+      if(!this.klassStationSelected) {
+        // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+        this.klassStationSelected = this.klassStations[0];
+      }
+    });
 
     // 모든 요일의 key를 가져온다.
     // 모든 요일의 이미지 주소를 가져온다.
@@ -84,18 +108,62 @@ export class CClassListComponent implements OnInit {
   }
 
   // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
+  getSelectedIdx(targetList:any[], key:string, value:string):number {
 
-  changeLevel() :void {
-    console.log("TEST / changeLevel");
+    let selectedIdx = -1;
+    for (var i = 0; i < targetList.length; i++) {
+      let element = targetList[i];
+      if(element[key] === value) {
+        selectedIdx = i;
+        break;
+      }
+    }    
 
-    // 레벨이 변경된다.
-    // 변경된 레벨에 따라 수업 리스트가 달라져야 한다.
-
-    // 수업 리스트 API Call!
+    return selectedIdx;
   }
 
-  changeStation() :void {
+  getNextElement(targetList:any[], prevIdx:number):any {
+    let nextElement = null;
+    if(prevIdx === (targetList.length - 1)) {
+      nextElement = targetList[0];
+    } else {
+      nextElement = targetList[prevIdx + 1];
+    }
+
+    return nextElement;
+  }
+
+  nextLevel() :void {
+    let selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
+    this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
+
+    // 수업 리스트 API Call!
+    // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
+  }
+
+  nextStation() :void {
     console.log("TEST / changeStation");
+
+    let selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
+    this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
+
+/*
+    let selectedIdx = -1;
+    for (var i = 0; i < this.klassStations.length; i++) {
+      let klassStation = this.klassStations[i];
+      if(klassStation.key === this.klassStationSelected.key) {
+        selectedIdx = i;
+        break;
+      }
+    }    
+
+    if(selectedIdx === (this.klassStations.length - 1)) {
+      this.klassStationSelected = this.klassStations[0];
+    } else {
+      this.klassStationSelected = this.klassStations[selectedIdx + 1];
+    }
+*/
+
 
     // 지하철 역이 변경된다.
     // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.

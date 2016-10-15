@@ -18,16 +18,41 @@ var CClassService = (function () {
     function CClassService(location, http) {
         this.location = location;
         this.http = http;
-        this.classesUrl = '/CI/index.php/api/classes/list';
+        this.classesUrl = '/CI/index.php/api/klass/list';
+        this.klassLevelUrl = '/CI/index.php/api/klass/level';
+        this.klassStationUrl = '/CI/index.php/api/klass/station';
+        this.baseHref = "";
+        this.baseHref = this.location._baseHref;
     }
+    CClassService.prototype.getKlassList = function (klassLevel, subwayStation, klassDay, klassTime) {
+        var req_url = "" + this.baseHref + this.classesUrl + "?level=" + klassLevel + "&station=" + subwayStation + "&day=" + klassDay + "&time=" + klassTime;
+        console.log("TEST / req_url ::: ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     CClassService.prototype.getCClasses = function () {
-        return this.http.get(this.location._baseHref + this.classesUrl)
+        return this.http.get(this.baseHref + this.classesUrl)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    CClassService.prototype.getKlassLevel = function () {
+        return this.http.get(this.baseHref + this.klassLevelUrl)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    CClassService.prototype.getKlassStation = function () {
+        return this.http.get(this.baseHref + this.klassStationUrl)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     CClassService.prototype.extractData = function (res) {
         var body = res.json();
+        // TODO - 데이터 검증 프로세스.
         console.log("CClassService / extractData / body ::: ", body);
         // console.log("extractData / body.data ::: ",body.data);
         return body.data || {};

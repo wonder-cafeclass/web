@@ -7,6 +7,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/models/CClass.php';
 require APPPATH . '/models/KlassKeyword.php';
 require APPPATH . '/models/KlassLevel.php';
+require APPPATH . '/models/KlassStation.php';
 
 /**
  * This is an example of a few basic user interaction methods you could use
@@ -19,7 +20,7 @@ require APPPATH . '/models/KlassLevel.php';
  * @license         MIT
  * @link            https://github.com/chriskacerguis/codeigniter-restserver
  */
-class Classes extends REST_Controller {
+class Klass extends REST_Controller {
 
     function __construct()
     {
@@ -213,6 +214,51 @@ class Classes extends REST_Controller {
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
     }
+
+    public function station_get() {
+
+        // wonder.jung
+        $const_map = $this->paramchecker->get_const_map();
+
+        $klass_venue_subway_station_list = $const_map->class_venue_subway_station_list;
+        $klass_venue_subway_station_img_url_list = $const_map->class_venue_subway_station_img_url_list;
+
+        // check list is valid
+        $is_valid = true;
+        if(count($klass_venue_subway_station_list) !== count($klass_venue_subway_station_img_url_list)) {
+            $is_valid = false;
+        }
+        if(!$is_valid) {
+            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
+            $response_body = [
+                'status' => FALSE,
+                'message' => 'Class station list is not valid!',
+                'data' => null
+            ];
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        $klass_station_list = array();
+        for ($i=0; $i < count($klass_venue_subway_station_list); $i++) { 
+
+            $key = $klass_venue_subway_station_list[$i];
+            $img_url = $klass_venue_subway_station_img_url_list[$i];
+
+            $station_obj = new KlassStation($key, $img_url);
+
+            array_push($klass_station_list, $station_obj);
+
+        }
+
+        $response_body = [
+            'status' => TRUE,
+            'message' => 'Success',
+            'data' => $klass_station_list
+        ];
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
+    }    
 
     public function insert_post() {
 
