@@ -12,9 +12,9 @@
 					<!-- Station -->
 					<img *ngIf=(klassStationSelected) src={{klassStationSelected.img_url}} (click)="nextStation()" alt="test" class="img-circle cc-img-filter pull-left">
 					<!-- Day -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_week_wed.png" (click)="changeDay()" alt="test" class="img-circle cc-img-filter pull-left">
+					<img *ngIf=(klassDaySelected) src={{klassDaySelected.img_url}} (click)="nextDay()" alt="test" class="img-circle cc-img-filter pull-left">
 					<!-- Time -->
-					<img src="http://cafeklass.cdn3.cafe24.com/cafeclass_time_af.png" (click)="changeTime()" alt="test" class="img-circle cc-img-filter pull-left">
+					<img *ngIf=(klassTimeSelected) src={{klassTimeSelected.img_url}} (click)="nextTime()" alt="test" class="img-circle cc-img-filter pull-left">
 
 					<!-- 검색 창-->
 					<input id="search-box" class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox (keyup)="search(searchBox.value)">

@@ -12,7 +12,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var Observable_1 = require('rxjs/Observable');
 var Subject_1 = require('rxjs/Subject');
-var cclass_service_1 = require('./cclass.service');
+var klass_service_1 = require('./klass.service');
 var cclass_search_service_1 = require('./cclass-search.service');
 var CClassListComponent = (function () {
     function CClassListComponent(cclassSearchService, service, route, router) {
@@ -20,8 +20,6 @@ var CClassListComponent = (function () {
         this.service = service;
         this.route = route;
         this.router = router;
-        // Day
-        // Time
         this.searchTerms = new Subject_1.Subject();
     }
     CClassListComponent.prototype.isSelected = function (cclass) {
@@ -71,8 +69,22 @@ var CClassListComponent = (function () {
         });
         // 모든 요일의 key를 가져온다.
         // 모든 요일의 이미지 주소를 가져온다.
+        this.service.getKlassDay().then(function (klassDays) {
+            _this.klassDays = klassDays;
+            if (!_this.klassDaySelected) {
+                // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+                _this.klassDaySelected = _this.klassDays[0];
+            }
+        });
         // 모든 시간의 key를 가져온다.
         // 모든 시간의 이미지 주소를 가져온다.
+        this.service.getKlassTime().then(function (klassTimes) {
+            _this.klassTimes = klassTimes;
+            if (!_this.klassTimeSelected) {
+                // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+                _this.klassTimeSelected = _this.klassTimes[0];
+            }
+        });
     };
     // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
     CClassListComponent.prototype.getSelectedIdx = function (targetList, key, value) {
@@ -99,41 +111,30 @@ var CClassListComponent = (function () {
     CClassListComponent.prototype.nextLevel = function () {
         var selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
         this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
-        // 수업 리스트 API Call!
+        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
+        // 수업 리스트 API Call! - 
         // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
     };
     CClassListComponent.prototype.nextStation = function () {
-        console.log("TEST / changeStation");
         var selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
         this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
-        /*
-            let selectedIdx = -1;
-            for (var i = 0; i < this.klassStations.length; i++) {
-              let klassStation = this.klassStations[i];
-              if(klassStation.key === this.klassStationSelected.key) {
-                selectedIdx = i;
-                break;
-              }
-            }
-        
-            if(selectedIdx === (this.klassStations.length - 1)) {
-              this.klassStationSelected = this.klassStations[0];
-            } else {
-              this.klassStationSelected = this.klassStations[selectedIdx + 1];
-            }
-        */
+        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
         // 지하철 역이 변경된다.
         // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
         // 수업 리스트 API Call!
     };
-    CClassListComponent.prototype.changeDay = function () {
-        console.log("TEST / changeDay");
+    CClassListComponent.prototype.nextDay = function () {
+        var selectedIdx = this.getSelectedIdx(this.klassDays, "key", this.klassDaySelected.key);
+        this.klassDaySelected = this.getNextElement(this.klassDays, selectedIdx);
+        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
         // 수업 요일이 변경된다.
         // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
         // 수업 리스트 API Call!
     };
-    CClassListComponent.prototype.changeTime = function () {
-        console.log("TEST / changeTime");
+    CClassListComponent.prototype.nextTime = function () {
+        console.log("TEST / nextTime");
+        var selectedIdx = this.getSelectedIdx(this.klassTimes, "key", this.klassTimeSelected.key);
+        this.klassTimeSelected = this.getNextElement(this.klassTimes, selectedIdx);
         // 수업 시간이 변경된다.
         // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
         // 수업 리스트 API Call!
@@ -151,7 +152,7 @@ var CClassListComponent = (function () {
             templateUrl: './ng-working/cclass-center/cclass-list.component.html',
             providers: [cclass_search_service_1.CClassSearchService]
         }), 
-        __metadata('design:paramtypes', [cclass_search_service_1.CClassSearchService, cclass_service_1.CClassService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [cclass_search_service_1.CClassSearchService, klass_service_1.KlassService, router_1.ActivatedRoute, router_1.Router])
     ], CClassListComponent);
     return CClassListComponent;
 }());

@@ -7,14 +7,17 @@ import { Location }     from '@angular/common';
 import { CClass } from './cclass';
 import { KlassLevel } from './klass-level';
 import { KlassStation } from './klass-station';
+import { KlassDay } from './klass-day';
+import { KlassTime } from './klass-time';
 
 @Injectable()
-export class CClassService {
+export class KlassService {
 
     private classesUrl = '/CI/index.php/api/klass/list';
     private klassLevelUrl = '/CI/index.php/api/klass/level';
     private klassStationUrl = '/CI/index.php/api/klass/station';
     private klassDayUrl = '/CI/index.php/api/klass/day';
+    private klassTimeUrl = '/CI/index.php/api/klass/time';
     private baseHref = "";
 
     static nextCClassId = 100;
@@ -70,6 +73,13 @@ export class CClassService {
 
     }
 
+    getKlassTime(): Promise<KlassTime[]> {
+        return this.http.get(this.baseHref + this.klassTimeUrl)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+
+    }
 
     private extractData(res: Response) {
         let body = res.json();

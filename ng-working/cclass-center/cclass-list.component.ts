@@ -4,12 +4,14 @@ import { ActivatedRoute, Router, Params }  from '@angular/router';
 import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
-import { CClassService }                   from './cclass.service';
+import { KlassService }                    from './klass.service';
 import { CClassSearchService }             from './cclass-search.service';
 import { CClass }                          from './cclass';
 import { KlassKeyword }                    from './klass-keyword';
 import { KlassLevel }                      from './klass-level';
-import { KlassStation }                      from './klass-station';
+import { KlassStation }                    from './klass-station';
+import { KlassDay }                        from './klass-day';
+import { KlassTime }                        from './klass-time';
 
 
 @Component({
@@ -31,15 +33,18 @@ export class CClassListComponent implements OnInit {
   // Station
   klassStations: KlassStation[];
   klassStationSelected: KlassStation; // 사용자가 선택한 클래스 레벨
-
   // Day
+  klassDays: KlassDay[];
+  klassDaySelected: KlassDay; // 사용자가 선택한 클래스 레벨
   // Time
+  klassTimes: KlassTime[];
+  klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨
 
   private searchTerms = new Subject<string>();
 
   constructor(
     private cclassSearchService: CClassSearchService,
-    private service: CClassService,
+    private service: KlassService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -101,9 +106,23 @@ export class CClassListComponent implements OnInit {
 
     // 모든 요일의 key를 가져온다.
     // 모든 요일의 이미지 주소를 가져온다.
+    this.service.getKlassDay().then(klassDays => {
+      this.klassDays = klassDays;
+      if(!this.klassDaySelected) {
+        // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+        this.klassDaySelected = this.klassDays[0];
+      }
+    });
 
     // 모든 시간의 key를 가져온다.
     // 모든 시간의 이미지 주소를 가져온다.
+    this.service.getKlassTime().then(klassTimes => {
+      this.klassTimes = klassTimes;
+      if(!this.klassTimeSelected) {
+        // 선택된 클래스 지하철역이 없다면 '모든 역'으로 표시.
+        this.klassTimeSelected = this.klassTimes[0];
+      }
+    });
 
   }
 
@@ -137,33 +156,17 @@ export class CClassListComponent implements OnInit {
     let selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
     this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
 
-    // 수업 리스트 API Call!
+    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
+
+    // 수업 리스트 API Call! - 
     // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
   }
 
   nextStation() :void {
-    console.log("TEST / changeStation");
-
     let selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
     this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
 
-/*
-    let selectedIdx = -1;
-    for (var i = 0; i < this.klassStations.length; i++) {
-      let klassStation = this.klassStations[i];
-      if(klassStation.key === this.klassStationSelected.key) {
-        selectedIdx = i;
-        break;
-      }
-    }    
-
-    if(selectedIdx === (this.klassStations.length - 1)) {
-      this.klassStationSelected = this.klassStations[0];
-    } else {
-      this.klassStationSelected = this.klassStations[selectedIdx + 1];
-    }
-*/
-
+    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
 
     // 지하철 역이 변경된다.
     // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
@@ -171,8 +174,11 @@ export class CClassListComponent implements OnInit {
     // 수업 리스트 API Call!
   }
 
-  changeDay() :void {
-    console.log("TEST / changeDay");
+  nextDay() :void {
+    let selectedIdx = this.getSelectedIdx(this.klassDays, "key", this.klassDaySelected.key);
+    this.klassDaySelected = this.getNextElement(this.klassDays, selectedIdx);
+
+    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
 
     // 수업 요일이 변경된다.
     // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
@@ -180,8 +186,12 @@ export class CClassListComponent implements OnInit {
     // 수업 리스트 API Call!
   }
 
-  changeTime() :void {
-    console.log("TEST / changeTime");
+  nextTime() :void {
+    console.log("TEST / nextTime");
+
+    let selectedIdx = this.getSelectedIdx(this.klassTimes, "key", this.klassTimeSelected.key);
+    this.klassTimeSelected = this.getNextElement(this.klassTimes, selectedIdx);
+
 
     // 수업 시간이 변경된다.
     // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
