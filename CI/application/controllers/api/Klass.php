@@ -10,6 +10,7 @@ require APPPATH . '/models/KlassLevel.php';
 require APPPATH . '/models/KlassStation.php';
 require APPPATH . '/models/KlassDay.php';
 require APPPATH . '/models/KlassTime.php';
+require APPPATH . '/models/SelectTile.php';
 
 /**
  * This is an example of a few basic user interaction methods you could use
@@ -367,7 +368,56 @@ class Klass extends REST_Controller {
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
-    }            
+    }  
+
+    public function selectile_get() 
+    {
+        // wonder.jung
+        $const_map = $this->paramchecker->get_const_map();
+
+        $klass_selectile_list = $const_map->klass_selectile_list;
+        $klass_selectile_img_list = $const_map->klass_selectile_img_list;
+
+        // check list is valid
+        $is_valid = true;
+        if(count($klass_selectile_list) !== count($klass_selectile_img_list)) 
+        {
+            $is_valid = false;
+        }
+        if(!$is_valid) 
+        {
+            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
+            $response_body = [
+                'status' => FALSE,
+                'message' => 'Class select tile list is not valid!',
+                'data' => null
+            ];
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        $obj_list = array();
+        for ($i=0; $i < count($klass_selectile_list); $i++) 
+        { 
+
+            $key = $klass_selectile_list[$i];
+            $img_url = $klass_selectile_img_list[$i];
+
+            $selectile_obj = new SelectTile($key, $img_url);
+
+            array_push($obj_list, $selectile_obj);
+
+        }        
+
+        $response_body = 
+        [
+            'status' => TRUE,
+            'message' => 'Success',
+            'data' => $obj_list
+        ];
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
+    }                
 
     public function insert_post() {
 

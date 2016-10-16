@@ -1,0 +1,54 @@
+<div>
+	<!--
+	<div id="selectors" class="selector-container" (mouseleave)="leaveSelector()" >
+		<img 	*ngIf=(klassLevelSelected) 
+				src={{klassLevelSelected.img_url}} 
+				(mouseover)="overLevel()" 
+				(click)="nextLevel()" 
+				alt={{klassLevelSelected.key}} 
+				class="img-circle cc-img-filter pull-left">
+		<img 	*ngIf=(klassStationSelected) 
+				src={{klassStationSelected.img_url}} 
+				(mouseover)="overStation()" 
+				(click)="nextStation()" 
+				alt={{klassStationSelected.key}} 
+				class="img-circle cc-img-filter pull-left">
+		<img 	*ngIf=(klassDaySelected) 
+				src={{klassDaySelected.img_url}} 
+				(mouseover)="overDay()" 
+				(click)="nextDay()" 
+				alt={{klassDaySelected.key}} 
+				class="img-circle cc-img-filter pull-left">
+		<img 	*ngIf=(klassTimeSelected) 
+				src={{klassTimeSelected.img_url}} 
+				(mouseover)="overTime()" 
+				(click)="nextTime()" 
+				alt={{klassTimeSelected.key}} 
+				class="img-circle cc-img-filter pull-left"
+				style="margin-right:0px;">
+	</div>
+	-->
+
+	<!-- Select Tile -->
+	<div id="selectile" class="selectile-container" (mouseleave)="leaveSelectile()" (outleave)="outSelectile()">
+		
+		<!--
+		<div id="selectile_row" *ngFor="let row of selectileTable">
+			<div id="selectile" *ngFor="let selectile of row.selectiles">
+				<img *ngIf=(selectile) src={{selectile.img_url}} class="img-circle cc-img-filter pull-left">
+			</div>
+		</div>
+		-->
+
+		<table class="table" style="width:200px;"> 
+			<tbody> 
+				<tr *ngFor="let row of selectileTable"> 
+					<td *ngFor="let selectile of row.selectiles" class="selectile-td">
+						<img *ngIf=(selectile) src={{selectile.img_url}} class="selectile-img">
+					</td> 
+				</tr> 
+			</tbody> 
+		</table>
+	</div>
+
+</div>

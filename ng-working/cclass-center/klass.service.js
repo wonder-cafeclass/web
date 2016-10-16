@@ -23,6 +23,7 @@ var KlassService = (function () {
         this.klassStationUrl = '/CI/index.php/api/klass/station';
         this.klassDayUrl = '/CI/index.php/api/klass/day';
         this.klassTimeUrl = '/CI/index.php/api/klass/time';
+        this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.baseHref = "";
         this.baseHref = this.location._baseHref;
     }
@@ -60,6 +61,12 @@ var KlassService = (function () {
     };
     KlassService.prototype.getKlassTime = function () {
         return this.http.get(this.baseHref + this.klassTimeUrl)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    KlassService.prototype.getKlassSelectile = function () {
+        return this.http.get(this.baseHref + this.klassSelectileUrl)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

@@ -13,6 +13,8 @@ import { CClassListComponent }       from './cclass-list.component';
 import { CClassCenterHomeComponent } from './cclass-center-home.component';
 import { CClassDetailComponent }     from './cclass-detail.component';
 
+import { KlassFilterTileComponent }     from './klass-filter-tile.component';
+
 import { cclassCenterRouting } from './cclass-center.routing';
 
 @NgModule({
@@ -25,9 +27,9 @@ import { cclassCenterRouting } from './cclass-center.routing';
     CClassCenterComponent,
     CClassListComponent,
     CClassCenterHomeComponent,
-    CClassDetailComponent
+    CClassDetailComponent,
+    KlassFilterTileComponent
   ],
-
   providers: [
     KlassService,
     CClassSearchService,

@@ -8,10 +8,11 @@ import { KlassService }                    from './klass.service';
 import { CClassSearchService }             from './cclass-search.service';
 import { CClass }                          from './cclass';
 import { KlassKeyword }                    from './klass-keyword';
-import { KlassLevel }                      from './klass-level';
-import { KlassStation }                    from './klass-station';
-import { KlassDay }                        from './klass-day';
-import { KlassTime }                        from './klass-time';
+
+// import { KlassLevel }                      from './klass-level';
+// import { KlassStation }                    from './klass-station';
+// import { KlassDay }                        from './klass-day';
+// import { KlassTime }                        from './klass-time';
 
 
 @Component({
@@ -27,6 +28,8 @@ export class CClassListComponent implements OnInit {
   // Search
   // TODO - 검색 관련 
   klassKeywords: Observable<KlassKeyword[]>;
+
+  /*
   // Level
   klassLevels: KlassLevel[];
   klassLevelSelected: KlassLevel; // 사용자가 선택한 클래스 레벨
@@ -39,6 +42,7 @@ export class CClassListComponent implements OnInit {
   // Time
   klassTimes: KlassTime[];
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨
+  */
 
   private searchTerms = new Subject<string>();
 
@@ -82,8 +86,9 @@ export class CClassListComponent implements OnInit {
     })
     ;
 
+    // REMOVE ME
     // 요걸 한번에 해결하는 API를 호출하자!
-
+    /*
     // 모든 레벨의 key를 가져온다.
     // 모든 레벨의 이미지 주소를 가져온다.
     this.service.getKlassLevel().then(klassLevels => {
@@ -123,9 +128,12 @@ export class CClassListComponent implements OnInit {
         this.klassTimeSelected = this.klassTimes[0];
       }
     });
+    */
 
   }
 
+  // REMOVE ME
+  /*
   // TODO 수업을 입력하는 방법을 제공해야 함. 첫번째 칸은 수업 입력칸으로 둠.(서비스 페이지에서는 노출되지 않음.)
   getSelectedIdx(targetList:any[], key:string, value:string):number {
 
@@ -198,6 +206,7 @@ export class CClassListComponent implements OnInit {
 
     // 수업 리스트 API Call!
   }
+  */
 
   onSelectKlass(cclass: CClass) {
 

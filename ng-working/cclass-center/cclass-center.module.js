@@ -19,6 +19,7 @@ var cclass_center_component_1 = require('./cclass-center.component');
 var cclass_list_component_1 = require('./cclass-list.component');
 var cclass_center_home_component_1 = require('./cclass-center-home.component');
 var cclass_detail_component_1 = require('./cclass-detail.component');
+var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var cclass_center_routing_1 = require('./cclass-center.routing');
 var CClassCenterModule = (function () {
     function CClassCenterModule() {
@@ -34,7 +35,8 @@ var CClassCenterModule = (function () {
                 cclass_center_component_1.CClassCenterComponent,
                 cclass_list_component_1.CClassListComponent,
                 cclass_center_home_component_1.CClassCenterHomeComponent,
-                cclass_detail_component_1.CClassDetailComponent
+                cclass_detail_component_1.CClassDetailComponent,
+                klass_filter_tile_component_1.KlassFilterTileComponent
             ],
             providers: [
                 klass_service_1.KlassService,

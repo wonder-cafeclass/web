@@ -7,6 +7,7 @@ import { Location }     from '@angular/common';
 import { CClass } from './cclass';
 import { KlassLevel } from './klass-level';
 import { KlassStation } from './klass-station';
+import { KlassDay } from './klass-day';
 
 @Injectable()
 export class CClassService {

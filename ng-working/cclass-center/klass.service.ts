@@ -9,6 +9,7 @@ import { KlassLevel } from './klass-level';
 import { KlassStation } from './klass-station';
 import { KlassDay } from './klass-day';
 import { KlassTime } from './klass-time';
+import { KlassSelectile } from './klass-selectile';
 
 @Injectable()
 export class KlassService {
@@ -18,6 +19,7 @@ export class KlassService {
     private klassStationUrl = '/CI/index.php/api/klass/station';
     private klassDayUrl = '/CI/index.php/api/klass/day';
     private klassTimeUrl = '/CI/index.php/api/klass/time';
+    private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
     private baseHref = "";
 
     static nextCClassId = 100;
@@ -75,6 +77,14 @@ export class KlassService {
 
     getKlassTime(): Promise<KlassTime[]> {
         return this.http.get(this.baseHref + this.klassTimeUrl)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+
+    }
+
+    getKlassSelectile(): Promise<KlassSelectile[]> {
+        return this.http.get(this.baseHref + this.klassSelectileUrl)
                       .toPromise()
                       .then(this.extractData)
                       .catch(this.handleError);

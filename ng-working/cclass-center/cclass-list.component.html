@@ -6,6 +6,10 @@
 		<div class="col-md-12 cc-div-col">
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
 				<div class="panel-body">
+					
+					<!-- 수업 검색을 위한 필터링 컴포넌트 -->
+					<klass-filter-tile></klass-filter-tile>
+
 					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
 					<!-- Level -->
 					<img *ngIf=(klassLevelSelected) src={{klassLevelSelected.img_url}} (click)="nextLevel()" alt="test" class="img-circle cc-img-filter pull-left">
@@ -16,12 +20,11 @@
 					<!-- Time -->
 					<img *ngIf=(klassTimeSelected) src={{klassTimeSelected.img_url}} (click)="nextTime()" alt="test" class="img-circle cc-img-filter pull-left">
 
-					<!-- 검색 창-->
-					<input id="search-box" class="pull-left form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox (keyup)="search(searchBox.value)">
-
 					<!-- 검색 로고 -->
 					<span class="glyphicon glyphicon-search pull-right cc-panel-magnifier" aria-hidden="true"></span>
-					
+
+					<!-- 검색 창-->
+					<input id="search-box" class="pull-right form-control cc-panel-search" placeholder="수업을 검색해보세요" #searchBox (keyup)="search(searchBox.value)">
 
 				</div>
 			</div>
@@ -51,8 +54,6 @@
 						<img src="{{cclass.days_img_url}}" alt="{{cclass.days_kor}}" class="img-circle cc-img-filter">
 						<!-- TIME -->
 						<img src="{{cclass.time_begin_img_url}}" alt="{{cclass.time_begin_name}}" class="img-circle cc-img-filter">
-						<!-- PLACE / CAFE -->
-						<img src="{{cclass.venue_cafe_logo_img_url}}" alt="{{cclass.venue_cafe}}" class="img-circle cc-img-filter">
 						
 					</div>
 					
