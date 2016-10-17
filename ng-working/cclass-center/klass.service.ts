@@ -20,6 +20,7 @@ export class KlassService {
     private klassDayUrl = '/CI/index.php/api/klass/day';
     private klassTimeUrl = '/CI/index.php/api/klass/time';
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
+    private klassSelectileMaskUrl = '/CI/index.php/api/klass/selectilemask';
     private baseHref = "";
 
     static nextCClassId = 100;
@@ -83,6 +84,14 @@ export class KlassService {
 
     }
 
+    getKlassSelectileMask(): Promise<KlassSelectile[]> {
+        return this.http.get(this.baseHref + this.klassSelectileMaskUrl)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+
+    }
+
     getKlassSelectile(): Promise<KlassSelectile[]> {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
                       .toPromise()
@@ -90,6 +99,7 @@ export class KlassService {
                       .catch(this.handleError);
 
     }
+
 
     private extractData(res: Response) {
         let body = res.json();

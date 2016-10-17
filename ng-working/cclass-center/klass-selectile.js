@@ -1,6 +1,8 @@
 "use strict";
 var KlassSelectile = (function () {
-    function KlassSelectile() {
+    function KlassSelectile(key, img_url) {
+        this.key = key;
+        this.img_url = img_url;
     }
     return KlassSelectile;
 }());

@@ -1,1 +1,1 @@
-{"version":3,"file":"klass-station.js","sourceRoot":"","sources":["klass-station.ts"],"names":[],"mappings":";AAAA;IAAA;IAGA,CAAC;IAAD,mBAAC;AAAD,CAAC,AAHD,IAGC;AAHY,oBAAY,eAGxB,CAAA"}
+{"version":3,"file":"klass-station.js","sourceRoot":"","sources":["klass-station.ts"],"names":[],"mappings":";AAAA;IACE,sBACS,GAAW,EACX,OAAe;QADf,QAAG,GAAH,GAAG,CAAQ;QACX,YAAO,GAAP,OAAO,CAAQ;IACrB,CAAC;IACN,mBAAC;AAAD,CAAC,AALD,IAKC;AALY,oBAAY,eAKxB,CAAA"}

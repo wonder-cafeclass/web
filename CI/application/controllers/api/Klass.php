@@ -158,7 +158,26 @@ class Klass extends REST_Controller {
         
     }
 
-    public function level_get() {
+    public function selectile_get() {
+
+        $result = array();
+
+        $result["selectile_masks"] = $this->get_selectile_mask();
+        $result["levels"] = $this->get_levels();
+        $result["stations"] = $this->get_stations();
+        $result["days"] = $this->get_days();
+        $result["times"] = $this->get_times();
+
+        $response_body = [
+            'status' => TRUE,
+            'message' => 'Success',
+            'data' => $result
+        ];
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
+    }
+
+    private function get_levels() {
 
         $const_map = $this->paramchecker->get_const_map();
 
@@ -176,18 +195,11 @@ class Klass extends REST_Controller {
         } else if(count($class_level_list) !== count($class_level_img_url_list)) {
             $is_valid = false;
         }
-        if(!$is_valid) {
-            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class level list is not valid!',
-                'data' => null
-            ];
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
-        }
-
         $klass_level_list = array();
+        if(!$is_valid) {
+            return $klass_level_list;
+        }
+        
         for ($i=0; $i < count($class_level_list); $i++) { 
 
             $key = $class_level_list[$i];
@@ -199,19 +211,24 @@ class Klass extends REST_Controller {
 
             array_push($klass_level_list, $level_obj);
 
-        }
+        }  
+        
+        return $klass_level_list;    
+    }
+    public function level_get() {
+
+        $obj_list = $this->get_levels();
 
         $response_body = [
             'status' => TRUE,
             'message' => 'Success',
-            'data' => $klass_level_list
+            'data' => $obj_list
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
     }
 
-    public function station_get() {
-
+    private function get_stations() {
         $const_map = $this->paramchecker->get_const_map();
 
         $klass_venue_subway_station_list = $const_map->class_venue_subway_station_list;
@@ -223,19 +240,12 @@ class Klass extends REST_Controller {
         {
             $is_valid = false;
         }
+        $klass_station_list = array();
         if(!$is_valid) 
         {
-            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class station list is not valid!',
-                'data' => null
-            ];
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
+            return $klass_station_list;
         }
-
-        $klass_station_list = array();
+        
         for ($i=0; $i < count($klass_venue_subway_station_list); $i++) 
         { 
 
@@ -248,27 +258,29 @@ class Klass extends REST_Controller {
 
         }
 
+        return $klass_station_list;       
+    }
+    public function station_get() {
+
+        $obj_list = $this->get_stations();
+
         $response_body = 
         [
             'status' => TRUE,
             'message' => 'Success',
-            'data' => $klass_station_list
+            'data' => $obj_list
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
     }  
 
-    public function day_get() 
-    {
-
+    private function get_days() {
         $const_map = $this->paramchecker->get_const_map();
 
         $class_days_list = $const_map->class_days_list;
         $class_days_eng_list = $const_map->class_days_eng_list;
         $class_days_kor_list = $const_map->class_days_kor_list;
         $class_days_img_url_list = $const_map->class_days_img_url_list;
-
-
 
         // check list is valid
         $is_valid = true;
@@ -284,20 +296,12 @@ class Klass extends REST_Controller {
         {
             $is_valid = false;
         }
-
+        $klass_day_list = array();
         if(!$is_valid) 
         {
-            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class day list is not valid!',
-                'data' => null
-            ];
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
+            return $klass_day_list;
         }
-
-        $klass_day_list = array();
+        
         for ($i=0; $i < count($class_days_list); $i++) { 
 
             $key = $class_days_list[$i];
@@ -309,21 +313,24 @@ class Klass extends REST_Controller {
 
             array_push($klass_day_list, $day_obj);
 
-        }        
+        }  
+
+        return $klass_day_list;
+    }
+    public function day_get() 
+    {
+        $obj_list = $this->get_days();
 
         $response_body = [
             'status' => TRUE,
             'message' => 'Success',
-            'data' => $klass_day_list
+            'data' => $obj_list
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
     } 
 
-    public function time_get() 
-    {
-
-        // wonder.jung
+    private function get_times() {
         $const_map = $this->paramchecker->get_const_map();
 
         $klass_times_list = $const_map->class_times_list;
@@ -335,44 +342,42 @@ class Klass extends REST_Controller {
         {
             $is_valid = false;
         }
+        $klass_time_list = array();
         if(!$is_valid) 
         {
             // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class time list is not valid!',
-                'data' => null
-            ];
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
+            return $klass_time_list;
         }
-
-        $klass_time_list = array();
+        
         for ($i=0; $i < count($klass_times_list); $i++) 
-        { 
-
+        {
             $key = $klass_times_list[$i];
             $img_url = $klass_times_img_url_list[$i];
 
             $time_obj = new KlassTime($key, $img_url);
 
             array_push($klass_time_list, $time_obj);
+        }
 
-        }        
+        return $klass_time_list;
+    }
+    public function time_get() 
+    {
+
+        $obj_list = $this->get_times();
 
         $response_body = 
         [
             'status' => TRUE,
             'message' => 'Success',
-            'data' => $klass_time_list
+            'data' => $obj_list
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
-    }  
+    } 
 
-    public function selectile_get() 
-    {
-        // wonder.jung
+    private function get_selectile_mask() {
+
         $const_map = $this->paramchecker->get_const_map();
 
         $klass_selectile_list = $const_map->klass_selectile_list;
@@ -384,19 +389,13 @@ class Klass extends REST_Controller {
         {
             $is_valid = false;
         }
-        if(!$is_valid) 
-        {
-            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class select tile list is not valid!',
-                'data' => null
-            ];
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
-        }
 
         $obj_list = array();
+        if(!$is_valid) 
+        {
+            return $obj_list;
+        }
+
         for ($i=0; $i < count($klass_selectile_list); $i++) 
         { 
 
@@ -407,7 +406,14 @@ class Klass extends REST_Controller {
 
             array_push($obj_list, $selectile_obj);
 
-        }        
+        }
+
+        return $obj_list;
+    }
+
+    public function selectilemask_get() 
+    {
+        $obj_list = $this->get_selectile_mask();
 
         $response_body = 
         [

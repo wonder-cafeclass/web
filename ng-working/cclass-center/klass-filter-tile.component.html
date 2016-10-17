@@ -1,5 +1,5 @@
 <div>
-	<!--
+	<!-- REMOVE ME
 	<div id="selectors" class="selector-container" (mouseleave)="leaveSelector()" >
 		<img 	*ngIf=(klassLevelSelected) 
 				src={{klassLevelSelected.img_url}} 
@@ -30,25 +30,69 @@
 	-->
 
 	<!-- Select Tile -->
-	<div id="selectile" class="selectile-container" (mouseleave)="leaveSelectile()" (outleave)="outSelectile()">
-		
-		<!--
-		<div id="selectile_row" *ngFor="let row of selectileTable">
-			<div id="selectile" *ngFor="let selectile of row.selectiles">
-				<img *ngIf=(selectile) src={{selectile.img_url}} class="img-circle cc-img-filter pull-left">
-			</div>
-		</div>
-		-->
+	<div id="selectile" class="selectile-container">
 
-		<table class="table" style="width:200px;"> 
+		<table *ngIf="selectileTable" id="selectile" class="table selectile-table" style="z-index:100;">
 			<tbody> 
 				<tr *ngFor="let row of selectileTable"> 
-					<td *ngFor="let selectile of row.selectiles" class="selectile-td">
-						<img *ngIf=(selectile) src={{selectile.img_url}} class="selectile-img">
+					<td 	*ngFor="let selectile of row" 
+							(mouseenter)="enterSelectile(selectile)"
+							class="selectile-td">
+						<div *ngIf=(selectile.img_url) style="float:left;">
+							<img src={{selectile.img_url}} class="selectile-img">
+						</div>
+						<div 	*ngIf=(selectile)
+								[class.st_knob]="selectile.class_name === 'knob'"
+
+								[class.st_center]="selectile.class_name === 'center'"
+								[class.st_center_round]="selectile.class_name === 'center-round'"
+
+								[class.st_top]="selectile.class_name === 'top'"
+								[class.st_top_knob]="selectile.class_name === 'top-knob'"
+								[class.st_top_right]="selectile.class_name === 'top-right'"
+								[class.st_top_left]="selectile.class_name === 'top-left'"
+
+								[class.st_bottom]="selectile.class_name === 'bottom'"
+								[class.st_bottom_right]="selectile.class_name === 'bottom-right'"
+								[class.st_bottom_left]="selectile.class_name === 'bottom-left'"
+
+								[class.st_left_single]="selectile.class_name === 'left-single'" 
+								[class.st_left_round]="selectile.class_name === 'left-round'" 
+								[class.st_left_round_knob]="selectile.class_name === 'left-round-knob'" 
+
+								[class.st_right_single]="selectile.class_name === 'right-single'"
+								[class.st_right_round]="selectile.class_name === 'right-round'" 
+								[class.st_right_round_knob]="selectile.class_name === 'right-round-knob'"
+
+						></div>
 					</td> 
 				</tr> 
 			</tbody> 
 		</table>
+
+		<!-- Shadow Panel INIT -->
+		<ul class="list-group st_shadow_ul">
+			<li *ngFor="let row of selectileShadowRows" class="list-group-item st_shadow_li"></li>
+		</ul>	
+
+		<!-- Shadow Panel DONE -->
+
+<!--
+		<table *ngIf="selectileMaskTable" id="selectile-mask" class="table selectile-table"> 
+			<tbody> 
+				<tr *ngFor="let row of selectileMaskTable"> 
+					<td *ngFor="let selectile of row.selectiles" class="selectile-td">
+						<div 	[class.selectile_knob]="selectile.class_name === 'knob'" 
+								[class.selectile_top]="selectile.class_name === 'top-right'"
+								[class.selectile_knob]="selectile.class_name === 'center'">
+						</div>
+					</td> 
+				</tr> 
+			</tbody> 
+		</table>
+-->		
+
+
 	</div>
 
 </div>
