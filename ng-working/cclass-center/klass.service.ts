@@ -15,12 +15,14 @@ import { KlassSelectile } from './klass-selectile';
 export class KlassService {
 
     private classesUrl = '/CI/index.php/api/klass/list';
-    private klassLevelUrl = '/CI/index.php/api/klass/level';
-    private klassStationUrl = '/CI/index.php/api/klass/station';
-    private klassDayUrl = '/CI/index.php/api/klass/day';
-    private klassTimeUrl = '/CI/index.php/api/klass/time';
+
+    // REMOVE ME
+    // private klassLevelUrl = '/CI/index.php/api/klass/level';
+    // private klassStationUrl = '/CI/index.php/api/klass/station';
+    // private klassDayUrl = '/CI/index.php/api/klass/day';
+    // private klassTimeUrl = '/CI/index.php/api/klass/time';
+
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
-    private klassSelectileMaskUrl = '/CI/index.php/api/klass/selectilemask';
     private baseHref = "";
 
     static nextCClassId = 100;
@@ -51,7 +53,8 @@ export class KlassService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-
+// REMOVE ME
+/*
     getKlassLevel(): Promise<KlassLevel[]> {
         return this.http.get(this.baseHref + this.klassLevelUrl)
                       .toPromise()
@@ -92,6 +95,7 @@ export class KlassService {
 
     }
 
+*/
     getKlassSelectile(): Promise<KlassSelectile[]> {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
                       .toPromise()
@@ -99,7 +103,6 @@ export class KlassService {
                       .catch(this.handleError);
 
     }
-
 
     private extractData(res: Response) {
         let body = res.json();

@@ -19,12 +19,12 @@ var KlassService = (function () {
         this.location = location;
         this.http = http;
         this.classesUrl = '/CI/index.php/api/klass/list';
-        this.klassLevelUrl = '/CI/index.php/api/klass/level';
-        this.klassStationUrl = '/CI/index.php/api/klass/station';
-        this.klassDayUrl = '/CI/index.php/api/klass/day';
-        this.klassTimeUrl = '/CI/index.php/api/klass/time';
+        // REMOVE ME
+        // private klassLevelUrl = '/CI/index.php/api/klass/level';
+        // private klassStationUrl = '/CI/index.php/api/klass/station';
+        // private klassDayUrl = '/CI/index.php/api/klass/day';
+        // private klassTimeUrl = '/CI/index.php/api/klass/time';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
-        this.klassSelectileMaskUrl = '/CI/index.php/api/klass/selectilemask';
         this.baseHref = "";
         this.baseHref = this.location._baseHref;
     }
@@ -42,36 +42,49 @@ var KlassService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
-    KlassService.prototype.getKlassLevel = function () {
-        return this.http.get(this.baseHref + this.klassLevelUrl)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.getKlassStation = function () {
-        return this.http.get(this.baseHref + this.klassStationUrl)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.getKlassDay = function () {
-        return this.http.get(this.baseHref + this.klassDayUrl)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.getKlassTime = function () {
-        return this.http.get(this.baseHref + this.klassTimeUrl)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.getKlassSelectileMask = function () {
-        return this.http.get(this.baseHref + this.klassSelectileMaskUrl)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
+    // REMOVE ME
+    /*
+        getKlassLevel(): Promise<KlassLevel[]> {
+            return this.http.get(this.baseHref + this.klassLevelUrl)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+    
+        }
+    
+        getKlassStation(): Promise<KlassStation[]> {
+            return this.http.get(this.baseHref + this.klassStationUrl)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+    
+        }
+    
+        getKlassDay(): Promise<KlassDay[]> {
+            return this.http.get(this.baseHref + this.klassDayUrl)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+    
+        }
+    
+        getKlassTime(): Promise<KlassTime[]> {
+            return this.http.get(this.baseHref + this.klassTimeUrl)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+    
+        }
+    
+        getKlassSelectileMask(): Promise<KlassSelectile[]> {
+            return this.http.get(this.baseHref + this.klassSelectileMaskUrl)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+    
+        }
+    
+    */
     KlassService.prototype.getKlassSelectile = function () {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
             .toPromise()

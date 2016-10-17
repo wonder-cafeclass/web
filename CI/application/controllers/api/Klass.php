@@ -162,7 +162,7 @@ class Klass extends REST_Controller {
 
         $result = array();
 
-        $result["selectile_masks"] = $this->get_selectile_mask();
+        // $result["selectile_masks"] = $this->get_selectile_mask();
         $result["levels"] = $this->get_levels();
         $result["stations"] = $this->get_stations();
         $result["days"] = $this->get_days();
@@ -373,57 +373,8 @@ class Klass extends REST_Controller {
             'data' => $obj_list
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
-
     } 
 
-    private function get_selectile_mask() {
-
-        $const_map = $this->paramchecker->get_const_map();
-
-        $klass_selectile_list = $const_map->klass_selectile_list;
-        $klass_selectile_img_list = $const_map->klass_selectile_img_list;
-
-        // check list is valid
-        $is_valid = true;
-        if(count($klass_selectile_list) !== count($klass_selectile_img_list)) 
-        {
-            $is_valid = false;
-        }
-
-        $obj_list = array();
-        if(!$is_valid) 
-        {
-            return $obj_list;
-        }
-
-        for ($i=0; $i < count($klass_selectile_list); $i++) 
-        { 
-
-            $key = $klass_selectile_list[$i];
-            $img_url = $klass_selectile_img_list[$i];
-
-            $selectile_obj = new SelectTile($key, $img_url);
-
-            array_push($obj_list, $selectile_obj);
-
-        }
-
-        return $obj_list;
-    }
-
-    public function selectilemask_get() 
-    {
-        $obj_list = $this->get_selectile_mask();
-
-        $response_body = 
-        [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }                
 
     public function insert_post() {
 
