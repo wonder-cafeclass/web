@@ -1,4 +1,7 @@
-import { Component, OnInit }      from '@angular/core';
+import {  Component, 
+          OnInit, 
+          EventEmitter, 
+          Output }      from '@angular/core';
 import { Location }               from '@angular/common';
 
 import { KlassService }                    from './klass.service';
@@ -30,6 +33,9 @@ export class KlassFilterTileComponent implements OnInit {
   // Time
   klassTimes: KlassTime[];
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
+
+  // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
+  @Output() onChangedSelectile = new EventEmitter<boolean>();
 
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
@@ -63,6 +69,8 @@ export class KlassFilterTileComponent implements OnInit {
       var klassTime = 
       new KlassTime(
         nextObj.key, 
+        nextObj.name_eng, 
+        nextObj.name_kor, 
         nextObj.img_url
       );
       nextObjList.push(klassTime);
@@ -117,6 +125,8 @@ export class KlassFilterTileComponent implements OnInit {
       var klassStation = 
       new KlassStation(
         nextObj.key, 
+        nextObj.name_eng, 
+        nextObj.name_kor, 
         nextObj.img_url
       );
       nextObjList.push(klassStation);
@@ -224,6 +234,22 @@ export class KlassFilterTileComponent implements OnInit {
     }
 
     this.leaveTable();
+
+    // TEST
+    this.emitChangedSelectile();
+  }
+  emitChangedSelectile() :void {
+    // 변경된 selectile의 값을 전달한다.
+
+    var selectileList:any[] = 
+    [
+      this.klassLevelSelected,
+      this.klassStationSelected,
+      this.klassDaySelected,
+      this.klassTimeSelected
+    ];
+
+    this.onChangedSelectile.emit(selectileList);
   }
   private setShadowRows(targetList:any[]) :void {
     if(1 < targetList.length) {
@@ -397,81 +423,8 @@ export class KlassFilterTileComponent implements OnInit {
     } // end outer for
 
     return targetList;
-  }   
-
-  // REMOVE ME
-  /*
-  setNextLevel(nextLevel:KlassLevel) :void {
-    this.klassLevelSelected = nextLevel;
-    this.klassLevelSelected["parentList"] = this.klassLevels;
-  }
-  nextLevel() :void {
-    let selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
-    let nextLevel = this.getNextElement(this.klassLevels, selectedIdx);
-    this.setNextLevel(nextLevel);
-
-    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-    // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-  }
-  overLevel() :void {
-    // 관련 selectile을 보여줍니다.
-    this.showSelectile(this.klassLevels, this.klassLevelSelected, 0);
-  }
-  */
-
-  // REMOVE ME
-  /*
-  setNextStation(nextStation:KlassStation) :void {
-    this.klassStationSelected = nextStation;
-    this.klassStationSelected["parentList"] = this.klassStations;
-  }
-  nextStation() :void {
-    let selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
-    let nextStation = this.getNextElement(this.klassStations, selectedIdx);
-    this.setNextStation(nextStation);
-
-    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-    // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-  }
-  overStation() :void {
-    this.showSelectile(this.klassStations, null, -1);
-  }
-  */
-
-
-  // REMOVE ME
-  /*
-  nextDay() :void {
-    let selectedIdx = this.getSelectedIdx(this.klassDays, "key", this.klassDaySelected.key);
-    this.klassDaySelected = this.getNextElement(this.klassDays, selectedIdx);
-    this.klassDaySelected["parentList"] = this.klassDays;
-
-    // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-
-    // 수업 요일이 변경된다.
-    // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
-
-    // 수업 리스트 API Call!
-
-    // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
   }
 
-  nextTime() :void {
-    console.log("TEST / nextTime");
-
-    let selectedIdx = this.getSelectedIdx(this.klassTimes, "key", this.klassTimeSelected.key);
-    this.klassTimeSelected = this.getNextElement(this.klassTimes, selectedIdx);
-    this.klassTimeSelected["parentList"] = this.klassTimes;
-
-    // 수업 시간이 변경된다.
-    // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
-
-    // 수업 리스트 API Call!
-
-    // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-  }
-  overTime() :void {
-    this.showSelectile(this.klassTimes, null, -1);
-  }
-  */
+  // TODO - Parent listens for child event
+  // https://angular.io/docs/ts/latest/cookbook/component-communication.html
 }

@@ -11,6 +11,5 @@ class KlassLevel {
                 $this->name_eng=$name_eng; 
                 $this->name_kor=$name_kor; 
                 $this->img_url=$img_url;
-
         }
 }

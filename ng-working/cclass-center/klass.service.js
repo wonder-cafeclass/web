@@ -1,4 +1,3 @@
-// import 'rxjs/add/operator/toPromise';
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -13,17 +12,14 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var common_1 = require('@angular/common');
 var KlassService = (function () {
+    // REMOVE ME
+    // static nextCClassId = 100;
     // New - XHR
     // promise-based
     function KlassService(location, http) {
         this.location = location;
         this.http = http;
         this.classesUrl = '/CI/index.php/api/klass/list';
-        // REMOVE ME
-        // private klassLevelUrl = '/CI/index.php/api/klass/level';
-        // private klassStationUrl = '/CI/index.php/api/klass/station';
-        // private klassDayUrl = '/CI/index.php/api/klass/day';
-        // private klassTimeUrl = '/CI/index.php/api/klass/time';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.baseHref = "";
         this.baseHref = this.location._baseHref;
@@ -42,49 +38,6 @@ var KlassService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
-    // REMOVE ME
-    /*
-        getKlassLevel(): Promise<KlassLevel[]> {
-            return this.http.get(this.baseHref + this.klassLevelUrl)
-                          .toPromise()
-                          .then(this.extractData)
-                          .catch(this.handleError);
-    
-        }
-    
-        getKlassStation(): Promise<KlassStation[]> {
-            return this.http.get(this.baseHref + this.klassStationUrl)
-                          .toPromise()
-                          .then(this.extractData)
-                          .catch(this.handleError);
-    
-        }
-    
-        getKlassDay(): Promise<KlassDay[]> {
-            return this.http.get(this.baseHref + this.klassDayUrl)
-                          .toPromise()
-                          .then(this.extractData)
-                          .catch(this.handleError);
-    
-        }
-    
-        getKlassTime(): Promise<KlassTime[]> {
-            return this.http.get(this.baseHref + this.klassTimeUrl)
-                          .toPromise()
-                          .then(this.extractData)
-                          .catch(this.handleError);
-    
-        }
-    
-        getKlassSelectileMask(): Promise<KlassSelectile[]> {
-            return this.http.get(this.baseHref + this.klassSelectileMaskUrl)
-                          .toPromise()
-                          .then(this.extractData)
-                          .catch(this.handleError);
-    
-        }
-    
-    */
     KlassService.prototype.getKlassSelectile = function () {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
             .toPromise()
@@ -116,7 +69,6 @@ var KlassService = (function () {
         if (title) {
         }
     };
-    KlassService.nextCClassId = 100;
     KlassService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [common_1.Location, http_1.Http])
@@ -124,9 +76,4 @@ var KlassService = (function () {
     return KlassService;
 }());
 exports.KlassService = KlassService;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=klass.service.js.map

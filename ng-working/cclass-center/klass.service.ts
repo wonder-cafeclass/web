@@ -1,5 +1,3 @@
-// import 'rxjs/add/operator/toPromise';
-
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Location }     from '@angular/common';
@@ -15,17 +13,11 @@ import { KlassSelectile } from './klass-selectile';
 export class KlassService {
 
     private classesUrl = '/CI/index.php/api/klass/list';
-
-    // REMOVE ME
-    // private klassLevelUrl = '/CI/index.php/api/klass/level';
-    // private klassStationUrl = '/CI/index.php/api/klass/station';
-    // private klassDayUrl = '/CI/index.php/api/klass/day';
-    // private klassTimeUrl = '/CI/index.php/api/klass/time';
-
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
     private baseHref = "";
 
-    static nextCClassId = 100;
+    // REMOVE ME
+    // static nextCClassId = 100;
 
     // New - XHR
     // promise-based
@@ -53,49 +45,7 @@ export class KlassService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-// REMOVE ME
-/*
-    getKlassLevel(): Promise<KlassLevel[]> {
-        return this.http.get(this.baseHref + this.klassLevelUrl)
-                      .toPromise()
-                      .then(this.extractData)
-                      .catch(this.handleError);
 
-    }
-
-    getKlassStation(): Promise<KlassStation[]> {
-        return this.http.get(this.baseHref + this.klassStationUrl)
-                      .toPromise()
-                      .then(this.extractData)
-                      .catch(this.handleError);
-
-    }
-
-    getKlassDay(): Promise<KlassDay[]> {
-        return this.http.get(this.baseHref + this.klassDayUrl)
-                      .toPromise()
-                      .then(this.extractData)
-                      .catch(this.handleError);
-
-    }
-
-    getKlassTime(): Promise<KlassTime[]> {
-        return this.http.get(this.baseHref + this.klassTimeUrl)
-                      .toPromise()
-                      .then(this.extractData)
-                      .catch(this.handleError);
-
-    }
-
-    getKlassSelectileMask(): Promise<KlassSelectile[]> {
-        return this.http.get(this.baseHref + this.klassSelectileMaskUrl)
-                      .toPromise()
-                      .then(this.extractData)
-                      .catch(this.handleError);
-
-    }
-
-*/
     getKlassSelectile(): Promise<KlassSelectile[]> {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
                       .toPromise()
@@ -144,10 +94,3 @@ export class KlassService {
 
 
 }
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

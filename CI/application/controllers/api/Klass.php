@@ -231,26 +231,43 @@ class Klass extends REST_Controller {
     private function get_stations() {
         $const_map = $this->paramchecker->get_const_map();
 
-        $klass_venue_subway_station_list = $const_map->class_venue_subway_station_list;
-        $klass_venue_subway_station_img_url_list = $const_map->class_venue_subway_station_img_url_list;
+        $subway_station_list = 
+        $const_map->class_venue_subway_station_list;
+        $subway_station_eng_list = 
+        $const_map->class_venue_subway_station_eng_list;
+        $subway_station_kor_list = 
+        $const_map->class_venue_subway_station_kor_list;
+        $subway_station_img_url_list = 
+        $const_map->class_venue_subway_station_img_url_list;
 
         // check list is valid
         $is_valid = true;
-        if(count($klass_venue_subway_station_list) !== count($klass_venue_subway_station_img_url_list)) 
+        if(count($subway_station_list) !== count($subway_station_eng_list)) 
         {
             $is_valid = false;
         }
+        if(count($subway_station_list) !== count($subway_station_kor_list)) 
+        {
+            $is_valid = false;
+        }
+        if(count($subway_station_list) !== count($subway_station_img_url_list)) 
+        {
+            $is_valid = false;
+        }
+
         $klass_station_list = array();
         if(!$is_valid) 
         {
             return $klass_station_list;
         }
         
-        for ($i=0; $i < count($klass_venue_subway_station_list); $i++) 
+        for ($i=0; $i < count($subway_station_list); $i++) 
         { 
 
-            $key = $klass_venue_subway_station_list[$i];
-            $img_url = $klass_venue_subway_station_img_url_list[$i];
+            $key = $subway_station_list[$i];
+            $name_eng = $subway_station_eng_list[$i];
+            $name_kor = $subway_station_kor_list[$i];
+            $img_url = $subway_station_img_url_list[$i];
 
             $station_obj = new KlassStation($key, $img_url);
 
@@ -334,6 +351,8 @@ class Klass extends REST_Controller {
         $const_map = $this->paramchecker->get_const_map();
 
         $klass_times_list = $const_map->class_times_list;
+        $klass_times_eng_list = $const_map->class_times_eng_list;
+        $klass_times_kor_list = $const_map->class_times_kor_list;
         $klass_times_img_url_list = $const_map->class_times_img_url_list;
 
         // check list is valid
@@ -352,6 +371,8 @@ class Klass extends REST_Controller {
         for ($i=0; $i < count($klass_times_list); $i++) 
         {
             $key = $klass_times_list[$i];
+            $name_eng = $klass_times_eng_list[$i];
+            $name_kor = $klass_times_kor_list[$i];
             $img_url = $klass_times_img_url_list[$i];
 
             $time_obj = new KlassTime($key, $img_url);

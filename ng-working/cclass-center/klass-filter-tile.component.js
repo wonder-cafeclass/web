@@ -19,6 +19,8 @@ var KlassFilterTileComponent = (function () {
     function KlassFilterTileComponent(service, location) {
         this.service = service;
         this.location = location;
+        // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
+        this.onChangedSelectile = new core_1.EventEmitter();
         this.stColCntPerRow = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
         this.isEnterST = false;
     }
@@ -36,7 +38,7 @@ var KlassFilterTileComponent = (function () {
         var nextObjList = [];
         for (var i = 0; i < times.length; ++i) {
             var nextObj = times[i];
-            var klassTime = new klass_time_1.KlassTime(nextObj.key, nextObj.img_url);
+            var klassTime = new klass_time_1.KlassTime(nextObj.key, nextObj.name_eng, nextObj.name_kor, nextObj.img_url);
             nextObjList.push(klassTime);
         }
         this.klassTimes = nextObjList;
@@ -74,7 +76,7 @@ var KlassFilterTileComponent = (function () {
         var nextObjList = [];
         for (var i = 0; i < stations.length; ++i) {
             var nextObj = stations[i];
-            var klassStation = new klass_station_1.KlassStation(nextObj.key, nextObj.img_url);
+            var klassStation = new klass_station_1.KlassStation(nextObj.key, nextObj.name_eng, nextObj.name_kor, nextObj.img_url);
             nextObjList.push(klassStation);
         }
         this.klassStations = nextObjList;
@@ -163,6 +165,18 @@ var KlassFilterTileComponent = (function () {
             this.klassTimeSelected = selectile;
         }
         this.leaveTable();
+        // TEST
+        this.emitChangedSelectile();
+    };
+    KlassFilterTileComponent.prototype.emitChangedSelectile = function () {
+        // 변경된 selectile의 값을 전달한다.
+        var selectileList = [
+            this.klassLevelSelected,
+            this.klassStationSelected,
+            this.klassDaySelected,
+            this.klassTimeSelected
+        ];
+        this.onChangedSelectile.emit(selectileList);
     };
     KlassFilterTileComponent.prototype.setShadowRows = function (targetList) {
         if (1 < targetList.length) {
@@ -324,6 +338,11 @@ var KlassFilterTileComponent = (function () {
         } // end outer for
         return targetList;
     };
+    __decorate([
+        // 사용자가 선택한 클래스 레벨 
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], KlassFilterTileComponent.prototype, "onChangedSelectile", void 0);
     KlassFilterTileComponent = __decorate([
         core_1.Component({
             selector: 'klass-filter-tile',

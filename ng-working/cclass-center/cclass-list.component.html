@@ -8,7 +8,7 @@
 				<div class="panel-body">
 					
 					<!-- 수업 검색을 위한 필터링 컴포넌트 -->
-					<klass-filter-tile></klass-filter-tile>
+					<klass-filter-tile (onChangedSelectile)="onChangedSelectile($event)"></klass-filter-tile>
 
 					<!-- 서버에서 내려준 필터링 조건에 따라 달라지는 영역-->
 					<!-- Level -->

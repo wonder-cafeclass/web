@@ -47,11 +47,13 @@
 		"class_status_eng_list":["New","Open","Suspended","Closed"],
 		"class_status_kor_list":["신규","개강","중단","종료"],
 
-		"class_times_list":["모든 시간","오전","점심","오후","저녁"],
+		"class_times_list":["always","morning","noon","afternoon","evening"],
+		"class_times_eng_list":["Always","Morning","Noon","Afternoon","Evening"],
+		"class_times_kor_list":["모든 시간","오전","점심","오후","저녁"],
 		"class_times_img_url_list":[
-			"assets/images/time/all.svg",
+			"assets/images/time/always.svg",
 			"assets/images/time/morning.svg",
-			"assets/images/time/lunch.svg",
+			"assets/images/time/noon.svg",
 			"assets/images/time/afternoon.svg",
 			"assets/images/time/evening.svg"
 		],
@@ -59,8 +61,8 @@
 		"class_days_list":[
 			"all",
 			"mon",
-			"wed",
 			"tue",
+			"wed",
 			"thu",
 			"fri",
 			"sat",
@@ -69,8 +71,8 @@
 		"class_days_eng_list":[
 			"All Days",
 			"Monday",
-			"Wednesday",
 			"Tuesday",
+			"Wednesday",
 			"Thursday",
 			"Friday",
 			"Saturday",
@@ -89,8 +91,8 @@
 		"class_days_img_url_list":[
 			"assets/images/day/all.svg",
 			"assets/images/day/mon.svg",
-			"assets/images/day/wed.svg",
 			"assets/images/day/tue.svg",
+			"assets/images/day/wed.svg",
 			"assets/images/day/thu.svg",
 			"assets/images/day/fri.svg",
 			"assets/images/day/sat.svg",
@@ -98,6 +100,32 @@
 		],
 
 		"class_venue_subway_station_list":[
+			"everywhere",
+			"jamsil",
+			"sincheon",
+			"seolleung",
+			"samseong",
+			"seongsu",
+			"bangi",
+			"gaerong",
+			"ogeum",
+			"seokchon",
+			"songpa"
+		],
+		"class_venue_subway_station_eng_list":[
+			"Everywhere",
+			"Jamsil",
+			"Sincheon",
+			"Seolleung",
+			"Samseong",
+			"Seongsu",
+			"Bangi",
+			"Gaerong",
+			"Ogeum",
+			"Seokchon",
+			"Songpa"
+		],
+		"class_venue_subway_station_kor_list":[
 			"모든 장소",
 			"잠실역",
 			"신천역",
@@ -111,7 +139,7 @@
 			"송파역"
 		],
 		"class_venue_subway_station_img_url_list":[
-			"assets/images/subway/all.svg",
+			"assets/images/subway/everywhere.svg",
 			"assets/images/subway/line_2_jamsil.svg",
 			"assets/images/subway/line_2_sincheon.svg",
 			"assets/images/subway/line_2_seolleung.svg",
