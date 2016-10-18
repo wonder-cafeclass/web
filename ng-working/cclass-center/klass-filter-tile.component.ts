@@ -122,6 +122,7 @@ export class KlassFilterTileComponent implements OnInit {
     var nextObjList:KlassStation[] = [];
     for (var i = 0; i < stations.length; ++i) {
       var nextObj = stations[i];
+
       var klassStation = 
       new KlassStation(
         nextObj.key, 

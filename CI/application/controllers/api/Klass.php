@@ -269,7 +269,7 @@ class Klass extends REST_Controller {
             $name_kor = $subway_station_kor_list[$i];
             $img_url = $subway_station_img_url_list[$i];
 
-            $station_obj = new KlassStation($key, $img_url);
+            $station_obj = new KlassStation($key, $name_eng, $name_kor, $img_url);
 
             array_push($klass_station_list, $station_obj);
 
@@ -375,7 +375,7 @@ class Klass extends REST_Controller {
             $name_kor = $klass_times_kor_list[$i];
             $img_url = $klass_times_img_url_list[$i];
 
-            $time_obj = new KlassTime($key, $img_url);
+            $time_obj = new KlassTime($key, $name_eng, $name_kor, $img_url);
 
             array_push($klass_time_list, $time_obj);
         }
