@@ -1,4 +1,7 @@
 export class KlassDay {
+
+	public parentList: KlassDay[];
+	
 	constructor(
 		public key: string,
 		public name_eng: string,

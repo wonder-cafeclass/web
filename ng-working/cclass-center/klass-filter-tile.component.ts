@@ -29,7 +29,7 @@ export class KlassFilterTileComponent implements OnInit {
   klassDaySelected: KlassDay; // 사용자가 선택한 클래스 레벨
   // Time
   klassTimes: KlassTime[];
-  klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨  
+  klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
 
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
@@ -69,11 +69,16 @@ export class KlassFilterTileComponent implements OnInit {
     }
     this.klassTimes = nextObjList;
 
+    // 부모 리스트 참조
+    for (var i = 0; i < this.klassTimes.length; ++i) {
+      let nextObj:KlassTime = this.klassTimes[i];
+      nextObj.parentList = this.klassTimes;
+      nextObj["focusIdx"] = 3;
+    }
+
     if(this.klassTimes && !this.klassTimeSelected) {
       // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
       this.klassTimeSelected = this.klassTimes[0];
-      this.klassTimeSelected["parent_list"] = this.klassTimes;
-      this.klassTimeSelected["focus_idx"] = 3;
     }
   }    
   private setDay(days:any[]) {
@@ -92,11 +97,16 @@ export class KlassFilterTileComponent implements OnInit {
     }
     this.klassDays = nextObjList;
 
+    // 부모 리스트 참조
+    for (var i = 0; i < this.klassDays.length; ++i) {
+      let nextObj:KlassDay = this.klassDays[i];
+      nextObj.parentList = this.klassDays;
+      nextObj["focusIdx"] = 2;
+    }
+
     if(this.klassDays && !this.klassDaySelected) {
       // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
       this.klassDaySelected = this.klassDays[0];
-      this.klassDaySelected["parent_list"] = this.klassDays;
-      this.klassDaySelected["focus_idx"] = 2;
     }
   }  
   private setStation(stations:any[]) {
@@ -113,12 +123,18 @@ export class KlassFilterTileComponent implements OnInit {
     }
     this.klassStations = nextObjList;
 
+    // 부모 리스트 참조
+    for (var i = 0; i < this.klassStations.length; ++i) {
+      let nextObj:KlassStation = this.klassStations[i];
+      nextObj.parentList = this.klassStations;
+      nextObj["focusIdx"] = 1;
+    }
+
     if(this.klassStations && !this.klassStationSelected) {
       // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
       this.klassStationSelected = this.klassStations[0];
-      this.klassStationSelected["parent_list"] = this.klassStations;
-      this.klassStationSelected["focus_idx"] = 1;
     }
+
   }
   private setLevel(levels:any[]) {
 
@@ -136,12 +152,18 @@ export class KlassFilterTileComponent implements OnInit {
     }
     this.klassLevels = nextObjList;
 
+    // 부모 리스트 참조
+    for (var i = 0; i < this.klassLevels.length; ++i) {
+      let nextObj:KlassLevel = this.klassLevels[i];
+      nextObj.parentList = this.klassLevels;
+      nextObj["focusIdx"] = 0;
+    }
+
     if(this.klassLevels && !this.klassLevelSelected) {
       // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
       this.klassLevelSelected = this.klassLevels[0];
-      this.klassLevelSelected["parent_list"] = this.klassLevels;
-      this.klassLevelSelected["focus_idx"] = 0;
     }
+
   }
 
   private getSelectedIdx(targetList:any[], key:string, value:string):number {
@@ -170,13 +192,12 @@ export class KlassFilterTileComponent implements OnInit {
 
   isEnterST:boolean=false;
   enterSelectile(selectile) :void {
-
     if(selectile.class_name !== "empty" || this.isEnterST) {
       return;
     }
     this.isEnterST = true;
-    if(selectile && selectile["parent_list"]) {
-      this.showSelectile(selectile["parent_list"], selectile, selectile["focus_idx"]);    
+    if(selectile && selectile["parentList"]) {
+      this.showSelectile(selectile["parentList"], selectile, selectile["focusIdx"]);
     }
   }
   leaveSelectile(selectile) :void {
@@ -191,7 +212,6 @@ export class KlassFilterTileComponent implements OnInit {
     this.showSelectile(null, null, -1);
   }
   clickSelectile(selectile) :void {
-    console.log("clickSelectile / selectile ::: ",selectile);
 
     if(selectile instanceof KlassLevel) {
       this.klassLevelSelected = selectile;
@@ -203,7 +223,7 @@ export class KlassFilterTileComponent implements OnInit {
       this.klassTimeSelected = selectile;
     }
 
-    // wonder.jung - 새로운 선택 객체를 만든 뒤에 이벤트를 설정. 선택 창은 내린다.
+    this.leaveTable();
   }
   private setShadowRows(targetList:any[]) :void {
     if(1 < targetList.length) {
@@ -229,7 +249,7 @@ export class KlassFilterTileComponent implements OnInit {
 
     nextSelectileTable.push(row);
 
-    if(!targetList) {
+    if(!targetList || null == targetObj || !(-1 < focusIdx)) {
       this.selectileTable = nextSelectileTable;
       this.setShadowRows(this.selectileTable);
       return;
@@ -379,46 +399,52 @@ export class KlassFilterTileComponent implements OnInit {
     return targetList;
   }   
 
+  // REMOVE ME
+  /*
+  setNextLevel(nextLevel:KlassLevel) :void {
+    this.klassLevelSelected = nextLevel;
+    this.klassLevelSelected["parentList"] = this.klassLevels;
+  }
   nextLevel() :void {
     let selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
-    this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
-    this.klassLevelSelected["parent_list"] = this.klassLevels;
+    let nextLevel = this.getNextElement(this.klassLevels, selectedIdx);
+    this.setNextLevel(nextLevel);
 
     // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-
-    // 수업 리스트 API Call! - 
-    // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
-
     // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
   }
   overLevel() :void {
     // 관련 selectile을 보여줍니다.
-    this.showSelectile(this.klassLevels, null, -1);
+    this.showSelectile(this.klassLevels, this.klassLevelSelected, 0);
   }
+  */
 
-
+  // REMOVE ME
+  /*
+  setNextStation(nextStation:KlassStation) :void {
+    this.klassStationSelected = nextStation;
+    this.klassStationSelected["parentList"] = this.klassStations;
+  }
   nextStation() :void {
     let selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
-    this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
-    this.klassStationSelected["parent_list"] = this.klassStations;
+    let nextStation = this.getNextElement(this.klassStations, selectedIdx);
+    this.setNextStation(nextStation);
+
     // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-
-    // 지하철 역이 변경된다.
-    // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
-
-    // 수업 리스트 API Call!
-
     // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
   }
   overStation() :void {
     this.showSelectile(this.klassStations, null, -1);
   }
+  */
 
 
+  // REMOVE ME
+  /*
   nextDay() :void {
     let selectedIdx = this.getSelectedIdx(this.klassDays, "key", this.klassDaySelected.key);
     this.klassDaySelected = this.getNextElement(this.klassDays, selectedIdx);
-    this.klassDaySelected["parent_list"] = this.klassDays;
+    this.klassDaySelected["parentList"] = this.klassDays;
 
     // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
 
@@ -429,17 +455,13 @@ export class KlassFilterTileComponent implements OnInit {
 
     // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
   }
-  overDay() :void {
-    this.showSelectile(this.klassDays, null, -1);
-  }
-
 
   nextTime() :void {
     console.log("TEST / nextTime");
 
     let selectedIdx = this.getSelectedIdx(this.klassTimes, "key", this.klassTimeSelected.key);
     this.klassTimeSelected = this.getNextElement(this.klassTimes, selectedIdx);
-    this.klassTimeSelected["parent_list"] = this.klassTimes;
+    this.klassTimeSelected["parentList"] = this.klassTimes;
 
     // 수업 시간이 변경된다.
     // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
@@ -451,4 +473,5 @@ export class KlassFilterTileComponent implements OnInit {
   overTime() :void {
     this.showSelectile(this.klassTimes, null, -1);
   }
+  */
 }

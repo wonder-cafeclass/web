@@ -40,11 +40,15 @@ var KlassFilterTileComponent = (function () {
             nextObjList.push(klassTime);
         }
         this.klassTimes = nextObjList;
+        // 부모 리스트 참조
+        for (var i = 0; i < this.klassTimes.length; ++i) {
+            var nextObj_1 = this.klassTimes[i];
+            nextObj_1.parentList = this.klassTimes;
+            nextObj_1["focusIdx"] = 3;
+        }
         if (this.klassTimes && !this.klassTimeSelected) {
             // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
             this.klassTimeSelected = this.klassTimes[0];
-            this.klassTimeSelected["parent_list"] = this.klassTimes;
-            this.klassTimeSelected["focus_idx"] = 3;
         }
     };
     KlassFilterTileComponent.prototype.setDay = function (days) {
@@ -55,11 +59,15 @@ var KlassFilterTileComponent = (function () {
             nextObjList.push(klassDay);
         }
         this.klassDays = nextObjList;
+        // 부모 리스트 참조
+        for (var i = 0; i < this.klassDays.length; ++i) {
+            var nextObj_2 = this.klassDays[i];
+            nextObj_2.parentList = this.klassDays;
+            nextObj_2["focusIdx"] = 2;
+        }
         if (this.klassDays && !this.klassDaySelected) {
             // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
             this.klassDaySelected = this.klassDays[0];
-            this.klassDaySelected["parent_list"] = this.klassDays;
-            this.klassDaySelected["focus_idx"] = 2;
         }
     };
     KlassFilterTileComponent.prototype.setStation = function (stations) {
@@ -70,11 +78,15 @@ var KlassFilterTileComponent = (function () {
             nextObjList.push(klassStation);
         }
         this.klassStations = nextObjList;
+        // 부모 리스트 참조
+        for (var i = 0; i < this.klassStations.length; ++i) {
+            var nextObj_3 = this.klassStations[i];
+            nextObj_3.parentList = this.klassStations;
+            nextObj_3["focusIdx"] = 1;
+        }
         if (this.klassStations && !this.klassStationSelected) {
             // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
             this.klassStationSelected = this.klassStations[0];
-            this.klassStationSelected["parent_list"] = this.klassStations;
-            this.klassStationSelected["focus_idx"] = 1;
         }
     };
     KlassFilterTileComponent.prototype.setLevel = function (levels) {
@@ -85,11 +97,15 @@ var KlassFilterTileComponent = (function () {
             nextObjList.push(klassLevel);
         }
         this.klassLevels = nextObjList;
+        // 부모 리스트 참조
+        for (var i = 0; i < this.klassLevels.length; ++i) {
+            var nextObj_4 = this.klassLevels[i];
+            nextObj_4.parentList = this.klassLevels;
+            nextObj_4["focusIdx"] = 0;
+        }
         if (this.klassLevels && !this.klassLevelSelected) {
             // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
             this.klassLevelSelected = this.klassLevels[0];
-            this.klassLevelSelected["parent_list"] = this.klassLevels;
-            this.klassLevelSelected["focus_idx"] = 0;
         }
     };
     KlassFilterTileComponent.prototype.getSelectedIdx = function (targetList, key, value) {
@@ -118,8 +134,8 @@ var KlassFilterTileComponent = (function () {
             return;
         }
         this.isEnterST = true;
-        if (selectile && selectile["parent_list"]) {
-            this.showSelectile(selectile["parent_list"], selectile, selectile["focus_idx"]);
+        if (selectile && selectile["parentList"]) {
+            this.showSelectile(selectile["parentList"], selectile, selectile["focusIdx"]);
         }
     };
     KlassFilterTileComponent.prototype.leaveSelectile = function (selectile) {
@@ -134,7 +150,6 @@ var KlassFilterTileComponent = (function () {
         this.showSelectile(null, null, -1);
     };
     KlassFilterTileComponent.prototype.clickSelectile = function (selectile) {
-        console.log("clickSelectile / selectile ::: ", selectile);
         if (selectile instanceof klass_level_1.KlassLevel) {
             this.klassLevelSelected = selectile;
         }
@@ -147,7 +162,7 @@ var KlassFilterTileComponent = (function () {
         else if (selectile instanceof klass_time_1.KlassTime) {
             this.klassTimeSelected = selectile;
         }
-        // wonder.jung - 새로운 선택 객체를 만든 뒤에 이벤트를 설정. 선택 창은 내린다.
+        this.leaveTable();
     };
     KlassFilterTileComponent.prototype.setShadowRows = function (targetList) {
         if (1 < targetList.length) {
@@ -170,7 +185,7 @@ var KlassFilterTileComponent = (function () {
         this.klassTimeSelected["class_name"] = "empty";
         row.push(this.klassTimeSelected);
         nextSelectileTable.push(row);
-        if (!targetList) {
+        if (!targetList || null == targetObj || !(-1 < focusIdx)) {
             this.selectileTable = nextSelectileTable;
             this.setShadowRows(this.selectileTable);
             return;
@@ -308,58 +323,6 @@ var KlassFilterTileComponent = (function () {
             } // end inner for
         } // end outer for
         return targetList;
-    };
-    KlassFilterTileComponent.prototype.nextLevel = function () {
-        var selectedIdx = this.getSelectedIdx(this.klassLevels, "key", this.klassLevelSelected.key);
-        this.klassLevelSelected = this.getNextElement(this.klassLevels, selectedIdx);
-        this.klassLevelSelected["parent_list"] = this.klassLevels;
-        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-        // 수업 리스트 API Call! - 
-        // this.service.getKlassList(this.klassLevelSelected.key, "").then(cclasses => this.cclasses = cclasses);
-        // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-    };
-    KlassFilterTileComponent.prototype.overLevel = function () {
-        // 관련 selectile을 보여줍니다.
-        this.showSelectile(this.klassLevels, null, -1);
-    };
-    KlassFilterTileComponent.prototype.nextStation = function () {
-        var selectedIdx = this.getSelectedIdx(this.klassStations, "key", this.klassStationSelected.key);
-        this.klassStationSelected = this.getNextElement(this.klassStations, selectedIdx);
-        this.klassStationSelected["parent_list"] = this.klassStations;
-        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-        // 지하철 역이 변경된다.
-        // 변경된 지하철 역에 따라 수업 리스트가 달라져야 한다.
-        // 수업 리스트 API Call!
-        // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-    };
-    KlassFilterTileComponent.prototype.overStation = function () {
-        this.showSelectile(this.klassStations, null, -1);
-    };
-    KlassFilterTileComponent.prototype.nextDay = function () {
-        var selectedIdx = this.getSelectedIdx(this.klassDays, "key", this.klassDaySelected.key);
-        this.klassDaySelected = this.getNextElement(this.klassDays, selectedIdx);
-        this.klassDaySelected["parent_list"] = this.klassDays;
-        // 값이 변경되었다면, 검색 버튼을 활성화해서 검색이 가능한 것을 유저에게 알려줍니다.
-        // 수업 요일이 변경된다.
-        // 변경된 수업 요일에 따라 수업 리스트가 달라져야 한다.
-        // 수업 리스트 API Call!
-        // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-    };
-    KlassFilterTileComponent.prototype.overDay = function () {
-        this.showSelectile(this.klassDays, null, -1);
-    };
-    KlassFilterTileComponent.prototype.nextTime = function () {
-        console.log("TEST / nextTime");
-        var selectedIdx = this.getSelectedIdx(this.klassTimes, "key", this.klassTimeSelected.key);
-        this.klassTimeSelected = this.getNextElement(this.klassTimes, selectedIdx);
-        this.klassTimeSelected["parent_list"] = this.klassTimes;
-        // 수업 시간이 변경된다.
-        // 변경된 수업 시간에 따라 수업 리스트가 달라져야 한다.
-        // 수업 리스트 API Call!
-        // 부모 컴포넌트에게 변경된 검색 값을 전달해야 합니다. / 컴포넌트간의 통신
-    };
-    KlassFilterTileComponent.prototype.overTime = function () {
-        this.showSelectile(this.klassTimes, null, -1);
     };
     KlassFilterTileComponent = __decorate([
         core_1.Component({
