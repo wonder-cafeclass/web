@@ -9,7 +9,7 @@ import { CClassSearchService }        from './cclass-search.service';
 import { CClassDetailResolve }        from './cclass-detail-resolve.service';
 
 import { CClassCenterComponent }     from './cclass-center.component';
-import { CClassListComponent }       from './cclass-list.component';
+import { KlassListComponent }       from './klass-list.component';
 import { CClassCenterHomeComponent } from './cclass-center-home.component';
 import { CClassDetailComponent }     from './cclass-detail.component';
 
@@ -25,7 +25,7 @@ import { cclassCenterRouting } from './cclass-center.routing';
   ],
   declarations: [
     CClassCenterComponent,
-    CClassListComponent,
+    KlassListComponent,
     CClassCenterHomeComponent,
     CClassDetailComponent,
     KlassFilterTileComponent

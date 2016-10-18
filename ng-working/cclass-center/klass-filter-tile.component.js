@@ -170,13 +170,17 @@ var KlassFilterTileComponent = (function () {
     };
     KlassFilterTileComponent.prototype.emitChangedSelectile = function () {
         // 변경된 selectile의 값을 전달한다.
+        var selectileList = this.getFocusedSelectiles();
+        this.onChangedSelectile.emit(selectileList);
+    };
+    KlassFilterTileComponent.prototype.getFocusedSelectiles = function () {
         var selectileList = [
             this.klassLevelSelected,
             this.klassStationSelected,
             this.klassDaySelected,
             this.klassTimeSelected
         ];
-        this.onChangedSelectile.emit(selectileList);
+        return selectileList;
     };
     KlassFilterTileComponent.prototype.setShadowRows = function (targetList) {
         if (1 < targetList.length) {
@@ -345,9 +349,10 @@ var KlassFilterTileComponent = (function () {
     ], KlassFilterTileComponent.prototype, "onChangedSelectile", void 0);
     KlassFilterTileComponent = __decorate([
         core_1.Component({
+            moduleId: module.id,
             selector: 'klass-filter-tile',
-            templateUrl: './ng-working/cclass-center/klass-filter-tile.component.html',
-            styleUrls: ['./ng-working/cclass-center/klass-filter-tile.component.css']
+            templateUrl: 'klass-filter-tile.component.html',
+            styleUrls: ['klass-filter-tile.component.css']
         }), 
         __metadata('design:paramtypes', [klass_service_1.KlassService, common_1.Location])
     ], KlassFilterTileComponent);

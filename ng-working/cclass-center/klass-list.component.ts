@@ -16,11 +16,11 @@ import { KlassTime }                        from './klass-time';
 
 @Component({
   moduleId: module.id,
-  styleUrls: ['cclass-list.component.css'],
-  templateUrl: 'cclass-list.component.html',
+  styleUrls: ['klass-list.component.css'],
+  templateUrl: 'klass-list.component.html',
   providers: [CClassSearchService]
 })
-export class CClassListComponent implements OnInit {
+export class KlassListComponent implements OnInit {
 
   cclasses: CClass[];
   public selectedId: number;
@@ -30,7 +30,7 @@ export class CClassListComponent implements OnInit {
   klassKeywords: Observable<KlassKeyword[]>;
 
   // 검색상태 관련
-  isEnableSearch: boolean = false;
+  isSearchEnabled: boolean = false;
 
   private searchTerms = new Subject<string>();
 
@@ -43,11 +43,6 @@ export class CClassListComponent implements OnInit {
 
   isSelected(cclass: CClass): boolean {
     return cclass.id === this.selectedId;
-  }
-
-  search(term: string): void {
-    console.log("TEST / search / term :: ",term);
-    this.searchTerms.next(term);
   }
 
   ngOnInit(): void {
@@ -75,29 +70,47 @@ export class CClassListComponent implements OnInit {
     ;
   }
 
-  onChangedSelectile(selectiles:any[]) {
+  search(selectile, searchKeyword:string): void {
 
-    for (var i = 0; i < selectiles.length; ++i) {
-      let selectile = selectiles[i];
-      if(selectile instanceof KlassLevel) {
-
-        console.log("HERE! / onChangedSelectile / level / selectile ::: ",selectile);
-
-      } else if(selectile instanceof KlassStation) {
-
-        console.log("HERE! / onChangedSelectile / station / selectile ::: ",selectile);
-
-      } else if(selectile instanceof KlassDay) {
-
-        console.log("HERE! / onChangedSelectile / day / selectile ::: ",selectile);
-
-      } else if(selectile instanceof KlassTime) {
-
-        console.log("HERE! / onChangedSelectile / time / selectile ::: ",selectile);
-
-      }
+    if(!this.isSearchEnabled) {
+      return;
     }
 
+    // wonder.jung
+    console.log("search / selectile :: ",selectile);
+    console.log("search / searchKeyword :: ",searchKeyword);
+
+    // this.searchTerms.next(term);
+  }
+  onChangedSelectile(selectiles:any[]) {
+    // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
+    this.isSearchEnabled = true;
+  }
+  onKeyupSearch(keyword:string) {
+
+    if(null === keyword || "" === keyword) {
+      return;
+    }
+
+    // 2글자 이상이어야 유효한 단어
+
+    // 최소 한단어 이상이어야 함.
+
+    // 1. 단어 분할로 제목 검색.
+
+    // 사용자가 입력한 단어를 공백 단위로 분할.
+
+    // 2. 제목과 설명은 최대 3개 단어 조합으로 검색. 그 이상은 무리가 있음.
+
+    // 검색 결과가 많을 경우, 스크롤로 더 보여줄 수 있어야 함. 
+    // 검색 결과는 최초 10개만 보여줌.
+
+    console.log("onKeyupSearch / keyword ::: ",keyword);
+
+    // 유저가 검색어를 입력한 상태. 유효한 키워드라면, 검색 버튼을 활성화 해줍니다.
+    if(!this.isSearchEnabled) {
+      this.isSearchEnabled = true;
+    }
   }
 
 
@@ -109,5 +122,7 @@ export class CClassListComponent implements OnInit {
     // Navigate with relative link
     // this.router.navigate([cclass.id], { relativeTo: this.route });
   }
+
+
 
 }

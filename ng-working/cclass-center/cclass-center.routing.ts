@@ -2,7 +2,7 @@ import { ModuleWithProviders }   from '@angular/core';
 import { Routes, RouterModule }  from '@angular/router';
 
 import { CClassCenterHomeComponent } from './cclass-center-home.component';
-import { CClassListComponent }       from './cclass-list.component';
+import { KlassListComponent }       from './klass-list.component';
 import { CClassCenterComponent }     from './cclass-center.component';
 import { CClassDetailComponent }     from './cclass-detail.component';
 
@@ -22,7 +22,7 @@ const cclassCenterRoutes: Routes = [
     children: [
       {
         path: '',
-        component: CClassListComponent,
+        component: KlassListComponent,
         children: [
           {
             path: ':id',

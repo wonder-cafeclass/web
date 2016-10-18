@@ -15,9 +15,10 @@ import { KlassSelectile }                  from './klass-selectile';
 import { KlassSelectileRow }                  from './klass-selectile-row';
 
 @Component({
+  moduleId: module.id,
   selector: 'klass-filter-tile',
-  templateUrl: './ng-working/cclass-center/klass-filter-tile.component.html',
-  styleUrls: [ './ng-working/cclass-center/klass-filter-tile.component.css' ]
+  templateUrl: 'klass-filter-tile.component.html',
+  styleUrls: [ 'klass-filter-tile.component.css' ]
 })
 export class KlassFilterTileComponent implements OnInit {
 
@@ -35,7 +36,7 @@ export class KlassFilterTileComponent implements OnInit {
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
 
   // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
-  @Output() onChangedSelectile = new EventEmitter<boolean>();
+  @Output() onChangedSelectile = new EventEmitter<any>();
 
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
@@ -241,7 +242,10 @@ export class KlassFilterTileComponent implements OnInit {
   }
   emitChangedSelectile() :void {
     // 변경된 selectile의 값을 전달한다.
-
+    var selectileList:any[] = this.getFocusedSelectiles();
+    this.onChangedSelectile.emit(selectileList);
+  }
+  public getFocusedSelectiles() :any[] {
     var selectileList:any[] = 
     [
       this.klassLevelSelected,
@@ -250,7 +254,7 @@ export class KlassFilterTileComponent implements OnInit {
       this.klassTimeSelected
     ];
 
-    this.onChangedSelectile.emit(selectileList);
+    return selectileList;
   }
   private setShadowRows(targetList:any[]) :void {
     if(1 < targetList.length) {
