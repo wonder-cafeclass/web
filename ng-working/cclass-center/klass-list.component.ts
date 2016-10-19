@@ -70,11 +70,17 @@ export class KlassListComponent implements OnInit {
     ;
   }
 
-  search(selectileList, searchKeyword:string): void {
+  clickSearch(selectileList, searchKeyword:string): void {
 
     if(!this.isSearchEnabled) {
       return;
     }
+    
+    this.search(selectileList, searchKeyword);
+  }
+
+  search(selectileList, searchKeyword:string): void {
+
 
     // wonder.jung
     console.log("search / selectileList :: ",selectileList);
@@ -124,8 +130,14 @@ export class KlassListComponent implements OnInit {
 
   }
   onChangedSelectile(selectiles:any[]) {
+
+    console.log("TEST / 001");
+
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
-    this.isSearchEnabled = true;
+    // this.isSearchEnabled = true;
+
+    // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
+    this.search(selectiles, "");
   }
   onKeyupSearch(keyword:string) {
 

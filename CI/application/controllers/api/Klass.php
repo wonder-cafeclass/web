@@ -42,6 +42,9 @@ class Klass extends REST_Controller {
 
         // init MyReponse
         $this->load->library('MY_Response');
+
+        // init MyTime
+        $this->load->library('MY_Time');
             
         // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
@@ -95,26 +98,6 @@ class Klass extends REST_Controller {
             $query = $this->db->query('SELECT * FROM klass');            
         }
 
-
-        
-        /*        
-        $rows = $query->custom_result_object('KlassCourse');
-        $output = array();
-        foreach ($rows as $row)
-        {
-            // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($this->my_paramchecker->get_const_map());
-            $row->level_img_url($this->my_paramchecker->get_const_map());
-            $row->days_img_url($this->my_paramchecker->get_const_map());
-            $row->venue_subway_station_img_url($this->my_paramchecker->get_const_map());
-            $row->venue_cafe_logo_img_url($this->my_paramchecker->get_const_map());
-            $row->price_with_format();
-            $row->weeks_to_months();
-            
-            array_push($output, $row);
-        }
-        */
-
         $classes = $query->result();
         $output = $this->addKlassExtraInfo($query);
         if (!empty($classes))
@@ -162,33 +145,57 @@ class Klass extends REST_Controller {
         $day = $this->my_paramchecker->get('day','klass_day');
         $time = $this->my_paramchecker->get('time','klass_time');
         $check_list = $this->my_paramchecker->get_check_list();
+        $extra = array();
 
         // DB QUERY
         // 유효한 파라미터들만 검색에 사용한다.
         $where_conditions = array();
         if(isset($level))
         {
-            // $where_conditions['level'] = $level;
             $this->db->where('level', $level);
         }
         if(isset($station))
         {
-            // $where_conditions['station'] = $station;
             $this->db->where('venue_subway_station', $station);
         }
         if(isset($day))
         {
-            // $where_conditions['days'] = $day;
             $this->db->where('days', $day);
         }
+        // Set time range
         // 시간 관련 검색은 범위를 가져와야 한다.
-        /*
-        if(isset($time))
+        $extra['time_begin'] = 
+        $time_begin = 
+        $this->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list'
+        );
+        $extra['time_end'] = 
+        $time_end = 
+        $this->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list', 
+            1
+        );
+        $time_begin_HHmm = "";
+        $time_end_HHmm = "";
+        if(is_numeric($time_begin) && is_numeric($time_end))
         {
-            $where_conditions['time'] = $time;
+            $time_begin_HHmm = $this->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->my_time->digit_to_HHmm($time_end, true);
         }
-        */
-        // q LIKE
+        if( $this->my_time->is_valid_HHmm($time_begin_HHmm) && 
+            $this->my_time->is_valid_HHmm($time_end_HHmm)) 
+        {
+            $this->db->where('time_begin >=', $time_begin_HHmm);
+            $this->db->where('time_end <=', $time_end_HHmm);
+
+        }
+        // wonder.jung
+        $this->db->order_by('id', 'DESC');
+
 
         // DB WORKS
         $limit = 30;
@@ -208,11 +215,11 @@ class Klass extends REST_Controller {
         $output = $this->addKlassExtraInfo($query);
         if (!empty($classes))
         {
-            $response_body = $this->my_response->getResBodySuccess($last_query, $output, $check_list);
+            $response_body = $this->my_response->getResBodySuccess($last_query, $output, $check_list, $extra);
         }
         else
         {
-            $response_body = $this->my_response->getResBodyFail('Klass could not be found', $last_query, $output, $check_list);
+            $response_body = $this->my_response->getResBodyFail('Klass could not be found', $last_query, $output, $check_list, $extra);
         }
         $this->set_response($response_body, REST_Controller::HTTP_OK); 
         

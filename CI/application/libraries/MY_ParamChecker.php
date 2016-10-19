@@ -169,7 +169,82 @@ class MY_ParamChecker {
     	return null;
     }
 
-    public function extract_value_in_brackets($target_filter="", $result=null){
+    private function get_const($key="") {
+        if(empty($key)) 
+        {
+            return;
+        }
+
+        $const_map = $this->get_const_map();
+        if(isset($const_map)) {
+            return $const_map->{$key};
+        }
+
+        return null;
+    }
+
+    public function get_const_from_list($key="", $key_list_key=null, $value_list_key=null, $offset=-1) 
+    {
+
+        if(empty($key)) 
+        {
+            return;
+        }
+        if(empty($key_list_key)) 
+        {
+            return;   
+        }
+        if(empty($value_list_key)) 
+        {
+            return;
+        }
+        if(count($key_list_key) !== count($value_list_key)) {
+            return;
+        }
+
+        $key_list = $this->get_const($key_list_key);
+        if(empty($key_list)) 
+        {
+            return;
+        }
+
+        $value_list = $this->get_const($value_list_key);
+        if(empty($value_list)) 
+        {
+            return;
+        }
+
+        for ($i=0; $i < count($key_list); $i++) 
+        { 
+            $cur_key = $key_list[$i];
+
+            if($key === $cur_key) 
+            {
+                // 1. 유저가 지정한 인덱스에서 offset한 값을 가져오는 경우.
+                // 양의 방향으로만 허용. 유저가 입력한 오프셋만큼 인덱스를 이동한 값을 가져온다.
+                $offset_valid=-1; 
+                $length = count($key_list);
+                $idx_last = $length - 1;
+                $idx_offset = -1;
+                if(0 < $offset) {
+                    $idx_offset = $offset + $i;
+                }
+                if(0 < $idx_offset) {
+                    $idx_offset %= $length;
+                }
+                if(-1 < $idx_offset) {
+                    return $value_list[$idx_offset];  
+                }
+
+                // 2. 유저가 지정한 인덱스의 값을 가져오는 경우.
+                return $value_list[$i];
+            }
+        }
+
+        return null;
+    }
+
+    private function extract_value_in_brackets($target_filter="", $result=null){
 
     	$output = array();
     	$output["extracted_value"] = "";
@@ -665,15 +740,15 @@ class MY_ParamChecker {
                         $idx_excluded = intval($idx_excluded_str_list[$i]);
 
                         // 해당 리스트에 없는 인덱스인지 검사.
-                        $last_idx = (count($const_list) - 1);
+                        $idx_last = (count($const_list) - 1);
                         if(!(-1 < $idx_excluded)) 
                         {
                             $result["message"]="!(-1 < \$idx_excluded)|\$idx_excluded:$idx_excluded";
                             return $result;
                         } 
-                        else if($last_idx < $idx_excluded) 
+                        else if($idx_last < $idx_excluded) 
                         {
-                            $result["message"]="\$last_idx < \$idx_excluded|\$last_idx:$last_idx|\$idx_excluded:$idx_excluded";
+                            $result["message"]="\$idx_last < \$idx_excluded|\$idx_last:$idx_last|\$idx_excluded:$idx_excluded";
                             return $result;
                         }
 
@@ -812,6 +887,14 @@ class MY_ParamChecker {
 		    		return $result;
     			}
     		}
+            else if(strpos($filter, 'is_number') !== false) 
+            {
+                if(!is_numeric($value))
+                {
+                    $result["message"]="!is_numeric(\$value)";
+                    return $result;
+                }
+            }
     		else
     		{
 	    		$result["message"]="no match filter!";

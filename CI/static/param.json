@@ -19,6 +19,7 @@
 		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",
 		"klass_day":"is_str|||matches[class_days_list]|||exclude[class_days_list|0]",
 		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
+		"klass_time_range":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[24]",
 
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
@@ -54,6 +55,7 @@
 		"class_status_kor_list":["신규","개강","중단","종료"],
 
 		"class_times_list":["always","morning","noon","afternoon","evening"],
+		"class_times_range_list":[0,7,12,14,19],
 		"class_times_eng_list":["Always","Morning","Noon","Afternoon","Evening"],
 		"class_times_kor_list":["모든 시간","오전","점심","오후","저녁"],
 		"class_times_img_url_list":[
