@@ -1,23 +1,15 @@
 <?php
 
+// @Deprecated
+/*
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/models/CClass.php';
 require APPPATH . '/models/KlassKeyword.php';
+require APPPATH . '/models/KlassLevel.php';
 
-/**
- * This is an example of a few basic user interaction methods you could use
- * all done with a hardcoded array
- *
- * @package         CodeIgniter
- * @subpackage      Rest Server
- * @category        Controller
- * @author          Phil Sturgeon, Chris Kacerguis
- * @license         MIT
- * @link            https://github.com/chriskacerguis/codeigniter-restserver
- */
 class Classes extends REST_Controller {
 
     function __construct()
@@ -44,8 +36,58 @@ class Classes extends REST_Controller {
         // TEST - PHPUnit test로 검증해야 함! wonder.jung
         // $check_result = $this->paramchecker->is_ok("user_id", 0);
 
+        // var req_url = `level=${klassLevel}&station=${subwayStation}&day=${klassDay}&time=${klassTime}`;
+
+        $where_conditions = array();
+
+        $level = $this->get('level');
+        $level = $this->db->escape($level);
+        if($level !== "NULL" && !empty($level)) 
+        {
+            $where_conditions['level'] = $level;
+        }
+
+        $station = $this->get('station');
+        $station = $this->db->escape($station);
+        if($station !== "NULL" && !empty($station)) 
+        {
+            $where_conditions['venue_subway_station'] = $station;
+        }
+
+        $day = $this->get('day');
+        $day = $this->db->escape($day);
+        if($day !== "NULL" && !empty($day)) 
+        {
+            $where_conditions['days'] = $day;
+        }
+
+        $time = $this->get('time');
+        $time = $this->db->escape($time);
+        if($time !== "NULL" && !empty($time)) 
+        {
+            // keyword를 이용, 검색할 수 있는 숫자값으로 변경한다.
+            $where_conditions['time_begin'] = $time;
+        }
+
+        // Sample - WHERE
+        if(!empty($where_conditions)) {
+            $limit = 500;
+            $offset = 0;
+            $query = $this->db->get_where('cclass', $where_conditions, $limit, $offset);
+            $query = $this->db->query($query);
+        } else {
+            $query = $this->db->query('SELECT * FROM cclass');            
+        }
+
+        // param 유효성 검사를 진행합니다.
+
         // Classes from a data store e.g. database
-        $query = $this->db->query('SELECT `id`,`title`,`desc`,`date_begin`,`time_begin`,`time_duration_minutes`,`time_end`,`level`,`week_min`,`week_max`,`days`,`class_per_week`,`venue`,`venue_subway_station`,`venue_cafe`,`venue_map_link`,`status`,`tags`,`price`,`class_img_url`,`date_created`,`date_updated` FROM cclass');
+        // $query = $this->db->query('SELECT `id`,`title`,`desc`,`date_begin`,`time_begin`,`time_duration_minutes`,`time_end`,`level`,`week_min`,`week_max`,`days`,`class_per_week`,`venue`,`venue_subway_station`,`venue_cafe`,`venue_map_link`,`status`,`tags`,`price`,`class_img_url`,`date_created`,`date_updated` FROM cclass');
+
+        // wonder.jung
+        // $q = $this->get('q');
+
+        // $query = $this->db->query('SELECT * FROM cclass');
         $classes = $query->result();
 
         $rows = $query->custom_result_object('CClass');
@@ -71,6 +113,7 @@ class Classes extends REST_Controller {
             $response_body = [
                 'status' => TRUE,
                 'message' => 'Success',
+                'query' => $query,
                 'data' => $output
             ];
 
@@ -83,6 +126,7 @@ class Classes extends REST_Controller {
             $response_body = [
                 'status' => FALSE,
                 'message' => 'Class could not be found',
+                'query' => $query,
                 'data' => $classes
             ];
 
@@ -106,6 +150,59 @@ class Classes extends REST_Controller {
         // OK (200) being the HTTP response code
         $this->set_response($response_body, REST_Controller::HTTP_OK);
         
+    }
+
+    public function level_get() {
+
+        // wonder.jung
+        $const_map = $this->paramchecker->get_const_map();
+
+        $class_level_list = $const_map->class_level_list;
+        $class_level_eng_list = $const_map->class_level_eng_list;
+        $class_level_kor_list = $const_map->class_level_kor_list;
+        $class_level_img_url_list = $const_map->class_level_img_url_list;
+
+        // check list is valid
+        $is_valid = true;
+        if(count($class_level_list) !== count($class_level_eng_list)) {
+            $is_valid = false;
+        } else if(count($class_level_list) !== count($class_level_kor_list)) {
+            $is_valid = false;
+        } else if(count($class_level_list) !== count($class_level_img_url_list)) {
+            $is_valid = false;
+        }
+        if(!$is_valid) {
+            // 클래스 레벨의 배열이 길이가 다릅니다. 실행을 중단합니다.
+            $response_body = [
+                'status' => FALSE,
+                'message' => 'Class level list is not valid!',
+                'data' => null
+            ];
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        $klass_level_list = array();
+        for ($i=0; $i < count($class_level_list); $i++) { 
+
+            $key = $class_level_list[$i];
+            $name_eng = $class_level_eng_list[$i];
+            $name_kor = $class_level_kor_list[$i];
+            $img_url = $class_level_img_url_list[$i];
+
+            $level_obj = new KlassLevel($key, $name_eng, $name_kor, $img_url);
+
+            array_push($klass_level_list, $level_obj);
+
+        }
+
+        $response_body = [
+            'status' => TRUE,
+            'message' => 'Success',
+            'data' => $klass_level_list
+        ];
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
     }
 
     public function insert_post() {
@@ -266,3 +363,4 @@ class Classes extends REST_Controller {
 
     }
 }
+*/

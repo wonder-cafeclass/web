@@ -4,15 +4,20 @@ import { ActivatedRoute, Router, Params }  from '@angular/router';
 import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
-import { CClassService }                   from './cclass.service';
+import { KlassService }                    from './klass.service';
 import { CClassSearchService }             from './cclass-search.service';
 import { CClass }                          from './cclass';
 import { KlassKeyword }                    from './klass-keyword';
 
+import { KlassLevel }                      from './klass-level';
+import { KlassStation }                    from './klass-station';
+import { KlassDay }                        from './klass-day';
+import { KlassTime }                        from './klass-time';
 
 @Component({
-  styleUrls: ['./ng-working/cclass-center/cclass-list.component.css'],
-  templateUrl: './ng-working/cclass-center/cclass-list.component.html',
+  moduleId: module.id,
+  styleUrls: ['cclass-list.component.css'],
+  templateUrl: 'cclass-list.component.html',
   providers: [CClassSearchService]
 })
 export class CClassListComponent implements OnInit {
@@ -21,14 +26,17 @@ export class CClassListComponent implements OnInit {
   public selectedId: number;
 
   // Search
+  // TODO - 검색 관련 
   klassKeywords: Observable<KlassKeyword[]>;
-  // klassKeywords: Observable<{}>;
+
+  // 검색상태 관련
+  isEnableSearch: boolean = false;
 
   private searchTerms = new Subject<string>();
 
   constructor(
     private cclassSearchService: CClassSearchService,
-    private service: CClassService,
+    private service: KlassService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -42,22 +50,12 @@ export class CClassListComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  testSwitchMap(term: string, index:number): Observable<CClass[]> {
-
-    console.log("testSwitchMap / term ::: ",term);
-    console.log("testSwitchMap / index ::: ",index);
-
-    return Observable.of<CClass[]>([]);
-
-  }
-
   ngOnInit(): void {
 
     // get class list
     this.route.params.forEach((params: Params) => {
       this.selectedId = params['id'];
-      this.service.getCClasses()
-        .then(cclasses => this.cclasses = cclasses);
+      this.service.getCClasses().then(cclasses => this.cclasses = cclasses);
     });
 
     // search class with keyword
@@ -67,7 +65,6 @@ export class CClassListComponent implements OnInit {
     .debounceTime(300)
     .distinctUntilChanged()
     .switchMap(
-      // this.testSwitchMap
       term => term?this.cclassSearchService.search(term):Observable.of<KlassKeyword[]>([])
     )
     .catch(error => {
@@ -76,19 +73,41 @@ export class CClassListComponent implements OnInit {
       return Observable.of<KlassKeyword[]>([]);
     })
     ;
+  }
+
+  onChangedSelectile(selectiles:any[]) {
+
+    for (var i = 0; i < selectiles.length; ++i) {
+      let selectile = selectiles[i];
+      if(selectile instanceof KlassLevel) {
+
+        console.log("HERE! / onChangedSelectile / level / selectile ::: ",selectile);
+
+      } else if(selectile instanceof KlassStation) {
+
+        console.log("HERE! / onChangedSelectile / station / selectile ::: ",selectile);
+
+      } else if(selectile instanceof KlassDay) {
+
+        console.log("HERE! / onChangedSelectile / day / selectile ::: ",selectile);
+
+      } else if(selectile instanceof KlassTime) {
+
+        console.log("HERE! / onChangedSelectile / time / selectile ::: ",selectile);
+
+      }
+    }
 
   }
 
 
+  onSelectKlass(cclass: CClass) {
 
-  // Legacy
-  /*
-  onSelect(cclass: CClass) {
-    this.selectedId = cclass.id;
-
+    // 유저가 수업을 선택했습니다.
+    // 수업 상세 페이지로 이동해야 합니다.
+    console.log("TEST / onSelectKlass / cclass :: ",cclass);
     // Navigate with relative link
     // this.router.navigate([cclass.id], { relativeTo: this.route });
   }
-  */
 
 }

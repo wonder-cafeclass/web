@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="120"
+   height="120"
+   viewBox="0 0 120 120"
+   id="svg5586"
+   version="1.1">
+  <defs
+     id="defs5588" />
+  <metadata
+     id="metadata5591">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g4156">
+    <circle
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#e85c41;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="path4162-1-7-8-6-5-1-5-6-3-4"
+       cx="60.000031"
+       cy="60.000004"
+       r="50" />
+    <rect
+       ry="5.9030401e-05"
+       y="3.1347656e-06"
+       x="0"
+       height="120"
+       width="120"
+       id="rect9899-1-2-6-8-0-9-9-3-4"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#e85c41;fill-opacity:0;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <circle
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="path4162-1-7-8-6-5-1-9-4-0-7-5"
+       cx="60.000031"
+       cy="60.000004"
+       r="40" />
+    <g
+       style="font-style:normal;font-weight:normal;font-size:28.85059738px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#e85c41;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="text4462-4-0-7-3-2-5-4-9-4-2">
+      <path
+         d="m 54.117482,76.537483 -15.785,0 q -0.875,0 -1.4,-0.105 -0.525,-0.105 -0.84,-0.42 -0.28,-0.28 -0.385,-0.77 -0.105,-0.49 -0.105,-1.26 l 0,-7.315 q 0,-1.54 0.525,-2.065 0.525,-0.525 1.995,-0.525 l 15.82,0 q 0.875,0 1.4,0.14 0.56,0.105 0.84,0.42 0.315,0.28 0.42,0.805 0.105,0.49 0.105,1.26 l 0,7.315 q 0,0.77 -0.14,1.26 -0.105,0.49 -0.42,0.77 -0.28,0.28 -0.805,0.385 -0.49,0.105 -1.225,0.105 z m -21.945,-13.755 q -0.595,0.28 -0.84,0.175 -0.21,-0.105 -0.385,-0.42 l -1.33,-2.415 q -0.35,-0.63 0.455,-0.98 1.785,-0.84 3.395,-1.96 1.61,-1.155 2.905,-2.38 1.295,-1.225 2.24,-2.45 0.98,-1.26 1.505,-2.31 0.315,-0.595 0.245,-0.84 -0.035,-0.245 -0.595,-0.245 l -7.735,0 q -0.49,0 -0.595,-0.175 -0.07,-0.21 -0.07,-0.56 l 0,-2.555 q 0,-0.735 0.7,-0.735 l 11.55,0 q 2.1,0 2.555,1.015 0.455,1.015 -0.14,2.8 -0.945,2.59 -2.87,5.285 1.365,1.365 3.01,2.45 1.645,1.05 2.905,1.75 0.56,0.315 0.245,0.84 l -1.61,2.625 q -0.315,0.525 -0.945,0.21 -0.525,-0.28 -1.33,-0.77 -0.77,-0.49 -1.645,-1.085 -0.84,-0.63 -1.75,-1.365 -0.91,-0.735 -1.68,-1.47 -1.715,1.68 -3.78,3.115 -2.03,1.435 -4.41,2.45 z m 15.155,-7.91 q -0.7,0 -0.7,-0.7 l 0,-2.59 q 0,-0.49 0.175,-0.56 0.21,-0.105 0.525,-0.105 l 4.62,0 0,-6.755 q 0,-0.455 0.21,-0.56 0.21,-0.105 0.525,-0.105 l 3.465,0 q 0.455,0 0.525,0.21 0.105,0.175 0.105,0.455 l 0,17.36 q 0,0.665 -0.665,0.665 l -3.5,0 q -0.665,0 -0.665,-0.63 l 0,-6.685 -4.62,0 z m 4.515,13.58 q 0,-0.42 -0.42,-0.42 l -10.535,0 q -0.455,0 -0.455,0.455 l 0,3.675 q 0,0.42 0.455,0.42 l 10.5,0 q 0.28,0 0.35,-0.07 0.105,-0.035 0.105,-0.385 l 0,-3.675 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35px;font-family:NanumGothic;-inkscape-font-specification:'NanumGothic Bold';fill:#000000;fill-opacity:1"
+         id="path4152" />
+      <path
+         d="m 86.718341,76.537483 -15.435,0 q -0.875,0 -1.4,-0.105 -0.525,-0.105 -0.84,-0.42 -0.28,-0.28 -0.385,-0.77 -0.105,-0.49 -0.105,-1.26 l 0,-7.385 q 0,-1.54 0.525,-2.065 0.525,-0.525 1.995,-0.525 l 15.47,0 q 0.875,0 1.4,0.14 0.56,0.105 0.84,0.42 0.315,0.28 0.42,0.805 0.105,0.49 0.105,1.26 l 0,7.385 q 0,0.77 -0.14,1.26 -0.105,0.49 -0.42,0.77 -0.28,0.28 -0.805,0.385 -0.49,0.105 -1.225,0.105 z m -21.035,-14.245 q -0.665,0.385 -0.91,0.42 -0.21,0 -0.49,-0.385 l -1.75,-2.17 q -0.385,-0.49 -0.28,-0.7 0.105,-0.245 0.525,-0.56 3.78,-2.555 5.53,-6.16 1.75,-3.64 1.75,-7.805 0,-0.595 0.14,-0.7 0.175,-0.14 0.665,-0.105 l 3.325,0.14 q 0.385,0.035 0.525,0.175 0.14,0.105 0.14,0.49 0,2.73 -0.525,5.145 0.455,1.225 1.26,2.38 0.84,1.155 1.785,2.17 0.98,0.98 1.995,1.785 1.05,0.77 1.925,1.26 0.455,0.28 0.455,0.56 0,0.14 -0.14,0.35 -0.105,0.175 -0.175,0.315 l -1.365,2.205 q -0.28,0.42 -0.49,0.455 -0.21,0 -0.7,-0.245 -0.735,-0.35 -1.61,-0.945 -0.875,-0.63 -1.75,-1.4 -0.84,-0.805 -1.68,-1.75 -0.805,-0.945 -1.435,-1.96 -2.31,4.27 -6.72,7.035 z m 22.96,-0.175 -3.5,0 q -0.42,0 -0.56,-0.14 -0.105,-0.14 -0.105,-0.525 l 0,-17.29 q 0,-0.385 0.14,-0.525 0.14,-0.14 0.525,-0.14 l 3.5,0 q 0.385,0 0.525,0.14 0.14,0.14 0.14,0.525 l 0,17.325 q 0,0.385 -0.14,0.525 -0.14,0.105 -0.525,0.105 z m -4.2,6.265 q 0,-0.42 -0.42,-0.42 l -10.185,0 q -0.455,0 -0.455,0.455 l 0,3.745 q 0,0.42 0.455,0.42 l 10.15,0 q 0.28,0 0.35,-0.07 0.105,-0.035 0.105,-0.385 l 0,-3.745 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35px;font-family:NanumGothic;-inkscape-font-specification:'NanumGothic Bold';fill:#000000;fill-opacity:1"
+         id="path4154" />
+    </g>
+  </g>
+</svg>

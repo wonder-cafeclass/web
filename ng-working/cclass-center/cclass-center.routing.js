@@ -1,7 +1,7 @@
 "use strict";
 var router_1 = require('@angular/router');
 var cclass_center_home_component_1 = require('./cclass-center-home.component');
-var cclass_list_component_1 = require('./cclass-list.component');
+var klass_list_component_1 = require('./klass-list.component');
 var cclass_center_component_1 = require('./cclass-center.component');
 var cclass_detail_component_1 = require('./cclass-detail.component');
 var can_deactivate_guard_service_1 = require('../guard/can-deactivate-guard.service');
@@ -18,7 +18,7 @@ var cclassCenterRoutes = [
         children: [
             {
                 path: '',
-                component: cclass_list_component_1.CClassListComponent,
+                component: klass_list_component_1.KlassListComponent,
                 children: [
                     {
                         path: ':id',

@@ -14,6 +14,13 @@
 		"user_email":"valid_emails",
 		"user_password":"is_str|||exact_length[8]",
 
+		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
+		"klass_level":"is_str|||matches[class_level_list]|||exclude[class_level_list|0]",
+		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",
+		"klass_day":"is_str|||matches[class_days_list]|||exclude[class_days_list|0]",
+		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
+		"klass_time_range":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[24]",
+
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
@@ -30,49 +37,57 @@
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
 
-		"class_level_list":["B","E","P","I","U","A"],
-		"class_level_eng_list":["Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
-		"class_level_kor_list":["왕초급","초급","초중급","중급","중상급","상급"],
+		"class_level_list":["ALL","B","E","P","I","U","A"],
+		"class_level_eng_list":["All Levels","Beginner","Elementary","Pre-intermediate","Intermediate","Upper-intermediate","Advanced"],
+		"class_level_kor_list":["모든 레벨", "왕초급","초급","초중급","중급","중상급","상급"],
 		"class_level_img_url_list":[
-			"assets/images/level/class_levels_beginner.svg",
-			"assets/images/level/class_levels_elementary.svg",
-			"assets/images/level/class_levels_pre_intermediate.svg",
-			"assets/images/level/class_levels_intermediate.svg",
-			"assets/images/level/class_levels_upper_intermediate.svg",
-			"assets/images/level/class_levels_advanced.svg"
+			"assets/images/level/all.svg",
+			"assets/images/level/beginner.svg",
+			"assets/images/level/elementary.svg",
+			"assets/images/level/pre_intermediate.svg",
+			"assets/images/level/intermediate.svg",
+			"assets/images/level/upper_intermediate.svg",
+			"assets/images/level/advanced.svg"
 		],
 
 		"class_status_list":["N","O","S","C"],
 		"class_status_eng_list":["New","Open","Suspended","Closed"],
 		"class_status_kor_list":["신규","개강","중단","종료"],
 
-		"class_time_list":["오전","점심","오후","저녁"],
-		"class_time_img_url_list":[
-			"assets/images/time/cafeclass_time_mn.png",
-			"assets/images/time/cafeclass_time_mn.png",
-			"assets/images/time/cafeclass_time_af.png",
-			"assets/images/time/cafeclass_time_ev.png"
+		"class_times_list":["always","morning","noon","afternoon","evening"],
+		"class_times_range_list":[0,7,12,14,19],
+		"class_times_eng_list":["Always","Morning","Noon","Afternoon","Evening"],
+		"class_times_kor_list":["모든 시간","오전","점심","오후","저녁"],
+		"class_times_img_url_list":[
+			"assets/images/time/always.svg",
+			"assets/images/time/morning.svg",
+			"assets/images/time/noon.svg",
+			"assets/images/time/afternoon.svg",
+			"assets/images/time/evening.svg"
 		],
 
 		"class_days_list":[
+			"all",
 			"mon",
-			"wed",
 			"tue",
+			"wed",
 			"thu",
 			"fri",
 			"sat",
 			"sun"
 		],
 		"class_days_eng_list":[
+			"All Days",
 			"Monday",
-			"Wednesday",
 			"Tuesday",
+			"Wednesday",
 			"Thursday",
 			"Friday",
 			"Saturday",
 			"Sunday"
 		],
 		"class_days_kor_list":[
+			"모든 요일",
 			"월",
 			"화",
 			"수",
@@ -82,16 +97,45 @@
 			"일"
 		],
 		"class_days_img_url_list":[
-			"assets/images/day/cafeclass_week_mon.png",
-			"assets/images/day/cafeclass_week_wed.png",
-			"assets/images/day/cafeclass_week_tue.png",
-			"assets/images/day/cafeclass_week_thu.png",
-			"assets/images/day/cafeclass_week_fri.png",
-			"assets/images/day/cafeclass_week_sat.png",
-			"assets/images/day/cafeclass_week_sun.png"
+			"assets/images/day/all.svg",
+			"assets/images/day/mon.svg",
+			"assets/images/day/tue.svg",
+			"assets/images/day/wed.svg",
+			"assets/images/day/thu.svg",
+			"assets/images/day/fri.svg",
+			"assets/images/day/sat.svg",
+			"assets/images/day/sun.svg"
 		],
 
+
 		"class_venue_subway_station_list":[
+			"everywhere",
+			"jamsil",
+			"sincheon",
+			"seolleung",
+			"samseong",
+			"seongsu",
+			"bangi",
+			"gaerong",
+			"ogeum",
+			"seokchon",
+			"songpa"
+		],
+		"class_venue_subway_station_eng_list":[
+			"Everywhere",
+			"Jamsil",
+			"Sincheon",
+			"Seolleung",
+			"Samseong",
+			"Seongsu",
+			"Bangi",
+			"Gaerong",
+			"Ogeum",
+			"Seokchon",
+			"Songpa"
+		],
+		"class_venue_subway_station_kor_list":[
+			"모든 장소",
 			"잠실역",
 			"신천역",
 			"선릉역",
@@ -104,17 +148,19 @@
 			"송파역"
 		],
 		"class_venue_subway_station_img_url_list":[
-			"assets/images/subway/cafeclass_station_2nd_js.png",
-			"assets/images/subway/cafeclass_station_2nd_sc.png",
-			"assets/images/subway/cafeclass_station_2nd_sr.png",
-			"assets/images/subway/cafeclass_station_2nd_ss.png",
-			"assets/images/subway/cafeclass_station_2nd_ssu.png",
-			"assets/images/subway/cafeclass_station_5th_bi.png",
-			"assets/images/subway/cafeclass_station_5th_gr.png",
-			"assets/images/subway/cafeclass_station_5th_og.png",
-			"assets/images/subway/cafeclass_station_8th_sc.png",
-			"assets/images/subway/cafeclass_station_8th_sp.png"
+			"assets/images/subway/everywhere.svg",
+			"assets/images/subway/line_2_jamsil.svg",
+			"assets/images/subway/line_2_sincheon.svg",
+			"assets/images/subway/line_2_seolleung.svg",
+			"assets/images/subway/line_2_samseong.svg",
+			"assets/images/subway/line_2_seongsu.svg",
+			"assets/images/subway/line_5_bangi.svg",
+			"assets/images/subway/line_5_gaerong.svg",
+			"assets/images/subway/line_5_ogeum.svg",
+			"assets/images/subway/line_8_seokchon.svg",
+			"assets/images/subway/line_8_songpa.svg"
 		],
+		
 
 		"class_venue_cafe_list":[
 			"할리스",
@@ -140,6 +186,27 @@
 		],
 
 		"class_venue_img_url_list":[],
+
+		"klass_selectile_list":[
+			"knob"
+			, "center"
+			, "top_right"
+			, "top_left"
+			, "bottom_left"
+			, "bottom_right"
+			, "right_single"
+			, "empty"
+		],
+		"klass_selectile_img_list":[
+			"assets/images/selectile/knob.svg"
+			, "assets/images/selectile/center.svg"
+			, "assets/images/selectile/top_right.svg"
+			, "assets/images/selectile/top_left.svg"
+			, "assets/images/selectile/bottom_left.svg"
+			, "assets/images/selectile/bottom_right.svg"
+			, "assets/images/selectile/right_single.svg"
+			, "assets/images/selectile/empty.svg"
+		],
 
 		"EOL":""
 	}

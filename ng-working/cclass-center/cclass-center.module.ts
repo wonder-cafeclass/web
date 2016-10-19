@@ -4,14 +4,16 @@ import { NgModule }       from '@angular/core';
 import { FormsModule }    from '@angular/forms';
 import { CommonModule }   from '@angular/common';
 
-import { CClassService }              from './cclass.service';
+import { KlassService }              from './klass.service';
 import { CClassSearchService }        from './cclass-search.service';
 import { CClassDetailResolve }        from './cclass-detail-resolve.service';
 
 import { CClassCenterComponent }     from './cclass-center.component';
-import { CClassListComponent }       from './cclass-list.component';
+import { KlassListComponent }       from './klass-list.component';
 import { CClassCenterHomeComponent } from './cclass-center-home.component';
 import { CClassDetailComponent }     from './cclass-detail.component';
+
+import { KlassFilterTileComponent }     from './klass-filter-tile.component';
 
 import { cclassCenterRouting } from './cclass-center.routing';
 
@@ -23,13 +25,13 @@ import { cclassCenterRouting } from './cclass-center.routing';
   ],
   declarations: [
     CClassCenterComponent,
-    CClassListComponent,
+    KlassListComponent,
     CClassCenterHomeComponent,
-    CClassDetailComponent
+    CClassDetailComponent,
+    KlassFilterTileComponent
   ],
-
   providers: [
-    CClassService,
+    KlassService,
     CClassSearchService,
     CClassDetailResolve
   ]

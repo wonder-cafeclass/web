@@ -1,0 +1,64 @@
+<div>
+	<!-- Select Tile -->
+	<div class="selectile-container">
+
+		<table *ngIf="selectileTable" (mouseleave)="leaveTable()" class="table selectile-table" style="z-index:100;">
+			<tbody> 
+				<tr *ngFor="let row of selectileTable"> 
+					<td 	*ngFor="let selectile of row" 
+							(mouseenter)="enterSelectile(selectile)"
+							(mouseleave)="leaveSelectile(selectile)"
+							class="selectile-td">
+						<div *ngIf=(selectile.img_url) (click)="clickSelectile(selectile)" style="float:left;">
+							<img src={{selectile.img_url}} class="selectile-img">
+						</div>
+						<div 	*ngIf=(selectile)
+								[class.st_knob]="selectile.class_name === 'knob'"
+
+								[class.st_center]="selectile.class_name === 'center'"
+								[class.st_center_round]="selectile.class_name === 'center-round'"
+
+								[class.st_top]="selectile.class_name === 'top'"
+								[class.st_top_knob]="selectile.class_name === 'top-knob'"
+								[class.st_top_right]="selectile.class_name === 'top-right'"
+								[class.st_top_left]="selectile.class_name === 'top-left'"
+
+								[class.st_bottom]="selectile.class_name === 'bottom'"
+								[class.st_bottom_right]="selectile.class_name === 'bottom-right'"
+								[class.st_bottom_left]="selectile.class_name === 'bottom-left'"
+
+								[class.st_left_single]="selectile.class_name === 'left-single'" 
+								[class.st_left_round]="selectile.class_name === 'left-round'" 
+								[class.st_left_round_knob]="selectile.class_name === 'left-round-knob'" 
+
+								[class.st_right_single]="selectile.class_name === 'right-single'"
+								[class.st_right_round]="selectile.class_name === 'right-round'" 
+								[class.st_right_round_knob]="selectile.class_name === 'right-round-knob'"
+
+						>
+							<div style="position: absolute;">
+								<div 	id="shim_left" 
+										[class.st_shim_left]="selectile.class_name === 'knob'"
+										[class.st_shim_hide]="selectile.class_name !== 'knob'"
+								>
+								</div>
+								<div 	id="shim_right"
+										[class.st_shim_right]="selectile.class_name === 'knob'"
+										[class.st_shim_hide]="selectile.class_name !== 'knob'"
+								>	
+								</div>
+							</div>
+
+						</div>
+					</td> 
+				</tr> 
+			</tbody> 
+		</table>
+
+		<!-- Shadow Panel INIT -->
+		<ul class="list-group st_shadow_ul">
+			<li *ngFor="let row of selectileShadowRows" class="list-group-item st_shadow_li"></li>
+		</ul>
+	</div>
+
+</div>
