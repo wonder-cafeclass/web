@@ -38,7 +38,10 @@ class Klass extends REST_Controller {
         $this->load->database();
 
         // init param checker
-        $this->load->library('paramChecker');
+        $this->load->library('MY_ParamChecker');
+
+        // init MyReponse
+        $this->load->library('MY_Response');
             
         // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
@@ -47,7 +50,7 @@ class Klass extends REST_Controller {
     public function list_get()
     {
         // TEST - PHPUnit test로 검증해야 함! wonder.jung
-        // $check_result = $this->paramchecker->is_ok("user_id", 0);
+        // $check_result = $this->my_paramchecker->is_ok("user_id", 0);
 
         // var req_url = `level=${klassLevel}&station=${subwayStation}&day=${klassDay}&time=${klassTime}`;
 
@@ -102,11 +105,11 @@ class Klass extends REST_Controller {
         foreach ($rows as $row)
         {
             // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($this->paramchecker->get_const_map());
-            $row->level_img_url($this->paramchecker->get_const_map());
-            $row->days_img_url($this->paramchecker->get_const_map());
-            $row->venue_subway_station_img_url($this->paramchecker->get_const_map());
-            $row->venue_cafe_logo_img_url($this->paramchecker->get_const_map());
+            $row->time_begin_img_url($this->my_paramchecker->get_const_map());
+            $row->level_img_url($this->my_paramchecker->get_const_map());
+            $row->days_img_url($this->my_paramchecker->get_const_map());
+            $row->venue_subway_station_img_url($this->my_paramchecker->get_const_map());
+            $row->venue_cafe_logo_img_url($this->my_paramchecker->get_const_map());
             $row->price_with_format();
             $row->weeks_to_months();
             
@@ -116,12 +119,7 @@ class Klass extends REST_Controller {
         if (!empty($classes))
         {
             // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'query' => $query,
-                'data' => $output
-            ];
+            $response_body = $this->my_response->getResBodySuccess($query, $output);
 
             // OK (200) being the HTTP response code
             $this->set_response($response_body, REST_Controller::HTTP_OK); 
@@ -129,12 +127,7 @@ class Klass extends REST_Controller {
         else
         {
             // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'Class could not be found',
-                'query' => $query,
-                'data' => $classes
-            ];
+            $response_body = $this->my_response->getResBodyFail('Klass could not be found', $query, $output);
 
             // NOT_FOUND (404) being the HTTP response code
             $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
@@ -142,16 +135,27 @@ class Klass extends REST_Controller {
     }
 
     public function search_get() {
-        
-        $q = $this->get('q');
 
-        $keyword_obj = new KlassKeyword(1, $q, $q);
+        $q = $this->my_paramchecker->get('q','klass_query');
+        $level = $this->my_paramchecker->get('level','klass_level');
+        $station = $this->my_paramchecker->get('level','klass_station');
+        $day = $this->my_paramchecker->get('day','klass_day');
+        $time = $this->my_paramchecker->get('time','klass_time');
+        $check_list = $this->my_paramchecker->get_check_list();
+        $query="";
 
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => array($keyword_obj,$keyword_obj)
-        ];
+        // TEST
+        $response_body = 
+        $this->my_response->getResBodySuccess(
+            // $query="", 
+            $query, 
+            // $data=null, 
+            null,
+            // $check_list=null, 
+            $check_list,
+            // $extra=null
+            null
+        );
 
         // OK (200) being the HTTP response code
         $this->set_response($response_body, REST_Controller::HTTP_OK);
@@ -179,7 +183,7 @@ class Klass extends REST_Controller {
 
     private function get_levels() {
 
-        $const_map = $this->paramchecker->get_const_map();
+        $const_map = $this->my_paramchecker->get_const_map();
 
         $class_level_list = $const_map->class_level_list;
         $class_level_eng_list = $const_map->class_level_eng_list;
@@ -229,7 +233,7 @@ class Klass extends REST_Controller {
     }
 
     private function get_stations() {
-        $const_map = $this->paramchecker->get_const_map();
+        $const_map = $this->my_paramchecker->get_const_map();
 
         $subway_station_list = 
         $const_map->class_venue_subway_station_list;
@@ -292,7 +296,7 @@ class Klass extends REST_Controller {
     }  
 
     private function get_days() {
-        $const_map = $this->paramchecker->get_const_map();
+        $const_map = $this->my_paramchecker->get_const_map();
 
         $class_days_list = $const_map->class_days_list;
         $class_days_eng_list = $const_map->class_days_eng_list;
@@ -348,7 +352,7 @@ class Klass extends REST_Controller {
     } 
 
     private function get_times() {
-        $const_map = $this->paramchecker->get_const_map();
+        $const_map = $this->my_paramchecker->get_const_map();
 
         $klass_times_list = $const_map->class_times_list;
         $klass_times_eng_list = $const_map->class_times_eng_list;

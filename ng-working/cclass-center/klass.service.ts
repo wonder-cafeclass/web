@@ -14,6 +14,7 @@ export class KlassService {
 
     private classesUrl = '/CI/index.php/api/klass/list';
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
+    private klassSearchUrl = '/CI/index.php/api/klass/search';
     private baseHref = "";
 
     // REMOVE ME
@@ -26,11 +27,13 @@ export class KlassService {
         this.baseHref = this.location._baseHref;
     }
 
-    getKlassList (klassLevel:string, subwayStation:string, klassDay:string, klassTime:string): Promise<CClass[]> {
+    searchKlassList (level:string, station:string, day:string, time:string, q:string): Promise<CClass[]> {
 
-        var req_url = `${this.baseHref}${this.classesUrl}?level=${klassLevel}&station=${subwayStation}&day=${klassDay}&time=${klassTime}`;
+        // 쿼리의 공백 단위 분리
+        // 구분자추가 
+        // 검색 단어는 10글자가 넘을 수 없음.
 
-        console.log("TEST / req_url ::: ", req_url);
+        let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ q }`;
 
         return this.http.get(req_url)
                       .toPromise()
@@ -45,7 +48,6 @@ export class KlassService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-
     getKlassSelectile(): Promise<KlassSelectile[]> {
         return this.http.get(this.baseHref + this.klassSelectileUrl)
                       .toPromise()
@@ -76,6 +78,8 @@ export class KlassService {
         return Promise.reject(errMsg);
     }
     
+
+    /*
     getCClass(id: number | string) {
         return this.getCClasses().then(cclasses => cclasses.find(cclass => cclass.id === +id));
     }
@@ -91,6 +95,6 @@ export class KlassService {
             // cclassesPromise.then(cclasses => cclasses.push(cclass));
         }
     }
-
+    */
 
 }

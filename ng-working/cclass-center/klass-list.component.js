@@ -14,6 +14,10 @@ var Observable_1 = require('rxjs/Observable');
 var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./klass.service');
 var cclass_search_service_1 = require('./cclass-search.service');
+var klass_level_1 = require('./klass-level');
+var klass_station_1 = require('./klass-station');
+var klass_day_1 = require('./klass-day');
+var klass_time_1 = require('./klass-time');
 var KlassListComponent = (function () {
     function KlassListComponent(cclassSearchService, service, route, router) {
         this.cclassSearchService = cclassSearchService;
@@ -47,7 +51,7 @@ var KlassListComponent = (function () {
                 return Observable_1.Observable.of([]);
             });
     };
-    KlassListComponent.prototype.search = function (selectile, searchKeyword) {
+    KlassListComponent.prototype.search = function (selectileList, searchKeyword) {
         if (!this.isSearchEnabled) {
             return;
         }
@@ -55,6 +59,43 @@ var KlassListComponent = (function () {
         console.log("search / selectile :: ", selectile);
         console.log("search / searchKeyword :: ", searchKeyword);
         // this.searchTerms.next(term);
+        // 항목별 filter 만들기
+        var level = "";
+        var station = "";
+        var day = "";
+        var time = "";
+        for (var i = 0; i < selectileList.length; ++i) {
+            var selectile = selectileList[i];
+            if (selectile instanceof klass_level_1.KlassLevel) {
+                level = selectile.key;
+            }
+            else if (selectile instanceof klass_station_1.KlassStation) {
+                station = selectile.key;
+            }
+            else if (selectile instanceof klass_day_1.KlassDay) {
+                day = selectile.key;
+            }
+            else if (selectile instanceof klass_time_1.KlassTime) {
+                time = selectile.key;
+            }
+        }
+        console.log("TEST / level :: ", level);
+        // keyword 안전성 검사 및 param 만들기(구분자추가)
+        var q = "";
+        this.service.searchKlassList(
+        // level:string, 
+        level, 
+        // station:string, 
+        station, 
+        // day:string, 
+        day, 
+        // time:string,
+        time, 
+        // q:string
+        q).then(function (cclasses) {
+            console.log("cclasses ::: ", cclasses);
+            // this.cclasses = cclasses 
+        });
     };
     KlassListComponent.prototype.onChangedSelectile = function (selectiles) {
         // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.

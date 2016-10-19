@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 
 
-class ParamChecker {
+class MY_ParamChecker {
 
 	private $json_obj;
 	private $json_path="/static/param.json";
@@ -52,6 +52,102 @@ class ParamChecker {
         // init database
         $this->CI->load->database();
 
+    }
+
+    private $check_list;
+    private $check_list_prop_success="succss";
+    private $check_list_prop_fail="fail";
+    private $check_list_prop_all="all";
+    public function get_check_list() 
+    {
+        if(is_null($this->check_list)) {
+            $this->check_list = 
+            [
+                $this->check_list_prop_success => array()
+                , $this->check_list_prop_fail => array()
+                , $this->check_list_prop_all => array()
+            ];
+        }
+
+        return $this->check_list;
+    }
+    private function set_check_list($check_list=null) {
+        $this->check_list = $check_list;
+    }
+    private function add_check_success($check_result) {
+
+        if(is_null($check_result)) {
+            return;
+        }
+
+        $check_list = $this->get_check_list();
+
+        array_push($check_list[$this->check_list_prop_success], $check_result);
+        array_push($check_list[$this->check_list_prop_all], $check_result);
+
+        $this->set_check_list($check_list);
+    }
+    private function add_check_fail($check_result) {
+
+        if(is_null($check_result)) {
+            return;
+        }
+
+        $check_list = $this->get_check_list();
+
+        array_push($check_list[$this->check_list_prop_fail], $check_result);
+        array_push($check_list[$this->check_list_prop_all], $check_result);
+
+        $this->set_check_list($check_list);
+    }
+
+    public function get($key="", $key_filter="")
+    {
+        if(empty($key)) {
+            return null;
+        }
+        if(empty($key_filter)) {
+            return null;
+        }
+
+        $value = $this->CI->get($key);
+        return $this->check($key_filter, $value);
+    }
+    public function post($key="", $key_filter="")
+    {
+        if(empty($key)) {
+            return null;
+        }
+        if(empty($key_filter)) {
+            return null;
+        }
+
+        $value = $this->CI->post($key);
+        return $this->check($key_filter, $value);
+    }
+    private function check($key="", $value="") {
+
+        if(empty($key)) {
+            return null;
+        }
+
+        $check_result = $this->is_ok($key, $value);
+
+        if(isset($check_result["success"])) 
+        {
+            if($check_result["success"] === true) 
+            {
+                $this->add_check_success($check_result);
+                return $value;
+            } 
+            else 
+            {
+                $this->add_check_fail($check_result);
+                return null;
+            }
+        }
+
+        return null;
     }
 
     // REMOVE ME

@@ -70,7 +70,7 @@ export class KlassListComponent implements OnInit {
     ;
   }
 
-  search(selectile, searchKeyword:string): void {
+  search(selectileList, searchKeyword:string): void {
 
     if(!this.isSearchEnabled) {
       return;
@@ -81,6 +81,48 @@ export class KlassListComponent implements OnInit {
     console.log("search / searchKeyword :: ",searchKeyword);
 
     // this.searchTerms.next(term);
+
+    // 항목별 filter 만들기
+    var level = "";
+    var station = "";
+    var day = "";
+    var time = "";
+
+    for (var i = 0; i < selectileList.length; ++i) {
+      let selectile = selectileList[i];
+      if(selectile instanceof KlassLevel) {
+        level = selectile.key;
+      } else if(selectile instanceof KlassStation) {
+        station = selectile.key;
+      } else if(selectile instanceof KlassDay) {
+        day = selectile.key;
+      } else if(selectile instanceof KlassTime) {
+        time = selectile.key;
+      }
+    }
+
+    console.log("TEST / level :: ",level);
+
+    // keyword 안전성 검사 및 param 만들기(구분자추가)
+
+    var q = "";
+
+    this.service.searchKlassList(
+      // level:string, 
+      level,
+      // station:string, 
+      station,
+      // day:string, 
+      day,
+      // time:string,
+      time, 
+      // q:string
+      q
+    ).then(cclasses => {
+        console.log("cclasses ::: ",cclasses);
+       // this.cclasses = cclasses 
+    });
+
   }
   onChangedSelectile(selectiles:any[]) {
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.

@@ -21,12 +21,15 @@ var KlassService = (function () {
         this.http = http;
         this.classesUrl = '/CI/index.php/api/klass/list';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
+        this.klassSearchUrl = '/CI/index.php/api/klass/search';
         this.baseHref = "";
         this.baseHref = this.location._baseHref;
     }
-    KlassService.prototype.getKlassList = function (klassLevel, subwayStation, klassDay, klassTime) {
-        var req_url = "" + this.baseHref + this.classesUrl + "?level=" + klassLevel + "&station=" + subwayStation + "&day=" + klassDay + "&time=" + klassTime;
-        console.log("TEST / req_url ::: ", req_url);
+    KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
+        // 쿼리의 공백 단위 분리
+        // 구분자추가 
+        // 검색 단어는 10글자가 넘을 수 없음.
+        var req_url = "" + this.baseHref + this.klassSearchUrl + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + q;
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -60,14 +63,6 @@ var KlassService = (function () {
             error.status ? error.status + " - " + error.statusText : 'Server error';
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
-    };
-    KlassService.prototype.getCClass = function (id) {
-        return this.getCClasses().then(function (cclasses) { return cclasses.find(function (cclass) { return cclass.id === +id; }); });
-    };
-    KlassService.prototype.addCClass = function (title) {
-        title = title.trim();
-        if (title) {
-        }
     };
     KlassService = __decorate([
         core_1.Injectable(), 
