@@ -1,4 +1,4 @@
-INSERT INTO `cafeclass`.`cclass`
+INSERT INTO `cafeclass`.`klass`
 (
 	`title`
 	,`desc`
@@ -57,7 +57,7 @@ VALUES
 
 	,1
 	,"투썸플레이스 잠실역"
-	,"잠실역"
+	,"jamsil"
 	,"투썸플레이스"
 	,"http://map.naver.com/?pinId=35135795&pinType=site&dlevel=12&y=fdcd665902373b826efc0d6f5fe69206&x=500b0955451f6cc123cc867c010f2177&enc=b64"
 
@@ -104,7 +104,7 @@ VALUES
 
 	,1
 	,"종합운동장 신천역 세인트앤드류스"
-	,"신천역"
+	,"sincheon"
 	,"세인트앤드류스"
 	,"http://map.naver.com/?pinId=36432428&pinType=site&dlevel=12&y=bf1954ec3a182aea0826101150c84ceb&x=9f9fb57b478d2e6f7f8c19ccbfb5f6f4&enc=b64"
 
@@ -131,7 +131,7 @@ VALUES
 	,"tue"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -152,7 +152,7 @@ VALUES
 	,"wed"
 	,1
 	,"투썸플레이스 개롱역점"
-	,"개롱역"
+	,"gaerong"
 	,"투썸플레이스"
 	,"http://map.naver.com/?pinId=35678338&pinType=site&dlevel=12&y=5712a478e0ec7dcab2355ab29fc48d82&x=de6fd936364f215912f9e958915e209d&enc=b64"
 	,"N"
@@ -173,7 +173,7 @@ VALUES
 	,"thu"
 	,1
 	,"투썸플레이스 개롱역점"
-	,"개롱역"
+	,"gaerong"
 	,"투썸플레이스"
 	,"http://map.naver.com/?pinId=35678338&pinType=site&dlevel=12&y=5712a478e0ec7dcab2355ab29fc48d82&x=de6fd936364f215912f9e958915e209d&enc=b64"
 	,"N"
@@ -194,7 +194,7 @@ VALUES
 	,"wed"
 	,1
 	,"투썸플레이스 성수역점"
-	,"성수역"
+	,"seongsu"
 	,"투썸플레이스"
 	,"http://map.naver.com/?pinId=36948846&pinType=site&dlevel=10&y=28aede6731d5cab71a84c14a3df3e116&x=87612cece0c5ae4b7d0835848afa9dd5&enc=b64"
 	,"N"
@@ -215,7 +215,7 @@ VALUES
 	,"tue"
 	,1
 	,"투썸플레이스 성수역점"
-	,"성수역"
+	,"seongsu"
 	,"투썸플레이스"
 	,"http://map.naver.com/?pinId=36948846&dlevel=10&enc=b64&pinType=site&y=28aede6731d5cab71a84c14a3df3e116&x=87612cece0c5ae4b7d0835848afa9dd5"
 	,"N"
@@ -236,7 +236,7 @@ VALUES
 	,"thu"
 	,1
 	,"인근카페 삼성역"
-	,"삼성역"
+	,"samseong"
 	,"미정"
 	,""
 	,"N"
@@ -257,7 +257,7 @@ VALUES
 	,"mon"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -278,7 +278,7 @@ VALUES
 	,"wed"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -299,7 +299,7 @@ VALUES
 	,"tue"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -320,7 +320,7 @@ VALUES
 	,"thu"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -341,7 +341,7 @@ VALUES
 	,"fri"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -362,7 +362,7 @@ VALUES
 	,"sat"
 	,1
 	,"송파역-스타벅스 송파사거리점"
-	,"송파역"
+	,"songpa"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -383,7 +383,7 @@ VALUES
 	,"mon"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -404,7 +404,7 @@ VALUES
 	,"wed"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -425,7 +425,7 @@ VALUES
 	,"tue"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -446,7 +446,7 @@ VALUES
 	,"thu"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -467,7 +467,7 @@ VALUES
 	,"fri"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"
@@ -489,7 +489,7 @@ VALUES
 	,"sat"
 	,1
 	,"잠실역-스타벅스 송파사거리점"
-	,"잠실역"
+	,"jamsil"
 	,"스타벅스"
 	,"http://map.naver.com/?pinId=36943350&dlevel=12&enc=b64&pinType=site&y=6a69e37b74a53f2c982b3869d09ca21c&x=87b8ea35d59fda89a0b4678c18e89a6e"
 	,"N"

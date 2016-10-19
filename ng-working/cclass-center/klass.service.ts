@@ -35,6 +35,8 @@ export class KlassService {
 
         let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ q }`;
 
+        console.log("TEST / req_url ::: ",req_url);
+
         return this.http.get(req_url)
                       .toPromise()
                       .then(this.extractData)

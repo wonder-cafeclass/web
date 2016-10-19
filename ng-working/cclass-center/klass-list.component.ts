@@ -77,10 +77,8 @@ export class KlassListComponent implements OnInit {
     }
 
     // wonder.jung
-    console.log("search / selectile :: ",selectile);
+    console.log("search / selectileList :: ",selectileList);
     console.log("search / searchKeyword :: ",searchKeyword);
-
-    // this.searchTerms.next(term);
 
     // 항목별 filter 만들기
     var level = "";
@@ -101,8 +99,6 @@ export class KlassListComponent implements OnInit {
       }
     }
 
-    console.log("TEST / level :: ",level);
-
     // keyword 안전성 검사 및 param 만들기(구분자추가)
 
     var q = "";
@@ -120,7 +116,10 @@ export class KlassListComponent implements OnInit {
       q
     ).then(cclasses => {
         console.log("cclasses ::: ",cclasses);
-       // this.cclasses = cclasses 
+       this.cclasses = cclasses 
+
+       // 검색 결과가 돌아오면 검색 버튼이 비활성화.
+       // 유저는 자신이 선택한 필터가 유지되기를 원할까? --> 사용성 테스트
     });
 
   }

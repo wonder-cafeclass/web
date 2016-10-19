@@ -1,7 +1,6 @@
 <?php
-// @ Deprecated
-/*
-class CClass {
+
+class KlassCourse {
 
         public $id;
         // 수업이름
@@ -68,6 +67,43 @@ class CClass {
         public $class_status;
         // 이미지 링크    
         public $class_img_url;
+
+        /*
+        public function get_time_begin_name($const_map=null, $time_begin="")
+        {
+                if(!isset($const_map)) 
+                {
+                        return;
+                }
+                if(!isset($this->time_begin)) 
+                {
+                        return;
+                }
+
+                $military_hours = date("H", strtotime($time_begin));
+                $time_begin_name = "";
+                if(6 <= $military_hours && $military_hours < 12) 
+                {
+                        // 오전
+                        $this->time_begin_name = $class_time_list[0];
+                } 
+                else if(12 <= $military_hours && $military_hours < 14) 
+                {
+                        // 점심
+                        $this->time_begin_name = $class_time_list[1];
+                }
+                else if(14 <= $military_hours && $military_hours < 18) 
+                {
+                        // 오후
+                        $this->time_begin_name = $class_time_list[2];
+                }
+                else if(18 <= $military_hours && $military_hours < 20) 
+                {
+                        // 저녁
+                        $this->time_begin_name = $class_time_list[3];
+                }
+        }
+        */
 
         public function time_begin_img_url($const_map=null)
         {
@@ -381,4 +417,3 @@ class CClass {
                 }
         }
 }
-*/

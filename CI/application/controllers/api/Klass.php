@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH . '/libraries/REST_Controller.php';
-require APPPATH . '/models/CClass.php';
+require APPPATH . '/models/KlassCourse.php';
 require APPPATH . '/models/KlassKeyword.php';
 require APPPATH . '/models/KlassLevel.php';
 require APPPATH . '/models/KlassStation.php';
@@ -89,18 +89,16 @@ class Klass extends REST_Controller {
         if(!empty($where_conditions)) {
             $limit = 500;
             $offset = 0;
-            $query = $this->db->get_where('cclass', $where_conditions, $limit, $offset);
+            $query = $this->db->get_where('klass', $where_conditions, $limit, $offset);
             $query = $this->db->query($query);
         } else {
-            $query = $this->db->query('SELECT * FROM cclass');            
+            $query = $this->db->query('SELECT * FROM klass');            
         }
 
-        // TODO - param 유효성 검사를 진행합니다.
 
-        $classes = $query->result();
-
-        $rows = $query->custom_result_object('CClass');
-
+        
+        /*        
+        $rows = $query->custom_result_object('KlassCourse');
         $output = array();
         foreach ($rows as $row)
         {
@@ -114,51 +112,109 @@ class Klass extends REST_Controller {
             $row->weeks_to_months();
             
             array_push($output, $row);
-        }        
+        }
+        */
 
+        $classes = $query->result();
+        $output = $this->addKlassExtraInfo($query);
         if (!empty($classes))
         {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
             $response_body = $this->my_response->getResBodySuccess($query, $output);
-
-            // OK (200) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
         }
         else
         {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
             $response_body = $this->my_response->getResBodyFail('Klass could not be found', $query, $output);
-
-            // NOT_FOUND (404) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
         }
+        $this->set_response($response_body, REST_Controller::HTTP_OK); 
     }
 
-    public function search_get() {
+    private function addKlassExtraInfo($query=null) {
 
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassCourse');
+        $output = array();
+        foreach ($rows as $row)
+        {
+            // 추가할 정보들을 넣는다.
+            $row->time_begin_img_url($this->my_paramchecker->get_const_map());
+            $row->level_img_url($this->my_paramchecker->get_const_map());
+            $row->days_img_url($this->my_paramchecker->get_const_map());
+            $row->venue_subway_station_img_url($this->my_paramchecker->get_const_map());
+            $row->venue_cafe_logo_img_url($this->my_paramchecker->get_const_map());
+            $row->price_with_format();
+            $row->weeks_to_months();
+            
+            array_push($output, $row);
+        }
+
+        return $output;
+    }
+
+    public function search_get() 
+    {
+        // CHECKS PARAMS
         $q = $this->my_paramchecker->get('q','klass_query');
         $level = $this->my_paramchecker->get('level','klass_level');
-        $station = $this->my_paramchecker->get('level','klass_station');
+        $station = $this->my_paramchecker->get('station','klass_station');
         $day = $this->my_paramchecker->get('day','klass_day');
         $time = $this->my_paramchecker->get('time','klass_time');
         $check_list = $this->my_paramchecker->get_check_list();
-        $query="";
+
+        // DB QUERY
+        // 유효한 파라미터들만 검색에 사용한다.
+        $where_conditions = array();
+        if(isset($level))
+        {
+            // $where_conditions['level'] = $level;
+            $this->db->where('level', $level);
+        }
+        if(isset($station))
+        {
+            // $where_conditions['station'] = $station;
+            $this->db->where('venue_subway_station', $station);
+        }
+        if(isset($day))
+        {
+            // $where_conditions['days'] = $day;
+            $this->db->where('days', $day);
+        }
+        // 시간 관련 검색은 범위를 가져와야 한다.
+        /*
+        if(isset($time))
+        {
+            $where_conditions['time'] = $time;
+        }
+        */
+        // q LIKE
+
+        // DB WORKS
+        $limit = 30;
+        $offset = 0;
+        $query = $this->db->get('klass', $limit, $offset);
+
 
         // TEST
-        $response_body = 
-        $this->my_response->getResBodySuccess(
-            // $query="", 
-            $query, 
-            // $data=null, 
-            null,
-            // $check_list=null, 
-            $check_list,
-            // $extra=null
-            null
-        );
+        // $response_body = $this->my_response->getResBodySuccess($query, "", $check_list, $where_conditions);
+        // $response_body = $this->my_response->getResBodySuccess("", "", $check_list, $where_conditions);
+        // $this->set_response($response_body, REST_Controller::HTTP_OK); 
 
-        // OK (200) being the HTTP response code
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
+        // RESULT
+        $classes = $query->result();
+        $last_query = $this->db->last_query();
+        $output = $this->addKlassExtraInfo($query);
+        if (!empty($classes))
+        {
+            $response_body = $this->my_response->getResBodySuccess($last_query, $output, $check_list);
+        }
+        else
+        {
+            $response_body = $this->my_response->getResBodyFail('Klass could not be found', $last_query, $output, $check_list);
+        }
+        $this->set_response($response_body, REST_Controller::HTTP_OK); 
         
     }
 

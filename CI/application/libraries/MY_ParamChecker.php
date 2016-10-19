@@ -130,6 +130,10 @@ class MY_ParamChecker {
         if(empty($key)) {
             return null;
         }
+        if($value === "NULL") {
+            // CI에서 null에 대해 문자열을 대신 넣음. 이를 방지.
+            $value = null;
+        }
 
         $check_result = $this->is_ok($key, $value);
 
@@ -577,6 +581,130 @@ class MY_ParamChecker {
 		    		return $result;
     			}
 			}
+            else if(strpos($filter, 'exclude') !== false) 
+            {
+                // wonder.jung
+ 
+                $output = 
+                $this->extract_value_in_brackets(
+                    // $target_filter=""
+                    $filter
+                    // $result=null
+                    , $result
+                );
+                $result = $output["result"];
+                $extracted_value = $output["extracted_value"];
+                if(empty($extracted_value)) 
+                {
+                    return $result;
+                }
+
+                // ex) exclude[class_venue_subway_station_list|0]
+                // ex) exclude[class_venue_subway_station_list|0,1,2]
+
+                $exploded_elements = explode("|",$extracted_value);
+                $cnt_exploded = count($exploded_elements);
+                if(empty($exploded_elements)) 
+                {
+                    $result["message"]="empty(\$exploded_elements)";
+                    return $result;
+                }
+                else if(!(1 < $cnt_exploded)) 
+                {
+                    $result["message"]="!(1 < count(\$cnt_exploded))|\$cnt_exploded:$cnt_exploded|\$extracted_value:$extracted_value";
+                    return $result;
+                }
+
+
+
+                // 검사할 리스트를 가져옵니다.
+                $key_const = $exploded_elements[0];
+                if(empty($key_const)) 
+                {
+                    $result["message"]="empty(\$key_const)";
+                    return $result;
+                }
+                $const_list = $const_map->{$key_const};
+                if(empty($const_list)) 
+                {
+                    $result["message"]="empty(\$const_list)";
+                    return $result;
+                }
+                else if(is_null($const_list)) 
+                {
+                    $result["message"]="is_null(\$const_list)";
+                    return $result;
+                }
+
+                $idx_excluded_dump = $exploded_elements[1];
+                $idx_excluded_list = array();
+
+                if(strcmp($idx_excluded_dump,"0") !== false)
+                {
+                    // 0일 가능성을 먼저 검사.
+                    $idx_excluded_list = array(0);
+                } 
+                else 
+                {
+                    if(empty($idx_excluded_dump)) 
+                    {
+                        $result["message"]="empty(\$idx_excluded_dump)";
+                        return $result;
+                    }
+                    $idx_excluded_str_list = explode(",",$idx_excluded_dump);
+                    if(empty($idx_excluded_str_list)) 
+                    {
+                        $result["message"]="empty(\$idx_excluded_str_list)";
+                        return $result;
+                    }
+
+                    // 리스트안의 허용하지 않는 인덱스들을 가져옵니다.
+                    $idx_excluded_list = array();
+                    for ($i=1; $i < count($idx_excluded_str_list); $i++) 
+                    { 
+                        $idx_excluded = intval($idx_excluded_str_list[$i]);
+
+                        // 해당 리스트에 없는 인덱스인지 검사.
+                        $last_idx = (count($const_list) - 1);
+                        if(!(-1 < $idx_excluded)) 
+                        {
+                            $result["message"]="!(-1 < \$idx_excluded)|\$idx_excluded:$idx_excluded";
+                            return $result;
+                        } 
+                        else if($last_idx < $idx_excluded) 
+                        {
+                            $result["message"]="\$last_idx < \$idx_excluded|\$last_idx:$last_idx|\$idx_excluded:$idx_excluded";
+                            return $result;
+                        }
+
+                        array_push($idx_excluded_list, $idx_excluded);
+                    }
+                }
+
+                if(empty($idx_excluded_list)) 
+                {
+                    $result["message"]="empty(\$idx_excluded_list)";
+                    return $result;
+                }
+
+                $has_excluded = false;
+                for ($j=0; $j < count($idx_excluded_list); $j++) 
+                { 
+                    $idx_excluded = $idx_excluded_list[$j];
+                    $const_excluded = $const_list[$idx_excluded];
+                    if($const_excluded === $value) 
+                    {
+                        $has_excluded = true;
+                        break;
+                    }
+                }
+
+                if($has_excluded) 
+                {
+                    $result["message"]="\$has_excluded";
+                    return $result;
+                }
+            }            
     		else if(strpos($filter, 'is_unique') !== false) 
     		{
                 $output = 

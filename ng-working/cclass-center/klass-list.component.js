@@ -52,13 +52,13 @@ var KlassListComponent = (function () {
             });
     };
     KlassListComponent.prototype.search = function (selectileList, searchKeyword) {
+        var _this = this;
         if (!this.isSearchEnabled) {
             return;
         }
         // wonder.jung
-        console.log("search / selectile :: ", selectile);
+        console.log("search / selectileList :: ", selectileList);
         console.log("search / searchKeyword :: ", searchKeyword);
-        // this.searchTerms.next(term);
         // 항목별 filter 만들기
         var level = "";
         var station = "";
@@ -79,7 +79,6 @@ var KlassListComponent = (function () {
                 time = selectile.key;
             }
         }
-        console.log("TEST / level :: ", level);
         // keyword 안전성 검사 및 param 만들기(구분자추가)
         var q = "";
         this.service.searchKlassList(
@@ -94,7 +93,9 @@ var KlassListComponent = (function () {
         // q:string
         q).then(function (cclasses) {
             console.log("cclasses ::: ", cclasses);
-            // this.cclasses = cclasses 
+            _this.cclasses = cclasses;
+            // 검색 결과가 돌아오면 검색 버튼이 비활성화.
+            // 유저는 자신이 선택한 필터가 유지되기를 원할까? --> 사용성 테스트
         });
     };
     KlassListComponent.prototype.onChangedSelectile = function (selectiles) {

@@ -15,10 +15,10 @@
 		"user_password":"is_str|||exact_length[8]",
 
 		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
-		"klass_level":"is_str|||matches[class_level_list]",
-		"klass_station":"is_str|||matches[class_venue_subway_station_list]",
-		"klass_day":"is_str|||matches[class_days_list]",
-		"klass_time":"is_str|||matches[class_times_list]",
+		"klass_level":"is_str|||matches[class_level_list]|||exclude[class_level_list|0]",
+		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",
+		"klass_day":"is_str|||matches[class_days_list]|||exclude[class_days_list|0]",
+		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
 
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
@@ -105,6 +105,7 @@
 			"assets/images/day/sun.svg"
 		],
 
+
 		"class_venue_subway_station_list":[
 			"everywhere",
 			"jamsil",
@@ -157,6 +158,7 @@
 			"assets/images/subway/line_8_seokchon.svg",
 			"assets/images/subway/line_8_songpa.svg"
 		],
+		
 
 		"class_venue_cafe_list":[
 			"할리스",

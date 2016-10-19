@@ -30,6 +30,7 @@ var KlassService = (function () {
         // 구분자추가 
         // 검색 단어는 10글자가 넘을 수 없음.
         var req_url = "" + this.baseHref + this.klassSearchUrl + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + q;
+        console.log("TEST / req_url ::: ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
