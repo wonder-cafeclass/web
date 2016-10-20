@@ -50,10 +50,12 @@ var KlassService = (function () {
     };
     KlassService.prototype.extractData = function (res) {
         var body = res.json();
+        console.log("KlassService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
-        console.log("CClassService / extractData / body ::: ", body);
-        // console.log("extractData / body.data ::: ",body.data);
-        return body.data || {};
+        if (null == body.data || !body.success) {
+            return null;
+        }
+        return body.data;
     };
     // New - XHR
     // promise-based

@@ -187,25 +187,17 @@
 
 		"class_venue_img_url_list":[],
 
-		"klass_selectile_list":[
-			"knob"
-			, "center"
-			, "top_right"
-			, "top_left"
-			, "bottom_left"
-			, "bottom_right"
-			, "right_single"
-			, "empty"
+		"klass_event_img_list":[
+			"new_class",
+			"no_class",
+			"no_image",
+			"error"
 		],
-		"klass_selectile_img_list":[
-			"assets/images/selectile/knob.svg"
-			, "assets/images/selectile/center.svg"
-			, "assets/images/selectile/top_right.svg"
-			, "assets/images/selectile/top_left.svg"
-			, "assets/images/selectile/bottom_left.svg"
-			, "assets/images/selectile/bottom_right.svg"
-			, "assets/images/selectile/right_single.svg"
-			, "assets/images/selectile/empty.svg"
+		"klass_event_img_url_list":[
+			"assets/images/event/new_class.svg",
+			"assets/images/event/no_class.svg",
+			"assets/images/event/no_image.svg",
+			"assets/images/event/error.svg"
 		],
 
 		"EOL":""

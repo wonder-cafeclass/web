@@ -18,8 +18,24 @@ class MY_ParamChecker {
 
 	public static $mysql_int_max = 2147483647;
 
-    public function __construct($CI=null)
+    public function __construct($params=null)
     {
+
+        // get singleton object.
+        $this->CI =& get_instance();
+        if(!isset($this->CI)) {
+            return;
+        }
+
+        // 이미 전에 로딩한 것 아닌지?
+        // init database
+        // $this->CI->load->database();
+
+        if(!isset($this->CI->my_error)) {
+            return;
+        }
+
+
 
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
 
@@ -35,7 +51,21 @@ class MY_ParamChecker {
     	if(file_exists($target_path)) 
     	{
 			$param_check_json_str = file_get_contents($target_path);
-    	} // end if
+    	} else {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_FILE_NOT_EXIST,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }
 
     	if(!empty($param_check_json_str)) 
     	{
@@ -43,16 +73,40 @@ class MY_ParamChecker {
     	} 
     	else 
     	{
-    		// error report!
-
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_EMPTY,
+                // $message=""
+                "\$param_check_json_str", 
+                // $extra=null
+                null
+            );
+            return;
     	} // end if
 
-    	$this->CI =& get_instance();
+        if(is_null($this->json_obj) || empty($this->json_obj)) {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
+                // $message=""
+                "", 
+                // $extra=null
+                null
+            );
+            return;            
+        }
 
-        // init database
-        $this->CI->load->database();
 
     }
+
 
     private $check_list;
     private $check_list_prop_success="succss";
@@ -77,6 +131,20 @@ class MY_ParamChecker {
     private function add_check_success($check_result) {
 
         if(is_null($check_result)) {
+
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                "is_null(\$check_result)", 
+                // $message=""
+                "", 
+                // $extra=null
+                null
+            );
+
             return;
         }
 
@@ -658,8 +726,6 @@ class MY_ParamChecker {
 			}
             else if(strpos($filter, 'exclude') !== false) 
             {
-                // wonder.jung
- 
                 $output = 
                 $this->extract_value_in_brackets(
                     // $target_filter=""
