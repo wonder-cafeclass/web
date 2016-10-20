@@ -102,4 +102,7 @@ export class KlassService {
     }
     */
 
+    // TODO - selectile의 해당 사항이 없는 항목들은 제외 시켜야 함.
+    // TODO - 4가지 주요 선택 항목에 대해서는 DB indexing이 필요함.
+
 }

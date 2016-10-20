@@ -251,7 +251,7 @@ class Klass extends REST_Controller implements MY_Class{
 
         // RESULT
         $classes = $query->result();
-        $last_query = "";
+        $last_query = $this->db->last_query();
         if (!empty($classes))
         {
             $last_query = $this->db->last_query();

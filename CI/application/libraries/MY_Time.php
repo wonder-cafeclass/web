@@ -40,9 +40,14 @@ class MY_Time{
 
 	// @ Desc : "19:20" 형식의 시간:분 문자열인지 확인합니다. 24시간 단위
 	// @ Usage : $this->is_valid_HHmm($target);
-	public function is_valid_HHmm($target){
+	public function is_valid_HHmm($target=""){
 		if(empty($target)) {
 			return false;
+		}
+
+		// 시간 범위 검색을 위한 24시 표현도 허용.
+		if("24:00" === $target) {
+			return true;
 		}
 
 		$is_over_20h = preg_match("/(2[0-3]|[01][0-9]):([0-5][0-9])/", $target);

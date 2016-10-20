@@ -129,6 +129,32 @@ export class KlassListComponent implements OnInit {
     });
 
   }
+
+  // EVENT
+  private isOverMagnifier: boolean=false;
+  onMouseenterMagnifier() {
+
+    if(!this.isSearchEnabled) {
+      return;
+    }
+    
+    if(!this.isOverMagnifier) {
+      this.isOverMagnifier = true;
+    }
+
+  }
+  onMouseleaveMagnifier() {
+
+    if(!this.isSearchEnabled) {
+      return;
+    }
+
+    if(this.isOverMagnifier) {
+      this.isOverMagnifier = false;
+    }
+
+  }
+
   onChangedSelectile(selectiles:any[]) {
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
     // this.isSearchEnabled = true;
@@ -136,7 +162,19 @@ export class KlassListComponent implements OnInit {
     // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
     this.search(selectiles, "");
   }
-  onKeyupSearch(keyword:string) {
+  onClickSearchInput() {
+    console.log(">> onClickSearchInput");
+  }
+  onKeyupEnterSearch(keyword:string) {
+    console.log(">>> onKeyupEnterSearch");
+    if(null === keyword || "" === keyword) {
+      console.log("onKeyupEnterSearch / keyword is not valid!");
+      return;
+    }
+
+    console.log(">>> onKeyupEnterSearch / init search process");
+  }
+  onKeyupSearchInput(keyword:string) {
 
     if(null === keyword || "" === keyword) {
       return;
@@ -154,6 +192,8 @@ export class KlassListComponent implements OnInit {
 
     // 검색 결과가 많을 경우, 스크롤로 더 보여줄 수 있어야 함. 
     // 검색 결과는 최초 10개만 보여줌.
+
+    // 유효한 검색어를 추천
 
     console.log("onKeyupSearch / keyword ::: ",keyword);
 

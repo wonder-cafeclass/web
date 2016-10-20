@@ -228,22 +228,47 @@ export class KlassFilterTileComponent implements OnInit {
     this.isEnterST = false;
     this.showSelectile(null, null, -1);
   }
-  clickSelectile(selectile) :void {
+  clickSelectile(event, selectile) :void {
 
+    event.stopPropagation();
+
+    let hasChanged = false;
     if(selectile instanceof KlassLevel) {
-      this.klassLevelSelected = selectile;
+
+      if(this.klassLevelSelected.key !== selectile.key) {
+        this.klassLevelSelected = selectile;  
+        hasChanged = true;
+      }
+      
     } else if(selectile instanceof KlassStation) {
-      this.klassStationSelected = selectile;
+
+      if(this.klassStationSelected.key !== selectile.key) {
+        this.klassStationSelected = selectile;  
+        hasChanged = true;
+      }
+
     } else if(selectile instanceof KlassDay) {
-      this.klassDaySelected = selectile;
+
+      if(this.klassDaySelected.key !== selectile.key) {
+        this.klassDaySelected = selectile;  
+        hasChanged = true;
+      }
+
     } else if(selectile instanceof KlassTime) {
-      this.klassTimeSelected = selectile;
+
+      if(this.klassTimeSelected.key !== selectile.key) {
+        this.klassTimeSelected = selectile;  
+        hasChanged = true;
+      }
+
     }
 
     this.leaveTable();
 
-    // TEST
-    this.emitChangedSelectile();
+    if(hasChanged) {
+      // 이전과 다른 값을 선택한 경우에만 리스트를 조회한다.
+      this.emitChangedSelectile();
+    }
   }
   emitChangedSelectile() :void {
     // 변경된 selectile의 값을 전달한다.

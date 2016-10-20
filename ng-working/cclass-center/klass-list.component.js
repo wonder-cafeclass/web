@@ -27,6 +27,8 @@ var KlassListComponent = (function () {
         // 검색상태 관련
         this.isSearchEnabled = false;
         this.searchTerms = new Subject_1.Subject();
+        // EVENT
+        this.isOverMagnifier = false;
     }
     KlassListComponent.prototype.isSelected = function (cclass) {
         return cclass.id === this.selectedId;
@@ -101,13 +103,40 @@ var KlassListComponent = (function () {
             // 유저는 자신이 선택한 필터가 유지되기를 원할까? --> 사용성 테스트
         });
     };
+    KlassListComponent.prototype.onMouseenterMagnifier = function () {
+        if (!this.isSearchEnabled) {
+            return;
+        }
+        if (!this.isOverMagnifier) {
+            this.isOverMagnifier = true;
+        }
+    };
+    KlassListComponent.prototype.onMouseleaveMagnifier = function () {
+        if (!this.isSearchEnabled) {
+            return;
+        }
+        if (this.isOverMagnifier) {
+            this.isOverMagnifier = false;
+        }
+    };
     KlassListComponent.prototype.onChangedSelectile = function (selectiles) {
         // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
         // this.isSearchEnabled = true;
         // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
         this.search(selectiles, "");
     };
-    KlassListComponent.prototype.onKeyupSearch = function (keyword) {
+    KlassListComponent.prototype.onClickSearchInput = function () {
+        console.log(">> onClickSearchInput");
+    };
+    KlassListComponent.prototype.onKeyupEnterSearch = function (keyword) {
+        console.log(">>> onKeyupEnterSearch");
+        if (null === keyword || "" === keyword) {
+            console.log("onKeyupEnterSearch / keyword is not valid!");
+            return;
+        }
+        console.log(">>> onKeyupEnterSearch / init search process");
+    };
+    KlassListComponent.prototype.onKeyupSearchInput = function (keyword) {
         if (null === keyword || "" === keyword) {
             return;
         }
@@ -118,6 +147,7 @@ var KlassListComponent = (function () {
         // 2. 제목과 설명은 최대 3개 단어 조합으로 검색. 그 이상은 무리가 있음.
         // 검색 결과가 많을 경우, 스크롤로 더 보여줄 수 있어야 함. 
         // 검색 결과는 최초 10개만 보여줌.
+        // 유효한 검색어를 추천
         console.log("onKeyupSearch / keyword ::: ", keyword);
         // 유저가 검색어를 입력한 상태. 유효한 키워드라면, 검색 버튼을 활성화 해줍니다.
         if (!this.isSearchEnabled) {

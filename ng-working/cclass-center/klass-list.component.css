@@ -63,6 +63,10 @@
 .cc-img-filter {
   height:40px;
 }
+.cc-img-magnifier {
+  height:40px;
+  width:40px;
+}
 .cc-img-class {
   border-top-right-radius: 3px;
   border-top-left-radius: 3px;
