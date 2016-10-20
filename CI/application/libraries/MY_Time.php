@@ -2,7 +2,16 @@
 
 class MY_Time{
 
-	// public static $STATUS_CODE_OK=200;
+	private $CI=null;
+
+    public function __construct($params=null)
+    {
+    	// Do something...
+        $this->CI =& get_instance();
+        if(!isset($this->CI)) {
+            return;
+        }
+    }
 
 	// @ Desc : "2017-08-01" 형식의 시간:분 문자열인지 확인합니다. 12시간 단위
 	// @ Usage : $this->is_valid_time_format_yyyy_mm_dd($target);
@@ -49,6 +58,18 @@ class MY_Time{
 	public function digit_to_HHmm($digit=-1, $to24=false) 
 	{
 		if(!(-1 < $digit)) {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_NOT_VALID,
+                // $message=""
+                "!(-1 < \$digit)", 
+                // $extra=null
+                $digit
+            );
 			return null;
 		}
 
@@ -66,7 +87,21 @@ class MY_Time{
 	public function convert_hh24_mm_to_seconds($str_time){
 
 		if($this->is_not_valid_HHmm($str_time)) {
-			return -1;
+
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_NOT_VALID,
+                // $message=""
+                "\$this->is_not_valid_HHmm(\$str_time)", 
+                // $extra=null
+                $str_time
+            );
+
+			return null;
 		}
 
 		sscanf($str_time, "%d:%d", $hours, $minutes);
@@ -77,6 +112,18 @@ class MY_Time{
 	public function sec_to_HHmm($seconds) {
 
 		if(!is_numeric($seconds)) {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_NOT_VALID,
+                // $message=""
+                "!is_numeric(\$seconds)", 
+                // $extra=null
+                $seconds
+            );			
 			return -1;
 		}
 
@@ -85,7 +132,18 @@ class MY_Time{
 	public function sec_to_YYYYMMHHMMSS($seconds) {
 
 		if(!is_numeric($seconds)) {
-			return -1;
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_NOT_VALID,
+                // $message=""
+                "!is_numeric(\$seconds)", 
+                // $extra=null
+                $seconds
+            );	
 		}
 
 		return gmdate("YmdHis", $seconds);

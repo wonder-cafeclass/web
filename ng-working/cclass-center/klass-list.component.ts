@@ -130,9 +130,6 @@ export class KlassListComponent implements OnInit {
 
   }
   onChangedSelectile(selectiles:any[]) {
-
-    console.log("TEST / 001");
-
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
     // this.isSearchEnabled = true;
 

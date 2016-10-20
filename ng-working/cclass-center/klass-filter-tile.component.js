@@ -27,6 +27,10 @@ var KlassFilterTileComponent = (function () {
     KlassFilterTileComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.service.getKlassSelectile().then(function (selectileInfo) {
+            if (null === selectileInfo) {
+                // TODO - 내려와야 할 데이터가 정상적으로 내려오지 않은 상황. 어떤 처리를 해주면 좋을까?
+                return;
+            }
             _this.setLevel(selectileInfo["levels"]);
             _this.setStation(selectileInfo["stations"]);
             _this.setDay(selectileInfo["days"]);

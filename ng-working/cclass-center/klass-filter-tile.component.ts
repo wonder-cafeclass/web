@@ -52,6 +52,11 @@ export class KlassFilterTileComponent implements OnInit {
 
     this.service.getKlassSelectile().then(selectileInfo => {
 
+      if(null === selectileInfo) {
+        // TODO - 내려와야 할 데이터가 정상적으로 내려오지 않은 상황. 어떤 처리를 해주면 좋을까?
+        return;
+      }
+
       this.setLevel(selectileInfo["levels"]);
       this.setStation(selectileInfo["stations"]);
       this.setDay(selectileInfo["days"]);
