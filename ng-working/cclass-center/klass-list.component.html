@@ -47,23 +47,35 @@
 					<div class="cc-class-filter">
 
 						<!-- LEVEL -->
-						<img src="{{cclass.level_img_url}}" alt="{{cclass.level_kor}}" class="img-circle cc-img-filter">
+						<img 	*ngIf="cclass.level_img_url" 
+								src="{{cclass.level_img_url}}" 
+								alt="{{cclass.level_kor}}" 
+								class="img-circle cc-img-filter what">
 						<!-- PLACE / SUBWAY STATION -->
-						<img src="{{cclass.venue_subway_station_img_url}}" alt="{{cclass.venue_subway_station}}" class="img-circle cc-img-filter">
+						<img 	*ngIf="cclass.venue_subway_station_img_url" 
+								src="{{cclass.venue_subway_station_img_url}}" 
+								alt="{{cclass.venue_subway_station}}" 
+								class="img-circle cc-img-filter">
 						<!-- DAY -->
-						<img src="{{cclass.days_img_url}}" alt="{{cclass.days_kor}}" class="img-circle cc-img-filter">
+						<img 	*ngIf="cclass.days_img_url" 
+								src="{{cclass.days_img_url}}" 
+								alt="{{cclass.days_kor}}" 
+								class="img-circle cc-img-filter">
 						<!-- TIME -->
-						<img src="{{cclass.time_begin_img_url}}" alt="{{cclass.time_begin_name}}" class="img-circle cc-img-filter">
-						
+						<img 	*ngIf="cclass.days_img_url" 
+								src="{{cclass.time_begin_img_url}}" 
+								alt="{{cclass.time_begin_name}}" 
+								class="img-circle cc-img-filter">
 					</div>
 					
 				</div>
 				<div class="panel-body cc-panel-class-bg">
 
-					<h4 class="pull-right cc-price">{{cclass.price_with_format}} &#8361;</h4>
+					<h4 *ngIf="cclass.price_with_format=='0'" class="pull-right cc-price">&nbsp;</h4>
+					<h4 *ngIf="cclass.price_with_format!='0'" class="pull-right cc-price">{{cclass.price_with_format}} &#8361;</h4>
 
-					<a href="#" class="btn cc-btn" role="button">신청하기</a>
-					<a href="#" class="btn btn-default" role="button">
+					<a *ngIf="cclass.level_img_url" href="#" class="btn cc-btn" role="button">신청하기</a>
+					<a *ngIf="cclass.level_img_url" href="#" class="btn btn-default" role="button">
 						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
 					</a>
 

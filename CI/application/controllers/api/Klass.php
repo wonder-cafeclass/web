@@ -151,16 +151,8 @@ class Klass extends REST_Controller implements MY_Class{
         }
 
         $check_list = $this->my_paramchecker->get_check_list();
-
-        // Sample - WHERE
-        if(!empty($where_conditions)) {
-            $limit = 500;
-            $offset = 0;
-            $query = $this->db->get_where('klass', $where_conditions, $limit, $offset);
-            $query = $this->db->query($query);
-        } else {
-            $query = $this->db->query('SELECT * FROM klass');            
-        }
+        
+        $query = $this->db->query('SELECT * FROM klass ORDER BY id DESC');
 
         $classes = $query->result();
         $output = $this->add_klass_extra_info($query);
@@ -257,24 +249,13 @@ class Klass extends REST_Controller implements MY_Class{
         $offset = 0;
         $query = $this->db->get('klass', $limit, $offset);
 
-        // TEST
-        $klass_course_event_list = array();
-        $klass_course = $this->get_klass_course_new_class();
-        array_push($klass_course_event_list, $klass_course);
-        $klass_course = $this->get_klass_course_no_class();
-        array_push($klass_course_event_list, $klass_course);
-        $klass_course = $this->get_klass_course_no_image();
-        array_push($klass_course_event_list, $klass_course);
-        $klass_course = $this->get_klass_course_error();
-        array_push($klass_course_event_list, $klass_course);
-        // $extra['klass_course_event_list'] = $klass_course_event_list;
-
         // RESULT
         $classes = $query->result();
-        $last_query = $this->db->last_query();
-        $output = $this->add_klass_extra_info($query);
+        $last_query = "";
         if (!empty($classes))
         {
+            $last_query = $this->db->last_query();
+            $output = $this->add_klass_extra_info($query);
             $response_body = 
             $this->my_response->getResBodySuccess(
                 $last_query, 
@@ -286,13 +267,13 @@ class Klass extends REST_Controller implements MY_Class{
         else
         {
             // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
-            // wonder.jung
+            $course = $this->get_klass_course_no_class();
+            $output = array($course);
 
             $response_body = 
-            $this->my_response->getResBodyFail(
-                'Klass could not be found', 
-                $last_query,
-                $output,
+            $this->my_response->getResBodySuccess(
+                $last_query, 
+                $output, 
                 $this->my_error->get(),
                 $extra
             );
@@ -499,6 +480,7 @@ class Klass extends REST_Controller implements MY_Class{
             'klass_event_img_list', 
             'klass_event_img_url_list'
         );
+        $klass_course->price_with_format="0";
 
         return $klass_course;
     }
@@ -516,6 +498,7 @@ class Klass extends REST_Controller implements MY_Class{
             'klass_event_img_list', 
             'klass_event_img_url_list'
         );
+        $klass_course->price_with_format="0";
 
         return $klass_course;
     }
@@ -533,6 +516,7 @@ class Klass extends REST_Controller implements MY_Class{
             'klass_event_img_list', 
             'klass_event_img_url_list'
         );
+        $klass_course->price_with_format="0";
 
         return $klass_course;
     }
