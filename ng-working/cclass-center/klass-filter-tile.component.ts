@@ -36,7 +36,10 @@ export class KlassFilterTileComponent implements OnInit {
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
 
   // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
-  @Output() onChangedSelectile = new EventEmitter<any>();
+  @Output() emitOnChangedSelectile = new EventEmitter<any>();
+
+  // 컴포넌트 로딩 완료 이벤트 발사!
+  @Output() emitOnInitKlassList = new EventEmitter<void>();
 
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
@@ -66,6 +69,7 @@ export class KlassFilterTileComponent implements OnInit {
 
     });
 
+    this.emitOnInitKlassList.emit();
   }
   private setTime(times:any[]) {
 
@@ -273,8 +277,9 @@ export class KlassFilterTileComponent implements OnInit {
   emitChangedSelectile() :void {
     // 변경된 selectile의 값을 전달한다.
     var selectileList:any[] = this.getFocusedSelectiles();
-    this.onChangedSelectile.emit(selectileList);
+    this.emitOnChangedSelectile.emit(selectileList);
   }
+  // emitOnChangedSelectile
   public getFocusedSelectiles() :any[] {
     var selectileList:any[] = 
     [

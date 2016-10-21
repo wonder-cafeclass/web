@@ -20,7 +20,9 @@ var KlassFilterTileComponent = (function () {
         this.service = service;
         this.location = location;
         // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
-        this.onChangedSelectile = new core_1.EventEmitter();
+        this.emitOnChangedSelectile = new core_1.EventEmitter();
+        // 컴포넌트 로딩 완료 이벤트 발사!
+        this.emitOnInitKlassList = new core_1.EventEmitter();
         this.stColCntPerRow = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
         this.isEnterST = false;
     }
@@ -37,6 +39,7 @@ var KlassFilterTileComponent = (function () {
             _this.setTime(selectileInfo["times"]);
             _this.showSelectile(null, null, -1);
         });
+        this.emitOnInitKlassList.emit();
     };
     KlassFilterTileComponent.prototype.setTime = function (times) {
         var nextObjList = [];
@@ -191,8 +194,9 @@ var KlassFilterTileComponent = (function () {
     KlassFilterTileComponent.prototype.emitChangedSelectile = function () {
         // 변경된 selectile의 값을 전달한다.
         var selectileList = this.getFocusedSelectiles();
-        this.onChangedSelectile.emit(selectileList);
+        this.emitOnChangedSelectile.emit(selectileList);
     };
+    // emitOnChangedSelectile
     KlassFilterTileComponent.prototype.getFocusedSelectiles = function () {
         var selectileList = [
             this.klassLevelSelected,
@@ -366,7 +370,11 @@ var KlassFilterTileComponent = (function () {
         // 사용자가 선택한 클래스 레벨 
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], KlassFilterTileComponent.prototype, "onChangedSelectile", void 0);
+    ], KlassFilterTileComponent.prototype, "emitOnChangedSelectile", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], KlassFilterTileComponent.prototype, "emitOnInitKlassList", void 0);
     KlassFilterTileComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

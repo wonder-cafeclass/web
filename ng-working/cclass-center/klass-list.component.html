@@ -1,25 +1,22 @@
 <!-- http://www.bootply.com/zoupRVbLG4 -->
 <div class="container">
-
+	
+	<!-- Search Input Component -->
 	<div class="row">
-
 		<div class="col-md-12 cc-div-col">
-			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
-				<div class="panel-body" (click)="onClickSearchInput()">
+			<!-- REFACTOR ME -->
+			<div class="list-group">
+				<button 	type="button" 
+							class="list-group-item cc-panel-filter"
+							(click)="onClickSearchInput($event, searchBox)"
+							(mouseleave)="onMouseLeaveSearchInput($event, searchBox)">
 					
-					<!-- 수업 검색을 위한 필터링 컴포넌트 -->
-					<klass-filter-tile #selectile (onChangedSelectile)="onChangedSelectile($event)"></klass-filter-tile>
+					<klass-filter-tile 	#selectile 
+										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
+										(emitOnChangedSelectile)="onChangedSelectile()">
+											
+					</klass-filter-tile>
 
-					<!-- 검색 로고 -->
-					<!--
-					<span 	class="glyphicon glyphicon-search pull-right cc-panel-magnifier" 
-							aria-hidden="true" 
-							(click)="search(selectile.getFocusedSelectiles(), searchBox.value)"
-							[class.search_disabled]="!isSearchEnabled"
-							[class.search_enabled]="isSearchEnabled"
-					></span>
-					-->
-					
 					<div (mouseenter)="onMouseenterMagnifier()" (mouseleave)="onMouseleaveMagnifier()">
 						<img 	*ngIf="!isOverMagnifier"
 								[class.search_disabled]="!isSearchEnabled"
@@ -31,21 +28,69 @@
 								class="pull-right cc-img-magnifier">
 					</div>
 
-
-					<!-- 검색 창-->
 					<input 	id="search-box" 
 							class="pull-right form-control cc-panel-search" 
 							placeholder="수업을 검색해보세요" 
-							#searchBox 
+							#searchBox
+							(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
+							(keyup)="onKeyupSearchInput(searchBox.value, searchBox, selectile)">
+
+				</button>
+				<!-- 최대 자동 완성 및 추천 갯수는 제한되어 운영한다. 최대 8개-->
+				<button *ngIf="recommend0" type="button" class="list-group-item">{{recommend0.getHtmlTag()}}</button>
+				<button *ngIf="recommend1" type="button" class="list-group-item">{{recommend1.getHtmlTag()}}</button>
+				<button *ngIf="recommend2" type="button" class="list-group-item">{{recommend2.getHtmlTag()}}</button>
+				<button *ngIf="recommend3" type="button" class="list-group-item">{{recommend3.getHtmlTag()}}</button>
+				<button *ngIf="recommend4" type="button" class="list-group-item">{{recommend4.getHtmlTag()}}</button>
+				<button *ngIf="recommend5" type="button" class="list-group-item">{{recommend5.getHtmlTag()}}</button>
+				<button *ngIf="recommend6" type="button" class="list-group-item">{{recommend6.getHtmlTag()}}</button>
+				<button *ngIf="recommend7" type="button" class="list-group-item">{{recommend7.getHtmlTag()}}</button>
+			</div>
+
+
+			<!-- REMOVE ME -->
+			<!--
+			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
+				<div 	class="panel-body" 
+						(mouseleave)="onMouseLeaveSearchInput($event, searchBox)" 
+						
+						(click)="onClickSearchInput($event, searchBox)">
+					
+					<klass-filter-tile 	#selectile 
+										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
+										(emitOnChangedSelectile)="onChangedSelectile()">
+											
+					</klass-filter-tile>
+
+					<div (mouseenter)="onMouseenterMagnifier()" (mouseleave)="onMouseleaveMagnifier()">
+						<img 	*ngIf="!isOverMagnifier"
+								[class.search_disabled]="!isSearchEnabled"
+								[class.search_enabled]="isSearchEnabled"
+								src="assets/images/search/magnifier.svg" 
+								class="pull-right cc-img-magnifier">
+						<img 	*ngIf="isOverMagnifier"
+								src="assets/images/search/magnifier_focus.svg" 
+								class="pull-right cc-img-magnifier">
+					</div>
+
+					<input 	id="search-box" 
+							class="pull-right form-control cc-panel-search" 
+							placeholder="수업을 검색해보세요" 
+							#searchBox
 							(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
 							(keyup)="onKeyupSearchInput(searchBox.value)">
 
 				</div>
 			</div>
+			-->
+
+
+
 		</div>
-	  
 	</div>
 
+	
+	<!-- Class List Component -->
 	<div class="row">
 
 		<div class="col-md-3 cc-div-col" *ngFor="let keyword of klassKeywords | async">
