@@ -45,7 +45,8 @@
 }
 
 .cc-panel-filter {
-  border-color: rgba(232, 92, 65, 0.5);
+  /*border-color: rgba(232, 92, 65, 0.5);*/
+  border-color: rgba(232, 92, 65, 1);
 }
 .cc-panel-search {
   width:50%;

@@ -18,8 +18,6 @@ import { KlassStation }                    from './klass-station';
 import { KlassDay }                        from './klass-day';
 import { KlassTime }                       from './klass-time';
 
-import { KlassSearchRecommend }            from './klass-search-recommend';
-
 @Component({
   moduleId: module.id,
   styleUrls: ['klass-list.component.css'],
@@ -38,16 +36,6 @@ export class KlassListComponent implements OnInit {
   // 검색상태 관련
   isSearchEnabled: boolean = false;
 
-  // 추천 검색어 객체리스트 - 결과를 검색어 객체에 넣어주려면?
-  recommend0: KlassSearchRecommend = null;
-  recommend1: KlassSearchRecommend = null;
-  recommend2: KlassSearchRecommend = null;
-  recommend3: KlassSearchRecommend = null;
-  recommend4: KlassSearchRecommend = null;
-  recommend5: KlassSearchRecommend = null;
-  recommend6: KlassSearchRecommend = null;
-  recommend7: KlassSearchRecommend = null;
- 
   private searchTerms = new Subject<string>();
 
   constructor(
@@ -85,84 +73,105 @@ export class KlassListComponent implements OnInit {
     })
     ;
   }
-
+  // REMOVE ME
+/*
   clickSearch(selectileList, searchKeyword:string): void {
 
     if(!this.isSearchEnabled) {
       return;
     }
-    
-    this.search(selectileList, searchKeyword);
-  }
 
-  onInitKlassFilterTile(searchBox) {
-    searchBox.focus();
-  }
-  // REMOVE ME
-  /*
-  onFetchedSelectiles(selectileGroupList:any) {
-
-    if(!selectileGroupList || 0 === selectileGroupList.length) {
-      // Error Report
-      return;
-    }
-
-    for (let i = 0; i < selectileGroupList.length; ++i) {
-      let selectileList = selectileGroupList[i];
-      if(!selectileList || 0 === selectileList.length) {
-        // Error Report
-        return;
-      }
-
-      let selectile = selectileList[0];
-
-
-    }
-  }
-  */
-
-  search(selectileList, searchKeyword:string): void {
-
-    // 항목별 filter 만들기
-    var level = "";
-    var station = "";
-    var day = "";
-    var time = "";
+    let klassLevel:KlassLevel;
+    let klassStation:KlassStation;
+    let klassDay:KlassDay;
+    let klassTime:KlassTime;
 
     for (var i = 0; i < selectileList.length; ++i) {
       let selectile = selectileList[i];
       if(selectile instanceof KlassLevel) {
-        level = selectile.key;
+
+        klassLevel = selectile;
+        
       } else if(selectile instanceof KlassStation) {
-        station = selectile.key;
+
+        klassStation = selectile;
+
       } else if(selectile instanceof KlassDay) {
-        day = selectile.key;
+
+        klassDay = selectile;
+
       } else if(selectile instanceof KlassTime) {
-        time = selectile.key;
-      }
+
+        klassTime = selectile;
+
+      } // end if
+    } // end for
+    
+    this.search(
+      klassLevel,
+      klassStation,
+      klassDay,
+      klassTime,
+      searchKeyword
+    );
+  }
+*/
+  onInitKlassFilterTile(searchBox) {
+    console.log("TEST / 002");
+    searchBox.focus();
+  }
+
+  search(level:KlassLevel, station:KlassStation, day:KlassDay, time:KlassTime, searchKeyword:string): void {
+
+    // 항목별 filter 만들기
+    var levelKey = "";
+    if(null != level && null != level.key) {
+      levelKey = level.key;
+    }
+    var stationKey = "";
+    if(null != station && null != station.key) {
+      stationKey = station.key;
+    }
+    var dayKey = "";
+    if(null != day && null != day.key) {
+      dayKey = day.key;
+    }
+    var timeKey = "";
+    if(null != time && null != time.key) {
+      timeKey = time.key;
     }
 
+    // wonder.jung
     // keyword 안전성 검사 및 param 만들기(구분자추가)
 
-    var q = "";
+    // TEST
+    let keywordList:string[] = searchKeyword.split(" ");
+    let searchKeywordSafe = "";
+
+    for (var i = 0; i < keywordList.length; ++i) {
+      let keyword = keywordList[i];
+      let keywordSafe = this.getKeywordSafe(keyword);
+
+      if(null == keywordSafe || "" === keywordSafe) {
+        continue;
+      }
+      searchKeywordSafe += `${keywordSafe}|`;
+    }
 
     this.service.searchKlassList(
       // level:string, 
-      level,
+      levelKey,
       // station:string, 
-      station,
+      stationKey,
       // day:string, 
-      day,
+      dayKey,
       // time:string,
-      time, 
+      timeKey, 
       // q:string
-      q
+      searchKeywordSafe
     ).then(cclasses => {
         console.log("cclasses ::: ",cclasses);
        this.cclasses = cclasses 
-
-       // 검색 결과가 돌아오면 검색 버튼이 비활성화.
-       // 유저는 자신이 선택한 필터가 유지되기를 원할까? --> 사용성 테스트
     });
 
   }
@@ -196,8 +205,16 @@ export class KlassListComponent implements OnInit {
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
     // this.isSearchEnabled = true;
 
+    if(null == selectiles || 0 === selectiles.length) {
+      // error report
+      console.log("!Error! / onChangedSelectile");
+      return;
+    }
+
+    console.log("onChangedSelectile / selectiles : ",selectiles);
+
     // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
-    this.search(selectiles, "");
+    // this.search(selectiles, "");
   }
   onClickSearchInput(event, searchBox) {
     event.stopPropagation();
@@ -209,14 +226,38 @@ export class KlassListComponent implements OnInit {
     event.stopPropagation();
     this.onMouseleaveMagnifier();
   }
-  onKeyupEnterSearch(keyword:string) {
-    console.log(">>> onKeyupEnterSearch");
-    if(null === keyword || "" === keyword) {
-      console.log("onKeyupEnterSearch / keyword is not valid!");
-      return;
+  onKeyupEnterSearch(keywordsFromUser:string, searchBox, selectile) {
+
+    let keywordsSafe = this.getKeywordSafe(keywordsFromUser);
+    if(keywordsFromUser.length !== keywordsSafe.length) {
+      searchBox.value = keywordsSafe;
     }
 
-    console.log(">>> onKeyupEnterSearch / init search process");
+    let selectileList = null;
+
+    console.log("onKeyupEnterSearch / selectile :: ",selectile);
+
+    this.search(
+      selectile.klassLevelSelected,
+      selectile.klassStationSelected,
+      selectile.klassTimeSelected,
+      selectile.klassDaySelected,
+      searchBox.value
+    );
+
+    // REMOVE ME
+    /*
+    this.clickSearch(
+      selectile.klassLevelSelected,
+      selectile.klassStationSelected,
+      selectile.klassTimeSelected,
+      selectile.klassDaySelected,
+      keywordsFromUser
+    );
+    */
+
+    // wonder.jung
+    // this.clickSearch(selectileList, keywordsFromUser);
   }
   private keywordMap;
   private isSafeSelectile(selectile) {
@@ -288,32 +329,48 @@ export class KlassListComponent implements OnInit {
     if(!this.keywordMap) {
       return;
     }
-    
+
+    if(!(1 < keyword.length)) {
+      // 대조하는 글자는 2글자 이상이어야 한다.
+      return;
+    }
+
     var selectileObj = null;
     for (let key in this.keywordMap) {
-      let index = key.indexOf(keyword);
-      if(-1 < index) {
-        selectileObj = this.keywordMap[key];
-        break;
+
+      let keyNoEmpty = key.replace(" ","");
+
+      let isOK = false;
+      if( 2 == keyNoEmpty.length && 2 == keyword.length ) {
+        isOK = true;
+      } else if( 2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length ) {
+        isOK = true;
       }
-    }   
+
+      if(!isOK) {
+        continue;
+      }
+
+      if(0 === keyNoEmpty.indexOf(keyword)) {
+        // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
+        selectileObj = this.keywordMap[key];
+        break;        
+      } // end if
+    } // end for
 
     return selectileObj; 
   }
-  private getRegexValidCharInSearch() {
-    return new RegExp("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\x20]+", "gi");
-  }
   private getKeywordSafe(keyword:string) {
-    let regex = this.getRegexValidCharInSearch();
+    let regex = new RegExp("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\x20]+", "gi");
     let keywordsSafe = keyword.replace(regex, "");
 
     return keywordsSafe;
   }
+  private keywordsFromUserPrev:string;
   onKeyupSearchInput(keywordsFromUser:string, searchBox, selectile) {
 
     // TODO 입력 가능하지 않은 문자는 검색 창에서 사라짐. - 유저에게 안내 필요.
     let keywordsSafe = this.getKeywordSafe(keywordsFromUser);
-
     if(keywordsFromUser.length !== keywordsSafe.length) {
       searchBox.value = keywordsSafe;
     }
@@ -325,6 +382,15 @@ export class KlassListComponent implements OnInit {
       return;
     }
 
+    // 이전과 동일한 내용이라면 중단한다.
+    if( null != this.keywordsFromUserPrev && 
+        this.keywordsFromUserPrev === keywordsFromUser){
+
+        return;
+    }
+    // 다르다면 키워드를 등록.
+    this.keywordsFromUserPrev = keywordsFromUser;
+
     this.setKeywordMap(selectile);
 
     // 안전한 문자열만 받습니다. 
@@ -334,8 +400,6 @@ export class KlassListComponent implements OnInit {
     let keywordListSafe:string[] = [];
     for (var i = 0; i < keywordList.length; ++i) {
       let keyword = keywordList[i];
-
-      // let keywordSafe = keyword.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20]+/gi, "");
       let keywordSafe = this.getKeywordSafe(keyword);
 
       if(null == keywordSafe || "" === keywordSafe) {
@@ -351,7 +415,8 @@ export class KlassListComponent implements OnInit {
 
     // 유효한 검색 키워드를 찾았습니다.
     // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
-    var selectileFoundList = [];
+    var selectileMatchList = [];
+    var keywordFoundList:string[] = [];
     var keywordNotFoundList:string[] = [];
     for (var i = 0; i < keywordListSafe.length; ++i) {
       let keywordSafe = keywordListSafe[i];
@@ -362,50 +427,23 @@ export class KlassListComponent implements OnInit {
         continue;
       }
 
-      selectileFoundList.push(selectileObj);
+      selectileMatchList.push(selectileObj);
+      keywordFoundList.push(keywordSafe);
     }
 
-    if(0 < selectileFoundList.length) {
-      console.log("selectileFoundList ::: ",selectileFoundList);
+    // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
+    // 사용자가 입력한 키워드는 검색창에서 제외합니다.
+    for (var i = 0; i < selectileMatchList.length; ++i) {
+      let selectileMatch = selectileMatchList[i];
+      selectile.klassSelectileSubject.next(selectileMatch);
+
+      // 사용자가 입력 및 매칭된 키워드는 제거합니다.
+      let keywordFound = keywordFoundList[i];
+      searchBox.value = searchBox.value.replace(keywordFound,"");
     }
-    console.log("keywordNotFoundList ::: ",keywordNotFoundList);
 
-    // 검색 키워드를 정리합니다. 필터 카테고리에서 여러개의 검색어를 in clause 쿼리로 처리할 수 있도록 합니다.
-    // 입력한 키워드에 매칭하는 필터 결과를 리스트 하단에 노출, 사용자가 선택할 수 있게합니다. 
-    // 사용자가 추천으로 보게되는 결과는 
-    // "필터 키워드 모음" + "추가 검색어" 입니다.
-    // 사용자가 추천을 무시하면 공백 구분자로 나누어진 단어로 제목과 설명, tag만을 검색합니다.
-
-    // 입력 가능한 문자에 대해 가이드 메시지 필요.
-    // 입력 가능하지 않은 문자는 검색 창에서 사라짐.
-
-
-
-
-    // 2글자 이상이어야 유효한 단어
-
-    // 최소 한단어 이상이어야 함.
-
-    // 1. 단어 분할로 제목 검색.
-
-    // 사용자가 입력한 단어를 공백 단위로 분할.
-
-    // 2. 제목과 설명은 최대 3개 단어 조합으로 검색. 그 이상은 무리가 있음.
-
-    // 2-1. 사용자가 선택할 수 있는 모든 selectile의 키워드 중심으로 먼저 검색. --> 여기에 선정된 단어는 제외됨.
-    // wonder.jung - 이걸 먼저 만들어 보자.
-
-
-    // 2-2. 나머지 매칭되지 않는 단어들을 가지고 수업타이틀 및 수업 설명으로 검색.
-
-
-
-    // 검색 결과가 많을 경우, 스크롤로 더 보여줄 수 있어야 함. 
-    // 검색 결과는 최초 10개만 보여줌.
-
-    // 유효한 검색어를 추천
-
-    //
+    // 필터와 매칭되지 않은 키워드는 "제목","설명"의 검색 키워드로 사용합니다.
+    // 1개의 단어만 검색 키워드로 지원합니다. - 엔터키와 검색 버튼 click으로 진행.
 
     // 유저가 검색어를 입력한 상태. 유효한 키워드라면, 검색 버튼을 활성화 해줍니다.
     if(!this.isSearchEnabled) {

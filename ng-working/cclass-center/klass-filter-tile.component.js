@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
+var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./klass.service');
 var klass_level_1 = require('./klass-level');
 var klass_station_1 = require('./klass-station');
@@ -19,6 +20,8 @@ var KlassFilterTileComponent = (function () {
     function KlassFilterTileComponent(service, location) {
         this.service = service;
         this.location = location;
+        // Observable Selectile 
+        this.klassSelectileSubject = new Subject_1.Subject();
         // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
         this.emitOnChangedSelectile = new core_1.EventEmitter();
         // 컴포넌트 로딩 완료 이벤트 발사!
@@ -40,6 +43,15 @@ var KlassFilterTileComponent = (function () {
             _this.showSelectile(null, null, -1);
         });
         this.emitOnInitKlassList.emit();
+        var _self = this;
+        this.klassSelectileSubject.subscribe(function (x) {
+            _self.updateShowingSelectile(x);
+        }, function (err) {
+            // error report
+            console.log('Error: ' + err);
+        }, function () {
+            console.log('Completed');
+        });
     };
     KlassFilterTileComponent.prototype.setTime = function (times) {
         var nextObjList = [];
@@ -160,6 +172,17 @@ var KlassFilterTileComponent = (function () {
     };
     KlassFilterTileComponent.prototype.clickSelectile = function (event, selectile) {
         event.stopPropagation();
+        if (null == selectile) {
+            // error report
+            return;
+        }
+        this.updateShowingSelectile(selectile);
+    };
+    KlassFilterTileComponent.prototype.updateShowingSelectile = function (selectile) {
+        if (null == selectile) {
+            // error report
+            return;
+        }
         var hasChanged = false;
         if (selectile instanceof klass_level_1.KlassLevel) {
             if (this.klassLevelSelected.key !== selectile.key) {

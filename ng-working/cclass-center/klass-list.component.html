@@ -4,7 +4,9 @@
 	<!-- Search Input Component -->
 	<div class="row">
 		<div class="col-md-12 cc-div-col">
-			<!-- REFACTOR ME -->
+			
+			<!-- REMOVE ME -->
+			<!-- 
 			<div class="list-group">
 				<button 	type="button" 
 							class="list-group-item cc-panel-filter"
@@ -13,7 +15,7 @@
 					
 					<klass-filter-tile 	#selectile 
 										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
-										(emitOnChangedSelectile)="onChangedSelectile()">
+										(emitOnChangedSelectile)="onChangedSelectile($event)">
 											
 					</klass-filter-tile>
 
@@ -36,29 +38,24 @@
 							(keyup)="onKeyupSearchInput(searchBox.value, searchBox, selectile)">
 
 				</button>
-				<!-- 최대 자동 완성 및 추천 갯수는 제한되어 운영한다. 최대 8개-->
-				<button *ngIf="recommend0" type="button" class="list-group-item">{{recommend0.getHtmlTag()}}</button>
-				<button *ngIf="recommend1" type="button" class="list-group-item">{{recommend1.getHtmlTag()}}</button>
-				<button *ngIf="recommend2" type="button" class="list-group-item">{{recommend2.getHtmlTag()}}</button>
-				<button *ngIf="recommend3" type="button" class="list-group-item">{{recommend3.getHtmlTag()}}</button>
-				<button *ngIf="recommend4" type="button" class="list-group-item">{{recommend4.getHtmlTag()}}</button>
-				<button *ngIf="recommend5" type="button" class="list-group-item">{{recommend5.getHtmlTag()}}</button>
-				<button *ngIf="recommend6" type="button" class="list-group-item">{{recommend6.getHtmlTag()}}</button>
-				<button *ngIf="recommend7" type="button" class="list-group-item">{{recommend7.getHtmlTag()}}</button>
+				<button *ngFor="let recommend of recommendList" 
+						type="button" 
+						class="list-group-item cc-panel-filter">		
+					{{recommend.getHtmlTag()}}
+				</button>
 			</div>
+			-->
 
 
-			<!-- REMOVE ME -->
-			<!--
+			<!-- REFACTOR ME -->
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
 				<div 	class="panel-body" 
-						(mouseleave)="onMouseLeaveSearchInput($event, searchBox)" 
-						
+						(mouseleave)="onMouseLeaveSearchInput($event, searchBox)"
 						(click)="onClickSearchInput($event, searchBox)">
 					
 					<klass-filter-tile 	#selectile 
 										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
-										(emitOnChangedSelectile)="onChangedSelectile()">
+										(emitOnChangedSelectile)="onChangedSelectile($event)">
 											
 					</klass-filter-tile>
 
@@ -77,14 +74,11 @@
 							class="pull-right form-control cc-panel-search" 
 							placeholder="수업을 검색해보세요" 
 							#searchBox
-							(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
-							(keyup)="onKeyupSearchInput(searchBox.value)">
+							(keyup.enter)="onKeyupEnterSearch(searchBox.value, searchBox, selectile)"
+							(keyup)="onKeyupSearchInput(searchBox.value, searchBox, selectile)">
 
 				</div>
 			</div>
-			-->
-
-
 
 		</div>
 	</div>

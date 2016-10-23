@@ -1,18 +1,20 @@
 import {  Component, 
           OnInit, 
           EventEmitter, 
-          Output }      from '@angular/core';
-import { Location }               from '@angular/common';
+          Output }              from '@angular/core';
+import { Location }             from '@angular/common';
 
-import { KlassService }                    from './klass.service';
+import { Subject }              from 'rxjs/Subject';
 
-import { KlassLevel }                      from './klass-level';
-import { KlassStation }                    from './klass-station';
-import { KlassDay }                        from './klass-day';
-import { KlassTime }                       from './klass-time';
+import { KlassService }         from './klass.service';
 
-import { KlassSelectile }                  from './klass-selectile';
-import { KlassSelectileRow }                  from './klass-selectile-row';
+import { KlassLevel }           from './klass-level';
+import { KlassStation }         from './klass-station';
+import { KlassDay }             from './klass-day';
+import { KlassTime }            from './klass-time';
+
+import { KlassSelectile }       from './klass-selectile';
+import { KlassSelectileRow }    from './klass-selectile-row';
 
 @Component({
   moduleId: module.id,
@@ -21,6 +23,9 @@ import { KlassSelectileRow }                  from './klass-selectile-row';
   styleUrls: [ 'klass-filter-tile.component.css' ]
 })
 export class KlassFilterTileComponent implements OnInit {
+
+  // Observable Selectile 
+  klassSelectileSubject = new Subject();
 
   // Level
   klassLevels: KlassLevel[];
@@ -70,6 +75,21 @@ export class KlassFilterTileComponent implements OnInit {
     });
 
     this.emitOnInitKlassList.emit();
+
+    var _self = this;
+    this.klassSelectileSubject.subscribe(
+      function (x) {
+        _self.updateShowingSelectile(x);
+      },
+      function (err) {
+        // error report
+        console.log('Error: ' + err);
+      },
+      function () {
+        console.log('Completed');
+      }
+    );
+
   }
   private setTime(times:any[]) {
 
@@ -233,8 +253,20 @@ export class KlassFilterTileComponent implements OnInit {
     this.showSelectile(null, null, -1);
   }
   clickSelectile(event, selectile) :void {
-
     event.stopPropagation();
+
+    if(null == selectile) {
+      // error report
+      return;
+    }
+    this.updateShowingSelectile(selectile);
+  }
+  updateShowingSelectile(selectile) :void {
+
+    if(null == selectile) {
+      // error report
+      return;
+    }
 
     let hasChanged = false;
     if(selectile instanceof KlassLevel) {
