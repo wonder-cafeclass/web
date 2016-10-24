@@ -371,6 +371,11 @@ var KlassListComponent = (function () {
         // Navigate with relative link
         // this.router.navigate([cclass.id], { relativeTo: this.route });
     };
+    KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
+        // if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
+        //   classImage.src = klassObj.class_img_err_url;
+        // }
+    };
     KlassListComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

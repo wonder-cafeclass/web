@@ -4,50 +4,7 @@
 	<!-- Search Input Component -->
 	<div class="row">
 		<div class="col-md-12 cc-div-col">
-			
-			<!-- REMOVE ME -->
-			<!-- 
-			<div class="list-group">
-				<button 	type="button" 
-							class="list-group-item cc-panel-filter"
-							(click)="onClickSearchInput($event, searchBox)"
-							(mouseleave)="onMouseLeaveSearchInput($event, searchBox)">
-					
-					<klass-filter-tile 	#selectile 
-										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
-										(emitOnChangedSelectile)="onChangedSelectile($event)">
-											
-					</klass-filter-tile>
-
-					<div (mouseenter)="onMouseenterMagnifier()" (mouseleave)="onMouseleaveMagnifier()">
-						<img 	*ngIf="!isOverMagnifier"
-								[class.search_disabled]="!isSearchEnabled"
-								[class.search_enabled]="isSearchEnabled"
-								src="assets/images/search/magnifier.svg" 
-								class="pull-right cc-img-magnifier">
-						<img 	*ngIf="isOverMagnifier"
-								src="assets/images/search/magnifier_focus.svg" 
-								class="pull-right cc-img-magnifier">
-					</div>
-
-					<input 	id="search-box" 
-							class="pull-right form-control cc-panel-search" 
-							placeholder="수업을 검색해보세요" 
-							#searchBox
-							(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
-							(keyup)="onKeyupSearchInput(searchBox.value, searchBox, selectile)">
-
-				</button>
-				<button *ngFor="let recommend of recommendList" 
-						type="button" 
-						class="list-group-item cc-panel-filter">		
-					{{recommend.getHtmlTag()}}
-				</button>
-			</div>
-			-->
-
-
-			<!-- REFACTOR ME -->
+		
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
 				<div 	class="panel-body" 
 						(mouseleave)="onMouseLeaveSearchInput($event, searchBox)"
@@ -92,30 +49,83 @@
 		</div>
 
 		<div class="col-md-3 cc-div-col" *ngFor="let cclass of cclasses" (click)="onSelectKlass(cclass)">
+
+			<ul class="list-group">
+				<li class="list-group-item klass-row-image">
+					<img 	#classImage 
+							class="cc-img-class" 
+							width="100%;" 
+							src={{cclass.class_img_url}} 
+							(error)="onLoadFailClassImage(classImage, cclass)" 
+							alt={{cclass.title}}>
+					<div class="klass-title-overlay">
+						<h5><strong>{{cclass.title}}</strong></h5>
+					</div>
+					<div class="klass-title-overlay-bg">
+					</div>
+				</li>
+				<!--
+				<li class="list-group-item klass-row-next-image">
+					<div class="caption">
+						<h5 class="klass-title"><strong>{{cclass.title}}</strong></h5>
+					</div>
+				</li>
+				-->
+				<li class="list-group-item">
+					<img 	*ngIf="cclass.level_img_url" 
+							src="{{cclass.level_img_url}}" 
+							alt="{{cclass.level_kor}}" 
+							class="img-circle cc-img-filter what">
+					<img 	*ngIf="cclass.venue_subway_station_img_url" 
+							src="{{cclass.venue_subway_station_img_url}}" 
+							alt="{{cclass.venue_subway_station}}" 
+							class="img-circle cc-img-filter">
+					<img 	*ngIf="cclass.days_img_url" 
+							src="{{cclass.days_img_url}}" 
+							alt="{{cclass.days_kor}}" 
+							class="img-circle cc-img-filter">
+					<img 	*ngIf="cclass.time_begin_img_url" 
+							src="{{cclass.time_begin_img_url}}" 
+							alt="{{cclass.time_begin_name}}" 
+							class="img-circle cc-img-filter">
+				</li>
+				<li class="list-group-item">
+					<div class="caption">
+						<p class="klass-desc">{{cclass.desc}}</p>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<h4 *ngIf="cclass.price_with_format=='0'" class="pull-right cc-price">&nbsp;</h4>
+					<h4 *ngIf="cclass.price_with_format!='0'" class="pull-right cc-price">{{cclass.price_with_format}} &#8361;</h4>
+
+					<a *ngIf="cclass.level_img_url" href="#" class="btn cc-btn" role="button">신청하기</a>
+					<a *ngIf="cclass.level_img_url" href="#" class="btn btn-default" role="button">
+						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+					</a>
+				</li>
+			</ul>
+			
+			<!-- 
 			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-border">
 				<div class="panel-heading cc-panel">
 					
-					<img class="cc-img-class" width="100%;" src={{cclass.class_img_url}} onerror="./assets/images/event/error.svg" alt={{cclass.title}}>
+					<img #classImage class="cc-img-class" width="100%;" src={{cclass.class_img_url}} (error)="onLoadFailClassImage(classImage, cclass)" alt={{cclass.title}}>
 
 					<div class="cc-class-filter">
 
-						<!-- LEVEL -->
 						<img 	*ngIf="cclass.level_img_url" 
 								src="{{cclass.level_img_url}}" 
 								alt="{{cclass.level_kor}}" 
 								class="img-circle cc-img-filter what">
-						<!-- PLACE / SUBWAY STATION -->
 						<img 	*ngIf="cclass.venue_subway_station_img_url" 
 								src="{{cclass.venue_subway_station_img_url}}" 
 								alt="{{cclass.venue_subway_station}}" 
 								class="img-circle cc-img-filter">
-						<!-- DAY -->
 						<img 	*ngIf="cclass.days_img_url" 
 								src="{{cclass.days_img_url}}" 
 								alt="{{cclass.days_kor}}" 
 								class="img-circle cc-img-filter">
-						<!-- TIME -->
-						<img 	*ngIf="cclass.days_img_url" 
+						<img 	*ngIf="cclass.time_begin_img_url" 
 								src="{{cclass.time_begin_img_url}}" 
 								alt="{{cclass.time_begin_name}}" 
 								class="img-circle cc-img-filter">
@@ -134,6 +144,7 @@
 
 				</div>
 			</div>
+			-->
 		</div>
 	  
 	</div>

@@ -461,6 +461,13 @@ export class KlassListComponent implements OnInit {
     // this.router.navigate([cclass.id], { relativeTo: this.route });
   }
 
+  onLoadFailClassImage(classImage, klassObj) {
+
+    // if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
+    //   classImage.src = klassObj.class_img_err_url;
+    // }
+  }
+
 
 
 }

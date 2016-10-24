@@ -39,6 +39,9 @@ class Klass extends REST_Controller implements MY_Class{
         // init database
         $this->load->database();
 
+        // init path util
+        $this->load->library('MY_Path');
+
         // init error logger
         $this->load->library('MY_Error');
 
@@ -823,13 +826,20 @@ class Klass extends REST_Controller implements MY_Class{
         foreach ($rows as $row)
         {
             // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($const_map);
-            $row->level_img_url($const_map);
-            $row->days_img_url($const_map);
-            $row->venue_subway_station_img_url($const_map);
-            $row->venue_cafe_logo_img_url($const_map);
+            $row->time_begin_img_url($const_map, $this->my_path);
+            $row->level_img_url($const_map, $this->my_path);
+            $row->days_img_url($const_map, $this->my_path);
+            $row->venue_subway_station_img_url($const_map, $this->my_path);
+            $row->venue_cafe_logo_img_url($const_map, $this->my_path);
             $row->price_with_format();
             $row->weeks_to_months();
+
+            $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
+
+            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
+
+            // TEST
+            $row->class_img_url = $this->my_path->get("/assets/images/class/test.jpg");
             
             array_push($output, $row);
         }
