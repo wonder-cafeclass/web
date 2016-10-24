@@ -1,13 +1,15 @@
 <div>
 	<!-- Select Tile -->
 	<div class="selectile-container">
-
-		<table *ngIf="selectileTable" (mouseleave)="leaveTable()" class="table selectile-table" style="z-index:100;">
+		<table 	*ngIf="selectileTable" 
+				(mouseleave)="leaveTable()"
+				class="table selectile-table" 
+				style="z-index:100;">
 			<tbody> 
 				<tr *ngFor="let row of selectileTable"> 
 					<td 	*ngFor="let selectile of row" 
 							(mouseenter)="enterSelectile(selectile)"
-							(mouseleave)="leaveSelectile(selectile)"
+							(mouseleave)="leaveSelectile(selectile)"	
 							class="selectile-td">
 						<div *ngIf=(selectile.img_url) (click)="clickSelectile($event, selectile)" style="float:left;">
 							<img src={{selectile.img_url}} class="selectile-img">
