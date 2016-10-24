@@ -29,11 +29,8 @@ export class KlassService {
 
     searchKlassList (level:string, station:string, day:string, time:string, q:string): Promise<CClass[]> {
 
-        // 쿼리의 공백 단위 분리
-        // 구분자추가 
-        // 검색 단어는 10글자가 넘을 수 없음.
-
-        let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ q }`;
+        let qEncoded = encodeURIComponent(q);
+        let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
 
         console.log("TEST / req_url ::: ",req_url);
 
@@ -101,5 +98,8 @@ export class KlassService {
         }
     }
     */
+
+    // TODO - selectile의 해당 사항이 없는 항목들은 제외 시켜야 함.
+    // TODO - 4가지 주요 선택 항목에 대해서는 DB indexing이 필요함.
 
 }

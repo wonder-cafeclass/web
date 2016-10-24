@@ -39,6 +39,9 @@ class Klass extends REST_Controller implements MY_Class{
         // init database
         $this->load->database();
 
+        // init path util
+        $this->load->library('MY_Path');
+
         // init error logger
         $this->load->library('MY_Error');
 
@@ -188,13 +191,13 @@ class Klass extends REST_Controller implements MY_Class{
         }
 
         // CHECKS PARAMS
-        $q = $this->my_paramchecker->get('q','klass_query');
-        $level = $this->my_paramchecker->get('level','klass_level');
-        $station = $this->my_paramchecker->get('station','klass_station');
-        $day = $this->my_paramchecker->get('day','klass_day');
-        $time = $this->my_paramchecker->get('time','klass_time');
-        $check_list = $this->my_paramchecker->get_check_list();
         $extra = array();
+        $extra['q'] = $q = $this->my_paramchecker->get('q','klass_query');
+        $extra['level'] = $level = $this->my_paramchecker->get('level','klass_level');
+        $extra['station'] = $station = $this->my_paramchecker->get('station','klass_station');
+        $extra['day'] = $day = $this->my_paramchecker->get('day','klass_day');
+        $extra['time'] = $time = $this->my_paramchecker->get('time','klass_time');
+        $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
 
         // DB QUERY
         // 유효한 파라미터들만 검색에 사용한다.
@@ -210,6 +213,36 @@ class Klass extends REST_Controller implements MY_Class{
         if(isset($day))
         {
             $this->db->where('days', $day);
+        }
+        if(isset($q)) 
+        {
+            $keyword_list = explode("|",$q);
+            $extra['keyword_list'] = $keyword_list;
+
+            $like_cnt = 0;
+            for ($i=0; $i < count($keyword_list); $i++) 
+            { 
+                $keyword = $keyword_list[$i];
+
+                if(empty($keyword)) 
+                {
+                    continue;
+                }
+
+                if(0 === $like_cnt) 
+                {
+                    // escaped automatically in 'like' or 'or_like'
+                    $this->db->like('title', $keyword);
+                    $this->db->or_like('desc', $keyword);
+                }
+                else
+                {
+                    $this->db->or_like('title', $keyword);
+                    $this->db->or_like('desc', $keyword);
+                }
+
+                $like_cnt++;
+            }
         }
         // Set time range
         // 시간 관련 검색은 범위를 가져와야 한다.
@@ -251,7 +284,7 @@ class Klass extends REST_Controller implements MY_Class{
 
         // RESULT
         $classes = $query->result();
-        $last_query = "";
+        $last_query = $this->db->last_query();
         if (!empty($classes))
         {
             $last_query = $this->db->last_query();
@@ -793,13 +826,20 @@ class Klass extends REST_Controller implements MY_Class{
         foreach ($rows as $row)
         {
             // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($const_map);
-            $row->level_img_url($const_map);
-            $row->days_img_url($const_map);
-            $row->venue_subway_station_img_url($const_map);
-            $row->venue_cafe_logo_img_url($const_map);
+            $row->time_begin_img_url($const_map, $this->my_path);
+            $row->level_img_url($const_map, $this->my_path);
+            $row->days_img_url($const_map, $this->my_path);
+            $row->venue_subway_station_img_url($const_map, $this->my_path);
+            $row->venue_cafe_logo_img_url($const_map, $this->my_path);
             $row->price_with_format();
             $row->weeks_to_months();
+
+            $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
+
+            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
+
+            // TEST
+            $row->class_img_url = $this->my_path->get("/assets/images/class/test.jpg");
             
             array_push($output, $row);
         }

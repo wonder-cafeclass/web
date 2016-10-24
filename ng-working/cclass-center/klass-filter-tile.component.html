@@ -9,7 +9,7 @@
 							(mouseenter)="enterSelectile(selectile)"
 							(mouseleave)="leaveSelectile(selectile)"
 							class="selectile-td">
-						<div *ngIf=(selectile.img_url) (click)="clickSelectile(selectile)" style="float:left;">
+						<div *ngIf=(selectile.img_url) (click)="clickSelectile($event, selectile)" style="float:left;">
 							<img src={{selectile.img_url}} class="selectile-img">
 						</div>
 						<div 	*ngIf=(selectile)

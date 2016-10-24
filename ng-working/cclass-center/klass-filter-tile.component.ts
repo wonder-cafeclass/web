@@ -1,18 +1,20 @@
 import {  Component, 
           OnInit, 
           EventEmitter, 
-          Output }      from '@angular/core';
-import { Location }               from '@angular/common';
+          Output }              from '@angular/core';
+import { Location }             from '@angular/common';
 
-import { KlassService }                    from './klass.service';
+import { Subject }              from 'rxjs/Subject';
 
-import { KlassLevel }                      from './klass-level';
-import { KlassStation }                    from './klass-station';
-import { KlassDay }                        from './klass-day';
-import { KlassTime }                       from './klass-time';
+import { KlassService }         from './klass.service';
 
-import { KlassSelectile }                  from './klass-selectile';
-import { KlassSelectileRow }                  from './klass-selectile-row';
+import { KlassLevel }           from './klass-level';
+import { KlassStation }         from './klass-station';
+import { KlassDay }             from './klass-day';
+import { KlassTime }            from './klass-time';
+
+import { KlassSelectile }       from './klass-selectile';
+import { KlassSelectileRow }    from './klass-selectile-row';
 
 @Component({
   moduleId: module.id,
@@ -21,6 +23,9 @@ import { KlassSelectileRow }                  from './klass-selectile-row';
   styleUrls: [ 'klass-filter-tile.component.css' ]
 })
 export class KlassFilterTileComponent implements OnInit {
+
+  // Observable Selectile 
+  klassSelectileSubject = new Subject();
 
   // Level
   klassLevels: KlassLevel[];
@@ -36,7 +41,10 @@ export class KlassFilterTileComponent implements OnInit {
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
 
   // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
-  @Output() onChangedSelectile = new EventEmitter<any>();
+  @Output() emitOnChangedSelectile = new EventEmitter<any>();
+
+  // 컴포넌트 로딩 완료 이벤트 발사!
+  @Output() emitOnInitKlassList = new EventEmitter<void>();
 
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
@@ -65,6 +73,22 @@ export class KlassFilterTileComponent implements OnInit {
       this.showSelectile(null, null, -1);    
 
     });
+
+    this.emitOnInitKlassList.emit();
+
+    var _self = this;
+    this.klassSelectileSubject.subscribe(
+      function (x) {
+        _self.updateShowingSelectile(x);
+      },
+      function (err) {
+        // error report
+        console.log('Error: ' + err);
+      },
+      function () {
+        console.log('Completed');
+      }
+    );
 
   }
   private setTime(times:any[]) {
@@ -228,28 +252,66 @@ export class KlassFilterTileComponent implements OnInit {
     this.isEnterST = false;
     this.showSelectile(null, null, -1);
   }
-  clickSelectile(selectile) :void {
+  clickSelectile(event, selectile) :void {
+    event.stopPropagation();
 
+    if(null == selectile) {
+      // error report
+      return;
+    }
+    this.updateShowingSelectile(selectile);
+  }
+  updateShowingSelectile(selectile) :void {
+
+    if(null == selectile) {
+      // error report
+      return;
+    }
+
+    let hasChanged = false;
     if(selectile instanceof KlassLevel) {
-      this.klassLevelSelected = selectile;
+
+      if(this.klassLevelSelected.key !== selectile.key) {
+        this.klassLevelSelected = selectile;  
+        hasChanged = true;
+      }
+      
     } else if(selectile instanceof KlassStation) {
-      this.klassStationSelected = selectile;
+
+      if(this.klassStationSelected.key !== selectile.key) {
+        this.klassStationSelected = selectile;  
+        hasChanged = true;
+      }
+
     } else if(selectile instanceof KlassDay) {
-      this.klassDaySelected = selectile;
+
+      if(this.klassDaySelected.key !== selectile.key) {
+        this.klassDaySelected = selectile;  
+        hasChanged = true;
+      }
+
     } else if(selectile instanceof KlassTime) {
-      this.klassTimeSelected = selectile;
+
+      if(this.klassTimeSelected.key !== selectile.key) {
+        this.klassTimeSelected = selectile;  
+        hasChanged = true;
+      }
+
     }
 
     this.leaveTable();
 
-    // TEST
-    this.emitChangedSelectile();
+    if(hasChanged) {
+      // 이전과 다른 값을 선택한 경우에만 리스트를 조회한다.
+      this.emitChangedSelectile();
+    }
   }
   emitChangedSelectile() :void {
     // 변경된 selectile의 값을 전달한다.
     var selectileList:any[] = this.getFocusedSelectiles();
-    this.onChangedSelectile.emit(selectileList);
+    this.emitOnChangedSelectile.emit(selectileList);
   }
+  // emitOnChangedSelectile
   public getFocusedSelectiles() :any[] {
     var selectileList:any[] = 
     [

@@ -67,45 +67,10 @@ class KlassCourse {
         public $class_status;
         // 이미지 링크    
         public $class_img_url;
+        // 이미지 에러 링크    
+        public $class_img_err_url;
 
-        /*
-        public function get_time_begin_name($const_map=null, $time_begin="")
-        {
-                if(!isset($const_map)) 
-                {
-                        return;
-                }
-                if(!isset($this->time_begin)) 
-                {
-                        return;
-                }
-
-                $military_hours = date("H", strtotime($time_begin));
-                $time_begin_name = "";
-                if(6 <= $military_hours && $military_hours < 12) 
-                {
-                        // 오전
-                        $this->time_begin_name = $class_time_list[0];
-                } 
-                else if(12 <= $military_hours && $military_hours < 14) 
-                {
-                        // 점심
-                        $this->time_begin_name = $class_time_list[1];
-                }
-                else if(14 <= $military_hours && $military_hours < 18) 
-                {
-                        // 오후
-                        $this->time_begin_name = $class_time_list[2];
-                }
-                else if(18 <= $military_hours && $military_hours < 20) 
-                {
-                        // 저녁
-                        $this->time_begin_name = $class_time_list[3];
-                }
-        }
-        */
-
-        public function time_begin_img_url($const_map=null)
+        public function time_begin_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
                 {
@@ -123,6 +88,11 @@ class KlassCourse {
                 {
                         return;
                 }
+                if(!isset($my_path)) 
+                {
+                        return;
+                }
+
                 $time_begin = $this->time_begin;
 
                 $military_hours = date("H", strtotime($time_begin));
@@ -159,9 +129,15 @@ class KlassCourse {
                         $this->time_begin_name = $class_times_list[0];
                         $this->time_begin_img_url = $class_times_img_url_list[0];
                 }
+
+                if(!empty($this->time_begin_img_url))
+                {
+
+                        $this->time_begin_img_url = $my_path->get($this->time_begin_img_url);
+                }
         }
 
-        public function level_img_url($const_map=null)
+        public function level_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
                 {
@@ -187,6 +163,11 @@ class KlassCourse {
                 {
                         return;
                 }
+                if(!isset($my_path)) 
+                {
+                        return;
+                }
+
                 $class_level = $this->level;
 
                 $class_level_list = $const_map->{"class_level_list"};
@@ -219,9 +200,14 @@ class KlassCourse {
                         $this->level_kor = $class_level_kor_list[$idx_selected];
                         $this->level_img_url = $class_level_img_url_list[$idx_selected];
                 }
+
+                if(!empty($this->level_img_url))
+                {
+                        $this->level_img_url = $my_path->get($this->level_img_url);
+                }
         } 
 
-        public function days_img_url($const_map=null)
+        public function days_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
                 {
@@ -240,6 +226,10 @@ class KlassCourse {
                         return;
                 }
                 if(!isset($const_map->{"class_days_img_url_list"})) 
+                {
+                        return;
+                }
+                if(!isset($my_path)) 
                 {
                         return;
                 }
@@ -285,9 +275,15 @@ class KlassCourse {
                                 $this->days_img_url .= "|".$class_days_img_url_list[$selected_idx];
                         }
                 }
+
+                // 이미지가 여러개일 경우의 문제있음.
+                if(!empty($this->days_img_url))
+                {
+                        $this->days_img_url = $my_path->get($this->days_img_url);
+                }
         }  
 
-        public function venue_subway_station_img_url($const_map=null)
+        public function venue_subway_station_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
                 {
@@ -298,6 +294,10 @@ class KlassCourse {
                         return;
                 }
                 if(!isset($const_map->{"class_venue_subway_station_img_url_list"})) 
+                {
+                        return;
+                }
+                if(!isset($my_path)) 
                 {
                         return;
                 }
@@ -324,16 +324,23 @@ class KlassCourse {
                 if(!(0 < $idx_selected)) 
                 {
                         // 선택한 항목이 없다. 기본 이미지를 돌려준다.
-                        $this->venue_subway_station_img_url = $class_venue_subway_station_img_url_list[0];
+                        $this->venue_subway_station_img_url = 
+                        $class_venue_subway_station_img_url_list[0];
                 }
                 else
                 {
                         // 선택한 항목이 없다. 기본 이미지를 돌려준다.
-                        $this->venue_subway_station_img_url = $class_venue_subway_station_img_url_list[$idx_selected];
+                        $this->venue_subway_station_img_url = 
+                        $class_venue_subway_station_img_url_list[$idx_selected];
+                }
+
+                if(!empty($this->venue_subway_station_img_url))
+                {
+                        $this->venue_subway_station_img_url = $my_path->get($this->venue_subway_station_img_url);
                 }
         }   
 
-        public function venue_cafe_logo_img_url($const_map=null)
+        public function venue_cafe_logo_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
                 {
@@ -344,6 +351,10 @@ class KlassCourse {
                         return;
                 }
                 if(!isset($const_map->{"class_venue_cafe_img_url_list"})) 
+                {
+                        return;
+                }
+                if(!isset($my_path)) 
                 {
                         return;
                 }
@@ -376,6 +387,11 @@ class KlassCourse {
                 {
                         // 선택한 항목이 없다. 기본 이미지를 돌려준다.
                         $this->venue_cafe_logo_img_url = $class_venue_cafe_img_url_list[$idx_selected];
+                }
+
+                if(!empty($this->venue_cafe_logo_img_url))
+                {
+                        $this->venue_cafe_logo_img_url = $my_path->get($this->venue_cafe_logo_img_url);
                 }
         } 
 

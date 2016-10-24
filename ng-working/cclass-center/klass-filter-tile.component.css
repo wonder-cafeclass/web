@@ -28,6 +28,9 @@
     float: left;
     position: absolute;
     width:200px;
+    margin: 0px;
+    top: 5px;
+    left: 5px;
 }
 .st_shadow_ul {
     margin: 0px;

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
+var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./klass.service');
 var klass_level_1 = require('./klass-level');
 var klass_station_1 = require('./klass-station');
@@ -19,8 +20,12 @@ var KlassFilterTileComponent = (function () {
     function KlassFilterTileComponent(service, location) {
         this.service = service;
         this.location = location;
+        // Observable Selectile 
+        this.klassSelectileSubject = new Subject_1.Subject();
         // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
-        this.onChangedSelectile = new core_1.EventEmitter();
+        this.emitOnChangedSelectile = new core_1.EventEmitter();
+        // 컴포넌트 로딩 완료 이벤트 발사!
+        this.emitOnInitKlassList = new core_1.EventEmitter();
         this.stColCntPerRow = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
         this.isEnterST = false;
     }
@@ -36,6 +41,16 @@ var KlassFilterTileComponent = (function () {
             _this.setDay(selectileInfo["days"]);
             _this.setTime(selectileInfo["times"]);
             _this.showSelectile(null, null, -1);
+        });
+        this.emitOnInitKlassList.emit();
+        var _self = this;
+        this.klassSelectileSubject.subscribe(function (x) {
+            _self.updateShowingSelectile(x);
+        }, function (err) {
+            // error report
+            console.log('Error: ' + err);
+        }, function () {
+            console.log('Completed');
         });
     };
     KlassFilterTileComponent.prototype.setTime = function (times) {
@@ -155,28 +170,56 @@ var KlassFilterTileComponent = (function () {
         this.isEnterST = false;
         this.showSelectile(null, null, -1);
     };
-    KlassFilterTileComponent.prototype.clickSelectile = function (selectile) {
+    KlassFilterTileComponent.prototype.clickSelectile = function (event, selectile) {
+        event.stopPropagation();
+        if (null == selectile) {
+            // error report
+            return;
+        }
+        this.updateShowingSelectile(selectile);
+    };
+    KlassFilterTileComponent.prototype.updateShowingSelectile = function (selectile) {
+        if (null == selectile) {
+            // error report
+            return;
+        }
+        var hasChanged = false;
         if (selectile instanceof klass_level_1.KlassLevel) {
-            this.klassLevelSelected = selectile;
+            if (this.klassLevelSelected.key !== selectile.key) {
+                this.klassLevelSelected = selectile;
+                hasChanged = true;
+            }
         }
         else if (selectile instanceof klass_station_1.KlassStation) {
-            this.klassStationSelected = selectile;
+            if (this.klassStationSelected.key !== selectile.key) {
+                this.klassStationSelected = selectile;
+                hasChanged = true;
+            }
         }
         else if (selectile instanceof klass_day_1.KlassDay) {
-            this.klassDaySelected = selectile;
+            if (this.klassDaySelected.key !== selectile.key) {
+                this.klassDaySelected = selectile;
+                hasChanged = true;
+            }
         }
         else if (selectile instanceof klass_time_1.KlassTime) {
-            this.klassTimeSelected = selectile;
+            if (this.klassTimeSelected.key !== selectile.key) {
+                this.klassTimeSelected = selectile;
+                hasChanged = true;
+            }
         }
         this.leaveTable();
-        // TEST
-        this.emitChangedSelectile();
+        if (hasChanged) {
+            // 이전과 다른 값을 선택한 경우에만 리스트를 조회한다.
+            this.emitChangedSelectile();
+        }
     };
     KlassFilterTileComponent.prototype.emitChangedSelectile = function () {
         // 변경된 selectile의 값을 전달한다.
         var selectileList = this.getFocusedSelectiles();
-        this.onChangedSelectile.emit(selectileList);
+        this.emitOnChangedSelectile.emit(selectileList);
     };
+    // emitOnChangedSelectile
     KlassFilterTileComponent.prototype.getFocusedSelectiles = function () {
         var selectileList = [
             this.klassLevelSelected,
@@ -350,7 +393,11 @@ var KlassFilterTileComponent = (function () {
         // 사용자가 선택한 클래스 레벨 
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], KlassFilterTileComponent.prototype, "onChangedSelectile", void 0);
+    ], KlassFilterTileComponent.prototype, "emitOnChangedSelectile", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], KlassFilterTileComponent.prototype, "emitOnInitKlassList", void 0);
     KlassFilterTileComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
