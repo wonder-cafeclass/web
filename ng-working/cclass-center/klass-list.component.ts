@@ -73,51 +73,8 @@ export class KlassListComponent implements OnInit {
     })
     ;
   }
-  // REMOVE ME
-/*
-  clickSearch(selectileList, searchKeyword:string): void {
 
-    if(!this.isSearchEnabled) {
-      return;
-    }
-
-    let klassLevel:KlassLevel;
-    let klassStation:KlassStation;
-    let klassDay:KlassDay;
-    let klassTime:KlassTime;
-
-    for (var i = 0; i < selectileList.length; ++i) {
-      let selectile = selectileList[i];
-      if(selectile instanceof KlassLevel) {
-
-        klassLevel = selectile;
-        
-      } else if(selectile instanceof KlassStation) {
-
-        klassStation = selectile;
-
-      } else if(selectile instanceof KlassDay) {
-
-        klassDay = selectile;
-
-      } else if(selectile instanceof KlassTime) {
-
-        klassTime = selectile;
-
-      } // end if
-    } // end for
-    
-    this.search(
-      klassLevel,
-      klassStation,
-      klassDay,
-      klassTime,
-      searchKeyword
-    );
-  }
-*/
   onInitKlassFilterTile(searchBox) {
-    console.log("TEST / 002");
     searchBox.focus();
   }
 
@@ -141,10 +98,6 @@ export class KlassListComponent implements OnInit {
       timeKey = time.key;
     }
 
-    // wonder.jung
-    // keyword 안전성 검사 및 param 만들기(구분자추가)
-
-    // TEST
     let keywordList:string[] = searchKeyword.split(" ");
     let searchKeywordSafe = "";
 
@@ -201,20 +154,31 @@ export class KlassListComponent implements OnInit {
 
   }
 
-  onChangedSelectile(selectiles:any[]) {
+  onChangedSelectile(selectileMap, searchBox) {
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
     // this.isSearchEnabled = true;
 
-    if(null == selectiles || 0 === selectiles.length) {
+    if(null == selectileMap) {
       // error report
       console.log("!Error! / onChangedSelectile");
       return;
     }
 
-    console.log("onChangedSelectile / selectiles : ",selectiles);
+    console.log("onChangedSelectile / selectileMap : ",selectileMap);
+
+    // wonder.jung
 
     // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
     // this.search(selectiles, "");
+
+    this.search(
+      selectileMap.level,
+      selectileMap.station,
+      selectileMap.day,
+      selectileMap.time,
+      searchBox.value
+    );
+
   }
   onClickSearchInput(event, searchBox) {
     event.stopPropagation();
@@ -235,29 +199,13 @@ export class KlassListComponent implements OnInit {
 
     let selectileList = null;
 
-    console.log("onKeyupEnterSearch / selectile :: ",selectile);
-
     this.search(
       selectile.klassLevelSelected,
       selectile.klassStationSelected,
-      selectile.klassTimeSelected,
       selectile.klassDaySelected,
+      selectile.klassTimeSelected,
       searchBox.value
     );
-
-    // REMOVE ME
-    /*
-    this.clickSearch(
-      selectile.klassLevelSelected,
-      selectile.klassStationSelected,
-      selectile.klassTimeSelected,
-      selectile.klassDaySelected,
-      keywordsFromUser
-    );
-    */
-
-    // wonder.jung
-    // this.clickSearch(selectileList, keywordsFromUser);
   }
   private keywordMap;
   private isSafeSelectile(selectile) {

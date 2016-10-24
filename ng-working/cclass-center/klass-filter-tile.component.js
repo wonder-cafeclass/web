@@ -216,18 +216,18 @@ var KlassFilterTileComponent = (function () {
     };
     KlassFilterTileComponent.prototype.emitChangedSelectile = function () {
         // 변경된 selectile의 값을 전달한다.
-        var selectileList = this.getFocusedSelectiles();
-        this.emitOnChangedSelectile.emit(selectileList);
+        var selectileMap = this.getFocusedSelectiles();
+        this.emitOnChangedSelectile.emit(selectileMap);
     };
     // emitOnChangedSelectile
     KlassFilterTileComponent.prototype.getFocusedSelectiles = function () {
-        var selectileList = [
-            this.klassLevelSelected,
-            this.klassStationSelected,
-            this.klassDaySelected,
-            this.klassTimeSelected
-        ];
-        return selectileList;
+        var selectileMap = {
+            level: this.klassLevelSelected,
+            station: this.klassStationSelected,
+            day: this.klassDaySelected,
+            time: this.klassTimeSelected
+        };
+        return selectileMap;
     };
     KlassFilterTileComponent.prototype.setShadowRows = function (targetList) {
         if (1 < targetList.length) {

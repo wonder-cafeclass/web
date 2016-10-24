@@ -308,20 +308,20 @@ export class KlassFilterTileComponent implements OnInit {
   }
   emitChangedSelectile() :void {
     // 변경된 selectile의 값을 전달한다.
-    var selectileList:any[] = this.getFocusedSelectiles();
-    this.emitOnChangedSelectile.emit(selectileList);
+    var selectileMap = this.getFocusedSelectiles();
+    this.emitOnChangedSelectile.emit(selectileMap);
   }
   // emitOnChangedSelectile
-  public getFocusedSelectiles() :any[] {
-    var selectileList:any[] = 
-    [
-      this.klassLevelSelected,
-      this.klassStationSelected,
-      this.klassDaySelected,
-      this.klassTimeSelected
-    ];
+  public getFocusedSelectiles() :any {
+    var selectileMap = 
+    {
+      level:this.klassLevelSelected,
+      station:this.klassStationSelected,
+      day:this.klassDaySelected,
+      time:this.klassTimeSelected
+    };
 
-    return selectileList;
+    return selectileMap;
   }
   private setShadowRows(targetList:any[]) :void {
     if(1 < targetList.length) {
