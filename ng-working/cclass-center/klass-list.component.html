@@ -16,7 +16,9 @@
 											
 					</klass-filter-tile>
 
-					<div (mouseenter)="onMouseenterMagnifier()" (mouseleave)="onMouseleaveMagnifier()">
+					<div 	(mouseenter)="onMouseenterMagnifier()" 
+							(mouseleave)="onMouseleaveMagnifier()" 
+							(click)="onKeyupEnterSearch(searchBox.value, searchBox, selectile)">
 						<img 	*ngIf="!isOverMagnifier"
 								[class.search_disabled]="!isSearchEnabled"
 								[class.search_enabled]="isSearchEnabled"
@@ -58,20 +60,13 @@
 							src={{cclass.class_img_url}} 
 							(error)="onLoadFailClassImage(classImage, cclass)" 
 							alt={{cclass.title}}>
-					<div class="klass-title-overlay">
+					<div *ngIf="cclass.title" class="klass-title-overlay">
 						<h5><strong>{{cclass.title}}</strong></h5>
 					</div>
-					<div class="klass-title-overlay-bg">
+					<div *ngIf="cclass.title" class="klass-title-overlay-bg">
 					</div>
 				</li>
-				<!--
-				<li class="list-group-item klass-row-next-image">
-					<div class="caption">
-						<h5 class="klass-title"><strong>{{cclass.title}}</strong></h5>
-					</div>
-				</li>
-				-->
-				<li class="list-group-item">
+				<li *ngIf="cclass.title" class="list-group-item">
 					<img 	*ngIf="cclass.level_img_url" 
 							src="{{cclass.level_img_url}}" 
 							alt="{{cclass.level_kor}}" 
@@ -89,12 +84,12 @@
 							alt="{{cclass.time_begin_name}}" 
 							class="img-circle cc-img-filter">
 				</li>
-				<li class="list-group-item">
+				<li *ngIf="cclass.desc" class="list-group-item">
 					<div class="caption">
 						<p class="klass-desc">{{cclass.desc}}</p>
 					</div>
 				</li>
-				<li class="list-group-item">
+				<li *ngIf="cclass.title" class="list-group-item">
 					<h4 *ngIf="cclass.price_with_format=='0'" class="pull-right cc-price">&nbsp;</h4>
 					<h4 *ngIf="cclass.price_with_format!='0'" class="pull-right cc-price">{{cclass.price_with_format}} &#8361;</h4>
 
