@@ -154,6 +154,7 @@ export class KlassListComponent implements OnInit {
 
   }
 
+  private prevSelectileMap = null;
   onChangedSelectile(selectileMap, searchBox) {
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
     // this.isSearchEnabled = true;
@@ -163,13 +164,6 @@ export class KlassListComponent implements OnInit {
       console.log("!Error! / onChangedSelectile");
       return;
     }
-
-    console.log("onChangedSelectile / selectileMap : ",selectileMap);
-
-    // wonder.jung
-
-    // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
-    // this.search(selectiles, "");
 
     this.search(
       selectileMap.level,
@@ -323,7 +317,24 @@ export class KlassListComponent implements OnInit {
       searchBox.value = keywordsSafe;
     }
 
-    if(null === keywordsFromUser || "" === keywordsFromUser || keywordsFromUser.length < 2) {
+    if( "" === keywordsFromUser && 
+        this.keywordsFromUserPrev !== keywordsFromUser) {
+
+      // 공백일 경우는, 필터만을 이용해서 검색하는 것으로 가정합니다.
+      this.keywordsFromUserPrev = keywordsFromUser;
+
+      this.search(
+        selectile.klassLevelSelected,
+        selectile.klassStationSelected,
+        selectile.klassDaySelected,
+        selectile.klassTimeSelected,
+        ""
+      );
+
+      return;
+    }
+
+    if(null === keywordsFromUser || keywordsFromUser.length < 2) {
       // 공백 및 1글자 입력은 처리하지 않습니다.
       return;
     } else if(!this.isSafeSelectile(selectile)) {
@@ -399,7 +410,6 @@ export class KlassListComponent implements OnInit {
     }
   }
 
-
   onSelectKlass(cclass: CClass) {
 
     // 유저가 수업을 선택했습니다.
@@ -410,10 +420,9 @@ export class KlassListComponent implements OnInit {
   }
 
   onLoadFailClassImage(classImage, klassObj) {
-
-    // if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
-    //   classImage.src = klassObj.class_img_err_url;
-    // }
+    if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
+      classImage.src = klassObj.class_img_err_url;
+    }
   }
 
 

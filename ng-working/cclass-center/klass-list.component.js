@@ -25,6 +25,7 @@ var KlassListComponent = (function () {
         this.searchTerms = new Subject_1.Subject();
         // EVENT
         this.isOverMagnifier = false;
+        this.prevSelectileMap = null;
     }
     KlassListComponent.prototype.isSelected = function (cclass) {
         return cclass.id === this.selectedId;
@@ -120,10 +121,6 @@ var KlassListComponent = (function () {
             console.log("!Error! / onChangedSelectile");
             return;
         }
-        console.log("onChangedSelectile / selectileMap : ", selectileMap);
-        // wonder.jung
-        // 유저가 검색 필드를 변경하면 변경된 값으로 리스트가 업데이트 됩니다.
-        // this.search(selectiles, "");
         this.search(selectileMap.level, selectileMap.station, selectileMap.day, selectileMap.time, searchBox.value);
     };
     KlassListComponent.prototype.onClickSearchInput = function (event, searchBox) {
@@ -244,7 +241,14 @@ var KlassListComponent = (function () {
         if (keywordsFromUser.length !== keywordsSafe.length) {
             searchBox.value = keywordsSafe;
         }
-        if (null === keywordsFromUser || "" === keywordsFromUser || keywordsFromUser.length < 2) {
+        if ("" === keywordsFromUser &&
+            this.keywordsFromUserPrev !== keywordsFromUser) {
+            // 공백일 경우는, 필터만을 이용해서 검색하는 것으로 가정합니다.
+            this.keywordsFromUserPrev = keywordsFromUser;
+            this.search(selectile.klassLevelSelected, selectile.klassStationSelected, selectile.klassDaySelected, selectile.klassTimeSelected, "");
+            return;
+        }
+        if (null === keywordsFromUser || keywordsFromUser.length < 2) {
             // 공백 및 1글자 입력은 처리하지 않습니다.
             return;
         }
@@ -314,9 +318,9 @@ var KlassListComponent = (function () {
         // this.router.navigate([cclass.id], { relativeTo: this.route });
     };
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
-        // if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
-        //   classImage.src = klassObj.class_img_err_url;
-        // }
+        if (null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
+            classImage.src = klassObj.class_img_err_url;
+        }
     };
     KlassListComponent = __decorate([
         core_1.Component({
