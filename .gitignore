@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 *.bak
 application/config/database.php
+
+CI/static/admin.json

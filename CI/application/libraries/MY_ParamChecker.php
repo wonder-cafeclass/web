@@ -35,14 +35,15 @@ class MY_ParamChecker {
             return;
         }
 
-
-
+        // REMOVE ME
+        /*
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
 
         $path_info = $_SERVER['PATH_INFO'];
 
         $http_host = $_SERVER['HTTP_HOST'];
         $req_uri = $_SERVER['REQUEST_URI'];
+        */
 
     	// Fetch ParamChecker.json
     	$param_check_json_str = "";
@@ -51,7 +52,9 @@ class MY_ParamChecker {
     	if(file_exists($target_path)) 
     	{
 			$param_check_json_str = file_get_contents($target_path);
-    	} else {
+    	} 
+        else 
+        {
             $this->CI->my_error->add(
                 // $class_name=""
                 static::class,
@@ -103,8 +106,6 @@ class MY_ParamChecker {
             );
             return;            
         }
-
-
     }
 
 

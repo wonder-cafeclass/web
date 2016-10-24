@@ -1,9 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit }	from '@angular/core';
+import { AuthService }          from './auth.service';
 
 @Component({
-  selector: 'my-app',
-  styleUrls: ['./ng-working/app.component.css'],
-  templateUrl: './ng-working/app.component.html'
+	moduleId: module.id,
+	selector: 'my-app',
+	styleUrls: ['app.component.css'],
+	templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+	// admin 여부를 판별합니다.
+	constructor(
+		private authService: AuthService
+	) {}
+
+	isAdmin:boolean=false;
+	ngOnInit(): void {
+		this.authService.getAdminAuth().then(
+			result => {
+				if(null != result.is_admin) {
+					this.isAdmin = result.is_admin;		
+				}
+			}
+		);
+	}
+
 }

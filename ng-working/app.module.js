@@ -18,6 +18,7 @@ var users_module_1 = require('./users/users.module');
 var cclass_center_module_1 = require('./cclass-center/cclass-center.module');
 var login_component_1 = require('./login/login.component');
 var dialog_service_1 = require('./widget/dialog.service');
+var auth_service_1 = require('./auth.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -39,6 +40,7 @@ var AppModule = (function () {
                 login_component_1.LoginComponent
             ],
             providers: [
+                auth_service_1.AuthService,
                 app_routing_1.appRoutingProviders,
                 dialog_service_1.DialogService
             ],

@@ -34,7 +34,7 @@ class Klass extends REST_Controller implements MY_Class{
 
         // Configure limits on our controller methods
         // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
-        $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
+        // $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
 
         // init database
         $this->load->database();

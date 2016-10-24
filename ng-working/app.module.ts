@@ -7,11 +7,12 @@ import { AppComponent }         from './app.component';
 import { routing,
          appRoutingProviders }  from './app.routing';
 
-import { UsersModule }         from './users/users.module';
+import { UsersModule }          from './users/users.module';
 import { CClassCenterModule }   from './cclass-center/cclass-center.module';
 
 import { LoginComponent }       from './login/login.component';
 import { DialogService }        from './widget/dialog.service';
+import { AuthService }          from './auth.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -32,6 +33,7 @@ import './rxjs-operators';
     LoginComponent
   ],
   providers: [
+    AuthService,
     appRoutingProviders,
     DialogService
   ],
