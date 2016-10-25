@@ -4,6 +4,8 @@ import { Component, OnInit, HostBinding,
 import { Router, ActivatedRoute }  from '@angular/router';
 
 import { Klass }                   from './model/klass';
+import { ImageService }            from '../util/image.service';
+
 import { DialogService }           from '../widget/dialog.service';
 
 @Component({
@@ -19,6 +21,7 @@ export class KlassDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public imageService: ImageService,
     public dialogService: DialogService
   ) { }
 

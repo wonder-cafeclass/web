@@ -11,6 +11,7 @@ import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
+import { ClockComponent }            from '../widget/clock/clock.component';
 
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 
@@ -27,7 +28,8 @@ import { klassCenterRouting }        from './klass-center.routing';
     KlassListComponent,
     KlassCenterHomeComponent,
     KlassDetailComponent,
-    KlassFilterTileComponent
+    KlassFilterTileComponent,
+    ClockComponent
   ],
   providers: [
     KlassService,

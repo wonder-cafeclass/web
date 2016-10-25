@@ -296,10 +296,6 @@ var KlassListComponent = (function () {
             this.isSearchEnabled = true;
         }
     };
-    KlassListComponent.prototype.onClickEnrollment = function (event, klass) {
-        event.stopPropagation();
-        console.log("onClickEnrollment / klass : ", klass);
-    };
     KlassListComponent.prototype.onClickWishList = function (event, klass) {
         event.stopPropagation();
         console.log("onClickWishList / klass : ", klass);

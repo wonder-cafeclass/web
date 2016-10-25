@@ -138,7 +138,6 @@ class KlassCourse {
 
                 if(!empty($this->time_begin_img_url))
                 {
-
                         $this->time_begin_img_url = $my_path->get($this->time_begin_img_url);
                 }
         }

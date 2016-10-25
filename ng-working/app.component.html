@@ -4,8 +4,8 @@
 	    <!-- Brand and toggle get grouped for better mobile display / box-shadow: 0 0 2px rgba(6,8,8,0.15);-->
 	    <div class="navbar-header">
 	      <a class="navbar-brand cc-logo-anchor" href="#">
-	      	<img *ngIf="isAdmin===true" class="watchtower" src="./assets/images/admin/watchtower.svg">
-	      	<img class="cc-logo-image" alt="Brand" src="./assets/images/cafeclass_logo_text_only.svg">
+	      	<img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
+	      	<img class="cc-logo-image" alt="Brand" src="{{imageService.get(imageService.cafeclassLogoUrl)}}">
 	      </a>
 	    </div>
 

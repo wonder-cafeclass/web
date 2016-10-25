@@ -1,6 +1,3 @@
-input {
-	width: 20em
-}
 .table.layout {
 	
 }
@@ -29,7 +26,7 @@ h5.font {
 .klass-title-overlay {
     position: relative;
     bottom: 52px;
-    color: #e85c41;
+    color: #fff;
     left: 0px;
     width: 400px;
     z-index: 100;
@@ -61,8 +58,16 @@ h5.font {
   margin-right: 10px;
 }
 .badge.klass {
-	font-size:16px;
-	color:#e85c41;
-	background-color:#ccc;
-	margin-right: 5px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #e85c41;
+    margin-right: 5px;
+}
+.klass-misc {
+    padding-left: 7px;
+    padding-bottom: 40px;
+    padding-top: 0px;
+    border-top: 0px;
 }
