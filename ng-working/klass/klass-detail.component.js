@@ -18,13 +18,12 @@ var KlassDetailComponent = (function () {
         this.dialogService = dialogService;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
-        console.log("TEST / detail - 001");
-        /*
-        this.route.data.forEach((data: { klass: Klass }) => {
-          this.editTitle = data.klass.title;
-          this.klass = data.klass;
+        var _this = this;
+        this.route.data.forEach(function (data) {
+            if (null != data.klass) {
+                _this.klass = data.klass;
+            }
         });
-        */
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

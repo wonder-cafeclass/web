@@ -10,12 +10,13 @@ export class KlassDetailResolve implements Resolve<Klass> {
   constructor(private ks: KlassService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Promise<Klass>|boolean {
+    
     let id = +route.params['id'];
 
     return this.ks.getKlass(id).then(klass => {
       if (klass) {
         return klass;
-      } else { // id not found
+      } else { // id not found. return to "class center"
         this.router.navigate(['/class-center']);
         return false;
       }

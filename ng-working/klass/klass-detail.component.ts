@@ -24,14 +24,14 @@ export class KlassDetailComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log("TEST / detail - 001");
-
-    /*
     this.route.data.forEach((data: { klass: Klass }) => {
-      this.editTitle = data.klass.title;
-      this.klass = data.klass;
+
+      if(null != data.klass) {
+        this.klass = data.klass;
+      }
+
     });
-    */
+
   }
 
   cancel() {

@@ -11,8 +11,12 @@ class KlassCourse {
         public $date_begin;
         // 시작시간
         public $time_begin;
-        // 시작시간 이미지
+        // 시작시간 이름
         public $time_begin_name;
+        // 시작시간 이름 - 영어
+        public $time_begin_name_eng;
+        // 시작시간 이름 - 한국어
+        public $time_begin_name_kor;
         // 시작시간 이미지
         public $time_begin_img_url;
         // 수업시간
@@ -97,38 +101,40 @@ class KlassCourse {
 
                 $military_hours = date("H", strtotime($time_begin));
                 $class_times_list = $const_map->{"class_times_list"};
+                $class_times_eng_list = $const_map->{"class_times_eng_list"};
+                $class_times_kor_list = $const_map->{"class_times_kor_list"};
                 $class_times_img_url_list = $const_map->{"class_times_img_url_list"};
 
                 if(6 <= $military_hours && $military_hours < 12) 
-                {
+                {       
                         // 오전
-                        $this->time_begin_name = $class_times_list[1];
-                        $this->time_begin_img_url = $class_times_img_url_list[1];
+                        $target_idx = 1;
                 } 
                 else if(12 <= $military_hours && $military_hours < 14) 
                 {
                         // 점심
-                        $this->time_begin_name = $class_times_list[2];
-                        $this->time_begin_img_url = $class_times_img_url_list[2];
+                        $target_idx = 2;
                 }
                 else if(14 <= $military_hours && $military_hours < 18) 
                 {
                         // 오후
-                        $this->time_begin_name = $class_times_list[3];
-                        $this->time_begin_img_url = $class_times_img_url_list[3];
+                        $target_idx = 3;
                 }
                 else if(18 <= $military_hours && $military_hours < 20) 
                 {
                         // 저녁
-                        $this->time_begin_name = $class_times_list[4];
-                        $this->time_begin_img_url = $class_times_img_url_list[4];
+                        $target_idx = 4;
                 }
                 else 
                 {
                         // TODO - Show Error - 지정된 시간이 없음.
-                        $this->time_begin_name = $class_times_list[0];
-                        $this->time_begin_img_url = $class_times_img_url_list[0];
+                        $target_idx = 0;
                 }
+
+                $this->time_begin_name = $class_times_list[$target_idx];
+                $this->time_begin_name_eng = $class_times_eng_list[$target_idx];
+                $this->time_begin_name_kor = $class_times_kor_list[$target_idx];
+                $this->time_begin_img_url = $class_times_img_url_list[$target_idx];
 
                 if(!empty($this->time_begin_img_url))
                 {
