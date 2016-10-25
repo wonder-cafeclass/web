@@ -50,6 +50,19 @@ var KlassDetailComponent = (function () {
         // Relative navigation back to the crises
         // this.router.navigate(['../', { id: klassId, foo: 'foo' }], { relativeTo: this.route });
     };
+    // EVENT
+    KlassDetailComponent.prototype.onClickEnrollment = function (event, klass) {
+        event.stopPropagation();
+        console.log("onClickEnrollment / klass ::: ", klass);
+    };
+    KlassDetailComponent.prototype.onClickWishList = function (event, klass) {
+        event.stopPropagation();
+        console.log("onClickEnrollment / klass ::: ", klass);
+    };
+    KlassDetailComponent.prototype.onClickYellowID = function (event, klass) {
+        event.stopPropagation();
+        console.log("onClickYellowID / klass ::: ", klass);
+    };
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

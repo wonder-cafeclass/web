@@ -25,7 +25,7 @@ export class Klass {
     public venue_subway_station_img_url: string;
     public venue_cafe: string;
     public venue_cafe_logo_img_url: string;
-    public venue_link: string;
+    public venue_map_link: string;
     public search_tag: string;
     public price: number;
     public price_with_format: string;

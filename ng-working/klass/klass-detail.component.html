@@ -65,6 +65,16 @@
                         src="{{klass.time_begin_img_url}}" 
                         alt="{{klass.time_begin_name}}" 
                         class="img-circle klass-img-filter">
+                    <img  *ngIf="klass.venue_cafe_logo_img_url" 
+                          src="{{klass.venue_cafe_logo_img_url}}" 
+                          alt="{{klass.venue_cafe}}" 
+                          class="img-circle klass-img-filter">
+                    <a    *ngIf="klass.venue_map_link"
+                          class="btn btn-default btn-xs" 
+                          href={{klass.venue_map_link}} 
+                          target="_blank"
+                          role="button">{{klass.venue}}</a>
+
 
                     <h4 *ngIf="klass.price_with_format=='0'" 
                         class="pull-right klass-price">&nbsp;</h4>
@@ -72,17 +82,37 @@
                         class="pull-right klass-price">{{klass.price_with_format}} &#8361;</h4>
                     
                   </li>
-                  <li class="list-group-item">
-                    {{klass.time_begin_name_kor}} {{klass.time_begin}} 시작 ( 약 {{klass.time_duration_minutes}}분 )
+                  <li class="list-group-item" style="padding: 15px;padding-left: 10px;">
+                    <span class="badge klass pull-left">{{klass.date_begin}}부터</span>
+                    <span class="badge klass pull-left">{{klass.time_begin_name_kor}} {{klass.time_begin}} ~ {{klass.time_end}}</span>
+                    <span class="badge klass pull-left">{{klass.time_duration_minutes}}분</span>
+                    <span class="badge klass pull-left">{{klass.week_min}}주</span>
+                    &nbsp;
                   </li>
-                  <li class="list-group-item klass-info">
-                    <img  *ngIf="klass.venue_cafe_logo_img_url" 
-                        src="{{klass.venue_cafe_logo_img_url}}" 
-                        alt="{{klass.venue_cafe}}" 
-                        class="img-circle klass-img-filter">
-                    {{klass.venue}} 지도링크
+                  <li class="list-group-item" style="padding:0px;">
+                    <img  src="/cafeclass/assets/images/notice/drinks.png" 
+                          style="width: 50%;position: relative;top: 0px;left: 0px;"
+                          alt="음료는 제공되지 않습니다.">
+                    
+                    <img  src="/cafeclass/assets/images/notice/help.png" 
+                          style="width: 50%;position: absolute;top: 0px;"
+                          (click)="onClickYellowID($event, klass)" 
+                          alt="수업안내">
                   </li>
-                  <li class="list-group-item">ROW3</li>
+                  <li class="list-group-item" style="padding:10px;">
+                    <a
+                      (click)="onClickEnrollment($event, klass)" 
+                      href="#" 
+                      class="btn klass-signup-btn pull-left" 
+                      role="button">신청하기</a>
+                    <a
+                      (click)="onClickWishList($event, klass)" 
+                      href="#" 
+                      class="btn btn-default" 
+                      role="button">
+                      <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> 
+                    </a>
+                  </li>
                 </ul>
 
               </td> 

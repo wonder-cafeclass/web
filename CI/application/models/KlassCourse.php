@@ -60,7 +60,7 @@ class KlassCourse {
         // 수업장소 이미지 - 카페
         public $venue_cafe_logo_img_url;
         // 수업장소링크
-        public $venue_link;
+        public $venue_map_link;
         // 검색태그
         public $search_tag;
         // 가격

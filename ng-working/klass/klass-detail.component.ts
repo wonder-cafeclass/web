@@ -65,4 +65,21 @@ export class KlassDetailComponent implements OnInit {
 
     // this.router.navigate(['../', { id: klassId, foo: 'foo' }], { relativeTo: this.route });
   }
+
+  // EVENT
+  onClickEnrollment(event, klass:Klass) {
+    event.stopPropagation();
+    console.log("onClickEnrollment / klass ::: ",klass);
+  }
+
+  onClickWishList(event, klass:Klass) {
+    event.stopPropagation();
+    console.log("onClickEnrollment / klass ::: ",klass);
+  }
+
+  onClickYellowID(event, klass:Klass) {
+    event.stopPropagation();
+    console.log("onClickYellowID / klass ::: ",klass);
+  }
+
 }
