@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { PlatformLocation }     from '@angular/common';
+import { UrlService } from "./util/url.service";
 
 @Injectable()
 export class AuthService {
 
     private adminAuthUrl = '/CI/index.php/api/admin/auth';
 
-    private baseHref:string;
-
-    constructor(private pl:PlatformLocation, private http: Http) {
-        this.baseHref = pl.getBaseHrefFromDOM();
+    constructor(private us:UrlService, private http: Http) {
     }
 
     getAdminAuth (): Promise<any> {
 
-        let req_url = `${ this.baseHref }${ this.adminAuthUrl }`;
+        let req_url = this.us.get(this.adminAuthUrl);;
+
+        console.log("TEST / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()

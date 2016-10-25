@@ -5,14 +5,14 @@ import {
     Response, 
     RequestOptions 
 }                                 from '@angular/http';
-import { PlatformLocation }       from '@angular/common';
-
 import { Klass }                  from './model/klass';
 import { KlassLevel }             from './model/klass-level';
 import { KlassStation }           from './model/klass-station';
 import { KlassDay }               from './model/klass-day';
 import { KlassTime }              from './model/klass-time';
 import { KlassSelectile }         from './model/klass-selectile';
+
+import { UrlService }         from '../util/url.service';
 
 @Injectable()
 export class KlassService {
@@ -23,14 +23,19 @@ export class KlassService {
     private klassSearchUrl = '/CI/index.php/api/klass/search';
     private baseHref = "";
 
-    constructor(private pl:PlatformLocation, private http: Http) {
-        this.baseHref = pl.getBaseHrefFromDOM();
+    constructor(private http: Http, private us:UrlService) {
     }
 
     searchKlassList (level:string, station:string, day:string, time:string, q:string): Promise<Klass[]> {
 
         let qEncoded = encodeURIComponent(q);
-        let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
+
+        // let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
+        let req_url = this.us.get(this.klassSearchUrl);
+
+        req_url = `${ req_url }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
+
+        // console.log("TEST / searchKlassList / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -41,7 +46,12 @@ export class KlassService {
 
     getKlass (id: number | string): Promise<Klass> {
         
-        let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
+        // let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
+
+        let req_url = this.us.get(this.klassUrl);
+        req_url = `${ req_url }?id=${ id }`;
+
+        // console.log("TEST / getKlass / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -50,14 +60,24 @@ export class KlassService {
     }
     
     getKlasses (): Promise<Klass[]> {
-        return this.http.get(this.baseHref + this.klassesUrl)
+
+        let req_url = this.us.get(this.klassesUrl);
+
+        // console.log("TEST / getKlasses / req_url : ",req_url);
+
+        return this.http.get(req_url)
                       .toPromise()
                       .then(this.extractData)
                       .catch(this.handleError);
     }
     
     getKlassSelectile(): Promise<KlassSelectile[]> {
-        return this.http.get(this.baseHref + this.klassSelectileUrl)
+
+        let req_url = this.us.get(this.klassSelectileUrl);
+
+        // console.log("TEST / getKlassSelectile / req_url : ",req_url);
+
+        return this.http.get(req_url)
                       .toPromise()
                       .then(this.extractData)
                       .catch(this.handleError);
@@ -68,7 +88,7 @@ export class KlassService {
 
         let body = res.json();
 
-        console.log("KlassService / extractData / body ::: ",body);
+        // console.log("KlassService / extractData / body ::: ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {

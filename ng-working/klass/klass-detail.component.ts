@@ -3,7 +3,7 @@ import { Component, OnInit, HostBinding,
          animate, style, state }   from '@angular/core';
 import { Router, ActivatedRoute }  from '@angular/router';
 
-import { Klass }                   from './klass';
+import { Klass }                   from './model/klass';
 import { DialogService }           from '../widget/dialog.service';
 
 @Component({

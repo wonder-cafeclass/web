@@ -1,4 +1,5 @@
 import { Component, OnInit }	from '@angular/core';
+import { UrlService }          	from './util/url.service';
 import { AuthService }          from './auth.service';
 
 @Component({
@@ -11,7 +12,8 @@ export class AppComponent implements OnInit {
 
 	// admin server 여부를 판별합니다.
 	constructor(
-		private authService: AuthService
+		private authService: AuthService,
+		private urlService: UrlService
 	) {}
 
 	isAdmin:boolean=false;

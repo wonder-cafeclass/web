@@ -9,11 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var url_service_1 = require('./util/url.service');
 var auth_service_1 = require('./auth.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService) {
+    function AppComponent(authService, urlService) {
         this.authService = authService;
+        this.urlService = urlService;
         this.isAdmin = false;
     }
     AppComponent.prototype.ngOnInit = function () {
@@ -31,7 +33,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService])
     ], AppComponent);
     return AppComponent;
 }());

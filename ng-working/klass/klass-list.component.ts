@@ -9,6 +9,7 @@ import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
 import { KlassService }                    from './klass.service';
+import { UrlService }                    from '../util/url.service';
 
 import { Klass }                           from './model/klass';
 import { KlassLevel }                      from './model/klass-level';
@@ -33,6 +34,7 @@ export class KlassListComponent implements OnInit {
 
   constructor(
     private service: KlassService,
+    private urlService: UrlService,
     private route: ActivatedRoute,
     private router: Router
   ) { }

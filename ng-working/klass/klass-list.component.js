@@ -12,9 +12,11 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./klass.service');
+var url_service_1 = require('../util/url.service');
 var KlassListComponent = (function () {
-    function KlassListComponent(service, route, router) {
+    function KlassListComponent(service, urlService, route, router) {
         this.service = service;
+        this.urlService = urlService;
         this.route = route;
         this.router = router;
         // 검색상태 관련
@@ -323,7 +325,7 @@ var KlassListComponent = (function () {
             styleUrls: ['klass-list.component.css'],
             templateUrl: 'klass-list.component.html',
         }), 
-        __metadata('design:paramtypes', [klass_service_1.KlassService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [klass_service_1.KlassService, url_service_1.UrlService, router_1.ActivatedRoute, router_1.Router])
     ], KlassListComponent);
     return KlassListComponent;
 }());

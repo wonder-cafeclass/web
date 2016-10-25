@@ -10,48 +10,57 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
-var common_1 = require('@angular/common');
+var url_service_1 = require('../util/url.service');
 var KlassService = (function () {
-    function KlassService(pl, http) {
-        this.pl = pl;
+    function KlassService(http, us) {
         this.http = http;
+        this.us = us;
         this.klassesUrl = '/CI/index.php/api/klass/list';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.klassSearchUrl = '/CI/index.php/api/klass/search';
         this.baseHref = "";
-        this.baseHref = pl.getBaseHrefFromDOM();
     }
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
         var qEncoded = encodeURIComponent(q);
-        var req_url = "" + this.baseHref + this.klassSearchUrl + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
+        // let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
+        var req_url = this.us.get(this.klassSearchUrl);
+        req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
+        // console.log("TEST / searchKlassList / req_url : ",req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     KlassService.prototype.getKlass = function (id) {
-        var req_url = "" + this.baseHref + this.klassUrl + "?id=" + id;
+        // let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
+        var req_url = this.us.get(this.klassUrl);
+        req_url = req_url + "?id=" + id;
+        // console.log("TEST / getKlass / req_url : ",req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     KlassService.prototype.getKlasses = function () {
-        return this.http.get(this.baseHref + this.klassesUrl)
+        var req_url = this.us.get(this.klassesUrl);
+        // console.log("TEST / getKlasses / req_url : ",req_url);
+        return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     KlassService.prototype.getKlassSelectile = function () {
-        return this.http.get(this.baseHref + this.klassSelectileUrl)
+        var req_url = this.us.get(this.klassSelectileUrl);
+        // console.log("TEST / getKlassSelectile / req_url : ",req_url);
+        return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     KlassService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("KlassService / extractData / body ::: ", body);
+        // console.log("KlassService / extractData / body ::: ",body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;
@@ -70,7 +79,7 @@ var KlassService = (function () {
     };
     KlassService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [common_1.PlatformLocation, http_1.Http])
+        __metadata('design:paramtypes', [http_1.Http, url_service_1.UrlService])
     ], KlassService);
     return KlassService;
 }());
