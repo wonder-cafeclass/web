@@ -10,16 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
-var common_1 = require('@angular/common');
+var url_service_1 = require("./util/url.service");
 var AuthService = (function () {
-    function AuthService(pl, http) {
-        this.pl = pl;
+    function AuthService(us, http) {
+        this.us = us;
         this.http = http;
         this.adminAuthUrl = '/CI/index.php/api/admin/auth';
-        this.baseHref = pl.getBaseHrefFromDOM();
     }
     AuthService.prototype.getAdminAuth = function () {
-        var req_url = "" + this.baseHref + this.adminAuthUrl;
+        var req_url = this.us.get(this.adminAuthUrl);
+        ;
+        console.log("TEST / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -46,7 +47,7 @@ var AuthService = (function () {
     };
     AuthService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [common_1.PlatformLocation, http_1.Http])
+        __metadata('design:paramtypes', [url_service_1.UrlService, http_1.Http])
     ], AuthService);
     return AuthService;
 }());

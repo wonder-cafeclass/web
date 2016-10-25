@@ -9,12 +9,12 @@ import { routing,
          appRoutingProviders }  from './app.routing';
 
 import { UsersModule }          from './users/users.module';
-// import { CClassCenterModule }   from './cclass-center/cclass-center.module';
 import { KlassCenterModule }   from './klass/klass-center.module';
 
 import { LoginComponent }       from './login/login.component';
 import { DialogService }        from './widget/dialog.service';
 import { AuthService }          from './auth.service';
+import { UrlService }           from './util/url.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -25,7 +25,6 @@ import './rxjs-operators';
     FormsModule,
     routing,
     UsersModule,
-    // CClassCenterModule,
     KlassCenterModule,
     HttpModule,
     JsonpModule
@@ -36,6 +35,7 @@ import './rxjs-operators';
   ],
   providers: [
     AuthService,
+    UrlService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService
