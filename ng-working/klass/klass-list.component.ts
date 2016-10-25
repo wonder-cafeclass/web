@@ -9,8 +9,8 @@ import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
 import { KlassService }                    from './klass.service';
-import { Klass }                          from './klass';
 
+import { Klass }                           from './model/klass';
 import { KlassLevel }                      from './model/klass-level';
 import { KlassStation }                    from './model/klass-station';
 import { KlassDay }                        from './model/klass-day';

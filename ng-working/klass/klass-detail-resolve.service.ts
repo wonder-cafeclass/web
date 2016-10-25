@@ -3,7 +3,7 @@ import { Router, Resolve,
          ActivatedRouteSnapshot } from '@angular/router';
 
 import { KlassService }           from './klass.service';
-import { Klass }                  from './klass';
+import { Klass }                  from './model/klass';
 
 @Injectable()
 export class KlassDetailResolve implements Resolve<Klass> {

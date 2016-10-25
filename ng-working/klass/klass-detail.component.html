@@ -72,8 +72,16 @@
                         class="pull-right klass-price">{{klass.price_with_format}} &#8361;</h4>
                     
                   </li>
-                  <li class="list-group-item">{{klass.time_begin_name_kor}} {{klass.time_begin}}</li>
-                  <li class="list-group-item">ROW3</li>
+                  <li class="list-group-item">
+                    {{klass.time_begin_name_kor}} {{klass.time_begin}} 시작 ( 약 {{klass.time_duration_minutes}}분 )
+                  </li>
+                  <li class="list-group-item klass-info">
+                    <img  *ngIf="klass.venue_cafe_logo_img_url" 
+                        src="{{klass.venue_cafe_logo_img_url}}" 
+                        alt="{{klass.venue_cafe}}" 
+                        class="img-circle klass-img-filter">
+                    {{klass.venue}} 지도링크
+                  </li>
                   <li class="list-group-item">ROW3</li>
                 </ul>
 

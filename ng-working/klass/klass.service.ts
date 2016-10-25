@@ -7,7 +7,7 @@ import {
 }                                 from '@angular/http';
 import { PlatformLocation }       from '@angular/common';
 
-import { Klass }                  from './klass';
+import { Klass }                  from './model/klass';
 import { KlassLevel }             from './model/klass-level';
 import { KlassStation }           from './model/klass-station';
 import { KlassDay }               from './model/klass-day';

@@ -5,7 +5,7 @@ export class Klass {
     public date_begin: string;
     public time_begin: string;
     public time_begin_img_url: string;
-    public time_duration: number;
+    public time_duration_minutes: number;
     public time_end: string;
     public level: string;
     public level_eng: string;

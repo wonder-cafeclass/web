@@ -20,7 +20,7 @@ class KlassCourse {
         // 시작시간 이미지
         public $time_begin_img_url;
         // 수업시간
-        public $time_duration;
+        public $time_duration_minutes;
         // 종료시간
         public $time_end;
         // 난이도
