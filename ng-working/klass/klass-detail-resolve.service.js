@@ -24,7 +24,7 @@ var KlassDetailResolve = (function () {
                 return klass;
             }
             else {
-                _this.router.navigate(['/klass-center']);
+                _this.router.navigate(['/class-center']);
                 return false;
             }
         });

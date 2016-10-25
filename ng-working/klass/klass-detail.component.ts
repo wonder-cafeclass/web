@@ -9,43 +9,9 @@ import { DialogService }           from '../widget/dialog.service';
 @Component({
   moduleId: module.id,
   styleUrls: ['klass-detail.component.css'],
-  templateUrl: 'klass-detail.component.html',
-  animations: [
-    trigger('routeAnimation', [
-      state('*',
-        style({
-          opacity: 1,
-          transform: 'translateX(0)'
-        })
-      ),
-      transition('void => *', [
-        style({
-          opacity: 0,
-          transform: 'translateX(-100%)'
-        }),
-        animate('0.2s ease-in')
-      ]),
-      transition('* => void', [
-        animate('0.5s ease-out', style({
-          opacity: 0,
-          transform: 'translateY(100%)'
-        }))
-      ])
-    ])
-  ]
+  templateUrl: 'klass-detail.component.html'
 })
 export class KlassDetailComponent implements OnInit {
-  @HostBinding('@routeAnimation') get routeAnimation() {
-    return true;
-  }
-
-  @HostBinding('style.display') get display() {
-    return 'block';
-  }
-
-  @HostBinding('style.position') get position() {
-    return 'absolute';
-  }
 
   klass: Klass;
   editTitle: string;
@@ -57,10 +23,15 @@ export class KlassDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    console.log("TEST / detail - 001");
+
+    /*
     this.route.data.forEach((data: { klass: Klass }) => {
       this.editTitle = data.klass.title;
       this.klass = data.klass;
     });
+    */
   }
 
   cancel() {
@@ -84,10 +55,14 @@ export class KlassDetailComponent implements OnInit {
 
   gotoKlassList() {
     let klassId = this.klass ? this.klass.id : null;
+
+    console.log("gotoKlassList / klassId : ",klassId);
+
     // Pass along the klass id if available
     // so that the KlassListComponent can select that klass.
     // Add a totally useless `foo` parameter for kicks.
     // Relative navigation back to the crises
-    this.router.navigate(['../', { id: klassId, foo: 'foo' }], { relativeTo: this.route });
+
+    // this.router.navigate(['../', { id: klassId, foo: 'foo' }], { relativeTo: this.route });
   }
 }

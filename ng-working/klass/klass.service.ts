@@ -17,7 +17,8 @@ import { KlassSelectile }         from './model/klass-selectile';
 @Injectable()
 export class KlassService {
 
-    private classesUrl = '/CI/index.php/api/klass/list';
+    private klassesUrl = '/CI/index.php/api/klass/list';
+    private klassUrl = '/CI/index.php/api/klass/course';
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
     private klassSearchUrl = '/CI/index.php/api/klass/search';
     private baseHref = "";
@@ -39,11 +40,17 @@ export class KlassService {
     }
 
     getKlass (id: number | string): Promise<Klass> {
-        return null;
+        
+        let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
     }
     
     getKlasses (): Promise<Klass[]> {
-        return this.http.get(this.baseHref + this.classesUrl)
+        return this.http.get(this.baseHref + this.klassesUrl)
                       .toPromise()
                       .then(this.extractData)
                       .catch(this.handleError);

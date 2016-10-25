@@ -14,6 +14,7 @@
 		"user_email":"valid_emails",
 		"user_password":"is_str|||exact_length[8]",
 
+		"klass_id":"is_natural_no_zero",
 		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9|]+$/]",
 		"klass_level":"is_str|||matches[class_level_list]|||exclude[class_level_list|0]",
 		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",

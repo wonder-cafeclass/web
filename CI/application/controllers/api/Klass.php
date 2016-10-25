@@ -147,6 +147,55 @@ class Klass extends REST_Controller implements MY_Class{
 
     }    
 
+    public function course_get()
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $extra = array();
+        $extra['id'] = $id = $this->my_paramchecker->get('id','klass_id');
+
+        $check_list = $this->my_paramchecker->get_check_list();
+        
+        $this->db->where('id', $id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->db->get('klass', $limit, $offset);
+        $output = $this->add_klass_extra_info($query);
+
+        // 첫번째 결과만 허용.
+        if(!empty($output)) 
+        {
+            $output = $output[0];
+        }
+
+        // REFACTOR ME
+        $last_query = $this->db->last_query();
+        if (!empty($output))
+        {
+            $response_body = 
+            $this->my_response->getResBodySuccess(
+                $last_query, 
+                $output, 
+                $this->my_error->get(),
+                $check_list
+            );
+        }
+        else
+        {
+            $response_body = 
+            $this->my_response->getResBodyFail(
+                'Klass could not be found', 
+                $last_query, 
+                $output, 
+                $this->my_error->get(),
+                $check_list
+            );
+        }
+        $this->set_response($response_body, REST_Controller::HTTP_OK); 
+    }    
+
     public function list_get()
     {
         if($this->is_not_ok()) {

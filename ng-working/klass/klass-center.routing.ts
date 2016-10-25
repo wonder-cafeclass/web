@@ -13,30 +13,24 @@ import { KlassDetailResolve }       from './klass-detail-resolve.service';
 const klassCenterRoutes: Routes = [
   {
     path: '',
-    redirectTo: '/klass-center',
+    redirectTo: '/class-center',
     pathMatch: 'full'
   },
   {
-    path: 'klass-center',
+    path: 'class-center',
     component: KlassCenterComponent,
     children: [
       {
         path: '',
-        component: KlassListComponent,
-        children: [
-          {
-            path: ':id',
-            component: KlassDetailComponent,
-            canDeactivate: [CanDeactivateGuard],
-            resolve: {
-              klass: KlassDetailResolve
-            }
-          },
-          {
-            path: '',
-            component: KlassCenterHomeComponent
-          }
-        ]
+        component: KlassListComponent
+      },
+      {
+        path: ':id',
+        component: KlassDetailComponent,
+        canDeactivate: [CanDeactivateGuard],
+        resolve: {
+          klass: KlassDetailResolve
+        }
       }
     ]
   }

@@ -15,7 +15,8 @@ var KlassService = (function () {
     function KlassService(pl, http) {
         this.pl = pl;
         this.http = http;
-        this.classesUrl = '/CI/index.php/api/klass/list';
+        this.klassesUrl = '/CI/index.php/api/klass/list';
+        this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.klassSearchUrl = '/CI/index.php/api/klass/search';
         this.baseHref = "";
@@ -30,10 +31,14 @@ var KlassService = (function () {
             .catch(this.handleError);
     };
     KlassService.prototype.getKlass = function (id) {
-        return null;
+        var req_url = "" + this.baseHref + this.klassUrl + "?id=" + id;
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
     };
     KlassService.prototype.getKlasses = function () {
-        return this.http.get(this.baseHref + this.classesUrl)
+        return this.http.get(this.baseHref + this.klassesUrl)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

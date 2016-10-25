@@ -386,14 +386,23 @@ export class KlassListComponent implements OnInit {
     }
   }
 
-  onSelectKlass(klass: Klass) {
+  onClickEnrollment(event, klass: Klass) {
+    event.stopPropagation();
+    console.log("onClickEnrollment / klass : ",klass);
+  }
+  onClickWishList(event, klass: Klass) {
+    event.stopPropagation();
+    console.log("onClickWishList / klass : ",klass);
+  }
+  onSelectKlass(event, klass: Klass) {
+    event.stopPropagation();
     this.gotoClassDetail(klass);
   }
   gotoClassDetail(klass: Klass) {
     console.log("TEST / gotoClassDetail / klass :: ",klass);
     // 수업 상세 페이지로 이동
     // Navigate with relative link
-    // this.router.navigate([klass.id], { relativeTo: this.route });
+    this.router.navigate([klass.id], { relativeTo: this.route });
   }
   onLoadFailClassImage(classImage, klassObj) {
     if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {

@@ -16,9 +16,10 @@ export class KlassDetailResolve implements Resolve<Klass> {
       if (klass) {
         return klass;
       } else { // id not found
-        this.router.navigate(['/klass-center']);
+        this.router.navigate(['/class-center']);
         return false;
       }
     });
+
   }
 }

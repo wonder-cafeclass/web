@@ -294,14 +294,23 @@ var KlassListComponent = (function () {
             this.isSearchEnabled = true;
         }
     };
-    KlassListComponent.prototype.onSelectKlass = function (klass) {
+    KlassListComponent.prototype.onClickEnrollment = function (event, klass) {
+        event.stopPropagation();
+        console.log("onClickEnrollment / klass : ", klass);
+    };
+    KlassListComponent.prototype.onClickWishList = function (event, klass) {
+        event.stopPropagation();
+        console.log("onClickWishList / klass : ", klass);
+    };
+    KlassListComponent.prototype.onSelectKlass = function (event, klass) {
+        event.stopPropagation();
         this.gotoClassDetail(klass);
     };
     KlassListComponent.prototype.gotoClassDetail = function (klass) {
         console.log("TEST / gotoClassDetail / klass :: ", klass);
         // 수업 상세 페이지로 이동
         // Navigate with relative link
-        // this.router.navigate([klass.id], { relativeTo: this.route });
+        this.router.navigate([klass.id], { relativeTo: this.route });
     };
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
         if (null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
