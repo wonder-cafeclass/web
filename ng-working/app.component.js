@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var auth_service_1 = require('./auth.service');
 var AppComponent = (function () {
-    // admin 여부를 판별합니다.
+    // admin server 여부를 판별합니다.
     function AppComponent(authService) {
         this.authService = authService;
         this.isAdmin = false;

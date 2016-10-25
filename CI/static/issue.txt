@@ -1,0 +1,11 @@
+1. Angular routing & Apache Server
+http://stackoverflow.com/questions/31415052/angular-2-0-router-not-working-on-reloading-the-browser
+https://www.npmjs.com/package/live-server
+
+2. HashLocation Strategy (이걸로 해결함.) 
+https://angular.io/docs/ts/latest/api/common/index/HashLocationStrategy-class.html
+ex) http://localhost/cafeclass/cclass-center (리프레쉬 불가) --> http://localhost/cafeclass/#/cclass-center
+
+3. Parent listens for child event
+https://angular.io/docs/ts/latest/cookbook/component-communication.html
+

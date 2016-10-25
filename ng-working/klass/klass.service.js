@@ -11,23 +11,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var common_1 = require('@angular/common');
-var AuthService = (function () {
-    function AuthService(pl, http) {
+var KlassService = (function () {
+    function KlassService(pl, http) {
         this.pl = pl;
         this.http = http;
-        this.adminAuthUrl = '/CI/index.php/api/admin/auth';
+        this.classesUrl = '/CI/index.php/api/klass/list';
+        this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
+        this.klassSearchUrl = '/CI/index.php/api/klass/search';
+        this.baseHref = "";
         this.baseHref = pl.getBaseHrefFromDOM();
     }
-    AuthService.prototype.getAdminAuth = function () {
-        var req_url = "" + this.baseHref + this.adminAuthUrl;
+    KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
+        var qEncoded = encodeURIComponent(q);
+        var req_url = "" + this.baseHref + this.klassSearchUrl + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
-    AuthService.prototype.extractData = function (res) {
+    KlassService.prototype.getKlass = function (id) {
+        return null;
+    };
+    KlassService.prototype.getKlasses = function () {
+        return this.http.get(this.baseHref + this.classesUrl)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    KlassService.prototype.getKlassSelectile = function () {
+        return this.http.get(this.baseHref + this.klassSelectileUrl)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    KlassService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("AuthService / extractData / body ::: ", body);
+        console.log("KlassService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;
@@ -36,7 +55,7 @@ var AuthService = (function () {
     };
     // New - XHR
     // promise-based
-    AuthService.prototype.handleError = function (error) {
+    KlassService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
         var errMsg = (error.message) ? error.message :
@@ -44,11 +63,11 @@ var AuthService = (function () {
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
     };
-    AuthService = __decorate([
+    KlassService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [common_1.PlatformLocation, http_1.Http])
-    ], AuthService);
-    return AuthService;
+    ], KlassService);
+    return KlassService;
 }());
-exports.AuthService = AuthService;
-//# sourceMappingURL=auth.service.js.map
+exports.KlassService = KlassService;
+//# sourceMappingURL=klass.service.js.map
