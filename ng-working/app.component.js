@@ -9,16 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var auth_service_1 = require('./auth.service');
 var AppComponent = (function () {
-    function AppComponent() {
+    // admin server 여부를 판별합니다.
+    function AppComponent(authService) {
+        this.authService = authService;
+        this.isAdmin = false;
     }
+    AppComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.authService.getAdminAuth().then(function (result) {
+            if (null != result.is_admin) {
+                _this.isAdmin = result.is_admin;
+            }
+        });
+    };
     AppComponent = __decorate([
         core_1.Component({
+            moduleId: module.id,
             selector: 'my-app',
-            styleUrls: ['./ng-working/app.component.css'],
-            templateUrl: './ng-working/app.component.html'
+            styleUrls: ['app.component.css'],
+            templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [auth_service_1.AuthService])
     ], AppComponent);
     return AppComponent;
 }());

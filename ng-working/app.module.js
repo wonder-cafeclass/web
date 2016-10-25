@@ -12,12 +12,15 @@ var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
+var common_1 = require('@angular/common');
 var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
-var cclass_center_module_1 = require('./cclass-center/cclass-center.module');
+// import { CClassCenterModule }   from './cclass-center/cclass-center.module';
+var klass_center_module_1 = require('./klass/klass-center.module');
 var login_component_1 = require('./login/login.component');
 var dialog_service_1 = require('./widget/dialog.service');
+var auth_service_1 = require('./auth.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -30,7 +33,8 @@ var AppModule = (function () {
                 forms_1.FormsModule,
                 app_routing_1.routing,
                 users_module_1.UsersModule,
-                cclass_center_module_1.CClassCenterModule,
+                // CClassCenterModule,
+                klass_center_module_1.KlassCenterModule,
                 http_1.HttpModule,
                 http_1.JsonpModule
             ],
@@ -39,7 +43,9 @@ var AppModule = (function () {
                 login_component_1.LoginComponent
             ],
             providers: [
+                auth_service_1.AuthService,
                 app_routing_1.appRoutingProviders,
+                { provide: common_1.LocationStrategy, useClass: common_1.HashLocationStrategy },
                 dialog_service_1.DialogService
             ],
             bootstrap: [app_component_1.AppComponent]

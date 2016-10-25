@@ -1,0 +1,107 @@
+<!-- http://www.bootply.com/zoupRVbLG4 -->
+<div class="container">
+	
+	<!-- Search Input Component -->
+	<div class="row">
+		<div class="col-md-12 cc-div-col">
+		
+			<div class="panel panel-default cc-no-box-shadow cc-panel-bg cc-panel-filter">
+				<div 	class="panel-body" 
+						(mouseleave)="onMouseLeaveSearchInput($event, searchBox)"
+						(click)="onClickSearchInput($event, searchBox)">
+					
+					<klass-filter-tile 	#selectile 
+										(emitOnInitKlassList)="onInitKlassFilterTile(searchBox)"
+										(emitOnChangedSelectile)="onChangedSelectile($event, searchBox)">
+											
+					</klass-filter-tile>
+
+					<div 	(mouseenter)="onMouseenterMagnifier()" 
+							(mouseleave)="onMouseleaveMagnifier()" 
+							(click)="onKeyupEnterSearch(searchBox.value, searchBox, selectile)">
+						<img 	*ngIf="!isOverMagnifier"
+								[class.search_disabled]="!isSearchEnabled"
+								[class.search_enabled]="isSearchEnabled"
+								src="assets/images/search/magnifier.svg" 
+								class="pull-right cc-img-magnifier">
+						<img 	*ngIf="isOverMagnifier"
+								src="assets/images/search/magnifier_focus.svg" 
+								class="pull-right cc-img-magnifier">
+					</div>
+
+					<input 	id="search-box" 
+							class="pull-right form-control cc-panel-search" 
+							placeholder="수업을 검색해보세요" 
+							#searchBox
+							(keyup.enter)="onKeyupEnterSearch(searchBox.value, searchBox, selectile)"
+							(keyup)="onKeyupSearchInput(searchBox.value, searchBox, selectile)">
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	
+	<!-- Class List Component -->
+	<div class="row">
+		
+		<div class="col-md-3 cc-div-col" *ngFor="let klass of klasses" >
+
+			<ul class="list-group">
+				<li class="list-group-item klass-row-image">
+					<img 	#classImage 
+							class="cc-img-class" 
+							width="100%;" 
+							src={{klass.class_img_url}} 
+							(click)="onSelectKlass($event, klass)"
+							(error)="onLoadFailClassImage(classImage, klass)" 
+							alt={{klass.title}}>
+					<div *ngIf="klass.title" class="klass-title-overlay">
+						<h5><strong>{{klass.title}}</strong></h5>
+					</div>
+					<div *ngIf="klass.title" class="klass-title-overlay-bg">
+					</div>
+				</li>
+				<li *ngIf="klass.title" class="list-group-item" style="padding:5px;">
+					<img 	*ngIf="klass.level_img_url" 
+							src="{{klass.level_img_url}}" 
+							alt="{{klass.level_kor}}" 
+							class="img-circle cc-img-filter">
+					<img 	*ngIf="klass.venue_subway_station_img_url" 
+							src="{{klass.venue_subway_station_img_url}}" 
+							alt="{{klass.venue_subway_station}}" 
+							class="img-circle cc-img-filter">
+					<img 	*ngIf="klass.days_img_url" 
+							src="{{klass.days_img_url}}" 
+							alt="{{klass.days_kor}}" 
+							class="img-circle cc-img-filter">
+					<img 	*ngIf="klass.time_begin_img_url" 
+							src="{{klass.time_begin_img_url}}" 
+							alt="{{klass.time_begin_name}}" 
+							class="img-circle cc-img-filter">
+				</li>
+				<li *ngIf="klass.title" class="list-group-item">
+					<h4 *ngIf="klass.price_with_format=='0'" class="pull-right cc-price">&nbsp;</h4>
+					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price">{{klass.price_with_format}} &#8361;</h4>
+
+					<a 	*ngIf="klass.level_img_url" 
+						(click)="onClickEnrollment($event, klass)" 
+						href="#" 
+						class="btn cc-btn" 
+						role="button">신청하기</a>
+
+					<a 	*ngIf="klass.level_img_url" 
+						(click)="onClickWishList($event, klass)" 
+						href="#" 
+						class="btn btn-default" 
+						role="button">
+						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+					</a>
+				</li>
+			</ul>
+
+		</div>
+	  
+	</div>
+</div>

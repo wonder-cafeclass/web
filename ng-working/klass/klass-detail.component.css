@@ -1,0 +1,68 @@
+input {
+	width: 20em
+}
+.table.layout {
+	
+}
+.klass-image {
+	width:400px;
+}
+.klass-img-filter {
+	height:40px;
+}
+.klass-field {
+	border:0px;
+	/*background-color:#f0f;*/
+}
+.klass-field.image {
+	width:400px;
+	padding: 0px;
+}
+.list-group-item.klass-info {
+	padding:5px;
+}
+h5.font {
+	font-size: 20px;
+	text-shadow: 1px 1px 1px #000000;
+	text-align: center;
+}
+.klass-title-overlay {
+    position: relative;
+    bottom: 52px;
+    color: #e85c41;
+    left: 0px;
+    width: 400px;
+    z-index: 100;
+}
+.klass-title-overlay-bg {
+    position: relative;
+    bottom: 102px;
+    left: 0px;
+    width: 400px;
+    height: 60px;
+    background-color: #000;
+    opacity: .5;
+	border-radius: 0px /*top-left*/ 0px /*top-right*/ 4px /*bottom-right*/ 4px /*bottom-left*/;
+}
+.klass-price {
+	color: #e85c41;
+	padding: 0px;
+	margin: 10px;  
+}
+.btn-map-link {
+    color: #fff;
+    background-color: #e85c41;
+    border-color: #e85c41;
+}
+.klass-signup-btn {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+  margin-right: 10px;
+}
+.badge.klass {
+	font-size:16px;
+	color:#e85c41;
+	background-color:#ccc;
+	margin-right: 5px;
+}

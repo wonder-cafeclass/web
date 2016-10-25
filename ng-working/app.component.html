@@ -4,6 +4,7 @@
 	    <!-- Brand and toggle get grouped for better mobile display / box-shadow: 0 0 2px rgba(6,8,8,0.15);-->
 	    <div class="navbar-header">
 	      <a class="navbar-brand cc-logo-anchor" href="#">
+	      	<img *ngIf="isAdmin===true" class="watchtower" src="./assets/images/admin/watchtower.svg">
 	      	<img class="cc-logo-image" alt="Brand" src="./assets/images/cafeclass_logo_text_only.svg">
 	      </a>
 	    </div>
@@ -12,12 +13,9 @@
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav">
 	        <li class="active">
-	        	<a routerLink="/cclass-center" routerLinkActive="active">클래스</a>
+	        	<a routerLink="/class-center" routerLinkActive="active">클래스</a>
 	        </li>
-	        <li>
-	        	<a routerLink="/users" routerLinkActive="active">학생들</a>
-	        </li>
-	        <li>
+	        <li *ngIf="isAdmin===true">
 	        	<a routerLink="/admin" routerLinkActive="active">운영자</a>
 	        </li>
 	      </ul>

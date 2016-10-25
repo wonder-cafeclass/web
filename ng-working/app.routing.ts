@@ -7,7 +7,6 @@ import { loginRoutes,
 import { CanDeactivateGuard } from './guard/can-deactivate-guard.service';
 import { AuthGuard }          from './auth/auth-guard.service';
 
-
 const adminRoutes: Routes = [
   {
     path: 'admin',
@@ -27,10 +26,3 @@ export const appRoutingProviders: any[] = [
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/
