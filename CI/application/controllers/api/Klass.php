@@ -53,6 +53,9 @@ class Klass extends REST_Controller implements MY_Class{
 
         // init MyTime
         $this->load->library('MY_Time');
+
+        // init MyCalendar
+        $this->load->library('MY_Calendar');
             
         // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
@@ -145,7 +148,7 @@ class Klass extends REST_Controller implements MY_Class{
 
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
-    }    
+    }
 
     public function course_get()
     {
@@ -156,7 +159,7 @@ class Klass extends REST_Controller implements MY_Class{
         $extra = array();
         $extra['id'] = $id = $this->my_paramchecker->get('id','klass_id');
 
-        $check_list = $this->my_paramchecker->get_check_list();
+        $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
         
         $this->db->where('id', $id);
         $limit = 1;
@@ -168,6 +171,20 @@ class Klass extends REST_Controller implements MY_Class{
         if(!empty($output)) 
         {
             $output = $output[0];
+            // print_r($output);
+            // echo "<br/>";
+
+            // 해당 클래스의 수업 일정에 대한 캘린더 정보를 가져옵니다.
+            // 1. 수업이 진행되는 년,월동안의 년,월,일,요일정보
+
+            // wonder.jung
+            $calendar_list = 
+            $this->my_calendar->get_weeks(
+                $output->date_begin, 
+                intval($output->week_min)
+            );
+            $extra['calendar_list'] = $calendar_list;
+
         }
 
         // REFACTOR ME
@@ -179,7 +196,7 @@ class Klass extends REST_Controller implements MY_Class{
                 $last_query, 
                 $output, 
                 $this->my_error->get(),
-                $check_list
+                $extra
             );
         }
         else
@@ -190,7 +207,7 @@ class Klass extends REST_Controller implements MY_Class{
                 $last_query, 
                 $output, 
                 $this->my_error->get(),
-                $check_list
+                $extra
             );
         }
         $this->set_response($response_body, REST_Controller::HTTP_OK); 
@@ -364,7 +381,8 @@ class Klass extends REST_Controller implements MY_Class{
         
     }
 
-
+    // 수정 및 변경은 admin 패키지에서 진행함.
+    /*
     public function insert_post() {
 
         if($this->is_not_ok()) {
@@ -530,7 +548,8 @@ class Klass extends REST_Controller implements MY_Class{
 
         }
 
-    }    
+    }  
+    */  
 
     private function get_klass_course_new_class() {
 

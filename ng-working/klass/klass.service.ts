@@ -29,12 +29,9 @@ export class KlassService {
     searchKlassList (level:string, station:string, day:string, time:string, q:string): Promise<Klass[]> {
 
         let qEncoded = encodeURIComponent(q);
-
-        // let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
         let req_url = this.us.get(this.klassSearchUrl);
 
         req_url = `${ req_url }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
-
         // console.log("TEST / searchKlassList / req_url : ",req_url);
 
         return this.http.get(req_url)
@@ -46,12 +43,10 @@ export class KlassService {
 
     getKlass (id: number | string): Promise<Klass> {
         
-        // let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
-
         let req_url = this.us.get(this.klassUrl);
         req_url = `${ req_url }?id=${ id }`;
 
-        // console.log("TEST / getKlass / req_url : ",req_url);
+        console.log("TEST / getKlass / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -88,7 +83,7 @@ export class KlassService {
 
         let body = res.json();
 
-        // console.log("KlassService / extractData / body ::: ",body);
+        console.log("KlassService / extractData / body ::: ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {

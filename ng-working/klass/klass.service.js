@@ -23,7 +23,6 @@ var KlassService = (function () {
     }
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
         var qEncoded = encodeURIComponent(q);
-        // let req_url = `${ this.baseHref }${ this.klassSearchUrl }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
         var req_url = this.us.get(this.klassSearchUrl);
         req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
         // console.log("TEST / searchKlassList / req_url : ",req_url);
@@ -33,10 +32,9 @@ var KlassService = (function () {
             .catch(this.handleError);
     };
     KlassService.prototype.getKlass = function (id) {
-        // let req_url = `${ this.baseHref }${ this.klassUrl }?id=${ id }`;
         var req_url = this.us.get(this.klassUrl);
         req_url = req_url + "?id=" + id;
-        // console.log("TEST / getKlass / req_url : ",req_url);
+        console.log("TEST / getKlass / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -60,7 +58,7 @@ var KlassService = (function () {
     };
     KlassService.prototype.extractData = function (res) {
         var body = res.json();
-        // console.log("KlassService / extractData / body ::: ",body);
+        console.log("KlassService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;

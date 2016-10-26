@@ -40,6 +40,12 @@
                         <span>&#8361; {{klass.price_with_format}}</span>
                         <span class="badge klass-price-week">{{klass.week_min}}주</span>
               </button> 
+              <button   type="button" 
+                        class="btn btn-default klass-signup-btn" 
+                        (click)="onClickEnrollment($event, klass)">
+                        <span>&#8361; {{klass.price_with_format}}</span>
+                        <span class="badge klass-price-week">{{klass.week_max}}주</span>
+              </button>
             </div>            
           </li>
 
