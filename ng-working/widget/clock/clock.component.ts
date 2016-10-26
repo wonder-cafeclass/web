@@ -1,5 +1,6 @@
-import {  Component, OnInit, Input }      from '@angular/core';
-import { ImageService }            from '../../util/image.service';
+import { Component, OnInit, Input }   from '@angular/core';
+import { ImageService }               from '../../util/image.service';
+import { ClockTime }                  from './model/clock-time';
 
 @Component({
   moduleId: module.id,
@@ -9,8 +10,8 @@ import { ImageService }            from '../../util/image.service';
 })
 export class ClockComponent implements OnInit {
 
-  @Input() klassTimeBegin:string;
-  @Input() klassTimeEnd:string;
+  @Input() clockTimeBegin:ClockTime;
+  @Input() clockTimeEnd:ClockTime;
   @Input() clockHeight:number=80;
 
   private clock1hr0000Url:string;
@@ -59,63 +60,21 @@ export class ClockComponent implements OnInit {
 
     this.clockBGUrl = this.imageService.get(this.imageService.clockBGUrl);
 
-    this.show(this.klassTimeBegin, this.klassTimeEnd);
+    this.show(this.clockTimeBegin, this.clockTimeEnd);
 
   }
 
-  getTimeObj(time_hh_mm:string): any {
+  show(clockTimeBegin:ClockTime, clockTimeEnd:ClockTime) :void {
 
-    if(null === time_hh_mm || "" === time_hh_mm) {
-      return null;
-    }
-
-    // 0. 유효한 시간값인지 검사합니다.
-    // ex) 07:30, 08:00 처럼 30분 단위만 허용합니다.
-    // 23:00 ~ 25:00 처럼 순방향 진행은 24시를 넘는 표현도 허용합니다.
-    // 23:00 ~ 01:00 는 오류로 처리합니다.
-    let res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):(0|3)0$/gi);
-    if(null === res || !(0 < res.length)) {
-      console.log("유효한 시간 값이 아닙니다.",time_hh_mm);
-      return null;
-    }
-
-    // 1. ex) 16:00 24시간 형태로 인자를 받습니다.
-    let time_hh_mm_fragments = time_hh_mm.split(":");
-    let hours = parseInt(time_hh_mm_fragments[0]);
-    let minutes = parseInt(time_hh_mm_fragments[1]);
-    let totalMinutes = 60 * hours +  minutes;
-    let hoursForRotate = hours;
-    let isAM = true;
-    if(12 <= hoursForRotate) {
-      hoursForRotate -= 12;
-      isAM = false;
-    }
-
-    let timeObj = {
-      time_hh_mm:time_hh_mm,
-      hours:hours,
-      minutes:minutes,
-      totalMinutes:totalMinutes,
-      hoursForRotate:hoursForRotate,
-      isAM:isAM
-    };
-
-    return timeObj;
-  }
-
-  show(timeBegin_hh_mm:string, timeEnd_hh_mm:string) :void {
-
-    let timeBeginObj = this.getTimeObj(timeBegin_hh_mm);
-    if(null === timeBeginObj) {
+    if(null === clockTimeBegin) {
       return;
     }
 
-    let timeEndObj = this.getTimeObj(timeEnd_hh_mm);
-    if(null === timeEndObj) {
+    if(null === clockTimeEnd) {
       return;
     }
 
-    let diffMinutes = timeEndObj.totalMinutes - timeBeginObj.totalMinutes;
+    let diffMinutes = clockTimeEnd.totalMinutes - clockTimeBegin.totalMinutes;
     if(0 < (diffMinutes%60)) {
       console.log("Error / 한시간 단위로 파라미터가 변경되어야 합니다.");
       return;
@@ -127,53 +86,51 @@ export class ClockComponent implements OnInit {
       return;
     }
 
-    if(1 === diffHours && 30 === timeBeginObj.minutes) {
+    if(1 === diffHours && 30 === clockTimeBegin.minutes) {
       this.clockHoursUrl = this.clock1hr0030Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock1hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock1hrNoticePMUrl;
       }
     } else if(1 === diffHours) {
       this.clockHoursUrl = this.clock1hr0000Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock1hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock1hrNoticePMUrl;
       }
-    } else if(2 === diffHours && 30 === timeBeginObj.minutes) {
+    } else if(2 === diffHours && 30 === clockTimeBegin.minutes) {
       this.clockHoursUrl = this.clock2hr0030Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock2hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock2hrNoticePMUrl;
       }
     } else if(2 === diffHours) {
       this.clockHoursUrl = this.clock2hr0000Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock2hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock2hrNoticePMUrl;
       }
-    } else if(3 === diffHours && 30 === timeBeginObj.minutes) {
+    } else if(3 === diffHours && 30 === clockTimeBegin.minutes) {
       this.clockHoursUrl = this.clock3hr0030Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock3hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock3hrNoticePMUrl;
       }
     } else if(3 === diffHours) {
       this.clockHoursUrl = this.clock3hr0000Url;
-      if(timeBeginObj.isAM) {
+      if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock3hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock3hrNoticePMUrl;
       }
     }
 
-    this.rotate = timeBeginObj.hoursForRotate * 30;
-
-    console.log("show / timeBeginObj : ",timeBeginObj);
+    this.rotate = clockTimeBegin.hoursForRotate * 30;
   }
 
   private test() :void {

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
+var clock_time_1 = require('./model/clock-time');
 /*
 * @ Desc   : 시간을 나타내주는 원형 시계 컴포넌트, 시작 시간과 종료 시간을 작은 List로 나타내주는 시계 리스트를 담고 있는 컨테이너 컴포넌트입니다.
 * @ Author : Wonder Jung
@@ -23,6 +24,52 @@ var ClockBoardComponent = (function () {
         // Do something
         console.log("TEST / ClockBoardComponent / this.klassTimeBegin : ", this.klassTimeBegin);
         console.log("TEST / ClockBoardComponent / this.klassTimeEnd : ", this.klassTimeEnd);
+        this.clockTimeBegin = this.getClockTime(this.klassTimeBegin);
+        this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
+    };
+    ClockBoardComponent.prototype.getClockTime = function (time_hh_mm) {
+        if (null === time_hh_mm || "" === time_hh_mm) {
+            return null;
+        }
+        // 0. 유효한 시간값인지 검사합니다.
+        // ex) 07:30, 08:00 처럼 30분 단위만 허용합니다.
+        // 23:00 ~ 25:00 처럼 순방향 진행은 24시를 넘는 표현도 허용합니다.
+        // 23:00 ~ 01:00 는 오류로 처리합니다.
+        var res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):(0|3)0$/gi);
+        if (null === res || !(0 < res.length)) {
+            console.log("유효한 시간 값이 아닙니다.", time_hh_mm);
+            return null;
+        }
+        // 1. ex) 16:00 24시간 형태로 인자를 받습니다.
+        var time_hh_mm_fragments = time_hh_mm.split(":");
+        var hoursStr = time_hh_mm_fragments[0];
+        var hours = parseInt(hoursStr);
+        var minutesStr = time_hh_mm_fragments[1];
+        var minutes = parseInt(minutesStr);
+        var totalMinutes = 60 * hours + minutes;
+        var hoursForRotate = hours;
+        var isAM = true;
+        var time_hh_mm_24 = time_hh_mm;
+        var time_hh_mm_12 = "AM " + hoursStr + ":" + minutesStr;
+        if (12 <= hoursForRotate) {
+            hoursForRotate -= 12;
+            var hoursIn12 = "" + hoursForRotate;
+            if (hoursForRotate < 10) {
+                hoursIn12 = "0" + hoursForRotate;
+            }
+            time_hh_mm_12 = "PM " + hoursIn12 + ":" + minutesStr;
+            isAM = false;
+        }
+        var clockTimeObj = new clock_time_1.ClockTime();
+        clockTimeObj.time_hh_mm = time_hh_mm;
+        clockTimeObj.hours = hours;
+        clockTimeObj.minutes = minutes;
+        clockTimeObj.totalMinutes = totalMinutes;
+        clockTimeObj.hoursForRotate = hoursForRotate;
+        clockTimeObj.isAM = isAM;
+        clockTimeObj.time_hh_mm_24 = time_hh_mm_24;
+        clockTimeObj.time_hh_mm_12 = time_hh_mm_12;
+        return clockTimeObj;
     };
     __decorate([
         core_1.Input(), 
