@@ -18,6 +18,8 @@ var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
 var klass_center_home_component_1 = require('./klass-center-home.component');
 var klass_detail_component_1 = require('./klass-detail.component');
+var clock_board_component_1 = require('../widget/clock/clock-board.component');
+var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
@@ -37,6 +39,8 @@ var KlassCenterModule = (function () {
                 klass_center_home_component_1.KlassCenterHomeComponent,
                 klass_detail_component_1.KlassDetailComponent,
                 klass_filter_tile_component_1.KlassFilterTileComponent,
+                clock_board_component_1.ClockBoardComponent,
+                clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent
             ],
             providers: [

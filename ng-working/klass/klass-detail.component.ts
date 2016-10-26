@@ -7,7 +7,7 @@ import { Klass }                   from './model/klass';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
-import { ClockComponent }           from '../widget/clock/clock.component';
+import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
 
 @Component({
   moduleId: module.id,
@@ -38,10 +38,9 @@ export class KlassDetailComponent implements OnInit {
 
     });
 
-    // TEST clock
+    // send time data to "clock board"
     this.klassTimeBegin = this.klass.time_begin;
     this.klassTimeEnd = this.klass.time_end;
-
   }
 
   cancel() {

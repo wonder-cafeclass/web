@@ -11,22 +11,20 @@ export class ClockComponent implements OnInit {
 
   @Input() klassTimeBegin:string;
   @Input() klassTimeEnd:string;
+  @Input() clockHeight:number=80;
 
   private clock1hr0000Url:string;
   private clock1hr0030Url:string;
-  private clock1hrNoticeUrl:string;
   private clock1hrNoticeAMUrl:string;
   private clock1hrNoticePMUrl:string;
 
   private clock2hr0000Url:string;
   private clock2hr0030Url:string;
-  private clock2hrNoticeUrl:string;
   private clock2hrNoticeAMUrl:string;
   private clock2hrNoticePMUrl:string;
 
   private clock3hr0000Url:string;
   private clock3hr0030Url:string;
-  private clock3hrNoticeUrl:string;
   private clock3hrNoticeAMUrl:string;
   private clock3hrNoticePMUrl:string;
 
@@ -46,26 +44,23 @@ export class ClockComponent implements OnInit {
     // Do something
     this.clock1hr0000Url = this.imageService.get(this.imageService.clock1hr0000Url);
     this.clock1hr0030Url = this.imageService.get(this.imageService.clock1hr0030Url);
-    this.clock1hrNoticeUrl = this.imageService.get(this.imageService.clock1hrNoticeUrl);
     this.clock1hrNoticeAMUrl = this.imageService.get(this.imageService.clock1hrNoticeAMUrl);
     this.clock1hrNoticePMUrl = this.imageService.get(this.imageService.clock1hrNoticePMUrl);
 
     this.clock2hr0000Url = this.imageService.get(this.imageService.clock2hr0000Url);
     this.clock2hr0030Url = this.imageService.get(this.imageService.clock2hr0030Url);
-    this.clock2hrNoticeUrl = this.imageService.get(this.imageService.clock2hrNoticeUrl);
     this.clock2hrNoticeAMUrl = this.imageService.get(this.imageService.clock2hrNoticeAMUrl);
     this.clock2hrNoticePMUrl = this.imageService.get(this.imageService.clock2hrNoticePMUrl);
 
     this.clock3hr0000Url = this.imageService.get(this.imageService.clock3hr0000Url);
     this.clock3hr0030Url = this.imageService.get(this.imageService.clock3hr0030Url);
-    this.clock3hrNoticeUrl = this.imageService.get(this.imageService.clock3hrNoticeUrl);
     this.clock3hrNoticeAMUrl = this.imageService.get(this.imageService.clock3hrNoticeAMUrl);
     this.clock3hrNoticePMUrl = this.imageService.get(this.imageService.clock3hrNoticePMUrl);
 
     this.clockBGUrl = this.imageService.get(this.imageService.clockBGUrl);
 
     this.show(this.klassTimeBegin, this.klassTimeEnd);
-    
+
   }
 
   getTimeObj(time_hh_mm:string): any {

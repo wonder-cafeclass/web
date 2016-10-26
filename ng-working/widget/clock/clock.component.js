@@ -13,22 +13,20 @@ var image_service_1 = require('../../util/image.service');
 var ClockComponent = (function () {
     function ClockComponent(imageService) {
         this.imageService = imageService;
+        this.clockHeight = 80;
     }
     ClockComponent.prototype.ngOnInit = function () {
         // Do something
         this.clock1hr0000Url = this.imageService.get(this.imageService.clock1hr0000Url);
         this.clock1hr0030Url = this.imageService.get(this.imageService.clock1hr0030Url);
-        this.clock1hrNoticeUrl = this.imageService.get(this.imageService.clock1hrNoticeUrl);
         this.clock1hrNoticeAMUrl = this.imageService.get(this.imageService.clock1hrNoticeAMUrl);
         this.clock1hrNoticePMUrl = this.imageService.get(this.imageService.clock1hrNoticePMUrl);
         this.clock2hr0000Url = this.imageService.get(this.imageService.clock2hr0000Url);
         this.clock2hr0030Url = this.imageService.get(this.imageService.clock2hr0030Url);
-        this.clock2hrNoticeUrl = this.imageService.get(this.imageService.clock2hrNoticeUrl);
         this.clock2hrNoticeAMUrl = this.imageService.get(this.imageService.clock2hrNoticeAMUrl);
         this.clock2hrNoticePMUrl = this.imageService.get(this.imageService.clock2hrNoticePMUrl);
         this.clock3hr0000Url = this.imageService.get(this.imageService.clock3hr0000Url);
         this.clock3hr0030Url = this.imageService.get(this.imageService.clock3hr0030Url);
-        this.clock3hrNoticeUrl = this.imageService.get(this.imageService.clock3hrNoticeUrl);
         this.clock3hrNoticeAMUrl = this.imageService.get(this.imageService.clock3hrNoticeAMUrl);
         this.clock3hrNoticePMUrl = this.imageService.get(this.imageService.clock3hrNoticePMUrl);
         this.clockBGUrl = this.imageService.get(this.imageService.clockBGUrl);
@@ -301,6 +299,10 @@ var ClockComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ClockComponent.prototype, "klassTimeEnd", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ClockComponent.prototype, "clockHeight", void 0);
     ClockComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

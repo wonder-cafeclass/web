@@ -1,13 +1,15 @@
 <div *ngIf="clockHoursUrl" class="clock">
 
 	<img  	*ngIf="clockNoticeUrl" 
+			[style.height]="clockHeight + 'px'"
 			src="{{clockNoticeUrl}}" 
 			alt="Simple Clock Hours" 
 			style="position: absolute;z-index: 100;">
 
 	<img  	*ngIf="clockHoursUrl" 
+			[style.height]="clockHeight + 'px'" 
 			src="{{clockHoursUrl}}" 
-			alt="Simple Clock Notice" 
+			alt="Simple Clock Notice"
 			[class.rotate330]="rotate === 330"
 			[class.rotate300]="rotate === 300"
 			[class.rotate270]="rotate === 270"
@@ -22,6 +24,7 @@
 			style="position: absolute;">
 
     <img  	*ngIf="clockBGUrl" 
+    		[style.height]="clockHeight + 'px'"
     		src="{{clockBGUrl}}" 
     		alt="Simple Clock BG">
     		

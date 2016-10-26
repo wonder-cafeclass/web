@@ -26,7 +26,7 @@ var KlassDetailComponent = (function () {
                 _this.klass = data.klass;
             }
         });
-        // TEST clock
+        // send time data to "clock board"
         this.klassTimeBegin = this.klass.time_begin;
         this.klassTimeEnd = this.klass.time_end;
     };

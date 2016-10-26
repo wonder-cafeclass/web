@@ -11,7 +11,10 @@ import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
-import { ClockComponent }            from '../widget/clock/clock.component';
+
+import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
+import { ClockDigitalComponent }       from '../widget/clock/clock-digital.component';
+import { ClockComponent }       from '../widget/clock/clock.component';
 
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 
@@ -29,6 +32,8 @@ import { klassCenterRouting }        from './klass-center.routing';
     KlassCenterHomeComponent,
     KlassDetailComponent,
     KlassFilterTileComponent,
+    ClockBoardComponent,
+    ClockDigitalComponent,
     ClockComponent
   ],
   providers: [
