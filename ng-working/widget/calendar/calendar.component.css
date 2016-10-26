@@ -1,0 +1,29 @@
+.cal-container{
+	width:150px;
+}
+.cal-cell {
+	width:20px;
+	text-align: center;
+	/*border-top: 1px solid #e85c41;*/
+}
+.cal-date {
+	font-size: 10px
+}
+.cal-day-picked {
+    color: #e85c41;
+}
+.cal-date-picked {
+    background-color: #e85c41;
+    color: #fff;
+}
+.badge-cage {
+    width: 11px;
+    height: 11px;	
+}
+.table.cal {
+	margin-bottom: 10px;
+    border-collapse:separate;
+    border:solid 1px #e85c41;
+    border-radius:6px;
+    -moz-border-radius:6px;	
+}

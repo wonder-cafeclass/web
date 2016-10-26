@@ -19,6 +19,11 @@ export class KlassDetailComponent implements OnInit {
   klass: Klass;
   klassTimeBegin:string;
   klassTimeEnd:string;
+
+  klassDateBegin:string;
+  klassWeekMin:number;
+  klassWeekMax:number;
+
   editTitle: string;
 
   constructor(
@@ -41,6 +46,10 @@ export class KlassDetailComponent implements OnInit {
     // send time data to "clock board"
     this.klassTimeBegin = this.klass.time_begin;
     this.klassTimeEnd = this.klass.time_end;
+
+    this.klassDateBegin = this.klass.date_begin;
+    this.klassWeekMin = this.klass.week_min;
+    this.klassWeekMax = this.klass.week_max;
   }
 
   cancel() {
