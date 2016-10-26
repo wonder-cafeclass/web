@@ -20,6 +20,10 @@ var klass_center_home_component_1 = require('./klass-center-home.component');
 var klass_detail_component_1 = require('./klass-detail.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
+var clock_board_component_1 = require('../widget/clock/clock-board.component');
+var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
+var clock_component_1 = require('../widget/clock/clock.component');
+var calendar_component_1 = require('../widget/calendar/calendar.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -35,7 +39,11 @@ var KlassCenterModule = (function () {
                 klass_list_component_1.KlassListComponent,
                 klass_center_home_component_1.KlassCenterHomeComponent,
                 klass_detail_component_1.KlassDetailComponent,
-                klass_filter_tile_component_1.KlassFilterTileComponent
+                klass_filter_tile_component_1.KlassFilterTileComponent,
+                clock_board_component_1.ClockBoardComponent,
+                clock_digital_component_1.ClockDigitalComponent,
+                clock_component_1.ClockComponent,
+                calendar_component_1.CalendarComponent
             ],
             providers: [
                 klass_service_1.KlassService,

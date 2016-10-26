@@ -58,7 +58,7 @@
 							(error)="onLoadFailClassImage(classImage, klass)" 
 							alt={{klass.title}}>
 					<div *ngIf="klass.title" class="klass-title-overlay">
-						<h5><strong>{{klass.title}}</strong></h5>
+						<h5 style="text-align: center;"><strong>{{klass.title}}</strong></h5>
 					</div>
 					<div *ngIf="klass.title" class="klass-title-overlay-bg">
 					</div>
@@ -86,10 +86,10 @@
 					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price">{{klass.price_with_format}} &#8361;</h4>
 
 					<a 	*ngIf="klass.level_img_url" 
-						(click)="onClickEnrollment($event, klass)" 
+						(click)="onSelectKlass($event, klass)"
 						href="#" 
 						class="btn cc-btn" 
-						role="button">신청하기</a>
+						role="button">자세히보기</a>
 
 					<a 	*ngIf="klass.level_img_url" 
 						(click)="onClickWishList($event, klass)" 

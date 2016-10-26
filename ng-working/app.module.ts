@@ -15,6 +15,7 @@ import { LoginComponent }       from './login/login.component';
 import { DialogService }        from './widget/dialog.service';
 import { AuthService }          from './auth.service';
 import { UrlService }           from './util/url.service';
+import { ImageService }           from './util/image.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -36,6 +37,7 @@ import './rxjs-operators';
   providers: [
     AuthService,
     UrlService,
+    ImageService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService

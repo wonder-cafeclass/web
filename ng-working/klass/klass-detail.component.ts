@@ -4,7 +4,10 @@ import { Component, OnInit, HostBinding,
 import { Router, ActivatedRoute }  from '@angular/router';
 
 import { Klass }                   from './model/klass';
+import { ImageService }            from '../util/image.service';
+
 import { DialogService }           from '../widget/dialog.service';
+import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
 
 @Component({
   moduleId: module.id,
@@ -14,13 +17,21 @@ import { DialogService }           from '../widget/dialog.service';
 export class KlassDetailComponent implements OnInit {
 
   klass: Klass;
+  klassTimeBegin:string;
+  klassTimeEnd:string;
+
+  klassDateBegin:string;
+  klassWeekMin:number;
+  klassWeekMax:number;
+
   editTitle: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public imageService: ImageService,
     public dialogService: DialogService
-  ) { }
+  ) {}
 
   ngOnInit() {
 
@@ -32,6 +43,13 @@ export class KlassDetailComponent implements OnInit {
 
     });
 
+    // send time data to "clock board"
+    this.klassTimeBegin = this.klass.time_begin;
+    this.klassTimeEnd = this.klass.time_end;
+
+    this.klassDateBegin = this.klass.date_begin;
+    this.klassWeekMin = this.klass.week_min;
+    this.klassWeekMax = this.klass.week_max;
   }
 
   cancel() {

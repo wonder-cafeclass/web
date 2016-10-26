@@ -9,7 +9,7 @@ import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
 import { KlassService }                    from './klass.service';
-import { UrlService }                    from '../util/url.service';
+import { UrlService }                      from '../util/url.service';
 
 import { Klass }                           from './model/klass';
 import { KlassLevel }                      from './model/klass-level';
@@ -388,10 +388,6 @@ export class KlassListComponent implements OnInit {
     }
   }
 
-  onClickEnrollment(event, klass: Klass) {
-    event.stopPropagation();
-    console.log("onClickEnrollment / klass : ",klass);
-  }
   onClickWishList(event, klass: Klass) {
     event.stopPropagation();
     console.log("onClickWishList / klass : ",klass);

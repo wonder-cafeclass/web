@@ -10,11 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var image_service_1 = require('../util/image.service');
 var dialog_service_1 = require('../widget/dialog.service');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, dialogService) {
+    function KlassDetailComponent(route, router, imageService, dialogService) {
         this.route = route;
         this.router = router;
+        this.imageService = imageService;
         this.dialogService = dialogService;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
@@ -24,6 +26,12 @@ var KlassDetailComponent = (function () {
                 _this.klass = data.klass;
             }
         });
+        // send time data to "clock board"
+        this.klassTimeBegin = this.klass.time_begin;
+        this.klassTimeEnd = this.klass.time_end;
+        this.klassDateBegin = this.klass.date_begin;
+        this.klassWeekMin = this.klass.week_min;
+        this.klassWeekMax = this.klass.week_max;
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();
@@ -69,7 +77,7 @@ var KlassDetailComponent = (function () {
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, dialog_service_1.DialogService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

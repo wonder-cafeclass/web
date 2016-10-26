@@ -1,0 +1,13 @@
+<div>
+	<div style="position: absolute;z-index: 100;">
+		<simple-clock   #clock 
+						[clockHeight]="clockHeight" 
+		                [clockTimeBegin]="clockTimeBegin" 
+		                [clockTimeEnd]="clockTimeEnd"></simple-clock>
+	</div>
+	<div style="margin-left: 40px;">
+		<clock-digital  #clock 
+		                [clockTimeBegin]="clockTimeBegin" 
+		                [clockTimeEnd]="clockTimeEnd"></clock-digital>
+	</div>
+</div>

@@ -84,9 +84,9 @@
   position: absolute;
   float: left;
   bottom: 0%;
-  color: #e85c41;
-  left: 5%;
+  color: #fff;
   z-index: 100;
+  width: 100%;
 }
 .klass-title-overlay-bg {
   position: absolute;
@@ -96,7 +96,7 @@
   width: 100%;
   height: 20%;
   background-color: #000;
-  opacity: .5;
+  opacity: .8;
 }
 .klass-title {
   text-align: center;
