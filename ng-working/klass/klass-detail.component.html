@@ -53,33 +53,22 @@
                           target="_blank"
                           role="button">{{klass.venue}}</a>
 
-                    <simple-clock></simple-clock>
-                    <!-- 
-                    <a
-                      (click)="onClickEnrollment($event, klass)" 
-                      href="#" 
-                      class="btn klass-signup-btn pull-right" 
-                      role="button">{{klass.price_with_format}} &#8361;</a>
-
-                    <a
-                      (click)="onClickWishList($event, klass)" 
-                      href="#" 
-                      class="btn btn-default" 
-                      role="button">
-                      <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> 
-                    </a>
-                    -->
+                    <simple-clock   #clock 
+                                    [klassTimeBegin]="klassTimeBegin" 
+                                    [klassTimeEnd]="klassTimeEnd"></simple-clock>
 
                     <div class="btn-group btn-group-lg" role="group" aria-label="button group"> 
                       <button   type="button" 
                                 class="btn btn-default" 
                                 (click)="onClickWishList($event, klass)">
-                                <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> 
+                                <span   class="glyphicon glyphicon-star-empty wishlist" 
+                                        aria-hidden="true"></span> 
                       </button> 
                       <button   type="button" 
                                 class="btn btn-default klass-signup-btn" 
                                 (click)="onClickEnrollment($event, klass)">
-                                {{klass.price_with_format}} &#8361;
+                                &#8361; {{klass.price_with_format}} 
+                                <span class="badge klass-price-week">{{klass.week_min}}주</span>
                       </button> 
                     </div>
 

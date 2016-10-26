@@ -12,9 +12,21 @@ export class ImageService {
     cafeclassLogoUrl:string="assets/images/cafeclass_logo_text_only.svg";
     watchTowerUrl:string="assets/images/admin/watchtower.svg";
 
-    clock1hrUrl:string="assets/images/clock/clock-1hr.svg";
-    clock2hrUrl:string="assets/images/clock/clock-2hr.svg";
-    clock3hrUrl:string="assets/images/clock/clock-3hr.svg";
+    clock1hr0000Url:string="assets/images/clock/clock-1hr-00-00.svg";
+    clock1hr0030Url:string="assets/images/clock/clock-1hr-00-30.svg";
+    clock1hrNoticeUrl:string="assets/images/clock/clock-1hr-notice.svg";
+    clock1hrNoticeAMUrl:string="assets/images/clock/clock-1hr-notice-am.svg";
+    clock1hrNoticePMUrl:string="assets/images/clock/clock-1hr-notice-pm.svg";
+    clock2hr0000Url:string="assets/images/clock/clock-2hr-00-00.svg";
+    clock2hr0030Url:string="assets/images/clock/clock-2hr-00-30.svg";
+    clock2hrNoticeUrl:string="assets/images/clock/clock-2hr-notice.svg";
+    clock2hrNoticeAMUrl:string="assets/images/clock/clock-2hr-notice-am.svg";
+    clock2hrNoticePMUrl:string="assets/images/clock/clock-2hr-notice-pm.svg";
+    clock3hr0000Url:string="assets/images/clock/clock-3hr-00-00.svg";
+    clock3hr0030Url:string="assets/images/clock/clock-3hr-00-30.svg";
+    clock3hrNoticeUrl:string="assets/images/clock/clock-3hr-notice.svg";
+    clock3hrNoticeAMUrl:string="assets/images/clock/clock-3hr-notice-am.svg";
+    clock3hrNoticePMUrl:string="assets/images/clock/clock-3hr-notice-pm.svg";
     clockBGUrl:string="assets/images/clock/clock-bg.svg";
 
     constructor(private us:UrlService) {

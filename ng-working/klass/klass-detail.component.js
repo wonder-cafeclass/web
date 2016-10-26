@@ -26,6 +26,9 @@ var KlassDetailComponent = (function () {
                 _this.klass = data.klass;
             }
         });
+        // TEST clock
+        this.klassTimeBegin = this.klass.time_begin;
+        this.klassTimeEnd = this.klass.time_end;
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

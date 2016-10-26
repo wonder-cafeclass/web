@@ -7,6 +7,7 @@ import { Klass }                   from './model/klass';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
+import { ClockComponent }           from '../widget/clock/clock.component';
 
 @Component({
   moduleId: module.id,
@@ -16,6 +17,8 @@ import { DialogService }           from '../widget/dialog.service';
 export class KlassDetailComponent implements OnInit {
 
   klass: Klass;
+  klassTimeBegin:string;
+  klassTimeEnd:string;
   editTitle: string;
 
   constructor(
@@ -23,7 +26,7 @@ export class KlassDetailComponent implements OnInit {
     private router: Router,
     public imageService: ImageService,
     public dialogService: DialogService
-  ) { }
+  ) {}
 
   ngOnInit() {
 
@@ -34,6 +37,10 @@ export class KlassDetailComponent implements OnInit {
       }
 
     });
+
+    // TEST clock
+    this.klassTimeBegin = this.klass.time_begin;
+    this.klassTimeEnd = this.klass.time_end;
 
   }
 

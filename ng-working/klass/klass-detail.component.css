@@ -71,3 +71,10 @@ h5.font {
     padding-top: 0px;
     border-top: 0px;
 }
+.klass-price-week {
+    color: #e85c41;
+    background-color: #fff;
+}
+.glyphicon-star-empty.wishlist {
+    color: #e85c41;
+}

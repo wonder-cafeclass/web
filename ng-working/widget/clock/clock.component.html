@@ -1,14 +1,28 @@
-<div class="clock">
-	<img  *ngIf="clock3hrUrl" src="{{clock3hrUrl}}" alt="Simple Clock BG" class="rotate150" style="position: absolute;">
-    <img  *ngIf="clockBGUrl" src="{{clockBGUrl}}" alt="Simple Clock BG">
+<div *ngIf="clockHoursUrl" class="clock">
+
+	<img  	*ngIf="clockNoticeUrl" 
+			src="{{clockNoticeUrl}}" 
+			alt="Simple Clock Hours" 
+			style="position: absolute;z-index: 100;">
+
+	<img  	*ngIf="clockHoursUrl" 
+			src="{{clockHoursUrl}}" 
+			alt="Simple Clock Notice" 
+			[class.rotate330]="rotate === 330"
+			[class.rotate300]="rotate === 300"
+			[class.rotate270]="rotate === 270"
+			[class.rotate240]="rotate === 240"
+			[class.rotate210]="rotate === 210"
+			[class.rotate180]="rotate === 180"
+			[class.rotate150]="rotate === 150"
+			[class.rotate120]="rotate === 120"
+			[class.rotate90]="rotate === 90"
+			[class.rotate60]="rotate === 60"
+			[class.rotate30]="rotate === 30"
+			style="position: absolute;">
+
+    <img  	*ngIf="clockBGUrl" 
+    		src="{{clockBGUrl}}" 
+    		alt="Simple Clock BG">
+    		
 </div>
-<!--
-	http://edutechwiki.unige.ch/en/Using_SVG_with_HTML5_tutorial
-	3.6 Including SVG through the SVG image element
--->
-<!--
-<svg id="circle" height="60" width="60" 
-     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
-  <image x="0" y="0" height="60" width="60" transform="translate(30) rotate(45 50 50)"  xlink:href="huge-red-circle.svg" />
-</svg>
--->
