@@ -3,116 +3,108 @@
   <!-- First Row -->
   <div class="row">
     <div class="col-md-12 cc-div-col" style="padding:0px;">
-      <!-- TABLE INIT -->
-      <div> 
-        <table *ngIf="klass" class="table layout"> 
-          <tbody> 
-  
-            <!-- First row init. -->
-            <tr #header> 
+        
+        <!-- First Column -->
+        <ul class="list-group col-md-4">
+          <li class="list-group-item" style="padding: 0px;">
 
-              <td #image class="klass-field image">
-                <img  #classImage 
-                    class="img-rounded klass-image" 
-                    src={{klass.class_img_url}} 
-                    alt={{klass.title}}>
-                <div *ngIf="klass.title" class="klass-title-overlay">
-                  <h5 class="font"><strong>{{klass.title}}</strong></h5>
-                </div>
-                <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
-              </td> 
+            <img  #classImage 
+                class="klass-image refactor-me" 
+                style="width: 100%;"
+                src={{klass.class_img_url}} 
+                alt={{klass.title}}>
+            <div *ngIf="klass.title" class="klass-title-overlay">
+              <h5 class="font"><strong>{{klass.title}}</strong></h5>
+            </div>
+            <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
+          
+          </li>
 
-              <td #class_title class="klass-field" style="padding:0px;">
-                
-                <ul class="list-group" style="padding-left: 16px;">
-                  <li class="list-group-item klass-info">
+          <li class="list-group-item" style="padding: 5px;">
+            <!-- dummy -->
+            <button   type="button" 
+                      class="btn btn-lg btn-default klass-signup-btn" 
+                      style="opacity: 0;">&nbsp;</button> 
 
-                    <img  *ngIf="klass.level_img_url" 
-                        src="{{klass.level_img_url}}" 
-                        alt="{{klass.level_kor}}" 
-                        class="img-circle klass-img-filter">
-                    <img  *ngIf="klass.venue_subway_station_img_url" 
-                        src="{{klass.venue_subway_station_img_url}}" 
-                        alt="{{klass.venue_subway_station}}" 
-                        class="img-circle klass-img-filter">
-                    <img  *ngIf="klass.days_img_url" 
-                        src="{{klass.days_img_url}}" 
-                        alt="{{klass.days_kor}}" 
-                        class="img-circle klass-img-filter">
-                    <img  *ngIf="klass.time_begin_img_url" 
-                        src="{{klass.time_begin_img_url}}" 
-                        alt="{{klass.time_begin_name}}" 
-                        class="img-circle klass-img-filter">
-                    <img  *ngIf="klass.venue_cafe_logo_img_url" 
-                          src="{{klass.venue_cafe_logo_img_url}}" 
-                          alt="{{klass.venue_cafe}}" 
-                          class="img-circle klass-img-filter">
-                    <a    *ngIf="klass.venue_map_link"
-                          class="btn btn-default btn-xs" 
-                          href={{klass.venue_map_link}} 
-                          target="_blank"
-                          role="button">{{klass.venue}}</a>
+            <div class="btn-group btn-group-lg klass-singup-btn-group" role="group" aria-label="button group">
+              <button   type="button" 
+                        class="btn btn-default" 
+                        style="border-color: #e85c41;"
+                        (click)="onClickWishList($event, klass)">
+                        <span   class="glyphicon glyphicon-star-empty wishlist" 
+                                aria-hidden="true"></span> 
+              </button> 
+              <button   type="button" 
+                        class="btn btn-default klass-signup-btn" 
+                        (click)="onClickEnrollment($event, klass)">
+                        <span>&#8361; {{klass.price_with_format}}</span>
+                        <span class="badge klass-price-week">{{klass.week_min}}주</span>
+              </button> 
+            </div>            
+          </li>
 
-                    <clock-board  #clockboard 
-                                  [klassTimeBegin]="klassTimeBegin" 
-                                  [klassTimeEnd]="klassTimeEnd"></clock-board>
+          <li class="list-group-item" style="padding:0px;">
+            <img  src={{imageService.get(imageService.noticeDrinksUrl)}}
+                  style="width: 100%;"
+                  alt="음료는 제공되지 않습니다.">
+          </li>
+          <li class="list-group-item" style="padding:0px;">
+            <img  src={{imageService.get(imageService.noticeHelpUrl)}}
+                  style="width: 100%;"
+                  (click)="onClickYellowID($event, klass)" 
+                  alt="수업안내">
+          </li>
+        </ul>
 
-                    <simple-calendar  #klassCalendar
-                                      [dateBegin]="klassDateBegin"
-                                      [weekMin]="klassWeekMin"
-                                      [weekMax]="klassWeekMax"></simple-calendar>
+        <!-- Second Column -->
+        <ul class="list-group col-md-4">
+          <li class="list-group-item">
+            <img  *ngIf="klass.level_img_url" 
+                src="{{klass.level_img_url}}" 
+                alt="{{klass.level_kor}}" 
+                class="img-circle klass-img-filter">
+            <img  *ngIf="klass.venue_subway_station_img_url" 
+                src="{{klass.venue_subway_station_img_url}}" 
+                alt="{{klass.venue_subway_station}}" 
+                class="img-circle klass-img-filter">
+            <img  *ngIf="klass.days_img_url" 
+                src="{{klass.days_img_url}}" 
+                alt="{{klass.days_kor}}" 
+                class="img-circle klass-img-filter">
+            <img  *ngIf="klass.time_begin_img_url" 
+                src="{{klass.time_begin_img_url}}" 
+                alt="{{klass.time_begin_name}}" 
+                class="img-circle klass-img-filter">
+            <img  *ngIf="klass.venue_cafe_logo_img_url" 
+                  src="{{klass.venue_cafe_logo_img_url}}" 
+                  alt="{{klass.venue_cafe}}" 
+                  class="img-circle klass-img-filter">
+            <a    *ngIf="klass.venue_map_link"
+                  class="btn btn-default btn-xs" 
+                  href={{klass.venue_map_link}} 
+                  target="_blank"
+                  role="button">{{klass.venue}}</a>                  
+          </li>
 
-                    <div class="btn-group btn-group-lg" role="group" aria-label="button group"> 
-                      <button   type="button" 
-                                class="btn btn-default" 
-                                style="border-color: #e85c41;"
-                                (click)="onClickWishList($event, klass)">
-                                <span   class="glyphicon glyphicon-star-empty wishlist" 
-                                        aria-hidden="true"></span> 
-                      </button> 
-                      <button   type="button" 
-                                class="btn btn-default klass-signup-btn" 
-                                (click)="onClickEnrollment($event, klass)">
-                                &#8361; {{klass.price_with_format}} 
-                                <span class="badge klass-price-week">{{klass.week_min}}주</span>
-                      </button> 
-                    </div>
-
-
-                  </li>
-
-                  <li class="list-group-item klass-misc">
-                    <div class="btn-group-vertical" role="group" aria-label="Vertical button group"> 
-                      <button type="button" class="btn btn-default btn-xs" disabled="disabled">{{klass.date_begin}}부터</button> 
-                      <button type="button" class="btn btn-default btn-xs" disabled="disabled">{{klass.time_begin_name_kor}} {{klass.time_begin}} ~ {{klass.time_end}}</button> 
-                      <button type="button" class="btn btn-default btn-xs" disabled="disabled">{{klass.time_duration_minutes}}분</button> 
-                      <button type="button" class="btn btn-default btn-xs" disabled="disabled">{{klass.week_min}}주</button> 
-                      <button type="button" class="btn btn-default btn-xs" disabled="disabled">{{klass.venue}}</button> 
-                    </div>
-                  </li>
-
-                  <li class="list-group-item" style="padding:0px;">
-                    <img  src={{imageService.get(imageService.noticeDrinksUrl)}}
-                          style="width: 50%;position: relative;top: 0px;left: 0px;"
-                          alt="음료는 제공되지 않습니다.">
-                    
-                    <img  src={{imageService.get(imageService.noticeHelpUrl)}}
-                          style="width: 50%;position: absolute;top: 0px;"
-                          (click)="onClickYellowID($event, klass)" 
-                          alt="수업안내">
-                  </li>
-
-                </ul>
-
-              </td> 
-
-            </tr> 
-            <!-- First row done. -->
-
-          </tbody> 
-        </table> 
-      </div>
-      <!-- TABLE END -->
+          <li class="list-group-item" style="padding: 5px;height: 96px;">
+            <clock-board  #clockboard 
+                          [klassTimeBegin]="klassTimeBegin" 
+                          [klassTimeEnd]="klassTimeEnd"></clock-board>
+          </li>        
+          <li class="list-group-item" style="padding: 5px;">
+            <simple-calendar  #klassCalendar
+                              [dateBegin]="klassDateBegin"
+                              [weekMin]="klassWeekMin"
+                              [weekMax]="klassWeekMax"></simple-calendar>
+          </li>
+        </ul>
+        
+        <!-- Third Column -->
+        <ul class="list-group col-md-4">
+          <li class="list-group-item">Review</li>
+          <li class="list-group-item">Q&A</li>
+          <li class="list-group-item">...</li>
+        </ul>
 
     </div>
   </div>

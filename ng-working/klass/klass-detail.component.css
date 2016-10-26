@@ -2,7 +2,9 @@
 	
 }
 .klass-image {
-	width:400px;
+	width:100%;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;    
 }
 .klass-img-filter {
 	height:40px;
@@ -24,22 +26,21 @@ h5.font {
 	text-align: center;
 }
 .klass-title-overlay {
-    position: relative;
-    bottom: 52px;
+    position: absolute;
+    bottom: 10px;
     color: #fff;
     left: 0px;
-    width: 400px;
+    width: 100%;
     z-index: 100;
 }
 .klass-title-overlay-bg {
-    position: relative;
-    bottom: 102px;
+    position: absolute;
+    bottom: 0px;
     left: 0px;
-    width: 400px;
+    width: 100%;
     height: 60px;
     background-color: #000;
     opacity: .5;
-	border-radius: 0px /*top-left*/ 0px /*top-right*/ 4px /*bottom-right*/ 4px /*bottom-left*/;
 }
 .klass-price {
 	color: #e85c41;
@@ -55,7 +56,7 @@ h5.font {
   color: #fff;
   background-color: #e85c41;
   border-color: #e85c41;
-  margin-right: 10px;
+  margin-right: 0px;
 }
 .badge.klass {
     padding: 10px;
@@ -77,4 +78,8 @@ h5.font {
 }
 .glyphicon-star-empty.wishlist {
     color: #e85c41;
+}
+.klass-singup-btn-group {
+    position:absolute;
+    right:5px;
 }

@@ -1,5 +1,5 @@
 .cal-container{
-	width:150px;
+	width:100%;
 }
 .cal-cell {
 	width:20px;
@@ -21,7 +21,7 @@
     height: 11px;	
 }
 .table.cal {
-	margin-bottom: 10px;
+	margin-bottom: 0px;
     border-collapse:separate;
     border:solid 1px #e85c41;
     border-radius:6px;
