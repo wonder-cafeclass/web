@@ -10,6 +10,7 @@ import { ImageService }            from '../util/image.service';
 import { DialogService }           from '../widget/dialog.service';
 import { ClockBoardComponent }     from '../widget/clock/clock-board.component';
 import { PriceTagComponent }       from '../widget/pricetag/pricetag.component';
+import { ImageGridComponent }      from '../widget/image-grid/image-grid.component';
 
 @Component({
   moduleId: module.id,
@@ -39,6 +40,10 @@ export class KlassDetailComponent implements OnInit {
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
 
+  selectileImageTable:string[][];
+
+  bannerImageTable:string[][];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -67,10 +72,38 @@ export class KlassDetailComponent implements OnInit {
     this.klassWeekMin = this.klass.week_min;
     this.klassWeekMax = this.klass.week_max;
 
-    // send time data to "pricetag-updown"
+    // send price to "pricetag-updown"
     // 주당 가격 계산이 필요. --> 이건 서버가 할일이 아닐까?
     this.priceTagTitle = "4주";
     this.priceTagPrice = this.klass.price;
+
+    // send image table to "image-grid"
+    this.selectileImageTable =
+    [
+      [
+        this.klass.level_img_url, 
+        this.klass.venue_subway_station_img_url,
+        this.klass.venue_cafe_logo_img_url
+      ],
+      [
+        this.klass.days_img_url,
+        this.klass.time_begin_img_url,
+        null
+      ]
+    ];
+
+    this.bannerImageTable =
+    [
+      [
+        this.imageService.get(this.imageService.noticeDrinksUrl)
+      ],
+      [
+        this.imageService.get(this.imageService.noticeHelpUrl)
+      ]
+    ];
+
+    console.log("this.bannerImageTable : ",this.bannerImageTable);
+
   }
 
   cancel() {
