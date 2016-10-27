@@ -220,7 +220,8 @@ class Klass extends REST_Controller implements MY_Class{
 
         // 실제 달력의 형태와 동일한 2차 배열을 만듭니다.
         $real_cal_list = array();
-        $week_days = ["mon","tue","wed","thu","fri","sat","sun"];
+        $week_days = ["sun","mon","tue","wed","thu","fri","sat"];
+        $week_days_length = count($week_days);
         $row_weeks_max = 6;
         $offset = -1;
         for ($i=0; $i < $row_weeks_max; $i++) 
@@ -228,7 +229,7 @@ class Klass extends REST_Controller implements MY_Class{
 
             $real_cal_row_list = array();
 
-            for ($j=0; $j < count($week_days); $j++) 
+            for ($j=0; $j < $week_days_length; $j++) 
             { 
                 $cur_day = $week_days[$j];
 
@@ -247,19 +248,21 @@ class Klass extends REST_Controller implements MY_Class{
                 $idx_for_klass_cal = -1;
                 if(-1 < $offset)
                 {
-                    $idx_for_klass_cal = ($i * $row_weeks_max) + $j - $offset;
-                }
+                    $idx_for_klass_cal = ($i * $week_days_length) + $j - $offset;
+                }                
 
-                $klass_cal = null;
+                $next_klass_cal = null;
                 if(-1 < $idx_for_klass_cal && $idx_for_klass_cal < count($klass_cal_list))
                 {
-                    $klass_cal = $klass_cal_list[$idx_for_klass_cal];
+                    $next_klass_cal = $klass_cal_list[$idx_for_klass_cal];
                 }
 
-                if(!is_null($klass_cal))
+
+
+                if(!is_null($next_klass_cal))
                 {
                     // 달력위에 표시될 날짜 객체를 넣어줍니다.
-                    array_push($real_cal_row_list, $klass_cal);
+                    array_push($real_cal_row_list, $next_klass_cal);
                 }
                 else 
                 {   
@@ -290,37 +293,31 @@ class Klass extends REST_Controller implements MY_Class{
         $limit = 1;
         $offset = 0;
         $query = $this->db->get('klass', $limit, $offset);
-        $output = $this->add_klass_extra_info($query);
-
-        // 첫번째 결과만 허용.
-        if(!empty($output)) 
+        $klass_list = $this->add_klass_extra_info($query);
+        $klass = null;
+        if(!empty($klass_list)) 
         {
-            $output = $output[0];
+            $klass = $klass_list[0];
 
             $calendar_list = 
             $this->my_calendar->get_date_list_by_month(
-                $output->date_begin, 
-                intval($output->week_max)
+                $klass->date_begin, 
+                intval($klass->week_max)
             );
 
-            $klass_cal = $this->convertKlassCalendar($output, $calendar_list);
+            $klass_cal_table = $this->convertKlassCalendar($klass, $calendar_list);
 
-            $output->calendar_list = $klass_cal;
-
-            // $extra['calendar_list'] = $calendar_list;
-            // $extra['date_begin'] = $output->date_begin;
-            // $extra['week_max'] = $output->week_max;
-
+            $klass->calendar_table = $klass_cal_table;
         }
 
         // REFACTOR ME
         $last_query = $this->db->last_query();
-        if (!empty($output))
+        if (!empty($klass))
         {
             $response_body = 
             $this->my_response->getResBodySuccess(
                 $last_query, 
-                $output, 
+                $klass, 
                 $this->my_error->get(),
                 $extra
             );
@@ -331,7 +328,7 @@ class Klass extends REST_Controller implements MY_Class{
             $this->my_response->getResBodyFail(
                 'Klass could not be found', 
                 $last_query, 
-                $output, 
+                null, 
                 $this->my_error->get(),
                 $extra
             );

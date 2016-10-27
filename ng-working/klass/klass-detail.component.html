@@ -99,6 +99,8 @@
           </li>        
           <li class="list-group-item" style="padding: 5px;">
             <simple-calendar  #klassCalendar
+                              [calendarTable]="klassCalendarTable"
+                              [dayBegin]="klassDayBegin"
                               [dateBegin]="klassDateBegin"
                               [weekMin]="klassWeekMin"
                               [weekMax]="klassWeekMax"></simple-calendar>

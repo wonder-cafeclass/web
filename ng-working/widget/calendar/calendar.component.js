@@ -15,10 +15,28 @@ var CalendarComponent = (function () {
     }
     CalendarComponent.prototype.ngOnInit = function () {
         // Do something
-        console.log("TEST / CalendarComponent / dateBegin : ", this.dateBegin);
-        console.log("TEST / CalendarComponent / weekMin : ", this.weekMin);
-        console.log("TEST / CalendarComponent / weekMax : ", this.weekMax);
+        console.log("XX / dayBegin : ", this.dayBegin);
+        if (null != this.calendarTable && 0 < this.calendarTable.length) {
+            for (var i = 0; i < this.calendarTable.length; ++i) {
+                var row = this.calendarTable[i];
+                for (var j = 0; j < row.length; ++j) {
+                    var field = row[j];
+                    if (null != field) {
+                        this.monthBegin = field.month;
+                        break;
+                    }
+                }
+            }
+        }
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], CalendarComponent.prototype, "calendarTable", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], CalendarComponent.prototype, "dayBegin", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)

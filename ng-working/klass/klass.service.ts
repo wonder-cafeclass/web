@@ -53,7 +53,7 @@ export class KlassService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-    
+
     getKlasses (): Promise<Klass[]> {
 
         let req_url = this.us.get(this.klassesUrl);
