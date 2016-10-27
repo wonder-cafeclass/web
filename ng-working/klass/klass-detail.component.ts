@@ -8,7 +8,8 @@ import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
-import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
+import { ClockBoardComponent }     from '../widget/clock/clock-board.component';
+import { PriceTagComponent }       from '../widget/pricetag/pricetag.component';
 
 @Component({
   moduleId: module.id,
@@ -32,6 +33,11 @@ export class KlassDetailComponent implements OnInit {
   klassCalendarTable:Calendar[][];
 
   editTitle: string;
+
+  priceTagTitle:string;
+  priceTagPrice:number;
+  priceTagCurrency:string="₩";
+  priceTagColor:string="#e85c41";
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +66,11 @@ export class KlassDetailComponent implements OnInit {
     this.klassDateBegin = this.klass.date_begin;
     this.klassWeekMin = this.klass.week_min;
     this.klassWeekMax = this.klass.week_max;
+
+    // send time data to "pricetag-updown"
+    // 주당 가격 계산이 필요. --> 이건 서버가 할일이 아닐까?
+    this.priceTagTitle = "4주";
+    this.priceTagPrice = this.klass.price;
   }
 
   cancel() {

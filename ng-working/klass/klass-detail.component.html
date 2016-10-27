@@ -21,6 +21,7 @@
           </li>
 
 
+          <li class="list-group-item">아래 배너 이미지는 운영자가 임의로 추가/삭제가 가능합니다.<br/>업로드시 사이즈에 대한 규정이 필요합니다.</li>
 
           <li class="list-group-item" style="padding:0px;">
             <img  src={{imageService.get(imageService.noticeDrinksUrl)}}
@@ -37,6 +38,28 @@
 
         <!-- Second Column -->
         <ul class="list-group col-md-6">
+
+          <li class="list-group-item" style="padding: 5px;">
+            
+            <pricetag-updown  [title]="priceTagTitle"
+                              [price]="priceTagPrice"
+                              [currency]="priceTagCurrency"
+                              [color]="priceTagColor"></pricetag-updown>
+            <!-- Price Tag -->
+            <!--
+  @Input() title:string;
+  @Input() price:number;
+  @Input() currency:string;
+  @Input() color:string;
+
+
+            <ul class="list-group" style="width:100px;margin-bottom:0px;">
+              <li class="list-group-item" style="text-align:center;background-color:#e85c41;border-color:#e85c41;color:#fff;font-size:25px;padding-top:2px;padding-bottom:2px;">{{klass.week_min}}주</li>
+              <li class="list-group-item" style="text-align:center;background-color:#fff;border-color:#e85c41;color:#e85c41;font-size:15px;">&#8361; {{klass.price_with_format}}</li>
+            </ul>
+            -->
+
+          </li>
 
           <li class="list-group-item" style="padding: 5px;height: 130px;">
 
@@ -98,7 +121,7 @@
 
                   </td> 
                   <td class="td-layout">
-                    
+                    <!-- 수업은 최소 1시간부터 시작 / 그 다음부터는 30분 단위 / 7:40분도 허용. 퇴근 직장인을 위한 마케팅 목적.  -->
                     <clock-board  #clockboard 
                                   [clockHeight]=120
                                   [klassTimeBegin]="klassTimeBegin" 
@@ -109,9 +132,12 @@
               </tbody> 
             </table>
 
-          </li>        
-          <li class="list-group-item" style="padding: 5px;">
+          </li>    
 
+          <li class="list-group-item" style="padding: 5px;">3시간 전까지만 수업신청을 받음.</li>
+
+          <li class="list-group-item" style="padding: 5px;">
+            <!-- 지나간 수업은 캘린더에 노출하지 않습니다. -->
             <simple-calendar  #klassCalendar
                               [calendarTable]="klassCalendarTable"
                               [dayBegin]="klassDayBegin"
@@ -121,23 +147,7 @@
 
           </li>
 
-          <li class="list-group-item" style="padding: 5px;">
-
-            <button   type="button" 
-                      class="btn btn-lg btn-default klass-signup-v2" 
-                      (click)="onClickEnrollment($event, klass)">
-                      <span>&#8361; {{klass.price_with_format}}</span>
-                      <span class="badge klass-price-week">{{klass.week_min}}주</span>
-            </button> 
-
-            <button   type="button"
-                      class="btn btn-lg btn-default klass-signup-v2" 
-                      (click)="onClickEnrollment($event, klass)">
-                      <span>&#8361; {{klass.price_with_format}}</span>
-                      <span class="badge klass-price-week">{{klass.week_max}}주</span>
-            </button>
-
-          </li>
+          <li class="list-group-item" style="padding: 5px;">59,000 / 최종 가격만 나옵니다. / 아래 바에는 수업 주 단위를 선택하는 콤보박스가 잇어야 합니다.</li>
 
           <li class="list-group-item" style="padding: 5px;">
 

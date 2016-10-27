@@ -254,7 +254,12 @@ class Klass extends REST_Controller implements MY_Class{
         $real_cal_list = array();
         $week_days = ["sun","mon","tue","wed","thu","fri","sat"];
         $week_days_length = count($week_days);
-        $row_weeks_max = 6;
+
+        // 1개월, 2개월, 3개월일 경우 최대 표시 주수가 다릅니다.
+        $klass_cnt = count($calendar_list);
+        $klass_week_cnt = intval($klass_cnt/$week_days_length) + 2;
+        $row_weeks_max = $klass_week_cnt;
+
         $offset = -1;
         for ($i=0; $i < $row_weeks_max; $i++) 
         { 

@@ -24,6 +24,7 @@ var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
 var calendar_component_1 = require('../widget/calendar/calendar.component');
+var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -43,7 +44,8 @@ var KlassCenterModule = (function () {
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,
-                calendar_component_1.CalendarComponent
+                calendar_component_1.CalendarComponent,
+                pricetag_component_1.PriceTagComponent
             ],
             providers: [
                 klass_service_1.KlassService,

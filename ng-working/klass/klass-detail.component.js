@@ -18,6 +18,8 @@ var KlassDetailComponent = (function () {
         this.router = router;
         this.imageService = imageService;
         this.dialogService = dialogService;
+        this.priceTagCurrency = "₩";
+        this.priceTagColor = "#e85c41";
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -34,6 +36,10 @@ var KlassDetailComponent = (function () {
         this.klassDateBegin = this.klass.date_begin;
         this.klassWeekMin = this.klass.week_min;
         this.klassWeekMax = this.klass.week_max;
+        // send time data to "pricetag-updown"
+        // 주당 가격 계산이 필요. --> 이건 서버가 할일이 아닐까?
+        this.priceTagTitle = "4주";
+        this.priceTagPrice = this.klass.price;
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

@@ -20,6 +20,8 @@ import { ClockComponent }            from '../widget/clock/clock.component';
 
 import { CalendarComponent }         from '../widget/calendar/calendar.component';
 
+import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { CalendarComponent }         from '../widget/calendar/calendar.component
     ClockBoardComponent,
     ClockDigitalComponent,
     ClockComponent,
-    CalendarComponent
+    CalendarComponent,
+    PriceTagComponent
   ],
   providers: [
     KlassService,
