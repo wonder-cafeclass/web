@@ -25,6 +25,8 @@ var KlassDetailComponent = (function () {
             if (null != data.klass) {
                 _this.klass = data.klass;
             }
+            _this.klassCalendarTable = _this.klass.calendar_table;
+            _this.klassDayBegin = _this.klass.days;
         });
         // send time data to "clock board"
         this.klassTimeBegin = this.klass.time_begin;

@@ -23,8 +23,10 @@ export class ClockBoardComponent implements OnInit {
 
   @Input() clockHeight:number=83;
 
+
   clockTimeBegin:ClockTime;
   clockTimeEnd:ClockTime;
+  dcLeftMargin:number=10;
 
   constructor(
     public imageService: ImageService
@@ -33,11 +35,10 @@ export class ClockBoardComponent implements OnInit {
   ngOnInit(): void {
 
     // Do something
-    console.log("TEST / ClockBoardComponent / this.klassTimeBegin : ",this.klassTimeBegin);
-    console.log("TEST / ClockBoardComponent / this.klassTimeEnd : ",this.klassTimeEnd);
-
     this.clockTimeBegin = this.getClockTime(this.klassTimeBegin);
     this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
+
+    this.dcLeftMargin = Math.round(this.clockHeight/2);
   }
 
   getClockTime(time_hh_mm:string): any {
@@ -66,7 +67,7 @@ export class ClockBoardComponent implements OnInit {
     let hoursForRotate = hours;
     let isAM = true;
     let time_hh_mm_24 = time_hh_mm;
-    let time_hh_mm_12 = `AM ${hoursStr}:${minutesStr}`;
+    let time_hh_mm_12 = `오전 ${hoursStr}:${minutesStr}`;
     if(12 <= hoursForRotate) {
       hoursForRotate -= 12;
 
@@ -74,7 +75,7 @@ export class ClockBoardComponent implements OnInit {
       if(hoursForRotate < 10) {
         hoursIn12 = `0${hoursForRotate}`;
       } 
-      time_hh_mm_12 = `PM ${hoursIn12}:${minutesStr}`;
+      time_hh_mm_12 = `오후 ${hoursIn12}:${minutesStr}`;
       isAM = false;
     }
 

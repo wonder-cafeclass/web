@@ -35,16 +35,6 @@ class MY_ParamChecker {
             return;
         }
 
-        // REMOVE ME
-        /*
-    	$abs_path = $_SERVER['DOCUMENT_ROOT'];
-
-        $path_info = $_SERVER['PATH_INFO'];
-
-        $http_host = $_SERVER['HTTP_HOST'];
-        $req_uri = $_SERVER['REQUEST_URI'];
-        */
-
     	// Fetch ParamChecker.json
     	$param_check_json_str = "";
     	$target_path = FCPATH . $this->json_path;

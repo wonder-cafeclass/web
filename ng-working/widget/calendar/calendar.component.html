@@ -3,82 +3,82 @@
 		<table class="table cal"> 
 
 			<tbody> 
+			
 				<tr>
 					<td class="cal-cell" colspan="7" style="border-top: 0px;">
-						<span class="cal-date">10월 ~ 11월</span>
+						<span class="cal-date">{{monthBegin}}월</span>
 					</td> 
 				</tr>
+
 				<tr>
-					<td class="cal-cell"><span class="cal-date">Sun</span></td> 
-					<td class="cal-cell"><span class="cal-date">Mon</span></td>
-					<td class="cal-cell"><span class="cal-date">Tue</span></td>
 					<td class="cal-cell">
-						<span class="cal-date cal-day-picked">Wed</span>
-					</td>
-					<td class="cal-cell"><span class="cal-date">Thu</span></td>
-					<td class="cal-cell"><span class="cal-date">Fri</span></td>
-					<td class="cal-cell"><span class="cal-date">Sat</span></td>
-				</tr> 
-				<tr> 
-					<td class="cal-cell">&nbsp;</td> 
-					<td class="cal-cell">&nbsp;</td>
-					<td class="cal-cell">&nbsp;</td>
-					<td class="cal-cell">&nbsp;</td>
-					<td class="cal-cell"><span class="cal-date">1</span></td>
-					<td class="cal-cell"><span class="cal-date">2</span></td>
-					<td class="cal-cell"><span class="cal-date">3</span></td>
-				</tr> 
-				<tr> 
-					<td class="cal-cell"><span class="cal-date">4</span></td> 
-					<td class="cal-cell"><span class="cal-date">5</span></td>
-					<td class="cal-cell"><span class="cal-date">6</span></td>
-					<td class="cal-cell">
-						<span class="badge cal-date cal-date-picked">
-							<div class="badge-cage">7</div>
+						<span *ngIf="dayBegin == 'sun'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">일</div>
 						</span>
-					</td>
-					<td class="cal-cell"><span class="cal-date">8</span></td>
-					<td class="cal-cell"><span class="cal-date">9</span></td>
-					<td class="cal-cell"><span class="cal-date">10</span></td>
-				</tr> 
-				<tr> 
-					<td class="cal-cell"><span class="cal-date">11</span></td> 
-					<td class="cal-cell"><span class="cal-date">12</span></td>
-					<td class="cal-cell"><span class="cal-date">13</span></td>
+						<span *ngIf="dayBegin != 'sun'" class="cal-date sun">일</span>
+					</td> 
 					<td class="cal-cell">
-						<span class="badge cal-date cal-date-picked">
-							<div class="badge-cage">14</div>
+						<span *ngIf="dayBegin == 'mon'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">월</div>
 						</span>
+						<span *ngIf="dayBegin != 'mon'" class="cal-date">월</span>
 					</td>
-					<td class="cal-cell"><span class="cal-date">15</span></td>
-					<td class="cal-cell"><span class="cal-date">16</span></td>
-					<td class="cal-cell"><span class="cal-date">17</span></td>
-				</tr> 
-				<tr> 
-					<td class="cal-cell"><span class="cal-date">18</span></td> 
-					<td class="cal-cell"><span class="cal-date">19</span></td>
-					<td class="cal-cell"><span class="cal-date">21</span></td>
 					<td class="cal-cell">
-						<span class="badge cal-date cal-date-picked">
-							<div class="badge-cage">22</div>
+						<span *ngIf="dayBegin == 'tue'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">화</div>
 						</span>
+						<span *ngIf="dayBegin != 'tue'" class="cal-date">화</span>
 					</td>
-					<td class="cal-cell"><span class="cal-date">23</span></td>
-					<td class="cal-cell"><span class="cal-date">24</span></td>
-					<td class="cal-cell"><span class="cal-date">25</span></td>
-				</tr> 
-				<tr> 
-					<td class="cal-cell"><span class="cal-date">26</span></td> 
-					<td class="cal-cell"><span class="cal-date">27</span></td>
-					<td class="cal-cell"><span class="cal-date">28</span></td>
 					<td class="cal-cell">
-						<span class="badge cal-date cal-date-picked">
-							<div class="badge-cage">29</div>
+						<span *ngIf="dayBegin == 'wed'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">수</div>
 						</span>
+						<span *ngIf="dayBegin != 'wed'" class="cal-date">수</span>
 					</td>
-					<td class="cal-cell"><span class="cal-date">30</span></td>
-					<td class="cal-cell"><span class="cal-date">31</span></td>
-					<td class="cal-cell">&nbsp;</td>
+					<td class="cal-cell">
+						<span *ngIf="dayBegin == 'thu'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">목</div>
+						</span>
+						<span *ngIf="dayBegin != 'thu'" class="cal-date">목</span>
+					</td>
+					<td class="cal-cell">
+						<!-- <span *ngIf="dayBegin == 'fri'" class="cal-date cal-day-picked">금</span> -->
+						<span *ngIf="dayBegin == 'fri'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">금</div>
+						</span>
+						<span *ngIf="dayBegin != 'fri'" class="cal-date">금</span>
+					</td>
+					<td class="cal-cell">
+						<span *ngIf="dayBegin == 'sat'" class="badge cal-date cal-date-picked">
+							<div class="badge-cage">토</div>
+						</span>
+						<span *ngIf="dayBegin != 'sat'" class="cal-date sat">토</span>
+					</td>
+				</tr> 
+
+				<tr *ngFor="let row of calendarTable"> 
+					<td *ngFor="let field of row" class="cal-cell">
+
+						<span 	*ngIf="field == null">&nbsp;</span>
+
+						<!-- 수업있음. 날짜 오늘보다 전 -->
+						<span 	*ngIf="field != null && field.hasKlass && !field.isExpired" 
+								class="badge cal-date cal-date-picked">
+							<div class="badge-cage">{{field.date}}</div>
+						</span>
+
+						<!-- 수업있음. 날짜 지났음. -->
+						<span 	*ngIf="field != null && field.hasKlass && field.isExpired" 
+								class="badge cal-date cal-expired">
+							<div class="badge-cage">{{field.date}}</div>
+						</span>
+
+
+						<span 	*ngIf="field != null && !field.hasKlass" 
+								[class.sun]="field.day=='Sun'" 
+								[class.sat]="field.day=='Sat'"
+								class="cal-date">{{field.date}}</span>
+					</td> 
 				</tr> 
 
 			</tbody> 

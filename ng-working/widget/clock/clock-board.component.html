@@ -5,8 +5,9 @@
 		                [clockTimeBegin]="clockTimeBegin" 
 		                [clockTimeEnd]="clockTimeEnd"></simple-clock>
 	</div>
-	<div style="margin-left: 40px;">
+	<div [style.margin-left]="dcLeftMargin + 'px'">
 		<clock-digital  #clock 
+						[clockHeight]="clockHeight" 
 		                [clockTimeBegin]="clockTimeBegin" 
 		                [clockTimeEnd]="clockTimeEnd"></clock-digital>
 	</div>

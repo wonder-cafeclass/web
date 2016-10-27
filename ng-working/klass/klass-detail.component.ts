@@ -4,6 +4,7 @@ import { Component, OnInit, HostBinding,
 import { Router, ActivatedRoute }  from '@angular/router';
 
 import { Klass }                   from './model/klass';
+import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
@@ -20,9 +21,15 @@ export class KlassDetailComponent implements OnInit {
   klassTimeBegin:string;
   klassTimeEnd:string;
 
+  klassDayBegin:string;
   klassDateBegin:string;
+  
+  klassPriceMin:string;
+  klassPriceMax:string;
   klassWeekMin:number;
   klassWeekMax:number;
+
+  klassCalendarTable:Calendar[][];
 
   editTitle: string;
 
@@ -41,6 +48,9 @@ export class KlassDetailComponent implements OnInit {
         this.klass = data.klass;
       }
 
+      this.klassCalendarTable = this.klass.calendar_table;
+      this.klassDayBegin = this.klass.days;
+      
     });
 
     // send time data to "clock board"

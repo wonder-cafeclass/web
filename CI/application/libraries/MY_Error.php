@@ -9,6 +9,9 @@ class MY_Error
 
 	private $log_list;
 
+	private $class_name_prev="";
+	private $method_name_prev="";
+	private $event_name_prev="";
 	public function add($class_name="", $method_name="", $event="", $message="", $extra=null) 
 	{
 		if(empty($class_name)) {
@@ -19,6 +22,19 @@ class MY_Error
 		}		
 		if(empty($event)) {
 			return;
+		}
+
+		if($this->class_name_prev === $class_name)
+		{
+			$this->class_name_prev = $class_name;
+		}
+		if($this->method_name_prev = $method_name)
+		{
+			$this->method_name_prev = $method_name;
+		}
+		if($this->event_name_prev = $event)
+		{
+			$this->event_name_prev = $event;
 		}
 
 		$log = [
@@ -34,6 +50,14 @@ class MY_Error
 		}
 
 		array_push($this->log_list, $log);
+	}
+	public function redo($event="", $message="", $extra=null)
+	{
+		$this->add($this->class_name_prev, $this->method_name_prev, $event, $message, $extra);
+	}
+	public function remessage($message="", $extra=null)
+	{
+		$this->add($this->class_name_prev, $this->method_name_prev, $this->event_name_prev, $message, $extra);	
 	}
 
 	public function get() {

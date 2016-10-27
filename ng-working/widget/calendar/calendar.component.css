@@ -2,7 +2,7 @@
 	width:100%;
 }
 .cal-cell {
-	width:20px;
+	width:10%;
 	text-align: center;
 	/*border-top: 1px solid #e85c41;*/
 }
@@ -12,6 +12,16 @@
 .cal-day-picked {
     color: #e85c41;
 }
+.cal-expired {
+    color: #c9c9c9;   
+}
+.sat {
+    color: #31708f;
+}
+.sun {
+    color: #f00;
+}
+
 .cal-date-picked {
     background-color: #e85c41;
     color: #fff;
