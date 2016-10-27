@@ -19,13 +19,13 @@ var ClockBoardComponent = (function () {
     function ClockBoardComponent(imageService) {
         this.imageService = imageService;
         this.clockHeight = 83;
+        this.dcLeftMargin = 10;
     }
     ClockBoardComponent.prototype.ngOnInit = function () {
         // Do something
-        console.log("TEST / ClockBoardComponent / this.klassTimeBegin : ", this.klassTimeBegin);
-        console.log("TEST / ClockBoardComponent / this.klassTimeEnd : ", this.klassTimeEnd);
         this.clockTimeBegin = this.getClockTime(this.klassTimeBegin);
         this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
+        this.dcLeftMargin = Math.round(this.clockHeight / 2);
     };
     ClockBoardComponent.prototype.getClockTime = function (time_hh_mm) {
         if (null === time_hh_mm || "" === time_hh_mm) {
@@ -50,14 +50,14 @@ var ClockBoardComponent = (function () {
         var hoursForRotate = hours;
         var isAM = true;
         var time_hh_mm_24 = time_hh_mm;
-        var time_hh_mm_12 = "AM " + hoursStr + ":" + minutesStr;
+        var time_hh_mm_12 = "\uC624\uC804 " + hoursStr + ":" + minutesStr;
         if (12 <= hoursForRotate) {
             hoursForRotate -= 12;
             var hoursIn12 = "" + hoursForRotate;
             if (hoursForRotate < 10) {
                 hoursIn12 = "0" + hoursForRotate;
             }
-            time_hh_mm_12 = "PM " + hoursIn12 + ":" + minutesStr;
+            time_hh_mm_12 = "\uC624\uD6C4 " + hoursIn12 + ":" + minutesStr;
             isAM = false;
         }
         var clockTimeObj = new clock_time_1.ClockTime();

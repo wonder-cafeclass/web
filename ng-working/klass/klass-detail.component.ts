@@ -23,6 +23,9 @@ export class KlassDetailComponent implements OnInit {
 
   klassDayBegin:string;
   klassDateBegin:string;
+  
+  klassPriceMin:string;
+  klassPriceMax:string;
   klassWeekMin:number;
   klassWeekMax:number;
 

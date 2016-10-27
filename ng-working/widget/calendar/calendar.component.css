@@ -12,6 +12,9 @@
 .cal-day-picked {
     color: #e85c41;
 }
+.cal-expired {
+    color: #c9c9c9;   
+}
 .sat {
     color: #31708f;
 }

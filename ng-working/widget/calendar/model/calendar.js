@@ -2,6 +2,7 @@
 var Calendar = (function () {
     function Calendar() {
         this.hasKlass = false;
+        this.isExpired = false;
     }
     return Calendar;
 }());

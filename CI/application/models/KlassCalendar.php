@@ -7,6 +7,7 @@ class KlassCalendar {
 	public $date; // "21" of the "21"st February 2011
 	public $day;  // Monday, Tuesday, ...
 	public $hasKlass=false;
+	public $isExpired=false;
 
 	public function KlassCalendar($yyyy_mm_dd_DD="", $year=-1, $month=-1, $date=-1, $day="") 
 	{

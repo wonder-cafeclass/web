@@ -15,9 +15,15 @@ import { ClockTime }                      from './model/clock-time';
 })
 export class ClockDigitalComponent implements OnInit {
 
+  @Input() clockHeight:number=83;
   @Input() clockTimeBegin:ClockTime;
   @Input() clockTimeEnd:ClockTime;
   @Input() is24:boolean=false;
+
+  rowHeight:number=0;
+  rowPadding:number=10;
+  elementHeight:number=20;
+  textMarginTop:number=0;
 
   constructor(
     public imageService: ImageService
@@ -26,16 +32,9 @@ export class ClockDigitalComponent implements OnInit {
   ngOnInit(): void {
 
     // Do something
+    this.rowHeight = Math.round(this.clockHeight/2);
 
-    if(this.is24) {
-      // 24h
-
-    } else {
-      // 12h
-      
-    }
-
-    // 모드 변경 될 수 있도록!
+    this.textMarginTop = Math.floor((this.rowHeight - ((this.rowPadding * 2) + this.elementHeight)) / 2);
 
   }
 

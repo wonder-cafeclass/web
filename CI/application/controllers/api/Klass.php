@@ -167,7 +167,18 @@ class Klass extends REST_Controller implements MY_Class{
         }
 
         $has_class_began = false;
+        $has_class_closed = false;
         $klass_cal_list = array();
+
+        // 수업이 종료되는 날짜를 가져옵니다.
+        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
+        $date_end = "";
+        if(!empty($date_list))
+        {
+            $date_end = $date_list[count($date_list) - 1];
+        }
+        
+
         for ($i=0; $i < count($calendar_list); $i++) 
         {
 
@@ -208,12 +219,33 @@ class Klass extends REST_Controller implements MY_Class{
             }
             $strpos = -1;
 
-            // 수업 시작 날짜이거나 그 이후면서 수업 요일이면, KlassCalendar에 "수업있음" true
-            if($has_class_began && $is_klass_day)
+            // 수업 종료 날짜 이후인지 검사.
+            if($has_class_began && !$has_class_closed && !empty($date_end)) 
+            {
+                $strpos = strpos(strtolower($cal_date), strtolower($date_end));
+            }
+            if(-1 < $strpos) 
+            {
+                $has_class_closed = true;
+            }
+
+            // 수업 시작 날짜이거나 그 이후, 수업 종료 이전이면서 수업 요일이면, KlassCalendar에 "수업있음" true
+            if($has_class_began && !$has_class_closed &&  $is_klass_day)
             {
                 $klassCalendar->hasKlass=true;
             }
 
+            // 오늘 날짜까지는 Expired로 표시? --> Peter님과 논의 필요.
+            $is_expired = false;
+            $yyyy_mm_dd = "$year-$month-$date";
+            $time_cal_date = strtotime($yyyy_mm_dd);
+
+            $yyyy_mm_dd_now = $this->my_calendar->get_now_YYYYMMDD();
+            $time_now = strtotime($yyyy_mm_dd_now);
+            if($time_cal_date < $time_now) {
+                // 오늘보다 이전의 시간임.
+                $klassCalendar->isExpired = true;
+            }
 
             array_push($klass_cal_list, $klassCalendar);
         }

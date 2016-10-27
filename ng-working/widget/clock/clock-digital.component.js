@@ -18,16 +18,22 @@ var clock_time_1 = require('./model/clock-time');
 var ClockDigitalComponent = (function () {
     function ClockDigitalComponent(imageService) {
         this.imageService = imageService;
+        this.clockHeight = 83;
         this.is24 = false;
+        this.rowHeight = 0;
+        this.rowPadding = 10;
+        this.elementHeight = 20;
+        this.textMarginTop = 0;
     }
     ClockDigitalComponent.prototype.ngOnInit = function () {
         // Do something
-        if (this.is24) {
-        }
-        else {
-        }
-        // 모드 변경 될 수 있도록!
+        this.rowHeight = Math.round(this.clockHeight / 2);
+        this.textMarginTop = Math.floor((this.rowHeight - ((this.rowPadding * 2) + this.elementHeight)) / 2);
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ClockDigitalComponent.prototype, "clockHeight", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', clock_time_1.ClockTime)

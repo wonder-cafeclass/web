@@ -5,4 +5,5 @@ export class Calendar {
 	public date; // "21" of the "21"st February 2011
 	public day;  // Monday, Tuesday, ...
 	public hasKlass=false;
+	public isExpired=false;
 }

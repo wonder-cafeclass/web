@@ -1,16 +1,20 @@
 <div>
 	<ul class="list-group" style="width:100%;">
-		<li class="list-group-item clock">
-			<span class="pull-left klass-time-guide">FROM</span>
+		<li class="list-group-item clock" [style.height]="rowHeight + 'px'">
 			&nbsp;
-			<span class="pull-right">
+			<span 	class="pull-right klass-time-guide" 
+					[style.margin-top]="textMarginTop + 'px'">부터</span>
+			<span 	class="pull-right" 
+					[style.margin-top]="textMarginTop + 'px'">
 				<span class="badge klass-time">{{clockTimeBegin.time_hh_mm_12}}</span>
 			</span>
 		</li>
-		<li class="list-group-item clock">
-			<span class="pull-left klass-time-guide">TO</span>
+		<li class="list-group-item clock" [style.height]="rowHeight + 'px'">
 			&nbsp;
-			<span class="pull-right">
+			<span 	class="pull-right klass-time-guide" 
+					[style.margin-top]="textMarginTop + 'px'">까지</span>
+			<span 	class="pull-right" 
+					[style.margin-top]="textMarginTop + 'px'">
 				<span class="badge klass-time">{{clockTimeEnd.time_hh_mm_12}}</span>
 			</span> 
 		</li>
