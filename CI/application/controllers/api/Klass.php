@@ -265,7 +265,7 @@ class Klass extends REST_Controller implements MY_Class{
         { 
 
             $real_cal_row_list = array();
-
+            $isNullList = true;
             for ($j=0; $j < $week_days_length; $j++) 
             { 
                 $cur_day = $week_days[$j];
@@ -300,6 +300,7 @@ class Klass extends REST_Controller implements MY_Class{
                 {
                     // 달력위에 표시될 날짜 객체를 넣어줍니다.
                     array_push($real_cal_row_list, $next_klass_cal);
+                    $isNullList = false;
                 }
                 else 
                 {   
@@ -308,7 +309,11 @@ class Klass extends REST_Controller implements MY_Class{
                 }
 
             }
-            array_push($real_cal_list, $real_cal_row_list);
+
+            if(!$isNullList) 
+            {
+                array_push($real_cal_list, $real_cal_row_list);
+            }
         }
 
         return $real_cal_list;
