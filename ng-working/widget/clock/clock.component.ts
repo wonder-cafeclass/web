@@ -61,7 +61,6 @@ export class ClockComponent implements OnInit {
     this.clockBGUrl = this.imageService.get(this.imageService.clockBGUrl);
 
     this.show(this.clockTimeBegin, this.clockTimeEnd);
-
   }
 
   show(clockTimeBegin:ClockTime, clockTimeEnd:ClockTime) :void {
@@ -75,8 +74,8 @@ export class ClockComponent implements OnInit {
     }
 
     let diffMinutes = clockTimeEnd.totalMinutes - clockTimeBegin.totalMinutes;
-    if(0 < (diffMinutes%60)) {
-      console.log("Error / 한시간 단위로 파라미터가 변경되어야 합니다.");
+    if(0 < (diffMinutes%10)) {
+      console.log("Error / 10분 단위로 파라미터가 변경되어야 합니다.");
       return;
     }
     let diffHours = (diffMinutes/60);
@@ -86,42 +85,43 @@ export class ClockComponent implements OnInit {
       return;
     }
 
-    if(1 === diffHours && 30 === clockTimeBegin.minutes) {
+    // 시작 시간으로부터 15분 미만까지는 동일 시간으로 표현합니다.
+    if(1 === diffHours && (30 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 45)) {
       this.clockHoursUrl = this.clock1hr0030Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock1hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock1hrNoticePMUrl;
       }
-    } else if(1 === diffHours) {
+    } else if(1 === diffHours && (0 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 15)) {
       this.clockHoursUrl = this.clock1hr0000Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock1hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock1hrNoticePMUrl;
       }
-    } else if(2 === diffHours && 30 === clockTimeBegin.minutes) {
+    } else if(2 === diffHours && (30 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 45)) {
       this.clockHoursUrl = this.clock2hr0030Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock2hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock2hrNoticePMUrl;
       }
-    } else if(2 === diffHours) {
+    } else if(2 === diffHours && (0 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 15)) {
       this.clockHoursUrl = this.clock2hr0000Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock2hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock2hrNoticePMUrl;
       }
-    } else if(3 === diffHours && 30 === clockTimeBegin.minutes) {
+    } else if(3 === diffHours && (30 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 45)) {
       this.clockHoursUrl = this.clock3hr0030Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock3hrNoticeAMUrl;
       } else {
         this.clockNoticeUrl = this.clock3hrNoticePMUrl;
       }
-    } else if(3 === diffHours) {
+    } else if(3 === diffHours && (0 <= clockTimeBegin.minutes && clockTimeBegin.minutes < 15)) {
       this.clockHoursUrl = this.clock3hr0000Url;
       if(clockTimeBegin.isAM) {
         this.clockNoticeUrl = this.clock3hrNoticeAMUrl;

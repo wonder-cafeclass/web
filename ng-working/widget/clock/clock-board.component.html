@@ -1,13 +1,13 @@
 <div>
 	<div style="position: absolute;z-index: 100;">
 		<simple-clock   #clock 
-						[clockHeight]="clockHeight" 
+						[clockHeight]="simpleClockHeight" 
 		                [clockTimeBegin]="clockTimeBegin" 
 		                [clockTimeEnd]="clockTimeEnd"></simple-clock>
 	</div>
 	<div [style.margin-left]="dcLeftMargin + 'px'">
 		<clock-digital  #clock 
-						[clockHeight]="clockHeight" 
+						[clockHeight]="clockDigitalHeight" 
 		                [clockTimeBegin]="clockTimeBegin" 
 		                [clockTimeEnd]="clockTimeEnd"></clock-digital>
 	</div>

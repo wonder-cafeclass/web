@@ -19,6 +19,8 @@ var ClockBoardComponent = (function () {
     function ClockBoardComponent(imageService) {
         this.imageService = imageService;
         this.clockHeight = 83;
+        this.simpleClockHeight = 82;
+        this.clockDigitalHeight = 83;
         this.dcLeftMargin = 10;
     }
     ClockBoardComponent.prototype.ngOnInit = function () {
@@ -26,16 +28,18 @@ var ClockBoardComponent = (function () {
         this.clockTimeBegin = this.getClockTime(this.klassTimeBegin);
         this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
         this.dcLeftMargin = Math.round(this.clockHeight / 2);
+        this.simpleClockHeight = this.clockHeight - 1;
+        this.clockDigitalHeight = this.clockHeight;
     };
     ClockBoardComponent.prototype.getClockTime = function (time_hh_mm) {
         if (null === time_hh_mm || "" === time_hh_mm) {
             return null;
         }
         // 0. 유효한 시간값인지 검사합니다.
-        // ex) 07:30, 08:00 처럼 30분 단위만 허용합니다.
+        // ex) 07:30, 08:00, 07:40, 08:10, 처럼 10분 단위까지 허용합니다. - 퇴근 시간이후롤 노린 마케팅 목적도 있음.
         // 23:00 ~ 25:00 처럼 순방향 진행은 24시를 넘는 표현도 허용합니다.
         // 23:00 ~ 01:00 는 오류로 처리합니다.
-        var res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):(0|3)0$/gi);
+        var res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):[0-5]0$/gi);
         if (null === res || !(0 < res.length)) {
             console.log("유효한 시간 값이 아닙니다.", time_hh_mm);
             return null;
@@ -54,10 +58,22 @@ var ClockBoardComponent = (function () {
         if (12 <= hoursForRotate) {
             hoursForRotate -= 12;
             var hoursIn12 = "" + hoursForRotate;
-            if (hoursForRotate < 10) {
-                hoursIn12 = "0" + hoursForRotate;
+            if (hoursForRotate == 0 || hoursForRotate <= 2) {
+                // 낮 12시인 경우.
+                hoursIn12 = "12";
+                time_hh_mm_12 = "\uB0AE " + hoursIn12 + ":" + minutesStr;
             }
-            time_hh_mm_12 = "\uC624\uD6C4 " + hoursIn12 + ":" + minutesStr;
+            else if (9 <= hoursForRotate) {
+                // 밤 시간을 나타냄. 밤은 9시부터...
+                if (hoursForRotate < 10) {
+                    hoursIn12 = "0" + hoursForRotate;
+                }
+                time_hh_mm_12 = "\uBC24 " + hoursIn12 + ":" + minutesStr;
+            }
+            else if (hoursForRotate < 10) {
+                hoursIn12 = "0" + hoursForRotate;
+                time_hh_mm_12 = "\uC624\uD6C4 " + hoursIn12 + ":" + minutesStr;
+            }
             isAM = false;
         }
         var clockTimeObj = new clock_time_1.ClockTime();
@@ -83,6 +99,14 @@ var ClockBoardComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], ClockBoardComponent.prototype, "clockHeight", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ClockBoardComponent.prototype, "simpleClockHeight", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ClockBoardComponent.prototype, "clockDigitalHeight", void 0);
     ClockBoardComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
