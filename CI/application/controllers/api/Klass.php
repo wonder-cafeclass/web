@@ -178,7 +178,6 @@ class Klass extends REST_Controller implements MY_Class{
             $date_end = $date_list[count($date_list) - 1];
         }
         
-
         for ($i=0; $i < count($calendar_list); $i++) 
         {
 
@@ -198,6 +197,15 @@ class Klass extends REST_Controller implements MY_Class{
 
             // KlassCalendar 객체를 만듭니다.
             $klassCalendar = new KlassCalendar($cal_date, $year, $month, $date, $day);
+
+            if(0 === $i)
+            {
+                $klassCalendar->isFirstDay = true;
+            }
+            else if((count($calendar_list) - 1) === $i)
+            {
+                $klassCalendar->isLastDay = true;
+            }
 
             $strpos = strpos(strtolower($cal_date), strtolower($klass_course->days));
             $is_klass_day = false;
@@ -248,7 +256,48 @@ class Klass extends REST_Controller implements MY_Class{
             }
 
             array_push($klass_cal_list, $klassCalendar);
-        }
+        } // end for
+
+        // 일차원 배열에서 각 달(Month)의 경계를 찾아 플래그 값을 넣습니다.
+        $has_changed = false;
+        $month_prev = null;
+        for ($i=0; $i < count($klass_cal_list); $i++) 
+        {
+            $klass_cal = $klass_cal_list[$i];
+
+            if(0 === $i)
+            {
+                // 캘린더의 첫번째 날을 찾았습니다.
+                $klass_cal->isFirstWeekOfMonth = true;
+                $klass_cal->isFirstDayOfMonth = true;
+                // 지금 달(month) 정보를 저장합니다.
+                $month_prev = intval($klass_cal->month);
+
+                continue;
+            } 
+            else if((count($klass_cal_list) - 1) === $i)
+            {
+                // 캘린더의 마지막 날을 찾았습니다.
+                $klass_cal->isLastWeekOfMonth = true;
+                $klass_cal->isLastDayOfMonth = true;
+                continue;
+            }
+
+            if($month_prev !== intval($klass_cal->month))
+            {
+                // 다음 달로 넘어갔습니다.
+                $klass_cal_prev = $klass_cal_list[($i - 1)];
+                $klass_cal_prev->isLastWeekOfMonth = true;
+                $klass_cal_prev->isLastDayOfMonth = true;
+
+                $klass_cal->isFirstWeekOfMonth = true;
+                $klass_cal->isFirstDayOfMonth = true;
+
+                // 다음 달을 비교할 정보로 저장.
+                $month_prev = intval($klass_cal->month);
+            }
+        } // end for
+
 
         // 실제 달력의 형태와 동일한 2차 배열을 만듭니다.
         $real_cal_list = array();
@@ -294,26 +343,130 @@ class Klass extends REST_Controller implements MY_Class{
                     $next_klass_cal = $klass_cal_list[$idx_for_klass_cal];
                 }
 
-
-
                 if(!is_null($next_klass_cal))
                 {
-                    // 달력위에 표시될 날짜 객체를 넣어줍니다.
+                    // 달력 위에 표시될 날짜 객체를 넣어줍니다.
                     array_push($real_cal_row_list, $next_klass_cal);
                     $isNullList = false;
                 }
                 else 
                 {   
-                    // 달력위의 빈 날짜는 null로 채워줍니다.
+                    // 달력 위의 빈 날짜는 null로 채워줍니다.
                     array_push($real_cal_row_list, null);
                 }
 
             }
 
-            if(!$isNullList) 
-            {
-                array_push($real_cal_list, $real_cal_row_list);
+            if($isNullList) {
+                continue;
             }
+
+            array_push($real_cal_list, $real_cal_row_list);
+        } // end for
+
+
+        // 정제된 캘린더 데이터로 각 달(month)의 경계가 되는 주(week)의 대한 정보를 추가합니다.
+        for ($i=0; $i < count($real_cal_list); $i++) 
+        {
+
+            $row = $real_cal_list[$i];
+
+            $field_first = $row[0];
+            $field_last = $row[count($row) - 1];
+            if(!is_null($field_first))
+            {
+                // 한 주(week)의 첫번째 날
+                $field_first->isFirstDayOfWeek = true;
+            }
+            if(!is_null($field_last))
+            {
+                // 한 주(week)의 첫번째 날
+                $field_last->isLastDayOfWeek = true;
+            }
+
+            // 각 달의 경계가 되는 시작, 끝 주(week)에 포함된 날들을 찾아 표시해줍니다.
+            $isFirstDayOfMonth = false;
+            $isLastDayOfMonth = false;
+            $month_matched = -1;
+            for ($j=0; $j < count($row); $j++) 
+            {
+                $field = $row[$j];
+                if(is_null($field))
+                {
+                    continue;
+                }
+
+                if(!$isFirstDayOfMonth && $field->isFirstDayOfMonth)
+                {
+                    $isFirstDayOfMonth = true;
+                    $month_matched_first_day = intval($field->month);
+                }
+                if(!$isLastDayOfMonth && $field->isLastDayOfMonth)
+                {
+                    $isLastDayOfMonth = true;
+                    $month_matched_last_day = intval($field->month);
+                }
+            }
+
+            if($isFirstDayOfMonth)
+            {
+                // 이번달의 첫번째 주(week)입니다.
+                for ($j=0; $j < count($row); $j++) 
+                {
+                    $field = $row[$j];
+                    if(is_null($field))
+                    {
+                        continue;
+                    }
+                    if($month_matched_first_day !== intval($field->month))
+                    {
+                        continue;   
+                    }
+
+                    $field->isFirstWeekOfMonth = true;
+
+                    if(0 === $i)
+                    {
+                        // 달력의 첫 주.
+                        $field->isFirstWeek = true;
+                    } // end if
+                } // end for
+
+                // 월별 이름 표시를 위해 2주차 화요일에 플래그 값을 준다.
+                $row_2nd_week = $real_cal_list[($i + 1)];
+                $wendesday = null;
+                if(!empty($row_2nd_week))
+                {
+                    $wendesday = $row_2nd_week[3];
+                }
+                if(!is_null($wendesday))
+                {
+                    $wendesday->isMonthIndicator = true;
+                }
+            }
+            if($isLastDayOfMonth)
+            {
+                // 이번달의 마지막 주(week)입니다.
+                for ($j=0; $j < count($row); $j++) 
+                {
+                    $field = $row[$j];
+                    if(is_null($field))
+                    {
+                        continue;
+                    }
+                    if($month_matched_last_day !== intval($field->month))
+                    {
+                        continue;
+                    }
+                    $field->isLastWeekOfMonth = true;
+
+                    if((count($real_cal_list) - 1) === $i)
+                    {
+                        // 달력의 마지막 주.
+                        $field->isLastWeek = true;
+                    } // end if
+                } // end for
+            } // end if
         }
 
         return $real_cal_list;

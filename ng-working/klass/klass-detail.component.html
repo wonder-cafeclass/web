@@ -30,29 +30,13 @@
         <!-- Second Column -->
         <ul class="list-group col-md-6">
           
+          <li class="list-group-item" style="padding: 5px;">65,000원 / 4주</li>
+          
+          <!-- 
           <li class="list-group-item" style="padding: 5px;">
-
-            <table class="table" style="margin-bottom: 0px;" [style.width]="priceTagCageWidth + 'px'"> 
-              <tbody> 
-                <tr>
-                  <td   class="td-layout"
-                        *ngFor="let weekly_price of klass.weekly_price_list">
-
-                    <pricetag-updown  [title]="weekly_price.weeks + '주'"
-                                      [price]="weekly_price.price"
-                                      [currency]="priceTagCurrency"
-                                      [color]="priceTagColor"></pricetag-updown>
-
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
+            image-grid의 hover시의 색상을 외부에서 제어할 수있어야 합니다.<br/>클릭시,링크가 있다면 해당 링크로 이동합니다. 혹은 다른 창으로 띄워줍니다.(선택사항)<br/>(완료/공유)7:40분도 허용. 퇴근 직장인을 위한 마케팅 목적.<br/>(완료/공유)오전 10:00부터 오후 00:00까지? >> 오전 10:00부터 정오(낮) 12:00까지?<br/>TEST - http://52.78.168.187/#/class-center/2<br/>TEST - http://52.78.168.187/#/class-center/5 PM07:30-PM09:00
           </li>
-
-          <li class="list-group-item" style="padding: 5px;">
-            image-grid의 hover시의 색상을 외부에서 제어할 수있어야 합니다.<br/>클릭시,링크가 있다면 해당 링크로 이동합니다. 혹은 다른 창으로 띄워줍니다.(선택사항)<br/>(완료/공유)7:40분도 허용. 퇴근 직장인을 위한 마케팅 목적.<br/>(완료/공유)오전 10:00부터 오후 00:00까지? --> 오전 10:00부터 정오(낮) 12:00까지?<br/>TEST - http://52.78.168.187/#/class-center/2<br/>TEST - http://52.78.168.187/#/class-center/5 PM07:30-PM09:00
-          </li>
+          -->
 
           <li class="list-group-item" style="padding: 5px;height: 130px;">
 
@@ -83,7 +67,7 @@
 
           </li>    
 
-          <li class="list-group-item" style="padding: 5px;">3시간 전까지만 수업신청을 받음.</li>
+          <!-- <li class="list-group-item" style="padding: 5px;">3시간 전까지만 수업신청을 받음.</li> -->
 
           <li class="list-group-item" style="padding: 5px;">
             <!-- 지나간 수업은 캘린더에 노출하지 않습니다. -->
@@ -93,6 +77,28 @@
                               [dateBegin]="klassDateBegin"
                               [weekMin]="klassWeekMin"
                               [weekMax]="klassWeekMax"></simple-calendar>
+
+          </li>
+
+          <li class="list-group-item" style="padding: 5px;">8주, 12주 결재시 할인 되는 경우에만 아래 열이 노출!</li>
+
+          <li class="list-group-item" style="padding: 5px;">
+
+            <table class="table" style="margin-bottom: 0px;" [style.width]="priceTagCageWidth + 'px'"> 
+              <tbody> 
+                <tr>
+                  <td   class="td-layout"
+                        *ngFor="let weekly_price of klass.weekly_price_list">
+
+                    <pricetag-updown  [title]="weekly_price.weeks + '주'"
+                                      [price]="weekly_price.price"
+                                      [currency]="priceTagCurrency"
+                                      [color]="priceTagColor"></pricetag-updown>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
           </li>
 

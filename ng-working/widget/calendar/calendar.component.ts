@@ -24,6 +24,9 @@ export class CalendarComponent implements OnInit {
 		console.log("XXX / 1 / this.calendarTable : ",this.calendarTable);
 
 		if(null != this.calendarTable && 0 < this.calendarTable.length){
+
+			/*
+			// 월별 calendar 객체를 넣어줍니다.
 			for (var i = 0; i < this.calendarTable.length; ++i) {
 				
 				let row = this.calendarTable[i];
@@ -58,6 +61,8 @@ export class CalendarComponent implements OnInit {
 					} // end inner if
 				} // end inner for
 			} //end outer for
+			*/
+			
 		} // end if
 
 		// TEST

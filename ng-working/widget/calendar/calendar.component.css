@@ -4,10 +4,15 @@
 .cal-cell {
 	width:10%;
 	text-align: center;
-	/*border-top: 1px solid #e85c41;*/
+    border-top: 0px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.cal-cell.day {
+    border-bottom: 1px solid #ccc;
 }
 .cal-date {
-	font-size: 10px
+	font-size: 14px
 }
 .cal-day-picked {
     color: #e85c41;
@@ -27,8 +32,8 @@
     color: #fff;
 }
 .badge-cage {
-    width: 11px;
-    height: 11px;	
+    width: 15px;
+    height: 15px;	
 }
 .table.cal {
 	margin-bottom: 0px;
@@ -36,4 +41,19 @@
     border:solid 1px #e85c41;
     border-radius:6px;
     -moz-border-radius:6px;	
+}
+.first_week_of_month {
+    border-top: 1px solid #ccc;
+}
+.first_day_of_month {
+    border-left: 1px solid #ccc;
+}
+.last_week_of_month {
+    border-bottom: 1px solid #ccc;
+}
+.month_indicator {
+    position: absolute;
+    font-size: 50px;
+    opacity: .4;
+    color: #777;
 }

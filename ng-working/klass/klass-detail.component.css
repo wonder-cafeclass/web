@@ -1,29 +1,12 @@
-.table.layout {
-	
-}
 .klass-image {
 	width:100%;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;    
 }
-.klass-img-filter {
-	height:60px;
-}
-.klass-field {
-	border:0px;
-	/*background-color:#f0f;*/
-}
-.klass-field.image {
-	width:400px;
-	padding: 0px;
-}
-.list-group-item.klass-info {
-	padding:5px;
-}
 h5.font {
-	font-size: 20px;
-	text-shadow: 1px 1px 1px #000000;
-	text-align: center;
+    font-size: 20px;
+    text-shadow: 1px 1px 1px #000000;
+    text-align: center;
 }
 .klass-title-overlay {
     position: absolute;
@@ -42,43 +25,21 @@ h5.font {
     background-color: #000;
     opacity: .5;
 }
-.klass-price {
-	color: #e85c41;
-	padding: 0px;
-	margin: 10px;  
-}
-.btn-map-link {
-    color: #fff;
-    background-color: #e85c41;
-    border-color: #e85c41;
-}
-.klass-signup-btn {
-  color: #fff;
-  background-color: #e85c41;
-  border-color: #e85c41;
-  margin-right: 0px;
-}
-.badge.klass {
-    padding: 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: #fff;
-    background-color: #e85c41;
-    margin-right: 5px;
-}
-.klass-misc {
-    padding-left: 7px;
-    padding-bottom: 40px;
-    padding-top: 0px;
-    border-top: 0px;
-}
 .klass-price-week {
     color: #fff; 
     background-color: #e85c41;
 }
-.glyphicon-star-empty.wishlist {
-    color: #e85c41;
-}
+
+
+
+
+
+
+
+
+
+
+
 .klass-singup-btn-group {
     position:absolute;
     right:5px;
@@ -107,3 +68,58 @@ table.pricetag {
     margin: 0px;    
     border-top: 0px;
 }
+
+
+
+
+/*
+- REMOVE ME
+.klass-img-filter {
+    height:60px;
+}
+.klass-field {
+    border:0px;
+}
+.klass-field.image {
+    width:400px;
+    padding: 0px;
+}
+.list-group-item.klass-info {
+    padding:5px;
+}
+.klass-price {
+    color: #e85c41;
+    padding: 0px;
+    margin: 10px;  
+}
+.btn-map-link {
+    color: #fff;
+    background-color: #e85c41;
+    border-color: #e85c41;
+}
+.klass-signup-btn {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+  margin-right: 0px;
+}
+.badge.klass {
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #e85c41;
+    margin-right: 5px;
+}
+.klass-misc {
+    padding-left: 7px;
+    padding-bottom: 40px;
+    padding-top: 0px;
+    border-top: 0px;
+}
+.glyphicon-star-empty.wishlist {
+    color: #e85c41;
+}
+
+
+*/

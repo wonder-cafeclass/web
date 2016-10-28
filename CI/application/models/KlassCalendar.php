@@ -9,6 +9,23 @@ class KlassCalendar {
 	public $hasKlass=false;
 	public $isExpired=false;
 
+	public $isFirstDayOfWeek=false;
+	public $isLastDayOfWeek=false;
+
+	public $isFirstWeekOfMonth=false;	
+	public $isLastWeekOfMonth=false;
+
+	public $isFirstDayOfMonth=false;
+	public $isLastDayOfMonth=false;
+
+	public $isFirstDay=false;
+	public $isLastDay=false;
+
+	public $isFirstWeek=false;
+	public $isLastWeek=false;
+
+	public $isMonthIndicator=false;
+
 	public function KlassCalendar($yyyy_mm_dd_DD="", $year=-1, $month=-1, $date=-1, $day="") 
 	{
 		$this->yyyy_mm_dd_DD = $yyyy_mm_dd_DD;
