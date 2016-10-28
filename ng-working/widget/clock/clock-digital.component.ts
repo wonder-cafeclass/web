@@ -24,6 +24,7 @@ export class ClockDigitalComponent implements OnInit {
   rowPadding:number=10;
   elementHeight:number=20;
   textMarginTop:number=0;
+  fontSize:number=14;
 
   constructor(
     public imageService: ImageService
@@ -31,12 +32,18 @@ export class ClockDigitalComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // Do something
     this.rowHeight = Math.round(this.clockHeight/2);
 
+    this.fontSize = 14;
+    if(60 <= this.rowHeight) {
+      this.fontSize = 24;
+    }
+
     this.textMarginTop = Math.floor((this.rowHeight - ((this.rowPadding * 2) + this.elementHeight)) / 2);
+    if(24 <= this.fontSize) {
+      this.textMarginTop = 2;
+    }
 
   }
-
 
 }

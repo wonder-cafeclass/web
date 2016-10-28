@@ -254,13 +254,18 @@ class Klass extends REST_Controller implements MY_Class{
         $real_cal_list = array();
         $week_days = ["sun","mon","tue","wed","thu","fri","sat"];
         $week_days_length = count($week_days);
-        $row_weeks_max = 6;
+
+        // 1개월, 2개월, 3개월일 경우 최대 표시 주수가 다릅니다.
+        $klass_cnt = count($calendar_list);
+        $klass_week_cnt = intval($klass_cnt/$week_days_length) + 2;
+        $row_weeks_max = $klass_week_cnt;
+
         $offset = -1;
         for ($i=0; $i < $row_weeks_max; $i++) 
         { 
 
             $real_cal_row_list = array();
-
+            $isNullList = true;
             for ($j=0; $j < $week_days_length; $j++) 
             { 
                 $cur_day = $week_days[$j];
@@ -295,6 +300,7 @@ class Klass extends REST_Controller implements MY_Class{
                 {
                     // 달력위에 표시될 날짜 객체를 넣어줍니다.
                     array_push($real_cal_row_list, $next_klass_cal);
+                    $isNullList = false;
                 }
                 else 
                 {   
@@ -303,7 +309,11 @@ class Klass extends REST_Controller implements MY_Class{
                 }
 
             }
-            array_push($real_cal_list, $real_cal_row_list);
+
+            if(!$isNullList) 
+            {
+                array_push($real_cal_list, $real_cal_row_list);
+            }
         }
 
         return $real_cal_list;
@@ -1057,12 +1067,37 @@ class Klass extends REST_Controller implements MY_Class{
             $row->price_with_format();
             $row->weeks_to_months();
 
-            $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
-
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
-
-            // TEST
+            $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
             $row->class_img_url = $this->my_path->get("/assets/images/class/test.jpg");
+
+            // 주당 수업 가격에 대해 계산한다.
+            // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
+            // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
+            $price = $row->price = intval($row->price);
+            $week_max = $row->week_max = intval($row->week_max);
+            $week_min = $row->week_min = intval($row->week_min);
+            $week_unit_cnt = ($week_max / $week_min);
+
+            // 주당 가격 산정은 다음과 같다. 
+            // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
+            $fee_per_a_week = $price/$week_min;
+
+            $row->week_list = array();
+            $row->price_list = array();
+            $row->weekly_price_list = array();
+            for ($i=1; $i <= $week_unit_cnt; $i++) { 
+                $next_weeks = $week_min * $i;
+                array_push($row->week_list, $next_weeks);
+                $next_price = $fee_per_a_week * $week_min * $i;
+                array_push($row->price_list, $next_price);
+
+                $weeky_price = [
+                    'weeks'=>$next_weeks,
+                    'price'=>$next_price
+                ];
+                array_push($row->weekly_price_list, $weeky_price);
+            }
             
             array_push($output, $row);
         }

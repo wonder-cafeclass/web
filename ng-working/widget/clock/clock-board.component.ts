@@ -22,7 +22,8 @@ export class ClockBoardComponent implements OnInit {
   @Input() klassTimeEnd:string;
 
   @Input() clockHeight:number=83;
-
+  @Input() simpleClockHeight:number=82;
+  @Input() clockDigitalHeight:number=83;
 
   clockTimeBegin:ClockTime;
   clockTimeEnd:ClockTime;
@@ -39,6 +40,9 @@ export class ClockBoardComponent implements OnInit {
     this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
 
     this.dcLeftMargin = Math.round(this.clockHeight/2);
+
+    this.simpleClockHeight = this.clockHeight - 1;
+    this.clockDigitalHeight = this.clockHeight;
   }
 
   getClockTime(time_hh_mm:string): any {
@@ -48,10 +52,10 @@ export class ClockBoardComponent implements OnInit {
     }
 
     // 0. 유효한 시간값인지 검사합니다.
-    // ex) 07:30, 08:00 처럼 30분 단위만 허용합니다.
+    // ex) 07:30, 08:00, 07:40, 08:10, 처럼 10분 단위까지 허용합니다. - 퇴근 시간이후롤 노린 마케팅 목적도 있음.
     // 23:00 ~ 25:00 처럼 순방향 진행은 24시를 넘는 표현도 허용합니다.
     // 23:00 ~ 01:00 는 오류로 처리합니다.
-    let res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):(0|3)0$/gi);
+    let res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):[0-5]0$/gi);
     if(null === res || !(0 < res.length)) {
       console.log("유효한 시간 값이 아닙니다.",time_hh_mm);
       return null;
@@ -72,10 +76,22 @@ export class ClockBoardComponent implements OnInit {
       hoursForRotate -= 12;
 
       let hoursIn12:string = ""+hoursForRotate;
-      if(hoursForRotate < 10) {
+      if(hoursForRotate == 0 || hoursForRotate <= 2) {
+        // 낮 12시인 경우.
+        hoursIn12 = `12`;
+        time_hh_mm_12 = `낮 ${hoursIn12}:${minutesStr}`;
+      } else if(9 <= hoursForRotate) {
+
+        // 밤 시간을 나타냄. 밤은 9시부터...
+        if(hoursForRotate < 10) {
+          hoursIn12 = `0${hoursForRotate}`;
+        }
+        time_hh_mm_12 = `밤 ${hoursIn12}:${minutesStr}`;
+
+      } else if(hoursForRotate < 10) {
         hoursIn12 = `0${hoursForRotate}`;
-      } 
-      time_hh_mm_12 = `오후 ${hoursIn12}:${minutesStr}`;
+        time_hh_mm_12 = `오후 ${hoursIn12}:${minutesStr}`;
+      }
       isAM = false;
     }
 

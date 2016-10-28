@@ -11,6 +11,7 @@
 				</tr>
 
 				<tr>
+					<td class="cal-cell">&nbsp;</td>
 					<td class="cal-cell">
 						<span *ngIf="dayBegin == 'sun'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">일</div>
@@ -57,27 +58,33 @@
 				</tr> 
 
 				<tr *ngFor="let row of calendarTable"> 
+
 					<td *ngFor="let field of row" class="cal-cell">
+						<!-- 빈 날짜 공간 -->
+						<div *ngIf="field == null">
+							<span>&nbsp;</span>
+						</div>
+						<!-- "월"별 이름 -->
+						<div *ngIf="field != null && field.yyyy_mm_dd_DD == null">{{field.month}}</div>
+						<!-- 날짜 정보 -->
+						<div *ngIf="field != null && field.yyyy_mm_dd_DD != null">
+							<!-- 수업있음. 날짜 오늘보다 전 -->
+							<span 	*ngIf="field.hasKlass && !field.isExpired"
+									class="badge cal-date cal-date-picked">
+								<div class="badge-cage">{{field.date}}</div>
+							</span>
 
-						<span 	*ngIf="field == null">&nbsp;</span>
+							<!-- 수업있음. 날짜 지났음. -->
+							<span 	*ngIf="field.hasKlass && field.isExpired" 
+									class="badge cal-date cal-expired">
+								<div class="badge-cage">{{field.date}}</div>
+							</span>
 
-						<!-- 수업있음. 날짜 오늘보다 전 -->
-						<span 	*ngIf="field != null && field.hasKlass && !field.isExpired" 
-								class="badge cal-date cal-date-picked">
-							<div class="badge-cage">{{field.date}}</div>
-						</span>
-
-						<!-- 수업있음. 날짜 지났음. -->
-						<span 	*ngIf="field != null && field.hasKlass && field.isExpired" 
-								class="badge cal-date cal-expired">
-							<div class="badge-cage">{{field.date}}</div>
-						</span>
-
-
-						<span 	*ngIf="field != null && !field.hasKlass" 
-								[class.sun]="field.day=='Sun'" 
-								[class.sat]="field.day=='Sat'"
-								class="cal-date">{{field.date}}</span>
+							<span 	*ngIf="!field.hasKlass" 
+									[class.sun]="field.day=='Sun'" 
+									[class.sat]="field.day=='Sat'"
+									class="cal-date">{{field.date}}</span>
+						</div>
 					</td> 
 				</tr> 
 

@@ -1,0 +1,9 @@
+.td-layout {
+    padding: 0px;
+    margin: 0px;    
+    border-top: 0px;
+}
+img:hover {
+    border: 2px dotted #e85c41;
+    border-radius: 5px;
+}

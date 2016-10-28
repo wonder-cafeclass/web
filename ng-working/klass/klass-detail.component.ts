@@ -8,7 +8,9 @@ import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
-import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
+import { ClockBoardComponent }     from '../widget/clock/clock-board.component';
+import { PriceTagComponent }       from '../widget/pricetag/pricetag.component';
+import { ImageGridComponent }      from '../widget/image-grid/image-grid.component';
 
 @Component({
   moduleId: module.id,
@@ -33,6 +35,18 @@ export class KlassDetailComponent implements OnInit {
 
   editTitle: string;
 
+  priceTagCurrency:string="₩";
+  priceTagColor:string="#e85c41";
+  priceTagWidth:number=105;
+  priceTagCageWidth:number=105;
+
+  selectileImageTable:string[][];
+  selectileImageHeight:number=60;
+  selectileImageWidth:number=60;
+  selectileCageWidth:number=60;
+
+  bannerImageTable:string[][];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -48,18 +62,50 @@ export class KlassDetailComponent implements OnInit {
         this.klass = data.klass;
       }
 
+      console.log("this.klass : ",this.klass);
+
       this.klassCalendarTable = this.klass.calendar_table;
       this.klassDayBegin = this.klass.days;
+
+      // send time data to "clock board"
+      this.klassTimeBegin = this.klass.time_begin;
+      this.klassTimeEnd = this.klass.time_end;
+
+      this.klassDateBegin = this.klass.date_begin;
+      this.klassWeekMin = this.klass.week_min;
+      this.klassWeekMax = this.klass.week_max;
+
+      this.priceTagCageWidth = this.klass.weekly_price_list.length * this.priceTagWidth;
+
+      // send image table to "image-grid"
+      this.selectileImageTable =
+      [
+        [
+          this.klass.level_img_url, 
+          this.klass.venue_subway_station_img_url,
+          this.klass.venue_cafe_logo_img_url
+        ],
+        [
+          this.klass.days_img_url,
+          this.klass.time_begin_img_url,
+          null
+        ]
+      ];
+      let fieldCntSelectile = this.selectileImageTable[0].length;
+      this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
+
+      this.bannerImageTable =
+      [
+        [
+          this.imageService.get(this.imageService.noticeDrinksUrl)
+        ],
+        [
+          this.imageService.get(this.imageService.noticeHelpUrl)
+        ]
+      ];
       
     });
 
-    // send time data to "clock board"
-    this.klassTimeBegin = this.klass.time_begin;
-    this.klassTimeEnd = this.klass.time_end;
-
-    this.klassDateBegin = this.klass.date_begin;
-    this.klassWeekMin = this.klass.week_min;
-    this.klassWeekMax = this.klass.week_max;
   }
 
   cancel() {
