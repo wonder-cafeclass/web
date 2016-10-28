@@ -20,6 +20,11 @@ var KlassDetailComponent = (function () {
         this.dialogService = dialogService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
+        this.priceTagWidth = 105;
+        this.priceTagCageWidth = 105;
+        this.selectileImageHeight = 60;
+        this.selectileImageWidth = 60;
+        this.selectileCageWidth = 60;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -27,43 +32,42 @@ var KlassDetailComponent = (function () {
             if (null != data.klass) {
                 _this.klass = data.klass;
             }
+            console.log("this.klass : ", _this.klass);
             _this.klassCalendarTable = _this.klass.calendar_table;
             _this.klassDayBegin = _this.klass.days;
+            // send time data to "clock board"
+            _this.klassTimeBegin = _this.klass.time_begin;
+            _this.klassTimeEnd = _this.klass.time_end;
+            _this.klassDateBegin = _this.klass.date_begin;
+            _this.klassWeekMin = _this.klass.week_min;
+            _this.klassWeekMax = _this.klass.week_max;
+            _this.priceTagCageWidth = _this.klass.weekly_price_list.length * _this.priceTagWidth;
+            // send image table to "image-grid"
+            _this.selectileImageTable =
+                [
+                    [
+                        _this.klass.level_img_url,
+                        _this.klass.venue_subway_station_img_url,
+                        _this.klass.venue_cafe_logo_img_url
+                    ],
+                    [
+                        _this.klass.days_img_url,
+                        _this.klass.time_begin_img_url,
+                        null
+                    ]
+                ];
+            var fieldCntSelectile = _this.selectileImageTable[0].length;
+            _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
+            _this.bannerImageTable =
+                [
+                    [
+                        _this.imageService.get(_this.imageService.noticeDrinksUrl)
+                    ],
+                    [
+                        _this.imageService.get(_this.imageService.noticeHelpUrl)
+                    ]
+                ];
         });
-        // send time data to "clock board"
-        this.klassTimeBegin = this.klass.time_begin;
-        this.klassTimeEnd = this.klass.time_end;
-        this.klassDateBegin = this.klass.date_begin;
-        this.klassWeekMin = this.klass.week_min;
-        this.klassWeekMax = this.klass.week_max;
-        // send price to "pricetag-updown"
-        // 주당 가격 계산이 필요. --> 이건 서버가 할일이 아닐까?
-        this.priceTagTitle = "4주";
-        this.priceTagPrice = this.klass.price;
-        // send image table to "image-grid"
-        this.selectileImageTable =
-            [
-                [
-                    this.klass.level_img_url,
-                    this.klass.venue_subway_station_img_url,
-                    this.klass.venue_cafe_logo_img_url
-                ],
-                [
-                    this.klass.days_img_url,
-                    this.klass.time_begin_img_url,
-                    null
-                ]
-            ];
-        this.bannerImageTable =
-            [
-                [
-                    this.imageService.get(this.imageService.noticeDrinksUrl)
-                ],
-                [
-                    this.imageService.get(this.imageService.noticeHelpUrl)
-                ]
-            ];
-        console.log("this.bannerImageTable : ", this.bannerImageTable);
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

@@ -31,14 +31,27 @@
         <ul class="list-group col-md-6">
           
           <li class="list-group-item" style="padding: 5px;">
-            <pricetag-updown  [title]="priceTagTitle"
-                              [price]="priceTagPrice"
-                              [currency]="priceTagCurrency"
-                              [color]="priceTagColor"></pricetag-updown>
+
+            <table class="table" style="margin-bottom: 0px;" [style.width]="priceTagCageWidth + 'px'"> 
+              <tbody> 
+                <tr>
+                  <td   class="td-layout"
+                        *ngFor="let weekly_price of klass.weekly_price_list">
+
+                    <pricetag-updown  [title]="weekly_price.weeks + '주'"
+                                      [price]="weekly_price.price"
+                                      [currency]="priceTagCurrency"
+                                      [color]="priceTagColor"></pricetag-updown>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
           </li>
 
           <li class="list-group-item" style="padding: 5px;">
-            image-grid의 hover시의 색상을 외부에서 제어할 수있어야 합니다.<br/>클릭시,링크가 있다면 해당 링크로 이동합니다. 혹은 다른 창으로 띄워줍니다.(선택사항)
+            image-grid의 hover시의 색상을 외부에서 제어할 수있어야 합니다.<br/>클릭시,링크가 있다면 해당 링크로 이동합니다. 혹은 다른 창으로 띄워줍니다.(선택사항)<br/>시계안의 시작 시간과 종료 시간의 텍스트가 커져야 합니다.
           </li>
 
           <li class="list-group-item" style="padding: 5px;height: 130px;">
@@ -46,11 +59,11 @@
             <table class="table"> 
               <tbody> 
                 <tr>
-                  <td class="td-layout">
+                  <td class="td-layout" [style.width]="selectileCageWidth + 'px'">
 
                     <image-grid [imageTable]="selectileImageTable"
-                                [imageHeight]="60"
-                                [imageWidth]="60"></image-grid>
+                                [imageHeight]="selectileImageHeight"
+                                [imageWidth]="selectileImageWidth"></image-grid>
 
                   </td> 
                   <td class="td-layout">

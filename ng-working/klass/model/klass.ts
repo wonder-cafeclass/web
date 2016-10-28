@@ -15,6 +15,8 @@ export class Klass {
     public level_img_url: string;
     public week_min: number;
     public week_max: number;
+    public week_list: string[];
+    public weekly_price_list: any[];
     public month_min: number;
     public month_max: number;
     public days: string;
@@ -30,6 +32,7 @@ export class Klass {
     public venue_map_link: string;
     public search_tag: string;
     public price: number;
+    public price_list: string[];
     public price_with_format: string;
     public class_status: string;
     public class_img_url: string;

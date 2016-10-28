@@ -35,12 +35,15 @@ export class KlassDetailComponent implements OnInit {
 
   editTitle: string;
 
-  priceTagTitle:string;
-  priceTagPrice:number;
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
+  priceTagWidth:number=105;
+  priceTagCageWidth:number=105;
 
   selectileImageTable:string[][];
+  selectileImageHeight:number=60;
+  selectileImageWidth:number=60;
+  selectileCageWidth:number=60;
 
   bannerImageTable:string[][];
 
@@ -59,50 +62,49 @@ export class KlassDetailComponent implements OnInit {
         this.klass = data.klass;
       }
 
+      console.log("this.klass : ",this.klass);
+
       this.klassCalendarTable = this.klass.calendar_table;
       this.klassDayBegin = this.klass.days;
+
+      // send time data to "clock board"
+      this.klassTimeBegin = this.klass.time_begin;
+      this.klassTimeEnd = this.klass.time_end;
+
+      this.klassDateBegin = this.klass.date_begin;
+      this.klassWeekMin = this.klass.week_min;
+      this.klassWeekMax = this.klass.week_max;
+
+      this.priceTagCageWidth = this.klass.weekly_price_list.length * this.priceTagWidth;
+
+      // send image table to "image-grid"
+      this.selectileImageTable =
+      [
+        [
+          this.klass.level_img_url, 
+          this.klass.venue_subway_station_img_url,
+          this.klass.venue_cafe_logo_img_url
+        ],
+        [
+          this.klass.days_img_url,
+          this.klass.time_begin_img_url,
+          null
+        ]
+      ];
+      let fieldCntSelectile = this.selectileImageTable[0].length;
+      this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
+
+      this.bannerImageTable =
+      [
+        [
+          this.imageService.get(this.imageService.noticeDrinksUrl)
+        ],
+        [
+          this.imageService.get(this.imageService.noticeHelpUrl)
+        ]
+      ];
       
     });
-
-    // send time data to "clock board"
-    this.klassTimeBegin = this.klass.time_begin;
-    this.klassTimeEnd = this.klass.time_end;
-
-    this.klassDateBegin = this.klass.date_begin;
-    this.klassWeekMin = this.klass.week_min;
-    this.klassWeekMax = this.klass.week_max;
-
-    // send price to "pricetag-updown"
-    // 주당 가격 계산이 필요. --> 이건 서버가 할일이 아닐까?
-    this.priceTagTitle = "4주";
-    this.priceTagPrice = this.klass.price;
-
-    // send image table to "image-grid"
-    this.selectileImageTable =
-    [
-      [
-        this.klass.level_img_url, 
-        this.klass.venue_subway_station_img_url,
-        this.klass.venue_cafe_logo_img_url
-      ],
-      [
-        this.klass.days_img_url,
-        this.klass.time_begin_img_url,
-        null
-      ]
-    ];
-
-    this.bannerImageTable =
-    [
-      [
-        this.imageService.get(this.imageService.noticeDrinksUrl)
-      ],
-      [
-        this.imageService.get(this.imageService.noticeHelpUrl)
-      ]
-    ];
-
-    console.log("this.bannerImageTable : ",this.bannerImageTable);
 
   }
 

@@ -16,10 +16,6 @@ var UrlService = (function () {
         this.baseHref = pl.getBaseHrefFromDOM();
         this.hostname = window.location.hostname;
         this.appBaseUrl = "http://" + this.hostname + this.baseHref;
-        console.log("window.location : ", window.location);
-        console.log("this.baseHref : ", this.baseHref);
-        console.log("this.hostname : ", this.hostname);
-        console.log("this.appBaseUrl : ", this.appBaseUrl);
     }
     UrlService.prototype.get = function (urlFragment) {
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.

@@ -12,11 +12,6 @@ export class UrlService {
         this.baseHref = pl.getBaseHrefFromDOM();
         this.hostname = window.location.hostname;
         this.appBaseUrl = `http://${ this.hostname }${ this.baseHref }`;
-
-        console.log("window.location : ",window.location);
-        console.log("this.baseHref : ",this.baseHref);
-        console.log("this.hostname : ",this.hostname);
-        console.log("this.appBaseUrl : ",this.appBaseUrl);
     }
 
     get(urlFragment:string) {

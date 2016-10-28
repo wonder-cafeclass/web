@@ -35,6 +35,8 @@ class KlassCourse {
         public $week_min;
         // 수업최장 주 단위
         public $week_max;
+        // 4주당 수업 주 단위 리스트
+        public $week_list;
         // 수업최소 월 단위
         public $month_min;
         // 수업최장 월 단위
@@ -65,6 +67,10 @@ class KlassCourse {
         public $search_tag;
         // 가격
         public $price;
+        // 4주당 가격리스트
+        public $price_list;
+        // 4주당 가격과 타이틀 리스트
+        public $weekly_price_list;
         // 가격 - 포맷적용
         public $price_with_format;
         // 수업운영상태

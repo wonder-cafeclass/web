@@ -92,6 +92,9 @@ h5.font {
     margin: 0px;    
     border-top: 0px;
 }
+.td-layout.price{
+    width: 105px;
+}
 table.pricetag {
     margin-bottom: 0px;
     border-collapse:separate;
