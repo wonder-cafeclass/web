@@ -13,6 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_KlassCalendar {
 
 	private $CI=null;
+    private $my_calendar;
 
     public function __construct($params=null)
     {
@@ -26,7 +27,8 @@ class MY_KlassCalendar {
             return;
         }
 
-        if(!isset($this->CI->my_calendar)) {
+        $this->my_calendar = $params['my_calendar'];
+        if(!isset($this->my_calendar)) {
             return;
         }
     }
@@ -128,7 +130,7 @@ class MY_KlassCalendar {
             $yyyy_mm_dd = "$year-$month-$date";
             $time_cal_date = strtotime($yyyy_mm_dd);
 
-            $yyyy_mm_dd_now = $this->CI->my_calendar->get_now_YYYYMMDD();
+            $yyyy_mm_dd_now = $this->my_calendar->get_now_YYYYMMDD();
             $time_now = strtotime($yyyy_mm_dd_now);
             if($time_cal_date < $time_now) {
                 // 오늘보다 이전의 시간임.
@@ -373,58 +375,8 @@ class MY_KlassCalendar {
         return $real_cal_list;
     }
 
-    /*
-    private function getCalendarTableMonthly($klass_cal_list=null)
+    public function getLinear($klass_course=null)
     {
-        // $klass_cal_list를 월별로 분리합니다.
-        $k_cal_monthly_list_group = array();
-        $k_cal_list = array();
-        for ($i=0; $i < count($klass_cal_list); $i++) { 
-            $klass_cal = $klass_cal_list[$i];
-
-            if($klass_cal->isFirstDayOfMonth)
-            {
-                if(!empty($k_cal_list))
-                {
-                    array_push($k_cal_monthly_list_group, $k_cal_list);
-                }
-                $k_cal_list = array();
-            }
-            else if((count($klass_cal_list) - 1) === $i)
-            {
-                // Last idx
-                if(!empty($k_cal_list))
-                {
-                    array_push($k_cal_monthly_list_group, $k_cal_list);
-                }
-            }
-
-            array_push($k_cal_list, $klass_cal);
-        }
-
-        // 월별로 달력 테이블 배열을 만듭니다.
-        $cal_table_list = array();
-        for ($i=0; $i < count($k_cal_monthly_list_group); $i++) { 
-            $k_cal_list = $k_cal_monthly_list_group[$i];
-            $cal_table = $this->getCalendarTableLinear($k_cal_list);
-
-            if(!is_null($cal_table))
-            {
-                array_push($cal_table_list, $cal_table);
-            }
-        }
-
-        // wonder.jung
-        return $cal_table_list;
-    }
-    */
-
-    public function getLinear($klass_course=null, $calendar_list=null)
-    {
-        if(empty($calendar_list))
-        {
-            return;
-        }
         if(is_null($klass_course)) 
         {
             return;
@@ -434,8 +386,14 @@ class MY_KlassCalendar {
             return;
         }
 
+        $calendar_list = 
+        $this->my_calendar->get_date_list_by_month(
+            $klass_course->date_begin, 
+            intval($klass_course->week_max)
+        );
+
         // ex) begin : 10-29 / end : 11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
-        $date_list = $this->CI->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
+        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
 
         // ["2016-10-01-Sat","2016-10-02-Sun",...] --> [new KlassCalendar(...), new KlassCalendar(...), ...]
         $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($date_list, $klass_course, $calendar_list);
@@ -450,12 +408,8 @@ class MY_KlassCalendar {
         return $klass_cal_list;
     }
 
-    public function getMonthly($klass_course=null, $calendar_list=null)
+    public function getMonthly($klass_course=null)
     {
-        if(empty($calendar_list))
-        {
-            return;
-        }
         if(is_null($klass_course)) 
         {
             return;
@@ -465,8 +419,14 @@ class MY_KlassCalendar {
             return;
         }
 
+        $calendar_list = 
+        $this->my_calendar->get_date_list_by_month(
+            $klass_course->date_begin, 
+            intval($klass_course->week_max)
+        );
+
         // ex) begin : 10-29 / end : 11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
-        $date_list = $this->CI->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
+        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
 
         // ["2016-10-01-Sat","2016-10-02-Sun",...] --> [new KlassCalendar(...), new KlassCalendar(...), ...]
         $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($date_list, $klass_course, $calendar_list);
@@ -512,7 +472,6 @@ class MY_KlassCalendar {
 
         // 매달 캘린더 정보를 선형(linear) 방식으로 리스트로 하나로 보여줍니다.
         // 실제 달력의 형태와 동일한 2차 배열을 만듭니다.
-        // $klass_cal_list = $this->getCalendarTableMonthly($klass_cal_list);
         $klass_monthly_list_group_next = array();
         for ($i=0; $i < count($klass_monthly_list_group); $i++)
         {

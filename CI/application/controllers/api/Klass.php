@@ -59,7 +59,7 @@ class Klass extends REST_Controller implements MY_Class{
         $this->load->library('MY_Calendar');
 
         // init MyKlassCalendar
-        $this->load->library('MY_KlassCalendar');
+        $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
             
         // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
@@ -175,16 +175,8 @@ class Klass extends REST_Controller implements MY_Class{
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
-
-            $calendar_list = 
-            $this->my_calendar->get_date_list_by_month(
-                $klass->date_begin, 
-                intval($klass->week_max)
-            );
-
-            $klass->calendar_table_linear = $this->my_klasscalendar->getLinear($klass, $calendar_list);
-
-            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass, $calendar_list);
+            $klass->calendar_table_linear = $this->my_klasscalendar->getLinear($klass);
+            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
         }
 
         $last_query = $this->db->last_query();
