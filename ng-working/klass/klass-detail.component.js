@@ -32,8 +32,10 @@ var KlassDetailComponent = (function () {
             if (null != data.klass) {
                 _this.klass = data.klass;
             }
-            console.log("this.klass : ", _this.klass);
-            _this.klassCalendarTable = _this.klass.calendar_table;
+            // console.log("this.klass : ",this.klass);
+            _this.klassCalendarTableLinear = _this.klass.calendar_table_linear;
+            _this.klassCalendarTableMonthly = _this.klass.calendar_table_monthly;
+            console.log("this.klassCalendarTableMonthly : ", _this.klassCalendarTableMonthly);
             _this.klassDayBegin = _this.klass.days;
             // send time data to "clock board"
             _this.klassTimeBegin = _this.klass.time_begin;

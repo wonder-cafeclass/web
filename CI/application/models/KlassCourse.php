@@ -79,8 +79,10 @@ class KlassCourse {
         public $class_img_url;
         // 이미지 에러 링크    
         public $class_img_err_url;
-        // 클래스 캘린더 리스트
-        public $calendar_table;
+        // 클래스 캘린더 리스트 (Linear) - Calendar[][]
+        public $calendar_table_linear;
+        // 클래스 캘린더 리스트 (Monthly) - Calendar[][][]
+        public $calendar_table_monthly;
 
         public function time_begin_img_url($const_map=null, $my_path=null)
         {

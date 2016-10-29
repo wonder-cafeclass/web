@@ -36,5 +36,6 @@ export class Klass {
     public price_with_format: string;
     public class_status: string;
     public class_img_url: string;
-    public calendar_table: Calendar[][];
+    public calendar_table_linear: Calendar[][];
+    public calendar_table_monthly: Calendar[][][];
 }

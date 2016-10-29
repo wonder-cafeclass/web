@@ -31,7 +31,8 @@ export class KlassDetailComponent implements OnInit {
   klassWeekMin:number;
   klassWeekMax:number;
 
-  klassCalendarTable:Calendar[][];
+  klassCalendarTableLinear:Calendar[][];
+  klassCalendarTableMonthly:Calendar[][][];
 
   editTitle: string;
 
@@ -62,9 +63,13 @@ export class KlassDetailComponent implements OnInit {
         this.klass = data.klass;
       }
 
-      console.log("this.klass : ",this.klass);
+      // console.log("this.klass : ",this.klass);
 
-      this.klassCalendarTable = this.klass.calendar_table;
+      this.klassCalendarTableLinear = this.klass.calendar_table_linear;
+      this.klassCalendarTableMonthly = this.klass.calendar_table_monthly;
+
+      console.log("this.klassCalendarTableMonthly : ",this.klassCalendarTableMonthly);
+
       this.klassDayBegin = this.klass.days;
 
       // send time data to "clock board"
