@@ -67,7 +67,29 @@
 
           </li>    
 
-          <!-- <li class="list-group-item" style="padding: 5px;">3시간 전까지만 수업신청을 받음.</li> -->
+          <li class="list-group-item" style="padding: 5px;">
+
+            <table class="table" style="margin-bottom: 0px;">
+              <tbody> 
+                <tr>
+                  <td *ngFor="let kCal of klassCalendarTableMonthly"
+                      class="td-layout" 
+                      [style.width]="miniCalCageWidth + 'px'">
+                    
+                    <mini-calendar  #klassMiniCalendar
+                                    [calendarTable]="kCal"
+                                    [calWidth]="miniCalWidth"
+                                    [dayBegin]="klassDayBegin"
+                                    [dateBegin]="klassDateBegin"
+                                    [weekMin]="klassWeekMin"
+                                    [weekMax]="klassWeekMax"></mini-calendar>
+
+                  </td> 
+                </tr>
+              </tbody> 
+            </table>
+
+          </li>
 
           <li class="list-group-item" style="padding: 5px;">
             <!-- 지나간 수업은 캘린더에 노출하지 않습니다. -->

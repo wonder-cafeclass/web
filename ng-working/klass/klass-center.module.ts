@@ -18,6 +18,7 @@ import { ClockBoardComponent }       from '../widget/clock/clock-board.component
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
 import { ClockComponent }            from '../widget/clock/clock.component';
 import { CalendarComponent }         from '../widget/calendar/calendar.component';
+import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
 import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
 import { ImageGridComponent }         from '../widget/image-grid/image-grid.component';
 
@@ -37,6 +38,7 @@ import { ImageGridComponent }         from '../widget/image-grid/image-grid.comp
     ClockDigitalComponent,
     ClockComponent,
     CalendarComponent,
+    MiniCalendarComponent,
     PriceTagComponent,
     ImageGridComponent
   ],

@@ -261,14 +261,14 @@ class MY_KlassCalendar {
 
                 // 월별 이름 표시를 위해 2주차 화요일에 플래그 값을 준다.
                 $row_2nd_week = $real_cal_list[($i + 1)];
-                $wendesday = null;
+                $target_day = null;
                 if(!empty($row_2nd_week))
                 {
-                    $wendesday = $row_2nd_week[3];
+                    $target_day = $row_2nd_week[2];
                 }
-                if(!is_null($wendesday))
+                if(!is_null($target_day))
                 {
-                    $wendesday->isMonthIndicator = true;
+                    $target_day->isMonthIndicator = true;
                 }
             }
             if($isLastDayOfMonth)

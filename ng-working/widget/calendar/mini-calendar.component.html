@@ -1,0 +1,83 @@
+<div>
+	<div class="cal-container"> 
+		<table class="table cal" [style.width]="calWidth + 'px'"> 
+
+			<tbody> 
+				<tr>
+					<td colspan="7" class="cal-month" style="color:#fff;font-weight:bold;">{{monthBegin}}월</td>
+				</tr>
+				<tr>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'sun'" class="cal-date picked">일</div>
+						<div *ngIf="dayBegin != 'sun'" class="cal-date unpicked sun">일</div>
+					</td> 
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'mon'" class="cal-date picked">월</div>
+						<div *ngIf="dayBegin != 'mon'" class="cal-date unpicked">월</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'tue'" class="cal-date picked">화</div>
+						<div *ngIf="dayBegin != 'tue'" class="cal-date unpicked">화</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'wed'" class="cal-date picked">수</div>
+						<div *ngIf="dayBegin != 'wed'" class="cal-date unpicked">수</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'thu'" class="cal-date picked">목</div>
+						<div *ngIf="dayBegin != 'thu'" class="cal-date unpicked">목</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'fri'" class="cal-date picked">금</div>
+						<div *ngIf="dayBegin != 'fri'" class="cal-date unpicked">금</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'sat'" class="cal-date picked">토</div>
+						<div *ngIf="dayBegin != 'sat'" class="cal-date unpicked sat">토</div>
+					</td>				
+
+				</tr> 
+				
+				<tr *ngFor="let row of calendarTable"> 
+
+					<td 	*ngFor="let field of row" 
+							class="cal-cell date">
+
+						<div info="빈 날짜 공간" *ngIf="field == null">
+							<span>&nbsp;</span>
+						</div>
+
+						<div 	*ngIf="field != null && field.isMonthIndicator" 
+								[style.width]="calWidth + 'px'"
+								class="month_indicator">{{field.month}}</div>
+
+						<div 	info="날짜 정보"
+								*ngIf="field != null && field.yyyy_mm_dd_DD != null"
+								style="margin-right: 0px;margin-left: 0px;">
+
+							<div 	info="수업있음. 날짜 오늘보다 전"
+									*ngIf="field.hasKlass && !field.isExpired"
+									class="cal-date picked">
+									{{field.date}}
+							</div>
+
+							<div 	info="수업있음. 날짜 지났음."
+									*ngIf="field.hasKlass && field.isExpired" 
+									class="cal-date cal-expired">
+									{{field.date}}
+							</div>
+
+							<div 	*ngIf="!field.hasKlass" 
+									[class.sun]="field.day=='Sun'" 
+									[class.sat]="field.day=='Sat'"
+									[class.normal]="field.day!='Sat' && field.day!='Sun'"
+									class="cal-date unpicked">{{field.date}}</div>
+						</div>
+					</td> 
+				</tr> 
+
+			</tbody> 
+
+		</table> 
+	</div>	
+</div>

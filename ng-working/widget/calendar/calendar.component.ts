@@ -19,54 +19,6 @@ export class CalendarComponent implements OnInit {
 	monthBegin:string;
 
 	ngOnInit(): void {
-
-		// TEST
-		console.log("XXX / 1 / this.calendarTable : ",this.calendarTable);
-
-		if(null != this.calendarTable && 0 < this.calendarTable.length){
-
-			/*
-			// 월별 calendar 객체를 넣어줍니다.
-			for (var i = 0; i < this.calendarTable.length; ++i) {
-				
-				let row = this.calendarTable[i];
-
-				// "월"을 나타내기위한 element를 각 열의 제일 앞에 추가한다.
-				let firstEle:Calendar = row[0];
-				let lastEle:Calendar = row[(row.length - 1)];
-
-				let month = -1;
-				if(null != firstEle) {
-					month = +firstEle.month;
-				} else if(null != lastEle) {
-					month = +lastEle.month;
-				}
-
-				if(!(-1 < month)) {
-					// error report!
-					console.log("!Error! / CalendarComponent / !(-1 < month)");
-					return;
-				}
-
-				let calForMonth = new Calendar();
-				calForMonth.month = month;
-
-				row.unshift(calForMonth);
-
-				for (var j = 0; j < row.length; ++j) {
-					let field:Calendar = row[j];
-
-					if(null != field && null == this.monthBegin) {
-						this.monthBegin = field.month;
-					} // end inner if
-				} // end inner for
-			} //end outer for
-			*/
-			
-		} // end if
-
-		// TEST
-		console.log("XXX / 2 / this.calendarTable : ",this.calendarTable);
-
+		// Do nothing.
 	}
 }

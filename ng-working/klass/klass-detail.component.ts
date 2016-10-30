@@ -8,9 +8,6 @@ import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
-import { ClockBoardComponent }     from '../widget/clock/clock-board.component';
-import { PriceTagComponent }       from '../widget/pricetag/pricetag.component';
-import { ImageGridComponent }      from '../widget/image-grid/image-grid.component';
 
 @Component({
   moduleId: module.id,
@@ -45,6 +42,10 @@ export class KlassDetailComponent implements OnInit {
   selectileImageHeight:number=60;
   selectileImageWidth:number=60;
   selectileCageWidth:number=60;
+
+  miniCalHeight:number=60;
+  miniCalWidth:number=60;
+  miniCalCageWidth:number=60;
 
   bannerImageTable:string[][];
 
@@ -98,6 +99,10 @@ export class KlassDetailComponent implements OnInit {
       ];
       let fieldCntSelectile = this.selectileImageTable[0].length;
       this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
+
+      // wonder.jung
+      let fieldCntCalMonthly = this.klassCalendarTableMonthly.length;
+      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth) + 20;
 
       this.bannerImageTable =
       [

@@ -25,6 +25,9 @@ var KlassDetailComponent = (function () {
         this.selectileImageHeight = 60;
         this.selectileImageWidth = 60;
         this.selectileCageWidth = 60;
+        this.miniCalHeight = 60;
+        this.miniCalWidth = 60;
+        this.miniCalCageWidth = 60;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -60,6 +63,9 @@ var KlassDetailComponent = (function () {
                 ];
             var fieldCntSelectile = _this.selectileImageTable[0].length;
             _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
+            // wonder.jung
+            var fieldCntCalMonthly = _this.klassCalendarTableMonthly.length;
+            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth) + 20;
             _this.bannerImageTable =
                 [
                     [
