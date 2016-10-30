@@ -454,7 +454,9 @@ class MY_KlassCalendar {
             else if((count($klass_cal_list) - 1) === $i)
             {
                 // last idx
+                array_push($klass_monthly_list, $klass_cal);
                 array_push($klass_monthly_list_group, $klass_monthly_list);
+                continue;
             }
 
             array_push($klass_monthly_list, $klass_cal);
@@ -465,6 +467,7 @@ class MY_KlassCalendar {
         for ($i=0; $i < count($klass_monthly_list_group); $i++)
         {
             $klass_monthly_list = $klass_monthly_list_group[$i];
+
             $klass_monthly_list = $this->setMonthBeginsEndsLinear($klass_monthly_list);
             array_push($klass_monthly_list_group_next, $klass_monthly_list);
         }
