@@ -102,7 +102,7 @@ export class KlassDetailComponent implements OnInit {
 
       // wonder.jung
       let fieldCntCalMonthly = this.klassCalendarTableMonthly.length;
-      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth) + 20;
+      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth) + 5;
 
       this.bannerImageTable =
       [

@@ -20,10 +20,7 @@ export class MiniCalendarComponent implements OnInit {
 	monthBegin:number;
 
 	ngOnInit(): void {
-		// Do nothing.
-
 		// set column width
-		console.log("TEST / this.calWidth : ",this.calWidth);
 		if(this.calWidth < this.calWidthMin) {
 			this.calWidth = this.calWidthMin;
 		}

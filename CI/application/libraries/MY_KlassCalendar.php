@@ -259,12 +259,12 @@ class MY_KlassCalendar {
                     } // end if
                 } // end for
 
-                // 월별 이름 표시를 위해 2주차 화요일에 플래그 값을 준다.
-                $row_2nd_week = $real_cal_list[($i + 1)];
+                // 월별 이름 표시를 위해 1주차 화요일에 플래그 값을 준다.
+                $target_week = $real_cal_list[1];
                 $target_day = null;
-                if(!empty($row_2nd_week))
+                if(!empty($target_week))
                 {
-                    $target_day = $row_2nd_week[2];
+                    $target_day = $target_week[2];
                 }
                 if(!is_null($target_day))
                 {

@@ -65,7 +65,7 @@ var KlassDetailComponent = (function () {
             _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
             // wonder.jung
             var fieldCntCalMonthly = _this.klassCalendarTableMonthly.length;
-            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth) + 20;
+            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth) + 5;
             _this.bannerImageTable =
                 [
                     [

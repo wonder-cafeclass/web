@@ -22,6 +22,18 @@
 .cal-cell.date {
     padding-top: 0px;
 }
+.cal-cell.date.firstrow {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+.lastrow {
+    margin-bottom: 3px;
+}
+.cal-cell.date.empty {
+    padding-top: 1px;    
+    padding-bottom: 1px;
+}
+
 .cal-cell.day {
     border-bottom: 1px solid #ccc;
 }
@@ -45,12 +57,18 @@
 .sun {
     color: #f00;
 }
-.cal-date.picked {
+.cal-date.hasClass {
     font-weight: bolder;
     color: #fff;
     background-color: #e85c41;
 }
-.cal-date.unpicked {
+.cal-date.hasClass.clickable:hover {
+    font-weight: bolder;
+    color: #e85c41;
+    background-color: #FFD700;
+}
+
+.cal-date.hasNoClass {
     background-color: #fff;
     font-weight: normal;
 }
@@ -67,13 +85,4 @@
     border:solid 1px #e85c41;
     border-radius:6px;
     -moz-border-radius:6px;	
-}
-.month_indicator {
-    position: absolute;
-    font-size: 50px;
-    opacity: .2;
-    color: #777;
-    left: 0px;
-    text-align: center;
-    margin-left: 5px;
 }

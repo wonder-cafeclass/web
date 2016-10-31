@@ -15,9 +15,7 @@ var MiniCalendarComponent = (function () {
         this.calWidthMin = 150;
     }
     MiniCalendarComponent.prototype.ngOnInit = function () {
-        // Do nothing.
         // set column width
-        console.log("TEST / this.calWidth : ", this.calWidth);
         if (this.calWidth < this.calWidthMin) {
             this.calWidth = this.calWidthMin;
         }
