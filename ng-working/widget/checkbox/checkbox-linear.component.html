@@ -1,0 +1,17 @@
+<form>
+
+  <div class="form-group" style="margin-bottom:0px;">
+      <div class="checkbox">
+
+        <label class="radio-inline" *ngFor="let option of optionList">
+          <input  type="radio" 
+                  name="inlineRadioOptions" 
+                  id="inlineRadio1" 
+                  value={{option.value}} 
+                  [checked]="option.isFocus"> {{option.key}}
+        </label>
+
+      </div>
+  </div>
+
+</form>

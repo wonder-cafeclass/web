@@ -10,6 +10,9 @@ import { ImageService }            from '../util/image.service';
 import { DialogService }           from '../widget/dialog.service';
 import { AuthService }             from '../auth.service';
 
+import { CheckboxOption } from '../widget/checkbox/model/checkbox-option';
+import { InputViewUpdown } from '../widget/input-view/model/input-view-updown';
+
 @Component({
   moduleId: module.id,
   styleUrls: ['klass-detail.component.css'],
@@ -51,6 +54,16 @@ export class KlassDetailComponent implements OnInit {
   bannerImageTable:string[][];
 
   isAdmin:boolean=false;
+
+  watchTowerImgUrl:string;
+  checkboxOptionListCourseDuration:CheckboxOption[];
+
+  // Admin Section
+  checkboxOptionListEnrollment:CheckboxOption[];
+  checkboxOptionListCourseDurationMin:CheckboxOption[];
+  checkboxOptionListCourseDurationMax:CheckboxOption[];
+
+  klassPriceList:InputViewUpdown[];
 
   constructor(
     private route: ActivatedRoute,
@@ -124,10 +137,81 @@ export class KlassDetailComponent implements OnInit {
       result => {
         if(null != result.is_admin) {
           this.isAdmin = result.is_admin;
+
+          // 운영툴 여부 결정 
+          if(this.isAdmin){
+            this.initAdmin();            
+          }
         }
       }
-    );    
+    );
 
+    // 최대수강신청기간
+    this.checkboxOptionListCourseDuration = [
+      new CheckboxOption("4주","4",true),
+      new CheckboxOption("8주","8",false),
+      new CheckboxOption("12주","12",false)
+    ];
+
+
+    
+
+
+  }
+
+  initAdmin() {
+
+    this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
+
+    // 수강신청일
+    let optionList = [
+      new CheckboxOption("4주마다","4",false),
+      new CheckboxOption("2주마다","2",false),
+      new CheckboxOption("매주마다","1",false)
+    ];
+    for (var i = 0; i < optionList.length; ++i) {
+      let option = optionList[i];
+      if(this.klass.enrollment_interval_week == +option.value) {
+        option.isFocus = true;  
+      }
+      optionList[i] = option;
+    }
+    this.checkboxOptionListEnrollment = optionList;
+
+    optionList = [
+      new CheckboxOption("4주","4",true),
+      new CheckboxOption("8주","8",false),
+      new CheckboxOption("12주","12",false)
+    ];
+    for (var i = 0; i < optionList.length; ++i) {
+      let option = optionList[i];
+      if(this.klass.week_min == +option.value) {
+        option.isFocus = true;  
+      }
+      optionList[i] = option;
+    }
+    this.checkboxOptionListCourseDurationMin = optionList;
+
+    optionList = [
+      new CheckboxOption("4주","4",true),
+      new CheckboxOption("8주","8",false),
+      new CheckboxOption("12주","12",false)
+    ];
+    for (var i = 0; i < optionList.length; ++i) {
+      let option = optionList[i];
+      if(this.klass.week_max == +option.value) {
+        option.isFocus = true;  
+      }
+      optionList[i] = option;
+    }
+    this.checkboxOptionListCourseDurationMax = optionList;
+
+    let updownList = [
+      new InputViewUpdown("4주",12,"40000",12,"price","#f0f"),
+      new InputViewUpdown("8주",12,"80000",12,"price","#f0f"),
+      new InputViewUpdown("12주",12,"120000",12,"price","#f0f")
+    ];
+    this.klassPriceList = updownList;
   }
 
   cancel() {

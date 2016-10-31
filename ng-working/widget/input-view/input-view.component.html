@@ -1,0 +1,25 @@
+<table class="table" style="margin-bottom: 0px;"> 
+  <tbody> 
+    <tr>
+  
+      <!-- TITLE -->
+      <td class="td-layout" [style.width]="titleWidth + 'px'">
+        <img *ngIf="titleImageUrl!=null && titleImageUrl!=''" class="cornerstone" src={{titleImageUrl}}>
+        <div>
+          <h5 class="pull-right" style="margin:13px;">{{title}}</h5>
+        </div>
+      </td>
+
+      <!-- CONTENT -->
+      <!-- CHECK BOX -->
+      <td *ngIf="checkboxOptionList!=null" class="td-layout">
+        <checkbox-linear [optionList]="checkboxOptionList"></checkbox-linear>
+      </td>
+      <!-- UPDOWN H LIST -->
+      <td *ngIf="updownList!=null" class="td-layout">
+        <input-view-h-list [updownList]="updownList"></input-view-h-list>
+      </td>
+
+    </tr>
+  </tbody>
+</table>

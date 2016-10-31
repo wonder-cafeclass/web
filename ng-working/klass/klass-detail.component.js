@@ -13,6 +13,8 @@ var router_1 = require('@angular/router');
 var image_service_1 = require('../util/image.service');
 var dialog_service_1 = require('../widget/dialog.service');
 var auth_service_1 = require('../auth.service');
+var checkbox_option_1 = require('../widget/checkbox/model/checkbox-option');
+var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var KlassDetailComponent = (function () {
     function KlassDetailComponent(route, router, imageService, dialogService, authService) {
         this.route = route;
@@ -82,8 +84,67 @@ var KlassDetailComponent = (function () {
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {
                 _this.isAdmin = result.is_admin;
+                // 운영툴 여부 결정 
+                if (_this.isAdmin) {
+                    _this.initAdmin();
+                }
             }
         });
+        // 최대수강신청기간
+        this.checkboxOptionListCourseDuration = [
+            new checkbox_option_1.CheckboxOption("4주", "4", true),
+            new checkbox_option_1.CheckboxOption("8주", "8", false),
+            new checkbox_option_1.CheckboxOption("12주", "12", false)
+        ];
+    };
+    KlassDetailComponent.prototype.initAdmin = function () {
+        this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
+        // 수강신청일
+        var optionList = [
+            new checkbox_option_1.CheckboxOption("4주마다", "4", false),
+            new checkbox_option_1.CheckboxOption("2주마다", "2", false),
+            new checkbox_option_1.CheckboxOption("매주마다", "1", false)
+        ];
+        for (var i = 0; i < optionList.length; ++i) {
+            var option = optionList[i];
+            if (this.klass.enrollment_interval_week == +option.value) {
+                option.isFocus = true;
+            }
+            optionList[i] = option;
+        }
+        this.checkboxOptionListEnrollment = optionList;
+        optionList = [
+            new checkbox_option_1.CheckboxOption("4주", "4", true),
+            new checkbox_option_1.CheckboxOption("8주", "8", false),
+            new checkbox_option_1.CheckboxOption("12주", "12", false)
+        ];
+        for (var i = 0; i < optionList.length; ++i) {
+            var option = optionList[i];
+            if (this.klass.week_min == +option.value) {
+                option.isFocus = true;
+            }
+            optionList[i] = option;
+        }
+        this.checkboxOptionListCourseDurationMin = optionList;
+        optionList = [
+            new checkbox_option_1.CheckboxOption("4주", "4", true),
+            new checkbox_option_1.CheckboxOption("8주", "8", false),
+            new checkbox_option_1.CheckboxOption("12주", "12", false)
+        ];
+        for (var i = 0; i < optionList.length; ++i) {
+            var option = optionList[i];
+            if (this.klass.week_max == +option.value) {
+                option.isFocus = true;
+            }
+            optionList[i] = option;
+        }
+        this.checkboxOptionListCourseDurationMax = optionList;
+        var updownList = [
+            new input_view_updown_1.InputViewUpdown("4주", 12, "40000", 12, "price", "#f0f"),
+            new input_view_updown_1.InputViewUpdown("8주", 12, "80000", 12, "price", "#f0f"),
+            new input_view_updown_1.InputViewUpdown("12주", 12, "120000", 12, "price", "#f0f")
+        ];
+        this.klassPriceList = updownList;
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

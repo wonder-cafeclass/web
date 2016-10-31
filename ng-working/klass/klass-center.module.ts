@@ -20,7 +20,11 @@ import { ClockComponent }            from '../widget/clock/clock.component';
 import { CalendarComponent }         from '../widget/calendar/calendar.component';
 import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
 import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
-import { ImageGridComponent }         from '../widget/image-grid/image-grid.component';
+import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
+import { CheckboxLinearComponent }   from '../widget/checkbox/checkbox-linear.component';
+import { InputViewComponent }        from '../widget/input-view/input-view.component';
+import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
+import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
 
 @NgModule({
   imports: [
@@ -40,7 +44,11 @@ import { ImageGridComponent }         from '../widget/image-grid/image-grid.comp
     CalendarComponent,
     MiniCalendarComponent,
     PriceTagComponent,
-    ImageGridComponent
+    ImageGridComponent,
+    CheckboxLinearComponent,
+    InputViewComponent,
+    InputViewHListComponent,
+    InputViewUpdownComponent
   ],
   providers: [
     KlassService,

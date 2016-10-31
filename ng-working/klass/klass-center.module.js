@@ -27,6 +27,10 @@ var calendar_component_1 = require('../widget/calendar/calendar.component');
 var mini_calendar_component_1 = require('../widget/calendar/mini-calendar.component');
 var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
+var checkbox_linear_component_1 = require('../widget/checkbox/checkbox-linear.component');
+var input_view_component_1 = require('../widget/input-view/input-view.component');
+var input_view_h_list_component_1 = require('../widget/input-view/input-view-h-list.component');
+var input_view_updown_component_1 = require('../widget/input-view/input-view-updown.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -49,7 +53,11 @@ var KlassCenterModule = (function () {
                 calendar_component_1.CalendarComponent,
                 mini_calendar_component_1.MiniCalendarComponent,
                 pricetag_component_1.PriceTagComponent,
-                image_grid_component_1.ImageGridComponent
+                image_grid_component_1.ImageGridComponent,
+                checkbox_linear_component_1.CheckboxLinearComponent,
+                input_view_component_1.InputViewComponent,
+                input_view_h_list_component_1.InputViewHListComponent,
+                input_view_updown_component_1.InputViewUpdownComponent
             ],
             providers: [
                 klass_service_1.KlassService,

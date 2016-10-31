@@ -30,7 +30,7 @@
         <!-- Second Column -->
         <ul class="list-group col-md-6">
           
-          <li class="list-group-item" style="padding: 5px;">65,000원 / 4주</li>
+          <li class="list-group-item col2nd">65,000원 / 4주</li>
           
           <!-- 
           <li class="list-group-item" style="padding: 5px;">
@@ -38,7 +38,7 @@
           </li>
           -->
 
-          <li class="list-group-item" style="padding: 5px;height: 130px;">
+          <li class="list-group-item col2nd" style="height: 130px;">
 
             <table class="table"> 
               <tbody> 
@@ -67,7 +67,7 @@
 
           </li>    
 
-          <li class="list-group-item" style="padding: 5px;">
+          <li class="list-group-item col2nd">
 
             <table class="table" style="margin-bottom: 0px; width:465px;">
               <tbody> 
@@ -91,141 +91,59 @@
 
           </li>
 
-          <li class="list-group-item" style="padding: 5px;">8주, 12주 결재시 할인 되는 경우에만 아래 열이 노출!</li>
-          
-          <!-- Refactor me to the component -->
-          <!-- TODO : 수강 신청일(Admin) -->
+          <!-- Admin Section - Init. -->
+          <!-- 1. 수강 신청일(Admin) -->
           <li *ngIf="isAdmin===true" 
-              class="list-group-item" 
-              style="padding: 5px;">
+              class="list-group-item col2nd">
 
-            <table class="table" style="margin-bottom: 0px;"> 
-              <tbody> 
-                <tr>
-
-                  <td class="td-layout" style="width: 150px;">
-                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
-                    <div>
-                      <h5 style="margin:13px;">수강신청일</h5>
-                    </div>
-                  </td>
-
-                  <td   class="td-layout">
-                    <form>
-
-                      <div class="form-group" style="margin-bottom:0px;">
-                        <!-- <div class="col-sm-offset-2 col-sm-10"> -->
-                          <div class="checkbox">
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 4주마다
-                            </label>
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 2주마다
-                            </label>
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> 매주마다
-                            </label>
-                          </div>
-                        <!-- </div> -->
-                      </div>
-
-                    </form>
-                  </td>
-
-                </tr>
-              </tbody>
-            </table>
+              <input-view   [title]="'수강신청일'"
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
+                            [checkboxOptionList]="checkboxOptionListEnrollment"></input-view>
 
           </li>
+          <!-- 2. 수업 수강 최소 기간 -->
+          <li *ngIf="isAdmin===true"
+              class="list-group-item col2nd">
 
-          <!-- TODO : 수강 신청기간(Admin) -->
-         <li *ngIf="isAdmin===true" 
-              class="list-group-item" 
-              style="padding: 5px;">
-
-            <table class="table" style="margin-bottom: 0px;"> 
-              <tbody> 
-                <tr>
-
-                  <td class="td-layout" style="width: 150px;">
-                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
-                    <div>
-                      <h5 style="margin:13px;">최대수강신청기간</h5>
-                    </div>
-                  </td>
-
-                  <td   class="td-layout">
-                    <form>
-
-                      <div class="form-group" style="margin-bottom:0px;">
-                        <!-- <div class="col-sm-offset-2 col-sm-10"> -->
-                          <div class="checkbox">
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 4주
-                            </label>
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 8주
-                            </label>
-                            <label class="radio-inline">
-                              <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> 12주
-                            </label>
-                          </div>
-                        <!-- </div> -->
-                      </div>
-
-                    </form>
-                  </td>
-
-                </tr>
-              </tbody>
-            </table>
+              <input-view   [title]="'가장짧은수강기간'"
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
+                            [checkboxOptionList]="checkboxOptionListCourseDurationMin"></input-view>
 
           </li>
+          <!-- 3. 수업 수강 최장 기간 -->
+          <li *ngIf="isAdmin===true"
+              class="list-group-item col2nd">
 
-        <!-- TODO : 수업 시작일 -->
-         <li *ngIf="isAdmin===true" 
-              class="list-group-item" 
-              style="padding: 5px;">
-
-            <table class="table" style="margin-bottom: 0px;"> 
-              <tbody> 
-                <tr>
-
-                  <td class="td-layout" style="width: 150px;">
-                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
-                    <div>
-                      <h5 style="margin:13px;">수업시작일</h5>
-                    </div>
-                  </td>
-
-                  <td   class="td-layout">
-                    선택할 수 있는 캘린더 필요.
-                  </td>
-
-                </tr>
-              </tbody>
-            </table>
+              <input-view   [title]="'가장긴수강기간'"
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
+                            [checkboxOptionList]="checkboxOptionListCourseDurationMax"></input-view>
 
           </li>
+          <!-- 4. 수강기간별 할인 가격 / ex) '2000|3000|4000'-->
+          <li *ngIf="isAdmin===true"
+              class="list-group-item col2nd">
+              <input-view   [title]="'수강기간별 할인 가격'"
+                            [updownList]="klassPriceList"
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"></input-view>
+          </li>
+          <!-- 5. 수업 시작일 -->
+          <li *ngIf="isAdmin===true"
+              class="list-group-item col2nd">
 
-          <li class="list-group-item" style="padding: 5px;">
+              <input-view   [title]="'수업시작일 / 달력 달아주세요'"
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"></input-view>
 
-            <table class="table" style="margin-bottom: 0px;" [style.width]="priceTagCageWidth + 'px'"> 
-              <tbody> 
-                <tr>
-                  <td   class="td-layout"
-                        *ngFor="let weekly_price of klass.weekly_price_list">
+          </li>
+          <!-- Admin Section - Done. -->
 
-                    <pricetag-updown  [title]="weekly_price.weeks + '주'"
-                                      [price]="weekly_price.price"
-                                      [currency]="priceTagCurrency"
-                                      [color]="priceTagColor"></pricetag-updown>
-
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
+          <!-- 1. 수강 신청기간 / TODO : 할인 가격이 있다면 우측에 노출됩니다. -->
+          <li class="list-group-item col2nd">
+                <input-view   [title]="'수강신청기간'"
+                              [checkboxOptionList]="checkboxOptionListCourseDuration"></input-view>
+          </li>
+          <!-- 2. 강의 시작날 / TODO : 운영에서 사용하는 시작일 달력을 재활용. -->
+          <li class="list-group-item col2nd">
+                <input-view   [title]="'강의시작날 / 운영에서 사용하는 시작일 달력을 재활용.'"></input-view>
           </li>
 
           <li class="list-group-item" style="padding: 5px;">59,000 / 최종 가격만 나옵니다. / 아래 바에는 수업 주 단위를 선택하는 콤보박스가 잇어야 합니다.</li>
