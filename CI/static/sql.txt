@@ -4,6 +4,8 @@
 DROP TABLE IF EXISTS `cclass`;
 DROP TABLE IF EXISTS `klass`;
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `attendance`;
+
 DROP TABLE IF EXISTS `log_access`;
 DROP TABLE IF EXISTS `log_error`;
 DROP TABLE IF EXISTS `log_action`;
@@ -56,6 +58,7 @@ CREATE TABLE `klass` (
   `venue_cafe` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 - 카페; ex) 스타벅스',
   `venue_map_link` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 맵링크 - 네이버맵 or 다음맵 링크;',
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/신규),O(Open/개강),S(Suspended/중단),C(Closed/종료)',
+  `enrollment_interval_week` int(1) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '1:매주 등록 가능(당일 수업 시작 3시간 전까지),2:격주로 등록 가능, 4:월별 첫번째 주까지 등록 가능.',
   `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
   `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '월별 수강료. 최대 천만원 단위까지 표시.',
   `class_img_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업을 안내하는 이미지 - 페이스북 광고에 사용되는 메인 이미지.',
@@ -65,6 +68,16 @@ CREATE TABLE `klass` (
   INDEX `search` (`level`,`venue_subway_station`,`days`),
   KEY `date_begin` (`date_begin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class';
+
+CREATE TABLE `attendance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
 
 CREATE TABLE `log_access` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
@@ -110,15 +123,3 @@ CREATE TABLE `keys` (
     `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `z_test_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(65) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test user';
-
-CREATE TABLE `z_test_class` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(65) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='test class';

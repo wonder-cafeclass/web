@@ -35,6 +35,7 @@ export class Klass {
     public price_list: string[];
     public price_with_format: string;
     public class_status: string;
+    public enrollment_interval_week:number;
     public class_img_url: string;
     public calendar_table_linear: Calendar[][];
     public calendar_table_monthly: Calendar[][][];

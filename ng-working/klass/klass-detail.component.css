@@ -72,6 +72,18 @@ table.pricetag {
 
 
 
+.watchtower {
+    float: left;
+    position: absolute;
+    width: 20px;
+    top: 5px;
+    left: 3px;    
+}
+
+
+
+
+
 /*
 - REMOVE ME
 .klass-img-filter {

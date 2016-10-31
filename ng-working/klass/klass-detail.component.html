@@ -90,20 +90,123 @@
             </table>
 
           </li>
-          
-          <!-- REMOVE ME
-          <li class="list-group-item" style="padding: 5px;">
-            <simple-calendar  #klassCalendar
-                              [calendarTable]="klassCalendarTableLinear"
-                              [dayBegin]="klassDayBegin"
-                              [dateBegin]="klassDateBegin"
-                              [weekMin]="klassWeekMin"
-                              [weekMax]="klassWeekMax"></simple-calendar>
-
-          </li>
-          -->
 
           <li class="list-group-item" style="padding: 5px;">8주, 12주 결재시 할인 되는 경우에만 아래 열이 노출!</li>
+          
+          <!-- Refactor me to the component -->
+          <!-- TODO : 수강 신청일(Admin) -->
+          <li *ngIf="isAdmin===true" 
+              class="list-group-item" 
+              style="padding: 5px;">
+
+            <table class="table" style="margin-bottom: 0px;"> 
+              <tbody> 
+                <tr>
+
+                  <td class="td-layout" style="width: 150px;">
+                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
+                    <div>
+                      <h5 style="margin:13px;">수강신청일</h5>
+                    </div>
+                  </td>
+
+                  <td   class="td-layout">
+                    <form>
+
+                      <div class="form-group" style="margin-bottom:0px;">
+                        <!-- <div class="col-sm-offset-2 col-sm-10"> -->
+                          <div class="checkbox">
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 4주마다
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 2주마다
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> 매주마다
+                            </label>
+                          </div>
+                        <!-- </div> -->
+                      </div>
+
+                    </form>
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+
+          </li>
+
+          <!-- TODO : 수강 신청기간(Admin) -->
+         <li *ngIf="isAdmin===true" 
+              class="list-group-item" 
+              style="padding: 5px;">
+
+            <table class="table" style="margin-bottom: 0px;"> 
+              <tbody> 
+                <tr>
+
+                  <td class="td-layout" style="width: 150px;">
+                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
+                    <div>
+                      <h5 style="margin:13px;">최대수강신청기간</h5>
+                    </div>
+                  </td>
+
+                  <td   class="td-layout">
+                    <form>
+
+                      <div class="form-group" style="margin-bottom:0px;">
+                        <!-- <div class="col-sm-offset-2 col-sm-10"> -->
+                          <div class="checkbox">
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 4주
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 8주
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> 12주
+                            </label>
+                          </div>
+                        <!-- </div> -->
+                      </div>
+
+                    </form>
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+
+          </li>
+
+        <!-- TODO : 수업 시작일 -->
+         <li *ngIf="isAdmin===true" 
+              class="list-group-item" 
+              style="padding: 5px;">
+
+            <table class="table" style="margin-bottom: 0px;"> 
+              <tbody> 
+                <tr>
+
+                  <td class="td-layout" style="width: 150px;">
+                    <img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
+                    <div>
+                      <h5 style="margin:13px;">수업시작일</h5>
+                    </div>
+                  </td>
+
+                  <td   class="td-layout">
+                    선택할 수 있는 캘린더 필요.
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+
+          </li>
 
           <li class="list-group-item" style="padding: 5px;">
 

@@ -67,6 +67,10 @@
     color: #e85c41;
     background-color: #FFD700;
 }
+.cal-date.hasClass.unclickable {
+    font-weight: lighter;
+    color: #ccc;
+}
 
 .cal-date.hasNoClass {
     background-color: #fff;

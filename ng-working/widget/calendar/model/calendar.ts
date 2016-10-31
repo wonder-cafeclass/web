@@ -6,6 +6,7 @@ export class Calendar {
 	public day;  // Monday, Tuesday, ...
 	public hasKlass:boolean=false;
 	public isExpired:boolean=false;
+	public isEnrollment:boolean=false;
 
 	public isFirstDayOfWeek:boolean=false;
 	public isLastDayOfWeek:boolean=false;

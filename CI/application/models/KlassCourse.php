@@ -75,6 +75,8 @@ class KlassCourse {
         public $price_with_format;
         // 수업운영상태
         public $class_status;
+        // 수업 신청 타입
+        public $enrollment_interval_week;
         // 이미지 링크    
         public $class_img_url;
         // 이미지 에러 링크    

@@ -56,8 +56,9 @@
 
 							<div 	info="수업있음. 날짜 오늘보다 전"
 									*ngIf="field.hasKlass && !field.isExpired"
-
-									class="cal-date hasClass clickable">
+									[class.clickable]="field.isEnrollment"
+									[class.unclickable]="!field.isEnrollment"
+									class="cal-date hasClass">
 									{{field.date}}
 							</div>
 

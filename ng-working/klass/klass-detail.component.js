@@ -12,12 +12,14 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../util/image.service');
 var dialog_service_1 = require('../widget/dialog.service');
+var auth_service_1 = require('../auth.service');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, imageService, dialogService) {
+    function KlassDetailComponent(route, router, imageService, dialogService, authService) {
         this.route = route;
         this.router = router;
         this.imageService = imageService;
         this.dialogService = dialogService;
+        this.authService = authService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
         this.priceTagWidth = 105;
@@ -28,6 +30,7 @@ var KlassDetailComponent = (function () {
         this.miniCalHeight = 60;
         this.miniCalWidth = 60;
         this.miniCalCageWidth = 60;
+        this.isAdmin = false;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -76,6 +79,11 @@ var KlassDetailComponent = (function () {
                     ]
                 ];
         });
+        this.authService.getAdminAuth().then(function (result) {
+            if (null != result.is_admin) {
+                _this.isAdmin = result.is_admin;
+            }
+        });
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();
@@ -121,7 +129,7 @@ var KlassDetailComponent = (function () {
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

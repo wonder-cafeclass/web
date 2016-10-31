@@ -8,6 +8,7 @@ import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
 import { DialogService }           from '../widget/dialog.service';
+import { AuthService }             from '../auth.service';
 
 @Component({
   moduleId: module.id,
@@ -49,11 +50,14 @@ export class KlassDetailComponent implements OnInit {
 
   bannerImageTable:string[][];
 
+  isAdmin:boolean=false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     public imageService: ImageService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -115,6 +119,14 @@ export class KlassDetailComponent implements OnInit {
       ];
       
     });
+
+    this.authService.getAdminAuth().then(
+      result => {
+        if(null != result.is_admin) {
+          this.isAdmin = result.is_admin;
+        }
+      }
+    );    
 
   }
 

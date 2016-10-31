@@ -3,6 +3,7 @@ var Calendar = (function () {
     function Calendar() {
         this.hasKlass = false;
         this.isExpired = false;
+        this.isEnrollment = false;
         this.isFirstDayOfWeek = false;
         this.isLastDayOfWeek = false;
         this.isFirstWeekOfMonth = false;

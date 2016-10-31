@@ -327,7 +327,8 @@ class MY_KlassCalendar {
                 {
                     // 달력 날짜가 지정되지 않았습니다.
                     $klass_cal = $klass_cal_list[0];
-                    if(strtolower($cur_day) === strtolower($klass_cal->day))
+                    if( !is_null($klass_cal) && 
+                        strtolower($cur_day) === strtolower($klass_cal->day))
                     {
                         // 같은 요일 발견!
                         $offset = $j;
@@ -483,6 +484,54 @@ class MY_KlassCalendar {
             array_push($klass_monthly_list_group_next, $klass_monthly_list);
         }
         $klass_monthly_list_group = $klass_monthly_list_group_next;
+
+        // 해당 날짜에 수업이 있다면, 수강신청이 가능한지 확인해서 플래그 값을 업데이트 해줍니다.
+        $enrollment_interval_week = intval($klass_course->enrollment_interval_week);
+        for ($i=0; $i < count($klass_monthly_list_group); $i++)
+        {
+            $klass_weekly_list = $klass_monthly_list_group[$i];
+            $klass_weekly_cnt = count($klass_weekly_list);
+
+            $enrollment_cnt = 0;
+            $next_enrollment_interval_weeks = 0;
+            for ($j=0; $j < count($klass_weekly_list); $j++)
+            {
+
+                $klass_daily_list = $klass_weekly_list[$j];
+                for ($k=0; $k < count($klass_daily_list); $k++)
+                {
+                    $klassCalendar = $klass_daily_list[$k];
+                    if(is_null($klassCalendar) || !isset($klassCalendar->hasKlass))
+                    {
+                        continue;
+                    }
+                    if(!$klassCalendar->hasKlass)
+                    {
+                        continue;   
+                    }
+                    if(0 < $enrollment_cnt) 
+                    {
+                        if($next_enrollment_interval_weeks < $enrollment_interval_week)
+                        {
+                            // 다음 수업 등록일까지 기다려야 함.
+                            $next_enrollment_interval_weeks++;
+                            continue;
+                        }
+                        else
+                        {
+                            // 다음 수업 등록일이 되었습니다.
+                            $enrollment_cnt++;
+                            $next_enrollment_interval_weeks = 0;  
+                            $klassCalendar->isEnrollment = true; 
+                        }
+                    }
+                    // 첫번째 신청 등록일입니다.
+                    $enrollment_cnt++;
+                    $next_enrollment_interval_weeks++;
+                    $klassCalendar->isEnrollment = true;
+                } // end for
+            } // end for
+        } // end for
 
         return $klass_monthly_list_group;
 
