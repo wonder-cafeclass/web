@@ -1,5 +1,10 @@
-import { Component, OnInit, Input }    from '@angular/core';
-import { InputViewUpdown } from './model/input-view-updown';
+import { 
+  Component, 
+  OnInit, 
+  Input, 
+  Output, 
+  EventEmitter }                   from '@angular/core';
+import { InputViewUpdown }         from './model/input-view-updown';
 
 /*
 *
@@ -17,11 +22,19 @@ export class InputViewHListComponent implements OnInit {
 
   @Input() updownList:InputViewUpdown[];
   @Input() cageWidth:number=100;
+  @Output() emitter = new EventEmitter<any>();
 
   constructor() {}
 
   ngOnInit(): void {
     // Do nothing.
+  }
+
+  onChangedFromChild(data) :void{
+
+    console.log("InputViewHListComponent / onChangedFromChild / data : ",data);
+
+    this.emitter.emit(data);
   }
 
 }

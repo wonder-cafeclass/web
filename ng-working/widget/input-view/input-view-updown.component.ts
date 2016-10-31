@@ -1,5 +1,10 @@
-import { Component, OnInit, Input }    from '@angular/core';
-import { InputViewUpdown } from './model/input-view-updown';
+import { 
+  Component, 
+  OnInit, 
+  Input, 
+  Output, 
+  EventEmitter }                    from '@angular/core';
+import { InputViewUpdown } 			from './model/input-view-updown';
 
 @Component({
   moduleId: module.id,
@@ -10,11 +15,20 @@ import { InputViewUpdown } from './model/input-view-updown';
 export class InputViewUpdownComponent implements OnInit {
 
   @Input() data:InputViewUpdown;
+  @Output() emitter = new EventEmitter<any>();
 
   constructor() {}
 
   ngOnInit(): void {
     // Do nothing.
+  }
+
+  onChange(event, value) :void {
+    event.stopPropagation();
+
+    // 
+
+    this.emitter.emit(value);
   }
 
 }

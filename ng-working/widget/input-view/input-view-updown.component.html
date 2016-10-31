@@ -3,7 +3,7 @@
   <li class="list-group-item updown tail" [style.font-size]="data.fontSizeText + 'px'">
 	  <div class="form-group" style="margin-bottom:0px;">
 	    <!-- <div class="col-sm-10"> -->
-	      <input class="form-control" placeholder="금액을 입력해주세요." value={{data.text}}>
+	      <input #inputText class="form-control" placeholder="금액을 입력해주세요." value={{data.text}} (change)="onChange($event, inputText.value)">
 	    <!-- </div> -->
 	  </div>  
   </li>

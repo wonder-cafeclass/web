@@ -7,8 +7,9 @@
           <input  type="radio" 
                   name="inlineRadioOptions" 
                   id="inlineRadio1" 
-                  value={{option.value}} 
-                  [checked]="option.isFocus"> {{option.key}}
+                  value={{option.myEvent.value}} 
+                  [checked]="option.isFocus"
+                  (change)="onChange($event, option.myEvent)">{{option.myEvent.title}}
         </label>
 
       </div>

@@ -22,6 +22,7 @@ var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
 var url_service_1 = require('./util/url.service');
 var image_service_1 = require('./util/image.service');
+var my_event_service_1 = require('./util/my-event.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -46,6 +47,7 @@ var AppModule = (function () {
                 auth_service_1.AuthService,
                 url_service_1.UrlService,
                 image_service_1.ImageService,
+                my_event_service_1.MyEventService,
                 app_routing_1.appRoutingProviders,
                 { provide: common_1.LocationStrategy, useClass: common_1.HashLocationStrategy },
                 dialog_service_1.DialogService

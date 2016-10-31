@@ -1,5 +1,11 @@
-import { Component, OnInit, Input }   from '@angular/core';
-import { CheckboxOption }             from './model/checkbox-option';
+import { 
+  Component, 
+  OnInit, 
+  Input, 
+  Output, 
+  EventEmitter }                     from '@angular/core';
+import { CheckboxOption }            from './model/checkbox-option';
+import { MyEvent }                   from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
@@ -10,6 +16,7 @@ import { CheckboxOption }             from './model/checkbox-option';
 export class CheckboxLinearComponent implements OnInit {
 
   @Input() optionList:CheckboxOption[];
+  @Output() emitter = new EventEmitter<any>();
 
   constructor() {}
 
@@ -18,5 +25,11 @@ export class CheckboxLinearComponent implements OnInit {
   }
 
   // TODO - even dispatch!
+  onChange(event, option) :void {
+
+    event.stopPropagation();
+    this.emitter.emit(option);
+
+  }
 
 }

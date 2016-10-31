@@ -13,11 +13,13 @@
       <!-- CONTENT -->
       <!-- CHECK BOX -->
       <td *ngIf="checkboxOptionList!=null" class="td-layout">
-        <checkbox-linear [optionList]="checkboxOptionList"></checkbox-linear>
+        <checkbox-linear  [optionList]="checkboxOptionList"
+                          (emitter)="onChangedFromChild($event)"></checkbox-linear>
       </td>
       <!-- UPDOWN H LIST -->
       <td *ngIf="updownList!=null" class="td-layout">
-        <input-view-h-list [updownList]="updownList"></input-view-h-list>
+        <input-view-h-list  [updownList]="updownList"
+                            (emitter)="onChangedFromChild($event)"></input-view-h-list>
       </td>
 
     </tr>

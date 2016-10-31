@@ -13,6 +13,7 @@ var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
 var klass_service_1 = require('./klass.service');
+var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
@@ -63,6 +64,7 @@ var KlassCenterModule = (function () {
             ],
             providers: [
                 klass_service_1.KlassService,
+                klass_checkbox_service_1.KlassCheckboxService,
                 klass_detail_resolve_service_1.KlassDetailResolve
             ]
         }), 

@@ -87,7 +87,8 @@
 
               <input-view   [title]="'수강신청일'"
                             [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListEnrollment"></input-view>
+                            [checkboxOptionList]="checkboxOptionListEnrollment"
+                            (emitter)="onChangedFromInputView($event)"></input-view>
 
           </li>
           <!-- 2. 수업 수강 최소 기간 -->
@@ -96,7 +97,8 @@
 
               <input-view   [title]="'가장짧은수강기간'"
                             [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListCourseDurationMin"></input-view>
+                            [checkboxOptionList]="checkboxOptionListCourseDurationMin"
+                            (emitter)="onChangedFromInputView($event)"></input-view>
 
           </li>
           <!-- 3. 수업 수강 최장 기간 -->
@@ -105,7 +107,8 @@
 
               <input-view   [title]="'가장긴수강기간'"
                             [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListCourseDurationMax"></input-view>
+                            [checkboxOptionList]="checkboxOptionListCourseDurationMax"
+                            (emitter)="onChangedFromInputView($event)"></input-view>
 
           </li>
           <!-- 4. 수강기간별 할인 가격 / ex) '2000|3000|4000'-->
@@ -113,7 +116,8 @@
               class="list-group-item col2nd">
               <input-view   [title]="'수강기간별 할인 가격'"
                             [updownList]="klassPriceList"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"></input-view>
+                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
+                            (emitter)="onChangedFromInputView($event)"></input-view>
           </li>
           <!-- 5. 수업 시작일 -->
           <li *ngIf="isAdmin===true"

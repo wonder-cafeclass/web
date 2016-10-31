@@ -5,6 +5,7 @@ import { FormsModule }               from '@angular/forms';
 import { CommonModule }              from '@angular/common';
 
 import { KlassService }              from './klass.service';
+import { KlassCheckboxService }              from './service/klass-checkbox.service';
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
 import { KlassCenterComponent }      from './klass-center.component';
@@ -54,6 +55,7 @@ import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updow
   ],
   providers: [
     KlassService,
+    KlassCheckboxService,
     KlassDetailResolve
   ]
 })

@@ -11,17 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../util/image.service');
+var my_event_service_1 = require('../util/my-event.service');
 var dialog_service_1 = require('../widget/dialog.service');
 var auth_service_1 = require('../auth.service');
-var checkbox_option_1 = require('../widget/checkbox/model/checkbox-option');
+var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, imageService, dialogService, authService) {
+    function KlassDetailComponent(route, router, imageService, dialogService, authService, myEventService, checkboxService) {
         this.route = route;
         this.router = router;
         this.imageService = imageService;
         this.dialogService = dialogService;
         this.authService = authService;
+        this.myEventService = myEventService;
+        this.checkboxService = checkboxService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
         this.priceTagWidth = 105;
@@ -41,10 +44,8 @@ var KlassDetailComponent = (function () {
             if (null != data.klass) {
                 _this.klass = data.klass;
             }
-            // console.log("this.klass : ",this.klass);
             _this.klassCalendarTableLinear = _this.klass.calendar_table_linear;
             _this.klassCalendarTableMonthly = _this.klass.calendar_table_monthly;
-            console.log("this.klassCalendarTableMonthly : ", _this.klassCalendarTableMonthly);
             _this.klassDayBegin = _this.klass.days;
             // send time data to "clock board"
             _this.klassTimeBegin = _this.klass.time_begin;
@@ -79,12 +80,9 @@ var KlassDetailComponent = (function () {
                     ]
                 ];
             _this.pricePerWeekFormat = _this.klass.week_min + _this.pricePerWeekFormat;
-            // 최대수강신청기간
-            _this.checkboxOptionListCourseDuration = [
-                new checkbox_option_1.CheckboxOption("4주", "4", true),
-                new checkbox_option_1.CheckboxOption("8주", "8", false),
-                new checkbox_option_1.CheckboxOption("12주", "12", false)
-            ];
+            // 유저 수강 기간
+            _this.checkboxOptionListCourseDuration =
+                _this.checkboxService.getKlassEnrolmentWeeks(_this.klass, 0);
         });
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {
@@ -98,45 +96,14 @@ var KlassDetailComponent = (function () {
     };
     KlassDetailComponent.prototype.initAdmin = function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
-        // 수강신청일
-        var optionList = [
-            new checkbox_option_1.CheckboxOption("4주마다", "4", false),
-            new checkbox_option_1.CheckboxOption("2주마다", "2", false),
-            new checkbox_option_1.CheckboxOption("매주마다", "1", false)
-        ];
-        for (var i = 0; i < optionList.length; ++i) {
-            var option = optionList[i];
-            if (this.klass.enrollment_interval_week == +option.value) {
-                option.isFocus = true;
-            }
-            optionList[i] = option;
-        }
+        // 수강신청 가능 기간
+        var optionList = this.checkboxService.getKlassEnrolmentInterval(this.klass, "" + this.klass.enrollment_interval_week);
         this.checkboxOptionListEnrollment = optionList;
-        optionList = [
-            new checkbox_option_1.CheckboxOption("4주", "4", true),
-            new checkbox_option_1.CheckboxOption("8주", "8", false),
-            new checkbox_option_1.CheckboxOption("12주", "12", false)
-        ];
-        for (var i = 0; i < optionList.length; ++i) {
-            var option = optionList[i];
-            if (this.klass.week_min == +option.value) {
-                option.isFocus = true;
-            }
-            optionList[i] = option;
-        }
+        // 가장 짧은 수강 기간
+        optionList = this.checkboxService.getKlassWeeksMin(this.klass, "" + this.klass.week_min);
         this.checkboxOptionListCourseDurationMin = optionList;
-        optionList = [
-            new checkbox_option_1.CheckboxOption("4주", "4", true),
-            new checkbox_option_1.CheckboxOption("8주", "8", false),
-            new checkbox_option_1.CheckboxOption("12주", "12", false)
-        ];
-        for (var i = 0; i < optionList.length; ++i) {
-            var option = optionList[i];
-            if (this.klass.week_max == +option.value) {
-                option.isFocus = true;
-            }
-            optionList[i] = option;
-        }
+        // 가장 긴 수강 기간
+        optionList = this.checkboxService.getKlassWeeksMax(this.klass, "" + this.klass.week_max);
         this.checkboxOptionListCourseDurationMax = optionList;
         var updownList = [];
         for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
@@ -144,7 +111,6 @@ var KlassDetailComponent = (function () {
             var updown = new input_view_updown_1.InputViewUpdown(klassPrice.weeks + "주", 12, "" + klassPrice.discount, 12, "price", "#f0f");
             updownList.push(updown);
         }
-        console.log("TEST / updownList : ", updownList);
         this.klassPriceList = updownList;
     };
     KlassDetailComponent.prototype.cancel = function () {
@@ -185,13 +151,17 @@ var KlassDetailComponent = (function () {
         event.stopPropagation();
         console.log("onClickYellowID / klass ::: ", klass);
     };
+    KlassDetailComponent.prototype.onChangedFromInputView = function (data) {
+        console.log("onChangedFromInputView / data :: ", data);
+        // 전파 받은 상태를 관리, 다른 체크 박스이 상태도제어할 수 있어야 한다.
+    };
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_event_service_1.MyEventService, klass_checkbox_service_1.KlassCheckboxService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

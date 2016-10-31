@@ -7,12 +7,15 @@ import { Klass }                   from './model/klass';
 import { KlassPrice }              from './model/klass-price';
 import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
+import { MyEventService }          from '../util/my-event.service';
+import { MyEvent }                 from '../util/model/my-event';
 
 import { DialogService }           from '../widget/dialog.service';
 import { AuthService }             from '../auth.service';
+import { KlassCheckboxService }    from './service/klass-checkbox.service';
 
-import { CheckboxOption } from '../widget/checkbox/model/checkbox-option';
-import { InputViewUpdown } from '../widget/input-view/model/input-view-updown';
+import { CheckboxOption }          from '../widget/checkbox/model/checkbox-option';
+import { InputViewUpdown }         from '../widget/input-view/model/input-view-updown';
 
 @Component({
   moduleId: module.id,
@@ -72,7 +75,9 @@ export class KlassDetailComponent implements OnInit {
     private router: Router,
     public imageService: ImageService,
     public dialogService: DialogService,
-    private authService: AuthService
+    private authService: AuthService,
+    private myEventService: MyEventService,
+    private checkboxService:KlassCheckboxService
   ) {}
 
   ngOnInit() {
@@ -83,12 +88,8 @@ export class KlassDetailComponent implements OnInit {
         this.klass = data.klass;
       }
 
-      // console.log("this.klass : ",this.klass);
-
       this.klassCalendarTableLinear = this.klass.calendar_table_linear;
       this.klassCalendarTableMonthly = this.klass.calendar_table_monthly;
-
-      console.log("this.klassCalendarTableMonthly : ",this.klassCalendarTableMonthly);
 
       this.klassDayBegin = this.klass.days;
 
@@ -132,15 +133,10 @@ export class KlassDetailComponent implements OnInit {
 
       this.pricePerWeekFormat = this.klass.week_min + this.pricePerWeekFormat;
 
-      // 최대수강신청기간
-      this.checkboxOptionListCourseDuration = [
-        new CheckboxOption("4주","4",true),
-        new CheckboxOption("8주","8",false),
-        new CheckboxOption("12주","12",false)
-      ];
+      // 유저 수강 기간
+      this.checkboxOptionListCourseDuration =
+      this.checkboxService.getKlassEnrolmentWeeks(this.klass, 0);
 
-
-      
     });
 
     this.authService.getAdminAuth().then(
@@ -166,49 +162,18 @@ export class KlassDetailComponent implements OnInit {
 
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
 
-    // 수강신청일
-    let optionList = [
-      new CheckboxOption("4주마다","4",false),
-      new CheckboxOption("2주마다","2",false),
-      new CheckboxOption("매주마다","1",false)
-    ];
-    for (var i = 0; i < optionList.length; ++i) {
-      let option = optionList[i];
-      if(this.klass.enrollment_interval_week == +option.value) {
-        option.isFocus = true;  
-      }
-      optionList[i] = option;
-    }
+    // 수강신청 가능 기간
+    let optionList:CheckboxOption[] = 
+    this.checkboxService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
     this.checkboxOptionListEnrollment = optionList;
 
-    optionList = [
-      new CheckboxOption("4주","4",true),
-      new CheckboxOption("8주","8",false),
-      new CheckboxOption("12주","12",false)
-    ];
-    for (var i = 0; i < optionList.length; ++i) {
-      let option = optionList[i];
-      if(this.klass.week_min == +option.value) {
-        option.isFocus = true;  
-      }
-      optionList[i] = option;
-    }
+    // 가장 짧은 수강 기간
+    optionList = this.checkboxService.getKlassWeeksMin(this.klass, ""+this.klass.week_min);
     this.checkboxOptionListCourseDurationMin = optionList;
 
-    optionList = [
-      new CheckboxOption("4주","4",true),
-      new CheckboxOption("8주","8",false),
-      new CheckboxOption("12주","12",false)
-    ];
-    for (var i = 0; i < optionList.length; ++i) {
-      let option = optionList[i];
-      if(this.klass.week_max == +option.value) {
-        option.isFocus = true;  
-      }
-      optionList[i] = option;
-    }
+    // 가장 긴 수강 기간
+    optionList = this.checkboxService.getKlassWeeksMax(this.klass, ""+this.klass.week_max);
     this.checkboxOptionListCourseDurationMax = optionList;
-
 
     let updownList = [];
     for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
@@ -227,8 +192,6 @@ export class KlassDetailComponent implements OnInit {
 
       updownList.push(updown);
     }
-
-    console.log("TEST / updownList : ",updownList);
 
     this.klassPriceList = updownList;
   }
@@ -279,6 +242,13 @@ export class KlassDetailComponent implements OnInit {
   onClickYellowID(event, klass:Klass) {
     event.stopPropagation();
     console.log("onClickYellowID / klass ::: ",klass);
+  }
+
+  onChangedFromInputView(data) {
+    console.log("onChangedFromInputView / data :: ",data);
+
+    // 전파 받은 상태를 관리, 다른 체크 박스이 상태도제어할 수 있어야 한다.
+
   }
 
 }

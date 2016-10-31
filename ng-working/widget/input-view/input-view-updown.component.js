@@ -12,14 +12,24 @@ var core_1 = require('@angular/core');
 var input_view_updown_1 = require('./model/input-view-updown');
 var InputViewUpdownComponent = (function () {
     function InputViewUpdownComponent() {
+        this.emitter = new core_1.EventEmitter();
     }
     InputViewUpdownComponent.prototype.ngOnInit = function () {
         // Do nothing.
+    };
+    InputViewUpdownComponent.prototype.onChange = function (event, value) {
+        event.stopPropagation();
+        // 
+        this.emitter.emit(value);
     };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', input_view_updown_1.InputViewUpdown)
     ], InputViewUpdownComponent.prototype, "data", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], InputViewUpdownComponent.prototype, "emitter", void 0);
     InputViewUpdownComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

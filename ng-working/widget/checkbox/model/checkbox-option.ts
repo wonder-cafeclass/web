@@ -1,7 +1,8 @@
+import { MyEvent } from '../../../util/model/my-event';
+
 export class CheckboxOption {
 	constructor(
-	    public key:string,
-	    public value:string,
+	    public myEvent:MyEvent,
 	    public isFocus:boolean
 	) {}
 }

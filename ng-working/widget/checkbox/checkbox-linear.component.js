@@ -11,14 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var CheckboxLinearComponent = (function () {
     function CheckboxLinearComponent() {
+        this.emitter = new core_1.EventEmitter();
     }
     CheckboxLinearComponent.prototype.ngOnInit = function () {
         // Do nothing.
+    };
+    // TODO - even dispatch!
+    CheckboxLinearComponent.prototype.onChange = function (event, option) {
+        event.stopPropagation();
+        this.emitter.emit(option);
     };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
     ], CheckboxLinearComponent.prototype, "optionList", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], CheckboxLinearComponent.prototype, "emitter", void 0);
     CheckboxLinearComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -17,9 +17,14 @@ var core_1 = require('@angular/core');
 var InputViewHListComponent = (function () {
     function InputViewHListComponent() {
         this.cageWidth = 100;
+        this.emitter = new core_1.EventEmitter();
     }
     InputViewHListComponent.prototype.ngOnInit = function () {
         // Do nothing.
+    };
+    InputViewHListComponent.prototype.onChangedFromChild = function (data) {
+        console.log("InputViewHListComponent / onChangedFromChild / data : ", data);
+        this.emitter.emit(data);
     };
     __decorate([
         core_1.Input(), 
@@ -29,6 +34,10 @@ var InputViewHListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], InputViewHListComponent.prototype, "cageWidth", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], InputViewHListComponent.prototype, "emitter", void 0);
     InputViewHListComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
