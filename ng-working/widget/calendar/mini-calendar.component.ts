@@ -15,8 +15,8 @@ export class MiniCalendarComponent implements OnInit {
 	@Input() dateBegin:string;
 	@Input() weekMin:number;
 	@Input() weekMax:number;
-	@Input() calWidth:number=150;
-	calWidthMin:number=150;
+	@Input() calWidth:number=145;
+	calWidthMin:number=145;
 	monthBegin:number;
 
 	ngOnInit(): void {

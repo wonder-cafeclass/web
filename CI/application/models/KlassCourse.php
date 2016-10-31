@@ -1,5 +1,7 @@
 <?php
 
+require APPPATH . '/models/KlassPrice.php';
+
 class KlassCourse {
 
         public $id;
@@ -67,7 +69,15 @@ class KlassCourse {
         public $search_tag;
         // 가격
         public $price;
-        // 4주당 가격리스트
+        // 가격 관련 KlassPrice List
+        public $klass_price_list;
+        // 할인된 가격의 배열
+        public $price_list_width_discount;
+        // 가격 할인 문자열
+        public $discount;
+        // 가격 할인 배열
+        public $discount_arr;
+        // 4주당 가격리스트 
         public $price_list;
         // 4주당 가격과 타이틀 리스트
         public $weekly_price_list;
@@ -420,6 +430,46 @@ class KlassCourse {
                 }
                 $this->price_with_format = number_format($this->price);
         }              
+
+        public function set_klass_price_list()
+        {
+                if(!isset($this->price)) 
+                {
+                        return;
+                }
+                if(!isset($this->discount)) 
+                {
+                        return;
+                }
+
+                $discounts = explode("|",$this->discount);
+                if(empty($discounts))
+                {
+                        return;
+                }
+                $basic_weeks = 4;
+
+                $price_per_4week = floor(intval($this->price) / $basic_weeks);
+                $week_min = intval($this->week_min);
+                $week_max = intval($this->week_max);
+                $week_diff = $week_max - $week_min;
+                $week_diff = floor($week_diff/$basic_weeks);
+
+                $klass_price_list = array();
+                for ($i=0; $i <= $week_diff; $i++) { 
+
+                        $weeks = $basic_weeks * ($i + 1);
+                        // 할인 가격 배열에 할인 가격 정보가 없다면 할인이 없는 것으로 처리.
+                        $discount = 0;
+                        if($i < (count($discounts))) {
+                                $discount = intval($discounts[$i]);
+                        }
+
+                        $klassPrice = new KlassPrice($weeks, $price_per_4week, $discount);
+                        array_push($klass_price_list, $klassPrice);
+                }
+                $this->klass_price_list = $klass_price_list;
+        }
 
         public function weeks_to_months()
         {

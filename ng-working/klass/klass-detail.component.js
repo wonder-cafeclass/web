@@ -26,6 +26,7 @@ var KlassDetailComponent = (function () {
         this.priceTagColor = "#e85c41";
         this.priceTagWidth = 105;
         this.priceTagCageWidth = 105;
+        this.pricePerWeekFormat = "주";
         this.selectileImageHeight = 60;
         this.selectileImageWidth = 60;
         this.selectileCageWidth = 60;
@@ -58,19 +59,16 @@ var KlassDetailComponent = (function () {
                     [
                         _this.klass.level_img_url,
                         _this.klass.venue_subway_station_img_url,
-                        _this.klass.venue_cafe_logo_img_url
-                    ],
-                    [
+                        _this.klass.venue_cafe_logo_img_url,
                         _this.klass.days_img_url,
                         _this.klass.time_begin_img_url,
-                        null
                     ]
                 ];
             var fieldCntSelectile = _this.selectileImageTable[0].length;
             _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
             // wonder.jung
             var fieldCntCalMonthly = _this.klassCalendarTableMonthly.length;
-            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth) + 5;
+            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth);
             _this.bannerImageTable =
                 [
                     [
@@ -80,6 +78,13 @@ var KlassDetailComponent = (function () {
                         _this.imageService.get(_this.imageService.noticeHelpUrl)
                     ]
                 ];
+            _this.pricePerWeekFormat = _this.klass.week_min + _this.pricePerWeekFormat;
+            // 최대수강신청기간
+            _this.checkboxOptionListCourseDuration = [
+                new checkbox_option_1.CheckboxOption("4주", "4", true),
+                new checkbox_option_1.CheckboxOption("8주", "8", false),
+                new checkbox_option_1.CheckboxOption("12주", "12", false)
+            ];
         });
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {
@@ -90,12 +95,6 @@ var KlassDetailComponent = (function () {
                 }
             }
         });
-        // 최대수강신청기간
-        this.checkboxOptionListCourseDuration = [
-            new checkbox_option_1.CheckboxOption("4주", "4", true),
-            new checkbox_option_1.CheckboxOption("8주", "8", false),
-            new checkbox_option_1.CheckboxOption("12주", "12", false)
-        ];
     };
     KlassDetailComponent.prototype.initAdmin = function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
@@ -139,11 +138,13 @@ var KlassDetailComponent = (function () {
             optionList[i] = option;
         }
         this.checkboxOptionListCourseDurationMax = optionList;
-        var updownList = [
-            new input_view_updown_1.InputViewUpdown("4주", 12, "40000", 12, "price", "#f0f"),
-            new input_view_updown_1.InputViewUpdown("8주", 12, "80000", 12, "price", "#f0f"),
-            new input_view_updown_1.InputViewUpdown("12주", 12, "120000", 12, "price", "#f0f")
-        ];
+        var updownList = [];
+        for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
+            var klassPrice = this.klass.klass_price_list[i];
+            var updown = new input_view_updown_1.InputViewUpdown(klassPrice.weeks + "주", 12, "" + klassPrice.discount, 12, "price", "#f0f");
+            updownList.push(updown);
+        }
+        console.log("TEST / updownList : ", updownList);
         this.klassPriceList = updownList;
     };
     KlassDetailComponent.prototype.cancel = function () {

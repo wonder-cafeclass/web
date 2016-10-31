@@ -891,6 +891,7 @@ class Klass extends REST_Controller implements MY_Class{
             $row->venue_subway_station_img_url($const_map, $this->my_path);
             $row->venue_cafe_logo_img_url($const_map, $this->my_path);
             $row->price_with_format();
+            $row->set_klass_price_list();
             $row->weeks_to_months();
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.

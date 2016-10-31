@@ -22,12 +22,15 @@ export class ClockBoardComponent implements OnInit {
   @Input() klassTimeEnd:string;
 
   @Input() clockHeight:number=83;
+  @Input() clockWidth:number=300;
   @Input() simpleClockHeight:number=82;
   @Input() clockDigitalHeight:number=83;
 
   clockTimeBegin:ClockTime;
   clockTimeEnd:ClockTime;
   dcLeftMargin:number=10;
+
+  clockDigitalWidth:number=0;
 
   constructor(
     public imageService: ImageService
@@ -43,6 +46,7 @@ export class ClockBoardComponent implements OnInit {
 
     this.simpleClockHeight = this.clockHeight - 1;
     this.clockDigitalHeight = this.clockHeight;
+    this.clockDigitalWidth = this.clockWidth - Math.round(this.clockHeight/2);
   }
 
   getClockTime(time_hh_mm:string): any {

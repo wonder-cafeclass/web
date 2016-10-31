@@ -30,42 +30,31 @@
         <!-- Second Column -->
         <ul class="list-group col-md-6">
           
-          <li class="list-group-item col2nd">65,000원 / 4주</li>
-          
-          <!-- 
-          <li class="list-group-item" style="padding: 5px;">
-            image-grid의 hover시의 색상을 외부에서 제어할 수있어야 합니다.<br/>클릭시,링크가 있다면 해당 링크로 이동합니다. 혹은 다른 창으로 띄워줍니다.(선택사항)<br/>(완료/공유)7:40분도 허용. 퇴근 직장인을 위한 마케팅 목적.<br/>(완료/공유)오전 10:00부터 오후 00:00까지? >> 오전 10:00부터 정오(낮) 12:00까지?<br/>TEST - http://52.78.168.187/#/class-center/2<br/>TEST - http://52.78.168.187/#/class-center/5 PM07:30-PM09:00
+          <li class="list-group-item col2nd">
+          <!-- 65,000원 / 4주
+           -->
+            <pricetag-h [title]="pricePerWeekFormat"
+                        [price]="klass.price"
+                        [currency]="priceTagCurrency"
+                        [cageWidth]="300"
+                        [fontSize]="24"
+                        [color]="priceTagColor"></pricetag-h>
           </li>
-          -->
+          <!-- FILTERS -->
+          <li class="list-group-item col2nd">
+            <image-grid [imageTable]="selectileImageTable"
+                        [imageHeight]="selectileImageHeight"
+                        [imageWidth]="selectileImageWidth"></image-grid>
+          </li>
 
+          <!-- COURSE TIME -->
           <li class="list-group-item col2nd" style="height: 130px;">
-
-            <table class="table"> 
-              <tbody> 
-                <tr>
-                  <td class="td-layout" [style.width]="selectileCageWidth + 'px'">
-                    <image-grid [imageTable]="selectileImageTable"
-                                [imageHeight]="selectileImageHeight"
-                                [imageWidth]="selectileImageWidth"></image-grid>
-
-                  </td> 
-                  <td class="td-layout">
-                    <!-- 
-                    1. 수업은 최소 1시간부터 시작
-                    2. 그 다음부터는 30분 단위
-                    3. 7:40분도 허용. 퇴근 직장인을 위한 마케팅 목적.
-                    -->
-                    <clock-board  #clockboard 
-                                  [clockHeight]=120
-                                  [klassTimeBegin]="klassTimeBegin" 
-                                  [klassTimeEnd]="klassTimeEnd"></clock-board>
-                                      
-                  </td> 
-                </tr>
-              </tbody> 
-            </table>
-
-          </li>    
+            <clock-board  #clockboard 
+                          [clockHeight]=120
+                          [clockWidth]=300
+                          [klassTimeBegin]="klassTimeBegin" 
+                          [klassTimeEnd]="klassTimeEnd"></clock-board>
+          </li>
 
           <li class="list-group-item col2nd">
 

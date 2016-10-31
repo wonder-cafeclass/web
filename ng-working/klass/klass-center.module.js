@@ -26,6 +26,7 @@ var clock_component_1 = require('../widget/clock/clock.component');
 var calendar_component_1 = require('../widget/calendar/calendar.component');
 var mini_calendar_component_1 = require('../widget/calendar/mini-calendar.component');
 var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
+var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
 var checkbox_linear_component_1 = require('../widget/checkbox/checkbox-linear.component');
 var input_view_component_1 = require('../widget/input-view/input-view.component');
@@ -53,6 +54,7 @@ var KlassCenterModule = (function () {
                 calendar_component_1.CalendarComponent,
                 mini_calendar_component_1.MiniCalendarComponent,
                 pricetag_component_1.PriceTagComponent,
+                pricetag_h_component_1.PriceTagHComponent,
                 image_grid_component_1.ImageGridComponent,
                 checkbox_linear_component_1.CheckboxLinearComponent,
                 input_view_component_1.InputViewComponent,

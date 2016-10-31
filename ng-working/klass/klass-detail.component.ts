@@ -4,6 +4,7 @@ import { Component, OnInit, HostBinding,
 import { Router, ActivatedRoute }  from '@angular/router';
 
 import { Klass }                   from './model/klass';
+import { KlassPrice }              from './model/klass-price';
 import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 
@@ -41,6 +42,7 @@ export class KlassDetailComponent implements OnInit {
   priceTagColor:string="#e85c41";
   priceTagWidth:number=105;
   priceTagCageWidth:number=105;
+  pricePerWeekFormat:string="주";
 
   selectileImageTable:string[][];
   selectileImageHeight:number=60;
@@ -106,20 +108,17 @@ export class KlassDetailComponent implements OnInit {
         [
           this.klass.level_img_url, 
           this.klass.venue_subway_station_img_url,
-          this.klass.venue_cafe_logo_img_url
-        ],
-        [
+          this.klass.venue_cafe_logo_img_url,
           this.klass.days_img_url,
           this.klass.time_begin_img_url,
-          null
         ]
-      ];
+      ];      
       let fieldCntSelectile = this.selectileImageTable[0].length;
       this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
 
       // wonder.jung
       let fieldCntCalMonthly = this.klassCalendarTableMonthly.length;
-      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth) + 5;
+      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth);
 
       this.bannerImageTable =
       [
@@ -130,6 +129,17 @@ export class KlassDetailComponent implements OnInit {
           this.imageService.get(this.imageService.noticeHelpUrl)
         ]
       ];
+
+      this.pricePerWeekFormat = this.klass.week_min + this.pricePerWeekFormat;
+
+      // 최대수강신청기간
+      this.checkboxOptionListCourseDuration = [
+        new CheckboxOption("4주","4",true),
+        new CheckboxOption("8주","8",false),
+        new CheckboxOption("12주","12",false)
+      ];
+
+
       
     });
 
@@ -145,13 +155,6 @@ export class KlassDetailComponent implements OnInit {
         }
       }
     );
-
-    // 최대수강신청기간
-    this.checkboxOptionListCourseDuration = [
-      new CheckboxOption("4주","4",true),
-      new CheckboxOption("8주","8",false),
-      new CheckboxOption("12주","12",false)
-    ];
 
 
     
@@ -206,11 +209,27 @@ export class KlassDetailComponent implements OnInit {
     }
     this.checkboxOptionListCourseDurationMax = optionList;
 
-    let updownList = [
-      new InputViewUpdown("4주",12,"40000",12,"price","#f0f"),
-      new InputViewUpdown("8주",12,"80000",12,"price","#f0f"),
-      new InputViewUpdown("12주",12,"120000",12,"price","#f0f")
-    ];
+
+    let updownList = [];
+    for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
+
+      let klassPrice:KlassPrice = this.klass.klass_price_list[i];
+
+      let updown = 
+      new InputViewUpdown(
+        klassPrice.weeks + "주",
+        12,
+        ""+klassPrice.discount,
+        12,
+        "price",
+        "#f0f"
+      );
+
+      updownList.push(updown);
+    }
+
+    console.log("TEST / updownList : ",updownList);
+
     this.klassPriceList = updownList;
   }
 

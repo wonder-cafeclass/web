@@ -20,6 +20,7 @@ import { ClockComponent }            from '../widget/clock/clock.component';
 import { CalendarComponent }         from '../widget/calendar/calendar.component';
 import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
 import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
+import { PriceTagHComponent }         from '../widget/pricetag/pricetag-h.component';
 import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
 import { CheckboxLinearComponent }   from '../widget/checkbox/checkbox-linear.component';
 import { InputViewComponent }        from '../widget/input-view/input-view.component';
@@ -44,6 +45,7 @@ import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updow
     CalendarComponent,
     MiniCalendarComponent,
     PriceTagComponent,
+    PriceTagHComponent,
     ImageGridComponent,
     CheckboxLinearComponent,
     InputViewComponent,

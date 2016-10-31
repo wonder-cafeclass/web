@@ -1,4 +1,5 @@
 import { Calendar }                from '../../widget/calendar/model/calendar';
+import { KlassPrice }              from './klass-price';
 
 export class Klass {
     public id: number;
@@ -33,6 +34,10 @@ export class Klass {
     public search_tag: string;
     public price: number;
     public price_list: string[];
+    public klass_price_list: KlassPrice[];
+    public price_list_width_discount: number[];
+    public $discount:string;
+    public $discount_arr:number[];
     public price_with_format: string;
     public class_status: string;
     public enrollment_interval_week:number;
