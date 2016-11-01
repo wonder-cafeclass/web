@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/my-event.service');
+var my_event_1 = require('../util/model/my-event');
 var dialog_service_1 = require('../widget/dialog.service');
 var auth_service_1 = require('../auth.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
@@ -108,7 +109,27 @@ var KlassDetailComponent = (function () {
         var updownList = [];
         for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
             var klassPrice = this.klass.klass_price_list[i];
-            var updown = new input_view_updown_1.InputViewUpdown(klassPrice.weeks + "주", 12, "" + klassPrice.discount, 12, "price", "#f0f");
+            var updown = new input_view_updown_1.InputViewUpdown(
+            // public myEvent:MyEvent
+            new my_event_1.MyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE_KLASS_ENROLMENT_WEEKS, 
+            // public title:string
+            klassPrice.weeks + "주", 
+            // public key:string
+            "week_max", 
+            // public value:string
+            "4", 
+            // public metaObj:any
+            this.klass), 
+            // public fontSizeTitle:number
+            12, 
+            // public fontSizeText:number
+            12, 
+            // public type:string
+            "price", 
+            // public color:string
+            "#f0f");
             updownList.push(updown);
         }
         this.klassPriceList = updownList;
@@ -151,9 +172,56 @@ var KlassDetailComponent = (function () {
         event.stopPropagation();
         console.log("onClickYellowID / klass ::: ", klass);
     };
-    KlassDetailComponent.prototype.onChangedFromInputView = function (data) {
-        console.log("onChangedFromInputView / data :: ", data);
-        // 전파 받은 상태를 관리, 다른 체크 박스이 상태도제어할 수 있어야 한다.
+    KlassDetailComponent.prototype.onChangedFromInputView = function (myEvent) {
+        var eventName = myEvent.eventName;
+        var myEventService = this.myEventService;
+        if (this.myEventService.is_it(eventName, myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
+            // '수강신청일'이 변경되었습니다.
+            // 1. 표시된 달력의 수강시작일 표시가 변경된 데이터에 맞게 표시되어야 합니다.
+            var interval = +myEvent.value;
+            var cloneTableGroup = this.klassCalendarTableMonthly;
+            for (var i = 0; i < cloneTableGroup.length; ++i) {
+                // 한달의 4개 이상의 수업이 있어야 4주마다 참여할 수 있음.
+                // 한달의 2개 이상의 수업이 있어야 2주마다 참여할 수 있음.
+                var table = cloneTableGroup[i];
+                var isFirstClass = false;
+                for (var j = 0; j < table.length; ++j) {
+                    var row = table[j];
+                    for (var k = 0; k < row.length; ++k) {
+                        var field = row[k];
+                        if (null == field) {
+                            continue;
+                        }
+                        if (!field.hasKlass) {
+                            // 수업이 없는 날은 제외
+                            continue;
+                        }
+                        if (field.isExpired) {
+                            // 지난 날은 제외
+                            continue;
+                        }
+                        // 수업 시작은 모두 아닌 것으로 초기화.
+                        field.isEnrollment = false;
+                        // 매주 수강이 가능한 경우의 날짜들만 필터링.
+                        if (4 === interval && field.isEnrollment4weeks) {
+                            // 4주마다 새로 강의 참여가 가능.
+                            // 매월 첫번째 강의 날에만 참여할 수 있음.
+                            field.isEnrollment = true;
+                        }
+                        else if (2 === interval && field.isEnrollment2weeks) {
+                            // 2주마다 새로 강의 참여가 가능.
+                            // 매월 첫번째,세번째 강의 날에만 참여할 수 있음.
+                            field.isEnrollment = true;
+                        }
+                        else if (1 === interval && field.isEnrollmentWeek) {
+                            // 매주마다 새로 강의 참여가 가능.
+                            // 모든 주에 신청이 가능.
+                            field.isEnrollment = true;
+                        } // end if
+                    } // end for
+                } // end for
+            } // end for
+        }
     };
     KlassDetailComponent = __decorate([
         core_1.Component({

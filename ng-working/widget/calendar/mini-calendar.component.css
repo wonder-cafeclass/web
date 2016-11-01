@@ -47,7 +47,7 @@
 
 }
 .cal-expired {
-    font-weight: bolder;
+    font-weight: lighter;
     color: #fff;
     background-color: #c9c9c9;
 }
@@ -63,6 +63,11 @@
     background-color: #e85c41;
 }
 .cal-date.hasClass.clickable:hover {
+    font-weight: bolder;
+    color: #e85c41;
+    background-color: #FFD700;
+}
+.cal-date.hasClass.focus {
     font-weight: bolder;
     color: #e85c41;
     background-color: #FFD700;

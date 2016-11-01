@@ -5,6 +5,7 @@ import {
   Output, 
   EventEmitter }                   from '@angular/core';
 import { InputViewUpdown }         from './model/input-view-updown';
+import { MyEvent }                  from '../../util/model/my-event';
 
 /*
 *
@@ -30,11 +31,8 @@ export class InputViewHListComponent implements OnInit {
     // Do nothing.
   }
 
-  onChangedFromChild(data) :void{
-
-    console.log("InputViewHListComponent / onChangedFromChild / data : ",data);
-
-    this.emitter.emit(data);
+  onChangedFromChild(myEvent:MyEvent) :void{
+    this.emitter.emit(myEvent);
   }
 
 }

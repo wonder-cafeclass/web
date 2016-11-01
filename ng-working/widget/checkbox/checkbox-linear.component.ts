@@ -25,10 +25,10 @@ export class CheckboxLinearComponent implements OnInit {
   }
 
   // TODO - even dispatch!
-  onChange(event, option) :void {
+  onChange(event, myEvent:MyEvent) :void {
 
     event.stopPropagation();
-    this.emitter.emit(option);
+    this.emitter.emit(myEvent);
 
   }
 

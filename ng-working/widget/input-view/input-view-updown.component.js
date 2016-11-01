@@ -17,10 +17,10 @@ var InputViewUpdownComponent = (function () {
     InputViewUpdownComponent.prototype.ngOnInit = function () {
         // Do nothing.
     };
-    InputViewUpdownComponent.prototype.onChange = function (event, value) {
+    InputViewUpdownComponent.prototype.onChange = function (event, value, myEvent) {
         event.stopPropagation();
-        // 
-        this.emitter.emit(value);
+        myEvent.valueNext = value;
+        this.emitter.emit(myEvent);
     };
     __decorate([
         core_1.Input(), 

@@ -6,9 +6,14 @@ class KlassCalendar {
 	public $month;
 	public $date; // "21" of the "21"st February 2011
 	public $day;  // Monday, Tuesday, ...
-	public $hasKlass=false;
-	public $isEnrollment=false; // 수강 등록이 가능한지 알려주는 플래그.
-	public $isExpired=false;
+
+	public $hasKlass=false; 				// 해당 날짜에 강의가 있는지 알려주는 플래그.
+	public $isExpired=false; 				// 지난 날짜인지 알려주는 플래그.
+
+	public $isEnrollment=false; 			// 강의 참여가 가능한지 알려주는 플래그.
+	public $isEnrollmentWeek=false; 		// 매주마다 강의 참여가 가능한지 알려주는 플래그.
+	public $isEnrollment2weeks=false; 		// 2주마다 강의 참여가 가능한지 알려주는 플래그.
+	public $isEnrollment4weeks=false; 		// 4주마다 강의 참여가 가능한지 알려주는 플래그.
 
 	public $isFirstDayOfWeek=false;
 	public $isLastDayOfWeek=false;

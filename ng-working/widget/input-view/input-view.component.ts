@@ -7,6 +7,7 @@ import {
 import { CheckboxLinearComponent }     from './../checkbox/checkbox-linear.component';
 import { CheckboxOption }              from './../checkbox/model/checkbox-option';
 import { InputViewUpdown }             from './model/input-view-updown';
+import { MyEvent }                     from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
@@ -33,15 +34,10 @@ export class InputViewComponent implements OnInit {
 
   ngOnInit(): void {
     // Do nothing.
-
-    // this.onVoted.emit(agreed);
   }
 
-  onChangedFromChild(data) :void{
-
-    console.log("InputViewComponent / onChangedFromChild / data : ",data);
-
-    this.emitter.emit(data);
+  onChangedFromChild(myEvent:MyEvent) :void{
+    console.log("InputViewComponent / onChangedFromChild / myEvent : ",myEvent);
+    this.emitter.emit(myEvent);
   }
-
 }

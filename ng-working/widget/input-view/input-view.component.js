@@ -20,11 +20,10 @@ var InputViewComponent = (function () {
     }
     InputViewComponent.prototype.ngOnInit = function () {
         // Do nothing.
-        // this.onVoted.emit(agreed);
     };
-    InputViewComponent.prototype.onChangedFromChild = function (data) {
-        console.log("InputViewComponent / onChangedFromChild / data : ", data);
-        this.emitter.emit(data);
+    InputViewComponent.prototype.onChangedFromChild = function (myEvent) {
+        console.log("InputViewComponent / onChangedFromChild / myEvent : ", myEvent);
+        this.emitter.emit(myEvent);
     };
     __decorate([
         core_1.Input(), 

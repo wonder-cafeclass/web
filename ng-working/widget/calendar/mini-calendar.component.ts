@@ -25,19 +25,23 @@ export class MiniCalendarComponent implements OnInit {
 			this.calWidth = this.calWidthMin;
 		}
 
-		for (var i = 0; i < this.calendarTable.length; ++i) {
-			let row = this.calendarTable[i];
-			for (var j = 0; j < row.length; ++j) {
-				let ct:Calendar = row[j];
+		// 몇 월인지 가져오기.
+		let ct:Calendar = this.calendarTable[(this.calendarTable.length - 1)][0];
+		if(null != ct && (0 < ct.month)){
+			this.monthBegin = +ct.month;
+		}
+	}
 
-				if(null != ct && (0 < ct.month)){
-					this.monthBegin = +ct.month;
-					break;
-				}
-			}
+	onMouseOverKlassDate(event, field:Calendar): void {
+		event.stopPropagation();
+
+		if(!field.isEnrollment) {
+			return;
 		}
 
+		console.log("onMouseOverKlassDate / 001 / field : ",field);
+		console.log("onMouseOverKlassDate / 001 / calendarTable : ",this.calendarTable);
 
-
+		// 수강신청을 할 경우, 
 	}
 }

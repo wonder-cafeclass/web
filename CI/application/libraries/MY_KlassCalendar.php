@@ -486,14 +486,23 @@ class MY_KlassCalendar {
         $klass_monthly_list_group = $klass_monthly_list_group_next;
 
         // 해당 날짜에 수업이 있다면, 수강신청이 가능한지 확인해서 플래그 값을 업데이트 해줍니다.
+        // 매주/2주/4주의 플래그값을 모두 검사, 등록합니다.
+        // wonder.jung
         $enrollment_interval_week = intval($klass_course->enrollment_interval_week);
+        $enrollment_week = 1;
+        $enrollment_2weeks = 2;
+        $enrollment_4weeks = 4;
         for ($i=0; $i < count($klass_monthly_list_group); $i++)
         {
             $klass_weekly_list = $klass_monthly_list_group[$i];
             $klass_weekly_cnt = count($klass_weekly_list);
 
-            $enrollment_cnt = 0;
-            $next_enrollment_interval_weeks = 0;
+            $enrollment_cnt_2weeks = 0;
+            $next_interval_2weeks = 0;
+
+            $enrollment_cnt_4weeks = 0;
+            $next_interval_4weeks = 0;
+
             for ($j=0; $j < count($klass_weekly_list); $j++)
             {
 
@@ -509,26 +518,75 @@ class MY_KlassCalendar {
                     {
                         continue;   
                     }
-                    if(0 < $enrollment_cnt) 
+
+                    // wonder.jung
+                    // 1. 매주 강의 참여
+                    $klassCalendar->isEnrollmentWeek = true; 
+                    if($enrollment_week === $enrollment_interval_week)
                     {
-                        if($next_enrollment_interval_weeks < $enrollment_interval_week)
+                        $klassCalendar->isEnrollment = true; 
+                    }
+
+                    // 2. 2주마다 강의 참여
+                    if(0 < $enrollment_cnt_2weeks) 
+                    {
+                        if($next_interval_2weeks < $enrollment_2weeks)
                         {
                             // 다음 수업 등록일까지 기다려야 함.
-                            $next_enrollment_interval_weeks++;
-                            continue;
+                            $next_interval_2weeks++;
                         }
                         else
                         {
                             // 다음 수업 등록일이 되었습니다.
-                            $enrollment_cnt++;
-                            $next_enrollment_interval_weeks = 0;  
+                            $enrollment_cnt_2weeks++;
+                            $next_interval_2weeks = 0;  
+                            $klassCalendar->isEnrollment2weeks = true; 
+                            if($enrollment_2weeks === $enrollment_interval_week)
+                            {
+                                $klassCalendar->isEnrollment = true; 
+                            }
+                        }
+                    } else {
+                        // 첫번째 신청 등록일입니다.
+                        $enrollment_cnt_2weeks++;
+                        $next_interval_2weeks++;
+                        $klassCalendar->isEnrollment2weeks = true;
+                        if($enrollment_2weeks === $enrollment_interval_week)
+                        {
                             $klassCalendar->isEnrollment = true; 
                         }
                     }
-                    // 첫번째 신청 등록일입니다.
-                    $enrollment_cnt++;
-                    $next_enrollment_interval_weeks++;
-                    $klassCalendar->isEnrollment = true;
+
+                    // 3. 4주마다 강의 참여
+                    if(0 < $enrollment_cnt_4weeks) 
+                    {
+                        if($next_interval_4weeks < $enrollment_4weeks)
+                        {
+                            // 다음 수업 등록일까지 기다려야 함.
+                            $next_interval_4weeks++;
+                        }
+                        else
+                        {
+                            // 다음 수업 등록일이 되었습니다.
+                            $enrollment_cnt_4weeks++;
+                            $next_interval_4weeks = 0;  
+                            $klassCalendar->isEnrollment4weeks = true; 
+                            if($enrollment_4weeks === $enrollment_interval_week)
+                            {
+                                $klassCalendar->isEnrollment = true; 
+                            }
+                        }
+                    } else {
+                        // 첫번째 신청 등록일입니다.
+                        $enrollment_cnt_4weeks++;
+                        $next_interval_4weeks++;
+                        $klassCalendar->isEnrollment4weeks = true;
+                        if($enrollment_4weeks === $enrollment_interval_week)
+                        {
+                            $klassCalendar->isEnrollment = true; 
+                        }
+                    }
+
                 } // end for
             } // end for
         } // end for

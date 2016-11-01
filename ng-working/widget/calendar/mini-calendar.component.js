@@ -19,16 +19,20 @@ var MiniCalendarComponent = (function () {
         if (this.calWidth < this.calWidthMin) {
             this.calWidth = this.calWidthMin;
         }
-        for (var i = 0; i < this.calendarTable.length; ++i) {
-            var row = this.calendarTable[i];
-            for (var j = 0; j < row.length; ++j) {
-                var ct = row[j];
-                if (null != ct && (0 < ct.month)) {
-                    this.monthBegin = +ct.month;
-                    break;
-                }
-            }
+        // 몇 월인지 가져오기.
+        var ct = this.calendarTable[(this.calendarTable.length - 1)][0];
+        if (null != ct && (0 < ct.month)) {
+            this.monthBegin = +ct.month;
         }
+    };
+    MiniCalendarComponent.prototype.onMouseOverKlassDate = function (event, field) {
+        event.stopPropagation();
+        if (!field.isEnrollment) {
+            return;
+        }
+        console.log("onMouseOverKlassDate / 001 / field : ", field);
+        console.log("onMouseOverKlassDate / 001 / calendarTable : ", this.calendarTable);
+        // 수강신청을 할 경우, 
     };
     __decorate([
         core_1.Input(), 

@@ -4,7 +4,8 @@ import {
   Input, 
   Output, 
   EventEmitter }                    from '@angular/core';
-import { InputViewUpdown } 			from './model/input-view-updown';
+import { InputViewUpdown } 			    from './model/input-view-updown';
+import { MyEvent }                  from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
@@ -23,12 +24,12 @@ export class InputViewUpdownComponent implements OnInit {
     // Do nothing.
   }
 
-  onChange(event, value) :void {
+  onChange(event, value:string, myEvent:MyEvent) :void {
     event.stopPropagation();
 
-    // 
+    myEvent.valueNext = value;
 
-    this.emitter.emit(value);
+    this.emitter.emit(myEvent);
   }
 
 }

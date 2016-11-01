@@ -17,9 +17,9 @@ var CheckboxLinearComponent = (function () {
         // Do nothing.
     };
     // TODO - even dispatch!
-    CheckboxLinearComponent.prototype.onChange = function (event, option) {
+    CheckboxLinearComponent.prototype.onChange = function (event, myEvent) {
         event.stopPropagation();
-        this.emitter.emit(option);
+        this.emitter.emit(myEvent);
     };
     __decorate([
         core_1.Input(), 

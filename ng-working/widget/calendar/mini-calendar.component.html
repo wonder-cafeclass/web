@@ -58,6 +58,8 @@
 									*ngIf="field.hasKlass && !field.isExpired"
 									[class.clickable]="field.isEnrollment"
 									[class.unclickable]="!field.isEnrollment"
+									[class.focus]="field.isFocus"
+									(mouseover)="onMouseOverKlassDate($event, field)"
 									class="cal-date hasClass">
 									{{field.date}}
 							</div>

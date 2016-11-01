@@ -22,9 +22,8 @@ var InputViewHListComponent = (function () {
     InputViewHListComponent.prototype.ngOnInit = function () {
         // Do nothing.
     };
-    InputViewHListComponent.prototype.onChangedFromChild = function (data) {
-        console.log("InputViewHListComponent / onChangedFromChild / data : ", data);
-        this.emitter.emit(data);
+    InputViewHListComponent.prototype.onChangedFromChild = function (myEvent) {
+        this.emitter.emit(myEvent);
     };
     __decorate([
         core_1.Input(), 

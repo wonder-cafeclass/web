@@ -1,4 +1,7 @@
 export class MyEvent {
+
+	public valueNext:string;
+
 	constructor(
 	    public eventName:string,
 	    public title:string,

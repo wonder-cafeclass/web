@@ -1,8 +1,9 @@
+import { MyEvent } from '../../../util/model/my-event';
+
 export class InputViewUpdown {
 	constructor(
-		public title:string,
+		public myEvent:MyEvent,
 		public fontSizeTitle:number,
-	    public text:string,
 	    public fontSizeText:number,
 	    public type:string,
 	    public color:string

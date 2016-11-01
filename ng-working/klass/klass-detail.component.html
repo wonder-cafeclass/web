@@ -31,8 +31,6 @@
         <ul class="list-group col-md-6">
           
           <li class="list-group-item col2nd">
-          <!-- 65,000원 / 4주
-           -->
             <pricetag-h [title]="pricePerWeekFormat"
                         [price]="klass.price"
                         [currency]="priceTagCurrency"
@@ -88,7 +86,7 @@
               <input-view   [title]="'수강신청일'"
                             [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
                             [checkboxOptionList]="checkboxOptionListEnrollment"
-                            (emitter)="onChangedFromInputView($event)"></input-view>
+                            (emitter)="onChangedFromInputView($event, klassMiniCalendar)"></input-view>
 
           </li>
           <!-- 2. 수업 수강 최소 기간 -->
