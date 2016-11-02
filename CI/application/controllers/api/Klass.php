@@ -887,6 +887,7 @@ class Klass extends REST_Controller implements MY_Class{
             // 추가할 정보들을 넣는다.
             $row->time_begin_img_url($const_map, $this->my_path);
             $row->level_img_url($const_map, $this->my_path);
+            $row->set_days_list($const_map);
             $row->days_img_url($const_map, $this->my_path);
             $row->venue_subway_station_img_url($const_map, $this->my_path);
             $row->venue_cafe_logo_img_url($const_map, $this->my_path);

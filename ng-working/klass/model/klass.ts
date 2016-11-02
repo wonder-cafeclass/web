@@ -21,6 +21,7 @@ export class Klass {
     public month_min: number;
     public month_max: number;
     public days: string;
+    public days_list: string[];
     public days_eng: string;
     public days_kor: string;
     public days_img_url: string;

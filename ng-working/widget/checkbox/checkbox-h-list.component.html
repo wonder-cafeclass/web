@@ -1,0 +1,31 @@
+<ul class="list-group updown" [style.width]="cageWidth + 'px'">
+	
+	<!-- List Title -->
+	<li *ngIf="listTitle" 
+		class="list-group-item updown head" 
+		[style.font-size]="listTitleFontSize + 'px'">
+		<img *ngIf="topLeftImageUrl" class="cornerstone" src={{topLeftImageUrl}}>
+		{{listTitle}}
+		</li>
+
+	<!-- List Options -->
+	<li 	*ngFor="let option of optionList" 
+			class="list-group-item updown tail">
+
+		<div class="form-group" style="margin-bottom:0px;">
+			<div class="checkbox" style="margin:5px;">
+
+				<!-- <label class="radio-inline"> -->
+				<input  type="checkbox" 
+				      name="inlineRadioOptions" 
+				      id="inlineRadio1" 
+				      value={{option.myEvent.value}} 
+				      [checked]="option.isFocus"
+				      (change)="onChange($event, option.myEvent)">{{option.myEvent.title}}
+				<!-- </label> -->
+
+			</div>
+		</div>
+
+	</li>
+</ul>

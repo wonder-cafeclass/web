@@ -10,7 +10,10 @@ export class PriceTagHComponent implements OnInit {
 
   @Input() title:string;
   @Input() price:number;
-  @Input() fontSize:number=12;
+  @Input() fontSizeTitle:number=12;
+  @Input() paddingTopTitle:number=10;
+  @Input() fontSizePrice:number=12;
+  @Input() paddingTopPrice:number=10;
   @Input() cageWidth:number=150;
   @Input() currency:string;
   @Input() color:string;

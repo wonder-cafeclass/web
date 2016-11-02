@@ -9,66 +9,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var PriceTagHComponent = (function () {
-    function PriceTagHComponent() {
+var InputViewTableComponent = (function () {
+    function InputViewTableComponent() {
         this.fontSizeTitle = 12;
         this.paddingTopTitle = 10;
-        this.fontSizePrice = 12;
-        this.paddingTopPrice = 10;
         this.cageWidth = 150;
     }
-    PriceTagHComponent.prototype.ngOnInit = function () {
-        this.priceWithFormat = this.numberWithCommas(this.price);
-    };
-    PriceTagHComponent.prototype.numberWithCommas = function (x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    InputViewTableComponent.prototype.ngOnInit = function () {
+        // Do something...
     };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], PriceTagHComponent.prototype, "title", void 0);
+    ], InputViewTableComponent.prototype, "tableTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "price", void 0);
+    ], InputViewTableComponent.prototype, "fontSizeTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "fontSizeTitle", void 0);
+    ], InputViewTableComponent.prototype, "paddingTopTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "paddingTopTitle", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "fontSizePrice", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "paddingTopPrice", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "cageWidth", void 0);
+    ], InputViewTableComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], PriceTagHComponent.prototype, "currency", void 0);
+    ], InputViewTableComponent.prototype, "topLeftImageUrl", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], PriceTagHComponent.prototype, "color", void 0);
-    PriceTagHComponent = __decorate([
+    ], InputViewTableComponent.prototype, "color", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], InputViewTableComponent.prototype, "chekcboxOptionList", void 0);
+    InputViewTableComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'pricetag-h',
-            templateUrl: 'pricetag-h.component.html',
-            styleUrls: ['pricetag-h.component.css']
+            selector: 'input-view-table',
+            templateUrl: 'input-view-table.component.html',
+            styleUrls: ['input-view-table.component.css']
         }), 
         __metadata('design:paramtypes', [])
-    ], PriceTagHComponent);
-    return PriceTagHComponent;
+    ], InputViewTableComponent);
+    return InputViewTableComponent;
 }());
-exports.PriceTagHComponent = PriceTagHComponent;
-//# sourceMappingURL=pricetag-h.component.js.map
+exports.InputViewTableComponent = InputViewTableComponent;
+//# sourceMappingURL=input-view-table.component.js.map

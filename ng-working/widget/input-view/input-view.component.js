@@ -40,7 +40,11 @@ var InputViewComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
-    ], InputViewComponent.prototype, "checkboxOptionList", void 0);
+    ], InputViewComponent.prototype, "radiobtnOptionList", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], InputViewComponent.prototype, "radiobtnOptionListTitleSize", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)

@@ -5,7 +5,8 @@ import { FormsModule }               from '@angular/forms';
 import { CommonModule }              from '@angular/common';
 
 import { KlassService }              from './klass.service';
-import { KlassCheckboxService }              from './service/klass-checkbox.service';
+import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
+import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
 import { KlassCenterComponent }      from './klass-center.component';
@@ -21,12 +22,15 @@ import { ClockComponent }            from '../widget/clock/clock.component';
 import { CalendarComponent }         from '../widget/calendar/calendar.component';
 import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
 import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
-import { PriceTagHComponent }         from '../widget/pricetag/pricetag-h.component';
+import { PriceTagHComponent }        from '../widget/pricetag/pricetag-h.component';
 import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
-import { CheckboxLinearComponent }   from '../widget/checkbox/checkbox-linear.component';
+import { RadioBtnLinearComponent }   from '../widget/radiobtn/radiobtn-linear.component';
 import { InputViewComponent }        from '../widget/input-view/input-view.component';
 import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
 import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
+import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
+import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
+import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 
 @NgModule({
   imports: [
@@ -48,14 +52,18 @@ import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updow
     PriceTagComponent,
     PriceTagHComponent,
     ImageGridComponent,
-    CheckboxLinearComponent,
+    RadioBtnLinearComponent,
     InputViewComponent,
     InputViewHListComponent,
-    InputViewUpdownComponent
+    InputViewTableComponent,
+    InputViewUpdownComponent,
+    RadioBtnHListComponent,
+    CheckBoxHListComponent
   ],
   providers: [
     KlassService,
-    KlassCheckboxService,
+    KlassRadioBtnService,
+    KlassCheckBoxService,
     KlassDetailResolve
   ]
 })

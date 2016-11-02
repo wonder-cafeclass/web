@@ -4,18 +4,18 @@ import {
   Input, 
   Output, 
   EventEmitter }                     from '@angular/core';
-import { CheckboxOption }            from './model/checkbox-option';
+import { RadioBtnOption }            from './model/radiobtn-option';
 import { MyEvent }                   from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
-  selector: 'checkbox-linear',
-  templateUrl: 'checkbox-linear.component.html',
-  styleUrls: [ 'checkbox-linear.component.css' ]
+  selector: 'radiobtn-linear',
+  templateUrl: 'radiobtn-linear.component.html',
+  styleUrls: [ 'radiobtn-linear.component.css' ]
 })
-export class CheckboxLinearComponent implements OnInit {
+export class RadioBtnLinearComponent implements OnInit {
 
-  @Input() optionList:CheckboxOption[];
+  @Input() optionList:RadioBtnOption[];
   @Output() emitter = new EventEmitter<any>();
 
   constructor() {}

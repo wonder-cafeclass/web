@@ -13,6 +13,7 @@ var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
 var klass_service_1 = require('./klass.service');
+var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
@@ -29,10 +30,13 @@ var mini_calendar_component_1 = require('../widget/calendar/mini-calendar.compon
 var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
-var checkbox_linear_component_1 = require('../widget/checkbox/checkbox-linear.component');
+var radiobtn_linear_component_1 = require('../widget/radiobtn/radiobtn-linear.component');
 var input_view_component_1 = require('../widget/input-view/input-view.component');
 var input_view_h_list_component_1 = require('../widget/input-view/input-view-h-list.component');
 var input_view_updown_component_1 = require('../widget/input-view/input-view-updown.component');
+var input_view_table_component_1 = require('../widget/input-view-table/input-view-table.component');
+var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
+var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -57,14 +61,18 @@ var KlassCenterModule = (function () {
                 pricetag_component_1.PriceTagComponent,
                 pricetag_h_component_1.PriceTagHComponent,
                 image_grid_component_1.ImageGridComponent,
-                checkbox_linear_component_1.CheckboxLinearComponent,
+                radiobtn_linear_component_1.RadioBtnLinearComponent,
                 input_view_component_1.InputViewComponent,
                 input_view_h_list_component_1.InputViewHListComponent,
-                input_view_updown_component_1.InputViewUpdownComponent
+                input_view_table_component_1.InputViewTableComponent,
+                input_view_updown_component_1.InputViewUpdownComponent,
+                radiobtn_h_list_component_1.RadioBtnHListComponent,
+                checkbox_h_list_component_1.CheckBoxHListComponent
             ],
             providers: [
                 klass_service_1.KlassService,
-                klass_checkbox_service_1.KlassCheckboxService,
+                klass_radiobtn_service_1.KlassRadioBtnService,
+                klass_checkbox_service_1.KlassCheckBoxService,
                 klass_detail_resolve_service_1.KlassDetailResolve
             ]
         }), 

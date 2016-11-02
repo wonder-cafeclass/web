@@ -4,8 +4,8 @@ import {
   Input, 
   Output, 
   EventEmitter }                       from '@angular/core';
-import { CheckboxLinearComponent }     from './../checkbox/checkbox-linear.component';
-import { CheckboxOption }              from './../checkbox/model/checkbox-option';
+import { RadioBtnLinearComponent }     from './../radiobtn/radiobtn-linear.component';
+import { RadioBtnOption }              from './../radiobtn/model/radiobtn-option';
 import { InputViewUpdown }             from './model/input-view-updown';
 import { MyEvent }                     from '../../util/model/my-event';
 
@@ -22,7 +22,9 @@ export class InputViewComponent implements OnInit {
   @Input() titleWidth:number=150;
 
   // 사용자가 선택할 수 있는 서브 컴포넌트들.
-  @Input() checkboxOptionList:CheckboxOption[];  
+  @Input() radiobtnOptionList:RadioBtnOption[];
+  @Input() radiobtnOptionListTitleSize:number;
+
   @Input() updownList:InputViewUpdown[]; 
 
   // 이벤트를 부모에게 전달

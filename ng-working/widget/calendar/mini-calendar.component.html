@@ -59,7 +59,8 @@
 									[class.clickable]="field.isEnrollment"
 									[class.unclickable]="!field.isEnrollment"
 									[class.focus]="field.isFocus"
-									(mouseover)="onMouseOverKlassDate($event, field)"
+									(mouseenter)="onMouseEnterKlassDate($event, field)"
+									(mouseleave)="onMouseLeaveKlassDate($event, field)"
 									class="cal-date hasClass">
 									{{field.date}}
 							</div>
@@ -84,3 +85,30 @@
 		</table> 
 	</div>	
 </div>
+
+<!-- // Sample
+<li class="list-group-item col2nd">
+
+<table class="table" style="margin-bottom: 0px; width:465px;">
+  <tbody> 
+    <tr>
+      <td *ngFor="let kCal of klassCalendarTableMonthly"
+          class="td-layout" 
+          style="width:150px;">
+        
+        <mini-calendar  #klassMiniCalendar
+                        [calendarTable]="kCal"
+                        [calWidth]="miniCalWidth"
+                        [dayBegin]="klassDayBegin"
+                        [dateBegin]="klassDateBegin"
+                        [weekMin]="klassWeekMin"
+                        [weekMax]="klassWeekMax"
+                        (emitter)="onChangedFromMiniCalendar($event)"></mini-calendar>
+
+      </td> 
+    </tr>
+  </tbody> 
+</table>
+
+</li>
+-->

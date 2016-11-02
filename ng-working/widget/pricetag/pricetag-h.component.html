@@ -1,8 +1,12 @@
 <table class="table round" [style.width]="cageWidth + 'px'"> 
   <tbody> 
     <tr>
-      <td class="td-layout title" [style.font-size]="fontSize + 'px'">{{title}}</td>
-      <td class="td-layout price" [style.font-size]="fontSize + 'px'">{{currency}} {{priceWithFormat}}</td> 
+      <td 	class="td-layout title" 
+      		[style.padding-top]="paddingTopTitle + 'px'"
+      		[style.font-size]="fontSizeTitle + 'px'">{{title}}</td>
+      <td 	class="td-layout price" 
+      		[style.padding-top]="paddingTopPrice + 'px'"
+      		[style.font-size]="fontSizePrice + 'px'">{{currency}} {{priceWithFormat}}</td> 
     </tr>
   </tbody> 
 </table>

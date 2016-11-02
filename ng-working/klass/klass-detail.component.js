@@ -15,16 +15,18 @@ var my_event_service_1 = require('../util/my-event.service');
 var my_event_1 = require('../util/model/my-event');
 var dialog_service_1 = require('../widget/dialog.service');
 var auth_service_1 = require('../auth.service');
+var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, imageService, dialogService, authService, myEventService, checkboxService) {
+    function KlassDetailComponent(route, router, imageService, dialogService, authService, myEventService, radiobtnService, checkboxService) {
         this.route = route;
         this.router = router;
         this.imageService = imageService;
         this.dialogService = dialogService;
         this.authService = authService;
         this.myEventService = myEventService;
+        this.radiobtnService = radiobtnService;
         this.checkboxService = checkboxService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
@@ -68,7 +70,6 @@ var KlassDetailComponent = (function () {
                 ];
             var fieldCntSelectile = _this.selectileImageTable[0].length;
             _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
-            // wonder.jung
             var fieldCntCalMonthly = _this.klassCalendarTableMonthly.length;
             _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth);
             _this.bannerImageTable =
@@ -82,8 +83,9 @@ var KlassDetailComponent = (function () {
                 ];
             _this.pricePerWeekFormat = _this.klass.week_min + _this.pricePerWeekFormat;
             // 유저 수강 기간
-            _this.checkboxOptionListCourseDuration =
-                _this.checkboxService.getKlassEnrolmentWeeks(_this.klass, 0);
+            _this.radiobtnOptionListCourseDuration =
+                _this.radiobtnService.getKlassEnrolmentWeeks(_this.klass, 0);
+            // 첫수업 날짜 가져오기
         });
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {
@@ -98,14 +100,8 @@ var KlassDetailComponent = (function () {
     KlassDetailComponent.prototype.initAdmin = function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
         // 수강신청 가능 기간
-        var optionList = this.checkboxService.getKlassEnrolmentInterval(this.klass, "" + this.klass.enrollment_interval_week);
-        this.checkboxOptionListEnrollment = optionList;
-        // 가장 짧은 수강 기간
-        optionList = this.checkboxService.getKlassWeeksMin(this.klass, "" + this.klass.week_min);
-        this.checkboxOptionListCourseDurationMin = optionList;
-        // 가장 긴 수강 기간
-        optionList = this.checkboxService.getKlassWeeksMax(this.klass, "" + this.klass.week_max);
-        this.checkboxOptionListCourseDurationMax = optionList;
+        var optionList = this.radiobtnService.getKlassEnrolmentInterval(this.klass, "" + this.klass.enrollment_interval_week);
+        this.radiobtnOptionListEnrollment = optionList;
         var updownList = [];
         for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
             var klassPrice = this.klass.klass_price_list[i];
@@ -119,7 +115,7 @@ var KlassDetailComponent = (function () {
             // public key:string
             "week_max", 
             // public value:string
-            "4", 
+            "" + klassPrice.discount, 
             // public metaObj:any
             this.klass), 
             // public fontSizeTitle:number
@@ -132,6 +128,11 @@ var KlassDetailComponent = (function () {
             "#f0f");
             updownList.push(updown);
         }
+        // 운영자 지정 - 수업 요일 
+        // days_list
+        // wonder.jung
+        this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
+        console.log("TEST / this.checkboxOptionListKlassDay : ", this.checkboxOptionListKlassDay);
         this.klassPriceList = updownList;
     };
     KlassDetailComponent.prototype.cancel = function () {
@@ -172,56 +173,29 @@ var KlassDetailComponent = (function () {
         event.stopPropagation();
         console.log("onClickYellowID / klass ::: ", klass);
     };
+    KlassDetailComponent.prototype.onChangedFromMiniCalendar = function (myEvent) {
+        var eventName = myEvent.eventName;
+        var myEventService = this.myEventService;
+        if (this.myEventService.is_it(eventName, myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
+            console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ", myEvent);
+        }
+        else if (this.myEventService.is_it(eventName, myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
+            console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ", myEvent);
+        }
+    };
     KlassDetailComponent.prototype.onChangedFromInputView = function (myEvent) {
         var eventName = myEvent.eventName;
         var myEventService = this.myEventService;
         if (this.myEventService.is_it(eventName, myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
             // '수강신청일'이 변경되었습니다.
-            // 1. 표시된 달력의 수강시작일 표시가 변경된 데이터에 맞게 표시되어야 합니다.
-            var interval = +myEvent.value;
-            var cloneTableGroup = this.klassCalendarTableMonthly;
-            for (var i = 0; i < cloneTableGroup.length; ++i) {
-                // 한달의 4개 이상의 수업이 있어야 4주마다 참여할 수 있음.
-                // 한달의 2개 이상의 수업이 있어야 2주마다 참여할 수 있음.
-                var table = cloneTableGroup[i];
-                var isFirstClass = false;
-                for (var j = 0; j < table.length; ++j) {
-                    var row = table[j];
-                    for (var k = 0; k < row.length; ++k) {
-                        var field = row[k];
-                        if (null == field) {
-                            continue;
-                        }
-                        if (!field.hasKlass) {
-                            // 수업이 없는 날은 제외
-                            continue;
-                        }
-                        if (field.isExpired) {
-                            // 지난 날은 제외
-                            continue;
-                        }
-                        // 수업 시작은 모두 아닌 것으로 초기화.
-                        field.isEnrollment = false;
-                        // 매주 수강이 가능한 경우의 날짜들만 필터링.
-                        if (4 === interval && field.isEnrollment4weeks) {
-                            // 4주마다 새로 강의 참여가 가능.
-                            // 매월 첫번째 강의 날에만 참여할 수 있음.
-                            field.isEnrollment = true;
-                        }
-                        else if (2 === interval && field.isEnrollment2weeks) {
-                            // 2주마다 새로 강의 참여가 가능.
-                            // 매월 첫번째,세번째 강의 날에만 참여할 수 있음.
-                            field.isEnrollment = true;
-                        }
-                        else if (1 === interval && field.isEnrollmentWeek) {
-                            // 매주마다 새로 강의 참여가 가능.
-                            // 모든 주에 신청이 가능.
-                            field.isEnrollment = true;
-                        } // end if
-                    } // end for
-                } // end for
-            } // end for
-        }
+            console.log("'수강신청일'이 변경되었습니다.");
+        } // end if
+    };
+    KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
+        var eventName = myEvent.eventName;
+        var myEventService = this.myEventService;
+        console.log("onChangedFromChild / eventName : ", eventName);
+        console.log("onChangedFromChild / myEvent : ", myEvent);
     };
     KlassDetailComponent = __decorate([
         core_1.Component({
@@ -229,7 +203,7 @@ var KlassDetailComponent = (function () {
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_event_service_1.MyEventService, klass_checkbox_service_1.KlassCheckboxService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_event_service_1.MyEventService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

@@ -1,10 +1,10 @@
 "use strict";
-var CheckboxOption = (function () {
-    function CheckboxOption(myEvent, isFocus) {
+var CheckBoxOption = (function () {
+    function CheckBoxOption(myEvent, isFocus) {
         this.myEvent = myEvent;
         this.isFocus = isFocus;
     }
-    return CheckboxOption;
+    return CheckBoxOption;
 }());
-exports.CheckboxOption = CheckboxOption;
+exports.CheckBoxOption = CheckBoxOption;
 //# sourceMappingURL=checkbox-option.js.map

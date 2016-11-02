@@ -45,6 +45,8 @@ class KlassCourse {
         public $month_max;
         // 수업요일
         public $days;
+        // 수업요일 리스트
+        public $days_list;
         // 수업요일 - ENG
         public $days_eng;
         // 수업요일 - KOR
@@ -233,6 +235,51 @@ class KlassCourse {
                         $this->level_img_url = $my_path->get($this->level_img_url);
                 }
         } 
+
+        public function set_days_list($const_map=null)
+        {
+                if(empty($this->days))
+                {
+                        return;
+                }
+                if(!isset($const_map)) 
+                {
+                        return;
+                }
+                if(!isset($const_map->{"class_days_list"})) 
+                {
+                        return;
+                }
+
+                $class_days = $this->days;
+                $class_days_list = $const_map->{"class_days_list"};
+
+                // "|"로 구분된 요일 정보를 분리해서 전달한다.
+                $days_list = explode("|", $class_days);
+
+                // 요일들의 유효성을 검사한다.
+                $class_day_map = array();
+                for ($i=0; $i < count($class_days_list); $i++) { 
+                        $class_day = $class_days_list[$i];
+                        $class_day_map[$class_day] = $class_day;
+                }
+                $is_valid = true;
+                for ($i=0; $i < count($class_days_list); $i++) {
+                        $class_day = $class_days_list[$i];
+                        if(!isset($class_day_map[$class_day]))
+                        {
+                                $is_valid = false;
+                        }
+                }
+                if(!$is_valid)
+                {
+                        return;
+                }
+
+                // 유효성 검증 완료! 데이터를 저장합니다.
+                $this->days_list = $days_list;
+
+        }
 
         public function days_img_url($const_map=null, $my_path=null)
         {

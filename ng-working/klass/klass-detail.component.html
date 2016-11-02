@@ -20,7 +20,7 @@
           
           </li>
 
-          <li class="list-group-item">아래 배너 이미지는 운영자가 임의로 추가/삭제가 가능합니다.<br/>업로드시 사이즈에 대한 규정이 필요합니다.</li>
+          <li class="list-group-item">아래 배너 이미지(링크지원안됨)는 운영자가 임의로 추가/삭제가 가능합니다.<br/>업로드시 사이즈에 대한 규정이 필요합니다.</li>
 
           <li class="list-group-item" style="padding:0px;">
               <image-grid [imageTable]="bannerImageTable"></image-grid>
@@ -35,7 +35,10 @@
                         [price]="klass.price"
                         [currency]="priceTagCurrency"
                         [cageWidth]="300"
-                        [fontSize]="24"
+                        [fontSizeTitle]="40"
+                        [paddingTopTitle]="5"
+                        [fontSizePrice]="25"
+                        [paddingTopPrice]="16"
                         [color]="priceTagColor"></pricetag-h>
           </li>
           <!-- FILTERS -->
@@ -46,98 +49,47 @@
           </li>
 
           <!-- COURSE TIME -->
-          <li class="list-group-item col2nd" style="height: 130px;">
+          <li class="list-group-item col2nd" style="height: 97px;">
             <clock-board  #clockboard 
-                          [clockHeight]=120
+                          [clockHeight]=86
                           [clockWidth]=300
                           [klassTimeBegin]="klassTimeBegin" 
                           [klassTimeEnd]="klassTimeEnd"></clock-board>
           </li>
 
-          <li class="list-group-item col2nd">
+          <!-- FIRST KLASS DATE -->
+          <li class="list-group-item col2nd">첫수업 : 서버에서 첫 수업날짜 계산해서 내려주기.</li>
 
-            <table class="table" style="margin-bottom: 0px; width:465px;">
-              <tbody> 
-                <tr>
-                  <td *ngFor="let kCal of klassCalendarTableMonthly"
-                      class="td-layout" 
-                      style="width:150px;">
-                    
-                    <mini-calendar  #klassMiniCalendar
-                                    [calendarTable]="kCal"
-                                    [calWidth]="miniCalWidth"
-                                    [dayBegin]="klassDayBegin"
-                                    [dateBegin]="klassDateBegin"
-                                    [weekMin]="klassWeekMin"
-                                    [weekMax]="klassWeekMax"></mini-calendar>
+          <!-- <li>사용자가 직접 textbox로 입력합니다.</li> -->
+          
 
-                  </td> 
-                </tr>
-              </tbody> 
-            </table>
-
-          </li>
 
           <!-- Admin Section - Init. -->
           <!-- 1. 수강 신청일(Admin) -->
           <li *ngIf="isAdmin===true" 
               class="list-group-item col2nd">
 
-              <input-view   [title]="'수강신청일'"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListEnrollment"
-                            (emitter)="onChangedFromInputView($event, klassMiniCalendar)"></input-view>
+              <radiobtn-h-list  [listTitle]="'수강신청일'"
+                                [listTitleFontSize]="16"
+                                [optionList]="radiobtnOptionListEnrollment"
+                                [cageWidth]="300"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
 
           </li>
-          <!-- 2. 수업 수강 최소 기간 -->
-          <li *ngIf="isAdmin===true"
-              class="list-group-item col2nd">
 
-              <input-view   [title]="'가장짧은수강기간'"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListCourseDurationMin"
-                            (emitter)="onChangedFromInputView($event)"></input-view>
-
-          </li>
-          <!-- 3. 수업 수강 최장 기간 -->
-          <li *ngIf="isAdmin===true"
-              class="list-group-item col2nd">
-
-              <input-view   [title]="'가장긴수강기간'"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            [checkboxOptionList]="checkboxOptionListCourseDurationMax"
-                            (emitter)="onChangedFromInputView($event)"></input-view>
-
-          </li>
-          <!-- 4. 수강기간별 할인 가격 / ex) '2000|3000|4000'-->
-          <li *ngIf="isAdmin===true"
-              class="list-group-item col2nd">
-              <input-view   [title]="'수강기간별 할인 가격'"
-                            [updownList]="klassPriceList"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"
-                            (emitter)="onChangedFromInputView($event)"></input-view>
-          </li>
           <!-- 5. 수업 시작일 -->
           <li *ngIf="isAdmin===true"
               class="list-group-item col2nd">
 
-              <input-view   [title]="'수업시작일 / 달력 달아주세요'"
-                            [titleImageUrl]="imageService.get(imageService.watchTowerUrl)"></input-view>
+            <checkbox-h-list  [listTitle]="'수업시작일'"
+                              [listTitleFontSize]="16"
+                              [optionList]="checkboxOptionListKlassDay"
+                              [cageWidth]="300"
+                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                              (emitter)="onChangedFromChild($event)"></checkbox-h-list>
 
           </li>
-          <!-- Admin Section - Done. -->
-
-          <!-- 1. 수강 신청기간 / TODO : 할인 가격이 있다면 우측에 노출됩니다. -->
-          <li class="list-group-item col2nd">
-                <input-view   [title]="'수강신청기간'"
-                              [checkboxOptionList]="checkboxOptionListCourseDuration"></input-view>
-          </li>
-          <!-- 2. 강의 시작날 / TODO : 운영에서 사용하는 시작일 달력을 재활용. -->
-          <li class="list-group-item col2nd">
-                <input-view   [title]="'강의시작날 / 운영에서 사용하는 시작일 달력을 재활용.'"></input-view>
-          </li>
-
-          <li class="list-group-item" style="padding: 5px;">59,000 / 최종 가격만 나옵니다. / 아래 바에는 수업 주 단위를 선택하는 콤보박스가 잇어야 합니다.</li>
 
           <li class="list-group-item" style="padding: 5px;">
             <!-- Refactor me! -->

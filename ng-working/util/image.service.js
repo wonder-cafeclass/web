@@ -19,6 +19,7 @@ var ImageService = (function () {
         this.noticeDrinksUrl = "assets/images/notice/drinks.png";
         this.cafeclassLogoUrl = "assets/images/cafeclass_logo_text_only.svg";
         this.watchTowerUrl = "assets/images/admin/watchtower.svg";
+        this.watchTowerWhiteUrl = "assets/images/admin/watchtower_white.svg";
         this.clock1hr00m00mUrl = "assets/images/clock/clock-1hr-00m-00m.svg";
         this.clock1hr00m30mUrl = "assets/images/clock/clock-1hr-00m-30m.svg";
         this.clock1hr30m00mUrl = "assets/images/clock/clock-1hr-30m-00m.svg";

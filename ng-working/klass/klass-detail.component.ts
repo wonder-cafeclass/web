@@ -12,9 +12,11 @@ import { MyEvent }                 from '../util/model/my-event';
 
 import { DialogService }           from '../widget/dialog.service';
 import { AuthService }             from '../auth.service';
-import { KlassCheckboxService }    from './service/klass-checkbox.service';
+import { KlassRadioBtnService }    from './service/klass-radiobtn.service';
+import { KlassCheckBoxService }    from './service/klass-checkbox.service';
 
-import { CheckboxOption }          from '../widget/checkbox/model/checkbox-option';
+import { RadioBtnOption }          from '../widget/radiobtn/model/radiobtn-option';
+import { CheckBoxOption }          from '../widget/checkbox/model/checkbox-option';
 import { InputViewUpdown }         from '../widget/input-view/model/input-view-updown';
 
 @Component({
@@ -61,12 +63,11 @@ export class KlassDetailComponent implements OnInit {
   isAdmin:boolean=false;
 
   watchTowerImgUrl:string;
-  checkboxOptionListCourseDuration:CheckboxOption[];
+  radiobtnOptionListCourseDuration:RadioBtnOption[];
 
   // Admin Section
-  checkboxOptionListEnrollment:CheckboxOption[];
-  checkboxOptionListCourseDurationMin:CheckboxOption[];
-  checkboxOptionListCourseDurationMax:CheckboxOption[];
+  radiobtnOptionListEnrollment:RadioBtnOption[];
+  checkboxOptionListKlassDay:CheckBoxOption[];
 
   klassPriceList:InputViewUpdown[];
 
@@ -77,7 +78,8 @@ export class KlassDetailComponent implements OnInit {
     public dialogService: DialogService,
     private authService: AuthService,
     private myEventService: MyEventService,
-    private checkboxService:KlassCheckboxService
+    private radiobtnService:KlassRadioBtnService,
+    private checkboxService:KlassCheckBoxService
   ) {}
 
   ngOnInit() {
@@ -117,7 +119,6 @@ export class KlassDetailComponent implements OnInit {
       let fieldCntSelectile = this.selectileImageTable[0].length;
       this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
 
-      // wonder.jung
       let fieldCntCalMonthly = this.klassCalendarTableMonthly.length;
       this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth);
 
@@ -134,8 +135,11 @@ export class KlassDetailComponent implements OnInit {
       this.pricePerWeekFormat = this.klass.week_min + this.pricePerWeekFormat;
 
       // 유저 수강 기간
-      this.checkboxOptionListCourseDuration =
-      this.checkboxService.getKlassEnrolmentWeeks(this.klass, 0);
+      this.radiobtnOptionListCourseDuration =
+      this.radiobtnService.getKlassEnrolmentWeeks(this.klass, 0);
+
+      // 첫수업 날짜 가져오기
+      
 
     });
 
@@ -163,17 +167,9 @@ export class KlassDetailComponent implements OnInit {
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
 
     // 수강신청 가능 기간
-    let optionList:CheckboxOption[] = 
-    this.checkboxService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
-    this.checkboxOptionListEnrollment = optionList;
-
-    // 가장 짧은 수강 기간
-    optionList = this.checkboxService.getKlassWeeksMin(this.klass, ""+this.klass.week_min);
-    this.checkboxOptionListCourseDurationMin = optionList;
-
-    // 가장 긴 수강 기간
-    optionList = this.checkboxService.getKlassWeeksMax(this.klass, ""+this.klass.week_max);
-    this.checkboxOptionListCourseDurationMax = optionList;
+    let optionList:RadioBtnOption[] = 
+    this.radiobtnService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
+    this.radiobtnOptionListEnrollment = optionList;
 
     let updownList = [];
     for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
@@ -191,7 +187,7 @@ export class KlassDetailComponent implements OnInit {
             // public key:string
             "week_max",
             // public value:string
-            "4",
+            "" + klassPrice.discount,
             // public metaObj:any
             this.klass
         ),
@@ -207,6 +203,13 @@ export class KlassDetailComponent implements OnInit {
 
       updownList.push(updown);
     }
+
+    // 운영자 지정 - 수업 요일 
+    // days_list
+    // wonder.jung
+    this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
+    console.log("TEST / this.checkboxOptionListKlassDay : ",this.checkboxOptionListKlassDay);
+
 
     this.klassPriceList = updownList;
   }
@@ -259,6 +262,19 @@ export class KlassDetailComponent implements OnInit {
     console.log("onClickYellowID / klass ::: ",klass);
   }
 
+  onChangedFromMiniCalendar(myEvent:MyEvent) {
+
+    let eventName:string = myEvent.eventName;
+    let myEventService:MyEventService = this.myEventService;
+
+    if(this.myEventService.is_it(eventName,myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
+      console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
+    } else if(this.myEventService.is_it(eventName,myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
+      console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
+    }
+
+  }
+
   onChangedFromInputView(myEvent:MyEvent) {
 
     let eventName:string = myEvent.eventName;
@@ -266,58 +282,17 @@ export class KlassDetailComponent implements OnInit {
 
     if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
       // '수강신청일'이 변경되었습니다.
-
-      // 1. 표시된 달력의 수강시작일 표시가 변경된 데이터에 맞게 표시되어야 합니다.
-      let interval:number = +myEvent.value;
-      let cloneTableGroup = this.klassCalendarTableMonthly;
-      for (var i = 0; i < cloneTableGroup.length; ++i) {
-
-        // 한달의 4개 이상의 수업이 있어야 4주마다 참여할 수 있음.
-        // 한달의 2개 이상의 수업이 있어야 2주마다 참여할 수 있음.
-        
-        let table = cloneTableGroup[i];
-        let isFirstClass:boolean=false;
-        for (var j = 0; j < table.length; ++j) {
-          let row = table[j];
-          for (var k = 0; k < row.length; ++k) {
-            let field = row[k];
-
-            if(null == field) {
-              continue;
-            }
-            if(!field.hasKlass) {
-              // 수업이 없는 날은 제외
-              continue;
-            }
-            if(field.isExpired) {
-              // 지난 날은 제외
-              continue;
-            }
-
-            // 수업 시작은 모두 아닌 것으로 초기화.
-            field.isEnrollment = false;
-
-            // 매주 수강이 가능한 경우의 날짜들만 필터링.
-            if(4 === interval && field.isEnrollment4weeks) {
-              // 4주마다 새로 강의 참여가 가능.
-              // 매월 첫번째 강의 날에만 참여할 수 있음.
-              field.isEnrollment = true;
-            } else if(2 === interval && field.isEnrollment2weeks) {
-              // 2주마다 새로 강의 참여가 가능.
-              // 매월 첫번째,세번째 강의 날에만 참여할 수 있음.
-              field.isEnrollment = true;
-            } else if(1 === interval && field.isEnrollmentWeek) {
-              // 매주마다 새로 강의 참여가 가능.
-              // 모든 주에 신청이 가능.
-              field.isEnrollment = true;
-            } // end if
-          } // end for
-        } // end for
-      } // end for
-    }
-
-    
-
+      console.log("'수강신청일'이 변경되었습니다.");
+    } // end if
   }
 
+  onChangedFromChild(myEvent:MyEvent) {
+
+    let eventName:string = myEvent.eventName;
+    let myEventService:MyEventService = this.myEventService;
+
+    console.log("onChangedFromChild / eventName : ",eventName);
+    console.log("onChangedFromChild / myEvent : ",myEvent);
+
+  }
 }

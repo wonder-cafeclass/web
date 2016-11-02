@@ -12,9 +12,17 @@
 
       <!-- CONTENT -->
       <!-- CHECK BOX -->
-      <td *ngIf="checkboxOptionList!=null" class="td-layout">
-        <checkbox-linear  [optionList]="checkboxOptionList"
-                          (emitter)="onChangedFromChild($event)"></checkbox-linear>
+      <td *ngIf="radiobtnOptionList!=null" class="td-layout">
+        <radiobtn-linear  [optionList]="radiobtnOptionList"
+                          (emitter)="onChangedFromChild($event)"></radiobtn-linear>
+        <!--
+        <radiobtn-h-list  [optionList]="radiobtnOptionList"
+                          [listTitle]="title"
+                          [listTitleFontSize]="radiobtnOptionListTitleSize"
+                          [cageWidth]="titleWidth"
+                          (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
+        -->
+
       </td>
       <!-- UPDOWN H LIST -->
       <td *ngIf="updownList!=null" class="td-layout">

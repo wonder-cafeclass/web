@@ -9,36 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var CheckboxLinearComponent = (function () {
-    function CheckboxLinearComponent() {
+var RadioBtnLinearComponent = (function () {
+    function RadioBtnLinearComponent() {
         this.emitter = new core_1.EventEmitter();
     }
-    CheckboxLinearComponent.prototype.ngOnInit = function () {
+    RadioBtnLinearComponent.prototype.ngOnInit = function () {
         // Do nothing.
     };
     // TODO - even dispatch!
-    CheckboxLinearComponent.prototype.onChange = function (event, myEvent) {
+    RadioBtnLinearComponent.prototype.onChange = function (event, myEvent) {
         event.stopPropagation();
         this.emitter.emit(myEvent);
     };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
-    ], CheckboxLinearComponent.prototype, "optionList", void 0);
+    ], RadioBtnLinearComponent.prototype, "optionList", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], CheckboxLinearComponent.prototype, "emitter", void 0);
-    CheckboxLinearComponent = __decorate([
+    ], RadioBtnLinearComponent.prototype, "emitter", void 0);
+    RadioBtnLinearComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'checkbox-linear',
-            templateUrl: 'checkbox-linear.component.html',
-            styleUrls: ['checkbox-linear.component.css']
+            selector: 'radiobtn-linear',
+            templateUrl: 'radiobtn-linear.component.html',
+            styleUrls: ['radiobtn-linear.component.css']
         }), 
         __metadata('design:paramtypes', [])
-    ], CheckboxLinearComponent);
-    return CheckboxLinearComponent;
+    ], RadioBtnLinearComponent);
+    return RadioBtnLinearComponent;
 }());
-exports.CheckboxLinearComponent = CheckboxLinearComponent;
-//# sourceMappingURL=checkbox-linear.component.js.map
+exports.RadioBtnLinearComponent = RadioBtnLinearComponent;
+//# sourceMappingURL=radiobtn-linear.component.js.map
