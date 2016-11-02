@@ -58,7 +58,16 @@
           </li>
 
           <!-- FIRST KLASS DATE -->
-          <li class="list-group-item col2nd">첫수업 : 서버에서 첫 수업날짜 계산해서 내려주기.</li>
+          <li *ngIf="firstClassDateFormatStr" class="list-group-item col2nd">
+            <butterfly  [title]="'첫 수업 날짜'"
+                        [fontSizeTitle]="18"
+                        [paddingTitle]="5"
+                        [text]="firstClassDateFormatStr"
+                        [fontSizeText]="18"
+                        [paddingText]="5"
+                        [cageWidth]="300"
+                        [color]="priceTagColor"></butterfly>
+          </li>
 
           <!-- <li>사용자가 직접 textbox로 입력합니다.</li> -->
           
@@ -82,7 +91,7 @@
           <li *ngIf="isAdmin===true"
               class="list-group-item col2nd">
 
-            <checkbox-h-list  [listTitle]="'수업시작일'"
+            <checkbox-h-list  [listTitle]="'수업 시작 요일'"
                               [listTitleFontSize]="16"
                               [optionList]="checkboxOptionListKlassDay"
                               [cageWidth]="300"

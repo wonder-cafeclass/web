@@ -33,7 +33,98 @@ class MY_KlassCalendar {
         }
     }
 
-    private function getKlassCalendarFrom_yyyy_mm_dd_DD ($date_list=null, $klass_course=null, $calendar_list=null)
+    private $klassDayMap;
+    private function getKlassDaysMap()
+    {
+        if(!empty($this->klassDayMap))
+        {
+            return $this->klassDayMap;
+        }
+
+        $class_days_list = array();
+        $class_days_eng_list = array();
+        $class_days_kor_list = array();
+        if(isset($this->CI->my_paramchecker)) 
+        {
+            $class_days_list = $this->CI->my_paramchecker->get_const("class_days_list");
+            $class_days_eng_list = $this->CI->my_paramchecker->get_const("class_days_eng_list");
+            $class_days_kor_list = $this->CI->my_paramchecker->get_const("class_days_kor_list");
+        }
+
+        $class_days_map = array();
+        for ($i=0; $i < count($class_days_list); $i++) 
+        { 
+            $class_day = $class_days_list[$i];
+            $class_day_eng = $class_days_eng_list[$i];
+            $class_day_kor = $class_days_kor_list[$i];
+
+            $class_day_obj = [
+                "class_day" => $class_day,
+                "class_day_eng" => $class_day_eng,
+                "class_day_kor" => $class_day_kor
+            ];            
+
+            $class_days_map["$class_day"]=$class_day_obj;
+        }    
+
+        if(!empty($class_days_map))
+        {
+            $this->klassDayMap = $class_days_map;
+        }
+
+        return $this->klassDayMap;
+    }
+    private function getDayEngName($day_key="")
+    {
+        if(empty($day_key)) 
+        {
+            return "";
+        }
+
+        $klassDaysMap = $this->getKlassDaysMap();
+
+        if(!empty($klassDaysMap)) {
+            // 영어 요일 이름 설정
+            $day_obj = null;
+            if(array_key_exists(strtolower($day_key), $klassDaysMap)) 
+            {   
+                $day_obj = $klassDaysMap[strtolower($day_key)];
+            }
+            if(!is_null($day_obj)) 
+            {
+                return $day_obj["class_day_eng"];
+            } // end inner if
+        } // end if
+
+        return "";
+    }
+    private function getDayKorName($day_key="")
+    {
+        if(empty($day_key)) 
+        {
+            return "";
+        }
+
+        $klassDaysMap = $this->getKlassDaysMap();
+
+        if(!empty($klassDaysMap)) {
+            // 한국어 요일 이름 설정
+            $day_obj = null;
+            if(array_key_exists(strtolower($day_key), $klassDaysMap)) 
+            {   
+                $day_obj = $klassDaysMap[strtolower($day_key)];
+            }
+            if(!is_null($day_obj)) 
+            {
+                return $day_obj["class_day_kor"];
+            } // end inner if
+        } // end if
+
+        return "";
+    }
+
+
+    private function getKlassCalendarFrom_yyyy_mm_dd_DD ($klass_course=null, $calendar_list=null, $date_begin="")
     {
         // ["2016-10-01-Sat","2016-10-02-Sun",...] --> [new KlassCalendar(...), new KlassCalendar(...), ...]
 
@@ -41,10 +132,6 @@ class MY_KlassCalendar {
         $has_class_closed = false;
         $klass_cal_list = array();
 
-        if(is_null($date_list))
-        {
-            return $klass_cal_list;
-        }
         if(is_null($klass_course))
         {
             return $klass_course;
@@ -55,9 +142,9 @@ class MY_KlassCalendar {
         }
 
         $date_end = "";
-        if(!empty($date_list))
+        if(!empty($calendar_list))
         {
-            $date_end = $date_list[count($date_list) - 1];
+            $date_end = $calendar_list[count($calendar_list) - 1];
         }
         
         for ($i=0; $i < count($calendar_list); $i++) 
@@ -76,9 +163,15 @@ class MY_KlassCalendar {
             $month = intval($fragments[1]);
             $date = intval($fragments[2]);
             $day = $fragments[3];
+            $cal_date_yyyy_mm_dd = "$year-$month-$date";
+
+
 
             // KlassCalendar 객체를 만듭니다.
             $klassCalendar = new KlassCalendar($cal_date, $year, $month, $date, $day);
+            // 언어별 요일 설정 이름 추가.
+            $klassCalendar->dayEng=$this->getDayEngName($day);
+            $klassCalendar->dayKor=$this->getDayKorName($day);
 
             if(0 === $i)
             {
@@ -99,13 +192,11 @@ class MY_KlassCalendar {
             $strpos = -1;
 
             // 수업 시작 날짜 이전인지 검사.
-            if(!$has_class_began)
-            {
-                $strpos = strpos(strtolower($cal_date), strtolower($klass_course->date_begin));
-            }
-            if(-1 < $strpos) 
+            if(strtotime($klass_course->date_begin) <= strtotime($cal_date_yyyy_mm_dd)) 
             {
                 $has_class_began = true;
+            } else {
+                $has_class_began = false;
             }
             $strpos = -1;
 
@@ -132,6 +223,10 @@ class MY_KlassCalendar {
 
             $yyyy_mm_dd_now = $this->my_calendar->get_now_YYYYMMDD();
             $time_now = strtotime($yyyy_mm_dd_now);
+            if(!empty($date_begin)) {
+                $time_now = strtotime($date_begin);
+            }
+
             if($time_cal_date < $time_now) {
                 // 오늘보다 이전의 시간임.
                 $klassCalendar->isExpired = true;
@@ -387,17 +482,18 @@ class MY_KlassCalendar {
             return;
         }
 
+
+        // ex) begin : 2016-10-29 / end : 2016-11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
+        $today = $this->my_calendar->get_now_YYYYMMDD();
+        // 오늘 이후부터 2달치의 날짜를 가져옵니다. 추가 등록을 고려.
         $calendar_list = 
         $this->my_calendar->get_date_list_by_month(
-            $klass_course->date_begin, 
-            intval($klass_course->week_max)
+            $today,
+            8
         );
 
-        // ex) begin : 10-29 / end : 11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
-        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
-
         // ["2016-10-01-Sat","2016-10-02-Sun",...] --> [new KlassCalendar(...), new KlassCalendar(...), ...]
-        $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($date_list, $klass_course, $calendar_list);
+        $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($klass_course, $calendar_list);
 
         // 일차원 배열에서 각 달(Month)의 경계를 찾아 플래그 값을 넣습니다.
         $klass_cal_list = $this->setMonthBeginsEndsLinear($klass_cal_list);
@@ -409,7 +505,7 @@ class MY_KlassCalendar {
         return $klass_cal_list;
     }
 
-    public function getMonthly($klass_course=null)
+    public function getMonthly($klass_course=null, $date_begin="")
     {
         if(is_null($klass_course)) 
         {
@@ -420,17 +516,20 @@ class MY_KlassCalendar {
             return;
         }
 
+        // ex) begin : 2016-10-29 / end : 2016-11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
+        $today = $this->my_calendar->get_now_YYYYMMDD();
+        if(!empty($date_begin)) {
+            $today = $date_begin;
+        }
+        // 오늘 이후부터 2달치의 날짜를 가져옵니다. 추가 등록을 고려.
         $calendar_list = 
         $this->my_calendar->get_date_list_by_month(
-            $klass_course->date_begin, 
-            intval($klass_course->week_max)
+            $today,
+            8
         );
 
-        // ex) begin : 10-29 / end : 11-21 --> ["2016-10-01-Mon", "2016-10-02-Tue", "2016-10-03-Wed", ..., "2016-11-29-Sat", "2016-11-30-Sat"]
-        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
-
         // ["2016-10-01-Sat","2016-10-02-Sun",...] --> [new KlassCalendar(...), new KlassCalendar(...), ...]
-        $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($date_list, $klass_course, $calendar_list);
+        $klass_cal_list = $this->getKlassCalendarFrom_yyyy_mm_dd_DD($klass_course, $calendar_list, $date_begin);
 
         // 월별로 리스트를 분리합니다.
         $has_changed = false;

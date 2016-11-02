@@ -175,8 +175,9 @@ class Klass extends REST_Controller implements MY_Class{
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
-            // $klass->calendar_table_linear = $this->my_klasscalendar->getLinear($klass);
             $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
+            // TEST
+            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass, "2016-11-15");
         }
 
         $last_query = $this->db->last_query();

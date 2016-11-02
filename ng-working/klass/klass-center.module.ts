@@ -23,6 +23,7 @@ import { CalendarComponent }         from '../widget/calendar/calendar.component
 import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
 import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
 import { PriceTagHComponent }        from '../widget/pricetag/pricetag-h.component';
+import { ButterflyComponent }        from '../widget/butterfly/butterfly.component';
 import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
 import { RadioBtnLinearComponent }   from '../widget/radiobtn/radiobtn-linear.component';
 import { InputViewComponent }        from '../widget/input-view/input-view.component';
@@ -51,6 +52,7 @@ import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.co
     MiniCalendarComponent,
     PriceTagComponent,
     PriceTagHComponent,
+    ButterflyComponent,
     ImageGridComponent,
     RadioBtnLinearComponent,
     InputViewComponent,

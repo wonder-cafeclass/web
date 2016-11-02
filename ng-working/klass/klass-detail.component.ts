@@ -71,6 +71,9 @@ export class KlassDetailComponent implements OnInit {
 
   klassPriceList:InputViewUpdown[];
 
+  firstClassDate:Calendar;
+  firstClassDateFormatStr:string;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -139,8 +142,14 @@ export class KlassDetailComponent implements OnInit {
       this.radiobtnService.getKlassEnrolmentWeeks(this.klass, 0);
 
       // 첫수업 날짜 가져오기
-      
-
+      this.setFirstClassDateFormat();
+      // REMOVE ME
+      /*
+      this.firstClassDate = this.getFirstClassDate(this.klass);
+      if(this.firstClassDate) {
+        this.firstClassDateFormatStr = `${this.firstClassDate.month}월 ${this.firstClassDate.date}일 ${this.firstClassDate.dayKor}요일`;
+      }
+      */
     });
 
     this.authService.getAdminAuth().then(
@@ -160,6 +169,55 @@ export class KlassDetailComponent implements OnInit {
     
 
 
+  }
+
+  private setFirstClassDateFormat() :void {
+    this.firstClassDate = this.getFirstClassDate(this.klass);
+
+    console.log("HERE / setFirstClassDateFormat / this.firstClassDate : ",this.firstClassDate);
+
+    if(this.firstClassDate) {
+      this.firstClassDateFormatStr = `${this.firstClassDate.month}월 ${this.firstClassDate.date}일 ${this.firstClassDate.dayKor}요일`;
+    }
+  }
+  private getFirstClassDate(klass:Klass) :Calendar {
+
+    let calendar_table_monthly = klass.calendar_table_monthly;
+    for (var i = 0; i < calendar_table_monthly.length; ++i) {
+      let calendar_table = calendar_table_monthly[i];
+      // console.log("calendar_table : ",calendar_table);
+      for (var j = 0; j < calendar_table.length; ++j) {
+        let week = calendar_table[j];
+        // console.log("week : ",week);
+        for (var k = 0; k < week.length; ++k) {
+          let date:Calendar = week[k];
+          // console.log("date : ",date);
+
+          if(null === date) {
+            continue;
+          }
+          if(date.isExpired) {
+            continue; 
+          }
+          if(!date.hasKlass) {
+            continue;
+          }
+
+          if(4 == +klass.enrollment_interval_week && !date.isEnrollment4weeks) {
+            continue; 
+          } else if(2 == +klass.enrollment_interval_week && !date.isEnrollment2weeks) {
+            continue; 
+          } else if(1 == +klass.enrollment_interval_week && !date.isEnrollmentWeek) {
+            continue; 
+          }
+
+          // 첫 수업을 찾았습니다.
+          return date;
+        }
+      }
+    }
+
+    return null;
   }
 
   initAdmin() {
@@ -275,6 +333,7 @@ export class KlassDetailComponent implements OnInit {
 
   }
 
+  // @ Deprecated
   onChangedFromInputView(myEvent:MyEvent) {
 
     let eventName:string = myEvent.eventName;
@@ -291,8 +350,39 @@ export class KlassDetailComponent implements OnInit {
     let eventName:string = myEvent.eventName;
     let myEventService:MyEventService = this.myEventService;
 
-    console.log("onChangedFromChild / eventName : ",eventName);
-    console.log("onChangedFromChild / myEvent : ",myEvent);
+    if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
+
+      // '수강신청일'이 변경되었습니다.
+      // console.log("onChangedFromChild / eventName : ",eventName);
+      // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+
+      let weekInterval:number = +myEvent.value;
+
+      // 첫수업날짜가 변경됩니다.
+      if(4 === weekInterval) {
+
+        this.klass.enrollment_interval_week = 4;
+        this.setFirstClassDateFormat();
+        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 4주");
+
+      } else if(2 === weekInterval) {
+
+        this.klass.enrollment_interval_week = 2;
+        this.setFirstClassDateFormat();
+        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 2주");
+
+      } else if(1 === weekInterval) {
+
+        this.klass.enrollment_interval_week = 1;
+        this.setFirstClassDateFormat();
+        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
+
+      }
+
+
+    } // end if
+
+
 
   }
 }

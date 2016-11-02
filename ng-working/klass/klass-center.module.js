@@ -29,6 +29,7 @@ var calendar_component_1 = require('../widget/calendar/calendar.component');
 var mini_calendar_component_1 = require('../widget/calendar/mini-calendar.component');
 var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
+var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
 var radiobtn_linear_component_1 = require('../widget/radiobtn/radiobtn-linear.component');
 var input_view_component_1 = require('../widget/input-view/input-view.component');
@@ -60,6 +61,7 @@ var KlassCenterModule = (function () {
                 mini_calendar_component_1.MiniCalendarComponent,
                 pricetag_component_1.PriceTagComponent,
                 pricetag_h_component_1.PriceTagHComponent,
+                butterfly_component_1.ButterflyComponent,
                 image_grid_component_1.ImageGridComponent,
                 radiobtn_linear_component_1.RadioBtnLinearComponent,
                 input_view_component_1.InputViewComponent,
