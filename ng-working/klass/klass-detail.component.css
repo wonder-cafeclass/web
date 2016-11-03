@@ -32,6 +32,7 @@ h5.font {
 li.col-next {
     padding: 5px;
     border: 0px;
+    padding-right: 0px;
 }
 li.col-next.first {
     padding-top: 0px;

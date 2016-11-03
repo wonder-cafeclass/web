@@ -8,6 +8,8 @@ nav.klass-info {
 }
 .container.klass-info {
 	padding-left: 0px;
+    margin-left: 0px;
+    margin-right: 0px;    
 }
 .collapse.klass-info {
 	padding-left: 0px;
@@ -15,4 +17,12 @@ nav.klass-info {
 li.klass-info {
     width: 100px;
     text-align: center;	
+}
+ul.shim {
+    border-left: 1px solid #f0f;
+}
+.fixed-shim {
+    width: 100px;
+    height: 1px;
+    float: left;
 }

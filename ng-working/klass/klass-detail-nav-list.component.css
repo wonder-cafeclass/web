@@ -5,4 +5,13 @@ li.first {
 }
 li.klass-info {
     border-color: #e85c41;	
+    padding:5px;
+}
+a.jump {
+    position: absolute;
+    top: -50px;    
+}
+a.jump.first {
+    position: absolute;
+    top: 0px;    
 }

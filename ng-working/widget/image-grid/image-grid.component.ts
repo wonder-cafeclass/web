@@ -13,6 +13,7 @@ export class ImageGridComponent implements OnInit {
   @Input() imageWidth:number=-1;
   @Input() tableWidth:number=-1;
   tableWidthStr:string;
+  @Input() hasTableBorder:boolean=false;
 
   gridWidth:number=100;
 
@@ -47,6 +48,8 @@ export class ImageGridComponent implements OnInit {
     } else {
       this.tableWidthStr="100%";
     }
+
+    console.log("hasTableBorder : ",this.hasTableBorder);
 
   }
 

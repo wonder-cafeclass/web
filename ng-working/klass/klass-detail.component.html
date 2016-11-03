@@ -22,10 +22,9 @@
           
           </li>
 
-          <li class="list-group-item">아래 배너 이미지(링크지원안됨)는 운영자가 임의로 추가/삭제가 가능합니다.<br/>업로드시 사이즈에 대한 규정이 필요합니다.</li>
-
           <li class="list-group-item" style="padding:0px;">
-              <image-grid [imageTable]="bannerImageTable"></image-grid>
+              <image-grid [imageTable]="bannerImageTable"
+                          [hasTableBorder]="false"></image-grid>
           </li>
         </ul>
 
@@ -52,7 +51,8 @@
           <li class="list-group-item col-next">
             <image-grid [imageTable]="selectileImageTable"
                         [imageHeight]="selectileImageHeight"
-                        [imageWidth]="selectileImageWidth"></image-grid>
+                        [imageWidth]="selectileImageWidth"
+                        [hasTableBorder]="true"></image-grid>
           </li>
 
           <!-- COURSE TIME -->
@@ -76,20 +76,16 @@
           </li>
 
           <li class="list-group-item col-next">
-            <div style="width:100%;">
-              네이버 지도 API를 이용, 지도를 이곳에 그려줍니다.<br/>네이버 지도 API 개발자 등록이 필요합니다. 계정 공유 부탁드려요!<br/><img style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
-            </div>
+            <butterfly  [title]="'수업 장소'"
+                        [fontSizeTitle]="16"
+                        [paddingTitle]="7"
+                        [text]="'투썸플레이스 잠실역점'"
+                        [fontSizeText]="18"
+                        [paddingText]="5"
+                        [color]="priceTagColor"></butterfly>          
           </li>
 
-          <li class="list-group-item col-next" style="padding: 5px;">
-            <!--
-            <button   type="button"
-                      style="opacity: 0;"
-                      class="btn btn-lg btn-default">
-                      <span class="badge klass-price-week">&nbsp;</span>
-            </button>
-            -->
-
+          <li class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
                       style="width:100%;"

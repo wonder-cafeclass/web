@@ -10,10 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var NavTabsComponent = (function () {
-    function NavTabsComponent() {
+    function NavTabsComponent(el, renderer) {
+        this.el = el;
+        this.renderer = renderer;
         this.fontSizeTitle = 12;
         this.paddingTopTitle = 10;
         this.cageWidth = -1;
+        this.isScrollOver = false;
     }
     NavTabsComponent.prototype.ngOnInit = function () {
         if (0 < this.cageWidth) {
@@ -22,6 +25,28 @@ var NavTabsComponent = (function () {
         else {
             this.cageWidthStr = "100%";
         } // end if
+    };
+    NavTabsComponent.prototype.onScroll = function (event) {
+        var offsetTopParent = this.el.nativeElement.offsetParent.offsetTop;
+        var scrollTop = document.body.scrollTop;
+        if (!this.isScrollOver && offsetTopParent <= (scrollTop - 1)) {
+            var clientWidthParent = this.el.nativeElement.offsetParent.clientWidth;
+            var screenWidth = screen.width;
+            var marginLeft = Math.round((screenWidth - clientWidthParent) / 2);
+            console.log("clientWidthParent : ", clientWidthParent);
+            console.log("screenWidth : ", screenWidth);
+            console.log("marginLeft : ", marginLeft);
+            this.shimWidthStr = marginLeft + "px";
+            this.isScrollOver = true;
+        }
+        else if (this.isScrollOver && scrollTop < offsetTopParent) {
+            this.isScrollOver = false;
+            this.shimWidthStr = null;
+        }
+    };
+    NavTabsComponent.prototype.clickNav = function (event) {
+        event.stopPropagation();
+        console.log("clickNav / event : ", event);
     };
     __decorate([
         core_1.Input(), 
@@ -63,14 +88,21 @@ var NavTabsComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], NavTabsComponent.prototype, "colorBorder", void 0);
+    __decorate([
+        core_1.HostListener('window:scroll', ['$event']), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', void 0)
+    ], NavTabsComponent.prototype, "onScroll", null);
     NavTabsComponent = __decorate([
+        core_1.Directive({ selector: '[myHighlight]' }),
         core_1.Component({
             moduleId: module.id,
             selector: 'nav-tabs',
             templateUrl: 'nav-tabs.component.html',
             styleUrls: ['nav-tabs.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [core_1.ElementRef, core_1.Renderer])
     ], NavTabsComponent);
     return NavTabsComponent;
 }());
