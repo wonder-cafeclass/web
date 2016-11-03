@@ -1,0 +1,8 @@
+li.first {
+	border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-top: 0px;	
+}
+li.klass-info {
+    border-color: #e85c41;	
+}

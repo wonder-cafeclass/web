@@ -2,10 +2,12 @@
   
   <!-- First Row -->
   <div class="row">
-    <div class="col-md-12 cc-div-col" style="padding:0px;">
+    <!-- <div class="col-md-12 cc-div-col" style="padding:0px;"> -->
+
+        <div class="col-md-2" style="padding:0px;"></div>
         
         <!-- First Column -->
-        <ul class="list-group col-md-6">
+        <ul class="list-group col-md-4">
           <li class="list-group-item" style="padding: 0px;">
 
             <img  #classImage 
@@ -28,28 +30,33 @@
         </ul>
 
         <!-- Second Column -->
-        <ul class="list-group col-md-6">
+        <ul class="list-group col-md-4" style="padding-right: 0px;">
           
-          <li class="list-group-item col2nd">
+          <li class="list-group-item col-next first">
             <pricetag-h [title]="pricePerWeekFormat"
-                        [price]="klass.price"
-                        [currency]="priceTagCurrency"
-                        [cageWidth]="300"
                         [fontSizeTitle]="40"
-                        [paddingTopTitle]="5"
+                        [paddingTitle]="5"
+
+                        [price]="klass.price"
                         [fontSizePrice]="25"
-                        [paddingTopPrice]="16"
+                        [paddingTopPrice]="25"
+  
+                        [desc]="pricetagDesc"
+                        [fontSizeDesc]="14"
+                        [paddingDesc]="5"
+
+                        [currency]="priceTagCurrency"
                         [color]="priceTagColor"></pricetag-h>
           </li>
           <!-- FILTERS -->
-          <li class="list-group-item col2nd">
+          <li class="list-group-item col-next">
             <image-grid [imageTable]="selectileImageTable"
                         [imageHeight]="selectileImageHeight"
                         [imageWidth]="selectileImageWidth"></image-grid>
           </li>
 
           <!-- COURSE TIME -->
-          <li class="list-group-item col2nd" style="height: 97px;">
+          <li class="list-group-item col-next" style="height: 97px;">
             <clock-board  #clockboard 
                           [clockHeight]=86
                           [clockWidth]=300
@@ -58,76 +65,113 @@
           </li>
 
           <!-- FIRST KLASS DATE -->
-          <li *ngIf="firstClassDateFormatStr" class="list-group-item col2nd">
-            <butterfly  [title]="'첫 수업 날짜'"
-                        [fontSizeTitle]="18"
-                        [paddingTitle]="5"
+          <li *ngIf="firstClassDateFormatStr" class="list-group-item col-next">
+            <butterfly  [title]="'강의 참가 가능일'"
+                        [fontSizeTitle]="16"
+                        [paddingTitle]="7"
                         [text]="firstClassDateFormatStr"
                         [fontSizeText]="18"
                         [paddingText]="5"
-                        [cageWidth]="300"
                         [color]="priceTagColor"></butterfly>
           </li>
 
-          <!-- <li>사용자가 직접 textbox로 입력합니다.</li> -->
-          
-
-
-          <!-- Admin Section - Init. -->
-          <!-- 1. 수강 신청일(Admin) -->
-          <li *ngIf="isAdmin===true" 
-              class="list-group-item col2nd">
-
-              <radiobtn-h-list  [listTitle]="'수강신청일'"
-                                [listTitleFontSize]="16"
-                                [optionList]="radiobtnOptionListEnrollment"
-                                [cageWidth]="300"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
-
+          <li class="list-group-item col-next">
+            <div style="width:100%;">
+              네이버 지도 API를 이용, 지도를 이곳에 그려줍니다.<br/>네이버 지도 API 개발자 등록이 필요합니다. 계정 공유 부탁드려요!<br/><img style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
+            </div>
           </li>
 
-          <!-- 5. 수업 시작일 -->
-          <li *ngIf="isAdmin===true"
-              class="list-group-item col2nd">
-
-            <checkbox-h-list  [listTitle]="'수업 시작 요일'"
-                              [listTitleFontSize]="16"
-                              [optionList]="checkboxOptionListKlassDay"
-                              [cageWidth]="300"
-                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                              (emitter)="onChangedFromChild($event)"></checkbox-h-list>
-
-          </li>
-
-          <li class="list-group-item" style="padding: 5px;">
-            <!-- Refactor me! -->
+          <li class="list-group-item col-next" style="padding: 5px;">
+            <!--
             <button   type="button"
                       style="opacity: 0;"
                       class="btn btn-lg btn-default">
                       <span class="badge klass-price-week">&nbsp;</span>
             </button>
+            -->
 
             <button   type="button"
-                      class="btn btn-lg btn-default pull-right klass-signup-v2" 
+                      class="btn btn-lg btn-default klass-signup-v2" 
+                      style="width:100%;"
                       (click)="onClickEnrollment($event, klass)">
                       신청하기(결재)
             </button>
-
+          </li>
+        </ul>
+        <div class="col-md-2" style="padding:0px;"></div>
+        <!--
+        <ul *ngIf="isAdmin===true" class="list-group col-md-3">
+          <li class="list-group-item col-next">저장하기 버튼</li>
+          <li class="list-group-item col-next first">
+            <input-view-updown  [data]="klassTitleUpdown"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></input-view-updown>
+          </li>
+          <li class="list-group-item col-next">
+            <input-view-updown  [data]="klassDescUpdown"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></input-view-updown>
           </li>
 
+
+          <li class="list-group-item col-next">수업 이미지 업로더</li>
+
+          <li class="list-group-item col-next">수업 관련 추가 배너</li>
+
+          <li class="list-group-item col-next">네이버 지도 API 등록</li>
+          <li class="list-group-item col-next">
+            <radiobtn-h-list  [listTitle]="'1회 신청시 수강기간'"
+                              [listTitleFontSize]="16"
+                              [optionList]="radiobtnOptionListCourseDuration"
+                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                              (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
+          </li>
+          <li class="list-group-item col-next">
+            <input-view-updown  [data]="klassPriceUpdown"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></input-view-updown>
+            
+          </li>
+          <li class="list-group-item col-next">
+            <input-view-updown  [data]="klassTimeBeginUpdown"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></input-view-updown>
+          </li>
+          <li class="list-group-item col-next">
+            <input-view-updown  [data]="klassTimeEndUpdown"
+                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                                (emitter)="onChangedFromChild($event)"></input-view-updown>
+          </li>
+          <li class="list-group-item col-next">
+            <radiobtn-h-list  [listTitle]="'수강신청일'"
+                              [listTitleFontSize]="16"
+                              [optionList]="radiobtnOptionListEnrollment"
+                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                              (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
+          </li>
+          <li *ngIf="isAdmin===true"
+              class="list-group-item col-next">
+
+            <checkbox-h-list  [listTitle]="'수업 요일'"
+                              [listTitleFontSize]="16"
+                              [optionList]="checkboxOptionListKlassDay"
+                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
+                              (emitter)="onChangedFromChild($event)"></checkbox-h-list>
+
+          </li>        
         </ul>
+        -->
         
-    </div>
+    <!-- </div> -->
   </div>
   
   <!-- Second Row -->
   <div class="row">
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="#">Home</a></li>
-      <li role="presentation"><a href="#">Profile</a></li>
-      <li role="presentation"><a href="#">Messages</a></li>
-    </ul>  
+    <div class="col-md-2" style="padding:0px;"></div>
+    <div class="col-md-8 cc-div-col" style="padding:0px;">
+      <klass-detail-nav-list [radiobtnOptionListNavTabs]="radiobtnOptionListNavTabs">
+      </klass-detail-nav-list>
+    </div>
+    <div class="col-md-2" style="padding:0px;"></div>
   </div>
-  
 </div>

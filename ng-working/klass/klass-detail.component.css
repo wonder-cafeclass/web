@@ -29,8 +29,12 @@ h5.font {
     color: #fff; 
     background-color: #e85c41;
 }
-li.col2nd {
+li.col-next {
     padding: 5px;
+    border: 0px;
+}
+li.col-next.first {
+    padding-top: 0px;
 }
 
 

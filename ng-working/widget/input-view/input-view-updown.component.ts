@@ -16,12 +16,22 @@ import { MyEvent }                  from '../../util/model/my-event';
 export class InputViewUpdownComponent implements OnInit {
 
   @Input() data:InputViewUpdown;
+  @Input() topLeftImageUrl:string;
+  @Input() cageWidth:number=-1;
+  cageWidthStr:string;
+
   @Output() emitter = new EventEmitter<any>();
 
   constructor() {}
 
   ngOnInit(): void {
-    // Do nothing.
+    if(0 < this.cageWidth) {
+      this.cageWidthStr=`${this.cageWidth}px`;
+    } else {
+      this.cageWidthStr="100%";
+    }
+
+    console.log("this.data : ",this.data);
   }
 
   onChange(event, value:string, myEvent:MyEvent) :void {

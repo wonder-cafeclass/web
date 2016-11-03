@@ -12,10 +12,17 @@ var core_1 = require('@angular/core');
 var input_view_updown_1 = require('./model/input-view-updown');
 var InputViewUpdownComponent = (function () {
     function InputViewUpdownComponent() {
+        this.cageWidth = -1;
         this.emitter = new core_1.EventEmitter();
     }
     InputViewUpdownComponent.prototype.ngOnInit = function () {
-        // Do nothing.
+        if (0 < this.cageWidth) {
+            this.cageWidthStr = this.cageWidth + "px";
+        }
+        else {
+            this.cageWidthStr = "100%";
+        }
+        console.log("this.data : ", this.data);
     };
     InputViewUpdownComponent.prototype.onChange = function (event, value, myEvent) {
         event.stopPropagation();
@@ -26,6 +33,14 @@ var InputViewUpdownComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', input_view_updown_1.InputViewUpdown)
     ], InputViewUpdownComponent.prototype, "data", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], InputViewUpdownComponent.prototype, "topLeftImageUrl", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], InputViewUpdownComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

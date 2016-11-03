@@ -1,0 +1,29 @@
+<nav class="navbar navbar-default klass-info" [style.border-color]="colorBorder">
+	<!--  navbar-fixed-top -->
+	<div class="container klass-info">
+		<div class="collapse navbar-collapse klass-info" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li> -->
+				<!-- <li><a href="#">Link</a></li> -->
+				<li 	*ngFor="let radiobtn of radiobtnList"
+						[ngClass]="{'active':radiobtn.isFocus}"
+						class="klass-info"
+						role="presentation">
+					<a 	[style.color]="radiobtn.isFocus?colorTitleFocus:colorTitleBlur" 
+						[style.background-color]="radiobtn.isFocus?colorBGFocus:colorBGBlur" 
+						href="#">{{radiobtn.myEvent.title}}</a>
+				</li>				
+			</ul>
+		</div><!-- /.navbar-collapse -->	
+	</div>
+
+</nav>
+<!--
+<ul class="nav nav-tabs" [style.width]="cageWidthStr">
+	<li 	*ngFor="let radiobtn of radiobtnList"
+			[ngClass]="{'active':radiobtn.isFocus}"
+			role="presentation">
+		<a 	[style.color]="radiobtn.isFocus?colorFocus:colorBlur" href="#">{{radiobtn.myEvent.title}}</a>
+	</li>
+</ul>
+-->

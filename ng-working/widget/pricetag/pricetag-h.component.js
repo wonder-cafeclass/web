@@ -12,13 +12,22 @@ var core_1 = require('@angular/core');
 var PriceTagHComponent = (function () {
     function PriceTagHComponent() {
         this.fontSizeTitle = 12;
-        this.paddingTopTitle = 10;
+        this.paddingTitle = 10;
+        this.fontSizeDesc = 12;
+        this.paddingDesc = 10;
         this.fontSizePrice = 12;
         this.paddingTopPrice = 10;
-        this.cageWidth = 150;
+        this.cageWidth = -1;
+        this.cageWidthStr = "";
     }
     PriceTagHComponent.prototype.ngOnInit = function () {
         this.priceWithFormat = this.numberWithCommas(this.price);
+        if (0 < this.cageWidth) {
+            this.cageWidthStr = this.cageWidth + "px";
+        }
+        else {
+            this.cageWidthStr = "100%";
+        }
     };
     PriceTagHComponent.prototype.numberWithCommas = function (x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -30,15 +39,27 @@ var PriceTagHComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "price", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
     ], PriceTagHComponent.prototype, "fontSizeTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], PriceTagHComponent.prototype, "paddingTopTitle", void 0);
+    ], PriceTagHComponent.prototype, "paddingTitle", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], PriceTagHComponent.prototype, "desc", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], PriceTagHComponent.prototype, "fontSizeDesc", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], PriceTagHComponent.prototype, "paddingDesc", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], PriceTagHComponent.prototype, "price", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

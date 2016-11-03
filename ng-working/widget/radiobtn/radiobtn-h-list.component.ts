@@ -23,8 +23,10 @@ export class RadioBtnHListComponent implements OnInit {
 
   @Input() optionList:RadioBtnOption[];
   @Input() listTitle:string;
+  @Input() listId:string;
   @Input() listTitleFontSize:number;
-  @Input() cageWidth:number=100;
+  @Input() cageWidth:number=-1;
+  cageWidthStr:string;
   @Input() topLeftImageUrl:string;
   
   @Output() emitter = new EventEmitter<any>();
@@ -32,7 +34,15 @@ export class RadioBtnHListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    // Do nothing.
+    if(0 < this.cageWidth) {
+      this.cageWidthStr=`${this.cageWidth}px`;
+    } else {
+      this.cageWidthStr="100%";
+    }
+
+    this.listId = "dummy_" + (Math.round(Math.random() * 10000000) + (this.listTitle.length * this.listTitleFontSize));
+
+    console.log("optionList : ",this.optionList);
   }
 
   onChange(event, myEvent:MyEvent) :void{

@@ -24,7 +24,8 @@ export class CheckBoxHListComponent implements OnInit {
   @Input() optionList:CheckBoxOption[];
   @Input() listTitle:string;
   @Input() listTitleFontSize:number;
-  @Input() cageWidth:number=100;
+  @Input() cageWidth:number=-1;
+  cageWidthStr:string="";
   @Input() topLeftImageUrl:string;
   
   @Output() emitter = new EventEmitter<any>();
@@ -32,7 +33,11 @@ export class CheckBoxHListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    // Do nothing.
+    if(0 < this.cageWidth) {
+      this.cageWidthStr=`${this.cageWidth}px`;
+    } else {
+      this.cageWidthStr="100%";
+    }
   }
 
   onChange(event, myEvent:MyEvent) :void{

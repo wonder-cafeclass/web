@@ -1,4 +1,4 @@
-<ul class="list-group updown" [style.width]="cageWidth + 'px'">
+<ul class="list-group updown" [style.width]="cageWidthStr">
 	
 	<!-- List Title -->
 	<li *ngIf="listTitle" 
@@ -17,11 +17,11 @@
 
 				<label class="radio-inline">
 				<input  type="radio" 
-				      name="inlineRadioOptions" 
-				      id="inlineRadio1" 
-				      value={{option.myEvent.value}} 
-				      [checked]="option.isFocus"
-				      (change)="onChange($event, option.myEvent)">{{option.myEvent.title}}
+						name={{listId}}
+						id={{listId}}
+						value={{option.myEvent.value}} 
+						[checked]="option.isFocus"
+						(change)="onChange($event, option.myEvent)">{{option.myEvent.title}}
 				</label>
 
 			</div>

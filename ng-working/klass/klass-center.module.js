@@ -15,11 +15,13 @@ var common_1 = require('@angular/common');
 var klass_service_1 = require('./klass.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
+var klass_color_service_1 = require('./service/klass-color.service');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
 var klass_center_home_component_1 = require('./klass-center-home.component');
 var klass_detail_component_1 = require('./klass-detail.component');
+var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
@@ -38,6 +40,7 @@ var input_view_updown_component_1 = require('../widget/input-view/input-view-upd
 var input_view_table_component_1 = require('../widget/input-view-table/input-view-table.component');
 var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
+var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -53,6 +56,7 @@ var KlassCenterModule = (function () {
                 klass_list_component_1.KlassListComponent,
                 klass_center_home_component_1.KlassCenterHomeComponent,
                 klass_detail_component_1.KlassDetailComponent,
+                klass_detail_nav_list_component_1.KlassDetailNavListComponent,
                 klass_filter_tile_component_1.KlassFilterTileComponent,
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
@@ -69,13 +73,15 @@ var KlassCenterModule = (function () {
                 input_view_table_component_1.InputViewTableComponent,
                 input_view_updown_component_1.InputViewUpdownComponent,
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
-                checkbox_h_list_component_1.CheckBoxHListComponent
+                checkbox_h_list_component_1.CheckBoxHListComponent,
+                nav_tabs_component_1.NavTabsComponent
             ],
             providers: [
                 klass_service_1.KlassService,
                 klass_radiobtn_service_1.KlassRadioBtnService,
                 klass_checkbox_service_1.KlassCheckBoxService,
-                klass_detail_resolve_service_1.KlassDetailResolve
+                klass_detail_resolve_service_1.KlassDetailResolve,
+                klass_color_service_1.KlassColorService
             ]
         }), 
         __metadata('design:paramtypes', [])

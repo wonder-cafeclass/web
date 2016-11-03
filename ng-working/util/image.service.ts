@@ -43,6 +43,8 @@ export class ImageService {
 
     clockBGUrl:string="assets/images/clock/clock-bg.svg";
 
+    mapDummy:string="assets/images/map_dummy.png";
+
     constructor(private us:UrlService) {
     }
 

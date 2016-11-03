@@ -45,6 +45,7 @@ var ImageService = (function () {
         this.clock3hr30mNoticeAMUrl = "assets/images/clock/clock-3hr-30m-notice-am.svg";
         this.clock3hr30mNoticePMUrl = "assets/images/clock/clock-3hr-30m-notice-pm.svg";
         this.clockBGUrl = "assets/images/clock/clock-bg.svg";
+        this.mapDummy = "assets/images/map_dummy.png";
     }
     ImageService.prototype.get = function (imgUrl) {
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.

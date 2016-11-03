@@ -19,3 +19,10 @@ ul.updown {
 	width:100px;
 	margin-bottom:0px;
 }
+.cornerstone {
+    float: left;
+    position: absolute;
+    width: 20px;
+    top: 5px;
+    left: 3px;    
+}

@@ -14,7 +14,8 @@ export class ButterflyComponent implements OnInit {
   @Input() paddingTitle:number=10;
   @Input() fontSizeText:number=12;
   @Input() paddingText:number=10;
-  @Input() cageWidth:number=150;
+  @Input() cageWidth:number=-1;
+  cageWidthStr:string;
   @Input() color:string;
 
   priceWithFormat:string;
@@ -23,6 +24,13 @@ export class ButterflyComponent implements OnInit {
 
   ngOnInit(): void {
     // Do something.
+
+    if(0 < this.cageWidth) {
+      this.cageWidthStr=`${this.cageWidth}px`;
+    } else {
+      this.cageWidthStr="100%";
+    }
+
   }
 
 }

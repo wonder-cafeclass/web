@@ -9,65 +9,70 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var ButterflyComponent = (function () {
-    function ButterflyComponent() {
+var NavTabsComponent = (function () {
+    function NavTabsComponent() {
         this.fontSizeTitle = 12;
-        this.paddingTitle = 10;
-        this.fontSizeText = 12;
-        this.paddingText = 10;
+        this.paddingTopTitle = 10;
         this.cageWidth = -1;
     }
-    ButterflyComponent.prototype.ngOnInit = function () {
-        // Do something.
+    NavTabsComponent.prototype.ngOnInit = function () {
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
         }
         else {
             this.cageWidthStr = "100%";
-        }
+        } // end if
     };
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', String)
-    ], ButterflyComponent.prototype, "title", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ButterflyComponent.prototype, "text", void 0);
+        __metadata('design:type', Array)
+    ], NavTabsComponent.prototype, "radiobtnList", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ButterflyComponent.prototype, "fontSizeTitle", void 0);
+    ], NavTabsComponent.prototype, "fontSizeTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ButterflyComponent.prototype, "paddingTitle", void 0);
+    ], NavTabsComponent.prototype, "paddingTopTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ButterflyComponent.prototype, "fontSizeText", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], ButterflyComponent.prototype, "paddingText", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], ButterflyComponent.prototype, "cageWidth", void 0);
+    ], NavTabsComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], ButterflyComponent.prototype, "color", void 0);
-    ButterflyComponent = __decorate([
+    ], NavTabsComponent.prototype, "topLeftImageUrl", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], NavTabsComponent.prototype, "colorTitleFocus", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], NavTabsComponent.prototype, "colorTitleBlur", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], NavTabsComponent.prototype, "colorBGFocus", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], NavTabsComponent.prototype, "colorBGBlur", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], NavTabsComponent.prototype, "colorBorder", void 0);
+    NavTabsComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'butterfly',
-            templateUrl: 'butterfly.component.html',
-            styleUrls: ['butterfly.component.css']
+            selector: 'nav-tabs',
+            templateUrl: 'nav-tabs.component.html',
+            styleUrls: ['nav-tabs.component.css']
         }), 
         __metadata('design:paramtypes', [])
-    ], ButterflyComponent);
-    return ButterflyComponent;
+    ], NavTabsComponent);
+    return NavTabsComponent;
 }());
-exports.ButterflyComponent = ButterflyComponent;
-//# sourceMappingURL=butterfly.component.js.map
+exports.NavTabsComponent = NavTabsComponent;
+//# sourceMappingURL=nav-tabs.component.js.map

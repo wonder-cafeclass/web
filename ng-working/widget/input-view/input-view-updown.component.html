@@ -1,5 +1,8 @@
-<ul class="list-group updown">
-  <li class="list-group-item updown head" [style.font-size]="data.fontSizeTitle + 'px'">{{data.myEvent.title}}</li>
+<ul class="list-group updown" [style.width]="cageWidthStr">
+  <li class="list-group-item updown head" [style.font-size]="data.fontSizeTitle + 'px'">
+  	<img *ngIf="topLeftImageUrl" class="cornerstone" src={{topLeftImageUrl}}>
+  	{{data.myEvent.title}}
+  </li>
   <li class="list-group-item updown tail" [style.font-size]="data.fontSizeText + 'px'">
 	  <div class="form-group" style="margin-bottom:0px;">
 	    <!-- <div class="col-sm-10"> -->

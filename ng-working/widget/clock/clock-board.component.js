@@ -19,11 +19,10 @@ var ClockBoardComponent = (function () {
     function ClockBoardComponent(imageService) {
         this.imageService = imageService;
         this.clockHeight = 83;
-        this.clockWidth = 300;
+        this.clockWidth = -1;
         this.simpleClockHeight = 82;
         this.clockDigitalHeight = 83;
         this.dcLeftMargin = 10;
-        this.clockDigitalWidth = 0;
     }
     ClockBoardComponent.prototype.ngOnInit = function () {
         // Do something
@@ -32,7 +31,13 @@ var ClockBoardComponent = (function () {
         this.dcLeftMargin = Math.round(this.clockHeight / 2);
         this.simpleClockHeight = this.clockHeight - 1;
         this.clockDigitalHeight = this.clockHeight;
-        this.clockDigitalWidth = this.clockWidth - Math.round(this.clockHeight / 2);
+        var clockDigitalWidth = this.clockWidth - Math.round(this.clockHeight / 2);
+        if (0 < this.clockWidth) {
+            this.clockDigitalWidthStr = clockDigitalWidth + "px";
+        }
+        else {
+            this.clockDigitalWidthStr = "100%";
+        }
     };
     ClockBoardComponent.prototype.getClockTime = function (time_hh_mm) {
         if (null === time_hh_mm || "" === time_hh_mm) {

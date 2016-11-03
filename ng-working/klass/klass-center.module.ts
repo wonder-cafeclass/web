@@ -7,12 +7,15 @@ import { CommonModule }              from '@angular/common';
 import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
+import { KlassColorService }      from './service/klass-color.service';
+
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
 import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
+import { KlassDetailNavListComponent }      from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 
@@ -32,6 +35,7 @@ import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updow
 import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
+import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 
 @NgModule({
   imports: [
@@ -44,6 +48,7 @@ import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.co
     KlassListComponent,
     KlassCenterHomeComponent,
     KlassDetailComponent,
+    KlassDetailNavListComponent,
     KlassFilterTileComponent,
     ClockBoardComponent,
     ClockDigitalComponent,
@@ -60,13 +65,15 @@ import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.co
     InputViewTableComponent,
     InputViewUpdownComponent,
     RadioBtnHListComponent,
-    CheckBoxHListComponent
+    CheckBoxHListComponent,
+    NavTabsComponent
   ],
   providers: [
     KlassService,
     KlassRadioBtnService,
     KlassCheckBoxService,
-    KlassDetailResolve
+    KlassDetailResolve,
+    KlassColorService
   ]
 })
 export class KlassCenterModule {}

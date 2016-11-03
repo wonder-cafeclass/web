@@ -16,11 +16,17 @@ var core_1 = require('@angular/core');
 */
 var CheckBoxHListComponent = (function () {
     function CheckBoxHListComponent() {
-        this.cageWidth = 100;
+        this.cageWidth = -1;
+        this.cageWidthStr = "";
         this.emitter = new core_1.EventEmitter();
     }
     CheckBoxHListComponent.prototype.ngOnInit = function () {
-        // Do nothing.
+        if (0 < this.cageWidth) {
+            this.cageWidthStr = this.cageWidth + "px";
+        }
+        else {
+            this.cageWidthStr = "100%";
+        }
     };
     CheckBoxHListComponent.prototype.onChange = function (event, myEvent) {
         event.stopPropagation();

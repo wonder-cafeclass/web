@@ -16,11 +16,18 @@ var core_1 = require('@angular/core');
 */
 var RadioBtnHListComponent = (function () {
     function RadioBtnHListComponent() {
-        this.cageWidth = 100;
+        this.cageWidth = -1;
         this.emitter = new core_1.EventEmitter();
     }
     RadioBtnHListComponent.prototype.ngOnInit = function () {
-        // Do nothing.
+        if (0 < this.cageWidth) {
+            this.cageWidthStr = this.cageWidth + "px";
+        }
+        else {
+            this.cageWidthStr = "100%";
+        }
+        this.listId = "dummy_" + (Math.round(Math.random() * 10000000) + (this.listTitle.length * this.listTitleFontSize));
+        console.log("optionList : ", this.optionList);
     };
     RadioBtnHListComponent.prototype.onChange = function (event, myEvent) {
         event.stopPropagation();
@@ -34,6 +41,10 @@ var RadioBtnHListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], RadioBtnHListComponent.prototype, "listTitle", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], RadioBtnHListComponent.prototype, "listId", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

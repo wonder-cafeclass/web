@@ -48,6 +48,7 @@ export class KlassDetailComponent implements OnInit {
   priceTagWidth:number=105;
   priceTagCageWidth:number=105;
   pricePerWeekFormat:string="주";
+  pricetagDesc:string;
 
   selectileImageTable:string[][];
   selectileImageHeight:number=60;
@@ -64,12 +65,17 @@ export class KlassDetailComponent implements OnInit {
 
   watchTowerImgUrl:string;
   radiobtnOptionListCourseDuration:RadioBtnOption[];
+  radiobtnOptionListNavTabs:RadioBtnOption[];
 
   // Admin Section
   radiobtnOptionListEnrollment:RadioBtnOption[];
   checkboxOptionListKlassDay:CheckBoxOption[];
 
-  klassPriceList:InputViewUpdown[];
+  klassPriceUpdown:InputViewUpdown;
+  klassTimeBeginUpdown:InputViewUpdown;
+  klassTimeEndUpdown:InputViewUpdown;
+  klassTitleUpdown:InputViewUpdown;
+  klassDescUpdown:InputViewUpdown;
 
   firstClassDate:Calendar;
   firstClassDateFormatStr:string;
@@ -135,21 +141,19 @@ export class KlassDetailComponent implements OnInit {
         ]
       ];
 
-      this.pricePerWeekFormat = this.klass.week_min + this.pricePerWeekFormat;
-
-      // 유저 수강 기간
-      this.radiobtnOptionListCourseDuration =
-      this.radiobtnService.getKlassEnrolmentWeeks(this.klass, 0);
+      this.pricePerWeekFormat = `${this.klass.week_min}주`;
+      this.pricetagDesc = `( 주 ${this.klass.days_list.length}회 )`;
 
       // 첫수업 날짜 가져오기
       this.setFirstClassDateFormat();
-      // REMOVE ME
-      /*
-      this.firstClassDate = this.getFirstClassDate(this.klass);
-      if(this.firstClassDate) {
-        this.firstClassDateFormatStr = `${this.firstClassDate.month}월 ${this.firstClassDate.date}일 ${this.firstClassDate.dayKor}요일`;
-      }
-      */
+
+      // nav-tabs : 수업 관련 내용
+      // wonder.jung
+      this.radiobtnOptionListNavTabs = 
+      this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_desc");
+      // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
+
+
     });
 
     this.authService.getAdminAuth().then(
@@ -224,52 +228,151 @@ export class KlassDetailComponent implements OnInit {
 
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
 
+    // 수강단위 기간 - (4주/8주/12주)
+    this.radiobtnOptionListCourseDuration =
+    this.radiobtnService.getKlassEnrolmentWeeks(this.klass);
+
     // 수강신청 가능 기간
     let optionList:RadioBtnOption[] = 
     this.radiobtnService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
     this.radiobtnOptionListEnrollment = optionList;
 
-    let updownList = [];
-    for (var i = 0; i < this.klass.klass_price_list.length; ++i) {
+    // 강의 제목
+    this.klassTitleUpdown = 
+    new InputViewUpdown(
+      // public myEvent:MyEvent
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE_KLASS_TITLE,
+          // public title:string
+          "수업 제목",
+          // public key:string
+          "title",
+          // public value:string
+          "" + this.klass.title,
+          // public metaObj:any
+          this.klass
+      ),
+      // public fontSizeTitle:number
+      16,
+      // public fontSizeText:number
+      12, 
+      // public type:string
+      "title",
+      // public color:string
+      "#f0f"
+    ); 
 
-      let klassPrice:KlassPrice = this.klass.klass_price_list[i];
+    // 강의 설명
+    this.klassDescUpdown = 
+    new InputViewUpdown(
+      // public myEvent:MyEvent
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE_KLASS_TITLE,
+          // public title:string
+          "수업 설명(TextArea)",
+          // public key:string
+          "desc",
+          // public value:string
+          "" + this.klass.desc,
+          // public metaObj:any
+          this.klass
+      ),
+      // public fontSizeTitle:number
+      16,
+      // public fontSizeText:number
+      12, 
+      // public type:string
+      "title",
+      // public color:string
+      "#f0f"
+    );     
 
-      let updown:InputViewUpdown = 
-      new InputViewUpdown(
-        // public myEvent:MyEvent
-        new MyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE_KLASS_ENROLMENT_WEEKS,
-            // public title:string
-            klassPrice.weeks + "주",
-            // public key:string
-            "week_max",
-            // public value:string
-            "" + klassPrice.discount,
-            // public metaObj:any
-            this.klass
-        ),
-        // public fontSizeTitle:number
-        12,
-        // public fontSizeText:number
-        12, 
-        // public type:string
-        "price",
-        // public color:string
-        "#f0f"
-      );
+    // 수업 시작 시간  
+    this.klassTimeBeginUpdown = 
+    new InputViewUpdown(
+      // public myEvent:MyEvent
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE_KLASS_PRICE,
+          // public title:string
+          "수업시작시간",
+          // public key:string
+          "time_begin",
+          // public value:string
+          "" + this.klass.time_begin,
+          // public metaObj:any
+          this.klass
+      ),
+      // public fontSizeTitle:number
+      16,
+      // public fontSizeText:number
+      12, 
+      // public type:string
+      "price",
+      // public color:string
+      "#f0f"
+    );
 
-      updownList.push(updown);
-    }
+    // 수업 종료 시간  
+    this.klassTimeEndUpdown = 
+    new InputViewUpdown(
+      // public myEvent:MyEvent
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE_KLASS_PRICE,
+          // public title:string
+          "수업종료시간",
+          // public key:string
+          "time_end",
+          // public value:string
+          "" + this.klass.time_end,
+          // public metaObj:any
+          this.klass
+      ),
+      // public fontSizeTitle:number
+      16,
+      // public fontSizeText:number
+      12, 
+      // public type:string
+      "price",
+      // public color:string
+      "#f0f"
+    );    
+
+    // 수강 금액
+    this.klassPriceUpdown = 
+    new InputViewUpdown(
+      // public myEvent:MyEvent
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE_KLASS_PRICE,
+          // public title:string
+          this.klass.week_min + "주 수업가격",
+          // public key:string
+          "week_max",
+          // public value:string
+          "" + this.klass.price,
+          // public metaObj:any
+          this.klass
+      ),
+      // public fontSizeTitle:number
+      16,
+      // public fontSizeText:number
+      12, 
+      // public type:string
+      "price",
+      // public color:string
+      "#f0f"
+    );
 
     // 운영자 지정 - 수업 요일 
     // days_list
-    // wonder.jung
     this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
     console.log("TEST / this.checkboxOptionListKlassDay : ",this.checkboxOptionListKlassDay);
 
 
-    this.klassPriceList = updownList;
   }
 
   cancel() {
@@ -350,11 +453,13 @@ export class KlassDetailComponent implements OnInit {
     let eventName:string = myEvent.eventName;
     let myEventService:MyEventService = this.myEventService;
 
+    console.log("onChangedFromChild / eventName : ",eventName);
+    console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+    console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
+
     if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
 
       // '수강신청일'이 변경되었습니다.
-      // console.log("onChangedFromChild / eventName : ",eventName);
-      // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
 
       let weekInterval:number = +myEvent.value;
 

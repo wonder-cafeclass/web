@@ -13,7 +13,7 @@ export class KlassRadioBtnService {
     /*
     *    @ Desc : 유저가 몇주(weeks) 수강하려는 결정을 도와주는 체크박스 데이터
     */
-    getKlassEnrolmentWeeks(klass:Klass, idxFocus:number) :RadioBtnOption[] {
+    getKlassEnrolmentWeeks(klass:Klass) :RadioBtnOption[] {
 
         let optionList:RadioBtnOption[] = [
             new RadioBtnOption(
@@ -69,17 +69,16 @@ export class KlassRadioBtnService {
                 // public isFocus:boolean
                 false
             )
-        ];        
+        ];
 
-        if(idxFocus < optionList.length) {
-            for (var i = 0; i < optionList.length; ++i) {
-                let option:RadioBtnOption = optionList[i];
+        for (var i = 0; i < optionList.length; ++i) {
+          let option:RadioBtnOption = optionList[i];
 
-                if(i === idxFocus) {
-                    option.isFocus = true;    
-                    optionList[i] = option;
-                }
-            }
+          if(+klass.week_min == +option.myEvent.value) {
+            option.isFocus = true;    
+            optionList[i] = option;
+            break;
+          }
         }
 
         return optionList;
@@ -309,7 +308,139 @@ export class KlassRadioBtnService {
         }
 
         return optionList;
-    }    
+    }
+
+    /*
+    *    @ Desc : 수업 상세 정보에 대한 Nav tabs에 들어갈 radiobtn 정보들
+    */
+    getNavTabsKlassInfo(klass:Klass, valueFocus:string) :RadioBtnOption[] {
+
+        // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
+        let optionList:RadioBtnOption[] = [
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "수업소개",
+              // public key:string
+              "klass_desc",
+              // public value:string
+              "klass_desc",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          ),
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "장소",
+              // public key:string
+              "klass_venue",
+              // public value:string
+              "klass_venue",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          ),
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "강사소개",
+              // public key:string
+              "tutor_desc",
+              // public value:string
+              "tutor_desc",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          ),
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "리뷰",
+              // public key:string
+              "student_review",
+              // public value:string
+              "student_review",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          ),
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "문의",
+              // public key:string
+              "student_question",
+              // public value:string
+              "student_question",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          ),
+
+          new RadioBtnOption(
+            // public myEvent:MyEvent
+            new MyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
+              // public title:string
+              "유의사항",
+              // public key:string
+              "caution",
+              // public value:string
+              "caution",
+              // public metaObj:any
+              klass
+            ),
+            // public isFocus:boolean
+            false
+          )        
+     
+        ]; 
+
+        if(null != valueFocus && "" != valueFocus) {
+            for (var i = 0; i < optionList.length; ++i) {
+                let option:RadioBtnOption = optionList[i];
+
+                if(option.myEvent.value === valueFocus) {
+                    option.isFocus = true;    
+                    optionList[i] = option;
+                }
+            }
+        }
+
+        return optionList;
+    }
 
 
 }
