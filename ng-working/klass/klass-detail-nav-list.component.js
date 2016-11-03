@@ -14,6 +14,14 @@ var KlassDetailNavListComponent = (function () {
     function KlassDetailNavListComponent(klassColorService) {
         this.klassColorService = klassColorService;
         this.cageWidth = -1;
+        this.isFocusKlassDesc = true;
+        this.isFocusKlassVenue = false;
+        this.isFocusTutorDesc = false;
+        this.isFocusStudentReview = false;
+        this.isFocusStudentQuestion = false;
+        this.isFocusCaution = false;
+        this.navHeight = 50;
+        this.borderTopBottomWidth = 2;
     }
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
         if (0 < this.cageWidth) {
@@ -25,6 +33,51 @@ var KlassDetailNavListComponent = (function () {
         this.colorWhite = this.klassColorService.white;
         this.colorOrange = this.klassColorService.orange;
         this.colorGray = this.klassColorService.gray;
+    };
+    KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
+        this.isFocusKlassDesc = false;
+        this.isFocusKlassVenue = false;
+        this.isFocusTutorDesc = false;
+        this.isFocusStudentReview = false;
+        this.isFocusStudentQuestion = false;
+        this.isFocusCaution = false;
+        var nextYPos = 0;
+        var box = null;
+        var firstBox = klassDesc.getBoundingClientRect();
+        var scrollY = window.scrollY;
+        if ("klass_desc" === myEvent.key) {
+            this.isFocusKlassDesc = true;
+            box = klassDesc.getBoundingClientRect();
+        }
+        else if ("klass_venue" === myEvent.key) {
+            this.isFocusKlassVenue = true;
+            box = klassVenue.getBoundingClientRect();
+        }
+        else if ("tutor_desc" === myEvent.key) {
+            this.isFocusTutorDesc = true;
+            box = tutorDesc.getBoundingClientRect();
+        }
+        else if ("student_review" === myEvent.key) {
+            this.isFocusStudentReview = true;
+            box = studentReview.getBoundingClientRect();
+        }
+        else if ("student_question" === myEvent.key) {
+            this.isFocusStudentQuestion = true;
+            box = studentQuestion.getBoundingClientRect();
+        }
+        else if ("caution" === myEvent.key) {
+            this.isFocusCaution = true;
+            box = caution.getBoundingClientRect();
+        }
+        if (0 < (firstBox.top - this.navHeight)) {
+            nextYPos = scrollY + box.top - (this.navHeight * 2 + this.borderTopBottomWidth);
+        }
+        else {
+            nextYPos = scrollY + box.top - this.navHeight;
+        }
+        if (0 < nextYPos) {
+            window.scrollTo(0, nextYPos);
+        }
     };
     __decorate([
         core_1.Input(), 

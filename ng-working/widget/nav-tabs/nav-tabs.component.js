@@ -16,6 +16,8 @@ var NavTabsComponent = (function () {
         this.fontSizeTitle = 12;
         this.paddingTopTitle = 10;
         this.cageWidth = -1;
+        this.emitter = new core_1.EventEmitter();
+        this.navHeight = 50;
         this.isScrollOver = false;
     }
     NavTabsComponent.prototype.ngOnInit = function () {
@@ -29,24 +31,32 @@ var NavTabsComponent = (function () {
     NavTabsComponent.prototype.onScroll = function (event) {
         var offsetTopParent = this.el.nativeElement.offsetParent.offsetTop;
         var scrollTop = document.body.scrollTop;
-        if (!this.isScrollOver && offsetTopParent <= (scrollTop - 1)) {
+        if (!this.isScrollOver && offsetTopParent <= (scrollTop + this.navHeight)) {
             var clientWidthParent = this.el.nativeElement.offsetParent.clientWidth;
             var screenWidth = screen.width;
             var marginLeft = Math.round((screenWidth - clientWidthParent) / 2);
-            console.log("clientWidthParent : ", clientWidthParent);
-            console.log("screenWidth : ", screenWidth);
-            console.log("marginLeft : ", marginLeft);
             this.shimWidthStr = marginLeft + "px";
             this.isScrollOver = true;
         }
-        else if (this.isScrollOver && scrollTop < offsetTopParent) {
+        else if (this.isScrollOver && (scrollTop + this.navHeight) < offsetTopParent) {
             this.isScrollOver = false;
             this.shimWidthStr = null;
         }
     };
-    NavTabsComponent.prototype.clickNav = function (event) {
+    NavTabsComponent.prototype.clickNav = function (event, radiobtnClicked) {
         event.stopPropagation();
-        console.log("clickNav / event : ", event);
+        event.preventDefault();
+        for (var i = 0; i < this.radiobtnList.length; ++i) {
+            var radiobtn = this.radiobtnList[i];
+            if (radiobtnClicked.myEvent.key === radiobtn.myEvent.key) {
+                radiobtn.isFocus = true;
+            }
+            else {
+                radiobtn.isFocus = false;
+            }
+        }
+        // 부모 객체로 이벤트를 전파합니다.
+        this.emitter.emit(radiobtnClicked.myEvent);
     };
     __decorate([
         core_1.Input(), 
@@ -89,13 +99,16 @@ var NavTabsComponent = (function () {
         __metadata('design:type', String)
     ], NavTabsComponent.prototype, "colorBorder", void 0);
     __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], NavTabsComponent.prototype, "emitter", void 0);
+    __decorate([
         core_1.HostListener('window:scroll', ['$event']), 
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', [Object]), 
         __metadata('design:returntype', void 0)
     ], NavTabsComponent.prototype, "onScroll", null);
     NavTabsComponent = __decorate([
-        core_1.Directive({ selector: '[myHighlight]' }),
         core_1.Component({
             moduleId: module.id,
             selector: 'nav-tabs',

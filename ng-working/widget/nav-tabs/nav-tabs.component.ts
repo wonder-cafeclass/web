@@ -1,13 +1,13 @@
 import {  Component, 
           OnInit, 
           Input, 
+          Output,
+          EventEmitter,
           HostListener, 
-          Directive, 
           ElementRef, 
           Renderer }      from '@angular/core';
 import { RadioBtnOption } from '../radiobtn/model/radiobtn-option';
 
-@Directive({ selector: '[myHighlight]' })
 @Component({
   moduleId: module.id,
   selector: 'nav-tabs',
@@ -32,6 +32,10 @@ export class NavTabsComponent implements OnInit {
 
   @Input() colorBorder:string;
 
+  @Output() emitter = new EventEmitter<any>();
+
+  navHeight:number=50;
+
 
   constructor(private el: ElementRef,private renderer: Renderer) {}
 
@@ -50,29 +54,39 @@ export class NavTabsComponent implements OnInit {
     let offsetTopParent:number = this.el.nativeElement.offsetParent.offsetTop;
     let scrollTop:number = document.body.scrollTop;
 
-    if(!this.isScrollOver && offsetTopParent <= (scrollTop - 1)) {
+    if(!this.isScrollOver && offsetTopParent <= (scrollTop + this.navHeight)) {
 
       let clientWidthParent:number = this.el.nativeElement.offsetParent.clientWidth;
       let screenWidth:number = screen.width;
       let marginLeft:number = Math.round((screenWidth-clientWidthParent)/2);
 
-      console.log("clientWidthParent : ",clientWidthParent);
-      console.log("screenWidth : ",screenWidth);
-      console.log("marginLeft : ",marginLeft);
-
       this.shimWidthStr=`${marginLeft}px`;
       this.isScrollOver = true;
 
-    } else if(this.isScrollOver && scrollTop < offsetTopParent){
+    } else if(this.isScrollOver && (scrollTop + this.navHeight) < offsetTopParent){
       this.isScrollOver = false;
       this.shimWidthStr=null;
     }
     
   }
 
-  clickNav(event) {
+  clickNav(event, radiobtnClicked) {
+
     event.stopPropagation();
-    console.log("clickNav / event : ",event);
+    event.preventDefault();
+
+    for (var i = 0; i < this.radiobtnList.length; ++i) {
+      let radiobtn = this.radiobtnList[i];
+
+      if(radiobtnClicked.myEvent.key === radiobtn.myEvent.key) {
+        radiobtn.isFocus = true;
+      } else {
+        radiobtn.isFocus = false;
+      }
+    }
+
+    // 부모 객체로 이벤트를 전파합니다.
+    this.emitter.emit(radiobtnClicked.myEvent);
   }
 
 }
