@@ -66,8 +66,7 @@ export class NavTabsComponent implements OnInit {
     } else if(this.isScrollOver && (scrollTop + this.navHeight) < offsetTopParent){
       this.isScrollOver = false;
       this.shimWidthStr=null;
-    }
-    
+    }    
   }
 
   clickNav(event, radiobtnClicked) {
