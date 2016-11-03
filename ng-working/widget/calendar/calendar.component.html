@@ -3,53 +3,47 @@
 		<table class="table cal"> 
 
 			<tbody> 
-			
-				<tr>
-					<td class="cal-cell" colspan="7" style="border-top: 0px;">
-						<span class="cal-date">{{monthBegin}}월</span>
-					</td> 
-				</tr>
 
 				<tr>
-					<td class="cal-cell">&nbsp;</td>
-					<td class="cal-cell">
+					<!-- <td class="cal-cell">&nbsp;</td> -->
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'sun'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">일</div>
 						</span>
 						<span *ngIf="dayBegin != 'sun'" class="cal-date sun">일</span>
 					</td> 
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'mon'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">월</div>
 						</span>
 						<span *ngIf="dayBegin != 'mon'" class="cal-date">월</span>
 					</td>
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'tue'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">화</div>
 						</span>
 						<span *ngIf="dayBegin != 'tue'" class="cal-date">화</span>
 					</td>
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'wed'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">수</div>
 						</span>
 						<span *ngIf="dayBegin != 'wed'" class="cal-date">수</span>
 					</td>
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'thu'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">목</div>
 						</span>
 						<span *ngIf="dayBegin != 'thu'" class="cal-date">목</span>
 					</td>
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<!-- <span *ngIf="dayBegin == 'fri'" class="cal-date cal-day-picked">금</span> -->
 						<span *ngIf="dayBegin == 'fri'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">금</div>
 						</span>
 						<span *ngIf="dayBegin != 'fri'" class="cal-date">금</span>
 					</td>
-					<td class="cal-cell">
+					<td class="cal-cell day">
 						<span *ngIf="dayBegin == 'sat'" class="badge cal-date cal-date-picked">
 							<div class="badge-cage">토</div>
 						</span>
@@ -59,15 +53,21 @@
 
 				<tr *ngFor="let row of calendarTable"> 
 
-					<td *ngFor="let field of row" class="cal-cell">
+					<td 	*ngFor="let field of row" 
+							[class.first_day_of_month]="field!=null && field.yyyy_mm_dd_DD != null && field.isFirstDayOfMonth  && !field.isFirstDay"
+							[class.first_week_of_month]="field!=null && field.yyyy_mm_dd_DD != null && field.isFirstWeekOfMonth  && !field.isFirstDay"
+							[class.last_week_of_month]="field!=null && field.yyyy_mm_dd_DD != null && field.isLastWeekOfMonth  && !field.isLastDay && !field.isLastWeek"
+							class="cal-cell">
 						<!-- 빈 날짜 공간 -->
 						<div *ngIf="field == null">
 							<span>&nbsp;</span>
 						</div>
-						<!-- "월"별 이름 -->
-						<div *ngIf="field != null && field.yyyy_mm_dd_DD == null">{{field.month}}</div>
+
+						<div *ngIf="field != null && field.isMonthIndicator" class="month_indicator">{{field.month}}</div>
+
 						<!-- 날짜 정보 -->
 						<div *ngIf="field != null && field.yyyy_mm_dd_DD != null">
+
 							<!-- 수업있음. 날짜 오늘보다 전 -->
 							<span 	*ngIf="field.hasKlass && !field.isExpired"
 									class="badge cal-date cal-date-picked">

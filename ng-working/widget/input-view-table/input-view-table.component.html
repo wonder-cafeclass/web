@@ -1,0 +1,28 @@
+<ul class="list-group updown" [style.width]="cageWidth + 'px'">
+  
+  <!-- List Title -->
+  <li *ngIf="tableTitle" 
+    class="list-group-item updown head" 
+    [style.font-size]="fontSizeTitle + 'px'">
+    <img *ngIf="topLeftImageUrl" class="cornerstone" src={{topLeftImageUrl}}>
+    {{tableTitle}}
+    </li>
+
+  <!-- List Options - CheckBox -->
+  <li   *ngFor="let option of chekcboxOptionList" 
+      class="list-group-item updown tail">
+
+    <!-- 여기에 원하는 컨텐츠를 넣자. -->
+    <table> 
+      <tbody> 
+
+        <tr>
+          <td style="width:50%;">TITLE</td>
+          <td style="width:50%;">CONTENTS</td>
+        </tr>
+
+      </tbody> 
+    </table>
+
+  </li>
+</ul>

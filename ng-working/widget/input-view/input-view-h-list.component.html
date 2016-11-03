@@ -1,0 +1,13 @@
+<table class="table" style="margin-bottom: 0px;" [style.width]="cageWidth + 'px'"> 
+  <tbody> 
+    <tr>
+      <td   class="td-layout"
+            *ngFor="let updown of updownList">
+
+        <input-view-updown 	[data]="updown"
+        					(emitter)="onChangedFromChild($event)"></input-view-updown>
+
+      </td>
+    </tr>
+  </tbody>
+</table>

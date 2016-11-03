@@ -1,0 +1,28 @@
+nav.klass-info {
+    margin-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;	
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-color:#fff;
+}
+.container.klass-info {
+	padding-left: 0px;
+    margin-left: 0px;
+    margin-right: 0px;    
+}
+.collapse.klass-info {
+	padding-left: 0px;
+}
+li.klass-info {
+    width: 100px;
+    text-align: center;	
+}
+ul.shim {
+    border-left: 1px solid #f0f;
+}
+.fixed-shim {
+    width: 100px;
+    height: 1px;
+    float: left;
+}

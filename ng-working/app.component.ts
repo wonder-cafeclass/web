@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
 		this.authService.getAdminAuth().then(
 			result => {
 				if(null != result.is_admin) {
-					this.isAdmin = result.is_admin;		
+					this.isAdmin = result.is_admin;
 				}
 			}
 		);

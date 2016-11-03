@@ -16,6 +16,7 @@ import { ClockTime }                      from './model/clock-time';
 export class ClockDigitalComponent implements OnInit {
 
   @Input() clockHeight:number=83;
+  @Input() clockWidth:number=83;
   @Input() clockTimeBegin:ClockTime;
   @Input() clockTimeEnd:ClockTime;
   @Input() is24:boolean=false;

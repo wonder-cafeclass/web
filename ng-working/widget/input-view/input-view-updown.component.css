@@ -1,0 +1,28 @@
+li.updown {
+	text-align:center;
+	border-color:#e85c41;
+}
+li.updown.head {
+	background-color:#e85c41;
+	color:#fff;
+	font-size:25px;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+li.updown.tail {
+	background-color:#fff;
+	color:#e85c41;
+	font-size:16px;
+	padding:8px;
+}
+ul.updown {
+	width:100px;
+	margin-bottom:0px;
+}
+.cornerstone {
+    float: left;
+    position: absolute;
+    width: 20px;
+    top: 5px;
+    left: 3px;    
+}

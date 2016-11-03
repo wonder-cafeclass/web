@@ -19,6 +19,7 @@ var ClockDigitalComponent = (function () {
     function ClockDigitalComponent(imageService) {
         this.imageService = imageService;
         this.clockHeight = 83;
+        this.clockWidth = 83;
         this.is24 = false;
         this.rowHeight = 0;
         this.rowPadding = 10;
@@ -41,6 +42,10 @@ var ClockDigitalComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], ClockDigitalComponent.prototype, "clockHeight", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ClockDigitalComponent.prototype, "clockWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', clock_time_1.ClockTime)

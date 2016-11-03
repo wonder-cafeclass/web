@@ -16,6 +16,7 @@ import { DialogService }        from './widget/dialog.service';
 import { AuthService }          from './auth.service';
 import { UrlService }           from './util/url.service';
 import { ImageService }           from './util/image.service';
+import { MyEventService }           from './util/my-event.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -38,6 +39,7 @@ import './rxjs-operators';
     AuthService,
     UrlService,
     ImageService,
+    MyEventService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService

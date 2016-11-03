@@ -1,13 +1,13 @@
 <table  class="table" 
+        [ngClass]="{'round':hasTableBorder}"
         style="margin-bottom:0px;" 
-        [style.width]="(0 < gridWidth)?gridWidth + 'px':'100%'">
+        [style.width]="tableWidthStr">
 
   <tbody>
 
     <tr *ngFor="let row of imageTable">
-      <td *ngFor="let field of row" class="td-layout">
+      <td *ngFor="let field of row" class="td-layout" [style.width]="'10%'">
         <img  *ngIf="field" src="{{field}}" 
-              [style.height]="(0 < imageHeight)?imageHeight + 'px':'100%'"
               [style.width]="(0 < imageWidth)?imageWidth + 'px':'100%'">
       </td>
     </tr>

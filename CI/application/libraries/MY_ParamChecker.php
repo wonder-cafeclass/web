@@ -228,7 +228,7 @@ class MY_ParamChecker {
     	return null;
     }
 
-    private function get_const($key="") {
+    public function get_const($key="") {
         if(empty($key)) 
         {
             return;

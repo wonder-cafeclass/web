@@ -13,6 +13,8 @@ var ImageGridComponent = (function () {
     function ImageGridComponent() {
         this.imageHeight = -1;
         this.imageWidth = -1;
+        this.tableWidth = -1;
+        this.hasTableBorder = false;
         this.gridWidth = 100;
     }
     ImageGridComponent.prototype.ngOnInit = function () {
@@ -35,6 +37,13 @@ var ImageGridComponent = (function () {
             } // end if
         } // end outer for
         this.gridWidth = this.imageWidth * colCnt;
+        if (0 < this.tableWidth) {
+            this.tableWidthStr = this.tableWidth + "px";
+        }
+        else {
+            this.tableWidthStr = "100%";
+        }
+        console.log("hasTableBorder : ", this.hasTableBorder);
     };
     __decorate([
         core_1.Input(), 
@@ -48,6 +57,14 @@ var ImageGridComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], ImageGridComponent.prototype, "imageWidth", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], ImageGridComponent.prototype, "tableWidth", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], ImageGridComponent.prototype, "hasTableBorder", void 0);
     ImageGridComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

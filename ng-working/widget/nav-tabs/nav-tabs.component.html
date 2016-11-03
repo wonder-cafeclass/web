@@ -1,0 +1,24 @@
+<nav 	class="navbar navbar-default klass-info" 
+		[style.border-color]="colorBorder" 
+		[ngClass]="{'navbar-fixed-top':isScrollOver}">
+	<div class="container" [ngClass]="{'klass-info':!isScrollOver}">
+		<div [ngClass]="{'row':isScrollOver}">
+			<div *ngIf="isScrollOver" class="col-md-2"></div>
+			<div class="collapse navbar-collapse klass-info" [ngClass]="{'col-md-8':isScrollOver}" id="bs-example-navbar-collapse-1">
+				<ul 	class="nav navbar-nav" 
+						[ngClass]="{'shim':isScrollOver}"
+						[style.border-color]="isScrollOver?colorBGFocus:colorBGBlur">
+					<li 	*ngFor="let radiobtn of radiobtnList"
+							[ngClass]="{'active':radiobtn.isFocus}"
+							class="klass-info"
+							role="presentation">
+						<a 	[style.color]="radiobtn.isFocus?colorTitleFocus:colorTitleBlur" 
+							[style.background-color]="radiobtn.isFocus?colorBGFocus:colorBGBlur" 
+							(click)="clickNav($event, radiobtn)"
+							href="#{{radiobtn.myEvent.key}}">{{radiobtn.myEvent.title}}</a>
+					</li>				
+				</ul>
+			</div>
+		</div> <!-- row -->
+	</div> <!-- container -->
+</nav>

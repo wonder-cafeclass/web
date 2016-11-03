@@ -57,6 +57,9 @@ class Klass extends REST_Controller implements MY_Class{
 
         // init MyCalendar
         $this->load->library('MY_Calendar');
+
+        // init MyKlassCalendar
+        $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
             
         // Set time zone as Seoul
         date_default_timezone_set('Asia/Seoul');
@@ -151,174 +154,6 @@ class Klass extends REST_Controller implements MY_Class{
 
     }
 
-    private function convertKlassCalendar($klass_course=null, $calendar_list=null) 
-    {
-        if(empty($calendar_list))
-        {
-            return;
-        }
-        if(is_null($klass_course)) 
-        {
-            return;
-        }
-        if(!$this->my_paramchecker->is_ok("klass_day", $klass_course->days))
-        {
-            return;
-        }
-
-        $has_class_began = false;
-        $has_class_closed = false;
-        $klass_cal_list = array();
-
-        // 수업이 종료되는 날짜를 가져옵니다.
-        $date_list = $this->my_calendar->get_weeks($klass_course->date_begin, $klass_course->week_max);
-        $date_end = "";
-        if(!empty($date_list))
-        {
-            $date_end = $date_list[count($date_list) - 1];
-        }
-        
-
-        for ($i=0; $i < count($calendar_list); $i++) 
-        {
-
-            // 2016-10-01-Sat
-            $cal_date = $calendar_list[$i];
-
-            $fragments = explode("-",$cal_date);
-            if(empty($fragments) || 4 != count($fragments))
-            {   
-                // error report
-                break;
-            }
-            $year = intval($fragments[0]);
-            $month = intval($fragments[1]);
-            $date = intval($fragments[2]);
-            $day = $fragments[3];
-
-            // KlassCalendar 객체를 만듭니다.
-            $klassCalendar = new KlassCalendar($cal_date, $year, $month, $date, $day);
-
-            $strpos = strpos(strtolower($cal_date), strtolower($klass_course->days));
-            $is_klass_day = false;
-            if(-1 < $strpos) 
-            {
-                // 수업이 있는 날짜입니다.
-                $is_klass_day = true;
-            }
-            $strpos = -1;
-
-            // 수업 시작 날짜 이전인지 검사.
-            if(!$has_class_began)
-            {
-                $strpos = strpos(strtolower($cal_date), strtolower($klass_course->date_begin));
-            }
-            if(-1 < $strpos) 
-            {
-                $has_class_began = true;
-            }
-            $strpos = -1;
-
-            // 수업 종료 날짜 이후인지 검사.
-            if($has_class_began && !$has_class_closed && !empty($date_end)) 
-            {
-                $strpos = strpos(strtolower($cal_date), strtolower($date_end));
-            }
-            if(-1 < $strpos) 
-            {
-                $has_class_closed = true;
-            }
-
-            // 수업 시작 날짜이거나 그 이후, 수업 종료 이전이면서 수업 요일이면, KlassCalendar에 "수업있음" true
-            if($has_class_began && !$has_class_closed &&  $is_klass_day)
-            {
-                $klassCalendar->hasKlass=true;
-            }
-
-            // 오늘 날짜까지는 Expired로 표시? --> Peter님과 논의 필요.
-            $is_expired = false;
-            $yyyy_mm_dd = "$year-$month-$date";
-            $time_cal_date = strtotime($yyyy_mm_dd);
-
-            $yyyy_mm_dd_now = $this->my_calendar->get_now_YYYYMMDD();
-            $time_now = strtotime($yyyy_mm_dd_now);
-            if($time_cal_date < $time_now) {
-                // 오늘보다 이전의 시간임.
-                $klassCalendar->isExpired = true;
-            }
-
-            array_push($klass_cal_list, $klassCalendar);
-        }
-
-        // 실제 달력의 형태와 동일한 2차 배열을 만듭니다.
-        $real_cal_list = array();
-        $week_days = ["sun","mon","tue","wed","thu","fri","sat"];
-        $week_days_length = count($week_days);
-
-        // 1개월, 2개월, 3개월일 경우 최대 표시 주수가 다릅니다.
-        $klass_cnt = count($calendar_list);
-        $klass_week_cnt = intval($klass_cnt/$week_days_length) + 2;
-        $row_weeks_max = $klass_week_cnt;
-
-        $offset = -1;
-        for ($i=0; $i < $row_weeks_max; $i++) 
-        { 
-
-            $real_cal_row_list = array();
-            $isNullList = true;
-            for ($j=0; $j < $week_days_length; $j++) 
-            { 
-                $cur_day = $week_days[$j];
-
-                if($offset < 0)
-                {
-                    // 달력 날짜가 지정되지 않았습니다.
-                    $klass_cal = $klass_cal_list[0];
-                    if(strtolower($cur_day) === strtolower($klass_cal->day))
-                    {
-                        // 같은 요일 발견!
-                        $offset = $j;
-                    }
-                }
-
-                // $klass_cal_list에 사용할 인덱스를 구합니다.
-                $idx_for_klass_cal = -1;
-                if(-1 < $offset)
-                {
-                    $idx_for_klass_cal = ($i * $week_days_length) + $j - $offset;
-                }                
-
-                $next_klass_cal = null;
-                if(-1 < $idx_for_klass_cal && $idx_for_klass_cal < count($klass_cal_list))
-                {
-                    $next_klass_cal = $klass_cal_list[$idx_for_klass_cal];
-                }
-
-
-
-                if(!is_null($next_klass_cal))
-                {
-                    // 달력위에 표시될 날짜 객체를 넣어줍니다.
-                    array_push($real_cal_row_list, $next_klass_cal);
-                    $isNullList = false;
-                }
-                else 
-                {   
-                    // 달력위의 빈 날짜는 null로 채워줍니다.
-                    array_push($real_cal_row_list, null);
-                }
-
-            }
-
-            if(!$isNullList) 
-            {
-                array_push($real_cal_list, $real_cal_row_list);
-            }
-        }
-
-        return $real_cal_list;
-    }
-
     public function course_get()
     {
         if($this->is_not_ok()) 
@@ -340,19 +175,11 @@ class Klass extends REST_Controller implements MY_Class{
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
-
-            $calendar_list = 
-            $this->my_calendar->get_date_list_by_month(
-                $klass->date_begin, 
-                intval($klass->week_max)
-            );
-
-            $klass_cal_table = $this->convertKlassCalendar($klass, $calendar_list);
-
-            $klass->calendar_table = $klass_cal_table;
+            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
+            // TEST
+            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass, "2016-11-15");
         }
 
-        // REFACTOR ME
         $last_query = $this->db->last_query();
         if (!empty($klass))
         {
@@ -1061,10 +888,12 @@ class Klass extends REST_Controller implements MY_Class{
             // 추가할 정보들을 넣는다.
             $row->time_begin_img_url($const_map, $this->my_path);
             $row->level_img_url($const_map, $this->my_path);
+            $row->set_days_list($const_map);
             $row->days_img_url($const_map, $this->my_path);
             $row->venue_subway_station_img_url($const_map, $this->my_path);
             $row->venue_cafe_logo_img_url($const_map, $this->my_path);
             $row->price_with_format();
+            $row->set_klass_price_list();
             $row->weeks_to_months();
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.

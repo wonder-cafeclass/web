@@ -10,7 +10,9 @@ export class ImageService {
     noticeHelpUrl:string="assets/images/notice/help.png";
     noticeDrinksUrl:string="assets/images/notice/drinks.png";
     cafeclassLogoUrl:string="assets/images/cafeclass_logo_text_only.svg";
+
     watchTowerUrl:string="assets/images/admin/watchtower.svg";
+    watchTowerWhiteUrl:string="assets/images/admin/watchtower_white.svg";
 
     clock1hr00m00mUrl:string="assets/images/clock/clock-1hr-00m-00m.svg";
     clock1hr00m30mUrl:string="assets/images/clock/clock-1hr-00m-30m.svg";
@@ -40,6 +42,8 @@ export class ImageService {
     clock3hr30mNoticePMUrl:string="assets/images/clock/clock-3hr-30m-notice-pm.svg";
 
     clockBGUrl:string="assets/images/clock/clock-bg.svg";
+
+    mapDummy:string="assets/images/map_dummy.png";
 
     constructor(private us:UrlService) {
     }

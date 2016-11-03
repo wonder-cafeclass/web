@@ -1,0 +1,97 @@
+.cal-container{
+	width:100%;
+}
+.cal-month {
+    background-color: #e85c41;
+    border-top: 0px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;  
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: center;
+}
+.cal-cell {
+	text-align: center;
+    border-top: 0px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 13%;
+}
+.cal-cell.date {
+    padding-top: 0px;
+}
+.cal-cell.date.firstrow {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+.lastrow {
+    margin-bottom: 3px;
+}
+.cal-cell.date.empty {
+    padding-top: 1px;    
+    padding-bottom: 1px;
+}
+
+.cal-cell.day {
+    border-bottom: 1px solid #ccc;
+}
+.cal-date {
+    width: 20px;
+    font-size: 12px;
+    padding: 0px;
+}
+.cal-day-picked {
+    color: #e85c41;
+
+}
+.cal-expired {
+    font-weight: lighter;
+    color: #fff;
+    background-color: #c9c9c9;
+}
+.sat {
+    color: #31708f;
+}
+.sun {
+    color: #f00;
+}
+.cal-date.hasClass {
+    font-weight: bolder;
+    color: #fff;
+    background-color: #e85c41;
+}
+.cal-date.hasClass.clickable:hover {
+    font-weight: bolder;
+    color: #e85c41;
+    background-color: #FFD700;
+}
+.cal-date.hasClass.focus {
+    font-weight: bolder;
+    color: #e85c41;
+    background-color: #FFD700;
+}
+.cal-date.hasClass.unclickable {
+    font-weight: lighter;
+    color: #ccc;
+}
+
+.cal-date.hasNoClass {
+    background-color: #fff;
+    font-weight: normal;
+}
+.badge-cage {
+    width: 15px;
+    height: 12px;	
+}
+.badge-cage.normal {
+    color: #333;
+}
+.table.cal {
+	margin-bottom: 0px;
+    border-collapse:separate;
+    border:solid 1px #e85c41;
+    border-radius:6px;
+    -moz-border-radius:6px;	
+}

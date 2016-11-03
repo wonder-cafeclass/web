@@ -1,0 +1,20 @@
+<table class="table round" [style.width]="cageWidthStr"> 
+  <tbody> 
+    <tr>
+      <td 	class="td-layout title">
+          <div  [style.font-size]="fontSizeTitle + 'px'"
+          >{{title}}</div>
+
+          <div   *ngIf="desc"
+                [style.font-size]="fontSizeDesc + 'px'"
+                [style.margin-bottom]="paddingTitle + 'px'"
+                style="margin-top:-10px;"
+          >{{desc}}</div>
+          
+      </td>
+      <td 	class="td-layout price" 
+      		[style.padding-top]="paddingTopPrice + 'px'"
+      		[style.font-size]="fontSizePrice + 'px'">{{currency}} {{priceWithFormat}}</td> 
+    </tr>
+  </tbody> 
+</table>

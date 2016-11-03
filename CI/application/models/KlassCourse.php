@@ -1,5 +1,7 @@
 <?php
 
+require APPPATH . '/models/KlassPrice.php';
+
 class KlassCourse {
 
         public $id;
@@ -43,6 +45,8 @@ class KlassCourse {
         public $month_max;
         // 수업요일
         public $days;
+        // 수업요일 리스트
+        public $days_list;
         // 수업요일 - ENG
         public $days_eng;
         // 수업요일 - KOR
@@ -67,7 +71,15 @@ class KlassCourse {
         public $search_tag;
         // 가격
         public $price;
-        // 4주당 가격리스트
+        // 가격 관련 KlassPrice List
+        public $klass_price_list;
+        // 할인된 가격의 배열
+        public $price_list_width_discount;
+        // 가격 할인 문자열
+        public $discount;
+        // 가격 할인 배열
+        public $discount_arr;
+        // 4주당 가격리스트 
         public $price_list;
         // 4주당 가격과 타이틀 리스트
         public $weekly_price_list;
@@ -75,12 +87,16 @@ class KlassCourse {
         public $price_with_format;
         // 수업운영상태
         public $class_status;
+        // 수업 신청 타입
+        public $enrollment_interval_week;
         // 이미지 링크    
         public $class_img_url;
         // 이미지 에러 링크    
         public $class_img_err_url;
-        // 클래스 캘린더 리스트
-        public $calendar_table;
+        // 클래스 캘린더 리스트 (Linear) - Calendar[][]
+        public $calendar_table_linear;
+        // 클래스 캘린더 리스트 (Monthly) - Calendar[][][]
+        public $calendar_table_monthly;
 
         public function time_begin_img_url($const_map=null, $my_path=null)
         {
@@ -219,6 +235,51 @@ class KlassCourse {
                         $this->level_img_url = $my_path->get($this->level_img_url);
                 }
         } 
+
+        public function set_days_list($const_map=null)
+        {
+                if(empty($this->days))
+                {
+                        return;
+                }
+                if(!isset($const_map)) 
+                {
+                        return;
+                }
+                if(!isset($const_map->{"class_days_list"})) 
+                {
+                        return;
+                }
+
+                $class_days = $this->days;
+                $class_days_list = $const_map->{"class_days_list"};
+
+                // "|"로 구분된 요일 정보를 분리해서 전달한다.
+                $days_list = explode("|", $class_days);
+
+                // 요일들의 유효성을 검사한다.
+                $class_day_map = array();
+                for ($i=0; $i < count($class_days_list); $i++) { 
+                        $class_day = $class_days_list[$i];
+                        $class_day_map[$class_day] = $class_day;
+                }
+                $is_valid = true;
+                for ($i=0; $i < count($class_days_list); $i++) {
+                        $class_day = $class_days_list[$i];
+                        if(!isset($class_day_map[$class_day]))
+                        {
+                                $is_valid = false;
+                        }
+                }
+                if(!$is_valid)
+                {
+                        return;
+                }
+
+                // 유효성 검증 완료! 데이터를 저장합니다.
+                $this->days_list = $days_list;
+
+        }
 
         public function days_img_url($const_map=null, $my_path=null)
         {
@@ -416,6 +477,46 @@ class KlassCourse {
                 }
                 $this->price_with_format = number_format($this->price);
         }              
+
+        public function set_klass_price_list()
+        {
+                if(!isset($this->price)) 
+                {
+                        return;
+                }
+                if(!isset($this->discount)) 
+                {
+                        return;
+                }
+
+                $discounts = explode("|",$this->discount);
+                if(empty($discounts))
+                {
+                        return;
+                }
+                $basic_weeks = 4;
+
+                $price_per_4week = floor(intval($this->price) / $basic_weeks);
+                $week_min = intval($this->week_min);
+                $week_max = intval($this->week_max);
+                $week_diff = $week_max - $week_min;
+                $week_diff = floor($week_diff/$basic_weeks);
+
+                $klass_price_list = array();
+                for ($i=0; $i <= $week_diff; $i++) { 
+
+                        $weeks = $basic_weeks * ($i + 1);
+                        // 할인 가격 배열에 할인 가격 정보가 없다면 할인이 없는 것으로 처리.
+                        $discount = 0;
+                        if($i < (count($discounts))) {
+                                $discount = intval($discounts[$i]);
+                        }
+
+                        $klassPrice = new KlassPrice($weeks, $price_per_4week, $discount);
+                        array_push($klass_price_list, $klassPrice);
+                }
+                $this->klass_price_list = $klass_price_list;
+        }
 
         public function weeks_to_months()
         {

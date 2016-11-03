@@ -1,0 +1,114 @@
+<div [style.width]="calWidth + 'px'">
+	<div class="cal-container" [style.width]="calWidth + 'px'"> 
+		<table class="table cal" [style.width]="calWidth + 'px'"> 
+
+			<tbody> 
+				<tr>
+					<td colspan="7" class="cal-month" style="color:#fff;font-weight:bold;">{{monthBegin}}월</td>
+				</tr>
+				<tr>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'sun'" class="cal-date hasClass">일</div>
+						<div *ngIf="dayBegin != 'sun'" class="cal-date hasNoClass sun">일</div>
+					</td> 
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'mon'" class="cal-date hasClass">월</div>
+						<div *ngIf="dayBegin != 'mon'" class="cal-date hasNoClass">월</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'tue'" class="cal-date hasClass">화</div>
+						<div *ngIf="dayBegin != 'tue'" class="cal-date hasNoClass">화</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'wed'" class="cal-date hasClass">수</div>
+						<div *ngIf="dayBegin != 'wed'" class="cal-date hasNoClass">수</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'thu'" class="cal-date hasClass">목</div>
+						<div *ngIf="dayBegin != 'thu'" class="cal-date hasNoClass">목</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'fri'" class="cal-date hasClass">금</div>
+						<div *ngIf="dayBegin != 'fri'" class="cal-date hasNoClass">금</div>
+					</td>
+					<td class="cal-cell day">
+						<div *ngIf="dayBegin == 'sat'" class="cal-date hasClass">토</div>
+						<div *ngIf="dayBegin != 'sat'" class="cal-date hasNoClass sat">토</div>
+					</td>				
+
+				</tr> 
+				
+				<tr *ngFor="let row of calendarTable"> 
+
+					<td 	*ngFor="let field of row"
+							[class.firstrow]="field != null && field.isFirstWeek != null && field.isFirstWeek"
+							[class.empty]="field == null"
+							class="cal-cell date">
+
+						<div info="빈 날짜 공간" *ngIf="field == null" style="height:1px;">
+							<span>&nbsp;</span>
+						</div>
+						
+						<div 	info="날짜 정보"
+								*ngIf="field != null && field.yyyy_mm_dd_DD != null"
+								[class.lastrow]="field != null && field.isFirstWeek != null && field.isLastWeek"
+								style="margin-right: 0px;margin-left: 0px;">
+
+							<div 	info="수업있음. 날짜 오늘보다 전"
+									*ngIf="field.hasKlass && !field.isExpired"
+									[class.clickable]="field.isEnrollment"
+									[class.unclickable]="!field.isEnrollment"
+									[class.focus]="field.isFocus"
+									(mouseenter)="onMouseEnterKlassDate($event, field)"
+									(mouseleave)="onMouseLeaveKlassDate($event, field)"
+									class="cal-date hasClass">
+									{{field.date}}
+							</div>
+
+							<div 	info="수업있음. 날짜 지났음."
+									*ngIf="field.hasKlass && field.isExpired" 
+									class="cal-date cal-expired">
+									{{field.date}}
+							</div>
+
+							<div 	*ngIf="!field.hasKlass" 
+									[class.sun]="field.day=='Sun'" 
+									[class.sat]="field.day=='Sat'"
+									[class.normal]="field.day!='Sat' && field.day!='Sun'"
+									class="cal-date hasNoClass">{{field.date}}</div>
+						</div>
+					</td> 
+				</tr> 
+
+			</tbody> 
+
+		</table> 
+	</div>	
+</div>
+
+<!-- // Sample
+<li class="list-group-item col2nd">
+
+<table class="table" style="margin-bottom: 0px; width:465px;">
+  <tbody> 
+    <tr>
+      <td *ngFor="let kCal of klassCalendarTableMonthly"
+          class="td-layout" 
+          style="width:150px;">
+        
+        <mini-calendar  #klassMiniCalendar
+                        [calendarTable]="kCal"
+                        [calWidth]="miniCalWidth"
+                        [dayBegin]="klassDayBegin"
+                        [dateBegin]="klassDateBegin"
+                        [weekMin]="klassWeekMin"
+                        [weekMax]="klassWeekMax"
+                        (emitter)="onChangedFromMiniCalendar($event)"></mini-calendar>
+
+      </td> 
+    </tr>
+  </tbody> 
+</table>
+
+</li>
+-->
