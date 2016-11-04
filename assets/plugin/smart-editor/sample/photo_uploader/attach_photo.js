@@ -36,6 +36,8 @@
 	
 	//File API 지원 여부로 결정
 	function checkDragAndDropAPI(){
+
+		/*
 		try{
 			if( !oNavigator.ie ){
 				if(!!oNavigator.safari && oNavigator.version <= 5){
@@ -49,6 +51,12 @@
 		}catch(e){
 			bSupportDragAndDropAPI = false;
 		}
+		*/
+
+		// File Select
+		bSupportDragAndDropAPI = false;
+		// File Drag & Drop
+		// bSupportDragAndDropAPI = true;
 	}
 	
 	//--------------- html5 미지원 브라우저에서 (IE9 이하) ---------------

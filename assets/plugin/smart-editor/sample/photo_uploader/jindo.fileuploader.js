@@ -315,6 +315,8 @@ jindo.FileUploader = jindo.$Class({
             this._aHiddenInput.length = 0;
             this._removeIframe();
         }, this).bind();
+
+        console.log(">>> elForm.submit");
         
         elForm.submit();
         if (this.option("bAutoReset")) {
@@ -370,6 +372,9 @@ jindo.FileUploader = jindo.$Class({
         return false;
     },
     _onFileSelectChange: function (we) {
+
+        console.log("TEST / _onFileSelectChange / 0");
+
         var sValue = we.element.value,
             bAllowed = this._checkExtension(sValue),
             htParam = {
