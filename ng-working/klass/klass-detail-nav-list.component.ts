@@ -1,7 +1,8 @@
 import { Component, OnInit, Input }   from '@angular/core';
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
-import { MyEvent }             from '../util/model/my-event';
-import { KlassColorService } from './service/klass-color.service'
+import { MyEvent }                    from '../util/model/my-event';
+import { ImageService }               from '../util/image.service';
+import { KlassColorService }          from './service/klass-color.service'
 
 @Component({
   moduleId: module.id,
@@ -28,7 +29,8 @@ export class KlassDetailNavListComponent implements OnInit {
   navHeight:number=50;
   borderTopBottomWidth:number=2;
 
-  constructor(private klassColorService:KlassColorService) {}
+  constructor(  private klassColorService:KlassColorService, 
+                public imageService: ImageService) {}
 
   ngOnInit(): void {
     if(0 < this.cageWidth) {
