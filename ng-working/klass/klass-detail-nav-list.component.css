@@ -10,11 +10,3 @@ li.klass-info {
 li.focus {
 	background-color: #e85c41;
 }
-a.jump {
-    position: absolute;
-    top: -50px;    
-}
-a.jump.first {
-    position: absolute;
-    top: 0px;    
-}

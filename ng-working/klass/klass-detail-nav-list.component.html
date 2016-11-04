@@ -12,7 +12,6 @@
             <li   #klassDesc
                   class="list-group-item klass-info first" 
                   [ngClass]="{'focus':isFocusKlassDesc}">
-                  <!-- <a class="jump first" name="klass_desc"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
                         <li class="list-group-item" style="padding:20px;">
@@ -38,18 +37,20 @@
                               </dl>                        
 
                         </li>
+                        <!-- TEST / smart editor -->
+                        <li class="list-group-item" style="padding:20px;">
+                              <smart-editor></smart-editor>
+                        </li>
                   </ul>
             </li>
             <li   #klassVenue
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusKlassVenue}">
-                  <!-- <a class="jump" name="klass_venue"></a> -->
                   <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
             </li>
             <li   #tutorDesc
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusTutorDesc}">
-            <!-- <a class="jump" name="tutor_desc"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
                         <li class="list-group-item" style="padding:5px;">
@@ -72,7 +73,6 @@
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
-                  <!-- <a class="jump" name="student_review"></a> -->
 
                   <!-- refactor me -->
                   <ul class="list-group" style="margin-bottom:0px;">
@@ -114,7 +114,6 @@
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
-                  <!-- <a class="jump" name="student_question"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
                         <li class="list-group-item" style="padding:5px;">
@@ -154,7 +153,6 @@
             <li   #caution
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusCaution}">
-                  <!-- <a class="jump" name="caution"></a> -->
                   <div class="list-group" style="margin-bottom:0px;">
                         <a href="#" class="list-group-item">
                               <h4 class="list-group-item-heading">Q1) 환불/취소 신청은 어떻게 하나요?</h4>

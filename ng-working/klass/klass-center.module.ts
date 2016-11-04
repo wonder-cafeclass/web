@@ -7,7 +7,7 @@ import { CommonModule }              from '@angular/common';
 import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
-import { KlassColorService }      from './service/klass-color.service';
+import { KlassColorService }         from './service/klass-color.service';
 
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
@@ -15,9 +15,13 @@ import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
-import { KlassDetailNavListComponent }      from './klass-detail-nav-list.component';
+import { 
+    KlassDetailNavListComponent 
+}                                    from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
+
+import { IframeSanitizerPipe }       from '../util/pipe/iframe-sanitizer.pipe';
 
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
@@ -36,6 +40,7 @@ import { InputViewTableComponent }   from '../widget/input-view-table/input-view
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
+import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
 
 @NgModule({
   imports: [
@@ -66,7 +71,9 @@ import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component
     InputViewUpdownComponent,
     RadioBtnHListComponent,
     CheckBoxHListComponent,
-    NavTabsComponent
+    NavTabsComponent,
+    SmartEditorComponent,
+    IframeSanitizerPipe
   ],
   providers: [
     KlassService,

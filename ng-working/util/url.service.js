@@ -25,6 +25,13 @@ var UrlService = (function () {
         }
         return "" + this.appBaseUrl + urlFragment;
     };
+    UrlService.prototype.getInner = function (urlFragment) {
+        if (0 < urlFragment.length && 0 === urlFragment.indexOf("/")) {
+            // "/subtree/subtree/A.php" --> "subtree/subtree/A"
+            urlFragment = urlFragment.replace("/", "");
+        }
+        return "" + this.baseHref + urlFragment;
+    };
     UrlService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [common_1.PlatformLocation])
