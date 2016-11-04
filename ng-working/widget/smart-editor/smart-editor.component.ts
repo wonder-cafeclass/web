@@ -51,8 +51,6 @@ export class SmartEditorComponent implements OnInit {
   }
 
   callFromOutside(myEvent) {
-    console.log('calledFromOutside / myEvent : ',myEvent);
-
     if(null == myEvent || null == myEvent.key) {
       return;
     }
@@ -84,8 +82,6 @@ export class SmartEditorComponent implements OnInit {
     if(null == this.childContentWindow.pasteHTML) {
       return;
     }
-
-    console.log("X / updateHTML / Found! / html : ",html);
     this.childContentWindow.pasteHTML(html);
 
   }

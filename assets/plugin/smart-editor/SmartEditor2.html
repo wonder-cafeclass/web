@@ -4,19 +4,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="./js/HuskyEZCreator.js" charset="utf-8"></script>
 </head>
-<body onload="ready()">
+<body>
 <form action="sample.php" method="post">
 	<!-- <textarea name="ir1" id="ir1" rows="10" cols="100" style="width:766px; height:412px; display:none;"></textarea> -->
-	<textarea name="ir1" id="ir1" rows="10" cols="100" style="width:100%; height:300px; min-width:610px; display:none;" onkeyup="onChangedText(this)"></textarea>
+	<textarea name="ir1" id="ir1" rows="10" cols="100" style="width:100%; height:300px; min-width:610px; display:none;"></textarea>
 	
-	<!-- Disabled
+<!-- 	
 	<p>
 		<input type="button" onclick="pasteHTML();" value="본문에 내용 넣기" />
 		<input type="button" onclick="showHTML();" value="본문 내용 가져오기" />
 		<input type="button" onclick="submitContents(this);" value="서버로 내용 전송" />
 		<input type="button" onclick="setDefaultFont();" value="기본 폰트 지정하기 (궁서_24)" />
 	</p>
-	-->
+-->
 
 </form>
 
@@ -42,11 +42,12 @@ nhn.husky.EZCreator.createInIFrame({
 	fOnAppLoad : function(){
 		//예제 코드
 		//oEditors.getById["ir1"].exec("PASTE_HTML", ["로딩이 완료된 후에 본문에 삽입되는 text입니다."]);
+		MY_SE_ready();
 	},
 	fCreator: "createSEditor2"
 });
 
-
+/*
 function pasteHTML() {
 	var sHTML = "<span style='color:#FF0000;'>이미지도 같은 방식으로 삽입합니다.<\/span>";
 	oEditors.getById["ir1"].exec("PASTE_HTML", [sHTML]);
@@ -73,8 +74,11 @@ function setDefaultFont() {
 	var nFontSize = 24;
 	oEditors.getById["ir1"].setDefaultFont(sDefaultFont, nFontSize);
 }
+*/
 
 
+
+// custom
 function getParameterByName(name, url) {
     if (!url) {
       url = window.location.href;
@@ -86,7 +90,6 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
 var editorHeight = parseInt(getParameterByName("height"));
 var editorWidth = parseInt(getParameterByName("width"));
 var ir1 = document.getElementById("ir1");
@@ -94,7 +97,6 @@ var otherComponentH = 54;
 if(null != ir1 && 0 < editorHeight) {
 	ir1.style.height = (editorHeight - otherComponentH) + "px";
 }
-
 // interaction with angular2
 var callbackName = getParameterByName("callbackName");
 var parentWindow = window.parent.window;
@@ -102,9 +104,7 @@ var angularCallback = null;
 if(null != parentWindow[callbackName]) {
 	angularCallback = parentWindow[callbackName];
 }
-
 // 에디터에서 필요한 이벤트는?
-
 // keyup event
 function onChangedText(textChanged) {
 	var myEvent = {
@@ -126,19 +126,15 @@ function callbackParent(myEvent) {
 		angularCallback.zone.run(function () { angularCallback.componentFn(myEvent)});
 	}	
 }
-
 function pasteHTML(sHTML) {
-	console.log("iframe / pasteHTML / sHTML : ",sHTML);
-	console.log("iframe / pasteHTML / oEditors : ",oEditors);
-
-	// sHTML = "<span style='color:#FF0000;'>이미지도 같은 방식으로 삽입합니다.<\/span>";
-	// oEditors.getById["ir1"].exec("PASTE_HTML", [sHTML]);
+	if(null == oEditors || null == oEditors.getById || null == sHTML) {
+		return;
+	}
+	oEditors.getById["ir1"].exec("PASTE_HTML", [sHTML]);
 }
-
-function ready() {
+function MY_SE_ready() {
 	fetchHTML();
 }
-
 
 
 </script>

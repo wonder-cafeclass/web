@@ -33,7 +33,6 @@ var SmartEditorComponent = (function () {
         };
     }
     SmartEditorComponent.prototype.callFromOutside = function (myEvent) {
-        console.log('calledFromOutside / myEvent : ', myEvent);
         if (null == myEvent || null == myEvent.key) {
             return;
         }
@@ -60,7 +59,6 @@ var SmartEditorComponent = (function () {
         if (null == this.childContentWindow.pasteHTML) {
             return;
         }
-        console.log("X / updateHTML / Found! / html : ", html);
         this.childContentWindow.pasteHTML(html);
     };
     __decorate([
