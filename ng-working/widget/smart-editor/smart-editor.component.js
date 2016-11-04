@@ -17,11 +17,31 @@ var my_asset_service_1 = require('../../util/my-asset.service');
 *	@ Author   : Wonder Jung
 */
 var SmartEditorComponent = (function () {
-    function SmartEditorComponent(myAssetService) {
+    function SmartEditorComponent(myAssetService, zone) {
+        var _this = this;
         this.myAssetService = myAssetService;
+        this.zone = zone;
+        this.cageHeight = -1;
         this.cageWidth = -1;
+        this.html = "";
         this.emitter = new core_1.EventEmitter();
+        // set function reference out of app. ( ex)iframe )
+        window["angularMySE"] = {
+            zone: this.zone,
+            componentFn: function (value) { return _this.callFromOutside(value); },
+            component: this
+        };
     }
+    SmartEditorComponent.prototype.callFromOutside = function (myEvent) {
+        console.log('calledFromOutside / myEvent : ', myEvent);
+        if (null == myEvent || null == myEvent.key) {
+            return;
+        }
+        if ("se_ready_to_fecth" === myEvent.key) {
+            // 전달받은 html 문자열을 iframe - smart editor에게 전달.
+            this.updateHTML(this.html);
+        }
+    };
     SmartEditorComponent.prototype.ngOnInit = function () {
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -29,13 +49,24 @@ var SmartEditorComponent = (function () {
         else {
             this.cageWidthStr = "100%";
         }
-        this.innerUrl = this.myAssetService.getInner(this.myAssetService.smartEditor);
-        console.log("innerUrl : ", this.innerUrl);
+        // Javascript, ifarme 통신 
+        // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
+        this.childContentWindow = this.iframe.nativeElement.contentWindow;
+    }; // end method
+    SmartEditorComponent.prototype.updateHTML = function (html) {
+        if (null == this.childContentWindow) {
+            return;
+        }
+        if (null == this.childContentWindow.pasteHTML) {
+            return;
+        }
+        console.log("X / updateHTML / Found! / html : ", html);
+        this.childContentWindow.pasteHTML(html);
     };
-    SmartEditorComponent.prototype.onChange = function (event, myEvent) {
-        event.stopPropagation();
-        this.emitter.emit(myEvent);
-    };
+    __decorate([
+        core_1.ViewChild('iframe'), 
+        __metadata('design:type', core_1.ElementRef)
+    ], SmartEditorComponent.prototype, "iframe", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -47,11 +78,19 @@ var SmartEditorComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
+    ], SmartEditorComponent.prototype, "cageHeight", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
     ], SmartEditorComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
     ], SmartEditorComponent.prototype, "topLeftImageUrl", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], SmartEditorComponent.prototype, "html", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -63,7 +102,7 @@ var SmartEditorComponent = (function () {
             templateUrl: 'smart-editor.component.html',
             styleUrls: ['smart-editor.component.css']
         }), 
-        __metadata('design:paramtypes', [my_asset_service_1.MyAssetService])
+        __metadata('design:paramtypes', [my_asset_service_1.MyAssetService, core_1.NgZone])
     ], SmartEditorComponent);
     return SmartEditorComponent;
 }());

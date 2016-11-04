@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var image_service_1 = require('../util/image.service');
 var klass_color_service_1 = require('./service/klass-color.service');
+var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
 var KlassDetailNavListComponent = (function () {
     function KlassDetailNavListComponent(klassColorService, imageService) {
         this.klassColorService = klassColorService;
@@ -35,6 +36,14 @@ var KlassDetailNavListComponent = (function () {
         this.colorWhite = this.klassColorService.white;
         this.colorOrange = this.klassColorService.orange;
         this.colorGray = this.klassColorService.gray;
+        // TEST
+        // iframe이 로딩이 완료된 시점을 알아야 합니다.
+        /*
+        setTimeout(() => {
+          console.log("TEST / setTimeout");
+          this.seComponent.updateHTML("TEST");
+        }, 300);
+        */
     };
     KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
         this.isFocusKlassDesc = false;
@@ -81,6 +90,10 @@ var KlassDetailNavListComponent = (function () {
             window.scrollTo(0, nextYPos);
         }
     };
+    __decorate([
+        core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 
+        __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
+    ], KlassDetailNavListComponent.prototype, "seComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)

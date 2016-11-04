@@ -46,6 +46,7 @@ export class MyAssetService {
     mapDummy:string="assets/images/map_dummy.png";
 
     smartEditor:string="assets/plugin/smart-editor/SmartEditor2.html";
+    smartEditorHuskyEZCreator:string="assets/plugin/smart-editor/js/HuskyEZCreator.js"
 
     constructor(private us:UrlService) {
     }

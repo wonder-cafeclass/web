@@ -1,8 +1,11 @@
 import { 
   Component, 
-  OnInit, 
+  OnInit,
+  NgZone, 
   Input, 
   Output, 
+  ElementRef,
+  ViewChild,
   EventEmitter }                    from '@angular/core';
 import { MyEvent }                  from '../../util/model/my-event';
 import { MyAssetService }           from '../../util/my-asset.service';
@@ -22,17 +25,43 @@ import { MyAssetService }           from '../../util/my-asset.service';
 })
 export class SmartEditorComponent implements OnInit {
 
+  @ViewChild('iframe') iframe:ElementRef;
+
   @Input() title:string;
   @Input() titleFontSize:number;
+  @Input() cageHeight:number=-1;
   @Input() cageWidth:number=-1;
   cageWidthStr:string;
   @Input() topLeftImageUrl:string;
+
+  @Input() html:string="";
   
   @Output() emitter = new EventEmitter<any>();
 
-  innerUrl:string;
+  childContentWindow;
 
-  constructor(public myAssetService:MyAssetService) {}
+  constructor(public myAssetService:MyAssetService, private zone:NgZone) {
+
+    // set function reference out of app. ( ex)iframe )
+    window["angularMySE"] = {
+      zone: this.zone, 
+      componentFn: (value) => this.callFromOutside(value), 
+      component: this
+    };
+  }
+
+  callFromOutside(myEvent) {
+    console.log('calledFromOutside / myEvent : ',myEvent);
+
+    if(null == myEvent || null == myEvent.key) {
+      return;
+    }
+
+    if("se_ready_to_fecth" === myEvent.key) {
+      // 전달받은 html 문자열을 iframe - smart editor에게 전달.
+      this.updateHTML(this.html);
+    }
+  }  
 
   ngOnInit(): void {
     if(0 < this.cageWidth) {
@@ -41,15 +70,24 @@ export class SmartEditorComponent implements OnInit {
       this.cageWidthStr="100%";
     }
 
-    this.innerUrl = this.myAssetService.getInner(this.myAssetService.smartEditor);
-    
+    // Javascript, ifarme 통신 
+    // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
+    this.childContentWindow = this.iframe.nativeElement.contentWindow;
 
-    console.log("innerUrl : ",this.innerUrl);
-  }
+  } // end method
 
-  onChange(event, myEvent:MyEvent) :void{
-    event.stopPropagation();
-    this.emitter.emit(myEvent);
+  public updateHTML(html:string) :void {
+
+    if(null == this.childContentWindow) {
+      return;
+    }
+    if(null == this.childContentWindow.pasteHTML) {
+      return;
+    }
+
+    console.log("X / updateHTML / Found! / html : ",html);
+    this.childContentWindow.pasteHTML(html);
+
   }
 
 }

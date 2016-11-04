@@ -24,7 +24,6 @@ var klass_detail_component_1 = require('./klass-detail.component');
 var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
-var iframe_sanitizer_pipe_1 = require('../util/pipe/iframe-sanitizer.pipe');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
@@ -77,8 +76,7 @@ var KlassCenterModule = (function () {
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
                 checkbox_h_list_component_1.CheckBoxHListComponent,
                 nav_tabs_component_1.NavTabsComponent,
-                smart_editor_component_1.SmartEditorComponent,
-                iframe_sanitizer_pipe_1.IframeSanitizerPipe
+                smart_editor_component_1.SmartEditorComponent
             ],
             providers: [
                 klass_service_1.KlassService,

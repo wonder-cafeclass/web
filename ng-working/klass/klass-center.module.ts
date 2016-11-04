@@ -21,8 +21,6 @@ import {
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 
-import { IframeSanitizerPipe }       from '../util/pipe/iframe-sanitizer.pipe';
-
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
 import { ClockComponent }            from '../widget/clock/clock.component';
@@ -72,8 +70,7 @@ import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.c
     RadioBtnHListComponent,
     CheckBoxHListComponent,
     NavTabsComponent,
-    SmartEditorComponent,
-    IframeSanitizerPipe
+    SmartEditorComponent
   ],
   providers: [
     KlassService,

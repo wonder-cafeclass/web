@@ -1,8 +1,12 @@
-import { Component, OnInit, Input }   from '@angular/core';
+import {  Component, 
+          ViewChild,
+          OnInit, 
+          Input }                     from '@angular/core';
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
 import { MyEvent }                    from '../util/model/my-event';
 import { ImageService }               from '../util/image.service';
-import { KlassColorService }          from './service/klass-color.service'
+import { KlassColorService }          from './service/klass-color.service';
+import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
 
 @Component({
   moduleId: module.id,
@@ -11,6 +15,9 @@ import { KlassColorService }          from './service/klass-color.service'
   styleUrls: [ 'klass-detail-nav-list.component.css' ]
 })
 export class KlassDetailNavListComponent implements OnInit {
+
+  @ViewChild(SmartEditorComponent)
+  private seComponent: SmartEditorComponent;  
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() cageWidth:number=-1;
@@ -42,7 +49,18 @@ export class KlassDetailNavListComponent implements OnInit {
     this.colorWhite = this.klassColorService.white;
     this.colorOrange = this.klassColorService.orange;
     this.colorGray = this.klassColorService.gray;
+
+    // TEST
+    // iframe이 로딩이 완료된 시점을 알아야 합니다.
+    /*
+    setTimeout(() => {
+      console.log("TEST / setTimeout");
+      this.seComponent.updateHTML("TEST");
+    }, 300);    
+    */
   }
+
+
 
   onChangedFromChild(myEvent:MyEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) :void{
 
