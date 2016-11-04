@@ -9,10 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var image_service_1 = require('../util/image.service');
 var klass_color_service_1 = require('./service/klass-color.service');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService) {
+    function KlassDetailNavListComponent(klassColorService, imageService) {
         this.klassColorService = klassColorService;
+        this.imageService = imageService;
         this.cageWidth = -1;
         this.isFocusKlassDesc = true;
         this.isFocusKlassVenue = false;
@@ -94,7 +96,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

@@ -44,7 +44,7 @@
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusKlassVenue}">
                   <!-- <a class="jump" name="klass_venue"></a> -->
-                  <img class="img-rounded" style="width:100%;" src="/cafeclass/assets/images/map_dummy.png">
+                  <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
             </li>
             <li   #tutorDesc
                   class="list-group-item klass-info"
