@@ -49,8 +49,6 @@ export class ImageGridComponent implements OnInit {
       this.tableWidthStr="100%";
     }
 
-    console.log("hasTableBorder : ",this.hasTableBorder);
-
   }
 
 }

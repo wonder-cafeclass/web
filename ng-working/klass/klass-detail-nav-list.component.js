@@ -12,10 +12,12 @@ var core_1 = require('@angular/core');
 var image_service_1 = require('../util/image.service');
 var klass_color_service_1 = require('./service/klass-color.service');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var klass_1 = require('./model/klass');
 var KlassDetailNavListComponent = (function () {
     function KlassDetailNavListComponent(klassColorService, imageService) {
         this.klassColorService = klassColorService;
         this.imageService = imageService;
+        this.isAdmin = false;
         this.cageWidth = -1;
         this.isFocusKlassDesc = true;
         this.isFocusKlassVenue = false;
@@ -25,6 +27,9 @@ var KlassDetailNavListComponent = (function () {
         this.isFocusCaution = false;
         this.navHeight = 50;
         this.borderTopBottomWidth = 2;
+        this.isShowKlassFeature = false;
+        this.isShowKlassTarget = false;
+        this.isShowKlassSchedule = false;
     }
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
         if (0 < this.cageWidth) {
@@ -36,14 +41,34 @@ var KlassDetailNavListComponent = (function () {
         this.colorWhite = this.klassColorService.white;
         this.colorOrange = this.klassColorService.orange;
         this.colorGray = this.klassColorService.gray;
-        // TEST
-        // iframe이 로딩이 완료된 시점을 알아야 합니다.
-        /*
-        setTimeout(() => {
-          console.log("TEST / setTimeout");
-          this.seComponent.updateHTML("TEST");
-        }, 300);
-        */
+        // Sanitize safe html
+        // http://stackoverflow.com/questions/39628007/angular2-innerhtml-binding-remove-style-attribute
+        if (null === this.klass.feature || "" === this.klass.feature) {
+            this.klass.feature = '<p style="color:#f00;">수업의 특징을 입력해주세요.</p>';
+        }
+        if (null === this.klass.target || "" === this.klass.target) {
+            this.klass.target = '<p style="color:#f00;">수업 추천 대상을 입력해주세요.</p>';
+        }
+        if (null === this.klass.schedule || "" === this.klass.schedule) {
+            this.klass.schedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
+        }
+        this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
+        this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
+    };
+    KlassDetailNavListComponent.prototype.onChangedFromChildSE = function (myEvent) {
+        // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
+        if (null == myEvent || null == myEvent.key || "" == myEvent.key) {
+            return;
+        }
+        if ("feature" === myEvent.key) {
+            this.klass.feature = myEvent.value;
+        }
+        else if ("target" === myEvent.key) {
+            this.klass.target = myEvent.value;
+        }
+        else if ("schedule" === myEvent.key) {
+            this.klass.schedule = myEvent.value;
+        }
     };
     KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
         this.isFocusKlassDesc = false;
@@ -90,6 +115,21 @@ var KlassDetailNavListComponent = (function () {
             window.scrollTo(0, nextYPos);
         }
     };
+    KlassDetailNavListComponent.prototype.onClickKlassFeature = function () {
+        this.isShowKlassFeature = !this.isShowKlassFeature;
+        this.isShowKlassTarget = false;
+        this.isShowKlassSchedule = false;
+    };
+    KlassDetailNavListComponent.prototype.onClickKlassTarget = function () {
+        this.isShowKlassFeature = false;
+        this.isShowKlassTarget = !this.isShowKlassTarget;
+        this.isShowKlassSchedule = false;
+    };
+    KlassDetailNavListComponent.prototype.onClickKlassSchedule = function () {
+        this.isShowKlassFeature = false;
+        this.isShowKlassTarget = false;
+        this.isShowKlassSchedule = !this.isShowKlassSchedule;
+    };
     __decorate([
         core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 
         __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
@@ -98,6 +138,14 @@ var KlassDetailNavListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Array)
     ], KlassDetailNavListComponent.prototype, "radiobtnOptionListNavTabs", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', klass_1.Klass)
+    ], KlassDetailNavListComponent.prototype, "klass", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], KlassDetailNavListComponent.prototype, "isAdmin", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

@@ -10,3 +10,6 @@ li.klass-info {
 li.focus {
 	background-color: #e85c41;
 }
+li.list-group-item.klass-desc {
+	padding:20px;
+}

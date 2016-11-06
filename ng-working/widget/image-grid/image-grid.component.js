@@ -43,7 +43,6 @@ var ImageGridComponent = (function () {
         else {
             this.tableWidthStr = "100%";
         }
-        console.log("hasTableBorder : ", this.hasTableBorder);
     };
     __decorate([
         core_1.Input(), 

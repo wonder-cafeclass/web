@@ -146,6 +146,7 @@ var KlassDetailComponent = (function () {
     };
     KlassDetailComponent.prototype.initAdmin = function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
+        this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
         // 수강단위 기간 - (4주/8주/12주)
         this.radiobtnOptionListCourseDuration =
             this.radiobtnService.getKlassEnrolmentWeeks(this.klass);
@@ -355,7 +356,7 @@ var KlassDetailComponent = (function () {
                 console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
             }
         } // end if
-    };
+    }; // end method
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

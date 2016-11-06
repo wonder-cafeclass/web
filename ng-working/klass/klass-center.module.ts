@@ -8,6 +8,9 @@ import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassColorService }         from './service/klass-color.service';
+import { MyRulerService }            from '../util/service/my-ruler.service';
+
+import { SafeHtmlPipe }              from '../util/pipe/safe-html-pipe';
 
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
@@ -39,6 +42,7 @@ import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.co
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+import { DronListComponent }         from '../widget/dron-list/dron-list.component';
 
 @NgModule({
   imports: [
@@ -70,14 +74,17 @@ import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.c
     RadioBtnHListComponent,
     CheckBoxHListComponent,
     NavTabsComponent,
-    SmartEditorComponent
+    SmartEditorComponent,
+    DronListComponent,
+    SafeHtmlPipe
   ],
   providers: [
     KlassService,
     KlassRadioBtnService,
     KlassCheckBoxService,
     KlassDetailResolve,
-    KlassColorService
+    KlassColorService,
+    MyRulerService
   ]
 })
 export class KlassCenterModule {}

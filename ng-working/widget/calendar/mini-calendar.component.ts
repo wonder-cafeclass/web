@@ -87,38 +87,5 @@ export class MiniCalendarComponent implements OnInit {
 		);
 
 		this.emitter.emit(myEvent);
-
-		// this.emitter.emit(myEvent);
-
-		// 부모객체에게 날짜에 mouseover event를 전달합니다.
-
-		/*
-		if(!date.isEnrollment) {
-			return;
-		}
-		for (var i = 0; i < this.calendarTable.length; ++i) {
-
-			let row = this.calendarTable[i];
-			for (var j = 0; j < row.length; ++j) {
-				let field = row[j];
-
-				if(null === field) {
-					continue;
-				}
-				if(!field.hasKlass) {
-					continue;
-				}
-				if(!(date.date < field.date)) {
-					// 사용자가 mouseover한 날짜보다 이후 날짜여야 합니다.
-					continue;
-				}
-
-				// 사용자가 수강 신청 한 기간만큼 포커싱 해줍니다.
-
-				// field.isFocus = true;
-			} // end for
-		} // end for
-		*/
-
 	}
 }

@@ -64,9 +64,11 @@ export class KlassDetailComponent implements OnInit {
   isAdmin:boolean=false;
 
   watchTowerImgUrl:string;
+  watchTowerWhiteImgUrl:string;
   radiobtnOptionListCourseDuration:RadioBtnOption[];
   radiobtnOptionListNavTabs:RadioBtnOption[];
 
+  // @ Deprecated
   // Admin Section
   radiobtnOptionListEnrollment:RadioBtnOption[];
   checkboxOptionListKlassDay:CheckBoxOption[];
@@ -227,6 +229,7 @@ export class KlassDetailComponent implements OnInit {
   initAdmin() {
 
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
+    this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
 
     // 수강단위 기간 - (4주/8주/12주)
     this.radiobtnOptionListCourseDuration =
@@ -486,8 +489,5 @@ export class KlassDetailComponent implements OnInit {
 
 
     } // end if
-
-
-
-  }
+  } // end method
 }

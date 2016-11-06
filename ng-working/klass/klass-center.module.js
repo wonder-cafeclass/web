@@ -16,6 +16,8 @@ var klass_service_1 = require('./klass.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_color_service_1 = require('./service/klass-color.service');
+var my_ruler_service_1 = require('../util/service/my-ruler.service');
+var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
@@ -42,6 +44,7 @@ var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.co
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var dron_list_component_1 = require('../widget/dron-list/dron-list.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -76,14 +79,17 @@ var KlassCenterModule = (function () {
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
                 checkbox_h_list_component_1.CheckBoxHListComponent,
                 nav_tabs_component_1.NavTabsComponent,
-                smart_editor_component_1.SmartEditorComponent
+                smart_editor_component_1.SmartEditorComponent,
+                dron_list_component_1.DronListComponent,
+                safe_html_pipe_1.SafeHtmlPipe
             ],
             providers: [
                 klass_service_1.KlassService,
                 klass_radiobtn_service_1.KlassRadioBtnService,
                 klass_checkbox_service_1.KlassCheckBoxService,
                 klass_detail_resolve_service_1.KlassDetailResolve,
-                klass_color_service_1.KlassColorService
+                klass_color_service_1.KlassColorService,
+                my_ruler_service_1.MyRulerService
             ]
         }), 
         __metadata('design:paramtypes', [])

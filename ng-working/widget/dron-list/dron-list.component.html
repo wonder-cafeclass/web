@@ -1,0 +1,42 @@
+<!--
+<div 	class="dron" 
+		[ngClass]="{'top-left': isTopLeft, 'top-right': isTopRight, 'bottom-left': isBottomLeft, 'bottom-right': isBottomRight}">dron-list</div>
+-->
+<nav class="navbar navbar-default navbar-fixed-bottom cage">
+  <div class="container">
+    <div class="dron-bottom-right" [style.top]="offsetTop + 'px'"><!-- +40 -->
+
+        <ul class="list-group">
+			<li class="list-group-item title"
+				id="dron-header"
+				[style.color]="textColor"
+				[style.border-color]="color"
+				[style.background-color]="bgColor">
+				<img 	*ngIf="topLeftImgUrl" 
+						class="watchtower" 
+						src={{topLeftImgUrl}}>
+				{{title}}
+	            <button   	type="button"
+	                      	class="btn btn-sm btn-default klass-btn">
+	                      	저장하기
+	            </button>
+
+			</li>
+			<li class="list-group-item" 
+				style="padding:0px;border:0px;"
+				id="dron-content">
+		        <smart-editor 	*ngIf="SEinnerHTML"
+		        				[cageHeight]="cageHeight"
+		        				[cageWidth]="cageWidth"
+		                      	[html]="SEinnerHTML"
+		                      	[key]="key"
+		                      	(emitter)="onChangedFromChild($event)"></smart-editor>
+			</li>
+        </ul>
+
+
+
+
+    </div>
+  </div>
+</nav>

@@ -4134,6 +4134,10 @@ nhn.husky.SE_EditingAreaManager = jindo.$Class({
 	},
 	
 	_fitElementInEditingArea : function(el){
+
+		// wonder.jung
+		console.log("_fitElementInEditingArea / el : ",el);
+
 		el.style.height = this.elEditingAreaContainer.offsetHeight+"px";
 //		el.style.width = this.elEditingAreaContainer.offsetWidth+"px";
 //		el.style.width = this.elEditingAreaContainer.style.width || (this.elEditingAreaContainer.offsetWidth+"px");
