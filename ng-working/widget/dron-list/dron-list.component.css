@@ -30,5 +30,12 @@ li.list-group-item.title {
     right: 5px;
     top: 5px;    
 }
+li.bottom {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;  
+    border-right: 0px solid #bababa;
+    border-left: 1px solid #bababa;
+    background-color: #ddd;
+}
 
 

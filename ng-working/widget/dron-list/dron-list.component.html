@@ -17,10 +17,10 @@
 						src={{topLeftImgUrl}}>
 				{{title}}
 	            <button   	type="button"
-	                      	class="btn btn-sm btn-default klass-btn">
-	                      	저장하기
+	            			style="margin:3px;"
+	                      	class="btn btn-xs btn-default klass-btn">
+					<span style="padding-top:3px;" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 	            </button>
-
 			</li>
 			<li class="list-group-item" 
 				style="padding:0px;border:0px;"
@@ -31,6 +31,21 @@
 		                      	[html]="SEinnerHTML"
 		                      	[key]="key"
 		                      	(emitter)="onChangedFromChild($event)"></smart-editor>
+<!-- EXAMPLE
+<dron-list  [cageHeight]="290"
+			[cageWidth]="710"
+			[key]="'feature'"
+			[SEinnerHTML]="'<p>TEST</p>'"></dron-list>
+-->
+			</li>
+			<li class="list-group-item bottom"
+				id="dron-tail">
+				&nbsp;<!-- btn이 float된 상태이기 때문에 공백문자로 row의 높이를 만들어줍니다. -->
+	            <button   	type="button"
+	                      	class="btn btn-sm btn-default klass-btn">
+	                      	저장하기
+	            </button>
+
 			</li>
         </ul>
 

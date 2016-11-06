@@ -32,6 +32,7 @@ export class DronListComponent implements OnInit {
   @Input() cageHeight:number=-1;
   headerHeight:number=-1;
   contentHeight:number=-1;
+  tailHeight:number=-1;
   offsetTop:number=10;
 
   @Input() color:string="";
@@ -73,20 +74,10 @@ export class DronListComponent implements OnInit {
     if("" === this.bgColor) {
       this.bgColor = this.klassColorService.orange;
     }
+    //bgColorBottom
     if("" === this.title) {
       this.title = "No title";
     }
-
-    /*
-    if(null != this.smartEditorComponent) {
-      // 스마트 에디터를 보여줘야 하는 경우.
-      let dronHeader = document.getElementById("dron-header");
-      // this.cageHeight;
-
-    }
-    */
-
-    console.log("DronListComponent / TEST / 001 / this.SEinnerHTML : ",this.SEinnerHTML);
   }
 
   onChangedFromChild(myEvent) :void {
@@ -95,22 +86,14 @@ export class DronListComponent implements OnInit {
       return;
     }
 
-    console.log("dron-list / onChangedFromChild / myEvent : ",myEvent);
-
     if(this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
 
       // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
       this.headerHeight = this.myRulerService.getHeight("dron-header");
       this.contentHeight = this.myRulerService.getHeight("dron-content");
-      this.offsetTop = -1 * (this.headerHeight + this.contentHeight - 8);
-
-      console.log("this.headerHeight : ",this.headerHeight);
-      console.log("this.contentHeight : ",this.contentHeight);
-      console.log("this.offsetTop : ",this.offsetTop);
+      this.tailHeight = this.myRulerService.getHeight("dron-tail");
+      // this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 8);
+      this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 4);
     }
-
-    
-
-
   }
 }
