@@ -255,7 +255,7 @@ class ThumbMaker{
 		return unlink($file_path);
 	}
 
-	public static function make_thumbnail($img_src_url="") {
+	public static function make_thumbnail($img_src_url="", $image_width=-1) {
 
 		$result = new stdClass();
 		$result->error = "Congrats! No Errors.";
@@ -294,12 +294,12 @@ class ThumbMaker{
 		// VALIDATION - DONE
 
 		$file_path = $thumbnail_dir_path . "/" . $thumbnail_name;
-		$image_width = self::$THUMBNAIL_WIDTH;
-
-		echo "\$file_path : $file_path<br/>";
+		if(!(0 < $image_width)) {
+			$image_width = self::$THUMBNAIL_WIDTH;
+		}
 
 		$result_make_thumb = self::make_thumb($img_src_url, $file_path, $image_width);
-		// return $result_make_thumb;
+
 		if(is_null($result_make_thumb) || $result_make_thumb->success == false) {
 			return $result_make_thumb;
 		}
@@ -308,6 +308,7 @@ class ThumbMaker{
 			$result->success = true;
 			$result->thumbnail_name = $thumbnail_name;
 			$result->thumbnail_url = self::get_thumb_service_path() . "/" . $thumbnail_name;
+
 			return $result;
 		}
 
@@ -385,47 +386,13 @@ class ThumbMaker{
 		// find the "desired height" of this thumbnail, relative to the desired width  
 		$desired_width = 0;
 		$desired_height = 0;
-		if($height < $width) {
 
-			// landscape
-			if($crop_size < $height) {
+		// $crop_info = $this->getShorterMatched($width, $height, $crop_size);
+		$crop_info = self::getHMatched($width, $height, $crop_size);
 
-				$result->view_mode = "landscape";
-				$desired_height = $crop_size;
-				$desired_width = floor(($desired_height * $width) / $height);
+		$desired_width = $crop_info->desired_width;
+		$desired_height = $crop_info->desired_height;
 
-				// $desired_width:$desired_height = $width:$height;
-
-			} else {
-
-				$desired_width = $width;
-				$desired_height = $height;
-			}
-
-			$result->desired_height = $desired_height;
-			$result->desired_width = $desired_width;
-
-
-		} else if($width <= $height) {
-
-			// portrait
-			if($crop_size < $width) {
-
-				$result->view_mode = "portrait";
-				$desired_width = $crop_size;
-				$desired_height = floor(($desired_width * $height) / $width);
-
-			} else {
-
-				$desired_width = $width;
-				$desired_height = $height;
-
-			}
-
-			$result->desired_height = $desired_height;
-			$result->desired_width = $desired_width;
-
-		}
 		if(!(0 <$desired_width)) {
 			$result->success == false;
 			$result->error = "make_thumb / !(0 <\$desired_width) <br/>";
@@ -447,9 +414,72 @@ class ThumbMaker{
 		imagejpeg($virtual_image, $dest);
 
 		$result->success = true;
+
 		return $result;
 
 	}
+
+	private static function getHMatched($width="", $height="", $desired_width=-1) {
+		// 가로(Horizontal) 변을 원하는 크기로 변경해서 나머지 세로 변을 선택된 가로 변과 원하는 크기의 비율로 변경해줍니다.
+		// $width:$height = $new_width:$new_height;
+
+		$new_height = round(($height*$desired_width) / $width);
+
+		$result = new stdClass();
+		$result->desired_height = $new_height;
+		$result->desired_width = $desired_width;
+
+		return $result;
+	}
+
+	private static function getShorterMatched($width="", $height="", $desired_size=-1) {
+		// 짧은 쪽의 변을 원하는 크기로 변경해서 나머지 긴 변을 선택된 변과 원하는 크기의 비율로 변경해줍니다.
+		$result = new stdClass();
+		if($height < $width) {
+
+			// landscape
+			if($desired_size < $height) {
+
+				$result->view_mode = "landscape";
+				$desired_height = $desired_size;
+				$desired_width = floor(($desired_height * $width) / $height);
+
+				// $desired_width:$desired_height = $width:$height;
+
+			} else {
+
+				$desired_width = $width;
+				$desired_height = $height;
+			}
+
+			$result->desired_height = $desired_height;
+			$result->desired_width = $desired_width;
+
+
+		} else if($width <= $height) {
+
+			// portrait
+			if($desired_size < $width) {
+
+				$result->view_mode = "portrait";
+				$desired_width = $desired_size;
+				$desired_height = floor(($desired_width * $height) / $width);
+
+			} else {
+
+				$desired_width = $width;
+				$desired_height = $height;
+
+			}
+
+			$result->desired_height = $desired_height;
+			$result->desired_width = $desired_width;
+
+		}
+
+		return $result;
+	}
+	
 
 
 } // end of class
