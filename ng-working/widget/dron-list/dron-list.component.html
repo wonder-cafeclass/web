@@ -17,6 +17,7 @@
 						src={{topLeftImgUrl}}>
 				{{title}}
 	            <button   	type="button"
+	            			(click)="dismiss()"
 	            			style="margin:3px;"
 	                      	class="btn btn-xs btn-default klass-btn">
 					<span style="padding-top:3px;" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -28,7 +29,6 @@
 		        <smart-editor 	*ngIf="SEinnerHTML"
 		        				[cageHeight]="cageHeight"
 		        				[cageWidth]="cageWidth"
-		                      	[html]="SEinnerHTML"
 		                      	[key]="key"
 		                      	(emitter)="onChangedFromChild($event)"></smart-editor>
 <!-- EXAMPLE
@@ -41,11 +41,18 @@
 			<li class="list-group-item bottom"
 				id="dron-tail">
 				&nbsp;<!-- btn이 float된 상태이기 때문에 공백문자로 row의 높이를 만들어줍니다. -->
+				<a href="#" class="btn btn-default btn-sm klass-btn" 
+							(click)="onClickSave($event)"
+							[ngClass]="{'disabled':isDisabledSave}"
+							role="button">저장하기</a>
+
+				<!--
 	            <button   	type="button"
+	            			(click)="save()"
 	                      	class="btn btn-sm btn-default klass-btn">
 	                      	저장하기
 	            </button>
-
+				-->
 			</li>
         </ul>
 

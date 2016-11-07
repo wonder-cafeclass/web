@@ -150,25 +150,23 @@ export class SmartEditorComponent implements OnInit {
     if(null == this.childContentWindow) {
       return;
     }
-    if(null == this.childContentWindow.pasteHTML) {
+    if(null == this.childContentWindow.initHTML) {
       return;
     }
-    this.childContentWindow.pasteHTML(html);
+    this.childContentWindow.initHTML(html);
 
   }
-  // REMOVE ME
-  public setHeight(height:number) :void {
-    if(!(0 < height)) {
-      return;
-    }
+
+  public clearHTML() :void {
+
     if(null == this.childContentWindow) {
       return;
     }
-    if(null == this.childContentWindow.setHeight) {
+    if(null == this.childContentWindow.initHTML) {
       return;
     }
+    this.childContentWindow.clearHTML();
 
-    this.childContentWindow.setHeight(height);
   }
 
   public setSESize(width:number, height:number) :void {
@@ -190,5 +188,45 @@ export class SmartEditorComponent implements OnInit {
   public initSE():void {
     this.childContentWindow.initSE(); 
   }
+  public hasChanged() :boolean {
 
+    if(null == this.childContentWindow) {
+      return;
+    }
+    if(null == this.childContentWindow.hasChanged) {
+      return;
+    }
+
+    return this.childContentWindow.hasChanged();
+  }
+  public saveNReturn():string {
+
+    if(null == this.childContentWindow) {
+      return;
+    }
+    if(null == this.childContentWindow.saveNReturn) {
+      return;
+    }
+
+    // 현재 작업중인 HTML 태그를 가져와 변수에 저장합니다.
+    let workingHTML = this.childContentWindow.saveNReturn();
+    if(null === workingHTML) {
+      return;
+    }
+    this.html = workingHTML;
+
+    // 작업중인 HTML 태그를 부모 컴포넌트에게 전달합니다.
+    return this.html;
+  }
+  public getHTMLPrev():string {
+
+    if(null == this.childContentWindow) {
+      return;
+    }
+    if(null == this.childContentWindow.getHTMLPrev) {
+      return;
+    }
+    
+    return this.childContentWindow.getHTMLPrev();
+  }
 }

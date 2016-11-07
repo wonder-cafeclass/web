@@ -19,6 +19,7 @@ var radiobtn_linear_component_1 = require('../radiobtn/radiobtn-linear.component
 var klass_color_service_1 = require('../../klass/service/klass-color.service');
 var my_ruler_service_1 = require('../../util/service/my-ruler.service');
 var my_event_service_1 = require('../../util/my-event.service');
+var my_event_1 = require('../../util/model/my-event');
 /*
 * @ Desc   : 외부의 호출로 현재 필요한 1개의 Editor만 노출해줍니다. 화면의 상단/하단/우측/좌측으로 노출됩니다. (추후구현)사용자의 드래깅으로 창의 위치 이동이 가능합니다.
 * @ Author : Wonder Jung
@@ -43,6 +44,8 @@ var DronListComponent = (function () {
         this.isTopRight = false;
         this.isBottomLeft = false;
         this.isBottomRight = true;
+        this.isDisabledSave = true;
+        this.emitter = new core_1.EventEmitter();
     }
     DronListComponent.prototype.ngOnInit = function () {
         // Do something...
@@ -60,7 +63,24 @@ var DronListComponent = (function () {
             this.title = "No title";
         }
     };
+    DronListComponent.prototype.ngOnChanges = function (changes) {
+        console.log("ngOnChanges / changes : ", changes);
+        if (null != changes) {
+            if (null != changes['title']) {
+            }
+            if (null != changes['SEinnerHTML'] &&
+                null != changes['SEinnerHTML']['currentValue']) {
+                // Smart Editor의 내용이 변경된 경우.
+                var html = changes['SEinnerHTML']['currentValue'];
+                if (null != this.smartEditorComponent) {
+                    this.smartEditorComponent.clearHTML();
+                    this.smartEditorComponent.updateHTML(html);
+                } // end inner if
+            } // end inner if 
+        } // end outer if
+    };
     DronListComponent.prototype.onChangedFromChild = function (myEvent) {
+        console.log(">>> onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {
             return;
         }
@@ -69,9 +89,100 @@ var DronListComponent = (function () {
             this.headerHeight = this.myRulerService.getHeight("dron-header");
             this.contentHeight = this.myRulerService.getHeight("dron-content");
             this.tailHeight = this.myRulerService.getHeight("dron-tail");
-            // this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 8);
             this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 4);
+            // 에디터에 넣을 내용을 설정합니다.
+            this.smartEditorComponent.updateHTML(this.SEinnerHTML);
         }
+        else if (this.myEventService.ON_CHANGE_SMART_EDITOR === myEvent.eventName) {
+            // 내용이 수정되었습니다.
+            console.log(">>> 내용이 수정되었습니다.");
+            this.isDisabledSave = false;
+            // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
+            var myEventReturn = new my_event_1.MyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE_DRON_LIST, 
+            // public title:string
+            "dron-list", 
+            // public key:string
+            myEvent.key, 
+            // public value:string
+            myEvent.value, 
+            // public metaObj:any
+            null);
+            this.emitter.emit(myEventReturn);
+        }
+    };
+    DronListComponent.prototype.dismiss = function () {
+        var hasChanged = false;
+        if (null !== this.smartEditorComponent) {
+            hasChanged = this.smartEditorComponent.hasChanged();
+        }
+        // 사용자에게 변경된 사항이 있다면 저장할 것인지 물어봅니다.
+        var wannaSave = false;
+        if (hasChanged && confirm("변경된 사항이 있습니다. 저장하시겠습니까?")) {
+            wannaSave = true;
+        }
+        var myEventReturn = null;
+        if (wannaSave) {
+            this.save();
+            myEventReturn =
+                new my_event_1.MyEvent(
+                // public eventName:string
+                this.myEventService.ON_SHUTDOWN_DRON_LIST, 
+                // public title:string
+                "dron-list", 
+                // public key:string
+                this.key, 
+                // public value:string
+                "", 
+                // public metaObj:any
+                null);
+        }
+        else {
+            // 저장하지 않습니다. 이전 값으로 돌려놓습니다.
+            var HTMLPrev = this.smartEditorComponent.getHTMLPrev();
+            myEventReturn =
+                new my_event_1.MyEvent(
+                // public eventName:string
+                this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST, 
+                // public title:string
+                "dron-list", 
+                // public key:string
+                this.key, 
+                // public value:string
+                HTMLPrev, 
+                // public metaObj:any
+                null);
+        }
+        this.emitter.emit(myEventReturn);
+    };
+    DronListComponent.prototype.onClickSave = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.save();
+    };
+    DronListComponent.prototype.save = function () {
+        if (this.isDisabledSave) {
+            return;
+        }
+        var result = null;
+        if (null !== this.smartEditorComponent) {
+            result = this.smartEditorComponent.saveNReturn();
+        }
+        console.log(">>> save / result : ", result);
+        // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
+        var myEventReturn = new my_event_1.MyEvent(
+        // public eventName:string
+        this.myEventService.ON_SAVE_DRON_LIST, 
+        // public title:string
+        "dron-list", 
+        // public key:string
+        this.key, 
+        // public value:string
+        result, 
+        // public metaObj:any
+        null);
+        this.emitter.emit(myEventReturn);
     };
     __decorate([
         core_1.Input(), 
@@ -122,7 +233,7 @@ var DronListComponent = (function () {
         __metadata('design:type', Boolean)
     ], DronListComponent.prototype, "isBottomRight", void 0);
     __decorate([
-        core_1.Input(), 
+        core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 
         __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
     ], DronListComponent.prototype, "smartEditorComponent", void 0);
     __decorate([
@@ -153,6 +264,10 @@ var DronListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], DronListComponent.prototype, "SEinnerHTML", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], DronListComponent.prototype, "emitter", void 0);
     DronListComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

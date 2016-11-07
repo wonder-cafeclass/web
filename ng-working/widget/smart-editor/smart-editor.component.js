@@ -106,23 +106,19 @@ var SmartEditorComponent = (function () {
         if (null == this.childContentWindow) {
             return;
         }
-        if (null == this.childContentWindow.pasteHTML) {
+        if (null == this.childContentWindow.initHTML) {
             return;
         }
-        this.childContentWindow.pasteHTML(html);
+        this.childContentWindow.initHTML(html);
     };
-    // REMOVE ME
-    SmartEditorComponent.prototype.setHeight = function (height) {
-        if (!(0 < height)) {
-            return;
-        }
+    SmartEditorComponent.prototype.clearHTML = function () {
         if (null == this.childContentWindow) {
             return;
         }
-        if (null == this.childContentWindow.setHeight) {
+        if (null == this.childContentWindow.initHTML) {
             return;
         }
-        this.childContentWindow.setHeight(height);
+        this.childContentWindow.clearHTML();
     };
     SmartEditorComponent.prototype.setSESize = function (width, height) {
         if (!(0 < width)) {
@@ -141,6 +137,40 @@ var SmartEditorComponent = (function () {
     };
     SmartEditorComponent.prototype.initSE = function () {
         this.childContentWindow.initSE();
+    };
+    SmartEditorComponent.prototype.hasChanged = function () {
+        if (null == this.childContentWindow) {
+            return;
+        }
+        if (null == this.childContentWindow.hasChanged) {
+            return;
+        }
+        return this.childContentWindow.hasChanged();
+    };
+    SmartEditorComponent.prototype.saveNReturn = function () {
+        if (null == this.childContentWindow) {
+            return;
+        }
+        if (null == this.childContentWindow.saveNReturn) {
+            return;
+        }
+        // 현재 작업중인 HTML 태그를 가져와 변수에 저장합니다.
+        var workingHTML = this.childContentWindow.saveNReturn();
+        if (null === workingHTML) {
+            return;
+        }
+        this.html = workingHTML;
+        // 작업중인 HTML 태그를 부모 컴포넌트에게 전달합니다.
+        return this.html;
+    };
+    SmartEditorComponent.prototype.getHTMLPrev = function () {
+        if (null == this.childContentWindow) {
+            return;
+        }
+        if (null == this.childContentWindow.getHTMLPrev) {
+            return;
+        }
+        return this.childContentWindow.getHTMLPrev();
     };
     __decorate([
         core_1.ViewChild('iframe'), 

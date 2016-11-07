@@ -22,6 +22,7 @@
 
 <script type="text/javascript">
 var oEditors = [];
+var htmlPrev = "";
 
 // 추가 글꼴 목록
 //var aAdditionalFontSet = [["MS UI Gothic", "MS UI Gothic"], ["Comic Sans MS", "Comic Sans MS"],["TEST","TEST"]];
@@ -60,7 +61,15 @@ function setSize(width, height) {
 
 }
 
+var initLock=null;
 function initSE() {
+
+	// 초기화는 1번만 허용합니다.
+	if(null !== initLock) {
+		return;
+	}
+	initLock = {};
+
 	nhn.husky.EZCreator.createInIFrame({
 		oAppRef: oEditors,
 		elPlaceHolder: "ir1",
@@ -116,6 +125,13 @@ if(null != parentWindow[callbackName]) {
 // 에디터에서 필요한 이벤트는?
 // event - from child to parent
 function onChangedText(textChanged) {
+
+	if(!hasChanged()) {
+		return;
+	}
+
+	textChanged = getHTML();
+
 	var myEvent = {
 		key:"se_update",
 		value:textChanged
@@ -149,9 +165,33 @@ function callbackParent(myEvent) {
 	}	
 }
 // event - from parent to child
+// var initHTMLLock=null;
+var htmlPrev = null;
+// @ Public
+function initHTML(sHTML) {
+	// 최초 1회만 내부 내용을 설정할 수 있습니다.
+	/*
+	if(null !== initHTMLLock) {
+		return;
+	}
+	initHTMLLock = {};
+	*/
+
+	console.log("SmartEditor2.html / initHTML / sHTML : ",sHTML);
+
+	if(null === sHTML) {
+		return;
+	}
+	pasteHTML(sHTML);
+
+	// Smart Editor에서 최초로 입력한 HTML tag에 "<p><br/></p>" 태그를 마지막에 붙여줍니다. 
+	// 이 변경된 값을 최초 입력값으로 설정합니다.
+	htmlPrev = getHTML();
+}
+// @ Private
 function pasteHTML(sHTML) {
 
-	if(null === oEditors || null === oEditors.getById || null === sHTML) {
+	if(null == oEditors || null == oEditors.getById || null == sHTML) {
 		return;
 	}
 	if("string" !== typeof sHTML) {
@@ -159,6 +199,41 @@ function pasteHTML(sHTML) {
 	}
 
 	oEditors.getById["ir1"].exec("PASTE_HTML", [sHTML]);
+}
+function clearHTML() {
+	oEditors.getById["ir1"].exec("SET_CONTENTS", [""]); 
+}
+// @ Public
+function hasChanged() {
+	if(null == htmlPrev) {
+		return false;
+	}
+	var HTMLworking = getHTML();
+
+	console.log("hasChanged / htmlPrev : ",htmlPrev);
+	console.log("hasChanged / HTMLworking : ",HTMLworking);
+
+	return (htmlPrev !== HTMLworking)?true:false;
+}
+// @ Public
+function saveNReturn() {
+	htmlPrev = getHTML();
+
+	return htmlPrev;
+}
+// @ Private
+function getHTML() {
+	var sHTML = oEditors.getById["ir1"].getIR();
+
+	// 텍스트가 변경된 경우, 아래와 같은 필터링 절차를 거칩니다. 
+	// 1. 화면이 클릭할 때마다 추가되는 "<p><br></p>" 문자열을 제거해줍니다. - 문서 작성 편의를 위해 추가된듯.
+	sHTML = sHTML.replace("<p><br></p>","");
+
+	return sHTML;
+}
+// @ Public
+function getHTMLPrev() {
+	return htmlPrev;
 }
 
 

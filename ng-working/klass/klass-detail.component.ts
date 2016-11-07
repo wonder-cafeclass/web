@@ -1,5 +1,5 @@
 import { Component, OnInit, HostBinding,
-         trigger, transition,
+         trigger, transition, ViewChild,
          animate, style, state }   from '@angular/core';
 import { Router, ActivatedRoute }  from '@angular/router';
 
@@ -19,6 +19,8 @@ import { RadioBtnOption }          from '../widget/radiobtn/model/radiobtn-optio
 import { CheckBoxOption }          from '../widget/checkbox/model/checkbox-option';
 import { InputViewUpdown }         from '../widget/input-view/model/input-view-updown';
 
+import { KlassDetailNavListComponent } from './klass-detail-nav-list.component';
+
 @Component({
   moduleId: module.id,
   styleUrls: ['klass-detail.component.css'],
@@ -37,6 +39,10 @@ export class KlassDetailComponent implements OnInit {
   klassPriceMax:string;
   klassWeekMin:number;
   klassWeekMax:number;
+
+  klassFeature:string;
+  klassTarget:string;
+  klassSchedule:string;
 
   klassCalendarTableLinear:Calendar[][];
   klassCalendarTableMonthly:Calendar[][][];
@@ -81,6 +87,11 @@ export class KlassDetailComponent implements OnInit {
 
   firstClassDate:Calendar;
   firstClassDateFormatStr:string;
+
+  // DronList
+  dronListKey:string;
+  dronListTitle:string;
+  dronListSEinnerHTML:string;
 
   constructor(
     private route: ActivatedRoute,
@@ -155,6 +166,9 @@ export class KlassDetailComponent implements OnInit {
       this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_desc");
       // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
 
+      this.klassFeature = this.klass.feature;
+      this.klassTarget = this.klass.target;
+      this.klassSchedule = this.klass.schedule;
 
     });
 
@@ -170,11 +184,7 @@ export class KlassDetailComponent implements OnInit {
         }
       }
     );
-
-
     
-
-
   }
 
   private setFirstClassDateFormat() :void {
@@ -387,7 +397,11 @@ export class KlassDetailComponent implements OnInit {
     this.gotoKlassList();
   }
 
+  // @ Deprecated
   canDeactivate(): Promise<boolean> | boolean {
+    return true;
+
+    /*
     // Allow synchronous navigation (`true`) if no klass or the klass is unchanged
     if (!this.klass || this.klass.title === this.editTitle) {
       return true;
@@ -395,6 +409,7 @@ export class KlassDetailComponent implements OnInit {
     // Otherwise ask the user with the dialog service and return its
     // promise which resolves to true or false when the user decides
     return this.dialogService.confirm('Discard changes?');
+    */
   }
 
   gotoKlassList() {
@@ -456,9 +471,9 @@ export class KlassDetailComponent implements OnInit {
     let eventName:string = myEvent.eventName;
     let myEventService:MyEventService = this.myEventService;
 
-    console.log("onChangedFromChild / eventName : ",eventName);
-    console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-    console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
+    // console.log("onChangedFromChild / eventName : ",eventName);
+    // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+    // console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
 
     if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
 
@@ -487,7 +502,94 @@ export class KlassDetailComponent implements OnInit {
 
       }
 
+    } else if (myEventService.ON_CLICK_KLASS_FEATURE === eventName) {
 
+      // 드론 리스트 - klass.feature를 수정합니다.
+      this.dronListKey = "feature";
+      this.dronListTitle = "수업의 특징을 입력해주세요";
+      this.dronListSEinnerHTML = myEvent.value;
+
+    } else if (myEventService.ON_CLICK_KLASS_TARGET === eventName) {
+
+      // 드론 리스트 - klass.target을 수정합니다.
+      this.dronListKey = "target";
+      this.dronListTitle = "수업의 추천대상을 입력해주세요";
+      this.dronListSEinnerHTML = myEvent.value;
+
+    } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
+
+      // 드론 리스트 - klass.schedule을 수정합니다.
+      this.dronListKey = "schedule";
+      this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
+      this.dronListSEinnerHTML = myEvent.value;
+      
+    } else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
+
+      console.log("onChangedFromChild / myEvent : ",myEvent);
+      console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+
+      // 드론 리스트의 입력 내용이 수정되었습니다.
+      if("feature" === myEvent.key) {
+        
+        console.log("feature 입력 내용이 수정되었습니다.");
+        this.klassFeature = myEvent.value;
+
+      } else if("target" === myEvent.key) {
+        
+        console.log("target 입력 내용이 수정되었습니다.");
+        this.klassTarget = myEvent.value;
+
+      } else if("schedule" === myEvent.key) {
+        
+        console.log("schedule 입력 내용이 수정되었습니다.");
+        this.klassSchedule = myEvent.value;
+
+      } // end if
+
+    } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
+
+      // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
+      if("feature" === myEvent.key) {
+        console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
+        console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+      }
+
+
+    } else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
+
+      // 사용자가 드론리스트를 닫았습니다.
+      console.log("사용자가 드론리스트를 닫았습니다.");
+      this.dronListTitle = null;
+
+    } else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
+
+      // 사용자가 드론리스트를 닫았습니다.
+      console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
+      this.dronListTitle = null;
+
+      // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
+      if("feature" === myEvent.key) {
+        
+        console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+        this.klassFeature = myEvent.value;
+
+      } else if("target" === myEvent.key) {
+        
+        console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+        this.klassTarget = myEvent.value;
+
+      } else if("schedule" === myEvent.key) {
+        
+        console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+        this.klassSchedule = myEvent.value;
+
+      } // end if
     } // end if
   } // end method
+
+
+  // Admin Section
+  showSEKlassFeature() :void {
+
+  }
 }

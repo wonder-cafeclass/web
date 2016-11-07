@@ -15,64 +15,29 @@
 
                   <ul class="list-group" style="margin-bottom:0px;">
 
-                        <li *ngIf="klass.feature" 
+                        <li *ngIf="klassFeature" 
                             (click)="onClickKlassFeature()"
                             class="list-group-item klass-desc">
 
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klass.feature | safeHtml"></div>
-                              <!-- TEST / Failed -->
-                              <!--
-                              <dron-list  *ngIf="isShowKlassFeature"
-                                          [cageHeight]="350"
-                                          [cageWidth]="680"
-                                          [key]="'feature'"
-                                          [SEinnerHTML]="klass.feature"></dron-list>
-                              -->
-<!-- 
-                    [cageHeight]="cageHeight"
-                    [cageWidth]="cageWidth"
-                            [html]="SEHTML | safeHtml"
-                            [key]="key"
--->
+                              <div [innerHTML]="klassFeature | safeHtml"></div>
 
                         </li>
 
-                        <li *ngIf="klass.target" 
+                        <li *ngIf="klassTarget" 
                             (click)="onClickKlassTarget()"
                             class="list-group-item klass-desc">
                               
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klass.target | safeHtml"></div>
-
-                              <!--
-                              <dl style="margin-bottom:0px;">
-                                <dt>이런 분들께 추천드려요.</dt>
-                                <dd>네이티브가 사용하는 표현 쓰고 싶으신 분들</dd>
-                                <dd>영어를 재미있게 공부하고 싶으신 분들</dd>
-                              </dl>
-                              -->
+                              <div [innerHTML]="klassTarget | safeHtml"></div>
                         </li>
 
-                        <li *ngIf="klass.schedule"
+                        <li *ngIf="klassSchedule"
                             (click)="onClickKlassSchedule()"
                             class="list-group-item klass-desc">
 
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klass.schedule | safeHtml"></div>
-
-                              <!-- 
-                              <img class="img-rounded" width="300px;" src="http://cafeclass.kr/wp-content/uploads/2016/09/미드-영어회화_잠실역_카페클래스.jpg"/>
-                              <dl style="margin-bottom:0px;">
-                                <dt>1. 지난 시간 리뷰 및 스몰 토크 – 20분</dt>
-                                <dd>ex) what did yod do last weekend?</dd>
-                                <dt>2. 표현 단어 예습 및 표현 맞춰보기 – 10분</dt>
-                                <dd>ex) 네가 잠든 줄 알았어. -> 영어로 어떻게 표현할까? 맞춰보기</dd>
-                                <dt>3. 수업 영상 보고 주요 표현 따라하기 + 연습 – 60분 (쉬는시간 포함)</dt>
-                                <dd>*패턴 연습 (직접 영작 및 입으로 연습)</dd>
-                              </dl>
-                              -->                        
-
+                              <div [innerHTML]="klassSchedule | safeHtml"></div>
                         </li>
                         <!-- TEST / smart editor / isAdmin -->
                         <!-- wonder.jung 이미지는 PC의 경우는 750px을 초과할 경우, 750px로 고정 -->

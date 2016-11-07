@@ -1,8 +1,13 @@
 import {  Component, 
           ViewChild,
           OnInit, 
+          OnChanges,
+          SimpleChanges,
+          Output, 
+          EventEmitter,
           Input }                     from '@angular/core';
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
+import { MyEventService }             from '../util/my-event.service';
 import { MyEvent }                    from '../util/model/my-event';
 import { ImageService }               from '../util/image.service';
 import { KlassColorService }          from './service/klass-color.service';
@@ -15,15 +20,22 @@ import { Klass }                      from './model/klass';
   templateUrl: 'klass-detail-nav-list.component.html',
   styleUrls: [ 'klass-detail-nav-list.component.css' ]
 })
-export class KlassDetailNavListComponent implements OnInit {
+export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   @ViewChild(SmartEditorComponent)
   private seComponent: SmartEditorComponent;  
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
+
+  @Input() klassFeature:string;
+  @Input() klassTarget:string;
+  @Input() klassSchedule:string;
+
   @Input() isAdmin:boolean=false;
   @Input() cageWidth:number=-1;
+
+
   cageWidthStr:string;
   colorWhite:string;
   colorOrange:string;
@@ -39,16 +51,19 @@ export class KlassDetailNavListComponent implements OnInit {
   navHeight:number=50;
   borderTopBottomWidth:number=2;
 
-  isShowKlassFeature:boolean=false;
-  isShowKlassTarget:boolean=false;
-  isShowKlassSchedule:boolean=false;
+  // isShowKlassFeature:boolean=false;
+  // isShowKlassTarget:boolean=false;
+  // isShowKlassSchedule:boolean=false;
 
   watchTowerImgUrl:string;
   watchTowerWhiteImgUrl:string;
 
   seKlassFeature:SmartEditorComponent;
 
+  @Output() emitter = new EventEmitter<any>();
+
   constructor(  private klassColorService:KlassColorService, 
+                private myEventService:MyEventService, 
                 public imageService: ImageService) {}
 
   ngOnInit(): void {
@@ -64,19 +79,34 @@ export class KlassDetailNavListComponent implements OnInit {
 
     // Sanitize safe html
     // http://stackoverflow.com/questions/39628007/angular2-innerhtml-binding-remove-style-attribute
-    if(null === this.klass.feature || "" === this.klass.feature) {
-      this.klass.feature = '<p style="color:#f00;">수업의 특징을 입력해주세요.</p>';
+    if(null === this.klassFeature || "" === this.klassFeature) {
+      this.klassFeature = '<p style="color:#f00;">수업의 특징을 입력해주세요.</p>';
     }
-    if(null === this.klass.target || "" === this.klass.target) {
-      this.klass.target = '<p style="color:#f00;">수업 추천 대상을 입력해주세요.</p>';
+    if(null === this.klassTarget || "" === this.klassTarget) {
+      this.klassTarget = '<p style="color:#f00;">수업 추천 대상을 입력해주세요.</p>';
     }
-    if(null === this.klass.schedule || "" === this.klass.schedule) {
-      this.klass.schedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
+    if(null === this.klassSchedule || "" === this.klassSchedule) {
+      this.klassSchedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
     }
+
+    console.log("this.klassFeature : ",this.klassFeature);
+    console.log("this.klassTarget : ",this.klassTarget);
+    console.log("this.klassSchedule : ",this.klassSchedule);
 
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
     this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
   }
+  ngOnChanges(changes: SimpleChanges) :void {
+
+    console.log("klass-detail-nav-list / ngOnChanges / changes : ",changes);
+
+    if(null != changes) {
+      if(null != changes['title']) {
+        // 타이틀이 변경된 경우.
+        // Do nothing...
+      }
+    } // end outer if
+  }  
 
   onChangedFromChildSE(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
@@ -141,23 +171,62 @@ export class KlassDetailNavListComponent implements OnInit {
 
   onClickKlassFeature() :void {
 
-    this.isShowKlassFeature = !this.isShowKlassFeature;
-    this.isShowKlassTarget = false;
-    this.isShowKlassSchedule = false;
+    // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
+    let myEventReturn:MyEvent = 
+    new MyEvent(
+        // public eventName:string
+        this.myEventService.ON_CLICK_KLASS_FEATURE,
+        // public title:string
+        "klass-detail-nav-list",
+        // public key:string
+        "feature",
+        // public value:string
+        this.klassFeature,
+        // public metaObj:any
+        null
+    );
+
+    this.emitter.emit(myEventReturn);          
 
   }
   onClickKlassTarget() :void {
 
-    this.isShowKlassFeature = false;
-    this.isShowKlassTarget = !this.isShowKlassTarget;
-    this.isShowKlassSchedule = false;
+    // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
+    let myEventReturn:MyEvent = 
+    new MyEvent(
+        // public eventName:string
+        this.myEventService.ON_CLICK_KLASS_TARGET,
+        // public title:string
+        "klass-detail-nav-list",
+        // public key:string
+        "target",
+        // public value:string
+        this.klassTarget,
+        // public metaObj:any
+        null
+    );
+
+    this.emitter.emit(myEventReturn);          
     
   }
   onClickKlassSchedule() :void {
 
-    this.isShowKlassFeature = false;
-    this.isShowKlassTarget = false;
-    this.isShowKlassSchedule = !this.isShowKlassSchedule;
-    
+    // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
+    let myEventReturn:MyEvent = 
+    new MyEvent(
+        // public eventName:string
+        this.myEventService.ON_CLICK_KLASS_SCHEDULE,
+        // public title:string
+        "klass-detail-nav-list",
+        // public key:string
+        "target",
+        // public value:string
+        this.klassSchedule,
+        // public metaObj:any
+        null
+    );
+
+    this.emitter.emit(myEventReturn);
+
   }  
 }
