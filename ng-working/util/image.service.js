@@ -45,6 +45,7 @@ var ImageService = (function () {
         this.clock3hr30mNoticeAMUrl = "assets/images/clock/clock-3hr-30m-notice-am.svg";
         this.clock3hr30mNoticePMUrl = "assets/images/clock/clock-3hr-30m-notice-pm.svg";
         this.clockBGUrl = "assets/images/clock/clock-bg.svg";
+        this.classFeatureUrl = "assets/images/class/info/points.png";
         this.mapDummy = "assets/images/map_dummy.png";
     }
     ImageService.prototype.get = function (imgUrl) {

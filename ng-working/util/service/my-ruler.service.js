@@ -18,12 +18,51 @@ var MyRulerService = (function () {
         if (null == element) {
             return -1;
         }
-        var style = window.getComputedStyle(element);
-        var height = element.offsetHeight;
+        var style = window.getComputedStyle(element, null);
+        // let Height = element.offsetHeight;
+        // let Height = element.clientHeight;
+        // let Height = element.scrollHeight;
+        // console.log("MyRulerService / getHeight / style : ",style);
+        var Height = +style.getPropertyValue("Height").replace("px", "");
+        var webkitLogicalHeight = +style["webkitLogicalHeight"].replace("px", "");
+        // console.log("MyRulerService / getHeight / element.offsetHeight : ",element.offsetHeight);
+        // console.log("MyRulerService / getHeight / element.clientHeight : ",element.clientHeight);
+        // console.log("MyRulerService / getHeight / element.scrollHeight : ",element.scrollHeight);
         var margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        var padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
         var border = parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
-        var actualHeight = height + margin + border;
+        // console.log("MyRulerService / getHeight / Height : ",Height);
+        // console.log("MyRulerService / getHeight / webkitLogicalHeight : ",webkitLogicalHeight);
+        // console.log("MyRulerService / getHeight / margin : ",margin);
+        // console.log("MyRulerService / getHeight / padding : ",padding);
+        // console.log("MyRulerService / getHeight / border : ",border);
+        var actualHeight = Height + padding + margin + border;
         return actualHeight;
+    };
+    MyRulerService.prototype.getWidth = function (id) {
+        var element = document.getElementById(id);
+        if (null == element) {
+            return -1;
+        }
+        var style = window.getComputedStyle(element, null);
+        // let Width = element.offsetWidth;
+        // let Width = element.clientWidth;
+        // let Width = element.scrollWidth;
+        // console.log("MyRulerService / getWidth / style : ",style);
+        var width = +style.getPropertyValue("width").replace("px", "");
+        // console.log("MyRulerService / getWidth / element.offsetWidth : ",element.offsetWidth);
+        // console.log("MyRulerService / getWidth / element.clientWidth : ",element.clientWidth);
+        // console.log("MyRulerService / getWidth / element.scrollWidth : ",element.scrollWidth);
+        var margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+        var padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        var border = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+        // console.log("MyRulerService / getWidth / Width : ",Width);
+        // console.log("MyRulerService / getWidth / webkitLogicalWidth : ",webkitLogicalWidth);
+        // console.log("MyRulerService / getWidth / margin : ",margin);
+        // console.log("MyRulerService / getWidth / padding : ",padding);
+        // console.log("MyRulerService / getWidth / border : ",border);
+        var actualWidth = width + padding + margin + border;
+        return actualWidth;
     };
     MyRulerService = __decorate([
         core_1.Injectable(), 

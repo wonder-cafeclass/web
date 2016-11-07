@@ -30,8 +30,8 @@ var my_event_1 = require('../../util/model/my-event');
 * @ Author : Wonder Jung
 *
 */
-var DronListComponent = (function () {
-    function DronListComponent(klassColorService, myEventService, myRulerService) {
+var InputRowComponent = (function () {
+    function InputRowComponent(klassColorService, myEventService, myRulerService) {
         this.klassColorService = klassColorService;
         this.myEventService = myEventService;
         this.myRulerService = myRulerService;
@@ -46,14 +46,10 @@ var DronListComponent = (function () {
         this.color = "";
         this.textColor = "";
         this.bgColor = "";
-        this.isTopLeft = false;
-        this.isTopRight = false;
-        this.isBottomLeft = false;
-        this.isBottomRight = true;
         this.isDisabledSave = true;
         this.emitter = new core_1.EventEmitter();
     }
-    DronListComponent.prototype.ngOnInit = function () {
+    InputRowComponent.prototype.ngOnInit = function () {
         // Do something...
         if ("" === this.color) {
             this.color = this.klassColorService.orange;
@@ -65,11 +61,15 @@ var DronListComponent = (function () {
             this.bgColor = this.klassColorService.orange;
         }
         //bgColorBottom
-        if ("" === this.title) {
+        if (null != this.myEventSingleInput &&
+            "" != this.myEventSingleInput.title) {
+            this.title = this.myEventSingleInput.title;
+        }
+        else if ("" === this.title) {
             this.title = "No title";
         }
     };
-    DronListComponent.prototype.ngOnChanges = function (changes) {
+    InputRowComponent.prototype.ngOnChanges = function (changes) {
         console.log("ngOnChanges / changes : ", changes);
         if (null != changes) {
             if (null != changes['title']) {
@@ -85,7 +85,7 @@ var DronListComponent = (function () {
             } // end inner if 
         } // end outer if
     };
-    DronListComponent.prototype.onChangedFromChild = function (myEvent) {
+    InputRowComponent.prototype.onChangedFromChild = function (myEvent) {
         console.log(">>> onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {
             return;
@@ -106,9 +106,9 @@ var DronListComponent = (function () {
             // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
             var myEventReturn = new my_event_1.MyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE_DRON_LIST, 
+            this.myEventService.ON_CHANGE_INPUT_ROW, 
             // public title:string
-            "dron-list", 
+            "input-row", 
             // public key:string
             myEvent.key, 
             // public value:string
@@ -118,7 +118,7 @@ var DronListComponent = (function () {
             this.emitter.emit(myEventReturn);
         }
     };
-    DronListComponent.prototype.setOffset = function () {
+    InputRowComponent.prototype.setOffset = function () {
         // this.headerHeight = this.myRulerService.getHeight("dron-header");
         this.headerHeight = 42;
         this.contentHeight = this.myRulerService.getHeight("dron-content");
@@ -126,7 +126,9 @@ var DronListComponent = (function () {
         this.tailHeight = 42;
         this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 2);
     };
-    DronListComponent.prototype.dismiss = function () {
+    InputRowComponent.prototype.dismiss = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
         var hasChanged = false;
         if (null != this.smartEditorComponent) {
             hasChanged = this.smartEditorComponent.hasChanged();
@@ -142,9 +144,9 @@ var DronListComponent = (function () {
             myEventReturn =
                 new my_event_1.MyEvent(
                 // public eventName:string
-                this.myEventService.ON_SHUTDOWN_DRON_LIST, 
+                this.myEventService.ON_SHUTDOWN_INPUT_ROW, 
                 // public title:string
-                "dron-list", 
+                "input-row", 
                 // public key:string
                 this.key, 
                 // public value:string
@@ -159,9 +161,9 @@ var DronListComponent = (function () {
                 myEventReturn =
                     new my_event_1.MyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST, 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW, 
                     // public title:string
-                    "dron-list", 
+                    "input-row", 
                     // public key:string
                     this.key, 
                     // public value:string
@@ -174,9 +176,9 @@ var DronListComponent = (function () {
                 myEventReturn =
                     new my_event_1.MyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST, 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW, 
                     // public title:string
-                    "dron-list", 
+                    "input-row", 
                     // public key:string
                     myEventFromSI.key, 
                     // public value:string
@@ -187,26 +189,26 @@ var DronListComponent = (function () {
         }
         this.emitter.emit(myEventReturn);
     };
-    DronListComponent.prototype.onClickSave = function (event) {
+    InputRowComponent.prototype.onClickSave = function (event) {
         event.stopPropagation();
         event.preventDefault();
         this.save();
     };
-    DronListComponent.prototype.save = function () {
+    InputRowComponent.prototype.save = function () {
         if (this.isDisabledSave) {
             return;
         }
         var result = null;
-        if (null !== this.smartEditorComponent) {
+        if (null != this.smartEditorComponent) {
             result = this.smartEditorComponent.saveNReturn();
         }
         console.log(">>> save / result : ", result);
         // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
         var myEventReturn = new my_event_1.MyEvent(
         // public eventName:string
-        this.myEventService.ON_SAVE_DRON_LIST, 
+        this.myEventService.ON_SAVE_INPUT_ROW, 
         // public title:string
-        "dron-list", 
+        "input-row", 
         // public key:string
         this.key, 
         // public value:string
@@ -218,105 +220,89 @@ var DronListComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "key", void 0);
+    ], InputRowComponent.prototype, "key", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "title", void 0);
+    ], InputRowComponent.prototype, "title", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], DronListComponent.prototype, "cageWidth", void 0);
+    ], InputRowComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], DronListComponent.prototype, "cageHeight", void 0);
+    ], InputRowComponent.prototype, "cageHeight", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "color", void 0);
+    ], InputRowComponent.prototype, "color", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "textColor", void 0);
+    ], InputRowComponent.prototype, "textColor", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "bgColor", void 0);
+    ], InputRowComponent.prototype, "bgColor", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "topLeftImgUrl", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], DronListComponent.prototype, "isTopLeft", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], DronListComponent.prototype, "isTopRight", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], DronListComponent.prototype, "isBottomLeft", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], DronListComponent.prototype, "isBottomRight", void 0);
+    ], InputRowComponent.prototype, "topLeftImgUrl", void 0);
     __decorate([
         core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 
         __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
-    ], DronListComponent.prototype, "smartEditorComponent", void 0);
+    ], InputRowComponent.prototype, "smartEditorComponent", void 0);
     __decorate([
         core_1.ViewChild(single_input_view_component_1.SingleInputViewComponent), 
         __metadata('design:type', single_input_view_component_1.SingleInputViewComponent)
-    ], DronListComponent.prototype, "singleInputViewComponent", void 0);
+    ], InputRowComponent.prototype, "singleInputViewComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', checkbox_h_list_component_1.CheckBoxHListComponent)
-    ], DronListComponent.prototype, "checkBoxHListComponent", void 0);
+    ], InputRowComponent.prototype, "checkBoxHListComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', mini_calendar_component_1.MiniCalendarComponent)
-    ], DronListComponent.prototype, "miniCalendarComponent", void 0);
+    ], InputRowComponent.prototype, "miniCalendarComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', input_view_h_list_component_1.InputViewHListComponent)
-    ], DronListComponent.prototype, "inputViewHListComponent", void 0);
+    ], InputRowComponent.prototype, "inputViewHListComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', input_view_updown_component_1.InputViewUpdownComponent)
-    ], DronListComponent.prototype, "inputViewUpdownComponent", void 0);
+    ], InputRowComponent.prototype, "inputViewUpdownComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', radiobtn_h_list_component_1.RadioBtnHListComponent)
-    ], DronListComponent.prototype, "radioBtnHListComponent", void 0);
+    ], InputRowComponent.prototype, "radioBtnHListComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', radiobtn_linear_component_1.RadioBtnLinearComponent)
-    ], DronListComponent.prototype, "radioBtnLinearComponent", void 0);
+    ], InputRowComponent.prototype, "radioBtnLinearComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], DronListComponent.prototype, "SEinnerHTML", void 0);
+    ], InputRowComponent.prototype, "SEinnerHTML", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', my_event_1.MyEvent)
-    ], DronListComponent.prototype, "myEventSingleInput", void 0);
+    ], InputRowComponent.prototype, "myEventSingleInput", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], DronListComponent.prototype, "emitter", void 0);
-    DronListComponent = __decorate([
+    ], InputRowComponent.prototype, "emitter", void 0);
+    InputRowComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'dron-list',
-            templateUrl: 'dron-list.component.html',
-            styleUrls: ['dron-list.component.css']
+            selector: 'input-row',
+            templateUrl: 'input-row.component.html',
+            styleUrls: ['input-row.component.css']
         }), 
         __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_ruler_service_1.MyRulerService])
-    ], DronListComponent);
-    return DronListComponent;
+    ], InputRowComponent);
+    return InputRowComponent;
 }());
-exports.DronListComponent = DronListComponent;
-//# sourceMappingURL=dron-list.component.js.map
+exports.InputRowComponent = InputRowComponent;
+//# sourceMappingURL=input-row.component.js.map

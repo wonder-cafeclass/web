@@ -1,0 +1,68 @@
+<!-- EXAMPLE
+<input-row  [cageHeight]="290"
+			[cageWidth]="768"
+			[key]="'feature'"
+			[myEventSingleInput]="myEvent"
+			[SEinnerHTML]="'<p>TEST</p>'">
+</input-row>
+-->
+
+<!-- single-input-view INIT -->
+<ul class="list-group" style="margin:0px;" *ngIf="myEventSingleInput">
+
+	<li class="list-group-item" 
+		style="padding:0px;border:0px;"
+		id="input-row-content">
+        <single-input-view 		*ngIf="myEventSingleInput"
+        						[cageWidth]="cageWidth"
+        						[type]="'textarea'"
+                      			[myEvent]="myEventSingleInput"
+                      			(emitter)="onChangedFromChild($event)">
+		</single-input-view>
+	</li>
+	<li class="list-group-item row-btns"
+		id="input-row-tail">
+		<a href="#" class="btn btn-default btn-sm klass-btn dismiss" 
+					(click)="dismiss($event)"
+					role="button">
+			<span style="padding-top:3px;" class="glyphicon glyphicon-remove" aria-hidden="true"></span>						
+		</a>
+		<a href="#" class="btn btn-default btn-sm klass-btn" 
+					(click)="onClickSave($event)"
+					[ngClass]="{'disabled':isDisabledSave}"
+					role="button">저장하기</a>
+	</li>
+</ul>
+<!-- single-input-view DONE -->
+
+
+<!-- smart-editor INIT -->
+<ul class="list-group" style="margin:0px;" *ngIf="SEinnerHTML">
+
+	<li class="list-group-item" 
+		style="padding:5px;border:0px;"
+		id="input-row-content">
+
+        <smart-editor 	*ngIf="SEinnerHTML"
+        				[cageHeight]="cageHeight"
+        				[cageWidth]="cageWidth"
+                      	[key]="key"
+                      	(emitter)="onChangedFromChild($event)">
+		</smart-editor>
+
+	</li>
+	<li class="list-group-item row-btns"
+		id="input-row-tail">
+		<a href="#" class="btn btn-default btn-sm klass-btn dismiss" 
+					(click)="dismiss($event)"
+					role="button">
+			<span style="padding-top:3px;" class="glyphicon glyphicon-remove" aria-hidden="true"></span>						
+		</a>
+
+		<a href="#" class="btn btn-default btn-sm klass-btn" 
+					(click)="onClickSave($event)"
+					[ngClass]="{'disabled':isDisabledSave}"
+					role="button">저장하기</a>
+	</li>
+</ul>
+<!-- smart-editor DONE -->

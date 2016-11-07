@@ -42,7 +42,8 @@ var SmartEditorComponent = (function () {
             if (this.cageWidth < this.cageWidthMin) {
                 this.cageWidth = this.cageWidthMin;
             }
-            this.cageWidthStr = this.cageWidth + "px";
+            var borderWidth = 2;
+            this.cageWidthStr = (this.cageWidth + borderWidth) + "px";
         }
         else {
             this.cageWidthStr = "100%";

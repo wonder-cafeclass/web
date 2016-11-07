@@ -91,8 +91,17 @@ var KlassDetailComponent = (function () {
                 _this.radiobtnService.getNavTabsKlassInfo(_this.klass, "klass_desc");
             // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
             _this.klassFeature = _this.klass.feature;
+            if (null === _this.klassFeature || "" === _this.klassFeature) {
+                _this.klassFeature = '수업의 특징을 입력해주세요.';
+            }
             _this.klassTarget = _this.klass.target;
+            if (null === _this.klassTarget || "" === _this.klassTarget) {
+                _this.klassTarget = '수업 추천 대상을 입력해주세요.';
+            }
             _this.klassSchedule = _this.klass.schedule;
+            if (null === _this.klassSchedule || "" === _this.klassSchedule) {
+                _this.klassSchedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
+            }
         });
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {
@@ -338,6 +347,7 @@ var KlassDetailComponent = (function () {
         } // end if
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
+        console.log("TEST / XXX / onChangedFromChild / myEvent : ", myEvent);
         var eventName = myEvent.eventName;
         var myEventService = this.myEventService;
         // console.log("onChangedFromChild / eventName : ",eventName);
@@ -365,18 +375,43 @@ var KlassDetailComponent = (function () {
         }
         else if (myEventService.ON_CLICK_KLASS_FEATURE === eventName) {
             // 드론 리스트 - klass.feature를 수정합니다.
+            this.clearDronList();
             this.dronListKey = "feature";
             this.dronListTitle = "수업의 특징을 입력해주세요";
-            this.dronListSEinnerHTML = myEvent.value;
+            this.dronListMyEventSingleInput =
+                new my_event_1.MyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE_KLASS_FEATURE, 
+                // public title:string
+                "수업 특징", 
+                // public key:string
+                "feature", 
+                // public value:string
+                this.klassFeature, 
+                // public metaObj:any
+                this.klass);
         }
         else if (myEventService.ON_CLICK_KLASS_TARGET === eventName) {
             // 드론 리스트 - klass.target을 수정합니다.
+            this.clearDronList();
             this.dronListKey = "target";
             this.dronListTitle = "수업의 추천대상을 입력해주세요";
-            this.dronListSEinnerHTML = myEvent.value;
+            this.dronListMyEventSingleInput =
+                new my_event_1.MyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE_KLASS_TARGET, 
+                // public title:string
+                "수업 대상", 
+                // public key:string
+                "target", 
+                // public value:string
+                this.klassTarget, 
+                // public metaObj:any
+                this.klass);
         }
         else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
             // 드론 리스트 - klass.schedule을 수정합니다.
+            this.clearDronList();
             this.dronListKey = "schedule";
             this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
             this.dronListSEinnerHTML = myEvent.value;
@@ -408,12 +443,14 @@ var KlassDetailComponent = (function () {
         else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
             // 사용자가 드론리스트를 닫았습니다.
             console.log("사용자가 드론리스트를 닫았습니다.");
-            this.dronListTitle = null;
+            // 관련 파라미터 초기화
+            this.clearDronList();
         }
         else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
             // 사용자가 드론리스트를 닫았습니다.
             console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
-            this.dronListTitle = null;
+            // 관련 파라미터 초기화
+            this.clearDronList();
             // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
             if ("feature" === myEvent.key) {
                 console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
@@ -429,6 +466,11 @@ var KlassDetailComponent = (function () {
             } // end if
         } // end if
     }; // end method
+    KlassDetailComponent.prototype.clearDronList = function () {
+        this.dronListTitle = null;
+        this.dronListSEinnerHTML = null;
+        this.dronListMyEventSingleInput = null;
+    };
     // Admin Section
     KlassDetailComponent.prototype.showSEKlassFeature = function () {
     };

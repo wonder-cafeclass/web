@@ -32,11 +32,11 @@ import { MyEvent }                     from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
-  selector: 'dron-list',
-  templateUrl: 'dron-list.component.html',
-  styleUrls: [ 'dron-list.component.css' ]
+  selector: 'input-row',
+  templateUrl: 'input-row.component.html',
+  styleUrls: [ 'input-row.component.css' ]
 })
-export class DronListComponent implements OnInit, OnChanges {
+export class InputRowComponent implements OnInit, OnChanges {
 
   @Input() key:string="";
   @Input() title:string="";
@@ -53,10 +53,11 @@ export class DronListComponent implements OnInit, OnChanges {
 
   @Input() topLeftImgUrl:string;
 
-  @Input() isTopLeft:boolean=false;
-  @Input() isTopRight:boolean=false;
-  @Input() isBottomLeft:boolean=false;
-  @Input() isBottomRight:boolean=true;
+  // REMOVE ME
+  // @Input() isTopLeft:boolean=false;
+  // @Input() isTopRight:boolean=false;
+  // @Input() isBottomLeft:boolean=false;
+  // @Input() isBottomRight:boolean=true;
 
   @ViewChild(SmartEditorComponent)
   private smartEditorComponent: SmartEditorComponent;
@@ -84,6 +85,7 @@ export class DronListComponent implements OnInit, OnChanges {
                 private myRulerService:MyRulerService) {}
 
   ngOnInit(): void {
+
     // Do something...
     if("" === this.color) {
       this.color = this.klassColorService.orange;
@@ -94,9 +96,17 @@ export class DronListComponent implements OnInit, OnChanges {
     if("" === this.bgColor) {
       this.bgColor = this.klassColorService.orange;
     }
+
     //bgColorBottom
-    if("" === this.title) {
+    if( null != this.myEventSingleInput && 
+        "" != this.myEventSingleInput.title ) {
+
+      this.title = this.myEventSingleInput.title;
+
+    } else if( "" === this.title ) {
+
       this.title = "No title";
+
     }
   }
   ngOnChanges(changes: SimpleChanges) :void {
@@ -149,9 +159,9 @@ export class DronListComponent implements OnInit, OnChanges {
       let myEventReturn:MyEvent = 
       new MyEvent(
           // public eventName:string
-          this.myEventService.ON_CHANGE_DRON_LIST,
+          this.myEventService.ON_CHANGE_INPUT_ROW,
           // public title:string
-          "dron-list",
+          "input-row",
           // public key:string
           myEvent.key,
           // public value:string
@@ -174,7 +184,10 @@ export class DronListComponent implements OnInit, OnChanges {
     this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 2);
   }
 
-  dismiss() :void {
+  dismiss(event) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
 
     let hasChanged:boolean = false;
     if(null != this.smartEditorComponent) {
@@ -194,9 +207,9 @@ export class DronListComponent implements OnInit, OnChanges {
       myEventReturn = 
       new MyEvent(
           // public eventName:string
-          this.myEventService.ON_SHUTDOWN_DRON_LIST,
+          this.myEventService.ON_SHUTDOWN_INPUT_ROW,
           // public title:string
-          "dron-list",
+          "input-row",
           // public key:string
           this.key,
           // public value:string
@@ -213,9 +226,9 @@ export class DronListComponent implements OnInit, OnChanges {
         myEventReturn = 
         new MyEvent(
             // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST,
+            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW,
             // public title:string
-            "dron-list",
+            "input-row",
             // public key:string
             this.key,
             // public value:string
@@ -232,9 +245,9 @@ export class DronListComponent implements OnInit, OnChanges {
         myEventReturn = 
         new MyEvent(
             // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST,
+            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW,
             // public title:string
-            "dron-list",
+            "input-row",
             // public key:string
             myEventFromSI.key,
             // public value:string
@@ -262,7 +275,7 @@ export class DronListComponent implements OnInit, OnChanges {
     }
 
     let result = null;
-    if(null !== this.smartEditorComponent) {
+    if(null != this.smartEditorComponent) {
       result = this.smartEditorComponent.saveNReturn();
     }
     console.log(">>> save / result : ",result);
@@ -271,9 +284,9 @@ export class DronListComponent implements OnInit, OnChanges {
     let myEventReturn:MyEvent = 
     new MyEvent(
         // public eventName:string
-        this.myEventService.ON_SAVE_DRON_LIST,
+        this.myEventService.ON_SAVE_INPUT_ROW,
         // public title:string
-        "dron-list",
+        "input-row",
         // public key:string
         this.key,
         // public value:string

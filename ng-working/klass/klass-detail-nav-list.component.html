@@ -17,27 +17,65 @@
 
                         <li *ngIf="klassFeature" 
                             (click)="onClickKlassFeature()"
-                            class="list-group-item klass-desc">
+                            class="list-group-item klass-desc klass-feature">
 
-                              <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klassFeature | safeHtml"></div>
-
+                            <img src="./assets/images/class/info/points.png" alt="" style="padding:10px;"/>
+                            <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                            <div class="klass-feature-title">
+                              <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                              이 수업의 특징 3가지.
+                            </div>
+                            <div  class="klass-feature-text" 
+                                  [ngClass]="{'empty':klass.feature == ''}">{{klassFeature}}</div>
+                        </li>
+                        <!-- Admin Section -->
+                        <li class="list-group-item admin">
+                          <input-row  *ngIf="isAdmin && isShowKlassFeature"
+                                      [key]="'feature'"
+                                      (emitter)="onChangedFromInputRow($event)"
+                                      [myEventSingleInput]="myEventSIKlassFeature">
+                          </input-row>
                         </li>
 
                         <li *ngIf="klassTarget" 
                             (click)="onClickKlassTarget()"
-                            class="list-group-item klass-desc">
+                            class="list-group-item klass-target">
                               
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klassTarget | safeHtml"></div>
+                              <div class="klass-target-title">
+                                <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                                이런 분들께 추천드려요.
+                              </div>
+                              <div  class="klass-target-text" 
+                                    [ngClass]="{'empty':klass.target == ''}">{{klassTarget}}</div>
+                        </li>
+                        <li class="list-group-item admin">
+                          <input-row  *ngIf="isAdmin && isShowKlassTarget"
+                                      [key]="'target'"
+                                      (emitter)="onChangedFromInputRow($event)"
+                                      [myEventSingleInput]="myEventSIKlassTarget">
+                          </input-row>
                         </li>
 
                         <li *ngIf="klassSchedule"
                             (click)="onClickKlassSchedule()"
-                            class="list-group-item klass-desc">
+                            class="list-group-item klass-schedule">
 
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div [innerHTML]="klassSchedule | safeHtml"></div>
+                              <div class="klass-target-title">
+                                <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                                이렇게 진행됩니다.
+                              </div>
+                              <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
+                        </li>
+                        <li class="list-group-item admin">
+                          <input-row  *ngIf="isAdmin && isShowKlassSchedule"
+                                      [cageHeight]="290"
+                                      [cageWidth]="754"
+                                      [key]="'schedule'"
+                                      (emitter)="onChangedFromInputRow($event)"
+                                      [SEinnerHTML]="klassSchedule">
+                          </input-row>                        
                         </li>
                         <!-- TEST / smart editor / isAdmin -->
                         <!-- wonder.jung 이미지는 PC의 경우는 750px을 초과할 경우, 750px로 고정 -->

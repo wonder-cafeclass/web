@@ -38,11 +38,15 @@ import { InputViewComponent }        from '../widget/input-view/input-view.compo
 import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
 import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
 import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
+import { SingleInputViewComponent }  from '../widget/input-view/single-input-view.component';
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+// @ Deprecated
 import { DronListComponent }         from '../widget/dron-list/dron-list.component';
+
+import { InputRowComponent }         from '../widget/input-row/input-row.component';
 
 @NgModule({
   imports: [
@@ -71,11 +75,13 @@ import { DronListComponent }         from '../widget/dron-list/dron-list.compone
     InputViewHListComponent,
     InputViewTableComponent,
     InputViewUpdownComponent,
+    SingleInputViewComponent,
     RadioBtnHListComponent,
     CheckBoxHListComponent,
     NavTabsComponent,
     SmartEditorComponent,
-    DronListComponent,
+    DronListComponent,    // @ Depreacted
+    InputRowComponent,
     SafeHtmlPipe
   ],
   providers: [

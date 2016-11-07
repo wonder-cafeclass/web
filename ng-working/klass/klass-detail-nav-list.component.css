@@ -10,6 +10,66 @@ li.klass-info {
 li.focus {
 	background-color: #e85c41;
 }
-li.list-group-item.klass-desc {
-	padding:20px;
+li.list-group-item.klass-feature {
+    background-color: #f0ca4d;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
 }
+div.klass-feature-title {
+	color:#7a7469;
+	padding: 10px;
+    font-size: 20px;
+    font-weight: bolder;
+}
+div.klass-feature-text {
+	padding: 10px;
+	padding-left: 30px;
+	color: #7a7469;
+    font-size: 14px;
+    font-weight: normal;
+}
+div.klass-feature-text.empty {
+	color: #f00;
+}
+li.list-group-item.klass-target {
+	color:#7a7469;
+	padding: 10px;
+	background-color: #edeae3;
+}
+div.klass-target-title {
+	color:#7a7469;
+	padding: 10px;
+    font-size: 20px;
+    font-weight: bolder;
+}
+div.klass-target-text {
+	padding: 10px;
+	padding-left: 30px;
+    font-size: 14px;
+    font-weight: normal;
+}
+div.klass-target-text.empty {
+	color: #f00;
+}
+li.list-group-item.klass-schedule {
+	color:#7a7469;
+	padding: 10px;
+	background-color: #edeae3;
+}
+div.klass-target-schedule {
+	padding: 10px;
+	padding-left: 30px;
+}
+
+li.list-group-item.klass-desc {
+	padding:10px;
+}
+.orange {
+	color:#e85c41;
+}
+li.list-group-item.admin {
+	padding: 0px;
+	border: 0px;
+}
+

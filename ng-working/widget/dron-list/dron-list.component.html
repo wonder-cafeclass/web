@@ -1,12 +1,16 @@
-<!--
-<div 	class="dron" 
-		[ngClass]="{'top-left': isTopLeft, 'top-right': isTopRight, 'bottom-left': isBottomLeft, 'bottom-right': isBottomRight}">dron-list</div>
+<!-- EXAMPLE
+<dron-list  [cageHeight]="290"
+			[cageWidth]="710"
+			[key]="'feature'"
+			[myEventSingleInput]="myEvent"
+			[SEinnerHTML]="'<p>TEST</p>'">
+</dron-list>
 -->
 <nav class="navbar navbar-default navbar-fixed-bottom cage">
   <div class="container">
     <div class="dron-bottom-right" [style.top]="offsetTop + 'px'"><!-- +40 -->
 
-        <ul class="list-group">
+        <ul class="list-group" style="margin:0px;">
 			<li class="list-group-item title"
 				id="dron-header"
 				[style.color]="textColor"
@@ -30,17 +34,19 @@
 		        				[cageHeight]="cageHeight"
 		        				[cageWidth]="cageWidth"
 		                      	[key]="key"
-		                      	(emitter)="onChangedFromChild($event)"></smart-editor>
-<!-- EXAMPLE
-<dron-list  [cageHeight]="290"
-			[cageWidth]="710"
-			[key]="'feature'"
-			[SEinnerHTML]="'<p>TEST</p>'"></dron-list>
--->
+		                      	(emitter)="onChangedFromChild($event)">
+				</smart-editor>
+
+		        <single-input-view 		*ngIf="myEventSingleInput"
+		        						[cageWidth]="cageWidth"
+		                      			[myEvent]="myEventSingleInput"
+		                      			(emitter)="onChangedFromChild($event)">
+				</single-input-view>
+
 			</li>
 			<li class="list-group-item bottom"
 				id="dron-tail">
-				&nbsp;<!-- btn이 float된 상태이기 때문에 공백문자로 row의 높이를 만들어줍니다. -->
+				<div>&nbsp;</div><!-- btn이 float된 상태이기 때문에 공백문자로 row의 높이를 만들어줍니다. -->
 				<a href="#" class="btn btn-default btn-sm klass-btn" 
 							(click)="onClickSave($event)"
 							[ngClass]="{'disabled':isDisabledSave}"

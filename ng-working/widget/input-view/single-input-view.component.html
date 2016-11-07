@@ -1,0 +1,22 @@
+<div 	class="form-group" 
+		style="margin-bottom:0px;padding:5px;"
+		[style.width]="cageWidthStr">
+
+	<input 	#inputText
+			*ngIf="type=='input'"
+			class="form-control" 
+			placeholder={{myEvent.title}}
+			[(ngModel)]="myEvent.value" (ngModelChange)="onChangeInputText(inputText.value)"
+			(change)="onChange($event, inputText.value)">
+
+	<textarea 	#textareaText
+				*ngIf="type=='textarea'"
+				rows="6"
+				class="form-control single-input" 
+				placeholder={{myEvent.title}}
+				[(ngModel)]="myEvent.value" (ngModelChange)="onChangeInputText(textareaText.value)"
+				(change)="onChange($event, textareaText.value)">
+	</textarea>
+
+				
+</div>  

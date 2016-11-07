@@ -64,8 +64,8 @@ export class SmartEditorComponent implements OnInit {
       if(this.cageWidth < this.cageWidthMin) {
         this.cageWidth = this.cageWidthMin;
       }
-
-      this.cageWidthStr=`${this.cageWidth}px`;
+      let borderWidth:number = 2;
+      this.cageWidthStr=`${this.cageWidth + borderWidth}px`;
     } else {
       this.cageWidthStr="100%";
     }
