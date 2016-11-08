@@ -43,31 +43,24 @@ var InputBtnsRowComponent = (function () {
         this.emitter.emit(myEventReady);
         console.log("input-btns-row / placeholder : ", this.placeholder);
     };
-    InputBtnsRowComponent.prototype.onChange = function (event, value) {
-        event.stopPropagation();
-        event.preventDefault();
+    InputBtnsRowComponent.prototype.onChange = function (value) {
+        // wonder.jung / 문자열의 길이 및 유효성 검증을 해야함.
         // input field의 역할이 어떤 것인지 모르므로 부모에게 change 이벤트 및 input field의 값을 전달합니다.
-        var myEvent = new my_event_1.MyEvent(
-        // public eventName:string
-        this.myEventService.ON_CHANGE, 
-        // public title:string
-        "input-btns-row", 
-        // public key:string
-        "change", 
-        // public value:string
-        value, 
-        // public metaObj:any
-        null);
-        this.emitter.emit(myEvent);
+        var myEventCopy = this.myEventKeyEnter.copy();
+        myEventCopy.eventName = this.myEventService.ON_CHANGE;
+        myEventCopy.value = value;
+        console.log("input-btns=row / onChange / myEventCopy : ", myEventCopy);
+        this.emitter.emit(myEventCopy);
     };
     InputBtnsRowComponent.prototype.callbackSave = function (value, myEvent) {
         if (null == myEvent) {
             return;
         }
+        var myEventCopy = myEvent.copy();
         if (null != value && "" != value) {
-            myEvent.value = value;
+            myEventCopy.value = value;
         }
-        this.emitter.emit(myEvent);
+        this.emitter.emit(myEventCopy);
         this.clearInputField();
     };
     InputBtnsRowComponent.prototype.onKeyEnter = function (event, value) {

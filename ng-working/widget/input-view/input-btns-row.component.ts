@@ -63,26 +63,19 @@ export class InputBtnsRowComponent implements OnInit {
     console.log("input-btns-row / placeholder : ",this.placeholder);
   }
 
-  onChange(event, value) :void{
+  onChange(value) :void{
 
-    event.stopPropagation();
-    event.preventDefault();
+    // wonder.jung / 문자열의 길이 및 유효성 검증을 해야함.
 
     // input field의 역할이 어떤 것인지 모르므로 부모에게 change 이벤트 및 input field의 값을 전달합니다.
-    let myEvent:MyEvent =
-    new MyEvent(
-        // public eventName:string
-        this.myEventService.ON_CHANGE,
-        // public title:string
-        "input-btns-row",
-        // public key:string
-        "change",
-        // public value:string
-        value,
-        // public metaObj:any
-        null
-    );
-    this.emitter.emit(myEvent);
+    let myEventCopy:MyEvent = this.myEventKeyEnter.copy();
+    myEventCopy.eventName = this.myEventService.ON_CHANGE;
+    myEventCopy.value = value;
+
+    console.log("input-btns=row / onChange / myEventCopy : ",myEventCopy);
+
+    this.emitter.emit(myEventCopy);
+
   }
 
   callbackSave(value:string, myEvent:MyEvent) {
@@ -91,11 +84,13 @@ export class InputBtnsRowComponent implements OnInit {
       return;
     }
 
+    let myEventCopy:MyEvent = myEvent.copy();
+
     if(null != value && "" != value) {
-      myEvent.value = value;
+      myEventCopy.value = value;
     }
 
-    this.emitter.emit(myEvent);
+    this.emitter.emit(myEventCopy);
     this.clearInputField();
   }
 

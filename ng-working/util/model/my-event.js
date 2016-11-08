@@ -6,19 +6,23 @@ var MyEvent = (function () {
         this.key = key;
         this.value = value;
         this.metaObj = metaObj;
+        var randomNum = (Math.random() * 1000000);
+        this.id = key + "_" + eventName + "_" + randomNum;
     }
     MyEvent.prototype.copy = function () {
         var copy = new MyEvent(this.eventName, this.title, this.key, this.value, this.metaObj);
+        copy.id = this.id;
+        copy.valueNext = this.valueNext;
         return copy;
     };
     MyEvent.prototype.isSame = function (myEvent) {
-        if (this.eventName !== myEvent.eventName) {
+        if (this.id !== myEvent.id) {
             return false;
         }
-        if (this.title !== myEvent.title) {
-            return false;
-        }
-        if (this.key !== myEvent.key) {
+        return true;
+    };
+    MyEvent.prototype.isSameValue = function (myEvent) {
+        if (this.id !== myEvent.id) {
             return false;
         }
         if (this.value !== myEvent.value) {

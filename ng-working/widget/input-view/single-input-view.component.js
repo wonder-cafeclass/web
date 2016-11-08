@@ -40,7 +40,7 @@ var SingleInputViewComponent = (function () {
             // public metaObj:any
             this.myEvent);
             this.myEvenListBtns = [myEventRemove];
-            this.myEventKeyEnter = myEventRemove;
+            this.myEventKeyEnter = this.myEvent.copy();
         }
         // Ready Event 발송 
         var myEventReady = new my_event_1.MyEvent(
@@ -73,7 +73,7 @@ var SingleInputViewComponent = (function () {
         this.emitter.emit(myEventReturn);
     };
     SingleInputViewComponent.prototype.onChangeFromChild = function (myEvent) {
-        console.log("single-input-view / onChangeFromChild / event : ", event);
+        console.log("single-input-view / onChangeFromChild / myEvent : ", myEvent);
         if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
             // 열을 지웁니다.
             var myEventTarget = null;
@@ -85,6 +85,9 @@ var SingleInputViewComponent = (function () {
                 myEventTarget = myEvent;
             }
             this.emitter.emit(myEventTarget);
+        }
+        else if (this.myEventService.ON_CHANGE === myEvent.eventName) {
+            this.emitter.emit(myEvent);
         }
     };
     SingleInputViewComponent.prototype.getMyEvent = function () {

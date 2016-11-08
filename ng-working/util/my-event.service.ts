@@ -1,4 +1,5 @@
 import { Injectable }             from '@angular/core';
+import { MyEvent }             from './model/my-event';
 
 @Injectable()
 export class MyEventService {
@@ -6,6 +7,7 @@ export class MyEventService {
     // 부모 자식간의 컴포넌트 통신시 어떤 이벤트가 발생했는지 정의하는 서비스 객체.
 
     // GENERAL PURPOSE
+    ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
     ON_CHANGE:string="ON_CHANGE";
     ON_SHUTDOWN:string="ON_SHUTDOWN";
@@ -64,6 +66,7 @@ export class MyEventService {
     constructor() {
     }
 
+    // @ Deprecated
     has_it(event_name:string) :boolean {
 
         if (    this.ON_CHANGE_KLASS_DISCOUNT === event_name ||
@@ -81,6 +84,7 @@ export class MyEventService {
         return false;
     }
 
+    // @ Deprecated
     is_it(target_event_name:string, event_name:string) :boolean{
 
         if(!this.has_it(target_event_name)) {
@@ -95,5 +99,112 @@ export class MyEventService {
 
         return false;
     }
+
+    public getCopyEventList(myEventList:MyEvent[]) :MyEvent[] {
+
+        let copyList:MyEvent[] = [];
+        for (var i = 0; i < myEventList.length; ++i) {
+          let myEvent = myEventList[i];
+          let myEventCopy = myEvent.copy();
+
+          copyList.push(myEventCopy);
+        }
+
+        return copyList;
+    }
+
+    public isSameEventLists(firstList:MyEvent[],secondList:MyEvent[]) :boolean {
+
+        if(null == firstList || 0 === firstList.length) {
+          return false;
+        }
+        if(null == secondList || 0 === secondList.length) {
+          return false;
+        }
+        if(firstList.length !== secondList.length) {
+          return false;
+        }
+
+        for (var i = 0; i < firstList.length; ++i) {
+          let firstMyEvent:MyEvent = firstList[i];
+          let secondMyEvent:MyEvent = secondList[i];
+
+          let isSame = firstMyEvent.isSame(secondMyEvent);
+          if(!isSame) {
+            return false;
+          }
+        }
+
+        return true;
+    } 
+
+    public getChangedFromList(firstList:MyEvent[],secondList:MyEvent[]) :MyEvent[] {
+
+        if(null == firstList || 0 === firstList.length) {
+            return null;
+        }
+        if(null == secondList || 0 === secondList.length) {
+            return null;
+        }
+        if(firstList.length !== secondList.length) {
+            return null;
+        }
+
+        for (var i = 0; i < firstList.length; ++i) {
+            let firstMyEvent:MyEvent = firstList[i];
+            let secondMyEvent:MyEvent = secondList[i];
+
+            let isSameValue = firstMyEvent.isSameValue(secondMyEvent);
+            if(!isSameValue) {
+                return [firstMyEvent, secondMyEvent];
+            }
+        }
+
+        return null;
+    }
+
+    public hasChangedList(firstList:MyEvent[],secondList:MyEvent[]) :boolean {
+        return this.isNotSameValueEventLists(firstList, secondList);        
+    }
+
+    public isNotSameValueEventLists(firstList:MyEvent[],secondList:MyEvent[]) :boolean {
+        return !this.isSameValueEventLists(firstList, secondList);
+    }
+    public isSameValueEventLists(firstList:MyEvent[],secondList:MyEvent[]) :boolean {
+
+        if(null == firstList || 0 === firstList.length) {
+          return false;
+        }
+        if(null == secondList || 0 === secondList.length) {
+          return false;
+        }
+        if(firstList.length !== secondList.length) {
+          return false;
+        }
+
+        for (var i = 0; i < firstList.length; ++i) {
+          let firstMyEvent:MyEvent = firstList[i];
+          let secondMyEvent:MyEvent = secondList[i];
+
+          let isSameValue = firstMyEvent.isSameValue(secondMyEvent);
+          if(!isSameValue) {
+            return false;
+          }
+        }
+
+        return true;
+    }      
+
+    public setEventValue(myEvent:MyEvent, myEventList:MyEvent[]) :MyEvent[] {
+        for (var i = 0; i < myEventList.length; ++i) {
+            let myEventNext = myEventList[i];
+            if(myEvent.isSame(myEventNext)) {
+                myEventNext.value = myEvent.value;
+            }
+        }
+
+        return myEventList;
+    }
+
 
 }

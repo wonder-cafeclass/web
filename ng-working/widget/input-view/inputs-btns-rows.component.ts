@@ -18,6 +18,8 @@ import { MyEvent }                     from '../../util/model/my-event';
 })
 export class InputsBtnsRowsComponent implements OnInit {
 
+  @Input() myEvent:MyEvent;
+  myEventForAddRow:MyEvent;
   @Input() myEventList:MyEvent[];
   myEventListCopy:MyEvent[];
   @Input() cageWidth:number=-1;
@@ -25,6 +27,7 @@ export class InputsBtnsRowsComponent implements OnInit {
   cageWidthStr:string;
   isDisabledSave:boolean=true;
   myEvenListBtnsForAddingRow:MyEvent[];
+  myEvenListBtnsForRemovingRow:MyEvent[];
 
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
@@ -40,7 +43,12 @@ export class InputsBtnsRowsComponent implements OnInit {
     }
 
     // 원본 비교를 위한 copy list 만들기
-    this.myEventListCopy = this.getCopyEventList(this.myEventList);
+    this.myEventListCopy = 
+    this.myEventService.getCopyEventList(this.myEventList);
+
+    let myEventCopy:MyEvent = this.myEvent.copy();
+    myEventCopy.eventName = this.myEventService.ON_ADD_ROW;
+    this.myEventForAddRow = myEventCopy;
 
     // 열을 추가할 수 있는 기능을 하는 input group 만들기
     this.myEvenListBtnsForAddingRow = [
@@ -54,7 +62,22 @@ export class InputsBtnsRowsComponent implements OnInit {
           // public value:string
           "",
           // public metaObj:any
-          null
+          this.myEvent
+      )
+    ];
+
+    this.myEvenListBtnsForRemovingRow = [
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_REMOVE_ROW,
+          // public title:string
+          "빼기",
+          // public key:string
+          "remove",
+          // public value:string
+          "",
+          // public metaObj:any
+          this.myEvent
       )
     ];
 
@@ -115,33 +138,56 @@ export class InputsBtnsRowsComponent implements OnInit {
 
   onChangeFromChild(myEvent:MyEvent) :void {
 
-    if(null == myEvent) {
+    if(null == myEvent && null != this.myEvent && null != myEvent.value) {
       return;
     }
 
     console.log("inputs-btns-rows / onChangeFromChild / myEvent : ",myEvent);
 
-    if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
-      if(null != myEvent.value && "" != myEvent.value) {
-        // 열을 추가합니다.
-        let newMyEvent:MyEvent = 
-        new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE,
-          // public title:string
-          "single-input-view",
-          // public key:string
-          "single-input-view",
-          // public value:string
-          myEvent.value,
-          // public metaObj:any
-          null
-        );
-        this.myEventList.push(newMyEvent);
-      }
-    } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
-      // 삭제 관련 유효성 검증을 할 수 없으므로 부모에게 이벤트 전달.
+    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+
+      // 변수 전파가 즉시 되지 않으므로 동일한 객체라면 직접 업데이트 해줍니다.
+      this.myEventList = this.myEventService.setEventValue(myEvent, this.myEventList);
+
+      let hasChanged:boolean = this.hasChanged();
+      this.isDisabledSave = (hasChanged)?false:true;
+
+      console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / hasChanged : ",hasChanged);
+      console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.isDisabledSave : ",this.isDisabledSave);
+      console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventList : ",this.myEventList);
+      console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventListCopy : ",this.myEventListCopy);
+
       this.emitter.emit(myEvent);
+
+    } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
+
+      // 공백 문자열도 허용합니다.
+      let myEventCopy:MyEvent = this.myEvent.copy();
+      myEventCopy.metaObj["idx"] = this.myEventList.length;
+      myEventCopy.value = myEvent.value;
+
+      this.myEventList.push(myEventCopy);
+
+      // 저장 관련 작업을 할 수 없으므로 부모에게 이벤트 전달.
+      let myEventCopyToParent:MyEvent = myEventCopy.copy();
+      myEventCopyToParent.eventName = this.myEventService.ON_ADD_ROW;
+      this.emitter.emit(myEventCopyToParent);
+
+    } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+
+      let myEventListNext:MyEvent[] = [];
+      for (var i = 0; i < this.myEventList.length; ++i) {
+        let myEventNext:MyEvent = this.myEventList[i];
+        if(myEventNext.isSame(myEvent)) {
+          // 지울 이벤트를 찾았습니다. 리스트에서 제외합니다.
+          continue;
+        }
+        myEventListNext.push(myEventNext);
+      }
+      this.myEventList = myEventListNext;
+
+      this.emitter.emit(myEvent);
+
     }
   }
 
@@ -159,7 +205,7 @@ export class InputsBtnsRowsComponent implements OnInit {
 
     console.log("inputs-btns-rows / dismiss");
 
-    let hasChanged:boolean = !this.isSameEventLists(this.myEventList, this.myEventListCopy);
+    let hasChanged:boolean = this.hasChanged();
     let firstMyEvent:MyEvent = this.myEventList[0];
 
     // 사용자에게 변경된 사항이 있다면 저장할 것인지 물어봅니다.
@@ -187,6 +233,7 @@ export class InputsBtnsRowsComponent implements OnInit {
       );
 
     } else {
+
       // 저장하지 않습니다. 이전 값으로 돌려놓습니다. - wonder.jung 이전 값으로 돌려놓는 방법은?
       myEventReturn = 
       new MyEvent(
@@ -201,6 +248,7 @@ export class InputsBtnsRowsComponent implements OnInit {
           // public metaObj:any
           this.myEventListCopy
       );
+      
     }
 
     this.emitter.emit(myEventReturn);
@@ -214,47 +262,84 @@ export class InputsBtnsRowsComponent implements OnInit {
 
   save() :void {
 
-    if(this.isDisabledSave) {
-      return;
-    }
     if(null == this.myEventList || 0 == this.myEventList.length) {
       return;
     }
 
     // 1. 리스트를 비교해서 변경내역이 있는지 확인합니다.
-    let isSameEventLists = this.isSameEventLists(this.myEventList, this.myEventListCopy);
-    let firstMyEvent:MyEvent = this.myEventList[0];
-    let myEventReturn:MyEvent = null;
-    if(isSameEventLists) {
+    let hasChanged:boolean = this.hasChanged();
+    console.log("inputs-btns-rows / save / hasChanged : ",hasChanged);
+    console.log("inputs-btns-rows / save / this.myEventList : ",this.myEventList);
 
-      // 1-1. 변경 내역이 없다면, 버튼이 비활성화 상태. 아무것도 하지 않습니다.
-
+    if(hasChanged) {
+      this.isDisabledSave = false;
     } else {
-
-      // 1-2. 변경 내역이 있다면, 저장을 진행합니다.
-      let myEventReturn:MyEvent = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_SAVE,
-          // public title:string
-          "inputs-btns-rows",
-          // public key:string
-          firstMyEvent.key,
-          // public value:string
-          "",
-          // public metaObj:any
-          this.myEventList
-      );
-
-      
+      this.isDisabledSave = true;
     }
-    this.emitter.emit(myEventReturn);      
 
-    // this.myEventListCopy = this.getCopyEventList(this.myEventList);
+    if(this.isDisabledSave) {
+      return;
+    }
 
+    let myEventChanged:MyEvent = this.getChanged();
+    if(null == myEventChanged) {
+      return;
+    }
 
-    // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
-    /*
-    */
+    let myEventReturn:MyEvent = myEventChanged.copy();
+    myEventReturn.eventName = this.myEventService.ON_SAVE;
+
+    console.log("inputs-btns-rows / save / myEventReturn : ",myEventReturn);
+
+    this.emitter.emit(myEventReturn);
+
+    // 저장이 완료됨. Event 데이터를 copy와 원본을 동일하게 덮어쓰기.
+    this.overwriteMyEventList();
+  } 
+
+  hasChanged() :boolean {
+
+    let hasChanged:boolean = 
+    this.myEventService.hasChangedList(
+      this.myEventList, 
+      this.myEventListCopy
+    );
+
+    return hasChanged;
+
+  }
+
+  getChanged() :MyEvent {
+
+    let myEventChangedList:MyEvent[] = 
+    this.myEventService.getChangedFromList(
+      this.myEventList, 
+      this.myEventListCopy
+    );
+
+    if( null != myEventChangedList && 
+        0 != myEventChangedList.length) {
+      // 첫번째 Event가 서비스중인 데이터.
+      return myEventChangedList[0];
+
+    }
+
+    return null;
+  }
+
+  overwriteMyEventList() :void {
+    this.myEventListCopy = 
+    this.myEventService.getCopyEventList(
+      this.myEventList
+    );
+
+    let hasChanged:boolean = this.hasChanged();
+    this.isDisabledSave = !hasChanged;
+
+    console.log("overwriteMyEventList / this.isDisabledSave : ",this.isDisabledSave);
+  }
+  rollbackMyEventListCopies() :void {
+    this.myEventList = this.myEventListCopy;
+    this.overwriteMyEventList();
   }  
 }

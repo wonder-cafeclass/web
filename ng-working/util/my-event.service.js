@@ -13,6 +13,7 @@ var MyEventService = (function () {
     function MyEventService() {
         // 부모 자식간의 컴포넌트 통신시 어떤 이벤트가 발생했는지 정의하는 서비스 객체.
         // GENERAL PURPOSE
+        this.ANY = "ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
         this.ON_READY = "ON_READY";
         this.ON_CHANGE = "ON_CHANGE";
         this.ON_SHUTDOWN = "ON_SHUTDOWN";
@@ -60,6 +61,7 @@ var MyEventService = (function () {
         this.ON_MOUSEENTER_KLASS_CALENDAR_DATE = "ON_MOUSEENTER_KLASS_CALENDAR_DATE";
         this.ON_MOUSELEAVE_KLASS_CALENDAR_DATE = "ON_MOUSELEAVE_KLASS_CALENDAR_DATE";
     }
+    // @ Deprecated
     MyEventService.prototype.has_it = function (event_name) {
         if (this.ON_CHANGE_KLASS_DISCOUNT === event_name ||
             this.ON_CHANGE_KLASS_PRICE === event_name ||
@@ -74,6 +76,7 @@ var MyEventService = (function () {
         }
         return false;
     };
+    // @ Deprecated
     MyEventService.prototype.is_it = function (target_event_name, event_name) {
         if (!this.has_it(target_event_name)) {
             return false;
@@ -85,6 +88,90 @@ var MyEventService = (function () {
             return true;
         }
         return false;
+    };
+    MyEventService.prototype.getCopyEventList = function (myEventList) {
+        var copyList = [];
+        for (var i = 0; i < myEventList.length; ++i) {
+            var myEvent = myEventList[i];
+            var myEventCopy = myEvent.copy();
+            copyList.push(myEventCopy);
+        }
+        return copyList;
+    };
+    MyEventService.prototype.isSameEventLists = function (firstList, secondList) {
+        if (null == firstList || 0 === firstList.length) {
+            return false;
+        }
+        if (null == secondList || 0 === secondList.length) {
+            return false;
+        }
+        if (firstList.length !== secondList.length) {
+            return false;
+        }
+        for (var i = 0; i < firstList.length; ++i) {
+            var firstMyEvent = firstList[i];
+            var secondMyEvent = secondList[i];
+            var isSame = firstMyEvent.isSame(secondMyEvent);
+            if (!isSame) {
+                return false;
+            }
+        }
+        return true;
+    };
+    MyEventService.prototype.getChangedFromList = function (firstList, secondList) {
+        if (null == firstList || 0 === firstList.length) {
+            return null;
+        }
+        if (null == secondList || 0 === secondList.length) {
+            return null;
+        }
+        if (firstList.length !== secondList.length) {
+            return null;
+        }
+        for (var i = 0; i < firstList.length; ++i) {
+            var firstMyEvent = firstList[i];
+            var secondMyEvent = secondList[i];
+            var isSameValue = firstMyEvent.isSameValue(secondMyEvent);
+            if (!isSameValue) {
+                return [firstMyEvent, secondMyEvent];
+            }
+        }
+        return null;
+    };
+    MyEventService.prototype.hasChangedList = function (firstList, secondList) {
+        return this.isNotSameValueEventLists(firstList, secondList);
+    };
+    MyEventService.prototype.isNotSameValueEventLists = function (firstList, secondList) {
+        return !this.isSameValueEventLists(firstList, secondList);
+    };
+    MyEventService.prototype.isSameValueEventLists = function (firstList, secondList) {
+        if (null == firstList || 0 === firstList.length) {
+            return false;
+        }
+        if (null == secondList || 0 === secondList.length) {
+            return false;
+        }
+        if (firstList.length !== secondList.length) {
+            return false;
+        }
+        for (var i = 0; i < firstList.length; ++i) {
+            var firstMyEvent = firstList[i];
+            var secondMyEvent = secondList[i];
+            var isSameValue = firstMyEvent.isSameValue(secondMyEvent);
+            if (!isSameValue) {
+                return false;
+            }
+        }
+        return true;
+    };
+    MyEventService.prototype.setEventValue = function (myEvent, myEventList) {
+        for (var i = 0; i < myEventList.length; ++i) {
+            var myEventNext = myEventList[i];
+            if (myEvent.isSame(myEventNext)) {
+                myEventNext.value = myEvent.value;
+            }
+        }
+        return myEventList;
     };
     MyEventService = __decorate([
         core_1.Injectable(), 

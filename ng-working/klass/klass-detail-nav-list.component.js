@@ -58,16 +58,26 @@ var KlassDetailNavListComponent = (function () {
                     "(예시) 자신감을 심어주는 클래스",
                 ];
         }
+        this.myEventForKlassFeature =
+            new my_event_1.MyEvent(
+            // public eventName:string
+            this.myEventService.ANY, 
+            // public title:string
+            "수업 특징", 
+            // public key:string
+            "feature", 
+            // public value:string
+            "", 
+            // public metaObj:any
+            {
+                klassId: +this.klass.id
+            });
         this.myEventListForKlassFeature = [];
         for (var i = 0; i < this.klassFeatureList.length; ++i) {
             var klassFeature = this.klassFeatureList[i];
-            var metaObj = {
-                klassId: +this.klass.id,
-                idx: i
-            };
             var myEventKlassFeature = new my_event_1.MyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE, 
+            this.myEventService.ANY, 
             // public title:string
             "수업 특징", 
             // public key:string
@@ -75,9 +85,12 @@ var KlassDetailNavListComponent = (function () {
             // public value:string
             klassFeature, 
             // public metaObj:any
-            metaObj);
+            {
+                klassId: +this.klass.id,
+                idx: i
+            });
             this.myEventListForKlassFeature.push(myEventKlassFeature);
-        }
+        } // end for
         // KLASS TARGET
         if (null == this.klassTargetList || 0 == this.klassTargetList.length) {
             // this.klassFeature = '(예시) 해외 여행시 다양한 상황에서 필요한 영어 표현들을 연습|(예시) 초급 분들도 영어로 묻고 답하는데 어려움 없도록 코칭|(예시) 자신감을 심어주는 클래스';
@@ -87,6 +100,23 @@ var KlassDetailNavListComponent = (function () {
                     "(예시) 2. 여행 상황별로 충분히 연습해 자신감을 갖고 싶은 분들"
                 ];
         }
+        var metaObj = {
+            klassId: +this.klass.id
+        };
+        this.myEventForKlassTarget =
+            new my_event_1.MyEvent(
+            // public eventName:string
+            this.myEventService.ANY, 
+            // public title:string
+            "수업 대상", 
+            // public key:string
+            "target", 
+            // public value:string
+            "", 
+            // public metaObj:any
+            {
+                klassId: +this.klass.id
+            });
         this.myEventListForKlassTarget = [];
         for (var i = 0; i < this.klassTargetList.length; ++i) {
             var klassTarget = this.klassTargetList[i];
@@ -100,11 +130,14 @@ var KlassDetailNavListComponent = (function () {
             // public value:string
             klassTarget, 
             // public metaObj:any
-            this.klass.id);
+            {
+                klassId: +this.klass.id,
+                idx: i
+            });
             this.myEventListForKlassTarget.push(myEventKlassFeature);
-        }
+        } // end for
+        this.overwriteKlassCopies();
         // KLASS SCHEDULE
-        console.log("HERE / this.klassSchedule : ", this.klassSchedule);
         if (null === this.klassSchedule || "" === this.klassSchedule) {
             this.klassSchedule = '<p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)1. Small talk &amp; 지난 시간 배운 표현 복습 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)2. Brainstorming – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)3. Key word 익히기 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)4. key expression – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)5. Break – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)6. Practice + Roleplay – <span style="color: rgb(255, 170, 0);">30분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)7. Q&amp;A, feedback + closing – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><br></p>';
         }
@@ -121,24 +154,32 @@ var KlassDetailNavListComponent = (function () {
         } // end outer if
     };
     KlassDetailNavListComponent.prototype.removeMyEventFromList = function (myEventToRemove, myEventList) {
-        var idxToRemove = -1;
-        var nextMyEventList = [];
-        if (null != myEventToRemove.metaObj || null != myEventToRemove.metaObj.idx) {
-            idxToRemove = myEventToRemove.metaObj.idx;
-        }
-        if (-1 < idxToRemove) {
-            for (var i = 0; i < this.myEventListForKlassFeature.length; ++i) {
-                var myEvent = this.myEventListForKlassFeature[i];
-                if (i === idxToRemove) {
-                    continue;
-                }
-                nextMyEventList.push(myEvent);
+        var myEventListNext = [];
+        for (var i = 0; i < myEventList.length; ++i) {
+            var myEventNext = myEventList[i];
+            if (myEventNext.isSame(myEventToRemove)) {
+                // 지울 이벤트를 찾았습니다. 리스트에서 제외합니다.
+                continue;
             }
-            // 새로운 리스트로 업데이트
-            return nextMyEventList;
+            myEventListNext.push(myEventNext);
         }
         // 삭제할 이벤트가 없습니다. 받은 리스트를 돌려줍니다.
-        return myEventList;
+        return myEventListNext;
+    };
+    KlassDetailNavListComponent.prototype.getEventValues = function (myEventList) {
+        var eventValues = "";
+        if (null == myEventList || 0 === myEventList.length) {
+            return eventValues;
+        }
+        for (var i = 0; i < myEventList.length; ++i) {
+            var myEvent = myEventList[i];
+            eventValues += myEvent.value;
+            if (i < (myEventList.length - 1)) {
+                // unless last index...
+                eventValues += "|";
+            }
+        }
+        return eventValues;
     };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
@@ -146,7 +187,31 @@ var KlassDetailNavListComponent = (function () {
             return;
         }
         console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent : ", myEvent);
-        if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+        if (this.myEventService.ON_CHANGE === myEvent.eventName) {
+            if ("feature" === myEvent.key) {
+                this.myEventListForKlassFeature =
+                    this.myEventService.setEventValue(myEvent, this.myEventListForKlassFeature);
+            }
+            else if ("target" === myEvent.key) {
+                this.myEventListForKlassTarget =
+                    this.myEventService.setEventValue(myEvent, this.myEventListForKlassTarget);
+            }
+        }
+        else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
+            // 열이 추가되었습니다.
+            console.log("열이 추가되었습니다.");
+            if ("feature" === myEvent.key) {
+                var klassFeatureNext = this.getEventValues(this.myEventListForKlassFeature);
+                console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
+                console.log(klassFeatureNext);
+            }
+            else if ("target" === myEvent.key) {
+                var klassFeatureTarget = this.getEventValues(this.myEventListForKlassTarget);
+                console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
+                console.log(klassFeatureTarget);
+            }
+        }
+        else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
             // 열을 지웁니다.
             if ("feature" === myEvent.key) {
                 this.klassFeature = this.klass.feature = myEvent.value;
@@ -154,6 +219,7 @@ var KlassDetailNavListComponent = (function () {
                 this.myEventListForKlassFeature = nextEventList;
                 // DB UPDATE
                 console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
+                console.log(this.myEventListForKlassFeature);
             }
             else if ("target" === myEvent.key) {
                 this.klassTarget = this.klass.target = myEvent.value;
@@ -161,6 +227,7 @@ var KlassDetailNavListComponent = (function () {
                 this.myEventListForKlassTarget = nextEventList;
                 // DB UPDATE
                 console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
+                console.log(this.myEventListForKlassTarget);
             } // end if
         }
         else if (this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
@@ -173,6 +240,23 @@ var KlassDetailNavListComponent = (function () {
             // 입력창을 닫습니다.
             if ("feature" === myEvent.key || "target" === myEvent.key) {
                 this.shutdownKlassInfos();
+            }
+            // wonder.jung
+            // 데이터가 변경되었는지 확인합니다.
+            var hasChanged = false;
+            if ("feature" === myEvent.key) {
+                hasChanged =
+                    this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
+            }
+            else if ("target" === myEvent.key) {
+                hasChanged =
+                    this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
+            }
+            console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ", hasChanged);
+            if (hasChanged) {
+                // 데이터를 롤백합니다.
+                console.log("데이터를 롤백합니다.");
+                this.rollbackKlassCopies();
             }
         }
         else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
@@ -270,6 +354,17 @@ var KlassDetailNavListComponent = (function () {
         this.isShowKlassFeatureAdmin = false;
         this.isShowKlassTargetAdmin = false;
         this.isShowKlassScheduleAdmin = false;
+    };
+    KlassDetailNavListComponent.prototype.overwriteKlassCopies = function () {
+        this.myEventListForKlassTargetCopy =
+            this.myEventService.getCopyEventList(this.myEventListForKlassTarget);
+        this.myEventListForKlassFeatureCopy =
+            this.myEventService.getCopyEventList(this.myEventListForKlassFeature);
+    };
+    KlassDetailNavListComponent.prototype.rollbackKlassCopies = function () {
+        this.myEventListForKlassTarget = this.myEventListForKlassTargetCopy;
+        this.myEventListForKlassFeature = this.myEventListForKlassFeatureCopy;
+        this.overwriteKlassCopies();
     };
     __decorate([
         core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 

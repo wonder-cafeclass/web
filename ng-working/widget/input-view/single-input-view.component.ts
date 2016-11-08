@@ -56,7 +56,7 @@ export class SingleInputViewComponent implements OnInit {
           this.myEvent
       );      
       this.myEvenListBtns = [myEventRemove];
-      this.myEventKeyEnter = myEventRemove;
+      this.myEventKeyEnter = this.myEvent.copy();
     }
 
     // Ready Event 발송 
@@ -99,9 +99,10 @@ export class SingleInputViewComponent implements OnInit {
   }
 
   onChangeFromChild(myEvent:MyEvent) :void {
-    console.log("single-input-view / onChangeFromChild / event : ",event);
+    console.log("single-input-view / onChangeFromChild / myEvent : ",myEvent);
 
     if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+
       // 열을 지웁니다.
       let myEventTarget:MyEvent = null;
       if(null != myEvent.metaObj) {
@@ -111,6 +112,11 @@ export class SingleInputViewComponent implements OnInit {
         myEventTarget = myEvent;
       }
       this.emitter.emit(myEventTarget);
+
+    } else if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+
+      this.emitter.emit(myEvent);
+
     }
   }
 

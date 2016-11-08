@@ -14,7 +14,7 @@ export class AuthService {
 
         let req_url = this.us.get(this.adminAuthUrl);;
 
-        console.log("TEST / req_url : ",req_url);
+        // console.log("TEST / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -27,7 +27,7 @@ export class AuthService {
 
         let body = res.json();
 
-        console.log("AuthService / extractData / body ::: ",body);
+        // console.log("AuthService / extractData / body ::: ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {

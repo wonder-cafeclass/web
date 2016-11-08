@@ -191,8 +191,6 @@ export class KlassDetailComponent implements OnInit {
   private setFirstClassDateFormat() :void {
     this.firstClassDate = this.getFirstClassDate(this.klass);
 
-    console.log("HERE / setFirstClassDateFormat / this.firstClassDate : ",this.firstClassDate);
-
     if(this.firstClassDate) {
       this.firstClassDateFormatStr = `${this.firstClassDate.month}월 ${this.firstClassDate.date}일 ${this.firstClassDate.dayKor}요일`;
     }
@@ -384,9 +382,6 @@ export class KlassDetailComponent implements OnInit {
     // 운영자 지정 - 수업 요일 
     // days_list
     this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
-    console.log("TEST / this.checkboxOptionListKlassDay : ",this.checkboxOptionListKlassDay);
-
-
   }
 
   cancel() {

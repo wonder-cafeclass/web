@@ -9,16 +9,26 @@
 
   <li   *ngFor="let myEvent of myEventList; let i = index"
         class="list-group-item compact" [ngClass]="{'first':i === 0}">
+
+    <!--
     <single-input-view  [type]="'removableRow'"
                         [myEvent]="myEvent"
                         (emitter)="onChangeFromChild($event)">
     </single-input-view>
+    -->
+    <input-btns-row [myEventList]="myEvenListBtnsForRemovingRow"
+                    [myEventKeyEnter]="myEvent"
+                    [inputText]="myEvent.value"
+                    [type]="'button'"
+                    (emitter)="onChangeFromChild($event)">
+    </input-btns-row>    
   </li>
 
   <!-- 열을 추가하는 입력을 받는 창 -->
 
   <li class="list-group-item compact">    
     <input-btns-row [myEventList]="myEvenListBtnsForAddingRow"
+                    [myEventKeyEnter]="myEventForAddRow"
                     [type]="'button'"
                     [placeholder]="placeholderForNewRow"
                     (emitter)="onChangeFromChild($event)">
@@ -29,7 +39,8 @@
 
     <div class="btn-group" role="group" aria-label="..." style="margin:5px;">
       <button (click)="dismiss($event)" type="button" class="btn btn-default">닫기</button>
-      <button (click)="onClickSave($event)" type="button" class="btn btn-default" >저장하기</button>
+      <button *ngIf="!isDisabledSave" (click)="onClickSave($event)" type="button" class="btn btn-default" >저장하기</button>
+      <button *ngIf="isDisabledSave" type="button" class="btn btn-default" disabled="disabled">저장하기</button>
     </div>
 
   </li>

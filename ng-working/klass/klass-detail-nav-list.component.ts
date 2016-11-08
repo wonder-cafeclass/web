@@ -54,8 +54,13 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   myEventSIKlassFeature:MyEvent; // @ Deprecated
   myEventSIKlassTarget:MyEvent; // @ Deprecated
+
+  myEventForKlassFeature:MyEvent;
   myEventListForKlassFeature:MyEvent[];
+  myEventListForKlassFeatureCopy:MyEvent[];
+  myEventForKlassTarget:MyEvent;
   myEventListForKlassTarget:MyEvent[];
+  myEventListForKlassTargetCopy:MyEvent[];
 
   navHeight:number=50;
   borderTopBottomWidth:number=2;
@@ -101,18 +106,30 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       ];
     }
 
+    this.myEventForKlassFeature = 
+    new MyEvent(
+      // public eventName:string
+      this.myEventService.ANY,
+      // public title:string
+      "수업 특징",
+      // public key:string
+      "feature",
+      // public value:string
+      "",
+      // public metaObj:any
+      {
+        klassId:+this.klass.id
+      }
+    );    
+
     this.myEventListForKlassFeature=[];
     for (var i = 0; i < this.klassFeatureList.length; ++i) {
       let klassFeature:string = this.klassFeatureList[i];
 
-      let metaObj = {
-        klassId:+this.klass.id,
-        idx:i
-      };
       let myEventKlassFeature = 
       new MyEvent(
         // public eventName:string
-        this.myEventService.ON_CHANGE,
+        this.myEventService.ANY,
         // public title:string
         "수업 특징",
         // public key:string
@@ -120,11 +137,15 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         // public value:string
         klassFeature,
         // public metaObj:any
-        metaObj
+        {
+          klassId:+this.klass.id,
+          idx:i
+        }
       );
-
       this.myEventListForKlassFeature.push(myEventKlassFeature);
-    }
+    } // end for
+
+
 
     // KLASS TARGET
     if(null == this.klassTargetList || 0 == this.klassTargetList.length) {
@@ -135,6 +156,26 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         "(예시) 2. 여행 상황별로 충분히 연습해 자신감을 갖고 싶은 분들"
       ];
     }
+
+    let metaObj = {
+      klassId:+this.klass.id
+    };
+    this.myEventForKlassTarget = 
+    new MyEvent(
+      // public eventName:string
+      this.myEventService.ANY,
+      // public title:string
+      "수업 대상",
+      // public key:string
+      "target",
+      // public value:string
+      "",
+      // public metaObj:any
+      {
+        klassId:+this.klass.id
+      }
+    ); 
+
     this.myEventListForKlassTarget=[];
     for (var i = 0; i < this.klassTargetList.length; ++i) {
       let klassTarget:string = this.klassTargetList[i];
@@ -150,14 +191,21 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         // public value:string
         klassTarget,
         // public metaObj:any
-        this.klass.id
+        {
+          klassId:+this.klass.id,
+          idx:i
+        }
       );
 
       this.myEventListForKlassTarget.push(myEventKlassFeature);
-    }    
+    } // end for
+
+    this.overwriteKlassCopies();
+
+
+
 
     // KLASS SCHEDULE
-    console.log("HERE / this.klassSchedule : ",this.klassSchedule);
     if(null === this.klassSchedule || "" === this.klassSchedule) {
       this.klassSchedule = '<p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)1. Small talk &amp; 지난 시간 배운 표현 복습 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)2. Brainstorming – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)3. Key word 익히기 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)4. key expression – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)5. Break – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)6. Practice + Roleplay – <span style="color: rgb(255, 170, 0);">30분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)7. Q&amp;A, feedback + closing – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><br></p>';
     }
@@ -166,6 +214,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
     this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
     this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
+
   }
   // @ Deprecated
   ngOnChanges(changes: SimpleChanges) :void {
@@ -180,29 +229,39 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   private removeMyEventFromList(myEventToRemove:MyEvent, myEventList:MyEvent[]) :MyEvent[] {
 
-    let idxToRemove = -1;
-    let nextMyEventList:MyEvent[] = [];
-    if(null != myEventToRemove.metaObj || null != myEventToRemove.metaObj.idx) {
-      idxToRemove = myEventToRemove.metaObj.idx;
-    }
-    if(-1 < idxToRemove) {
-
-      for (var i = 0; i < this.myEventListForKlassFeature.length; ++i) {
-        let myEvent = this.myEventListForKlassFeature[i];
-        if(i === idxToRemove) {
-          continue;
-        }
-        nextMyEventList.push(myEvent);
+    let myEventListNext:MyEvent[] = [];
+    for (var i = 0; i < myEventList.length; ++i) {
+      let myEventNext:MyEvent = myEventList[i];
+      if(myEventNext.isSame(myEventToRemove)) {
+        // 지울 이벤트를 찾았습니다. 리스트에서 제외합니다.
+        continue;
       }
-
-      // 새로운 리스트로 업데이트
-      return nextMyEventList;
+      myEventListNext.push(myEventNext);
     }
 
     // 삭제할 이벤트가 없습니다. 받은 리스트를 돌려줍니다.
-    return myEventList;
+    return myEventListNext;
   }
-  
+
+  private getEventValues(myEventList:MyEvent[]) :string {
+
+    let eventValues:string = "";
+    if(null == myEventList || 0 === myEventList.length) {
+      return eventValues;
+    }
+    
+    for (var i = 0; i < myEventList.length; ++i) {
+      let myEvent:MyEvent = myEventList[i];
+      eventValues += myEvent.value;
+      if(i < (myEventList.length - 1)) {
+        // unless last index...
+        eventValues += "|";
+      }
+    }
+
+    return eventValues;
+  }
+
   onChangedFromInputRow(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
 
@@ -212,7 +271,42 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
     console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent : ",myEvent);
 
-    if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+
+      if("feature" === myEvent.key) {
+        this.myEventListForKlassFeature =
+        this.myEventService.setEventValue(
+          myEvent, 
+          this.myEventListForKlassFeature
+        );
+      } else if("target" === myEvent.key) {
+        this.myEventListForKlassTarget =
+        this.myEventService.setEventValue(
+          myEvent, 
+          this.myEventListForKlassTarget
+        );
+      }
+
+    } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
+
+      // 열이 추가되었습니다.
+      console.log("열이 추가되었습니다.");
+      if("feature" === myEvent.key) {
+
+        let klassFeatureNext:string = this.getEventValues(this.myEventListForKlassFeature);
+
+        console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
+        console.log(klassFeatureNext);
+      } else if("target" === myEvent.key) {
+
+        let klassFeatureTarget:string = this.getEventValues(this.myEventListForKlassTarget);
+
+        console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
+        console.log(klassFeatureTarget);
+      }
+
+    } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+
       // 열을 지웁니다.
       if("feature" === myEvent.key) {
         this.klassFeature = this.klass.feature = myEvent.value;
@@ -222,6 +316,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
         // DB UPDATE
         console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
+        console.log(this.myEventListForKlassFeature);
 
       } else if("target" === myEvent.key) {
         this.klassTarget = this.klass.target = myEvent.value;
@@ -231,6 +326,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
         // DB UPDATE
         console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
+        console.log(this.myEventListForKlassTarget);
 
       } // end if
 
@@ -248,7 +344,29 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         this.shutdownKlassInfos();
       }
 
-      // 데이터를 롧백합니다.
+      // wonder.jung
+      // 데이터가 변경되었는지 확인합니다.
+      let hasChanged:boolean = false;
+      if("feature" === myEvent.key) {
+        hasChanged = 
+        this.myEventService.hasChangedList(
+          this.myEventListForKlassFeature
+          , this.myEventListForKlassFeatureCopy
+        );
+      } else if("target" === myEvent.key) {
+        hasChanged = 
+        this.myEventService.hasChangedList(
+          this.myEventListForKlassFeature
+          , this.myEventListForKlassFeatureCopy
+        );
+      }
+      console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ",hasChanged);
+
+      if(hasChanged) {
+        // 데이터를 롤백합니다.
+        console.log("데이터를 롤백합니다.");
+        this.rollbackKlassCopies();
+      }
 
     } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
 
@@ -358,5 +476,23 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     this.isShowKlassFeatureAdmin=false;
     this.isShowKlassTargetAdmin=false;
     this.isShowKlassScheduleAdmin=false;
+  }
+  overwriteKlassCopies() :void {
+
+    this.myEventListForKlassTargetCopy = 
+    this.myEventService.getCopyEventList(
+      this.myEventListForKlassTarget
+    );
+    this.myEventListForKlassFeatureCopy = 
+    this.myEventService.getCopyEventList(
+      this.myEventListForKlassFeature
+    );
+
+  }
+  rollbackKlassCopies() :void {
+    this.myEventListForKlassTarget = this.myEventListForKlassTargetCopy;
+    this.myEventListForKlassFeature = this.myEventListForKlassFeatureCopy;
+
+    this.overwriteKlassCopies();
   }
 }

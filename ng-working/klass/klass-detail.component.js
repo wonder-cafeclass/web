@@ -106,7 +106,6 @@ var KlassDetailComponent = (function () {
     };
     KlassDetailComponent.prototype.setFirstClassDateFormat = function () {
         this.firstClassDate = this.getFirstClassDate(this.klass);
-        console.log("HERE / setFirstClassDateFormat / this.firstClassDate : ", this.firstClassDate);
         if (this.firstClassDate) {
             this.firstClassDateFormatStr = this.firstClassDate.month + "\uC6D4 " + this.firstClassDate.date + "\uC77C " + this.firstClassDate.dayKor + "\uC694\uC77C";
         }
@@ -274,7 +273,6 @@ var KlassDetailComponent = (function () {
         // 운영자 지정 - 수업 요일 
         // days_list
         this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
-        console.log("TEST / this.checkboxOptionListKlassDay : ", this.checkboxOptionListKlassDay);
     };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();

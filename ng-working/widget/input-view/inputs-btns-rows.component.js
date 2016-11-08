@@ -28,7 +28,11 @@ var InputsBtnsRowsComponent = (function () {
             this.cageWidthStr = "100%";
         }
         // 원본 비교를 위한 copy list 만들기
-        this.myEventListCopy = this.getCopyEventList(this.myEventList);
+        this.myEventListCopy =
+            this.myEventService.getCopyEventList(this.myEventList);
+        var myEventCopy = this.myEvent.copy();
+        myEventCopy.eventName = this.myEventService.ON_ADD_ROW;
+        this.myEventForAddRow = myEventCopy;
         // 열을 추가할 수 있는 기능을 하는 input group 만들기
         this.myEvenListBtnsForAddingRow = [
             new my_event_1.MyEvent(
@@ -41,7 +45,20 @@ var InputsBtnsRowsComponent = (function () {
             // public value:string
             "", 
             // public metaObj:any
-            null)
+            this.myEvent)
+        ];
+        this.myEvenListBtnsForRemovingRow = [
+            new my_event_1.MyEvent(
+            // public eventName:string
+            this.myEventService.ON_REMOVE_ROW, 
+            // public title:string
+            "빼기", 
+            // public key:string
+            "remove", 
+            // public value:string
+            "", 
+            // public metaObj:any
+            this.myEvent)
         ];
         // Ready Event 발송 
         var myEventReady = new my_event_1.MyEvent(
@@ -87,29 +104,43 @@ var InputsBtnsRowsComponent = (function () {
         return true;
     };
     InputsBtnsRowsComponent.prototype.onChangeFromChild = function (myEvent) {
-        if (null == myEvent) {
+        if (null == myEvent && null != this.myEvent && null != myEvent.value) {
             return;
         }
         console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
-        if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
-            if (null != myEvent.value && "" != myEvent.value) {
-                // 열을 추가합니다.
-                var newMyEvent = new my_event_1.MyEvent(
-                // public eventName:string
-                this.myEventService.ON_CHANGE, 
-                // public title:string
-                "single-input-view", 
-                // public key:string
-                "single-input-view", 
-                // public value:string
-                myEvent.value, 
-                // public metaObj:any
-                null);
-                this.myEventList.push(newMyEvent);
-            }
+        if (this.myEventService.ON_CHANGE === myEvent.eventName) {
+            // 변수 전파가 즉시 되지 않으므로 동일한 객체라면 직접 업데이트 해줍니다.
+            this.myEventList = this.myEventService.setEventValue(myEvent, this.myEventList);
+            var hasChanged = this.hasChanged();
+            this.isDisabledSave = (hasChanged) ? false : true;
+            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / hasChanged : ", hasChanged);
+            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.isDisabledSave : ", this.isDisabledSave);
+            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventList : ", this.myEventList);
+            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventListCopy : ", this.myEventListCopy);
+            this.emitter.emit(myEvent);
+        }
+        else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
+            // 공백 문자열도 허용합니다.
+            var myEventCopy = this.myEvent.copy();
+            myEventCopy.metaObj["idx"] = this.myEventList.length;
+            myEventCopy.value = myEvent.value;
+            this.myEventList.push(myEventCopy);
+            // 저장 관련 작업을 할 수 없으므로 부모에게 이벤트 전달.
+            var myEventCopyToParent = myEventCopy.copy();
+            myEventCopyToParent.eventName = this.myEventService.ON_ADD_ROW;
+            this.emitter.emit(myEventCopyToParent);
         }
         else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
-            // 삭제 관련 유효성 검증을 할 수 없으므로 부모에게 이벤트 전달.
+            var myEventListNext = [];
+            for (var i = 0; i < this.myEventList.length; ++i) {
+                var myEventNext = this.myEventList[i];
+                if (myEventNext.isSame(myEvent)) {
+                    // 지울 이벤트를 찾았습니다. 리스트에서 제외합니다.
+                    continue;
+                }
+                myEventListNext.push(myEventNext);
+            }
+            this.myEventList = myEventListNext;
             this.emitter.emit(myEvent);
         }
     };
@@ -123,7 +154,7 @@ var InputsBtnsRowsComponent = (function () {
     };
     InputsBtnsRowsComponent.prototype.dismiss = function () {
         console.log("inputs-btns-rows / dismiss");
-        var hasChanged = !this.isSameEventLists(this.myEventList, this.myEventListCopy);
+        var hasChanged = this.hasChanged();
         var firstMyEvent = this.myEventList[0];
         // 사용자에게 변경된 사항이 있다면 저장할 것인지 물어봅니다.
         var wannaSave = false;
@@ -169,38 +200,61 @@ var InputsBtnsRowsComponent = (function () {
         this.save();
     };
     InputsBtnsRowsComponent.prototype.save = function () {
-        if (this.isDisabledSave) {
-            return;
-        }
         if (null == this.myEventList || 0 == this.myEventList.length) {
             return;
         }
         // 1. 리스트를 비교해서 변경내역이 있는지 확인합니다.
-        var isSameEventLists = this.isSameEventLists(this.myEventList, this.myEventListCopy);
-        var firstMyEvent = this.myEventList[0];
-        var myEventReturn = null;
-        if (isSameEventLists) {
+        var hasChanged = this.hasChanged();
+        console.log("inputs-btns-rows / save / hasChanged : ", hasChanged);
+        console.log("inputs-btns-rows / save / this.myEventList : ", this.myEventList);
+        if (hasChanged) {
+            this.isDisabledSave = false;
         }
         else {
-            // 1-2. 변경 내역이 있다면, 저장을 진행합니다.
-            var myEventReturn_1 = new my_event_1.MyEvent(
-            // public eventName:string
-            this.myEventService.ON_SAVE, 
-            // public title:string
-            "inputs-btns-rows", 
-            // public key:string
-            firstMyEvent.key, 
-            // public value:string
-            "", 
-            // public metaObj:any
-            this.myEventList);
+            this.isDisabledSave = true;
         }
+        if (this.isDisabledSave) {
+            return;
+        }
+        var myEventChanged = this.getChanged();
+        if (null == myEventChanged) {
+            return;
+        }
+        var myEventReturn = myEventChanged.copy();
+        myEventReturn.eventName = this.myEventService.ON_SAVE;
+        console.log("inputs-btns-rows / save / myEventReturn : ", myEventReturn);
         this.emitter.emit(myEventReturn);
-        // this.myEventListCopy = this.getCopyEventList(this.myEventList);
-        // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
-        /*
-        */
+        // 저장이 완료됨. Event 데이터를 copy와 원본을 동일하게 덮어쓰기.
+        this.overwriteMyEventList();
     };
+    InputsBtnsRowsComponent.prototype.hasChanged = function () {
+        var hasChanged = this.myEventService.hasChangedList(this.myEventList, this.myEventListCopy);
+        return hasChanged;
+    };
+    InputsBtnsRowsComponent.prototype.getChanged = function () {
+        var myEventChangedList = this.myEventService.getChangedFromList(this.myEventList, this.myEventListCopy);
+        if (null != myEventChangedList &&
+            0 != myEventChangedList.length) {
+            // 첫번째 Event가 서비스중인 데이터.
+            return myEventChangedList[0];
+        }
+        return null;
+    };
+    InputsBtnsRowsComponent.prototype.overwriteMyEventList = function () {
+        this.myEventListCopy =
+            this.myEventService.getCopyEventList(this.myEventList);
+        var hasChanged = this.hasChanged();
+        this.isDisabledSave = !hasChanged;
+        console.log("overwriteMyEventList / this.isDisabledSave : ", this.isDisabledSave);
+    };
+    InputsBtnsRowsComponent.prototype.rollbackMyEventListCopies = function () {
+        this.myEventList = this.myEventListCopy;
+        this.overwriteMyEventList();
+    };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', my_event_1.MyEvent)
+    ], InputsBtnsRowsComponent.prototype, "myEvent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
