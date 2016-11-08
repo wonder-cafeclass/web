@@ -69,22 +69,6 @@ var DronListComponent = (function () {
             this.title = "No title";
         }
     };
-    DronListComponent.prototype.ngOnChanges = function (changes) {
-        console.log("ngOnChanges / changes : ", changes);
-        if (null != changes) {
-            if (null != changes['title']) {
-            }
-            if (null != changes['SEinnerHTML'] &&
-                null != changes['SEinnerHTML']['currentValue']) {
-                // Smart Editor의 내용이 변경된 경우.
-                var html = changes['SEinnerHTML']['currentValue'];
-                if (null != this.smartEditorComponent) {
-                    this.smartEditorComponent.clearHTML();
-                    this.smartEditorComponent.updateHTML(html);
-                } // end inner if
-            } // end inner if 
-        } // end outer if
-    };
     DronListComponent.prototype.onChangedFromChild = function (myEvent) {
         console.log(">>> onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {

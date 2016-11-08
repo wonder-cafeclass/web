@@ -34,11 +34,15 @@ import { PriceTagHComponent }        from '../widget/pricetag/pricetag-h.compone
 import { ButterflyComponent }        from '../widget/butterfly/butterfly.component';
 import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
 import { RadioBtnLinearComponent }   from '../widget/radiobtn/radiobtn-linear.component';
+
 import { InputViewComponent }        from '../widget/input-view/input-view.component';
 import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
 import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
 import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
 import { SingleInputViewComponent }  from '../widget/input-view/single-input-view.component';
+import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
+import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
+
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
@@ -71,10 +75,14 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     ButterflyComponent,
     ImageGridComponent,
     RadioBtnLinearComponent,
+    
     InputViewComponent,
     InputViewHListComponent,
     InputViewTableComponent,
     InputViewUpdownComponent,
+    InputBtnsRowComponent,
+    InputsBtnsRowsComponent,
+
     SingleInputViewComponent,
     RadioBtnHListComponent,
     CheckBoxHListComponent,

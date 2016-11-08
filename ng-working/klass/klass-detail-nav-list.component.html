@@ -15,51 +15,54 @@
 
                   <ul class="list-group" style="margin-bottom:0px;">
 
-                        <li *ngIf="klassFeature" 
+                        <li *ngIf="myEventListForKlassFeature" 
                             (click)="onClickKlassFeature()"
                             class="list-group-item klass-desc klass-feature">
 
-                            <img src="./assets/images/class/info/points.png" alt="" style="padding:10px;"/>
                             <!-- 입력제한 기준 : 42자 - 공백포함? -->
                             <div class="klass-feature-title">
                               <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                              이 수업의 특징 3가지.
+                              이 수업의 특징 {{myEventListForKlassFeature.length}}가지.
                             </div>
-                            <div  class="klass-feature-text" 
-                                  [ngClass]="{'empty':klass.feature == ''}">{{klassFeature}}</div>
+                            <div  *ngFor="let myEvent of myEventListForKlassFeature"
+                                  class="klass-feature-text" 
+                                  [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
                         </li>
                         <!-- Admin Section -->
-                        <li class="list-group-item admin">
-                          <input-row  *ngIf="isAdmin && isShowKlassFeature"
-                                      [key]="'feature'"
-                                      (emitter)="onChangedFromInputRow($event)"
-                                      [myEventSingleInput]="myEventSIKlassFeature">
-                          </input-row>
+                        <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
+                            class="list-group-item admin">
+                          <inputs-btns-rows   [myEventList]="myEventListForKlassFeature" 
+                                              (emitter)="onChangedFromInputRow($event)"
+                                              [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
+                          </inputs-btns-rows>
                         </li>
 
-                        <li *ngIf="klassTarget" 
+                        <li *ngIf="myEventListForKlassTarget" 
                             (click)="onClickKlassTarget()"
                             class="list-group-item klass-target">
-                              
-                              <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div class="klass-target-title">
-                                <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                                이런 분들께 추천드려요.
-                              </div>
-                              <div  class="klass-target-text" 
-                                    [ngClass]="{'empty':klass.target == ''}">{{klassTarget}}</div>
+                          
+                          <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                          <div class="klass-target-title">
+                            <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                            이런 분들께 추천드려요.
+                          </div>
+
+                          <div  *ngFor="let myEvent of myEventListForKlassTarget"
+                                class="klass-target-text" 
+                                [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
+
                         </li>
-                        <li class="list-group-item admin">
-                          <input-row  *ngIf="isAdmin && isShowKlassTarget"
-                                      [key]="'target'"
-                                      (emitter)="onChangedFromInputRow($event)"
-                                      [myEventSingleInput]="myEventSIKlassTarget">
-                          </input-row>
+                        <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
+                            class="list-group-item admin">
+                          <inputs-btns-rows [myEventList]="myEventListForKlassTarget"
+                                            (emitter)="onChangedFromInputRow($event)"
+                                            [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
+                          </inputs-btns-rows>
                         </li>
 
-                        <li *ngIf="klassSchedule"
+                        <li *ngIf="klassSchedule && !isShowKlassScheduleAdmin"
                             (click)="onClickKlassSchedule()"
-                            class="list-group-item klass-schedule">
+                            class="list-group-item klass-schedule last-temp">
 
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
                               <div class="klass-target-title">
@@ -69,7 +72,7 @@
                               <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
                         </li>
                         <li class="list-group-item admin">
-                          <input-row  *ngIf="isAdmin && isShowKlassSchedule"
+                          <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
                                       [cageHeight]="290"
                                       [cageWidth]="754"
                                       [key]="'schedule'"

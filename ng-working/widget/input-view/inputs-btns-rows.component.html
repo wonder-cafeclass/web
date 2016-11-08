@@ -1,0 +1,36 @@
+<!-- EXAMPLE
+<inputs-btns-rows   [myEventList]="myEventListForKlassFeature" 
+                    [placeholderForNewRow]="'새로운 내용을 입력해주세요.'">
+</inputs-btns-rows>
+-->
+
+<ul class="list-group" style="margin-bottom:0px;padding:0px;">
+
+
+  <li   *ngFor="let myEvent of myEventList; let i = index"
+        class="list-group-item compact" [ngClass]="{'first':i === 0}">
+    <single-input-view  [type]="'removableRow'"
+                        [myEvent]="myEvent"
+                        (emitter)="onChangeFromChild($event)">
+    </single-input-view>
+  </li>
+
+  <!-- 열을 추가하는 입력을 받는 창 -->
+
+  <li class="list-group-item compact">    
+    <input-btns-row [myEventList]="myEvenListBtnsForAddingRow"
+                    [type]="'button'"
+                    [placeholder]="placeholderForNewRow"
+                    (emitter)="onChangeFromChild($event)">
+    </input-btns-row>
+  </li>
+
+  <li class="list-group-item compact last">
+
+    <div class="btn-group" role="group" aria-label="..." style="margin:5px;">
+      <button (click)="dismiss($event)" type="button" class="btn btn-default">닫기</button>
+      <button (click)="onClickSave($event)" type="button" class="btn btn-default" >저장하기</button>
+    </div>
+
+  </li>
+</ul>

@@ -1,6 +1,5 @@
 import {  Component, 
-          OnInit, 
-          OnChanges,
+          OnInit,
           SimpleChanges,
           ViewChild,
           EventEmitter,
@@ -36,7 +35,7 @@ import { MyEvent }                     from '../../util/model/my-event';
   templateUrl: 'input-row.component.html',
   styleUrls: [ 'input-row.component.css' ]
 })
-export class InputRowComponent implements OnInit, OnChanges {
+export class InputRowComponent implements OnInit {
 
   @Input() key:string="";
   @Input() title:string="";
@@ -52,12 +51,6 @@ export class InputRowComponent implements OnInit, OnChanges {
   @Input() bgColor:string="";
 
   @Input() topLeftImgUrl:string;
-
-  // REMOVE ME
-  // @Input() isTopLeft:boolean=false;
-  // @Input() isTopRight:boolean=false;
-  // @Input() isBottomLeft:boolean=false;
-  // @Input() isBottomRight:boolean=true;
 
   @ViewChild(SmartEditorComponent)
   private smartEditorComponent: SmartEditorComponent;
@@ -109,30 +102,8 @@ export class InputRowComponent implements OnInit, OnChanges {
 
     }
   }
-  ngOnChanges(changes: SimpleChanges) :void {
-    console.log("ngOnChanges / changes : ",changes);
-
-    if(null != changes) {
-      if(null != changes['title']) {
-        // 타이틀이 변경된 경우.
-        // Do nothing...
-      }
-      if(  null != changes['SEinnerHTML'] && 
-           null != changes['SEinnerHTML']['currentValue']) {
-        // Smart Editor의 내용이 변경된 경우.
-        let html = changes['SEinnerHTML']['currentValue'];
-
-        if(null != this.smartEditorComponent) {
-          this.smartEditorComponent.clearHTML();
-          this.smartEditorComponent.updateHTML(html);
-        } // end inner if
-      } // end inner if 
-    } // end outer if
-  }
 
   onChangedFromChild(myEvent) :void {
-
-    console.log(">>> onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
       return;
@@ -278,8 +249,6 @@ export class InputRowComponent implements OnInit, OnChanges {
     if(null != this.smartEditorComponent) {
       result = this.smartEditorComponent.saveNReturn();
     }
-    console.log(">>> save / result : ",result);
-
     // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
     let myEventReturn:MyEvent = 
     new MyEvent(

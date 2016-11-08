@@ -62,9 +62,6 @@ var ClockComponent = (function () {
             console.log("Error / 최소 시간 범위는 1시간, 최대 시간 범위는 3시간입니다. / diffHours : ", diffHours);
             return;
         }
-        console.log("show / diffHours : ", diffHours);
-        console.log("show / diffMinutes : ", diffMinutes);
-        console.log("show / clockTimeBegin.minutes : ", clockTimeBegin.minutes);
         // 시작 시간으로부터 15분 미만까지는 동일 시간으로 표현합니다.
         if (1 === diffHours) {
             if (60 === diffMinutes) {

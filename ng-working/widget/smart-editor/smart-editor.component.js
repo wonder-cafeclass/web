@@ -87,7 +87,6 @@ var SmartEditorComponent = (function () {
             this.emitter.emit(myEventReturn);
         }
         else if ("se_update" === myEvent.key) {
-            console.log("callFromOutside / se_update / myEvent : ", myEvent);
             // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
             var myEventReturn = new my_event_1.MyEvent(
             // public eventName:string
@@ -116,7 +115,7 @@ var SmartEditorComponent = (function () {
         if (null == this.childContentWindow) {
             return;
         }
-        if (null == this.childContentWindow.initHTML) {
+        if (null == this.childContentWindow.clearHTML) {
             return;
         }
         this.childContentWindow.clearHTML();

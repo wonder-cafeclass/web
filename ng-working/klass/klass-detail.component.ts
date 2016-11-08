@@ -167,18 +167,9 @@ export class KlassDetailComponent implements OnInit {
       this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_desc");
       // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
 
-      this.klassFeature = this.klass.feature;
-      if (null === this.klassFeature || "" === this.klassFeature) {
-          this.klassFeature = '수업의 특징을 입력해주세요.';
-      }
-      this.klassTarget = this.klass.target;
-      if (null === this.klassTarget || "" === this.klassTarget) {
-          this.klassTarget = '수업 추천 대상을 입력해주세요.';
-      }
+      this.klassFeature = this.klass.feature;   // @ Deprecated
+      this.klassTarget = this.klass.target;     // @ Deprecated
       this.klassSchedule = this.klass.schedule;
-      if (null === this.klassSchedule || "" === this.klassSchedule) {
-          this.klassSchedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
-      }
 
     });
 

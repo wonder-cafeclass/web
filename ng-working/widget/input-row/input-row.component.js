@@ -69,24 +69,7 @@ var InputRowComponent = (function () {
             this.title = "No title";
         }
     };
-    InputRowComponent.prototype.ngOnChanges = function (changes) {
-        console.log("ngOnChanges / changes : ", changes);
-        if (null != changes) {
-            if (null != changes['title']) {
-            }
-            if (null != changes['SEinnerHTML'] &&
-                null != changes['SEinnerHTML']['currentValue']) {
-                // Smart Editor의 내용이 변경된 경우.
-                var html = changes['SEinnerHTML']['currentValue'];
-                if (null != this.smartEditorComponent) {
-                    this.smartEditorComponent.clearHTML();
-                    this.smartEditorComponent.updateHTML(html);
-                } // end inner if
-            } // end inner if 
-        } // end outer if
-    };
     InputRowComponent.prototype.onChangedFromChild = function (myEvent) {
-        console.log(">>> onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {
             return;
         }
@@ -202,7 +185,6 @@ var InputRowComponent = (function () {
         if (null != this.smartEditorComponent) {
             result = this.smartEditorComponent.saveNReturn();
         }
-        console.log(">>> save / result : ", result);
         // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
         var myEventReturn = new my_event_1.MyEvent(
         // public eventName:string

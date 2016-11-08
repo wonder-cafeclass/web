@@ -1,6 +1,5 @@
 import {  Component, 
-          OnInit, 
-          OnChanges,
+          OnInit,
           SimpleChanges,
           ViewChild,
           EventEmitter,
@@ -36,7 +35,7 @@ import { MyEvent }                     from '../../util/model/my-event';
   templateUrl: 'dron-list.component.html',
   styleUrls: [ 'dron-list.component.css' ]
 })
-export class DronListComponent implements OnInit, OnChanges {
+export class DronListComponent implements OnInit {
 
   @Input() key:string="";
   @Input() title:string="";
@@ -98,26 +97,6 @@ export class DronListComponent implements OnInit, OnChanges {
     if("" === this.title) {
       this.title = "No title";
     }
-  }
-  ngOnChanges(changes: SimpleChanges) :void {
-    console.log("ngOnChanges / changes : ",changes);
-
-    if(null != changes) {
-      if(null != changes['title']) {
-        // 타이틀이 변경된 경우.
-        // Do nothing...
-      }
-      if(  null != changes['SEinnerHTML'] && 
-           null != changes['SEinnerHTML']['currentValue']) {
-        // Smart Editor의 내용이 변경된 경우.
-        let html = changes['SEinnerHTML']['currentValue'];
-
-        if(null != this.smartEditorComponent) {
-          this.smartEditorComponent.clearHTML();
-          this.smartEditorComponent.updateHTML(html);
-        } // end inner if
-      } // end inner if 
-    } // end outer if
   }
 
   onChangedFromChild(myEvent) :void {

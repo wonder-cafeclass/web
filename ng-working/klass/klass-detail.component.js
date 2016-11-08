@@ -90,18 +90,9 @@ var KlassDetailComponent = (function () {
             _this.radiobtnOptionListNavTabs =
                 _this.radiobtnService.getNavTabsKlassInfo(_this.klass, "klass_desc");
             // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
-            _this.klassFeature = _this.klass.feature;
-            if (null === _this.klassFeature || "" === _this.klassFeature) {
-                _this.klassFeature = '수업의 특징을 입력해주세요.';
-            }
-            _this.klassTarget = _this.klass.target;
-            if (null === _this.klassTarget || "" === _this.klassTarget) {
-                _this.klassTarget = '수업 추천 대상을 입력해주세요.';
-            }
+            _this.klassFeature = _this.klass.feature; // @ Deprecated
+            _this.klassTarget = _this.klass.target; // @ Deprecated
             _this.klassSchedule = _this.klass.schedule;
-            if (null === _this.klassSchedule || "" === _this.klassSchedule) {
-                _this.klassSchedule = '<p style="color:#f00;">일일 수업 스케쥴을 입력해주세요.</p>';
-            }
         });
         this.authService.getAdminAuth().then(function (result) {
             if (null != result.is_admin) {

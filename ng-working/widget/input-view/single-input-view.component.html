@@ -1,5 +1,13 @@
+<!--
+<single-input-view 		[cageWidth]="cageWidth"
+						[type]="'input'|'textarea'|'removableRow'"
+              			[myEvent]="myEventSingleInput"
+              			(emitter)="onChangedFromChild($event)">
+</single-input-view>
+-->
 <div 	class="form-group" 
-		style="margin-bottom:0px;padding:5px;"
+		style="margin-bottom:0px;"
+		[style.padding]="type!='removableRow'?'5px':'0px'"
 		[style.width]="cageWidthStr">
 
 	<input 	#inputText
@@ -17,6 +25,15 @@
 				[(ngModel)]="myEvent.value" (ngModelChange)="onChangeInputText(textareaText.value)"
 				(change)="onChange($event, textareaText.value)">
 	</textarea>
+	
+	<!-- 삭제 기능이 있는 입력 열 -->
+    <input-btns-row *ngIf="type=='removableRow'"
+    				[myEventList]="myEvenListBtns"
+    				[myEventKeyEnter]="myEventKeyEnter"
+    				[inputText]="myEvent.value"
+                    [type]="'button'"
+                    (emitter)="onChangeFromChild($event)">
+    </input-btns-row>
 
 				
 </div>  

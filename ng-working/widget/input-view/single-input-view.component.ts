@@ -23,6 +23,8 @@ export class SingleInputViewComponent implements OnInit {
   @Input() type:string;
   myValue:string;
   cageWidthStr:string;
+  myEvenListBtns:MyEvent[];
+  myEventKeyEnter:MyEvent;
 
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
@@ -39,11 +41,29 @@ export class SingleInputViewComponent implements OnInit {
 
     this.myValue = this.myEvent.value;
 
+    if("removableRow" === this.type) {
+      let myEventRemove:MyEvent =
+      new MyEvent(
+          // public eventName:string
+          this.myEventService.ON_REMOVE_ROW,
+          // public title:string
+          "빼기",
+          // public key:string
+          "remove",
+          // public value:string
+          "",
+          // public metaObj:any
+          this.myEvent
+      );      
+      this.myEvenListBtns = [myEventRemove];
+      this.myEventKeyEnter = myEventRemove;
+    }
+
     // Ready Event 발송 
     let myEventReady:MyEvent =
     new MyEvent(
         // public eventName:string
-        this.myEventService.ON_READY_SINGLE_INPUT_VIEW,
+        this.myEventService.ON_READY,
         // public title:string
         "single-input-view",
         // public key:string
@@ -63,7 +83,7 @@ export class SingleInputViewComponent implements OnInit {
     let myEventReturn:MyEvent = 
     new MyEvent(
         // public eventName:string
-        this.myEventService.ON_CHANGE_SINGLE_INPUT_VIEW,
+        this.myEventService.ON_CHANGE,
         // public title:string
         "single-input-view",
         // public key:string
@@ -76,6 +96,22 @@ export class SingleInputViewComponent implements OnInit {
 
     this.emitter.emit(myEventReturn);
 
+  }
+
+  onChangeFromChild(myEvent:MyEvent) :void {
+    console.log("single-input-view / onChangeFromChild / event : ",event);
+
+    if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+      // 열을 지웁니다.
+      let myEventTarget:MyEvent = null;
+      if(null != myEvent.metaObj) {
+        myEventTarget = myEvent.metaObj;
+        myEventTarget.eventName = this.myEventService.ON_REMOVE_ROW;
+      } else {
+        myEventTarget = myEvent;
+      }
+      this.emitter.emit(myEventTarget);
+    }
   }
 
   getMyEvent() :MyEvent {

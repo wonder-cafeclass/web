@@ -12,6 +12,15 @@ var core_1 = require('@angular/core');
 var MyEventService = (function () {
     function MyEventService() {
         // 부모 자식간의 컴포넌트 통신시 어떤 이벤트가 발생했는지 정의하는 서비스 객체.
+        // GENERAL PURPOSE
+        this.ON_READY = "ON_READY";
+        this.ON_CHANGE = "ON_CHANGE";
+        this.ON_SHUTDOWN = "ON_SHUTDOWN";
+        this.ON_SHUTDOWN_N_ROLLBACK = "ON_SHUTDOWN_N_ROLLBACK";
+        this.ON_SAVE = "ON_SAVE";
+        this.ON_ADD_ROW = "ON_ADD_ROW";
+        this.ON_REMOVE_ROW = "ON_REMOVE_ROW";
+        // SPECIFIC CASES
         this.ON_CHANGE_KLASS_DISCOUNT = "ON_CHANGE_KLASS_DISCOUNT";
         this.ON_CHANGE_KLASS_TITLE = "ON_CHANGE_KLASS_TITLE";
         this.ON_CHANGE_KLASS_PRICE = "ON_CHANGE_KLASS_PRICE";
@@ -40,6 +49,11 @@ var MyEventService = (function () {
         this.ON_SAVE_INPUT_ROW = "ON_SAVE_INPUT_ROW";
         this.ON_SHUTDOWN_INPUT_ROW = "ON_SHUTDOWN_INPUT_ROW";
         this.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW = "ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW";
+        this.ON_READY_INPUT_BTNS_ROW = "ON_READY_INPUT_BTNS_ROW";
+        this.ON_CHANGE_INPUT_BTNS_ROW = "ON_CHANGE_INPUT_BTNS_ROW";
+        this.ON_SAVE_INPUT_BTNS_ROW = "ON_SAVE_INPUT_BTNS_ROW";
+        this.ON_SHUTDOWN_INPUT_BTNS_ROW = "ON_SHUTDOWN_INPUT_BTNS_ROW";
+        this.ON_SHUTDOWN_N_ROLLBACK_INPUT_BTNS_ROW = "ON_SHUTDOWN_N_ROLLBACK_INPUT_BTNS_ROW";
         this.ON_CLICK_KLASS_FEATURE = "ON_CLICK_KLASS_FEATURE";
         this.ON_CLICK_KLASS_TARGET = "ON_CLICK_KLASS_TARGET";
         this.ON_CLICK_KLASS_SCHEDULE = "ON_CLICK_KLASS_SCHEDULE";
