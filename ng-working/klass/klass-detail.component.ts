@@ -515,43 +515,7 @@ export class KlassDetailComponent implements OnInit {
         console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
 
       }
-/*  - REMOVE ME
-    } else if (myEventService.ON_CLICK_KLASS_FEATURE === eventName) {
 
-      // 드론 리스트 - klass.feature를 수정합니다.
-      this.clearDronList();
-      this.dronListKey = this.myEventService.KLASS_FEATURE;
-      this.dronListTitle = "수업의 특징을 입력해주세요";
-      this.dronListMyEventSingleInput = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_FEATURE,
-          // public key:string
-          this.myEventService.KLASS_FEATURE,
-          // public value:string
-          this.klassFeature,
-          // public metaObj:any
-          this.klass
-      );
-
-    } else if (myEventService.ON_CLICK_KLASS_TARGET === eventName) {
-
-      // 드론 리스트 - klass.target을 수정합니다.
-      this.clearDronList();
-      this.dronListKey = this.myEventService.KLASS_TARGET;
-      this.dronListTitle = "수업의 추천대상을 입력해주세요";
-      this.dronListMyEventSingleInput = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_TARGET,
-          // public key:string
-          this.myEventService.KLASS_TARGET,
-          // public value:string
-          this.klassTarget,
-          // public metaObj:any
-          this.klass
-      );
-*/
     } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
 
       // 드론 리스트 - klass.schedule을 수정합니다.
@@ -559,6 +523,8 @@ export class KlassDetailComponent implements OnInit {
       this.dronListKey = this.myEventService.KLASS_SCHEDULE;
       this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
       this.dronListSEinnerHTML = myEvent.value;
+
+      //ON_PREVIEW
       
     } else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
 
@@ -585,6 +551,8 @@ export class KlassDetailComponent implements OnInit {
 
     } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
 
+      // @ Deprecated
+
       // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
@@ -594,12 +562,16 @@ export class KlassDetailComponent implements OnInit {
 
     } else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
 
+      // @ Deprecated
+
       // 사용자가 드론리스트를 닫았습니다.
       console.log("사용자가 드론리스트를 닫았습니다.");
       // 관련 파라미터 초기화
       this.clearDronList();
 
     } else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
+
+      // @ Deprecated
 
       // 사용자가 드론리스트를 닫았습니다.
       console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");

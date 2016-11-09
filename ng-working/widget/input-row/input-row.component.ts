@@ -45,6 +45,7 @@ export class InputRowComponent implements OnInit {
   contentHeight:number=-1;
   tailHeight:number=-1;
   offsetTop:number=10;
+  isPreview:boolean=false;
 
   @Input() color:string="";
   @Input() textColor:string="";
@@ -66,6 +67,7 @@ export class InputRowComponent implements OnInit {
 
   // smart-editor params
   @Input() SEinnerHTML:string;
+  SEinnerHTMLCopy:string;
   @Input() myEventSingleInput:MyEvent;
 
   isDisabledSave:boolean=true;
@@ -89,20 +91,6 @@ export class InputRowComponent implements OnInit {
     if("" === this.bgColor) {
       this.bgColor = this.klassColorService.orange;
     }
-
-    //bgColorBottom
-    /*
-    if( null != this.myEventSingleInput && 
-        "" != this.myEventSingleInput.title ) {
-
-      this.title = this.myEventSingleInput.title;
-
-    } else if( "" === this.title ) {
-
-      this.title = "No title";
-
-    }
-    */
   }
 
   onChangedFromChild(myEvent) :void {
@@ -111,42 +99,52 @@ export class InputRowComponent implements OnInit {
       return;
     }
 
-    if(this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
+    if(this.myEventService.ON_READY === myEvent.eventName) {
 
-      // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
-      this.setOffset();
-      // 에디터에 넣을 내용을 설정합니다.
-      this.smartEditorComponent.updateHTML(this.SEinnerHTML);
+      if(this.myEventService.KEY_SMART_EDITOR === myEvent.key) {
 
-    } else if(this.myEventService.ON_READY_SINGLE_INPUT_VIEW === myEvent.eventName) {
-      
-      this.setOffset();
+        // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
+        this.setOffset();
+        // 에디터에 넣을 내용을 설정합니다.
+        // this.smartEditorComponent.updateHTML(this.SEinnerHTML);
 
-    } else if(  this.myEventService.ON_CHANGE_SMART_EDITOR === myEvent.eventName || 
-                this.myEventService.ON_CHANGE_SINGLE_INPUT_VIEW === myEvent.eventName  ) {
+      } else if(this.myEventService.KEY_SINGLE_INPUT_VIEW === myEvent.key) {
+
+        this.setOffset();
+
+      }
+
+    } else if(  this.myEventService.ON_CHANGE === myEvent.eventName ) {
 
       // 내용이 수정되었습니다.
       this.isDisabledSave = false;
 
-      // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
-      let myEventReturn:MyEvent = 
-      this.myEventService.getMyEvent(
-        // public eventName:string
-        this.myEventService.ON_CHANGE,
-        // public key:string
-        this.myEventService.KEY_INPUT_ROW,
-        // public value:string
-        myEvent.value,
-        // public metaObj:any
-        null,
-        // public myChecker:MyChecker
-        null    
-      );
+      let hasChanged:boolean = false;
+      if(this.myEventService.KEY_SMART_EDITOR === myEvent.key) {
+        this.updateSEinnerHTML(myEvent.value);
+        hasChanged = this.hasChangedSEinnerHTML();
+      }
 
-      this.emitter.emit(myEventReturn);
+      if(hasChanged) {
+        // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
+        let myEventReturn:MyEvent = 
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.key,
+          // public value:string
+          myEvent.value,
+          // public metaObj:any
+          null,
+          // public myChecker:MyChecker
+          null    
+        );
 
-    }
-  }
+        this.emitter.emit(myEventReturn);
+      } // end if
+    } // end if
+  } // end if
 
   setOffset() :void {
     // this.headerHeight = this.myRulerService.getHeight("dron-header");
@@ -167,6 +165,8 @@ export class InputRowComponent implements OnInit {
       hasChanged = this.smartEditorComponent.hasChanged();
     }
 
+
+
     // 사용자에게 변경된 사항이 있다면 저장할 것인지 물어봅니다.
     let wannaSave:boolean = false;
     if(hasChanged && confirm("변경된 사항이 있습니다. 저장하시겠습니까?")) {
@@ -182,9 +182,9 @@ export class InputRowComponent implements OnInit {
         // public eventName:string
         this.myEventService.ON_SHUTDOWN,
         // public key:string
-        this.myEventService.KEY_INPUT_ROW,
+        this.key,
         // public value:string
-        "",
+        this.SEinnerHTMLCopy,
         // public metaObj:any
         null,
         // public myChecker:MyChecker
@@ -201,7 +201,7 @@ export class InputRowComponent implements OnInit {
           // public eventName:string
           this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
           // public key:string
-          this.myEventService.KEY_INPUT_ROW,
+          this.key,
           // public value:string
           "",
           // public metaObj:any
@@ -220,7 +220,7 @@ export class InputRowComponent implements OnInit {
           // public eventName:string
           this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
           // public key:string
-          this.myEventService.KEY_INPUT_ROW,
+          this.key,
           // public value:string
           myEventFromSI.value,
           // public metaObj:any
@@ -235,10 +235,69 @@ export class InputRowComponent implements OnInit {
     this.emitter.emit(myEventReturn);
   }
 
+  hasChangedSEinnerHTML() :boolean {
+
+    if(this.SEinnerHTMLCopy != this.SEinnerHTML) {
+      return true;
+    }
+
+    return false;
+  }
+
+  updateSEinnerHTML(newSEinnerHTML:string) :void {
+    this.SEinnerHTML = newSEinnerHTML;
+  }
+
+  overwriteSEinnerHTML() :void{
+    this.SEinnerHTMLCopy = this.SEinnerHTML;
+  }
+
   onClickSave(event) :void {
     event.stopPropagation();
     event.preventDefault();
     this.save();
+  }
+  onClickUnpreview(event) :void {
+    event.stopPropagation();
+    event.preventDefault();    
+    this.isPreview=false;
+
+    let myEventReturn:MyEvent = 
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_UNPREVIEW,
+      // public key:string
+      this.key,
+      // public value:string
+      "",
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      null    
+    );
+
+    this.emitter.emit(myEventReturn);      
+  }
+  onClickPreview(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.isPreview=true;
+
+    let myEventReturn:MyEvent = 
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_PREVIEW,
+      // public key:string
+      this.key,
+      // public value:string
+      "",
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      null    
+    );
+
+    this.emitter.emit(myEventReturn);    
   }
 
   save() :void {
@@ -255,17 +314,20 @@ export class InputRowComponent implements OnInit {
     let myEventReturn:MyEvent = 
     this.myEventService.getMyEvent(
       // public eventName:string
-      this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+      this.myEventService.ON_SAVE,
       // public key:string
-      this.myEventService.KEY_INPUT_ROW,
+      this.key,
       // public value:string
-      result,
+      this.SEinnerHTML,
       // public metaObj:any
       null,
       // public myChecker:MyChecker
       null    
     );
 
-    this.emitter.emit(myEventReturn);      
+    this.emitter.emit(myEventReturn);
+    this.overwriteSEinnerHTML();
+
+    this.isDisabledSave = true;
   }
 }

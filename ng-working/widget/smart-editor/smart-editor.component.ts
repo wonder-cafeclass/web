@@ -129,7 +129,7 @@ export class SmartEditorComponent implements OnInit {
           // public key:string
           this.myEventService.KEY_SMART_EDITOR,
           // public value:string
-          "",
+          myEvent.value,
           // public metaObj:any
           null,
           // public myChecker:MyChecker
@@ -142,7 +142,7 @@ export class SmartEditorComponent implements OnInit {
 
   }  
 
-  public updateHTML(html:string) :void {
+  private updateHTML(html:string) :void {
 
     if(null == this.childContentWindow) {
       return;
@@ -150,6 +150,7 @@ export class SmartEditorComponent implements OnInit {
     if(null == this.childContentWindow.initHTML) {
       return;
     }
+
     this.childContentWindow.initHTML(html);
 
   }

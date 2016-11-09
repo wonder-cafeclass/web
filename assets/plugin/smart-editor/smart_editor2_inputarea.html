@@ -15,6 +15,7 @@
 var prevInnerHTML = "";
 function onChangedText(el) {
 	var textChanged = el.innerHTML;
+
 	prevInnerHTML = textChanged;
 	callbackParent(textChanged);
 }

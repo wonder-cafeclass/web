@@ -66,9 +66,10 @@
                           </inputs-btns-rows>
                         </li>
 
-                        <li *ngIf="klassSchedule && !isShowKlassScheduleAdmin"
+                        <li *ngIf="klassSchedule && (!isShowKlassScheduleAdmin || isPreviewKlassSchedule)"
                             (click)="onClickKlassSchedule()"
-                            class="list-group-item klass-schedule last-temp">
+                            [ngClass]="{'last-temp':!isPreviewKlassSchedule}"
+                            class="list-group-item klass-schedule">
 
                               <!-- 입력제한 기준 : 42자 - 공백포함? -->
                               <div class="klass-target-title">
@@ -79,9 +80,9 @@
                         </li>
                         <li class="list-group-item admin">
                           <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
-                                      [cageHeight]="290"
+                                      [cageHeight]="480"
                                       [cageWidth]="754"
-                                      [key]="'schedule'"
+                                      [key]="myEventService.KLASS_SCHEDULE"
                                       (emitter)="onChangedFromInputRow($event)"
                                       [SEinnerHTML]="klassSchedule">
                           </input-row>                        

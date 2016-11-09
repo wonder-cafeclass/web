@@ -39,13 +39,15 @@
 <!-- smart-editor INIT -->
 <ul class="list-group" style="margin:0px;" *ngIf="SEinnerHTML">
 
-	<li class="list-group-item" 
+	<li *ngIf="!isPreview"
+		class="list-group-item" 
 		style="padding:5px;border:0px;"
 		id="input-row-content">
 
         <smart-editor 	*ngIf="SEinnerHTML"
         				[cageHeight]="cageHeight"
         				[cageWidth]="cageWidth"
+        				[html]="SEinnerHTML"
                       	[key]="key"
                       	(emitter)="onChangedFromChild($event)">
 		</smart-editor>
@@ -53,16 +55,29 @@
 	</li>
 	<li class="list-group-item row-btns"
 		id="input-row-tail">
-		<a href="#" class="btn btn-default btn-sm klass-btn dismiss" 
+
+		<a href="#" *ngIf="!isPreview"
+					class="btn btn-default btn-sm klass-btn" 
+					(click)="onClickPreview($event)"
+					role="button">미리보기</a>
+		<a href="#" *ngIf="isPreview"
+					class="btn btn-default btn-sm klass-btn preview" 
+					(click)="onClickUnpreview($event)"
+					role="button">돌아가기</a>
+
+		<a href="#" *ngIf="!isPreview"
+					class="btn btn-default btn-sm klass-btn" 
+					(click)="onClickSave($event)"
+					[ngClass]="{'disabled':isDisabledSave}"
+					role="button">저장하기</a>
+
+		<a href="#" *ngIf="!isPreview"
+					class="btn btn-default btn-sm klass-btn dismiss" 
 					(click)="dismiss($event)"
 					role="button">
 			<span style="padding-top:3px;" class="glyphicon glyphicon-remove" aria-hidden="true"></span>						
 		</a>
 
-		<a href="#" class="btn btn-default btn-sm klass-btn" 
-					(click)="onClickSave($event)"
-					[ngClass]="{'disabled':isDisabledSave}"
-					role="button">저장하기</a>
 	</li>
 </ul>
 <!-- smart-editor DONE -->

@@ -43,6 +43,7 @@ var InputRowComponent = (function () {
         this.contentHeight = -1;
         this.tailHeight = -1;
         this.offsetTop = 10;
+        this.isPreview = false;
         this.color = "";
         this.textColor = "";
         this.bgColor = "";
@@ -60,52 +61,45 @@ var InputRowComponent = (function () {
         if ("" === this.bgColor) {
             this.bgColor = this.klassColorService.orange;
         }
-        //bgColorBottom
-        /*
-        if( null != this.myEventSingleInput &&
-            "" != this.myEventSingleInput.title ) {
-    
-          this.title = this.myEventSingleInput.title;
-    
-        } else if( "" === this.title ) {
-    
-          this.title = "No title";
-    
-        }
-        */
     };
     InputRowComponent.prototype.onChangedFromChild = function (myEvent) {
         if (null == myEvent) {
             return;
         }
-        if (this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
-            // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
-            this.setOffset();
-            // 에디터에 넣을 내용을 설정합니다.
-            this.smartEditorComponent.updateHTML(this.SEinnerHTML);
+        if (this.myEventService.ON_READY === myEvent.eventName) {
+            if (this.myEventService.KEY_SMART_EDITOR === myEvent.key) {
+                // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
+                this.setOffset();
+            }
+            else if (this.myEventService.KEY_SINGLE_INPUT_VIEW === myEvent.key) {
+                this.setOffset();
+            }
         }
-        else if (this.myEventService.ON_READY_SINGLE_INPUT_VIEW === myEvent.eventName) {
-            this.setOffset();
-        }
-        else if (this.myEventService.ON_CHANGE_SMART_EDITOR === myEvent.eventName ||
-            this.myEventService.ON_CHANGE_SINGLE_INPUT_VIEW === myEvent.eventName) {
+        else if (this.myEventService.ON_CHANGE === myEvent.eventName) {
             // 내용이 수정되었습니다.
             this.isDisabledSave = false;
-            // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
-            var myEventReturn = this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_INPUT_ROW, 
-            // public value:string
-            myEvent.value, 
-            // public metaObj:any
-            null, 
-            // public myChecker:MyChecker
-            null);
-            this.emitter.emit(myEventReturn);
-        }
-    };
+            var hasChanged = false;
+            if (this.myEventService.KEY_SMART_EDITOR === myEvent.key) {
+                this.updateSEinnerHTML(myEvent.value);
+                hasChanged = this.hasChangedSEinnerHTML();
+            }
+            if (hasChanged) {
+                // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
+                var myEventReturn = this.myEventService.getMyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE, 
+                // public key:string
+                this.key, 
+                // public value:string
+                myEvent.value, 
+                // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
+                null);
+                this.emitter.emit(myEventReturn);
+            } // end if
+        } // end if
+    }; // end if
     InputRowComponent.prototype.setOffset = function () {
         // this.headerHeight = this.myRulerService.getHeight("dron-header");
         this.headerHeight = 42;
@@ -134,9 +128,9 @@ var InputRowComponent = (function () {
                 // public eventName:string
                 this.myEventService.ON_SHUTDOWN, 
                 // public key:string
-                this.myEventService.KEY_INPUT_ROW, 
+                this.key, 
                 // public value:string
-                "", 
+                this.SEinnerHTMLCopy, 
                 // public metaObj:any
                 null, 
                 // public myChecker:MyChecker
@@ -151,7 +145,7 @@ var InputRowComponent = (function () {
                     // public eventName:string
                     this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    this.myEventService.KEY_INPUT_ROW, 
+                    this.key, 
                     // public value:string
                     "", 
                     // public metaObj:any
@@ -166,7 +160,7 @@ var InputRowComponent = (function () {
                     // public eventName:string
                     this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    this.myEventService.KEY_INPUT_ROW, 
+                    this.key, 
                     // public value:string
                     myEventFromSI.value, 
                     // public metaObj:any
@@ -177,10 +171,56 @@ var InputRowComponent = (function () {
         }
         this.emitter.emit(myEventReturn);
     };
+    InputRowComponent.prototype.hasChangedSEinnerHTML = function () {
+        if (this.SEinnerHTMLCopy != this.SEinnerHTML) {
+            return true;
+        }
+        return false;
+    };
+    InputRowComponent.prototype.updateSEinnerHTML = function (newSEinnerHTML) {
+        this.SEinnerHTML = newSEinnerHTML;
+    };
+    InputRowComponent.prototype.overwriteSEinnerHTML = function () {
+        this.SEinnerHTMLCopy = this.SEinnerHTML;
+    };
     InputRowComponent.prototype.onClickSave = function (event) {
         event.stopPropagation();
         event.preventDefault();
         this.save();
+    };
+    InputRowComponent.prototype.onClickUnpreview = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.isPreview = false;
+        var myEventReturn = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_UNPREVIEW, 
+        // public key:string
+        this.key, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        null);
+        this.emitter.emit(myEventReturn);
+    };
+    InputRowComponent.prototype.onClickPreview = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.isPreview = true;
+        var myEventReturn = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_PREVIEW, 
+        // public key:string
+        this.key, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        null);
+        this.emitter.emit(myEventReturn);
     };
     InputRowComponent.prototype.save = function () {
         if (this.isDisabledSave) {
@@ -193,16 +233,18 @@ var InputRowComponent = (function () {
         // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
         var myEventReturn = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
+        this.myEventService.ON_SAVE, 
         // public key:string
-        this.myEventService.KEY_INPUT_ROW, 
+        this.key, 
         // public value:string
-        result, 
+        this.SEinnerHTML, 
         // public metaObj:any
         null, 
         // public myChecker:MyChecker
         null);
         this.emitter.emit(myEventReturn);
+        this.overwriteSEinnerHTML();
+        this.isDisabledSave = true;
     };
     __decorate([
         core_1.Input(), 

@@ -38,6 +38,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
   @Input() klassTarget:string;
   @Input() klassTargetList:string[];
   @Input() klassSchedule:string;
+  klassScheduleCopy:string;
 
   @Input() isAdmin:boolean=false;
   @Input() cageWidth:number=-1;
@@ -74,6 +75,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
   isShowKlassFeatureAdmin:boolean=false;
   isShowKlassTargetAdmin:boolean=false;
   isShowKlassScheduleAdmin:boolean=false;
+  isPreviewKlassSchedule:boolean=false;
 
   watchTowerImgUrl:string;
   watchTowerWhiteImgUrl:string;
@@ -172,15 +174,12 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       this.myEventListForKlassTarget.push(myEventKlassTarget);
     } // end for
 
-    this.overwriteKlassCopies();
-
-
-
-
     // KLASS SCHEDULE
     if(null === this.klassSchedule || "" === this.klassSchedule) {
       this.klassSchedule = '<p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)1. Small talk &amp; 지난 시간 배운 표현 복습 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)2. Brainstorming – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)3. Key word 익히기 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)4. key expression – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)5. Break – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)6. Practice + Roleplay – <span style="color: rgb(255, 170, 0);">30분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)7. Q&amp;A, feedback + closing – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><br></p>';
     }
+
+    this.overwriteKlassCopies();
 
     // IMAGES
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
@@ -246,17 +245,26 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+
         this.myEventListForKlassFeature =
         this.myEventService.setEventValue(
           myEvent, 
           this.myEventListForKlassFeature
         );
+
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+
         this.myEventListForKlassTarget =
         this.myEventService.setEventValue(
           myEvent, 
           this.myEventListForKlassTarget
         );
+
+      } else if(this.myEventService.KLASS_SCHEDULE=== myEvent.key) {
+
+        this.klassSchedule = myEvent.value;
+        console.log("ON_CHANGE / this.klassSchedule.length : ",this.klassSchedule.length);
+
       }
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -312,6 +320,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         hasChanged = this.hasChangedFeature();
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         hasChanged = this.hasChangedTarget();
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+        hasChanged = this.hasChangedSchedule();
       }
 
       if(hasChanged) {
@@ -320,11 +330,14 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         this.overwriteKlassCopies();
       }
 
+      console.log("ON_SAVE / this.klassSchedule.length : ",this.klassSchedule.length);
+
     } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
 
       // 입력창을 닫습니다.
       if( this.myEventService.KLASS_FEATURE === myEvent.key || 
-          this.myEventService.KLASS_TARGET === myEvent.key) {
+          this.myEventService.KLASS_TARGET === myEvent.key ||
+          this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         this.shutdownKlassInfos();
       }
 
@@ -332,7 +345,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
       // 입력창을 닫습니다.
       if( this.myEventService.KLASS_FEATURE === myEvent.key || 
-          this.myEventService.KLASS_TARGET === myEvent.key) {
+          this.myEventService.KLASS_TARGET === myEvent.key ||
+          this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         this.shutdownKlassInfos();
       }
 
@@ -342,6 +356,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         hasChanged = this.hasChangedFeature();
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         hasChanged = this.hasChangedTarget();
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+        hasChanged = this.hasChangedSchedule();
       }
       console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ",hasChanged);
 
@@ -349,6 +365,24 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         // 데이터를 롤백합니다.
         console.log("데이터를 롤백합니다.");
         this.rollbackKlassCopies();
+      }
+
+    } else if (this.myEventService.ON_PREVIEW === myEvent.eventName) {
+
+      console.log("XXX - 01");
+
+      if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+        // 화면에 현재 작업중인 모습을 보여줌.
+
+        console.log("XXX - 02");
+        this.isPreviewKlassSchedule=true;
+      }
+
+    } else if (this.myEventService.ON_UNPREVIEW === myEvent.eventName) {
+
+      if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+        // 화면에 현재 작업중인 모습을 보여주지 않음.
+        this.isPreviewKlassSchedule=false;
       }
 
     } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
@@ -404,6 +438,13 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
     return hasChanged;
   }
+  hasChangedSchedule() :boolean {
+    if(this.klassScheduleCopy != this.klassSchedule) {
+      return true;
+    }
+    return false;
+  }
+
 
   onChangedFromChild(myEvent:MyEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) :void{
 
@@ -494,15 +535,19 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     this.myEventService.getCopyEventList(
       this.myEventListForKlassTarget
     );
+
     this.myEventListForKlassFeatureCopy = 
     this.myEventService.getCopyEventList(
       this.myEventListForKlassFeature
     );
 
+    this.klassScheduleCopy = this.klassSchedule;
+
   }
   rollbackKlassCopies() :void {
     this.myEventListForKlassTarget = this.myEventListForKlassTargetCopy;
     this.myEventListForKlassFeature = this.myEventListForKlassFeatureCopy;
+    this.klassSchedule = this.klassScheduleCopy;
 
     this.overwriteKlassCopies();
   }
