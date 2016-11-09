@@ -1,6 +1,7 @@
 <!-- Example
 
 <input-btns-row [myEventCallback]="myEventCallback" 
+				[type]="'removable'|'fixed'" 
 				[cageWidth]="cageWidth" 
 				[inputText]="inputText">
 				[placeholder]="'새로운 이름을 입력해주세요.'"
@@ -8,14 +9,22 @@
 </input-btns-row>
 
 -->
-<div class="input-group" style="padding:5px;"> 
+<div 	*ngIf="type=='fixed'"
+		style="padding:5px;"> 
+	<input 	#inputText 
+			[(ngModel)]="innerText"
+			(ngModelChange)="onChange($event, inputText)"
+			class="form-control" 
+			placeholder={{placeholder}}>
+</div>
+<div 	*ngIf="type=='removable'"
+		class="input-group" style="padding:5px;"> 
 	<input 	#inputText 
 			[(ngModel)]="innerText"
 			(keyup.enter)="onKeyEnter($event, inputText.value)"
 			(ngModelChange)="onChange($event, inputText)"
 			class="form-control" 
-			placeholder={{placeholder}}
-			aria-label="Text input with multiple buttons">
+			placeholder={{placeholder}}>
 	<div class="input-group-btn">
 		<!-- Single Btn -->
 		<button *ngIf="myButton" 

@@ -17,6 +17,7 @@ var InputsBtnsRowsComponent = (function () {
     function InputsBtnsRowsComponent(myEventService, myCheckerService) {
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
+        this.maxRowCnt = 3;
         this.isDisabledSave = true;
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
@@ -270,6 +271,14 @@ var InputsBtnsRowsComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], InputsBtnsRowsComponent.prototype, "key", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], InputsBtnsRowsComponent.prototype, "rowType", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], InputsBtnsRowsComponent.prototype, "maxRowCnt", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)

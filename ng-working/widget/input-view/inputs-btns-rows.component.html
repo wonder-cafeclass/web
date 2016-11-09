@@ -1,23 +1,58 @@
 <!-- EXAMPLE
-<inputs-btns-rows   [myEventList]="myEventListForKlassFeature" 
-                    [placeholderForNewRow]="'새로운 내용을 입력해주세요.'">
+<inputs-btns-rows   [key]="myEventService.KLASS_FEATURE"
+                    [rowType]="'removable|fixed'"
+                    [maxRowCnt]="3"
+                    [myEventList]="myEventListForKlassFeature" 
+                    (emitter)="onChangedFromInputRow($event)"
+                    [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
 </inputs-btns-rows>
 -->
 
 <ul class="list-group" style="margin-bottom:0px;padding:0px;">
-
+  
   <li   *ngFor="let myBtn of myRemovableBtnList; let i = index"
         class="list-group-item compact" [ngClass]="{'first':i === 0}">
-    <input-btns-row [myEventKeyEnterCallback]="myBtn.myEvent"
+
+    <!-- 열의 갯수가 이벤트 리스트의 갯수에 고정 -->
+    <input-btns-row *ngIf="rowType=='fixed'"
+                    [type]="rowType"
+                    [myEventKeyEnterCallback]="myBtn.myEvent"
+                    [inputText]="myBtn.myEvent.value"
+                    (emitter)="onChangeFromChild($event)">
+    </input-btns-row>
+
+    <input-btns-row *ngIf="rowType=='removable'"
+                    [type]="rowType"
+                    [myEventKeyEnterCallback]="myBtn.myEvent"
+                    [myButton]="myBtn"
+                    [inputText]="myBtn.myEvent.value"
+                    (emitter)="onChangeFromChild($event)">
+    </input-btns-row>
+
+  </li>
+
+
+  <!-- 열의 갯수가 이벤트 리스트의 갯수로 표시. 유저가 수정할 수 있음. -->
+  <!-- 
+  <li   *ngIf="rowType=='removalbe'"
+        *ngFor="let myBtn of myRemovableBtnList; let i = index"
+        class="list-group-item compact" [ngClass]="{'first':i === 0}">
+    <input-btns-row [type]="'removable'"
+                    [myEventKeyEnterCallback]="myBtn.myEvent"
                     [myButton]="myBtn"
                     [inputText]="myBtn.myEvent.value"
                     (emitter)="onChangeFromChild($event)">
     </input-btns-row>    
   </li>
+  -->
+
 
   <!-- 열을 추가하는 입력을 받는 창 -->
-  <li class="list-group-item compact">    
-    <input-btns-row [myEventKeyEnterCallback]="myEvent"
+  <li *ngIf="myRemovableBtnList.length < maxRowCnt" 
+      class="list-group-item compact">    
+    <input-btns-row *ngIf="rowType=='removable'"
+                    [type]="rowType"
+                    [myEventKeyEnterCallback]="myEvent"
                     [myButtonList]="myAddBtnList"
                     [placeholder]="placeholderForNewRow"
                     (emitter)="onChangeFromChild($event)">

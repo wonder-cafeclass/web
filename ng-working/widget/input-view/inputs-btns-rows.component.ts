@@ -22,6 +22,8 @@ import { MyButton }                    from '../../util/model/my-button';
 export class InputsBtnsRowsComponent implements OnInit {
 
   @Input() key:string;
+  @Input() rowType:string;
+  @Input() maxRowCnt:number=3;
   @Input() myEventList:MyEvent[];
   myEventListCopy:MyEvent[];
   @Input() placeholderForNewRow:string;
