@@ -1,55 +1,113 @@
 <div>
-	<nav-tabs 	*ngIf="radiobtnOptionListNavTabs"
-                  (emitter)="onChangedFromChild($event, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution)"
-			[radiobtnList]="radiobtnOptionListNavTabs"
-                  [colorTitleFocus]="colorWhite"
-                  [colorTitleBlur]="colorOrange"
-	          	[colorBGFocus]="colorOrange"
-	          	[colorBGBlur]="colorWhite"
-                  [colorBorder]="colorOrange"></nav-tabs>
+	<nav-tabs *ngIf="radiobtnOptionListNavTabs"
+            (emitter)="onChangedFromChild($event, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution)"
+            [radiobtnList]="radiobtnOptionListNavTabs"
+            [colorTitleFocus]="colorWhite"
+            [colorTitleBlur]="colorOrange"
+            [colorBGFocus]="colorOrange"
+            [colorBGBlur]="colorWhite"
+            [colorBorder]="colorOrange"></nav-tabs>
 
       <ul class="list-group">
             <li   #klassDesc
                   class="list-group-item klass-info first" 
                   [ngClass]="{'focus':isFocusKlassDesc}">
-                  <!-- <a class="jump first" name="klass_desc"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
-                        <li class="list-group-item" style="padding:20px;">
-                              <h4>미드에서 나오는 일상 영어 회화 표현을 쉽게 배웁니다.</h4>
-                              <h4>실제 Native 들이 말하는 스타일을 모방해서 영어로 구사할 수 있도록 연습합니다.</h4>
+
+                        <li *ngIf="myEventListForKlassFeature" 
+                            (click)="onClickKlassFeature()"
+                            class="list-group-item klass-desc klass-feature">
+
+                            <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                            <div class="klass-feature-title">
+                              <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                              이 수업의 특징 {{myEventListForKlassFeature.length}}가지.
+                            </div>
+                            <div  *ngFor="let myEvent of myEventListForKlassFeature"
+                                  class="klass-feature-text" 
+                                  [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
                         </li>
-                        <li class="list-group-item" style="padding:20px;">
-                              <dl style="margin-bottom:0px;">
-                                <dt>이런 분들께 추천드려요.</dt>
-                                <dd>네이티브가 사용하는 표현 쓰고 싶으신 분들</dd>
-                                <dd>영어를 재미있게 공부하고 싶으신 분들</dd>
-                              </dl>                        
+                        <!-- Admin Section -->
+                        <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
+                            class="list-group-item admin">
+                          <inputs-btns-rows   [key]="myEventService.KLASS_FEATURE"
+                                              [rowType]="'fixed'"
+                                              [maxRowCnt]="3"
+                                              [myEventList]="myEventListForKlassFeature" 
+                                              (emitter)="onChangedFromInputRow($event)"
+                                              [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
+                          </inputs-btns-rows>
                         </li>
-                        <li class="list-group-item" style="padding:20px;">
-                              <img class="img-rounded" width="300px;" src="http://cafeclass.kr/wp-content/uploads/2016/09/미드-영어회화_잠실역_카페클래스.jpg"/>
-                              <dl style="margin-bottom:0px;">
-                                <dt>1. 지난 시간 리뷰 및 스몰 토크 – 20분</dt>
-                                <dd>ex) what did yod do last weekend?</dd>
-                                <dt>2. 표현 단어 예습 및 표현 맞춰보기 – 10분</dt>
-                                <dd>ex) 네가 잠든 줄 알았어. -> 영어로 어떻게 표현할까? 맞춰보기</dd>
-                                <dt>3. 수업 영상 보고 주요 표현 따라하기 + 연습 – 60분 (쉬는시간 포함)</dt>
-                                <dd>*패턴 연습 (직접 영작 및 입으로 연습)</dd>
-                              </dl>                        
+
+                        <li *ngIf="myEventListForKlassTarget" 
+                            (click)="onClickKlassTarget()"
+                            class="list-group-item klass-target">
+                          
+                          <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                          <div class="klass-target-title">
+                            <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                            이런 분들께 추천드려요.
+                          </div>
+
+                          <div  *ngFor="let myEvent of myEventListForKlassTarget"
+                                class="klass-target-text" 
+                                [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
 
                         </li>
+                        <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
+                            class="list-group-item admin">
+                          <inputs-btns-rows [key]="myEventService.KLASS_TARGET"
+                                            [rowType]="'removable'"
+                                            [maxRowCnt]="5"
+                                            [myEventList]="myEventListForKlassTarget"
+                                            (emitter)="onChangedFromInputRow($event)"
+                                            [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
+                          </inputs-btns-rows>
+                        </li>
+
+                        <li *ngIf="klassSchedule && !isShowKlassScheduleAdmin"
+                            (click)="onClickKlassSchedule()"
+                            class="list-group-item klass-schedule last-temp">
+
+                              <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                              <div class="klass-target-title">
+                                <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                                이렇게 진행됩니다.
+                              </div>
+                              <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
+                        </li>
+                        <li class="list-group-item admin">
+                          <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
+                                      [cageHeight]="290"
+                                      [cageWidth]="754"
+                                      [key]="'schedule'"
+                                      (emitter)="onChangedFromInputRow($event)"
+                                      [SEinnerHTML]="klassSchedule">
+                          </input-row>                        
+                        </li>
+                        <!-- TEST / smart editor / isAdmin -->
+                        <!-- wonder.jung 이미지는 PC의 경우는 750px을 초과할 경우, 750px로 고정 -->
+                        <!-- wonder.jung 이미지는 모바일의 경우는 아이폰5 기준, 320px을 초과할 경우, 320px로 고정 -->
+                        <!-- wonder.jung feature, target은 텍스트필드 입력으로 고정. 현재 서비스에서 사용중인 이미지로 배치할 것. -->
                   </ul>
             </li>
+
+            <li   class="list-group-item klass-info">지도 이미지는 절반 크기로!</li>
             <li   #klassVenue
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusKlassVenue}">
-                  <!-- <a class="jump" name="klass_venue"></a> -->
                   <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
             </li>
+
+            <!-- 선생님 관련 소개 정보 데이터 예시 -->
+            <!-- 
+            https://docs.google.com/spreadsheets/d/1QZtwc0Z2eOpAoye-q2JyvLZW9hjKFfnhozhyUHNJfqM/edit#gid=678348289
+            -->
+
             <li   #tutorDesc
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusTutorDesc}">
-            <!-- <a class="jump" name="tutor_desc"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
                         <li class="list-group-item" style="padding:5px;">
@@ -72,7 +130,6 @@
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
-                  <!-- <a class="jump" name="student_review"></a> -->
 
                   <!-- refactor me -->
                   <ul class="list-group" style="margin-bottom:0px;">
@@ -114,7 +171,6 @@
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
-                  <!-- <a class="jump" name="student_question"></a> -->
 
                   <ul class="list-group" style="margin-bottom:0px;">
                         <li class="list-group-item" style="padding:5px;">
@@ -154,7 +210,6 @@
             <li   #caution
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusCaution}">
-                  <!-- <a class="jump" name="caution"></a> -->
                   <div class="list-group" style="margin-bottom:0px;">
                         <a href="#" class="list-group-item">
                               <h4 class="list-group-item-heading">Q1) 환불/취소 신청은 어떻게 하나요?</h4>

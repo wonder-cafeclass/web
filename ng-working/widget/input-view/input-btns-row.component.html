@@ -1,0 +1,41 @@
+<!-- Example
+
+<input-btns-row [myEventCallback]="myEventCallback" 
+				[type]="'removable'|'fixed'" 
+				[cageWidth]="cageWidth" 
+				[inputText]="inputText">
+				[placeholder]="'새로운 이름을 입력해주세요.'"
+				(emitter)="onChangeFromChild($event)"
+</input-btns-row>
+
+-->
+<div 	*ngIf="type=='fixed'"
+		style="padding:5px;"> 
+	<input 	#inputText 
+			[(ngModel)]="innerText"
+			(ngModelChange)="onChange($event, inputText)"
+			class="form-control" 
+			placeholder={{placeholder}}>
+</div>
+<div 	*ngIf="type=='removable'"
+		class="input-group" style="padding:5px;"> 
+	<input 	#inputText 
+			[(ngModel)]="innerText"
+			(keyup.enter)="onKeyEnter($event, inputText.value)"
+			(ngModelChange)="onChange($event, inputText)"
+			class="form-control" 
+			placeholder={{placeholder}}>
+	<div class="input-group-btn">
+		<!-- Single Btn -->
+		<button *ngIf="myButton" 
+				type="button" 
+				(click)="onClick($event, inputText.value, myButton)"
+				class="btn btn-default">{{myButton.title}}</button>
+
+		<!-- Multiple Btns -->
+		<button *ngFor="let myButton of myButtonList" 
+				type="button" 
+				(click)="onClick($event, inputText.value, myButton)"
+				class="btn btn-default">{{myButton.title}}</button>
+	</div> 
+</div>

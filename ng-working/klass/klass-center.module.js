@@ -16,6 +16,9 @@ var klass_service_1 = require('./klass.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_color_service_1 = require('./service/klass-color.service');
+var my_ruler_service_1 = require('../util/service/my-ruler.service');
+var my_checker_service_1 = require('../util/service/my-checker.service');
+var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
@@ -38,9 +41,16 @@ var input_view_component_1 = require('../widget/input-view/input-view.component'
 var input_view_h_list_component_1 = require('../widget/input-view/input-view-h-list.component');
 var input_view_updown_component_1 = require('../widget/input-view/input-view-updown.component');
 var input_view_table_component_1 = require('../widget/input-view-table/input-view-table.component');
+var single_input_view_component_1 = require('../widget/input-view/single-input-view.component');
+var input_btns_row_component_1 = require('../widget/input-view/input-btns-row.component');
+var inputs_btns_rows_component_1 = require('../widget/input-view/inputs-btns-rows.component');
 var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
+var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+// @ Deprecated
+var dron_list_component_1 = require('../widget/dron-list/dron-list.component');
+var input_row_component_1 = require('../widget/input-row/input-row.component');
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -72,16 +82,25 @@ var KlassCenterModule = (function () {
                 input_view_h_list_component_1.InputViewHListComponent,
                 input_view_table_component_1.InputViewTableComponent,
                 input_view_updown_component_1.InputViewUpdownComponent,
+                input_btns_row_component_1.InputBtnsRowComponent,
+                inputs_btns_rows_component_1.InputsBtnsRowsComponent,
+                single_input_view_component_1.SingleInputViewComponent,
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
                 checkbox_h_list_component_1.CheckBoxHListComponent,
-                nav_tabs_component_1.NavTabsComponent
+                nav_tabs_component_1.NavTabsComponent,
+                smart_editor_component_1.SmartEditorComponent,
+                dron_list_component_1.DronListComponent,
+                input_row_component_1.InputRowComponent,
+                safe_html_pipe_1.SafeHtmlPipe
             ],
             providers: [
                 klass_service_1.KlassService,
                 klass_radiobtn_service_1.KlassRadioBtnService,
                 klass_checkbox_service_1.KlassCheckBoxService,
                 klass_detail_resolve_service_1.KlassDetailResolve,
-                klass_color_service_1.KlassColorService
+                klass_color_service_1.KlassColorService,
+                my_ruler_service_1.MyRulerService,
+                my_checker_service_1.MyCheckerService
             ]
         }), 
         __metadata('design:paramtypes', [])

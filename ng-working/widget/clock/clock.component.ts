@@ -109,10 +109,6 @@ export class ClockComponent implements OnInit {
       return;
     }
 
-    console.log("show / diffHours : ",diffHours);
-    console.log("show / diffMinutes : ",diffMinutes);
-    console.log("show / clockTimeBegin.minutes : ",clockTimeBegin.minutes);
-
     // 시작 시간으로부터 15분 미만까지는 동일 시간으로 표현합니다.
     if(1 === diffHours) {
 

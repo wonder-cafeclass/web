@@ -7,7 +7,11 @@ import { CommonModule }              from '@angular/common';
 import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
-import { KlassColorService }      from './service/klass-color.service';
+import { KlassColorService }         from './service/klass-color.service';
+import { MyRulerService }            from '../util/service/my-ruler.service';
+import { MyCheckerService }          from '../util/service/my-checker.service';
+
+import { SafeHtmlPipe }              from '../util/pipe/safe-html-pipe';
 
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
@@ -15,7 +19,9 @@ import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
-import { KlassDetailNavListComponent }      from './klass-detail-nav-list.component';
+import { 
+    KlassDetailNavListComponent 
+}                                    from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 
@@ -29,13 +35,23 @@ import { PriceTagHComponent }        from '../widget/pricetag/pricetag-h.compone
 import { ButterflyComponent }        from '../widget/butterfly/butterfly.component';
 import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
 import { RadioBtnLinearComponent }   from '../widget/radiobtn/radiobtn-linear.component';
+
 import { InputViewComponent }        from '../widget/input-view/input-view.component';
 import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
 import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
 import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
+import { SingleInputViewComponent }  from '../widget/input-view/single-input-view.component';
+import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
+import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
+
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
+import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+// @ Deprecated
+import { DronListComponent }         from '../widget/dron-list/dron-list.component';
+
+import { InputRowComponent }         from '../widget/input-row/input-row.component';
 
 @NgModule({
   imports: [
@@ -60,20 +76,31 @@ import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component
     ButterflyComponent,
     ImageGridComponent,
     RadioBtnLinearComponent,
+    
     InputViewComponent,
     InputViewHListComponent,
     InputViewTableComponent,
     InputViewUpdownComponent,
+    InputBtnsRowComponent,
+    InputsBtnsRowsComponent,
+
+    SingleInputViewComponent,
     RadioBtnHListComponent,
     CheckBoxHListComponent,
-    NavTabsComponent
+    NavTabsComponent,
+    SmartEditorComponent,
+    DronListComponent,    // @ Depreacted
+    InputRowComponent,
+    SafeHtmlPipe
   ],
   providers: [
     KlassService,
     KlassRadioBtnService,
     KlassCheckBoxService,
     KlassDetailResolve,
-    KlassColorService
+    KlassColorService,
+    MyRulerService,
+    MyCheckerService
   ]
 })
 export class KlassCenterModule {}

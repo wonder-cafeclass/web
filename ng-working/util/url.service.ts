@@ -14,7 +14,7 @@ export class UrlService {
         this.appBaseUrl = `http://${ this.hostname }${ this.baseHref }`;
     }
 
-    get(urlFragment:string) {
+    get(urlFragment:string) :string{
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.
 
         if(0 < urlFragment.length && 0 === urlFragment.indexOf("/")) {
@@ -23,6 +23,16 @@ export class UrlService {
         }
 
         return `${ this.appBaseUrl }${ urlFragment }`;
+
+    }
+
+    getInner(urlFragment:string) :string{
+        if(0 < urlFragment.length && 0 === urlFragment.indexOf("/")) {
+            // "/subtree/subtree/A.php" --> "subtree/subtree/A"
+            urlFragment = urlFragment.replace("/","");
+        }
+
+        return `${ this.baseHref }${ urlFragment }`;
 
     }
 

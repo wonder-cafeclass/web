@@ -4,19 +4,23 @@ import { FormsModule }    from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { LocationStrategy, HashLocationStrategy, PlatformLocation } from '@angular/common';
 
-import { AppComponent }         from './app.component';
+import { AppComponent }             from './app.component';
 import { routing,
-         appRoutingProviders }  from './app.routing';
+         appRoutingProviders }      from './app.routing';
 
-import { UsersModule }          from './users/users.module';
-import { KlassCenterModule }   from './klass/klass-center.module';
+import { UsersModule }              from './users/users.module';
+import { KlassCenterModule }        from './klass/klass-center.module';
 
-import { LoginComponent }       from './login/login.component';
-import { DialogService }        from './widget/dialog.service';
-import { AuthService }          from './auth.service';
-import { UrlService }           from './util/url.service';
-import { ImageService }           from './util/image.service';
+import { LoginComponent }           from './login/login.component';
+import { DialogService }            from './widget/dialog.service';
+import { AuthService }              from './auth.service';
+import { UrlService }               from './util/url.service';
+import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/my-event.service';
+import { MyAssetService }           from './util/my-asset.service';
+
+
+
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -40,6 +44,7 @@ import './rxjs-operators';
     UrlService,
     ImageService,
     MyEventService,
+    MyAssetService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService

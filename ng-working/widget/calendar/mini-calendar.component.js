@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
 var my_event_service_1 = require('../../util/my-event.service');
-var my_event_1 = require('../../util/model/my-event');
 var MiniCalendarComponent = (function () {
     function MiniCalendarComponent(imageService, myEventService) {
         this.imageService = imageService;
@@ -35,62 +34,33 @@ var MiniCalendarComponent = (function () {
     // (mouseleave)="onMouseLeaveKlassDate($event, field)"
     MiniCalendarComponent.prototype.onMouseLeaveKlassDate = function (event, date) {
         event.stopPropagation();
-        var myEvent = new my_event_1.MyEvent(
+        var myEvent = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE, 
-        // public title:string
-        "mini-calendar", 
+        this.myEventService.ON_MOUSE_LEAVE, 
         // public key:string
-        "date", 
+        this.myEventService.KEY_MINI_CALENDAR, 
         // public value:string
         date.date, 
         // public metaObj:any
-        date);
+        date, 
+        // public myChecker:MyChecker
+        null);
         this.emitter.emit(myEvent);
     };
     MiniCalendarComponent.prototype.onMouseEnterKlassDate = function (event, date) {
         event.stopPropagation();
-        var myEvent = new my_event_1.MyEvent(
+        var myEvent = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE, 
-        // public title:string
-        "mini-calendar", 
+        this.myEventService.ON_MOUSE_ENTER, 
         // public key:string
-        "date", 
+        this.myEventService.KEY_MINI_CALENDAR, 
         // public value:string
         date.date, 
         // public metaObj:any
-        date);
+        date, 
+        // public myChecker:MyChecker
+        null);
         this.emitter.emit(myEvent);
-        // this.emitter.emit(myEvent);
-        // 부모객체에게 날짜에 mouseover event를 전달합니다.
-        /*
-        if(!date.isEnrollment) {
-            return;
-        }
-        for (var i = 0; i < this.calendarTable.length; ++i) {
-
-            let row = this.calendarTable[i];
-            for (var j = 0; j < row.length; ++j) {
-                let field = row[j];
-
-                if(null === field) {
-                    continue;
-                }
-                if(!field.hasKlass) {
-                    continue;
-                }
-                if(!(date.date < field.date)) {
-                    // 사용자가 mouseover한 날짜보다 이후 날짜여야 합니다.
-                    continue;
-                }
-
-                // 사용자가 수강 신청 한 기간만큼 포커싱 해줍니다.
-
-                // field.isFocus = true;
-            } // end for
-        } // end for
-        */
     };
     __decorate([
         core_1.Input(), 

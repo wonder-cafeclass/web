@@ -2,7 +2,8 @@ import { MyEvent } from '../../../util/model/my-event';
 
 export class CheckBoxOption {
 	constructor(
-	    public myEvent:MyEvent,
-	    public isFocus:boolean
+		public title:string,
+	    public isFocus:boolean,
+	    public myEvent:MyEvent
 	) {}
 }

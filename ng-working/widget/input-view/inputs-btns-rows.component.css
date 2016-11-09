@@ -1,0 +1,13 @@
+li.compact {
+	padding:0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+li.first {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;	
+}
+li.last {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;	
+}

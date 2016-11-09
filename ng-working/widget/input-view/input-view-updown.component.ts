@@ -37,7 +37,7 @@ export class InputViewUpdownComponent implements OnInit {
   onChange(event, value:string, myEvent:MyEvent) :void {
     event.stopPropagation();
 
-    myEvent.valueNext = value;
+    myEvent.value = value;
 
     this.emitter.emit(myEvent);
   }

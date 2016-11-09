@@ -1,4 +1,17 @@
 <div class="container">
+
+  <!-- Dron List -->
+  <!-- 
+  <dron-list  *ngIf="dronListTitle"
+              [topLeftImgUrl]="watchTowerWhiteImgUrl"
+              [cageHeight]="290"
+              [cageWidth]="710"
+              [key]="dronListKey"
+              [title]="dronListTitle"
+              [SEinnerHTML]="dronListSEinnerHTML"
+              [myEventSingleInput]="dronListMyEventSingleInput"
+              (emitter)="onChangedFromChild($event)"></dron-list>
+  -->
   
   <!-- First Row -->
   <div class="row">
@@ -95,69 +108,7 @@
           </li>
         </ul>
         <div class="col-md-2" style="padding:0px;"></div>
-        <!--
-        <ul *ngIf="isAdmin===true" class="list-group col-md-3">
-          <li class="list-group-item col-next">저장하기 버튼</li>
-          <li class="list-group-item col-next first">
-            <input-view-updown  [data]="klassTitleUpdown"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></input-view-updown>
-          </li>
-          <li class="list-group-item col-next">
-            <input-view-updown  [data]="klassDescUpdown"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></input-view-updown>
-          </li>
 
-
-          <li class="list-group-item col-next">수업 이미지 업로더</li>
-
-          <li class="list-group-item col-next">수업 관련 추가 배너</li>
-
-          <li class="list-group-item col-next">네이버 지도 API 등록</li>
-          <li class="list-group-item col-next">
-            <radiobtn-h-list  [listTitle]="'1회 신청시 수강기간'"
-                              [listTitleFontSize]="16"
-                              [optionList]="radiobtnOptionListCourseDuration"
-                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                              (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
-          </li>
-          <li class="list-group-item col-next">
-            <input-view-updown  [data]="klassPriceUpdown"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></input-view-updown>
-            
-          </li>
-          <li class="list-group-item col-next">
-            <input-view-updown  [data]="klassTimeBeginUpdown"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></input-view-updown>
-          </li>
-          <li class="list-group-item col-next">
-            <input-view-updown  [data]="klassTimeEndUpdown"
-                                [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                                (emitter)="onChangedFromChild($event)"></input-view-updown>
-          </li>
-          <li class="list-group-item col-next">
-            <radiobtn-h-list  [listTitle]="'수강신청일'"
-                              [listTitleFontSize]="16"
-                              [optionList]="radiobtnOptionListEnrollment"
-                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                              (emitter)="onChangedFromChild($event)"></radiobtn-h-list>
-          </li>
-          <li *ngIf="isAdmin===true"
-              class="list-group-item col-next">
-
-            <checkbox-h-list  [listTitle]="'수업 요일'"
-                              [listTitleFontSize]="16"
-                              [optionList]="checkboxOptionListKlassDay"
-                              [topLeftImageUrl]="imageService.get(imageService.watchTowerWhiteUrl)"
-                              (emitter)="onChangedFromChild($event)"></checkbox-h-list>
-
-          </li>        
-        </ul>
-        -->
-        
     <!-- </div> -->
   </div>
   
@@ -165,7 +116,14 @@
   <div class="row">
     <div class="col-md-2" style="padding:0px;"></div>
     <div class="col-md-8 cc-div-col" style="padding:0px;">
-      <klass-detail-nav-list [radiobtnOptionListNavTabs]="radiobtnOptionListNavTabs">
+      <klass-detail-nav-list  #klassDetailNav
+                              [radiobtnOptionListNavTabs]="radiobtnOptionListNavTabs"
+                              (emitter)="onChangedFromChildNav($event)"
+                              [isAdmin]="isAdmin"
+                              [klassFeature]="klassFeature"
+                              [klassTarget]="klassTarget"
+                              [klassSchedule]="klassSchedule"
+                              [klass]="klass">
       </klass-detail-nav-list>
     </div>
     <div class="col-md-2" style="padding:0px;"></div>

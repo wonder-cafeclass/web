@@ -26,7 +26,7 @@ var InputViewUpdownComponent = (function () {
     };
     InputViewUpdownComponent.prototype.onChange = function (event, value, myEvent) {
         event.stopPropagation();
-        myEvent.valueNext = value;
+        myEvent.value = value;
         this.emitter.emit(myEvent);
     };
     __decorate([

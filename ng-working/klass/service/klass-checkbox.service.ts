@@ -17,130 +17,144 @@ export class KlassCheckBoxService {
 
         let optionList:CheckBoxOption[] = [
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "일요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "sun",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "일요일"
                 // public isFocus:boolean
-                false
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_SUNDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
             ),
 
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "월요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "mon",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "월요일"
                 // public isFocus:boolean
-                false
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_MONDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
             ),
 
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "화요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "tue",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "화요일"
                 // public isFocus:boolean
-                false
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_TUESDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
             ),
 
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "수요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "tue",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "수요일"
                 // public isFocus:boolean
-                false
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_WEDNESDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
             ),
 
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "목요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "thu",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "목요일"
                 // public isFocus:boolean
-                false
-            ),  
-
-            new CheckBoxOption(
+                ,false
                 // public myEvent:MyEvent
-                new MyEvent(
+                ,this.myEventService.getMyEvent(
                     // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "금요일",
+                    this.myEventService.ANY,
                     // public key:string
-                    "days",
+                    this.myEventService.KLASS_DAYS,
                     // public value:string
-                    "fri",
+                    this.myEventService.KLASS_DAYS_THURSDAY,
                     // public metaObj:any
-                    klass
-                ),
-                // public isFocus:boolean
-                false
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
             ),
 
             new CheckBoxOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_DAYS,
-                    // public title:string
-                    "토요일",
-                    // public key:string
-                    "days",
-                    // public value:string
-                    "sat",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "금요일"
                 // public isFocus:boolean
-                false
-            )                                   
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_FRIDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
+            ),
+
+            new CheckBoxOption(
+                // public title:string,
+                "토요일"
+                // public isFocus:boolean
+                ,false
+                // public myEvent:MyEvent
+                ,this.myEventService.getMyEvent(
+                    // public eventName:string
+                    this.myEventService.ANY,
+                    // public key:string
+                    this.myEventService.KLASS_DAYS,
+                    // public value:string
+                    this.myEventService.KLASS_DAYS_SATURDAY,
+                    // public metaObj:any
+                    klass,
+                    // public myChecker:MyChecker
+                    null    
+                )
+            )                                 
         ]; 
 
         // set focus

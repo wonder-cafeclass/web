@@ -20,7 +20,7 @@ var AuthService = (function () {
     AuthService.prototype.getAdminAuth = function () {
         var req_url = this.us.get(this.adminAuthUrl);
         ;
-        console.log("TEST / req_url : ", req_url);
+        // console.log("TEST / req_url : ",req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -28,7 +28,7 @@ var AuthService = (function () {
     };
     AuthService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("AuthService / extractData / body ::: ", body);
+        // console.log("AuthService / extractData / body ::: ",body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;

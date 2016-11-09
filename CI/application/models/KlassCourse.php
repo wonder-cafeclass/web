@@ -9,6 +9,12 @@ class KlassCourse {
         public $title;
         // 수업설명
         public $desc;
+        // 수업특징
+        public $feature;
+        // 수업대상
+        public $target;
+        // 수업일정
+        public $schedule;
         // 시작날짜
         public $date_begin;
         // 시작시간

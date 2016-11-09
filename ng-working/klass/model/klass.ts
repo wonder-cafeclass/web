@@ -5,6 +5,9 @@ export class Klass {
     public id: number;
     public title: string;
     public desc: string;
+    public feature: string;
+    public target: string;
+    public schedule: string;
     public date_begin: string;
     public time_begin: string;
     public time_begin_img_url: string;

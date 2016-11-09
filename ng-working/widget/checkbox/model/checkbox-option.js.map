@@ -1,1 +1,1 @@
-{"version":3,"file":"checkbox-option.js","sourceRoot":"","sources":["checkbox-option.ts"],"names":[],"mappings":";AAEA;IACC,wBACW,OAAe,EACf,OAAe;QADf,YAAO,GAAP,OAAO,CAAQ;QACf,YAAO,GAAP,OAAO,CAAQ;IACvB,CAAC;IACL,qBAAC;AAAD,CAAC,AALD,IAKC;AALY,sBAAc,iBAK1B,CAAA"}
+{"version":3,"file":"checkbox-option.js","sourceRoot":"","sources":["checkbox-option.ts"],"names":[],"mappings":";AAEA;IACC,wBACQ,KAAY,EACT,OAAe,EACf,OAAe;QAFlB,UAAK,GAAL,KAAK,CAAO;QACT,YAAO,GAAP,OAAO,CAAQ;QACf,YAAO,GAAP,OAAO,CAAQ;IACvB,CAAC;IACL,qBAAC;AAAD,CAAC,AAND,IAMC;AANY,sBAAc,iBAM1B,CAAA"}

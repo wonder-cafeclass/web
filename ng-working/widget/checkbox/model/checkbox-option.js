@@ -1,8 +1,9 @@
 "use strict";
 var CheckBoxOption = (function () {
-    function CheckBoxOption(myEvent, isFocus) {
-        this.myEvent = myEvent;
+    function CheckBoxOption(title, isFocus, myEvent) {
+        this.title = title;
         this.isFocus = isFocus;
+        this.myEvent = myEvent;
     }
     return CheckBoxOption;
 }());
