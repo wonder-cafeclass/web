@@ -1,8 +1,10 @@
 "use strict";
 var RadioBtnOption = (function () {
-    function RadioBtnOption(myEvent, isFocus) {
-        this.myEvent = myEvent;
+    function RadioBtnOption(title, key, isFocus, myEvent) {
+        this.title = title;
+        this.key = key;
         this.isFocus = isFocus;
+        this.myEvent = myEvent;
     }
     return RadioBtnOption;
 }());

@@ -17,57 +17,69 @@ export class KlassRadioBtnService {
 
         let optionList:RadioBtnOption[] = [
             new RadioBtnOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_ENROLMENT_WEEKS,
-                    // public title:string
-                    "4주",
-                    // public key:string
-                    "week_max",
-                    // public value:string
-                    "4",
-                    // public metaObj:any
-                    klass
-                ),
-                // public isFocus:boolean
-                false
+              // public title:string,
+              "4주",
+              // public key:string,
+              "4",
+              // public isFocus:boolean
+              false,
+              // public myEvent:MyEvent
+              this.myEventService.getMyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE,
+                // public key:string
+                this.myEventService.KLASS_WEEK_MAX,
+                // public value:string
+                "4",
+                // public metaObj:any
+                klass,
+                // public myChecker:MyChecker
+                null
+              )
             ),
 
             new RadioBtnOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_ENROLMENT_WEEKS,
-                    // public title:string
-                    "8주",
-                    // public key:string
-                    "week_max",
-                    // public value:string
-                    "8",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "8주",
+                // public key:string,
+                "8",
                 // public isFocus:boolean
-                false
+                false,
+                // public myEvent:MyEvent
+                this.myEventService.getMyEvent(
+                  // public eventName:string
+                  this.myEventService.ON_CHANGE,
+                  // public key:string
+                  this.myEventService.KLASS_WEEK_MAX,
+                  // public value:string
+                  "8",
+                  // public metaObj:any
+                  klass,
+                  // public myChecker:MyChecker
+                  null
+                )
             ),
 
             new RadioBtnOption(
-                // public myEvent:MyEvent
-                new MyEvent(
-                    // public eventName:string
-                    this.myEventService.ON_CHANGE_KLASS_ENROLMENT_WEEKS,
-                    // public title:string
-                    "12주",
-                    // public key:string
-                    "week_max",
-                    // public value:string
-                    "12",
-                    // public metaObj:any
-                    klass
-                ),
+                // public title:string,
+                "12주",
+                // public key:string,
+                "12",
                 // public isFocus:boolean
-                false
+                false,
+                // public myEvent:MyEvent
+                this.myEventService.getMyEvent(
+                  // public eventName:string
+                  this.myEventService.ON_CHANGE,
+                  // public key:string
+                  this.myEventService.KLASS_WEEK_MAX,
+                  // public value:string
+                  "12",
+                  // public metaObj:any
+                  klass,
+                  // public myChecker:MyChecker
+                  null
+                )
             )
         ];
 
@@ -91,57 +103,69 @@ export class KlassRadioBtnService {
 
         let optionList:RadioBtnOption[] = [
           new RadioBtnOption(
+            // public title:string,
+            "4주",
+            // public key:string,
+            "4",
+            // public isFocus:boolean
+            false,
             // public myEvent:MyEvent
-            new MyEvent(
+            this.myEventService.getMyEvent(
               // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL,
-              // public title:string
-              "4주마다",
+              this.myEventService.ON_CHANGE,
               // public key:string
-              "enrollment_interval_week",
+              this.myEventService.KLASS_ENROLMENT_INTERVAL,
               // public value:string
               "4",
               // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
+              klass,
+              // public myChecker:MyChecker
+              null
+            )
           ),
 
           new RadioBtnOption(
+            // public title:string,
+            "2주",
+            // public key:string,
+            "2",
+            // public isFocus:boolean
+            false,
             // public myEvent:MyEvent
-            new MyEvent(
+            this.myEventService.getMyEvent(
               // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL,
-              // public title:string
-              "2주마다",
+              this.myEventService.ON_CHANGE,
               // public key:string
-              "enrollment_interval_week",
+              this.myEventService.KLASS_ENROLMENT_INTERVAL,
               // public value:string
               "2",
               // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
+            // public title:string,
+            "1주",
+            // public key:string,
+            "1",
+            // public isFocus:boolean
+            false,
             // public myEvent:MyEvent
-            new MyEvent(
+            this.myEventService.getMyEvent(
               // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL,
-              // public title:string
-              "매주마다",
+              this.myEventService.ON_CHANGE,
               // public key:string
-              "enrollment_interval_week",
+              this.myEventService.KLASS_ENROLMENT_INTERVAL,
               // public value:string
               "1",
               // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           )      
         ];   
 
@@ -160,155 +184,7 @@ export class KlassRadioBtnService {
 
     }
 
-    /*
-    *    @ Desc : 가장 짧은 수강 기간에 대한 체크박스 데이터.
-    */
-    getKlassWeeksMin(klass:Klass, valueFocus:string) :RadioBtnOption[] {
 
-        let optionList:RadioBtnOption[] = [
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "4주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "4",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          ),
-
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "8주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "8",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          ),
-
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "12주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "12",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          )       
-        ]; 
-
-        if(null != valueFocus && "" != valueFocus) {
-            for (var i = 0; i < optionList.length; ++i) {
-                let option:RadioBtnOption = optionList[i];
-
-                if(option.myEvent.value === valueFocus) {
-                    option.isFocus = true;    
-                    optionList[i] = option;
-                }
-            }
-        }
-
-        return optionList;
-    }
-
-    /*
-    *    @ Desc : 가장 긴 수강 기간에 대한 체크박스 데이터.
-    */
-    getKlassWeeksMax(klass:Klass, valueFocus:string) :RadioBtnOption[] {
-
-        let optionList:RadioBtnOption[] = [
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "4주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "4",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          ),
-
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "8주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "8",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          ),
-
-          new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_KLASS_WEEKS_MIN,
-              // public title:string
-              "12주",
-              // public key:string
-              "week_min",
-              // public value:string
-              "12",
-              // public metaObj:any
-              klass
-            ),
-            // public isFocus:boolean
-            false
-          )       
-        ]; 
-
-        if(null != valueFocus && "" != valueFocus) {
-            for (var i = 0; i < optionList.length; ++i) {
-                let option:RadioBtnOption = optionList[i];
-
-                if(option.myEvent.value === valueFocus) {
-                    option.isFocus = true;    
-                    optionList[i] = option;
-                }
-            }
-        }
-
-        return optionList;
-    }
 
     /*
     *    @ Desc : 수업 상세 정보에 대한 Nav tabs에 들어갈 radiobtn 정보들
@@ -319,125 +195,150 @@ export class KlassRadioBtnService {
         let optionList:RadioBtnOption[] = [
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "수업소개",
-              // public key:string
-              "klass_desc",
-              // public value:string
-              "klass_desc",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "수업소개",
+            // public key:string,
+            this.myEventService.KLASS_DESC,
             // public isFocus:boolean
-            false
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KLASS_DESC,
+              // public value:string
+              klass.desc,
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "장소",
-              // public key:string
-              "klass_venue",
-              // public value:string
-              "klass_venue",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "장소",
+            // public key:string,
+            this.myEventService.KLASS_VENUE,
             // public isFocus:boolean
-            false
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KLASS_VENUE,
+              // public value:string
+              klass.venue,
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "강사소개",
-              // public key:string
-              "tutor_desc",
-              // public value:string
-              "tutor_desc",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "강사소개",
+            // public key:string,
+            this.myEventService.TUTOR_DESC,
             // public isFocus:boolean
-            false
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.TUTOR_DESC,
+              // public value:string
+              "Need to implement!",
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "리뷰",
-              // public key:string
-              "student_review",
-              // public value:string
-              "student_review",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "리뷰",
+            // public key:string,
+            this.myEventService.STUDENT_REVIEW,
             // public isFocus:boolean
-            false
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.STUDENT_REVIEW,
+              // public value:string
+              "Need to implement!",
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "문의",
-              // public key:string
-              "student_question",
-              // public value:string
-              "student_question",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "문의",
+            // public key:string,
+            this.myEventService.STUDENT_QUESTION,
             // public isFocus:boolean
-            false
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.STUDENT_QUESTION,
+              // public value:string
+              "Need to implement!",
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
           ),
 
           new RadioBtnOption(
-            // public myEvent:MyEvent
-            new MyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE_NAV_TABS_KLASS_INFO,
-              // public title:string
-              "유의사항",
-              // public key:string
-              "caution",
-              // public value:string
-              "caution",
-              // public metaObj:any
-              klass
-            ),
+            // public title:string,
+            "유의사항",
+            // public key:string,
+            this.myEventService.STUDENT_QUESTION,
             // public isFocus:boolean
-            false
-          )        
-     
-        ]; 
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.CAUTION,
+              // public value:string
+              "Need to implement!",
+              // public metaObj:any
+              klass,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
+          )
+        ]; // end array
+
 
         if(null != valueFocus && "" != valueFocus) {
             for (var i = 0; i < optionList.length; ++i) {
                 let option:RadioBtnOption = optionList[i];
 
-                if(option.myEvent.value === valueFocus) {
+                if(option.key === valueFocus) {
                     option.isFocus = true;    
                     optionList[i] = option;
                 }
             }
-        }
+        } // end if
+
 
         return optionList;
     }

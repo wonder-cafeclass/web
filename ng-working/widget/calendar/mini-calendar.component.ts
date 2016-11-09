@@ -53,17 +53,17 @@ export class MiniCalendarComponent implements OnInit {
 		event.stopPropagation();
 
 		let myEvent:MyEvent = 
-		new MyEvent(
-		    // public eventName:string
-		    this.myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE,
-		    // public title:string
-		    "mini-calendar",
-		    // public key:string
-		    "date",
-		    // public value:string
-		    date.date,
-		    // public metaObj:any
-		    date
+		this.myEventService.getMyEvent(
+			// public eventName:string
+			this.myEventService.ON_MOUSE_LEAVE,
+			// public key:string
+			this.myEventService.KEY_MINI_CALENDAR,
+			// public value:string
+			date.date,
+			// public metaObj:any
+			date,
+			// public myChecker:MyChecker
+			null    
 		);
 
 		this.emitter.emit(myEvent);
@@ -73,17 +73,17 @@ export class MiniCalendarComponent implements OnInit {
 		event.stopPropagation();
 
 		let myEvent:MyEvent = 
-		new MyEvent(
-		    // public eventName:string
-		    this.myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE,
-		    // public title:string
-		    "mini-calendar",
-		    // public key:string
-		    "date",
-		    // public value:string
-		    date.date,
-		    // public metaObj:any
-		    date
+		this.myEventService.getMyEvent(
+			// public eventName:string
+			this.myEventService.ON_MOUSE_ENTER,
+			// public key:string
+			this.myEventService.KEY_MINI_CALENDAR,
+			// public value:string
+			date.date,
+			// public metaObj:any
+			date,
+			// public myChecker:MyChecker
+			null    
 		);
 
 		this.emitter.emit(myEvent);

@@ -88,16 +88,16 @@ var DronListComponent = (function () {
             // 내용이 수정되었습니다.
             this.isDisabledSave = false;
             // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
-            var myEventReturn = new my_event_1.MyEvent(
+            var myEventReturn = this.myEventService.getMyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE_DRON_LIST, 
-            // public title:string
-            "dron-list", 
+            this.myEventService.ON_CHANGE, 
             // public key:string
-            myEvent.key, 
+            this.myEventService.KEY_DRON_LIST, 
             // public value:string
             myEvent.value, 
             // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
             null);
             this.emitter.emit(myEventReturn);
         }
@@ -124,16 +124,16 @@ var DronListComponent = (function () {
         if (wannaSave) {
             this.save();
             myEventReturn =
-                new my_event_1.MyEvent(
+                this.myEventService.getMyEvent(
                 // public eventName:string
-                this.myEventService.ON_SHUTDOWN_DRON_LIST, 
-                // public title:string
-                "dron-list", 
+                this.myEventService.ON_SHUTDOWN, 
                 // public key:string
-                this.key, 
+                this.myEventService.KEY_DRON_LIST, 
                 // public value:string
                 "", 
                 // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
                 null);
         }
         else {
@@ -141,31 +141,31 @@ var DronListComponent = (function () {
             if (null != this.smartEditorComponent) {
                 var HTMLPrev = this.smartEditorComponent.getHTMLPrev();
                 myEventReturn =
-                    new my_event_1.MyEvent(
+                    this.myEventService.getMyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST, 
-                    // public title:string
-                    "dron-list", 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    this.key, 
+                    this.myEventService.KEY_DRON_LIST, 
                     // public value:string
                     HTMLPrev, 
                     // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
                     null);
             }
             else if (null != this.singleInputViewComponent) {
                 var myEventFromSI = this.singleInputViewComponent.getMyEvent();
                 myEventReturn =
-                    new my_event_1.MyEvent(
+                    this.myEventService.getMyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST, 
-                    // public title:string
-                    "dron-list", 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    myEventFromSI.key, 
+                    this.myEventService.KEY_DRON_LIST, 
                     // public value:string
                     myEventFromSI.value, 
                     // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
                     null);
             }
         }
@@ -186,16 +186,16 @@ var DronListComponent = (function () {
         }
         console.log(">>> save / result : ", result);
         // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
-        var myEventReturn = new my_event_1.MyEvent(
+        var myEventReturn = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_SAVE_DRON_LIST, 
-        // public title:string
-        "dron-list", 
+        this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
         // public key:string
-        this.key, 
+        this.myEventService.KEY_DRON_LIST, 
         // public value:string
         result, 
         // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
         null);
         this.emitter.emit(myEventReturn);
     };

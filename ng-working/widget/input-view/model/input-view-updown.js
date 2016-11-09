@@ -1,11 +1,12 @@
 "use strict";
 var InputViewUpdown = (function () {
-    function InputViewUpdown(myEvent, fontSizeTitle, fontSizeText, type, color) {
-        this.myEvent = myEvent;
+    function InputViewUpdown(title, fontSizeTitle, fontSizeText, type, color, myEvent) {
+        this.title = title;
         this.fontSizeTitle = fontSizeTitle;
         this.fontSizeText = fontSizeText;
         this.type = type;
         this.color = color;
+        this.myEvent = myEvent;
     }
     return InputViewUpdown;
 }());

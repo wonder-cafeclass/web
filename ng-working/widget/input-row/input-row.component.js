@@ -61,13 +61,18 @@ var InputRowComponent = (function () {
             this.bgColor = this.klassColorService.orange;
         }
         //bgColorBottom
-        if (null != this.myEventSingleInput &&
-            "" != this.myEventSingleInput.title) {
-            this.title = this.myEventSingleInput.title;
+        /*
+        if( null != this.myEventSingleInput &&
+            "" != this.myEventSingleInput.title ) {
+    
+          this.title = this.myEventSingleInput.title;
+    
+        } else if( "" === this.title ) {
+    
+          this.title = "No title";
+    
         }
-        else if ("" === this.title) {
-            this.title = "No title";
-        }
+        */
     };
     InputRowComponent.prototype.onChangedFromChild = function (myEvent) {
         if (null == myEvent) {
@@ -87,16 +92,16 @@ var InputRowComponent = (function () {
             // 내용이 수정되었습니다.
             this.isDisabledSave = false;
             // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
-            var myEventReturn = new my_event_1.MyEvent(
+            var myEventReturn = this.myEventService.getMyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE_INPUT_ROW, 
-            // public title:string
-            "input-row", 
+            this.myEventService.ON_CHANGE, 
             // public key:string
-            myEvent.key, 
+            this.myEventService.KEY_INPUT_ROW, 
             // public value:string
             myEvent.value, 
             // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
             null);
             this.emitter.emit(myEventReturn);
         }
@@ -125,16 +130,16 @@ var InputRowComponent = (function () {
         if (wannaSave) {
             this.save();
             myEventReturn =
-                new my_event_1.MyEvent(
+                this.myEventService.getMyEvent(
                 // public eventName:string
-                this.myEventService.ON_SHUTDOWN_INPUT_ROW, 
-                // public title:string
-                "input-row", 
+                this.myEventService.ON_SHUTDOWN, 
                 // public key:string
-                this.key, 
+                this.myEventService.KEY_INPUT_ROW, 
                 // public value:string
                 "", 
                 // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
                 null);
         }
         else {
@@ -142,31 +147,31 @@ var InputRowComponent = (function () {
             if (null != this.smartEditorComponent) {
                 var HTMLPrev = this.smartEditorComponent.getHTMLPrev();
                 myEventReturn =
-                    new my_event_1.MyEvent(
+                    this.myEventService.getMyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW, 
-                    // public title:string
-                    "input-row", 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    this.key, 
+                    this.myEventService.KEY_INPUT_ROW, 
                     // public value:string
-                    HTMLPrev, 
+                    "", 
                     // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
                     null);
             }
             else if (null != this.singleInputViewComponent) {
                 var myEventFromSI = this.singleInputViewComponent.getMyEvent();
                 myEventReturn =
-                    new my_event_1.MyEvent(
+                    this.myEventService.getMyEvent(
                     // public eventName:string
-                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW, 
-                    // public title:string
-                    "input-row", 
+                    this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
                     // public key:string
-                    myEventFromSI.key, 
+                    this.myEventService.KEY_INPUT_ROW, 
                     // public value:string
                     myEventFromSI.value, 
                     // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
                     null);
             }
         }
@@ -186,16 +191,16 @@ var InputRowComponent = (function () {
             result = this.smartEditorComponent.saveNReturn();
         }
         // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
-        var myEventReturn = new my_event_1.MyEvent(
+        var myEventReturn = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_SAVE_INPUT_ROW, 
-        // public title:string
-        "input-row", 
+        this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
         // public key:string
-        this.key, 
+        this.myEventService.KEY_INPUT_ROW, 
         // public value:string
         result, 
         // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
         null);
         this.emitter.emit(myEventReturn);
     };

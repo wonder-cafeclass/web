@@ -9,6 +9,7 @@ import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassColorService }         from './service/klass-color.service';
 import { MyRulerService }            from '../util/service/my-ruler.service';
+import { MyCheckerService }          from '../util/service/my-checker.service';
 
 import { SafeHtmlPipe }              from '../util/pipe/safe-html-pipe';
 
@@ -98,7 +99,8 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassCheckBoxService,
     KlassDetailResolve,
     KlassColorService,
-    MyRulerService
+    MyRulerService,
+    MyCheckerService
   ]
 })
 export class KlassCenterModule {}

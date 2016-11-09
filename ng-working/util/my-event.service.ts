@@ -1,5 +1,6 @@
 import { Injectable }             from '@angular/core';
-import { MyEvent }             from './model/my-event';
+import { MyEvent }                from './model/my-event';
+import { MyChecker }              from './model/my-checker';
 
 @Injectable()
 export class MyEventService {
@@ -15,6 +16,41 @@ export class MyEventService {
     ON_SAVE:string="ON_SAVE";
     ON_ADD_ROW:string="ON_ADD_ROW";
     ON_REMOVE_ROW:string="ON_REMOVE_ROW";
+    ON_MOUSE_LEAVE:string="ON_MOUSE_LEAVE";
+    ON_MOUSE_ENTER:string="ON_MOUSE_ENTER";
+
+    // SPECIFIC ATTR
+    KLASS_WEEK_MAX:string="KLASS_WEEK_MAX";
+    KLASS_ENROLMENT_INTERVAL:string="KLASS_ENROLMENT_INTERVAL";
+
+    KLASS_DAYS:string="KLASS_DAYS";             // 수업요일
+    KLASS_DAYS_SUNDAY:string="sun";             // 수업요일 - 일요일
+    KLASS_DAYS_MONDAY:string="mon";             // 수업요일 - 월요일
+    KLASS_DAYS_TUESDAY:string="tue";            // 수업요일 - 화요일
+    KLASS_DAYS_WEDNESDAY:string="wed";          // 수업요일 - 수요일
+    KLASS_DAYS_THURSDAY:string="thu";           // 수업요일 - 목요일
+    KLASS_DAYS_FRIDAY:string="fri";             // 수업요일 - 금요일
+    KLASS_DAYS_SATURDAY:string="sat";           // 수업요일 - 토요일
+
+    KLASS_SCHEDULE:string="KLASS_SCHEDULE";     // 수업일정
+    KLASS_TITLE:string="KLASS_TITLE";           // 수업이름
+    KLASS_FEATURE:string="KLASS_FEATURE";       // 수업특징
+    KLASS_TARGET:string="KLASS_TARGET";         // 수업대상
+    KLASS_DESC:string="KLASS_DESC";             // 수업소개
+    KLASS_VENUE:string="KLASS_VENUE";           // 장소
+    KLASS_TIME_BEGIN:string="KLASS_TIME_BEGIN"; // 수업시작시간
+    KLASS_TIME_END:string="KLASS_TIME_END";     // 수업종료시간
+    TUTOR_DESC:string="TUTOR_DESC";             // 강사소개
+    STUDENT_REVIEW:string="STUDENT_REVIEW";     // 리뷰
+    STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
+    CAUTION:string="CAUTION";                   // 유의사항
+
+    KEY_SMART_EDITOR:string="KEY_SMART_EDITOR";         // 네이버 스마트에디터
+    KEY_INPUTS_BTNS_ROWS:string="KEY_INPUTS_BTNS_ROWS"; // 여러개의 열이 있는 입력창
+    KEY_INPUT_BTNS_ROW:string="KEY_INPUT_BTNS_ROW"; // 여러개 버튼과 1개의 INPUT이 있는 입력창
+    KEY_INPUT_ROW:string="KEY_INPUT_ROW";           // 입력창만 있는 열
+    KEY_MINI_CALENDAR:string="KEY_MINI_CALENDAR";   // 날짜를 한눈에 확인하는 미니 캘린더
+    KEY_DRON_LIST:string="KEY_DRON_LIST";           // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
 
     // SPECIFIC CASES
     ON_CHANGE_KLASS_DISCOUNT:string="ON_CHANGE_KLASS_DISCOUNT";
@@ -62,6 +98,8 @@ export class MyEventService {
 
     ON_MOUSEENTER_KLASS_CALENDAR_DATE:string="ON_MOUSEENTER_KLASS_CALENDAR_DATE";
     ON_MOUSELEAVE_KLASS_CALENDAR_DATE:string="ON_MOUSELEAVE_KLASS_CALENDAR_DATE";
+
+    private uniqueIdx:number=0;
 
     constructor() {
     }
@@ -204,6 +242,21 @@ export class MyEventService {
         }
 
         return myEventList;
+    }
+
+    public getUniqueIdx() {
+        return this.uniqueIdx++;
+    }
+
+    // 각 MyEvent 객체가 자신만의 id를 가져야 하는 경우 사용합니다.
+    // 추가/삭제가 가능한 MyEventList를 제어해야 할 경우 사용합니다.
+    public getMyEvent(eventName:string, key:string, value:string, metaObj:any, myChecker:MyChecker) :MyEvent{
+
+        let uniqueId:number = this.getUniqueIdx();
+        let myEvent:MyEvent = 
+        new MyEvent(uniqueId,eventName,key,value,metaObj,myChecker);
+
+        return myEvent;
     }
 
 

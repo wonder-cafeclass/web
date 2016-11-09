@@ -105,37 +105,36 @@ export class SmartEditorComponent implements OnInit {
 
       // 에디터가 준비된 것을 부모 객체에게 알린다.
       let myEventReturn:MyEvent = 
-      new MyEvent(
+      this.myEventService.getMyEvent(
           // public eventName:string
-          this.myEventService.ON_READY_SMART_EDITOR,
-          // public title:string
-          "smart-editor",
+          this.myEventService.ON_READY,
           // public key:string
-          this.key,
+          this.myEventService.KEY_SMART_EDITOR,
           // public value:string
-          myEvent.value,
+          "",
           // public metaObj:any
-          null
-      );
-
+          null,
+          // public myChecker:MyChecker
+          null    
+      )
       this.emitter.emit(myEventReturn);      
 
     } else if("se_update" === myEvent.key) {
 
       // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
       let myEventReturn:MyEvent = 
-      new MyEvent(
+      this.myEventService.getMyEvent(
           // public eventName:string
-          this.myEventService.ON_CHANGE_SMART_EDITOR,
-          // public title:string
-          "smart-editor",
+          this.myEventService.ON_CHANGE,
           // public key:string
-          this.key,
+          this.myEventService.KEY_SMART_EDITOR,
           // public value:string
-          myEvent.value,
+          "",
           // public metaObj:any
-          null
-      );
+          null,
+          // public myChecker:MyChecker
+          null    
+      )
 
       this.emitter.emit(myEventReturn);
       

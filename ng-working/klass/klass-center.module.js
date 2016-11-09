@@ -17,6 +17,7 @@ var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_color_service_1 = require('./service/klass-color.service');
 var my_ruler_service_1 = require('../util/service/my-ruler.service');
+var my_checker_service_1 = require('../util/service/my-checker.service');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
@@ -98,7 +99,8 @@ var KlassCenterModule = (function () {
                 klass_checkbox_service_1.KlassCheckBoxService,
                 klass_detail_resolve_service_1.KlassDetailResolve,
                 klass_color_service_1.KlassColorService,
-                my_ruler_service_1.MyRulerService
+                my_ruler_service_1.MyRulerService,
+                my_checker_service_1.MyCheckerService
             ]
         }), 
         __metadata('design:paramtypes', [])

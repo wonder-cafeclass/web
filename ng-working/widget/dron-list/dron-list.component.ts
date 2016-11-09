@@ -126,19 +126,18 @@ export class DronListComponent implements OnInit {
 
       // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
       let myEventReturn:MyEvent = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_DRON_LIST,
-          // public title:string
-          "dron-list",
-          // public key:string
-          myEvent.key,
-          // public value:string
-          myEvent.value,
-          // public metaObj:any
-          null
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_DRON_LIST,
+        // public value:string
+        myEvent.value,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        null
       );
-
       this.emitter.emit(myEventReturn);
 
     }
@@ -171,17 +170,17 @@ export class DronListComponent implements OnInit {
       this.save();
 
       myEventReturn = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_SHUTDOWN_DRON_LIST,
-          // public title:string
-          "dron-list",
-          // public key:string
-          this.key,
-          // public value:string
-          "",
-          // public metaObj:any
-          null
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_SHUTDOWN,
+        // public key:string
+        this.myEventService.KEY_DRON_LIST,
+        // public value:string
+        "",
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        null
       );
 
     } else {
@@ -190,17 +189,17 @@ export class DronListComponent implements OnInit {
         let HTMLPrev:string = this.smartEditorComponent.getHTMLPrev();
 
         myEventReturn = 
-        new MyEvent(
-            // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST,
-            // public title:string
-            "dron-list",
-            // public key:string
-            this.key,
-            // public value:string
-            HTMLPrev,
-            // public metaObj:any
-            null
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+          // public key:string
+          this.myEventService.KEY_DRON_LIST,
+          // public value:string
+          HTMLPrev,
+          // public metaObj:any
+          null,
+          // public myChecker:MyChecker
+          null
         );
 
       } else if(null != this.singleInputViewComponent) {
@@ -209,19 +208,18 @@ export class DronListComponent implements OnInit {
         this.singleInputViewComponent.getMyEvent();
 
         myEventReturn = 
-        new MyEvent(
-            // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST,
-            // public title:string
-            "dron-list",
-            // public key:string
-            myEventFromSI.key,
-            // public value:string
-            myEventFromSI.value,
-            // public metaObj:any
-            null
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+          // public key:string
+          this.myEventService.KEY_DRON_LIST,
+          // public value:string
+          myEventFromSI.value,
+          // public metaObj:any
+          null,
+          // public myChecker:MyChecker
+          null
         );
-
       }
     }
 
@@ -248,17 +246,17 @@ export class DronListComponent implements OnInit {
 
     // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
     let myEventReturn:MyEvent = 
-    new MyEvent(
-        // public eventName:string
-        this.myEventService.ON_SAVE_DRON_LIST,
-        // public title:string
-        "dron-list",
-        // public key:string
-        this.key,
-        // public value:string
-        result,
-        // public metaObj:any
-        null
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+      // public key:string
+      this.myEventService.KEY_DRON_LIST,
+      // public value:string
+      result,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      null
     );
 
     this.emitter.emit(myEventReturn);      

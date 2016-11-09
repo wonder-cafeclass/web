@@ -8,6 +8,7 @@ import { KlassPrice }              from './model/klass-price';
 import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 import { MyEventService }          from '../util/my-event.service';
+import { MyCheckerService }        from '../util/service/my-checker.service';
 import { MyEvent }                 from '../util/model/my-event';
 
 import { DialogService }           from '../widget/dialog.service';
@@ -102,7 +103,8 @@ export class KlassDetailComponent implements OnInit {
     private authService: AuthService,
     private myEventService: MyEventService,
     private radiobtnService:KlassRadioBtnService,
-    private checkboxService:KlassCheckBoxService
+    private checkboxService:KlassCheckBoxService,
+    private myCheckerService:MyCheckerService
   ) {}
 
   ngOnInit() {
@@ -164,8 +166,10 @@ export class KlassDetailComponent implements OnInit {
       // nav-tabs : 수업 관련 내용
       // wonder.jung
       this.radiobtnOptionListNavTabs = 
-      this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_desc");
+      this.radiobtnService.getNavTabsKlassInfo(this.klass, this.myEventService.KLASS_DESC);
       // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
+
+      console.log("klass-detail / this.radiobtnOptionListNavTabs : ",this.radiobtnOptionListNavTabs);
 
       this.klassFeature = this.klass.feature;   // @ Deprecated
       this.klassTarget = this.klass.target;     // @ Deprecated
@@ -249,134 +253,146 @@ export class KlassDetailComponent implements OnInit {
     this.radiobtnService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
     this.radiobtnOptionListEnrollment = optionList;
 
-    // 강의 제목
+    let fontSizeTitle:number=16;
+    let fontSizeText:number=12;
+    let color:string="#f0f";
+
     this.klassTitleUpdown = 
     new InputViewUpdown(
-      // public myEvent:MyEvent
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_TITLE,
-          // public title:string
-          "수업 제목",
-          // public key:string
-          "title",
-          // public value:string
-          "" + this.klass.title,
-          // public metaObj:any
-          this.klass
-      ),
+      // public title:string
+      "강의 제목",
       // public fontSizeTitle:number
-      16,
+      fontSizeTitle,
       // public fontSizeText:number
-      12, 
+      fontSizeText, 
       // public type:string
       "title",
       // public color:string
-      "#f0f"
+      color,
+      // public myEvent:MyEvent
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ANY,
+        // public key:string
+        this.myEventService.KLASS_TITLE,
+        // public value:string
+        this.klass.title,
+        // public metaObj:any
+        this.klass,
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
+      )
     ); 
 
-    // 강의 설명
     this.klassDescUpdown = 
     new InputViewUpdown(
-      // public myEvent:MyEvent
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_TITLE,
-          // public title:string
-          "수업 설명(TextArea)",
-          // public key:string
-          "desc",
-          // public value:string
-          "" + this.klass.desc,
-          // public metaObj:any
-          this.klass
-      ),
+      // public title:string
+      "강의 설명",
       // public fontSizeTitle:number
-      16,
+      fontSizeTitle,
       // public fontSizeText:number
-      12, 
+      fontSizeText, 
       // public type:string
       "title",
       // public color:string
-      "#f0f"
+      color,
+      // public myEvent:MyEvent
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ANY,
+        // public key:string
+        this.myEventService.KLASS_DESC,
+        // public value:string
+        this.klass.desc,
+        // public metaObj:any
+        this.klass,
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
+      )
     );     
 
     // 수업 시작 시간  
     this.klassTimeBeginUpdown = 
     new InputViewUpdown(
-      // public myEvent:MyEvent
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_PRICE,
-          // public title:string
-          "수업시작시간",
-          // public key:string
-          "time_begin",
-          // public value:string
-          "" + this.klass.time_begin,
-          // public metaObj:any
-          this.klass
-      ),
+      // public title:string
+      "수업 시작 시간",
       // public fontSizeTitle:number
-      16,
+      fontSizeTitle,
       // public fontSizeText:number
-      12, 
+      fontSizeText, 
       // public type:string
       "price",
       // public color:string
-      "#f0f"
+      color,
+      // public myEvent:MyEvent
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ANY,
+        // public key:string
+        this.myEventService.KLASS_TIME_BEGIN,
+        // public value:string
+        this.klass.time_begin,
+        // public metaObj:any
+        this.klass,
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
+      )
     );
 
-    // 수업 종료 시간  
+    //   
     this.klassTimeEndUpdown = 
     new InputViewUpdown(
-      // public myEvent:MyEvent
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_PRICE,
-          // public title:string
-          "수업종료시간",
-          // public key:string
-          "time_end",
-          // public value:string
-          "" + this.klass.time_end,
-          // public metaObj:any
-          this.klass
-      ),
+      // public title:string
+      "수업 종료 시간",
       // public fontSizeTitle:number
-      16,
+      fontSizeTitle,
       // public fontSizeText:number
-      12, 
+      fontSizeText, 
       // public type:string
       "price",
       // public color:string
-      "#f0f"
+      color,
+      // public myEvent:MyEvent
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ANY,
+        // public key:string
+        this.myEventService.KLASS_TIME_END,
+        // public value:string
+        this.klass.time_end,
+        // public metaObj:any
+        this.klass,
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
+      )
     );    
 
     // 수강 금액
     this.klassPriceUpdown = 
     new InputViewUpdown(
-      // public myEvent:MyEvent
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_KLASS_PRICE,
-          // public title:string
-          this.klass.week_min + "주 수업가격",
-          // public key:string
-          "week_max",
-          // public value:string
-          "" + this.klass.price,
-          // public metaObj:any
-          this.klass
-      ),
+      // public title:string
+      "수강 금액",
       // public fontSizeTitle:number
-      16,
+      fontSizeTitle,
       // public fontSizeText:number
-      12, 
+      fontSizeText, 
       // public type:string
       "price",
       // public color:string
-      "#f0f"
+      color,
+      // public myEvent:MyEvent
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ANY,
+        // public key:string
+        this.myEventService.KLASS_WEEK_MAX,
+        // public value:string
+        ""+this.klass.price,
+        // public metaObj:any
+        this.klass,
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
+      )
     );
 
     // 운영자 지정 - 수업 요일 
@@ -499,21 +515,19 @@ export class KlassDetailComponent implements OnInit {
         console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
 
       }
-
+/*  - REMOVE ME
     } else if (myEventService.ON_CLICK_KLASS_FEATURE === eventName) {
 
       // 드론 리스트 - klass.feature를 수정합니다.
       this.clearDronList();
-      this.dronListKey = "feature";
+      this.dronListKey = this.myEventService.KLASS_FEATURE;
       this.dronListTitle = "수업의 특징을 입력해주세요";
       this.dronListMyEventSingleInput = 
       new MyEvent(
           // public eventName:string
           this.myEventService.ON_CHANGE_KLASS_FEATURE,
-          // public title:string
-          "수업 특징",
           // public key:string
-          "feature",
+          this.myEventService.KLASS_FEATURE,
           // public value:string
           this.klassFeature,
           // public metaObj:any
@@ -524,27 +538,25 @@ export class KlassDetailComponent implements OnInit {
 
       // 드론 리스트 - klass.target을 수정합니다.
       this.clearDronList();
-      this.dronListKey = "target";
+      this.dronListKey = this.myEventService.KLASS_TARGET;
       this.dronListTitle = "수업의 추천대상을 입력해주세요";
       this.dronListMyEventSingleInput = 
       new MyEvent(
           // public eventName:string
           this.myEventService.ON_CHANGE_KLASS_TARGET,
-          // public title:string
-          "수업 대상",
           // public key:string
-          "target",
+          this.myEventService.KLASS_TARGET,
           // public value:string
           this.klassTarget,
           // public metaObj:any
           this.klass
       );
-
+*/
     } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
 
       // 드론 리스트 - klass.schedule을 수정합니다.
       this.clearDronList();
-      this.dronListKey = "schedule";
+      this.dronListKey = this.myEventService.KLASS_SCHEDULE;
       this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
       this.dronListSEinnerHTML = myEvent.value;
       
@@ -554,17 +566,17 @@ export class KlassDetailComponent implements OnInit {
       console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
 
       // 드론 리스트의 입력 내용이 수정되었습니다.
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         
         console.log("feature 입력 내용이 수정되었습니다.");
         this.klassFeature = myEvent.value;
 
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         
         console.log("target 입력 내용이 수정되었습니다.");
         this.klassTarget = myEvent.value;
 
-      } else if("schedule" === myEvent.key) {
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         
         console.log("schedule 입력 내용이 수정되었습니다.");
         this.klassSchedule = myEvent.value;
@@ -574,7 +586,7 @@ export class KlassDetailComponent implements OnInit {
     } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
 
       // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
         console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
       }
@@ -595,17 +607,17 @@ export class KlassDetailComponent implements OnInit {
       this.clearDronList();
 
       // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         
         console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
         this.klassFeature = myEvent.value;
 
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         
         console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
         this.klassTarget = myEvent.value;
 
-      } else if("schedule" === myEvent.key) {
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         
         console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
         this.klassSchedule = myEvent.value;

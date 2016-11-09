@@ -24,7 +24,7 @@ export class SingleInputViewComponent implements OnInit {
   myValue:string;
   cageWidthStr:string;
   myEvenListBtns:MyEvent[];
-  myEventKeyEnter:MyEvent;
+  myEventCallback:MyEvent;
 
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
@@ -42,37 +42,40 @@ export class SingleInputViewComponent implements OnInit {
     this.myValue = this.myEvent.value;
 
     if("removableRow" === this.type) {
+
       let myEventRemove:MyEvent =
-      new MyEvent(
+      this.myEventService.getMyEvent(
           // public eventName:string
-          this.myEventService.ON_REMOVE_ROW,
-          // public title:string
-          "빼기",
+          this.myEventService.ON_READY,
           // public key:string
-          "remove",
+          this.myEventService.KEY_SMART_EDITOR,
           // public value:string
           "",
           // public metaObj:any
-          this.myEvent
-      );      
+          null,
+          // public myChecker:MyChecker
+          null    
+      );
+     
       this.myEvenListBtns = [myEventRemove];
-      this.myEventKeyEnter = this.myEvent.copy();
+      this.myEventCallback = this.myEvent.copy();
     }
 
     // Ready Event 발송 
     let myEventReady:MyEvent =
-    new MyEvent(
+    this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_READY,
-        // public title:string
-        "single-input-view",
         // public key:string
-        "ready",
+        this.myEventService.KEY_SMART_EDITOR,
         // public value:string
         "",
         // public metaObj:any
-        null
+        null,
+        // public myChecker:MyChecker
+        null    
     );
+
     this.emitter.emit(myEventReady);
   }
 
@@ -81,17 +84,17 @@ export class SingleInputViewComponent implements OnInit {
 
     // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
     let myEventReturn:MyEvent = 
-    new MyEvent(
+    this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_CHANGE,
-        // public title:string
-        "single-input-view",
         // public key:string
-        this.myEvent.key,
+        this.myEventService.KEY_SMART_EDITOR,
         // public value:string
         value,
         // public metaObj:any
-        null
+        null,
+        // public myChecker:MyChecker
+        null    
     );
 
     this.emitter.emit(myEventReturn);
@@ -135,7 +138,7 @@ export class SingleInputViewComponent implements OnInit {
       return;
     }
 
-    this.myEvent.valueNext = value;
+    this.myEvent.value = value;
     this.emitter.emit(this.myEvent);
   }
 }

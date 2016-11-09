@@ -10,67 +10,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_event_service_1 = require('../../util/my-event.service');
-var my_event_1 = require('../../util/model/my-event');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var my_button_1 = require('../../util/model/my-button');
 var InputsBtnsRowsComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
-    function InputsBtnsRowsComponent(myEventService) {
+    function InputsBtnsRowsComponent(myEventService, myCheckerService) {
         this.myEventService = myEventService;
-        this.cageWidth = -1;
+        this.myCheckerService = myCheckerService;
         this.isDisabledSave = true;
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
     }
     InputsBtnsRowsComponent.prototype.ngOnInit = function () {
-        if (0 < this.cageWidth) {
-            this.cageWidthStr = this.cageWidth + "px";
+        if (null == this.myEventList || 0 === this.myEventList.length) {
+            console.log("!Error! / inputs-btns-rows / this.myEventList is not valid!");
+            return;
         }
-        else {
-            this.cageWidthStr = "100%";
-        }
+        console.log("inputs-btns-rows / key : ", this.key);
         // 원본 비교를 위한 copy list 만들기
         this.myEventListCopy =
             this.myEventService.getCopyEventList(this.myEventList);
-        var myEventCopy = this.myEvent.copy();
-        myEventCopy.eventName = this.myEventService.ON_ADD_ROW;
-        this.myEventForAddRow = myEventCopy;
         // 열을 추가할 수 있는 기능을 하는 input group 만들기
-        this.myEvenListBtnsForAddingRow = [
-            new my_event_1.MyEvent(
-            // public eventName:string
-            this.myEventService.ON_ADD_ROW, 
-            // public title:string
-            "추가하기", 
-            // public key:string
-            "add-row", 
-            // public value:string
-            "", 
-            // public metaObj:any
-            this.myEvent)
+        var myChecker = this.myCheckerService.getTitleChecker();
+        var myEvent = this.myEventList[0];
+        this.myAddBtnList = [
+            new my_button_1.MyButton("추가하기", this.myEventService.ON_ADD_ROW, myChecker, myEvent)
         ];
-        this.myEvenListBtnsForRemovingRow = [
-            new my_event_1.MyEvent(
-            // public eventName:string
-            this.myEventService.ON_REMOVE_ROW, 
-            // public title:string
-            "빼기", 
-            // public key:string
-            "remove", 
-            // public value:string
-            "", 
-            // public metaObj:any
-            this.myEvent)
-        ];
+        this.myRemovableBtnList = [];
+        for (var i = 0; i < this.myEventList.length; ++i) {
+            var curMyEvent = this.myEventList[i];
+            var myButtonNext = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, curMyEvent);
+            this.myRemovableBtnList.push(myButtonNext);
+        }
         // Ready Event 발송 
-        var myEventReady = new my_event_1.MyEvent(
+        var myEventReady = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_READY, 
-        // public title:string
-        "inputs-btns-rows", 
         // public key:string
-        "inputs-btns-rows", 
+        this.myEventService.KEY_INPUTS_BTNS_ROWS, 
         // public value:string
         "", 
         // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
         null);
         this.emitter.emit(myEventReady);
     };
@@ -104,33 +86,32 @@ var InputsBtnsRowsComponent = (function () {
         return true;
     };
     InputsBtnsRowsComponent.prototype.onChangeFromChild = function (myEvent) {
-        if (null == myEvent && null != this.myEvent && null != myEvent.value) {
+        console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
+        if (null == myEvent && null != myEvent.value) {
             return;
         }
-        console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
         if (this.myEventService.ON_CHANGE === myEvent.eventName) {
             // 변수 전파가 즉시 되지 않으므로 동일한 객체라면 직접 업데이트 해줍니다.
             this.myEventList = this.myEventService.setEventValue(myEvent, this.myEventList);
             var hasChanged = this.hasChanged();
             this.isDisabledSave = (hasChanged) ? false : true;
-            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / hasChanged : ", hasChanged);
-            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.isDisabledSave : ", this.isDisabledSave);
-            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventList : ", this.myEventList);
-            console.log("inputs-btns-rows / onChangeFromChild / ON_CHANGE / this.myEventListCopy : ", this.myEventListCopy);
             this.emitter.emit(myEvent);
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
             // 공백 문자열도 허용합니다.
-            var myEventCopy = this.myEvent.copy();
-            myEventCopy.metaObj["idx"] = this.myEventList.length;
-            myEventCopy.value = myEvent.value;
-            this.myEventList.push(myEventCopy);
+            this.myEventList.push(myEvent);
+            // MyButton 객체를 만들어 열울 추가합니다.
+            var myChecker = this.myCheckerService.getTitleChecker();
+            var myButtonNew = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, myEvent);
+            this.myRemovableBtnList.push(myButtonNew);
             // 저장 관련 작업을 할 수 없으므로 부모에게 이벤트 전달.
-            var myEventCopyToParent = myEventCopy.copy();
-            myEventCopyToParent.eventName = this.myEventService.ON_ADD_ROW;
-            this.emitter.emit(myEventCopyToParent);
+            var hasChanged = this.hasChanged();
+            this.isDisabledSave = (hasChanged) ? false : true;
+            this.emitter.emit(myEvent);
         }
         else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+            var listLengthPrev = this.myEventList.length;
+            // console.log("BEFORE / this.myEventList : ",this.myEventList);
             var myEventListNext = [];
             for (var i = 0; i < this.myEventList.length; ++i) {
                 var myEventNext = this.myEventList[i];
@@ -139,11 +120,34 @@ var InputsBtnsRowsComponent = (function () {
                     continue;
                 }
                 myEventListNext.push(myEventNext);
-            }
+            } // end for
             this.myEventList = myEventListNext;
-            this.emitter.emit(myEvent);
-        }
-    };
+            var myRemovableBtnListNext = [];
+            for (var i = 0; i < this.myRemovableBtnList.length; ++i) {
+                var myBtnNext = this.myRemovableBtnList[i];
+                var myEventNext = myBtnNext.myEvent;
+                if (myEventNext.isSame(myEvent)) {
+                    // 지울 이벤트를 찾았습니다. 리스트에서 제외합니다.
+                    continue;
+                }
+                myRemovableBtnListNext.push(myBtnNext);
+            } // end for
+            this.myRemovableBtnList = myRemovableBtnListNext;
+            var listLengthAfter = this.myEventList.length;
+            // console.log("AFTER / listLengthAfter : ",listLengthAfter);
+            if (listLengthPrev === (listLengthAfter + 1)) {
+                // 리스트가 1개가 줄어야 부모에게 이벤트를 발송할 있다.
+                var hasChanged = this.hasChanged();
+                this.isDisabledSave = (hasChanged) ? false : true;
+                this.emitter.emit(myEvent);
+            }
+            else {
+                console.log("!Error! / Target Not Found!");
+                console.log("listLengthPrev : ", listLengthPrev);
+                console.log("listLengthAfter : ", listLengthAfter);
+            } // end inner if
+        } // end if
+    }; // end method
     InputsBtnsRowsComponent.prototype.getMyEvent = function () {
         return null;
     };
@@ -164,33 +168,34 @@ var InputsBtnsRowsComponent = (function () {
         var myEventReturn = null;
         if (wannaSave) {
             this.save();
+            // wonder.jung
             myEventReturn =
-                new my_event_1.MyEvent(
+                this.myEventService.getMyEvent(
                 // public eventName:string
                 this.myEventService.ON_SHUTDOWN, 
-                // public title:string
-                "inputs-btns-rows", 
                 // public key:string
                 firstMyEvent.key, 
                 // public value:string
                 "", 
                 // public metaObj:any
-                this.myEventList);
+                this.myEventList, 
+                // public myChecker:MyChecker
+                null);
         }
         else {
-            // 저장하지 않습니다. 이전 값으로 돌려놓습니다. - wonder.jung 이전 값으로 돌려놓는 방법은?
+            // 저장하지 않습니다. 이전 값으로 돌려놓습니다.
             myEventReturn =
-                new my_event_1.MyEvent(
+                this.myEventService.getMyEvent(
                 // public eventName:string
                 this.myEventService.ON_SHUTDOWN_N_ROLLBACK, 
-                // public title:string
-                "inputs-btns-rows", 
                 // public key:string
                 firstMyEvent.key, 
                 // public value:string
                 "", 
                 // public metaObj:any
-                this.myEventListCopy);
+                this.myEventListCopy, 
+                // public myChecker:MyChecker
+                null);
         }
         this.emitter.emit(myEventReturn);
     };
@@ -200,13 +205,13 @@ var InputsBtnsRowsComponent = (function () {
         this.save();
     };
     InputsBtnsRowsComponent.prototype.save = function () {
+        console.log("inputs-btns-rows / save / 00 / this.isDisabledSave : ", this.isDisabledSave);
         if (null == this.myEventList || 0 == this.myEventList.length) {
             return;
         }
         // 1. 리스트를 비교해서 변경내역이 있는지 확인합니다.
         var hasChanged = this.hasChanged();
-        console.log("inputs-btns-rows / save / hasChanged : ", hasChanged);
-        console.log("inputs-btns-rows / save / this.myEventList : ", this.myEventList);
+        console.log("inputs-btns-rows / save / 01 / hasChanged : ", hasChanged);
         if (hasChanged) {
             this.isDisabledSave = false;
         }
@@ -216,19 +221,29 @@ var InputsBtnsRowsComponent = (function () {
         if (this.isDisabledSave) {
             return;
         }
-        var myEventChanged = this.getChanged();
-        if (null == myEventChanged) {
-            return;
-        }
-        var myEventReturn = myEventChanged.copy();
-        myEventReturn.eventName = this.myEventService.ON_SAVE;
-        console.log("inputs-btns-rows / save / myEventReturn : ", myEventReturn);
-        this.emitter.emit(myEventReturn);
         // 저장이 완료됨. Event 데이터를 copy와 원본을 동일하게 덮어쓰기.
         this.overwriteMyEventList();
+        console.log("inputs-btns-rows / save / 02 / 저장이 완료됨. Event 데이터를 copy와 원본을 동일하게 덮어쓰기.");
+        // 부모 객체에게 전달할 이벤트 객체 만들기.
+        // wonder.jung
+        var myEventReturn = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_SAVE, 
+        // public key:string
+        this.key, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        "", 
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker());
+        console.log("inputs-btns-rows / save / 010 / myEventReturn : ", myEventReturn);
+        this.emitter.emit(myEventReturn);
     };
     InputsBtnsRowsComponent.prototype.hasChanged = function () {
         var hasChanged = this.myEventService.hasChangedList(this.myEventList, this.myEventListCopy);
+        console.log("inputs-btns-rows / hasChanged / this.myEventList : ", this.myEventList);
+        console.log("inputs-btns-rows / hasChanged / this.myEventListCopy : ", this.myEventListCopy);
         return hasChanged;
     };
     InputsBtnsRowsComponent.prototype.getChanged = function () {
@@ -243,8 +258,8 @@ var InputsBtnsRowsComponent = (function () {
     InputsBtnsRowsComponent.prototype.overwriteMyEventList = function () {
         this.myEventListCopy =
             this.myEventService.getCopyEventList(this.myEventList);
-        var hasChanged = this.hasChanged();
-        this.isDisabledSave = !hasChanged;
+        // 원본과 복사본이 동일. '저장'버튼을 비활성화.
+        this.isDisabledSave = true;
         console.log("overwriteMyEventList / this.isDisabledSave : ", this.isDisabledSave);
     };
     InputsBtnsRowsComponent.prototype.rollbackMyEventListCopies = function () {
@@ -253,16 +268,12 @@ var InputsBtnsRowsComponent = (function () {
     };
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', my_event_1.MyEvent)
-    ], InputsBtnsRowsComponent.prototype, "myEvent", void 0);
+        __metadata('design:type', String)
+    ], InputsBtnsRowsComponent.prototype, "key", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
     ], InputsBtnsRowsComponent.prototype, "myEventList", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], InputsBtnsRowsComponent.prototype, "cageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -278,7 +289,7 @@ var InputsBtnsRowsComponent = (function () {
             templateUrl: 'inputs-btns-rows.component.html',
             styleUrls: ['inputs-btns-rows.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
     ], InputsBtnsRowsComponent);
     return InputsBtnsRowsComponent;
 }());

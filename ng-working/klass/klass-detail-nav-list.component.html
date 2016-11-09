@@ -31,7 +31,7 @@
                         <!-- Admin Section -->
                         <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
                             class="list-group-item admin">
-                          <inputs-btns-rows   [myEvent]="myEventForKlassFeature"
+                          <inputs-btns-rows   [key]="myEventService.KLASS_FEATURE"
                                               [myEventList]="myEventListForKlassFeature" 
                                               (emitter)="onChangedFromInputRow($event)"
                                               [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
@@ -55,8 +55,7 @@
                         </li>
                         <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
                             class="list-group-item admin">
-                          <inputs-btns-rows [myEvent]="myEventForKlassTarget"
-                                            [myEventList]="myEventListForKlassTarget"
+                          <inputs-btns-rows [myEventList]="myEventListForKlassTarget"
                                             (emitter)="onChangedFromInputRow($event)"
                                             [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
                           </inputs-btns-rows>

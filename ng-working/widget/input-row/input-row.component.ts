@@ -91,6 +91,7 @@ export class InputRowComponent implements OnInit {
     }
 
     //bgColorBottom
+    /*
     if( null != this.myEventSingleInput && 
         "" != this.myEventSingleInput.title ) {
 
@@ -101,6 +102,7 @@ export class InputRowComponent implements OnInit {
       this.title = "No title";
 
     }
+    */
   }
 
   onChangedFromChild(myEvent) :void {
@@ -128,17 +130,17 @@ export class InputRowComponent implements OnInit {
 
       // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
       let myEventReturn:MyEvent = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE_INPUT_ROW,
-          // public title:string
-          "input-row",
-          // public key:string
-          myEvent.key,
-          // public value:string
-          myEvent.value,
-          // public metaObj:any
-          null
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_INPUT_ROW,
+        // public value:string
+        myEvent.value,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        null    
       );
 
       this.emitter.emit(myEventReturn);
@@ -176,17 +178,17 @@ export class InputRowComponent implements OnInit {
       this.save();
 
       myEventReturn = 
-      new MyEvent(
-          // public eventName:string
-          this.myEventService.ON_SHUTDOWN_INPUT_ROW,
-          // public title:string
-          "input-row",
-          // public key:string
-          this.key,
-          // public value:string
-          "",
-          // public metaObj:any
-          null
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_SHUTDOWN,
+        // public key:string
+        this.myEventService.KEY_INPUT_ROW,
+        // public value:string
+        "",
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        null    
       );
 
     } else {
@@ -195,18 +197,18 @@ export class InputRowComponent implements OnInit {
         let HTMLPrev:string = this.smartEditorComponent.getHTMLPrev();
 
         myEventReturn = 
-        new MyEvent(
-            // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW,
-            // public title:string
-            "input-row",
-            // public key:string
-            this.key,
-            // public value:string
-            HTMLPrev,
-            // public metaObj:any
-            null
-        );
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+          // public key:string
+          this.myEventService.KEY_INPUT_ROW,
+          // public value:string
+          "",
+          // public metaObj:any
+          null,
+          // public myChecker:MyChecker
+          null    
+        );        
 
       } else if(null != this.singleInputViewComponent) {
 
@@ -214,17 +216,17 @@ export class InputRowComponent implements OnInit {
         this.singleInputViewComponent.getMyEvent();
 
         myEventReturn = 
-        new MyEvent(
-            // public eventName:string
-            this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW,
-            // public title:string
-            "input-row",
-            // public key:string
-            myEventFromSI.key,
-            // public value:string
-            myEventFromSI.value,
-            // public metaObj:any
-            null
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+          // public key:string
+          this.myEventService.KEY_INPUT_ROW,
+          // public value:string
+          myEventFromSI.value,
+          // public metaObj:any
+          null,
+          // public myChecker:MyChecker
+          null    
         );
 
       }
@@ -251,17 +253,17 @@ export class InputRowComponent implements OnInit {
     }
     // 부모 컴포넌트에게 MyEvent 객체를 전달, 사용자가 수정 및 입력을 완료했음을 알립니다.
     let myEventReturn:MyEvent = 
-    new MyEvent(
-        // public eventName:string
-        this.myEventService.ON_SAVE_INPUT_ROW,
-        // public title:string
-        "input-row",
-        // public key:string
-        this.key,
-        // public value:string
-        result,
-        // public metaObj:any
-        null
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_SHUTDOWN_N_ROLLBACK,
+      // public key:string
+      this.myEventService.KEY_INPUT_ROW,
+      // public value:string
+      result,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      null    
     );
 
     this.emitter.emit(myEventReturn);      

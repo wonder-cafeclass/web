@@ -1,18 +1,15 @@
 "use strict";
 var MyEvent = (function () {
-    function MyEvent(eventName, title, key, value, metaObj) {
+    function MyEvent(id, eventName, key, value, metaObj, myChecker) {
+        this.id = id;
         this.eventName = eventName;
-        this.title = title;
         this.key = key;
         this.value = value;
         this.metaObj = metaObj;
-        var randomNum = (Math.random() * 1000000);
-        this.id = key + "_" + eventName + "_" + randomNum;
+        this.myChecker = myChecker;
     }
     MyEvent.prototype.copy = function () {
-        var copy = new MyEvent(this.eventName, this.title, this.key, this.value, this.metaObj);
-        copy.id = this.id;
-        copy.valueNext = this.valueNext;
+        var copy = new MyEvent(this.id, this.eventName, this.key, this.value, this.metaObj, this.myChecker);
         return copy;
     };
     MyEvent.prototype.isSame = function (myEvent) {

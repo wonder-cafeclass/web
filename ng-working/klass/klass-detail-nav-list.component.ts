@@ -7,8 +7,13 @@ import {  Component,
           EventEmitter,
           Input }                     from '@angular/core';
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
+
 import { MyEventService }             from '../util/my-event.service';
 import { MyEvent }                    from '../util/model/my-event';
+
+import { MyCheckerService }           from '../util/service/my-checker.service';
+import { MyChecker }                  from '../util/model/my-checker';
+
 import { ImageService }               from '../util/image.service';
 import { KlassColorService }          from './service/klass-color.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
@@ -79,7 +84,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
   @Output() emitter = new EventEmitter<any>();
 
   constructor(  private klassColorService:KlassColorService, 
-                private myEventService:MyEventService, 
+                public myEventService:MyEventService, 
+                private myCheckerService:MyCheckerService, 
                 public imageService: ImageService) {}
 
   ngOnInit(): void {
@@ -106,42 +112,26 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       ];
     }
 
-    this.myEventForKlassFeature = 
-    new MyEvent(
-      // public eventName:string
-      this.myEventService.ANY,
-      // public title:string
-      "수업 특징",
-      // public key:string
-      "feature",
-      // public value:string
-      "",
-      // public metaObj:any
-      {
-        klassId:+this.klass.id
-      }
-    );    
-
     this.myEventListForKlassFeature=[];
     for (var i = 0; i < this.klassFeatureList.length; ++i) {
       let klassFeature:string = this.klassFeatureList[i];
 
       let myEventKlassFeature = 
       new MyEvent(
+        // public id:string
+        this.myEventService.getUniqueIdx(),
         // public eventName:string
         this.myEventService.ANY,
-        // public title:string
-        "수업 특징",
         // public key:string
-        "feature",
+        this.myEventService.KLASS_FEATURE,
         // public value:string
         klassFeature,
         // public metaObj:any
-        {
-          klassId:+this.klass.id,
-          idx:i
-        }
+        {klassId:+this.klass.id},
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
       );
+
       this.myEventListForKlassFeature.push(myEventKlassFeature);
     } // end for
 
@@ -157,47 +147,29 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       ];
     }
 
-    let metaObj = {
-      klassId:+this.klass.id
-    };
-    this.myEventForKlassTarget = 
-    new MyEvent(
-      // public eventName:string
-      this.myEventService.ANY,
-      // public title:string
-      "수업 대상",
-      // public key:string
-      "target",
-      // public value:string
-      "",
-      // public metaObj:any
-      {
-        klassId:+this.klass.id
-      }
-    ); 
 
     this.myEventListForKlassTarget=[];
     for (var i = 0; i < this.klassTargetList.length; ++i) {
+
       let klassTarget:string = this.klassTargetList[i];
 
-      let myEventKlassFeature = 
+      let myEventKlassTarget = 
       new MyEvent(
+        // public id:string
+        this.myEventService.getUniqueIdx(),
         // public eventName:string
         this.myEventService.ON_CHANGE,
-        // public title:string
-        "수업 대상",
         // public key:string
-        "target",
+        this.myEventService.KLASS_TARGET,
         // public value:string
         klassTarget,
         // public metaObj:any
-        {
-          klassId:+this.klass.id,
-          idx:i
-        }
+        {klassId:+this.klass.id},
+        // public myChecker:MyChecker
+        this.myCheckerService.getTitleChecker()
       );
 
-      this.myEventListForKlassTarget.push(myEventKlassFeature);
+      this.myEventListForKlassTarget.push(myEventKlassTarget);
     } // end for
 
     this.overwriteKlassCopies();
@@ -273,13 +245,13 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
     if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         this.myEventListForKlassFeature =
         this.myEventService.setEventValue(
           myEvent, 
           this.myEventListForKlassFeature
         );
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         this.myEventListForKlassTarget =
         this.myEventService.setEventValue(
           myEvent, 
@@ -290,14 +262,14 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
 
       // 열이 추가되었습니다.
-      console.log("열이 추가되었습니다.");
-      if("feature" === myEvent.key) {
+      console.log("열이 추가되었습니다. / myEvent : ",myEvent);
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
 
         let klassFeatureNext:string = this.getEventValues(this.myEventListForKlassFeature);
 
         console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
         console.log(klassFeatureNext);
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
 
         let klassFeatureTarget:string = this.getEventValues(this.myEventListForKlassTarget);
 
@@ -308,7 +280,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
       // 열을 지웁니다.
-      if("feature" === myEvent.key) {
+      console.log("열을 지웁니다. / myEvent : ",myEvent);
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         this.klassFeature = this.klass.feature = myEvent.value;
 
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassFeature);
@@ -318,7 +291,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
         console.log(this.myEventListForKlassFeature);
 
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         this.klassTarget = this.klass.target = myEvent.value;
 
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassTarget);
@@ -330,35 +303,45 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
       } // end if
 
+    } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
+
+      console.log("klass-detail-nav-list / ON_SAVE / 데이터를 저장합니다.");
+      // wonder.jung
+      let hasChanged:boolean = false;
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+        hasChanged = this.hasChangedFeature();
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+        hasChanged = this.hasChangedTarget();
+      }
+
+      if(hasChanged) {
+        // 변경된 사항을 모두 저장합니다.
+        console.log("변경된 사항을 모두 저장합니다.");
+        this.overwriteKlassCopies();
+      }
+
     } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
 
       // 입력창을 닫습니다.
-      if("feature" === myEvent.key || "target" === myEvent.key) {
+      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
+          this.myEventService.KLASS_TARGET === myEvent.key) {
         this.shutdownKlassInfos();
       }
 
     } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
 
       // 입력창을 닫습니다.
-      if("feature" === myEvent.key || "target" === myEvent.key) {
+      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
+          this.myEventService.KLASS_TARGET === myEvent.key) {
         this.shutdownKlassInfos();
       }
 
-      // wonder.jung
       // 데이터가 변경되었는지 확인합니다.
       let hasChanged:boolean = false;
-      if("feature" === myEvent.key) {
-        hasChanged = 
-        this.myEventService.hasChangedList(
-          this.myEventListForKlassFeature
-          , this.myEventListForKlassFeatureCopy
-        );
-      } else if("target" === myEvent.key) {
-        hasChanged = 
-        this.myEventService.hasChangedList(
-          this.myEventListForKlassFeature
-          , this.myEventListForKlassFeatureCopy
-        );
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+        hasChanged = this.hasChangedFeature();
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+        hasChanged = this.hasChangedTarget();
       }
       console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ",hasChanged);
 
@@ -370,43 +353,56 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
     } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
 
-      if("feature" === myEvent.key || "target" === myEvent.key || "schedule" === myEvent.key) {
+      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
+          this.myEventService.KLASS_TARGET === myEvent.key || 
+          this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+
         this.shutdownKlassInfos();
       }
 
     } else if(this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
 
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         this.klassFeature = this.klass.feature = myEvent.value;
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         this.klassTarget = this.klass.target = myEvent.value;
-      } else if("schedule" === myEvent.key) {
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         this.klassSchedule = this.klass.schedule = myEvent.value;
       }
 
     } else if(this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
 
+      // @ Deprecated
+
       // DB로 변경된 데이터를 저장합니다.
-      if("feature" === myEvent.key) {
+      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         // Not implemented!
-      } else if("target" === myEvent.key) {
+      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         // Not implemented!
-      } else if("schedule" === myEvent.key) {
+      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         // Not implemented!
       }
 
-    } else if(this.myEventService.ON_SHUTDOWN_INPUT_ROW === myEvent.eventName) {
-       // Need to implement
-       /*
-      if("feature" === myEvent.key) {
-        this.klassFeature = this.klass.feature = myEvent.value;
-      } else if("target" === myEvent.key) {
-        this.klassTarget = this.klass.target = myEvent.value;
-      } else if("schedule" === myEvent.key) {
-        this.klassSchedule = this.klass.schedule = myEvent.value;
-      }
-      */
     }
+  }
+
+  hasChangedFeature() :boolean {
+    let hasChanged:boolean = 
+    this.myEventService.hasChangedList(
+      this.myEventListForKlassFeature
+      , this.myEventListForKlassFeatureCopy
+    );
+
+    return hasChanged;
+  }
+  hasChangedTarget() :boolean {
+    let hasChanged:boolean = 
+    this.myEventService.hasChangedList(
+      this.myEventListForKlassTarget
+      , this.myEventListForKlassTargetCopy
+    );
+
+    return hasChanged;
   }
 
   onChangedFromChild(myEvent:MyEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) :void{
@@ -423,35 +419,50 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     let firstBox = klassDesc.getBoundingClientRect();
     let scrollY:number = window.scrollY;
 
-    if("klass_desc" === myEvent.key) {
+    if(this.myEventService.KLASS_DESC === myEvent.key) {
+
       this.isFocusKlassDesc=true;
       box = klassDesc.getBoundingClientRect();
-    } else if("klass_venue" === myEvent.key) {
+
+    } else if(this.myEventService.KLASS_VENUE === myEvent.key) {
+
       this.isFocusKlassVenue=true;
       box = klassVenue.getBoundingClientRect();
-    } else if("tutor_desc" === myEvent.key) {
+
+    } else if(this.myEventService.TUTOR_DESC === myEvent.key) {
+
       this.isFocusTutorDesc=true;
       box = tutorDesc.getBoundingClientRect();
-    } else if("student_review" === myEvent.key) {
+
+    } else if(this.myEventService.STUDENT_REVIEW === myEvent.key) {
+
       this.isFocusStudentReview=true;
       box = studentReview.getBoundingClientRect();
-    } else if("student_question" === myEvent.key) {
+
+    } else if(this.myEventService.STUDENT_QUESTION === myEvent.key) {
+
       this.isFocusStudentQuestion=true;
       box = studentQuestion.getBoundingClientRect();
-    } else if("caution" === myEvent.key) {
+
+    } else if(this.myEventService.CAUTION === myEvent.key) {
+
       this.isFocusCaution=true;
       box = caution.getBoundingClientRect();
-    }
 
-    if(0 < (firstBox.top - this.navHeight)) {
-      nextYPos = scrollY + box.top - (this.navHeight * 2 + this.borderTopBottomWidth);
-    } else {
-      nextYPos = scrollY + box.top - this.navHeight;
-    }
+    } // end if
 
-    if(0 < nextYPos) {
-      window.scrollTo(0, nextYPos);      
-    }
+    if(null != box) {
+      if(0 < (firstBox.top - this.navHeight)) {
+        nextYPos = scrollY + box.top - (this.navHeight * 2 + this.borderTopBottomWidth);
+      } else {
+        nextYPos = scrollY + box.top - this.navHeight;
+      }
+
+      if(0 < nextYPos) {
+        window.scrollTo(0, nextYPos);      
+      } // end inner if
+    } // end if
+
   }
 
   onClickKlassFeature() :void {

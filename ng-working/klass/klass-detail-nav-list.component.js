@@ -11,14 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_event_service_1 = require('../util/my-event.service');
 var my_event_1 = require('../util/model/my-event');
+var my_checker_service_1 = require('../util/service/my-checker.service');
 var image_service_1 = require('../util/image.service');
 var klass_color_service_1 = require('./service/klass-color.service');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
 var klass_1 = require('./model/klass');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService, myEventService, imageService) {
+    function KlassDetailNavListComponent(klassColorService, myEventService, myCheckerService, imageService) {
         this.klassColorService = klassColorService;
         this.myEventService = myEventService;
+        this.myCheckerService = myCheckerService;
         this.imageService = imageService;
         this.isAdmin = false;
         this.cageWidth = -1;
@@ -58,37 +60,22 @@ var KlassDetailNavListComponent = (function () {
                     "(예시) 자신감을 심어주는 클래스",
                 ];
         }
-        this.myEventForKlassFeature =
-            new my_event_1.MyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public title:string
-            "수업 특징", 
-            // public key:string
-            "feature", 
-            // public value:string
-            "", 
-            // public metaObj:any
-            {
-                klassId: +this.klass.id
-            });
         this.myEventListForKlassFeature = [];
         for (var i = 0; i < this.klassFeatureList.length; ++i) {
             var klassFeature = this.klassFeatureList[i];
             var myEventKlassFeature = new my_event_1.MyEvent(
+            // public id:string
+            this.myEventService.getUniqueIdx(), 
             // public eventName:string
             this.myEventService.ANY, 
-            // public title:string
-            "수업 특징", 
             // public key:string
-            "feature", 
+            this.myEventService.KLASS_FEATURE, 
             // public value:string
             klassFeature, 
             // public metaObj:any
-            {
-                klassId: +this.klass.id,
-                idx: i
-            });
+            { klassId: +this.klass.id }, 
+            // public myChecker:MyChecker
+            this.myCheckerService.getTitleChecker());
             this.myEventListForKlassFeature.push(myEventKlassFeature);
         } // end for
         // KLASS TARGET
@@ -100,41 +87,23 @@ var KlassDetailNavListComponent = (function () {
                     "(예시) 2. 여행 상황별로 충분히 연습해 자신감을 갖고 싶은 분들"
                 ];
         }
-        var metaObj = {
-            klassId: +this.klass.id
-        };
-        this.myEventForKlassTarget =
-            new my_event_1.MyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public title:string
-            "수업 대상", 
-            // public key:string
-            "target", 
-            // public value:string
-            "", 
-            // public metaObj:any
-            {
-                klassId: +this.klass.id
-            });
         this.myEventListForKlassTarget = [];
         for (var i = 0; i < this.klassTargetList.length; ++i) {
             var klassTarget = this.klassTargetList[i];
-            var myEventKlassFeature = new my_event_1.MyEvent(
+            var myEventKlassTarget = new my_event_1.MyEvent(
+            // public id:string
+            this.myEventService.getUniqueIdx(), 
             // public eventName:string
             this.myEventService.ON_CHANGE, 
-            // public title:string
-            "수업 대상", 
             // public key:string
-            "target", 
+            this.myEventService.KLASS_TARGET, 
             // public value:string
             klassTarget, 
             // public metaObj:any
-            {
-                klassId: +this.klass.id,
-                idx: i
-            });
-            this.myEventListForKlassTarget.push(myEventKlassFeature);
+            { klassId: +this.klass.id }, 
+            // public myChecker:MyChecker
+            this.myCheckerService.getTitleChecker());
+            this.myEventListForKlassTarget.push(myEventKlassTarget);
         } // end for
         this.overwriteKlassCopies();
         // KLASS SCHEDULE
@@ -188,24 +157,24 @@ var KlassDetailNavListComponent = (function () {
         }
         console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent : ", myEvent);
         if (this.myEventService.ON_CHANGE === myEvent.eventName) {
-            if ("feature" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 this.myEventListForKlassFeature =
                     this.myEventService.setEventValue(myEvent, this.myEventListForKlassFeature);
             }
-            else if ("target" === myEvent.key) {
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
                 this.myEventListForKlassTarget =
                     this.myEventService.setEventValue(myEvent, this.myEventListForKlassTarget);
             }
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
             // 열이 추가되었습니다.
-            console.log("열이 추가되었습니다.");
-            if ("feature" === myEvent.key) {
+            console.log("열이 추가되었습니다. / myEvent : ", myEvent);
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 var klassFeatureNext = this.getEventValues(this.myEventListForKlassFeature);
                 console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
                 console.log(klassFeatureNext);
             }
-            else if ("target" === myEvent.key) {
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
                 var klassFeatureTarget = this.getEventValues(this.myEventListForKlassTarget);
                 console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
                 console.log(klassFeatureTarget);
@@ -213,7 +182,8 @@ var KlassDetailNavListComponent = (function () {
         }
         else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
             // 열을 지웁니다.
-            if ("feature" === myEvent.key) {
+            console.log("열을 지웁니다. / myEvent : ", myEvent);
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 this.klassFeature = this.klass.feature = myEvent.value;
                 var nextEventList = this.removeMyEventFromList(myEvent, this.myEventListForKlassFeature);
                 this.myEventListForKlassFeature = nextEventList;
@@ -221,7 +191,7 @@ var KlassDetailNavListComponent = (function () {
                 console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
                 console.log(this.myEventListForKlassFeature);
             }
-            else if ("target" === myEvent.key) {
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
                 this.klassTarget = this.klass.target = myEvent.value;
                 var nextEventList = this.removeMyEventFromList(myEvent, this.myEventListForKlassTarget);
                 this.myEventListForKlassTarget = nextEventList;
@@ -230,27 +200,42 @@ var KlassDetailNavListComponent = (function () {
                 console.log(this.myEventListForKlassTarget);
             } // end if
         }
+        else if (this.myEventService.ON_SAVE === myEvent.eventName) {
+            console.log("klass-detail-nav-list / ON_SAVE / 데이터를 저장합니다.");
+            // wonder.jung
+            var hasChanged = false;
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
+                hasChanged = this.hasChangedFeature();
+            }
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
+                hasChanged = this.hasChangedTarget();
+            }
+            if (hasChanged) {
+                // 변경된 사항을 모두 저장합니다.
+                console.log("변경된 사항을 모두 저장합니다.");
+                this.overwriteKlassCopies();
+            }
+        }
         else if (this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
             // 입력창을 닫습니다.
-            if ("feature" === myEvent.key || "target" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key ||
+                this.myEventService.KLASS_TARGET === myEvent.key) {
                 this.shutdownKlassInfos();
             }
         }
         else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
             // 입력창을 닫습니다.
-            if ("feature" === myEvent.key || "target" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key ||
+                this.myEventService.KLASS_TARGET === myEvent.key) {
                 this.shutdownKlassInfos();
             }
-            // wonder.jung
             // 데이터가 변경되었는지 확인합니다.
             var hasChanged = false;
-            if ("feature" === myEvent.key) {
-                hasChanged =
-                    this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
+                hasChanged = this.hasChangedFeature();
             }
-            else if ("target" === myEvent.key) {
-                hasChanged =
-                    this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
+                hasChanged = this.hasChangedTarget();
             }
             console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ", hasChanged);
             if (hasChanged) {
@@ -260,32 +245,41 @@ var KlassDetailNavListComponent = (function () {
             }
         }
         else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
-            if ("feature" === myEvent.key || "target" === myEvent.key || "schedule" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key ||
+                this.myEventService.KLASS_TARGET === myEvent.key ||
+                this.myEventService.KLASS_SCHEDULE === myEvent.key) {
                 this.shutdownKlassInfos();
             }
         }
         else if (this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
-            if ("feature" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 this.klassFeature = this.klass.feature = myEvent.value;
             }
-            else if ("target" === myEvent.key) {
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
                 this.klassTarget = this.klass.target = myEvent.value;
             }
-            else if ("schedule" === myEvent.key) {
+            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
                 this.klassSchedule = this.klass.schedule = myEvent.value;
             }
         }
         else if (this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
+            // @ Deprecated
             // DB로 변경된 데이터를 저장합니다.
-            if ("feature" === myEvent.key) {
+            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
             }
-            else if ("target" === myEvent.key) {
+            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
             }
-            else if ("schedule" === myEvent.key) {
+            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
             }
         }
-        else if (this.myEventService.ON_SHUTDOWN_INPUT_ROW === myEvent.eventName) {
-        }
+    };
+    KlassDetailNavListComponent.prototype.hasChangedFeature = function () {
+        var hasChanged = this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
+        return hasChanged;
+    };
+    KlassDetailNavListComponent.prototype.hasChangedTarget = function () {
+        var hasChanged = this.myEventService.hasChangedList(this.myEventListForKlassTarget, this.myEventListForKlassTargetCopy);
+        return hasChanged;
     };
     KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
         this.isFocusKlassDesc = false;
@@ -298,39 +292,41 @@ var KlassDetailNavListComponent = (function () {
         var box = null;
         var firstBox = klassDesc.getBoundingClientRect();
         var scrollY = window.scrollY;
-        if ("klass_desc" === myEvent.key) {
+        if (this.myEventService.KLASS_DESC === myEvent.key) {
             this.isFocusKlassDesc = true;
             box = klassDesc.getBoundingClientRect();
         }
-        else if ("klass_venue" === myEvent.key) {
+        else if (this.myEventService.KLASS_VENUE === myEvent.key) {
             this.isFocusKlassVenue = true;
             box = klassVenue.getBoundingClientRect();
         }
-        else if ("tutor_desc" === myEvent.key) {
+        else if (this.myEventService.TUTOR_DESC === myEvent.key) {
             this.isFocusTutorDesc = true;
             box = tutorDesc.getBoundingClientRect();
         }
-        else if ("student_review" === myEvent.key) {
+        else if (this.myEventService.STUDENT_REVIEW === myEvent.key) {
             this.isFocusStudentReview = true;
             box = studentReview.getBoundingClientRect();
         }
-        else if ("student_question" === myEvent.key) {
+        else if (this.myEventService.STUDENT_QUESTION === myEvent.key) {
             this.isFocusStudentQuestion = true;
             box = studentQuestion.getBoundingClientRect();
         }
-        else if ("caution" === myEvent.key) {
+        else if (this.myEventService.CAUTION === myEvent.key) {
             this.isFocusCaution = true;
             box = caution.getBoundingClientRect();
-        }
-        if (0 < (firstBox.top - this.navHeight)) {
-            nextYPos = scrollY + box.top - (this.navHeight * 2 + this.borderTopBottomWidth);
-        }
-        else {
-            nextYPos = scrollY + box.top - this.navHeight;
-        }
-        if (0 < nextYPos) {
-            window.scrollTo(0, nextYPos);
-        }
+        } // end if
+        if (null != box) {
+            if (0 < (firstBox.top - this.navHeight)) {
+                nextYPos = scrollY + box.top - (this.navHeight * 2 + this.borderTopBottomWidth);
+            }
+            else {
+                nextYPos = scrollY + box.top - this.navHeight;
+            }
+            if (0 < nextYPos) {
+                window.scrollTo(0, nextYPos);
+            } // end inner if
+        } // end if
     };
     KlassDetailNavListComponent.prototype.onClickKlassFeature = function () {
         this.isShowKlassFeatureAdmin = !this.isShowKlassFeatureAdmin;
@@ -418,7 +414,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

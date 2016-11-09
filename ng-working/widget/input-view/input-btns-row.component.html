@@ -1,10 +1,8 @@
 <!-- Example
 
-<input-btns-row [myEventList]="myEventList" 
-				[myEventKeyEnter]="myEventKeyEnter" 
+<input-btns-row [myEventCallback]="myEventCallback" 
 				[cageWidth]="cageWidth" 
-				[inputText]="inputText"
-				[type]="'button'|'etc'">
+				[inputText]="inputText">
 				[placeholder]="'새로운 이름을 입력해주세요.'"
 				(emitter)="onChangeFromChild($event)"
 </input-btns-row>
@@ -14,14 +12,21 @@
 	<input 	#inputText 
 			[(ngModel)]="innerText"
 			(keyup.enter)="onKeyEnter($event, inputText.value)"
-			(ngModelChange)="onChange($event, inputText.value)"
+			(ngModelChange)="onChange($event, inputText)"
 			class="form-control" 
 			placeholder={{placeholder}}
-			aria-label="Text input with multiple buttons"> 
+			aria-label="Text input with multiple buttons">
 	<div class="input-group-btn">
-		<button *ngFor="let myEvent of myEventList" 
+		<!-- Single Btn -->
+		<button *ngIf="myButton" 
 				type="button" 
-				(click)="onClick($event, inputText.value, myEvent)"
-				class="btn btn-default">{{myEvent.title}}</button>
+				(click)="onClick($event, inputText.value, myButton)"
+				class="btn btn-default">{{myButton.title}}</button>
+
+		<!-- Multiple Btns -->
+		<button *ngFor="let myButton of myButtonList" 
+				type="button" 
+				(click)="onClick($event, inputText.value, myButton)"
+				class="btn btn-default">{{myButton.title}}</button>
 	</div> 
 </div>

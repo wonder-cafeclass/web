@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_1 = require('../../util/model/my-event');
 var my_event_service_1 = require('../../util/my-event.service');
 var my_asset_service_1 = require('../../util/my-asset.service');
 /*
@@ -73,31 +72,31 @@ var SmartEditorComponent = (function () {
             // 전달받은 html 문자열을 iframe - smart editor에게 전달.
             this.updateHTML(this.html);
             // 에디터가 준비된 것을 부모 객체에게 알린다.
-            var myEventReturn = new my_event_1.MyEvent(
+            var myEventReturn = this.myEventService.getMyEvent(
             // public eventName:string
-            this.myEventService.ON_READY_SMART_EDITOR, 
-            // public title:string
-            "smart-editor", 
+            this.myEventService.ON_READY, 
             // public key:string
-            this.key, 
+            this.myEventService.KEY_SMART_EDITOR, 
             // public value:string
-            myEvent.value, 
+            "", 
             // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
             null);
             this.emitter.emit(myEventReturn);
         }
         else if ("se_update" === myEvent.key) {
             // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
-            var myEventReturn = new my_event_1.MyEvent(
+            var myEventReturn = this.myEventService.getMyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE_SMART_EDITOR, 
-            // public title:string
-            "smart-editor", 
+            this.myEventService.ON_CHANGE, 
             // public key:string
-            this.key, 
+            this.myEventService.KEY_SMART_EDITOR, 
             // public value:string
-            myEvent.value, 
+            "", 
             // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
             null);
             this.emitter.emit(myEventReturn);
         }

@@ -28,8 +28,8 @@
 	
 	<!-- 삭제 기능이 있는 입력 열 -->
     <input-btns-row *ngIf="type=='removableRow'"
-    				[myEventList]="myEvenListBtns"
-    				[myEventKeyEnter]="myEvent"
+    				[myButtonList]="myEvenListBtns"
+    				[myEventKeyEnterCallback]="myEvent"
     				[inputText]="myEvent.value"
                     [type]="'button'"
                     (emitter)="onChangeFromChild($event)">
