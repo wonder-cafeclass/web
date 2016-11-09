@@ -33,5 +33,8 @@ li.row-btns {
     border-top: 0px;
     padding-top: 0px;    
 }
+a.preview {
+    margin-top: 5px;    
+}
 
 

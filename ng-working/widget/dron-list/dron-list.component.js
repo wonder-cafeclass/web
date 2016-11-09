@@ -77,8 +77,6 @@ var DronListComponent = (function () {
         if (this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
             // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
             this.setOffset();
-            // 에디터에 넣을 내용을 설정합니다.
-            this.smartEditorComponent.updateHTML(this.SEinnerHTML);
         }
         else if (this.myEventService.ON_READY_SINGLE_INPUT_VIEW === myEvent.eventName) {
             this.setOffset();

@@ -165,7 +165,7 @@ function callbackParent(myEvent) {
 	}	
 }
 // event - from parent to child
-// var initHTMLLock=null;
+var initHTMLLock=null;
 var htmlPrev = null;
 // @ Public
 function initHTML(sHTML) {
@@ -173,6 +173,11 @@ function initHTML(sHTML) {
 	if(null === sHTML) {
 		return;
 	}
+	if(null != initHTMLLock) {
+		return;
+	}
+	initHTMLLock={};
+
 	pasteHTML(sHTML);
 
 	// Smart Editor에서 최초로 입력한 HTML tag에 "<p><br/></p>" 태그를 마지막에 붙여줍니다. 

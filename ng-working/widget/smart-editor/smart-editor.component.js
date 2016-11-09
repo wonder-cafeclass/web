@@ -93,7 +93,7 @@ var SmartEditorComponent = (function () {
             // public key:string
             this.myEventService.KEY_SMART_EDITOR, 
             // public value:string
-            "", 
+            myEvent.value, 
             // public metaObj:any
             null, 
             // public myChecker:MyChecker

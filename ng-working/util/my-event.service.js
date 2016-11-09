@@ -24,6 +24,8 @@ var MyEventService = (function () {
         this.ON_REMOVE_ROW = "ON_REMOVE_ROW";
         this.ON_MOUSE_LEAVE = "ON_MOUSE_LEAVE";
         this.ON_MOUSE_ENTER = "ON_MOUSE_ENTER";
+        this.ON_PREVIEW = "ON_PREVIEW";
+        this.ON_UNPREVIEW = "ON_UNPREVIEW";
         // SPECIFIC ATTR
         this.KLASS_WEEK_MAX = "KLASS_WEEK_MAX";
         this.KLASS_ENROLMENT_INTERVAL = "KLASS_ENROLMENT_INTERVAL";
@@ -51,6 +53,7 @@ var MyEventService = (function () {
         this.KEY_INPUTS_BTNS_ROWS = "KEY_INPUTS_BTNS_ROWS"; // 여러개의 열이 있는 입력창
         this.KEY_INPUT_BTNS_ROW = "KEY_INPUT_BTNS_ROW"; // 여러개 버튼과 1개의 INPUT이 있는 입력창
         this.KEY_INPUT_ROW = "KEY_INPUT_ROW"; // 입력창만 있는 열
+        this.KEY_SINGLE_INPUT_VIEW = "KEY_SINGLE_INPUT_VIEW"; // ?
         this.KEY_MINI_CALENDAR = "KEY_MINI_CALENDAR"; // 날짜를 한눈에 확인하는 미니 캘린더
         this.KEY_DRON_LIST = "KEY_DRON_LIST"; // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
         // SPECIFIC CASES

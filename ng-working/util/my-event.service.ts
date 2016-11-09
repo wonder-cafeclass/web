@@ -18,6 +18,8 @@ export class MyEventService {
     ON_REMOVE_ROW:string="ON_REMOVE_ROW";
     ON_MOUSE_LEAVE:string="ON_MOUSE_LEAVE";
     ON_MOUSE_ENTER:string="ON_MOUSE_ENTER";
+    ON_PREVIEW:string="ON_PREVIEW";
+    ON_UNPREVIEW:string="ON_UNPREVIEW";
 
     // SPECIFIC ATTR
     KLASS_WEEK_MAX:string="KLASS_WEEK_MAX";
@@ -49,6 +51,7 @@ export class MyEventService {
     KEY_INPUTS_BTNS_ROWS:string="KEY_INPUTS_BTNS_ROWS"; // 여러개의 열이 있는 입력창
     KEY_INPUT_BTNS_ROW:string="KEY_INPUT_BTNS_ROW"; // 여러개 버튼과 1개의 INPUT이 있는 입력창
     KEY_INPUT_ROW:string="KEY_INPUT_ROW";           // 입력창만 있는 열
+    KEY_SINGLE_INPUT_VIEW:string="KEY_SINGLE_INPUT_VIEW";           // ?
     KEY_MINI_CALENDAR:string="KEY_MINI_CALENDAR";   // 날짜를 한눈에 확인하는 미니 캘린더
     KEY_DRON_LIST:string="KEY_DRON_LIST";           // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
 

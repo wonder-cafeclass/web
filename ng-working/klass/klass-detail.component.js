@@ -400,6 +400,7 @@ var KlassDetailComponent = (function () {
             } // end if
         }
         else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
+            // @ Deprecated
             // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
             if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
@@ -407,12 +408,14 @@ var KlassDetailComponent = (function () {
             }
         }
         else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
+            // @ Deprecated
             // 사용자가 드론리스트를 닫았습니다.
             console.log("사용자가 드론리스트를 닫았습니다.");
             // 관련 파라미터 초기화
             this.clearDronList();
         }
         else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
+            // @ Deprecated
             // 사용자가 드론리스트를 닫았습니다.
             console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
             // 관련 파라미터 초기화
