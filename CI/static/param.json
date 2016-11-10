@@ -22,6 +22,9 @@
 		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
 		"klass_time_range":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[24]",
 
+		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
+		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
+
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 

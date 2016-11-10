@@ -4,3 +4,5 @@ node_modules/
 application/config/database.php
 
 CI/static/admin.json
+
+CI/static/api.json
