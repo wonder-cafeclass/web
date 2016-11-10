@@ -120,20 +120,38 @@ class MY_Curl
 		$result=null;
 		if(is_array($json))
 		{
+			$box_list = [];
 			// echo "extract - 001<br/>\n";
 			if(is_string($attr))	
 			{
 				// echo "extract - 001-1<br/>\n";
-				if(isset($json[$attr])) {
-					return $this->extract($json[$attr], $attr_arr);
-				}
+				// echo "\$attr : $attr<br/>";
+				
+				foreach($json as $key => $value)
+				{
+					// echo "extract - 001-1-1<br/>\n";
+					if(is_array($value))
+					{
+						if(isset($value[$attr]))
+						{
+							array_push($box_list, $value[$attr]);
+						}
+					}
+					else if(is_object($value))
+					{
+						if(isset($value->{$attr}))
+						{
+							array_push($box_list, $value->{$attr});
+						}
+						
+					} // end if
+				} // end foreach
 			}
 			else if(is_array($attr))	
 			{
 				// echo "extract - 001-2<br/>\n";
 				// print_r($json);
 
-				$box_list = [];
 				foreach($json as $key => $value)
 				{
 					// echo "extract - 001-2-1<br/>\n";
@@ -151,21 +169,24 @@ class MY_Curl
 					array_push($box_list, $box);
 
 				}
-				return $this->extract($box_list, $attr_arr);
 			}
+			return $this->extract($box_list, $attr_arr);
 		}
 		else
 		{
 			// echo "extract - 002<br/>\n";
 			if(is_string($attr))	
 			{
-				// Need to implement!
 				// echo "extract - 002-1<br/>\n";
+				if(isset($json->{$attr})) {
+					// echo "extract - 002-1-2<br/>\n";
+					return $this->extract($json->{$attr}, $attr_arr);
+				}
 			}
 			else if(is_array($attr))	
 			{
 				// Need to implement!
-				// echo "extract - 002-2<br/>\n";
+				// echo "extract - 002-2 / <br/>\n";
 			}
 		}
 
@@ -211,8 +232,8 @@ class MY_Curl
         else 
         {
         	// parse json
-        	$json = json_encode($response);
-			$result = $this->extract($response, $attr_arr);
+        	$json = json_decode($response);
+			$result = $this->extract($json, $attr_arr);
         }
 
         return $result;

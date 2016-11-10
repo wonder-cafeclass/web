@@ -28,6 +28,7 @@ class Naver extends REST_Controller implements MY_Class{
     private $api_search_shop_url="http://devcafeclass.co.uk/CI/index.php/api/naver/search_shop";
 
     private $api_search_local="https://openapi.naver.com/v1/search/local.xml?query=";
+    private $api_search_map="https://openapi.naver.com/v1/map/geocode?query=";
 
     private $X_Naver_Client_Id="";
     private $X_Naver_Client_Secret="";
@@ -173,6 +174,8 @@ class Naver extends REST_Controller implements MY_Class{
                 ]
             ]
         );
+
+        // TODO - 검색 결과가 없는 경우라면?
         
         $output["result"] = $result;
 
@@ -215,7 +218,7 @@ class Naver extends REST_Controller implements MY_Class{
     }
 
     /*
-    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchmap?q=스타벅스%20잠실
+    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchmap?q=서울특별시 송파구 올림픽로 212 갤러리아팰리스
     */
 
     public function searchmap_get() {
@@ -249,21 +252,25 @@ class Naver extends REST_Controller implements MY_Class{
 
         // TEST 주소명 테스트 - param checker에서 일반 주소명을 검색할때 문제가 없는지 확인해본다.       
 
+        $query_encoded = urlencode($query);
 
-        // 2. 네이버 지도 검색
-        /*
-        curl "https://openapi.naver.com/v1/map/geocode?query=%EC%9D%B8%EC%B2%9C%EA%B4%91%EC%97%AD%EC%8B%9C%20%EC%97%B0%EC%88%98%EA%B5%AC%20%EC%BB%A8%EB%B2%A4%EC%8B%9C%EC%95%84%EB%8C%80%EB%A1%9C%2060%20%ED%91%B8%EB%A5%B4%EC%A7%80%EC%98%A4%EC%9B%94%EB%93%9C%EB%A7%88%ED%81%AC" \
-            -H "X-Naver-Client-Id: AuobHzuF9LcSklUr0EqM" \
-            -H "X-Naver-Client-Secret: WgBmgVCFOS"
-        */
-        // $apikey = [
-        //     $this->my_apikey->X_Naver_Client_Id=>$this->X_Naver_Client_Id,
-        //     $this->my_apikey->X_Naver_Client_Secret=>$this->X_Naver_Client_Secret
-        // ];
-        // array_push($output, $apikey);
-
-
-        $output["result"] = "TEST";
+        $result =
+        $this->my_curl->get_json(
+            // $url=""
+            $this->api_search_map . $query_encoded,
+            // $header_arr=null
+            [
+                $this->my_apikey->X_Naver_Client_Id => $this->X_Naver_Client_Id,
+                $this->my_apikey->X_Naver_Client_Secret => $this->X_Naver_Client_Secret
+            ],
+            // $attr_arr=null
+            [
+                "result",
+                "items",
+                "point"
+            ]
+        );
+        $output["result"] = $result;
 
         $response_body = array();
         if ($is_ok)
