@@ -27,6 +27,7 @@ var KlassVenueSearchListComponent = (function () {
         this.cageWidthVenueInfo = -1;
         this.cageHeight = -1;
         this.inputWidth = -1;
+        this.isHideKlassVenue = false;
         this.searchTermsNaverLocal = new Subject_1.Subject();
         this.searchTermsNaverMap = new Subject_1.Subject();
         // 이벤트를 부모에게 전달
@@ -90,9 +91,14 @@ var KlassVenueSearchListComponent = (function () {
             this.searchTermsNaverLocal
                 .debounceTime(300) // wait for 300ms pause in events
                 .distinctUntilChanged() // ignore if next search term is same as previous
-                .switchMap(function (term) { return term // switch to new observable each time
-                ? _this.klassService.searchKlassVenue(term)
-                : Observable_1.Observable.of([]); })
+                .switchMap(function (term) {
+                // 새로운 입력이 들어온다면 검색 결과리스트를 노출합니다.
+                _this.isHideKlassVenue = false;
+                // switch to new observable each time
+                // return the http search observable
+                // or the observable of empty heroes if no search term
+                return (null != term) ? _this.klassService.searchKlassVenue(term) : Observable_1.Observable.of([]);
+            })
                 .catch(function (error) {
                 // TODO: real error handling
                 console.log(error);
@@ -106,7 +112,6 @@ var KlassVenueSearchListComponent = (function () {
         if ("ready_to_init" === myEvent.key) {
             // iframe의 너비, 높이를 변경합니다.
             if (null != this.childContentWindow.setSize) {
-                console.log("klass-venue-search-list / callFromOutside / setSize / this.cageWidthNaverMap : ", this.cageWidthNaverMap);
                 this.childContentWindow.setSize(this.cageWidthNaverMap, this.cageHeight);
             }
             // iframe에 지도 좌표 - 위도/경도 정보를 전해줍니다.
@@ -173,9 +178,12 @@ var KlassVenueSearchListComponent = (function () {
             // iframe에 위치 업데이트
             if (null != _this.childContentWindow.init) {
                 _this.childContentWindow.init(_this.klassVenuesNaverMap);
-                // 검색 리스트 삭제.
-                _this.klassVenues = null;
+                // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
+                // this.klassVenues = null;
+                // 선택한 업체 이름을 화면에 표시합니다.
                 _this.searchBoxText = _this.removeHTMLTags(_this.klassVenuesNaverMap.title);
+                // 결과 라스트는 화면에서 가립니다.
+                _this.isHideKlassVenue = true;
                 // DB UPDATE!
                 console.log("DB UPDATE!");
             }

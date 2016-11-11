@@ -29,25 +29,55 @@ var KlassService = (function () {
         var req_url = this.us.get(this.klassVenueSearchLocalUrl);
         req_url = req_url + "?q=" + qEncoded;
         console.log("klass.service.ts / searchKlassVenue / req_url : ", req_url);
-        return this.http.get(req_url)
-            .map(function (r) {
-            var responseJson = r.json();
-            var result = [];
-            if (null != responseJson &&
-                null != responseJson.data &&
-                null != responseJson.data.result) {
-                result = responseJson.data.result;
-            }
-            console.log("klass.service.ts / searchKlassVenue / responseJson : ", responseJson);
-            // return r.json().data as KlassVenue[]; 
-            return result;
+        return this.http.get(req_url).map(this.getKlassVenue);
+        /*
+        .map((r: Response) => {
+
+          let responseJson = r.json();
+          let result = [];
+          if( null != responseJson &&
+              null != responseJson.data &&
+              null != responseJson.data.result ) {
+
+              result = responseJson.data.result;
+          }
+
+          console.log("klass.service.ts / searchKlassVenue / responseJson : ",responseJson);
+
+          // return r.json().data as KlassVenue[];
+          return result as KlassVenue[];
         });
+        */
+    };
+    KlassService.prototype.getKlassVenue = function (r) {
+        var responseJson = r.json();
+        var result = [];
+        if (null != responseJson &&
+            null != responseJson.data &&
+            null != responseJson.data.result) {
+            result = responseJson.data.result;
+        }
+        // 예외 사항 검사
+        if (0 < result.length) {
+            var element = result[0];
+            if (null == element) {
+                console.log("!Error! / klass.service.ts / null == element");
+                console.log("r : ", r);
+                return [];
+            }
+            else if (null == element.title) {
+                console.log("!Error! / klass.service.ts / null == element.title");
+                console.log("r : ", r);
+                return [];
+            }
+        }
+        return result;
     };
     KlassService.prototype.searchKlassMap = function (q) {
         var qEncoded = encodeURIComponent(q);
         var req_url = this.us.get(this.klassVenueSearchMapUrl);
         req_url = req_url + "?q=" + qEncoded;
-        console.log("klass.service.ts / searchKlassMap / req_url : ", req_url);
+        // console.log("klass.service.ts / searchKlassMap / req_url : ",req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.getLatLon)

@@ -98,7 +98,228 @@ class MY_Curl
 		return $this->call($url, $is_xml, true, $header_arr, $attr_arr);
 	}
 
-	private function extract($json=null, $attr_arr=null) {
+	private function isNumericKeyArr($target_arr=null) 
+	{
+		if(is_null($target_arr)) 
+		{
+			return null;
+		}
+
+		$is_numeric_key = true;
+		foreach($target_arr as $key => $value)
+		{
+			if(!is_numeric($key)) 
+			{
+				$is_numeric_key = false;
+				break;
+			}
+		}
+
+		return $is_numeric_key;
+	}
+	private function extractSingleAttr($json=null, $attr="") 
+	{
+		if(is_null($json)) 
+		{
+			return;			
+		}
+		if(empty($attr)) 
+		{
+			return $json;
+		}
+		$is_debug=false;
+		if($is_debug) echo "<br/>\n<br/>\n";
+		if($is_debug) echo "extractSingleAttr<br/>\n";
+		if($is_debug) print_r($json);
+		if($is_debug) echo "<br/>\nextractSingleAttr / \$attr : $attr<br/>\n";
+
+		if(is_array($json))
+		{
+			// 1. array
+			$isNumericKeyArr = $this->isNumericKeyArr($json);
+
+			if($is_debug) echo "extractSingleAttr / 0<br/>\n";
+
+			if($isNumericKeyArr)
+			{
+				if($is_debug) echo "extractSingleAttr / 0-1<br/>\n";
+
+				// 1-1. numeric idx arr ["APPLE","BANANA",..]
+				// 내부 엘리먼트에서 해당되는 attr 값이 있는지 확인해야 합니다.
+				$box_list = [];
+				foreach ($json as $value) {
+					$box = $this->extractSingleAttr($value, $attr);
+					array_push($box_list, $box);
+				}
+
+				if($is_debug) print_r($box_list);
+				if($is_debug) echo "<br/>\n<br/>\n";
+
+				return $box_list;
+			}
+			else
+			{
+				if($is_debug) echo "extractSingleAttr / 0-2<br/>\n";
+
+				// 1-2. key-value arr ["A"=>"APPLE","B"=>"BANANA",..]
+				// json obj 타입으로 인식, stdClass로 전환합니다.
+				$box = new stdClass();
+				if(isset($json[$attr]))
+				{
+					$box = $json[$attr];
+				} // end if
+
+				if($is_debug) print_r($box);
+				if($is_debug) echo "<br/>\n<br/>\n";
+
+				return $box;
+			}
+		}
+		else
+		{
+			if($is_debug) echo "extractSingleAttr / 1<br/>\n";
+
+			// 2. stdObj {"A":"APPLE","B":"BANANA"}
+			// 해당 객체의 1개의 값만 포함한 객체로 돌려줍니다.
+			$box = new stdClass();
+			if(isset($json->{$attr}))
+			{
+				$box = $json->{$attr};
+			} // end if
+
+			if($is_debug) print_r($box);
+			if($is_debug) echo "<br/>\n<br/>\n";
+
+			return $box;
+		}
+		return null;
+	}
+	private function extractMultipleAttr($json=null, $attr_arr="") 
+	{
+		if(is_null($json)) 
+		{
+			return;			
+		}
+		if(empty($attr_arr))
+		{
+			return $json;
+		}
+
+		$is_debug=false;
+		if($is_debug) echo "<br/>\n<br/>\n";
+		if($is_debug) echo "extractMultipleAttr<br/>\n";
+		// if($is_debug) print_r($json);
+		// if($is_debug) print_r($attr_arr);
+
+		if(is_array($json))
+		{
+			// 1. array
+			$isNumericKeyArr = $this->isNumericKeyArr($json);
+
+			if($isNumericKeyArr)
+			{
+				// 1-1. numeric idx arr ["APPLE","BANANA",..]
+				// 내부 엘리먼트에서 해당되는 attr 값이 있는지 확인해야 합니다.
+
+				/*
+				$json =
+				[
+					[
+						"A"=>"APPLE"
+						,"B"=>"BANANA"
+						,...
+					],
+					[
+						"A"=>"APPLE"
+						,"B"=>"BANANA"
+						,...
+					],
+					...
+				]
+
+				$attr_arr = ["A"]
+
+				$box_list =
+				[
+					[
+						"A"=>"APPLE"
+					],
+					[
+						"A"=>"APPLE"
+					],
+					...
+				]
+				*/
+
+				$box_list = [];
+				foreach ($json as $value) 
+				{
+					$box = new stdClass();
+					foreach ($attr_arr as $attr) 
+					{
+
+						// if($is_debug) print_r($value);
+						if($is_debug) echo "<br/>\extractMultipleAttr / 1-1-1 / \$attr : $attr<br/>\n";
+
+						// attr에 해당하는 값을 돌려줍니다.
+						$result = $this->extractSingleAttr($value, $attr);
+
+						if($is_debug) print_r($result);
+						if($is_debug) echo "<br/>\n";
+
+						if(!empty($result))
+						{
+							$box->{$attr} = $result;
+						}
+					}
+
+					if($is_debug) echo "<br/>\extractMultipleAttr / 1-1-2<br/>\n";
+					if($is_debug) print_r($box);
+					if($is_debug) echo "<br/>\n";
+
+					array_push($box_list, $box);
+				}
+
+				if($is_debug) echo "<br/>\extractMultipleAttr / 1-1-3<br/>\n";
+				if($is_debug) print_r($box_list);
+				if($is_debug) echo "<br/>\n";
+
+				return $box_list;
+			}
+			else
+			{
+				// 1-2. key-value arr ["A"=>"APPLE","B"=>"BANANA",..]
+				// json obj 타입으로 인식, stdClass로 전환합니다.
+				$box = new stdClass();
+				foreach ($attr_arr as $attr) 
+				{
+					if(isset($json[$attr]))
+					{
+						$box->{$attr} = $json[$attr];
+					} // end if
+				}
+				return $box;
+			}
+		}
+		else
+		{
+			// 2. stdObj {"A":"APPLE","B":"BANANA"}
+			// 해당 객체의 1개의 값만 포함한 객체로 돌려줍니다.
+			$box = new stdClass();
+			foreach ($attr_arr as $attr) 
+			{
+				if(isset($json->{$attr}))
+				{
+					$box->{$attr} = $json->{$attr};
+				} // end if
+			}
+			return $box;
+		}
+
+		return null;
+	}	
+	private function extract($json=null, $attr_arr=null) 
+	{
 
 		if(is_null($json)) 
 		{
@@ -108,111 +329,42 @@ class MY_Curl
 		{
 			return $json;
 		}
-
-		// echo "\n\n<br/><br/>";
-		$cnt = count($attr_arr);
-		// echo "extract - 000 / \$cnt : $cnt<br/>\n";
 		$attr = array_shift($attr_arr);
 		if(empty($attr)) 
 		{
 			return $json;
 		}
 
-		$result=null;
-		if(is_array($json))
+		$is_debug=false;
+		if($is_debug) echo "<br/>\n<br/>\n";
+		if($is_debug) print_r($json);
+		if($is_debug) print_r($attr_arr);
+
+		if(is_array($attr) && !empty($attr))
 		{
-			$box_list = [];
-			// echo "extract - 001<br/>\n";
-			if(is_string($attr))	
-			{
-				// print_r($json);
-				// echo "<br/>\n<br/>\n";
+			// ["user_id","status",...]
+			if($is_debug) echo "extract - 01 <br/>\n";
+			$result = $this->extractMultipleAttr($json, $attr);
 
-				// echo "extract - 001-1<br/>\n";
-				// echo "\$attr : $attr<br/>";
+			if($is_debug) print_r($result);
+			if($is_debug) echo "extract - 01 <br/>\n";
 
-				if(isset($json[$attr])) 
-				{
-					$box_list = $json[$attr];
-				} 
-				else 
-				{
-					foreach($json as $key => $value)
-					{
-						// echo "extract - 001-1-1<br/>\n";
-						if(is_array($value))
-						{
-							// echo "extract - 001-1-1-1<br/>\n";
-							// print_r($value);
-							// echo "<br/><br/>\n\n";
-
-							if(isset($value[$attr]))
-							{
-								// echo "extract - 001-1-1-2<br/>\n";
-								array_push($box_list, $value[$attr]);
-							}
-						}
-						else //if(is_object($value))
-						{
-							// echo "extract - 001-1-1-3<br/>\n";
-							if(isset($value->{$attr}))
-							{
-								// echo "extract - 001-1-1-4<br/>\n";
-								array_push($box_list, $value->{$attr});
-							}
-							
-						} // end if
-					} // end foreach
-				} // end if
-
-			}
-			else if(is_array($attr))	
-			{
-				// echo "extract - 001-2<br/>\n";
-				// print_r($json);
-				// echo "\n";
-				// print_r($attr);
-				// echo "\n";
-
-				foreach($json as $key => $value)
-				{
-					// echo "extract - 001-2-1<br/>\n";
-					$box = [];
-					foreach($attr as $attr_name)
-					{
-						// echo "extract - 001-2-1-1<br/>\n";
-						// echo "extract - 001-2 / \$key : $key<br/>\n";
-						if(isset($value[$attr_name]))
-						{
-							// echo "extract - 001-2-1-1-*<br/>\n";
-							$box[$attr_name] = $value[$attr_name];
-						}
-					}
-					array_push($box_list, $box);
-
-				}
-			}
-			return $this->extract($box_list, $attr_arr);
+			if($is_debug) echo "<br/>\n<br/>\n";
+			return $this->extract($result, $attr_arr);
 		}
-		else
+		else if(is_string($attr) && !empty($attr))
 		{
-			// echo "extract - 002<br/>\n";
-			if(is_string($attr))	
-			{
-				// echo "extract - 002-1<br/>\n";
-				if(isset($json->{$attr})) {
-					// echo "extract - 002-1-2<br/>\n";
-					return $this->extract($json->{$attr}, $attr_arr);
-				}
-			}
-			else if(is_array($attr))	
-			{
-				// Need to implement!
-				// echo "extract - 002-2 / <br/>\n";
-			}
-		}
+			// "user_id"
+			if($is_debug) echo "extract - 02 / \$attr : $attr <br/>\n";
+			$result = $this->extractSingleAttr($json, $attr);
 
-		return $result;
+			if($is_debug) print_r($result);
+			if($is_debug) echo "extract - 02<br/>\n";
+
+			if($is_debug) echo "<br/>\n<br/>\n";
+			return $this->extract($result, $attr_arr);
+		}
+		return $json;
 	}
 
 	private function call($url="", $is_xml=false, $is_post=false, $header_arr=null, $attr_arr=null) 
@@ -252,7 +404,6 @@ class MY_Curl
 			$result = json_decode($json,TRUE);
 
 			$result = $this->extract($result, $attr_arr);
-
         } 
         else 
         {

@@ -39,7 +39,8 @@ export class KlassService {
         req_url = `${ req_url }?q=${ qEncoded }`;
         console.log("klass.service.ts / searchKlassVenue / req_url : ",req_url);
 
-        return this.http.get(req_url)
+        return this.http.get(req_url).map(this.getKlassVenue);
+                        /*
                         .map((r: Response) => {
 
                           let responseJson = r.json();
@@ -56,7 +57,35 @@ export class KlassService {
                           // return r.json().data as KlassVenue[]; 
                           return result as KlassVenue[];
                         });
+                        */
 
+    }
+    private getKlassVenue(r: Response): KlassVenue[] {
+
+      let responseJson = r.json();
+      let result = [];
+      if( null != responseJson && 
+          null != responseJson.data && 
+          null != responseJson.data.result ) {
+
+          result = responseJson.data.result;
+      }
+
+      // 예외 사항 검사
+      if(0 < result.length) {
+        let element = result[0];
+        if(null == element) {
+          console.log("!Error! / klass.service.ts / null == element");
+          console.log("r : ",r);
+          return [];
+        } else if(null == element.title) {
+          console.log("!Error! / klass.service.ts / null == element.title");
+          console.log("r : ",r);
+          return [];
+        }
+      }
+
+      return result as KlassVenue[];
     }
 
     searchKlassMap (q:string): Promise<KlassVenue> {
@@ -65,7 +94,7 @@ export class KlassService {
       let req_url = this.us.get(this.klassVenueSearchMapUrl);
 
       req_url = `${ req_url }?q=${ qEncoded }`;
-      console.log("klass.service.ts / searchKlassMap / req_url : ",req_url);
+      // console.log("klass.service.ts / searchKlassMap / req_url : ",req_url);
 
       
       return this.http.get(req_url)

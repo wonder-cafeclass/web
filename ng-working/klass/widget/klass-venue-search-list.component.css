@@ -21,6 +21,7 @@ div.fly {
 li.my-style {
 	padding:5px;
 	border-color:#e85c41;
+  color:#777;
 }
 li.my-focus {
 	color:#fff;
@@ -55,6 +56,9 @@ li.body {
 */}
 li.tail {
   border:0px;  
+}
+li.my-hide {
+  display:none;
 }
 
 .cc-img-magnifier {
