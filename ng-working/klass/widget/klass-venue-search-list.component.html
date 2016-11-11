@@ -1,50 +1,86 @@
 <div [style.height]="cageHeightStr">
-	<div 	*ngIf="isAdmin" 
-			[style.width]="inputWidthStr"
-			class="fly">
-		<ul class="list-group">
-		  <li class="list-group-item my-style">
-	
-<!-- 			
-			<div 	(mouseenter)="onMouseenterMagnifier()" 
-					(mouseleave)="onMouseleaveMagnifier()" 
-					(click)="onKeyupEnterSearch(searchBox.value, searchBox)">
-				<img 	*ngIf="!isOverMagnifier"
-						[class.search_disabled]="!isSearchEnabled"
-						[class.search_enabled]="isSearchEnabled"
-						src="assets/images/search/magnifier.svg" 
-						class="pull-right cc-img-magnifier">
-				<img 	*ngIf="isOverMagnifier"
-						src="assets/images/search/magnifier_focus.svg" 
-						class="pull-right cc-img-magnifier">
-			</div>		  
- -->
+
+	<table class="table" style="margin-bottom: 0px;" [style.width]="cageWidthStr"> 
+		<tbody> 
+			<tr>
+
+				<td   class="my-style border-right"
+						[style.width]="cageWidthNaverMapStr">
+
+<!-- NAVER MAP INIT -->
+<div 	*ngIf="isAdmin"
+		[style.width]="inputWidthStr"
+		class="fly">
+	<ul class="list-group">
+	  <li class="list-group-item my-style">
+
+		<input 	id="search-box" 
+				class="form-control cc-panel-search" 
+				placeholder="장소를 검색해보세요" 
+				value={{searchBoxText}}
+				#searchBox
+				(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
+				(keyup)="onKeyupSearchInput(searchBox.value)">
+	  	
+	  </li>
+	  <li 	*ngFor="let klassVenue of klassVenues | async" 
+			(mouseenter)="onMouseenterKlassVenue(klassVenue)"
+			(mouseleave)="onMouseleaveKlassVenue(klassVenue)" 
+			[class.my-focus]="klassVenue.isFocus"
+			[class.my-blur]="!klassVenue.isFocus"
+	  		(click)="onClickKlassVenue(klassVenue)"
+	  		class="list-group-item my-style my-result">
+	  		<div [innerHTML]="klassVenue.title | safeHtml"></div>
+	  </li>
+	</ul>		
+</div>
+<iframe 	id="se"
+			#iframe
+			src="./assets/plugin/naver-maps/maps.html?height=350&callbackName=angularMySL" 
+			[style.height]="cageHeightStr"
+			[style.width]="cageWidthNaverMapStr"
+			class="cage"></iframe>
+<!-- NAVER MAP DONE -->
+
+				</td>
+
+				<td class="my-style"
+					[style.width]="cageWidthVenueInfoStr">
+
+<!-- NAVER MAP INFO BEGINS -->
+<ul *ngIf="klassVenuesNaverMap" class="list-group">
+	<li class="list-group-item my-padding my-title head">
+		<h5 class="my-style">이름</h5>
+	</li>
+	<li class="list-group-item my-padding my-content body">
+		<small><div [innerHTML]="klassVenuesNaverMap.title | safeHtml"></div></small>
+	</li>
+	<li class="list-group-item my-padding my-title body">
+		<h5 class="my-style">전화번호</h5>
+	</li>
+	<li class="list-group-item my-padding my-content body">
+		<small>{{klassVenuesNaverMap.telephone}}</small>
+	</li>
+	<li class="list-group-item my-padding my-title body">
+		<h5 class="my-style">주소</h5>
+	</li>
+	<li class="list-group-item my-padding my-content tail">
+		<small>{{klassVenuesNaverMap.address}}</small>
+	</li>
+	<li class="list-group-item my-padding my-title body">
+		<h5 class="my-style">도로명 주소</h5>
+	</li>
+	<li class="list-group-item my-padding my-content tail">
+		<small>{{klassVenuesNaverMap.roadAddress}}</small>
+	</li>
+</ul>
+<!-- NAVER MAP INFO ENDS -->
+
+				</td>
+
+			</tr>
+		</tbody>
+	</table>
 
 
-			<input 	id="search-box" 
-					class="form-control cc-panel-search" 
-					placeholder="장소를 검색해보세요" 
-					value={{searchBoxText}}
-					#searchBox
-					(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
-					(keyup)="onKeyupSearchInput(searchBox.value)">
-		  	
-		  </li>
-		  <li 	*ngFor="let klassVenue of klassVenues | async" 
-				(mouseenter)="onMouseenterKlassVenue(klassVenue)"
-				(mouseleave)="onMouseleaveKlassVenue(klassVenue)" 
-				[class.my-focus]="klassVenue.isFocus"
-				[class.my-blur]="!klassVenue.isFocus"
-		  		(click)="onClickKlassVenue(klassVenue)"
-		  		class="list-group-item my-style my-result">
-		  		<div [innerHTML]="klassVenue.title | safeHtml"></div>
-		  </li>
-		</ul>		
-	</div>
-	<iframe 	id="se"
-				#iframe
-				src="./assets/plugin/naver-maps/maps.html?height=350&callbackName=angularMySL" 
-				[style.height]="cageHeightStr"
-				[style.width]="cageWidthStr"
-				class="cage"></iframe>
 </div>
