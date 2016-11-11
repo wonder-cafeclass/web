@@ -48,6 +48,7 @@ import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.co
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+import { SearchListComponent }      from '../widget/search-list/search-list.component';
 // @ Deprecated
 import { DronListComponent }         from '../widget/dron-list/dron-list.component';
 
@@ -89,6 +90,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     CheckBoxHListComponent,
     NavTabsComponent,
     SmartEditorComponent,
+    SearchListComponent,
     DronListComponent,    // @ Depreacted
     InputRowComponent,
     SafeHtmlPipe

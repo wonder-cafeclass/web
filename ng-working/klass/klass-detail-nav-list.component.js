@@ -271,35 +271,40 @@ var KlassDetailNavListComponent = (function () {
                 // 화면에 현재 작업중인 모습을 보여주지 않음.
                 this.isPreviewKlassSchedule = false;
             }
+        } /* else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
+    
+          if( this.myEventService.KLASS_FEATURE === myEvent.key ||
+              this.myEventService.KLASS_TARGET === myEvent.key ||
+              this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+    
+            this.shutdownKlassInfos();
+          }
+    
+        } else if(this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
+    
+          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+            this.klassFeature = this.klass.feature = myEvent.value;
+          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+            this.klassTarget = this.klass.target = myEvent.value;
+          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+            this.klassSchedule = this.klass.schedule = myEvent.value;
+          }
+    
+        } else if(this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
+    
+          // @ Deprecated
+    
+          // DB로 변경된 데이터를 저장합니다.
+          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+            // Not implemented!
+          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+            // Not implemented!
+          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+            // Not implemented!
+          }
+    
         }
-        else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
-            if (this.myEventService.KLASS_FEATURE === myEvent.key ||
-                this.myEventService.KLASS_TARGET === myEvent.key ||
-                this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-                this.shutdownKlassInfos();
-            }
-        }
-        else if (this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
-                this.klassFeature = this.klass.feature = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
-                this.klassTarget = this.klass.target = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-                this.klassSchedule = this.klass.schedule = myEvent.value;
-            }
-        }
-        else if (this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
-            // @ Deprecated
-            // DB로 변경된 데이터를 저장합니다.
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
-            }
-            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
-            }
-            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-            }
-        }
+        */
     };
     KlassDetailNavListComponent.prototype.hasChangedFeature = function () {
         var hasChanged = this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);

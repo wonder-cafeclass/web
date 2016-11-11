@@ -48,6 +48,7 @@ var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.co
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var search_list_component_1 = require('../widget/search-list/search-list.component');
 // @ Deprecated
 var dron_list_component_1 = require('../widget/dron-list/dron-list.component');
 var input_row_component_1 = require('../widget/input-row/input-row.component');
@@ -89,6 +90,7 @@ var KlassCenterModule = (function () {
                 checkbox_h_list_component_1.CheckBoxHListComponent,
                 nav_tabs_component_1.NavTabsComponent,
                 smart_editor_component_1.SmartEditorComponent,
+                search_list_component_1.SearchListComponent,
                 dron_list_component_1.DronListComponent,
                 input_row_component_1.InputRowComponent,
                 safe_html_pipe_1.SafeHtmlPipe

@@ -74,31 +74,42 @@ var DronListComponent = (function () {
         if (null == myEvent) {
             return;
         }
-        if (this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
-            // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
-            this.setOffset();
-        }
-        else if (this.myEventService.ON_READY_SINGLE_INPUT_VIEW === myEvent.eventName) {
-            this.setOffset();
-        }
-        else if (this.myEventService.ON_CHANGE_SMART_EDITOR === myEvent.eventName ||
-            this.myEventService.ON_CHANGE_SINGLE_INPUT_VIEW === myEvent.eventName) {
-            // 내용이 수정되었습니다.
-            this.isDisabledSave = false;
-            // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
-            var myEventReturn = this.myEventService.getMyEvent(
+        /*
+        if(this.myEventService.ON_READY_SMART_EDITOR === myEvent.eventName) {
+    
+          // 에디터가 준비되었습니다. 에디터의 높이를 구해서, 화면에 최대한 노출하도록 이동합니다.
+          this.setOffset();
+          // 에디터에 넣을 내용을 설정합니다.
+          // this.smartEditorComponent.updateHTML(this.SEinnerHTML);
+    
+        } else if(this.myEventService.ON_READY_SINGLE_INPUT_VIEW === myEvent.eventName) {
+          
+          this.setOffset();
+    
+        } else if(  this.myEventService.ON_CHANGE_SMART_EDITOR === myEvent.eventName ||
+                    this.myEventService.ON_CHANGE_SINGLE_INPUT_VIEW === myEvent.eventName  ) {
+    
+          // 내용이 수정되었습니다.
+          this.isDisabledSave = false;
+    
+          // 부모 컴포넌트에게 MyEvent 객체 - 사용자가 수정창을 닫음 - 를 전달.
+          let myEventReturn:MyEvent =
+          this.myEventService.getMyEvent(
             // public eventName:string
-            this.myEventService.ON_CHANGE, 
+            this.myEventService.ON_CHANGE,
             // public key:string
-            this.myEventService.KEY_DRON_LIST, 
+            this.myEventService.KEY_DRON_LIST,
             // public value:string
-            myEvent.value, 
+            myEvent.value,
             // public metaObj:any
-            null, 
+            null,
             // public myChecker:MyChecker
-            null);
-            this.emitter.emit(myEventReturn);
+            null
+          );
+          this.emitter.emit(myEventReturn);
+    
         }
+        */
     };
     DronListComponent.prototype.setOffset = function () {
         // this.headerHeight = this.myRulerService.getHeight("dron-header");

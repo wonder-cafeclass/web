@@ -15,13 +15,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */ 
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/libraries/MY_Class.php';
+require APPPATH . '/models/KlassLocation.php';
 
 /*
 *   @ Author : Wonder Jung
 *   @ Desc : 네이버 API 호출을 관리하는 클래스. 검색-지역(상점), 지도-주소검색 의 2가지 API를 사용합니다.
 */
-
-
 class Naver extends REST_Controller implements MY_Class{
 
     // 로컬 서버에서 domain 검증으로 api 호출이 불가능한 경우, 사용해야할 api url.
@@ -175,9 +174,28 @@ class Naver extends REST_Controller implements MY_Class{
             ]
         );
 
-        // TODO - 검색 결과가 없는 경우라면?
-        
-        $output["result"] = $result;
+        $location_list = array();
+        for ($i=0; $i < count($result); $i++) { 
+            $element = $result[$i];
+
+            $klassLocation = new KlassLocation();
+            if(isset($element["title"])) {
+                $klassLocation->title = $element["title"];
+            }
+            if(isset($element["telephone"])) {
+                $klassLocation->telephone = $element["telephone"];
+            }
+            if(isset($element["address"])) {
+                $klassLocation->address = $element["address"];    
+            }
+            if(isset($element["roadAddress"])) {
+                $klassLocation->roadAddress = $element["roadAddress"];
+            }
+
+            array_push($location_list, $klassLocation);
+        }
+
+        $output["result"] = $location_list;
 
         array_push($output, $result);
 

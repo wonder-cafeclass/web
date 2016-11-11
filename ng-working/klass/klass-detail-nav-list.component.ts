@@ -385,7 +385,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         this.isPreviewKlassSchedule=false;
       }
 
-    } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
+    }/* else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
 
       if( this.myEventService.KLASS_FEATURE === myEvent.key || 
           this.myEventService.KLASS_TARGET === myEvent.key || 
@@ -418,6 +418,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       }
 
     }
+    */
   }
 
   hasChangedFeature() :boolean {

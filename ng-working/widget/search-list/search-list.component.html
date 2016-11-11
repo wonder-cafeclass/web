@@ -1,0 +1,46 @@
+<div [style.height]="cageHeightStr">
+	<div 	*ngIf="isAdmin" 
+			[style.width]="inputWidthStr"
+			class="fly">
+		<ul class="list-group">
+		  <li class="list-group-item my-style">
+	
+<!-- 			<div 	(mouseenter)="onMouseenterMagnifier()" 
+					(mouseleave)="onMouseleaveMagnifier()" 
+					(click)="onKeyupEnterSearch(searchBox.value, searchBox)">
+				<img 	*ngIf="!isOverMagnifier"
+						[class.search_disabled]="!isSearchEnabled"
+						[class.search_enabled]="isSearchEnabled"
+						src="assets/images/search/magnifier.svg" 
+						class="pull-right cc-img-magnifier">
+				<img 	*ngIf="isOverMagnifier"
+						src="assets/images/search/magnifier_focus.svg" 
+						class="pull-right cc-img-magnifier">
+			</div>		  
+ -->
+			<input 	id="search-box" 
+					class="form-control cc-panel-search" 
+					placeholder="장소를 검색해보세요" 
+					#searchBox
+					(keyup.enter)="onKeyupEnterSearch(searchBox.value)"
+					(keyup)="onKeyupSearchInput(searchBox.value)">
+		  	
+		  </li>
+		  <li 	*ngFor="let searchResult of searchResultList" 
+				(mouseenter)="onMouseenterSearchResult(searchResult)"
+				(mouseleave)="onMouseleaveSearchResult(searchResult)" 
+				[class.my-focus]="searchResult.isFocus"
+				[class.my-blur]="!searchResult.isFocus"
+		  		(click)="onClickSearchResult(searchResult)"
+		  		class="list-group-item my-style my-result">
+		  	{{searchResult.title}}
+		  </li>
+		</ul>		
+	</div>
+	<iframe 	id="se"
+				#iframe
+				src="./assets/plugin/naver-maps/maps.html?height=350&callbackName=angularMySL" 
+				[style.height]="cageHeightStr"
+				[style.width]="cageWidthStr"
+				class="cage"></iframe>
+</div>

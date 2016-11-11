@@ -109,6 +109,7 @@ class MY_Curl
 			return $json;
 		}
 
+		// echo "\n\n<br/><br/>";
 		$cnt = count($attr_arr);
 		// echo "extract - 000 / \$cnt : $cnt<br/>\n";
 		$attr = array_shift($attr_arr);
@@ -124,33 +125,54 @@ class MY_Curl
 			// echo "extract - 001<br/>\n";
 			if(is_string($attr))	
 			{
+				// print_r($json);
+				// echo "<br/>\n<br/>\n";
+
 				// echo "extract - 001-1<br/>\n";
 				// echo "\$attr : $attr<br/>";
-				
-				foreach($json as $key => $value)
+
+				if(isset($json[$attr])) 
 				{
-					// echo "extract - 001-1-1<br/>\n";
-					if(is_array($value))
+					$box_list = $json[$attr];
+				} 
+				else 
+				{
+					foreach($json as $key => $value)
 					{
-						if(isset($value[$attr]))
+						// echo "extract - 001-1-1<br/>\n";
+						if(is_array($value))
 						{
-							array_push($box_list, $value[$attr]);
+							// echo "extract - 001-1-1-1<br/>\n";
+							// print_r($value);
+							// echo "<br/><br/>\n\n";
+
+							if(isset($value[$attr]))
+							{
+								// echo "extract - 001-1-1-2<br/>\n";
+								array_push($box_list, $value[$attr]);
+							}
 						}
-					}
-					else if(is_object($value))
-					{
-						if(isset($value->{$attr}))
+						else //if(is_object($value))
 						{
-							array_push($box_list, $value->{$attr});
-						}
-						
-					} // end if
-				} // end foreach
+							// echo "extract - 001-1-1-3<br/>\n";
+							if(isset($value->{$attr}))
+							{
+								// echo "extract - 001-1-1-4<br/>\n";
+								array_push($box_list, $value->{$attr});
+							}
+							
+						} // end if
+					} // end foreach
+				} // end if
+
 			}
 			else if(is_array($attr))	
 			{
 				// echo "extract - 001-2<br/>\n";
 				// print_r($json);
+				// echo "\n";
+				// print_r($attr);
+				// echo "\n";
 
 				foreach($json as $key => $value)
 				{
@@ -220,6 +242,7 @@ class MY_Curl
         if(is_null($response) || empty($response)) 
         {
         	// error report!
+        	return null;
         }
 
         if($is_xml) {
@@ -227,7 +250,9 @@ class MY_Curl
 			$xml = simplexml_load_string($response);
 			$json = json_encode($xml);
 			$result = json_decode($json,TRUE);
+
 			$result = $this->extract($result, $attr_arr);
+
         } 
         else 
         {

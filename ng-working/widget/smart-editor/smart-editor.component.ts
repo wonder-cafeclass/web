@@ -27,6 +27,7 @@ import { MyAssetService }           from '../../util/my-asset.service';
 export class SmartEditorComponent implements OnInit {
 
   @ViewChild('iframe') iframe:ElementRef;
+  private childContentWindow;
 
   @Input() title:string;
   @Input() titleFontSize:number;
@@ -42,7 +43,6 @@ export class SmartEditorComponent implements OnInit {
   
   @Output() emitter = new EventEmitter<any>();
 
-  childContentWindow;
 
 
   constructor(  public myAssetService:MyAssetService, 

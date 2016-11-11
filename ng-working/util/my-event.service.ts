@@ -47,15 +47,17 @@ export class MyEventService {
     STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
     CAUTION:string="CAUTION";                   // 유의사항
 
-    KEY_SMART_EDITOR:string="KEY_SMART_EDITOR";         // 네이버 스마트에디터
-    KEY_INPUTS_BTNS_ROWS:string="KEY_INPUTS_BTNS_ROWS"; // 여러개의 열이 있는 입력창
-    KEY_INPUT_BTNS_ROW:string="KEY_INPUT_BTNS_ROW"; // 여러개 버튼과 1개의 INPUT이 있는 입력창
-    KEY_INPUT_ROW:string="KEY_INPUT_ROW";           // 입력창만 있는 열
-    KEY_SINGLE_INPUT_VIEW:string="KEY_SINGLE_INPUT_VIEW";           // ?
-    KEY_MINI_CALENDAR:string="KEY_MINI_CALENDAR";   // 날짜를 한눈에 확인하는 미니 캘린더
-    KEY_DRON_LIST:string="KEY_DRON_LIST";           // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
+    KEY_SEARCH_LIST:string="KEY_SEARCH_LIST";             // 검색시, 결과가 리스트에 노출됨.
+    KEY_SMART_EDITOR:string="KEY_SMART_EDITOR";           // 네이버 스마트에디터
+    KEY_INPUTS_BTNS_ROWS:string="KEY_INPUTS_BTNS_ROWS";   // 여러개의 열이 있는 입력창
+    KEY_INPUT_BTNS_ROW:string="KEY_INPUT_BTNS_ROW";       // 여러개 버튼과 1개의 INPUT이 있는 입력창
+    KEY_INPUT_ROW:string="KEY_INPUT_ROW";                 // 입력창만 있는 열
+    KEY_SINGLE_INPUT_VIEW:string="KEY_SINGLE_INPUT_VIEW"; // ?
+    KEY_MINI_CALENDAR:string="KEY_MINI_CALENDAR";         // 날짜를 한눈에 확인하는 미니 캘린더
+    KEY_DRON_LIST:string="KEY_DRON_LIST";                 // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
 
-    // SPECIFIC CASES
+    // SPECIFIC CASES - @ Deprecated
+    /*
     ON_CHANGE_KLASS_DISCOUNT:string="ON_CHANGE_KLASS_DISCOUNT";
     ON_CHANGE_KLASS_TITLE:string="ON_CHANGE_KLASS_TITLE";
     ON_CHANGE_KLASS_PRICE:string="ON_CHANGE_KLASS_PRICE";
@@ -101,6 +103,7 @@ export class MyEventService {
 
     ON_MOUSEENTER_KLASS_CALENDAR_DATE:string="ON_MOUSEENTER_KLASS_CALENDAR_DATE";
     ON_MOUSELEAVE_KLASS_CALENDAR_DATE:string="ON_MOUSELEAVE_KLASS_CALENDAR_DATE";
+    */
 
     private uniqueIdx:number=0;
 
@@ -109,20 +112,7 @@ export class MyEventService {
 
     // @ Deprecated
     has_it(event_name:string) :boolean {
-
-        if (    this.ON_CHANGE_KLASS_DISCOUNT === event_name ||
-                this.ON_CHANGE_KLASS_PRICE === event_name ||
-                this.ON_CHANGE_KLASS_TIME === event_name ||
-                this.ON_CHANGE_KLASS_DATE === event_name ||
-                this.ON_CHANGE_KLASS_LEVEL === event_name ||
-                this.ON_CHANGE_KLASS_ENROLMENT_INTERVAL === event_name ||
-                this.ON_CHANGE_KLASS_WEEKS_MIN === event_name ||
-                this.ON_CHANGE_KLASS_WEEKS_MAX === event_name ||
-                this.ON_CHANGE_KLASS_DATE_BEGIN === event_name ) {
-
-            return true;
-        }
-        return false;
+        return true;
     }
 
     // @ Deprecated

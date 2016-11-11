@@ -60,6 +60,14 @@ CREATE TABLE `klass` (
   `venue_subway_station` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 - 지하철역; ex) 송파역',
   `venue_cafe` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 - 카페; ex) 스타벅스',
   `venue_map_link` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 맵링크 - 네이버맵 or 다음맵 링크;',
+
+  `venue_title` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 이름',
+  `venue_telephone` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 전화번호',
+  `venue_address` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 주소 / 네이버 지역 검색 결과',
+  `venue_road_address` varchar(512) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 도로명 주소 / 네이버 지역 검색 결과',
+  `venue_latitude` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 경도 / 네이버 맵에 사용됨',
+  `venue_longitude` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '수업이 진행되는 장소 위도 / 네이버 맵에 사용됨',
+
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/신규),O(Open/개강),S(Suspended/중단),C(Closed/종료)',
   `enrollment_interval_week` int(1) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '1:매주 등록 가능(당일 수업 시작 3시간 전까지),2:격주로 등록 가능, 4:월별 첫번째 주까지 등록 가능.',
   `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
