@@ -26,8 +26,7 @@
 	  <li 	*ngFor="let klassVenue of klassVenues | async" 
 			(mouseenter)="onMouseenterKlassVenue(klassVenue)"
 			(mouseleave)="onMouseleaveKlassVenue(klassVenue)" 
-			[class.my-focus]="klassVenue.isFocus"
-			[class.my-blur]="!klassVenue.isFocus"
+			[class.my-hide]="isHideKlassVenue"
 	  		(click)="onClickKlassVenue(klassVenue)"
 	  		class="list-group-item my-style my-result">
 	  		<div [innerHTML]="klassVenue.title | safeHtml"></div>

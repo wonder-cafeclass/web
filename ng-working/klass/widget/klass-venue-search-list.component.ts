@@ -44,6 +44,7 @@ export class KlassVenueSearchListComponent implements OnInit {
   inputWidthStr:string;
   myEventCallback:MyEvent;
   @Input() klassVenue:KlassVenue;
+  isHideKlassVenue:boolean=false;
   searchBoxText:string;
 
   // 네이버 지역 검색 결과
@@ -131,11 +132,16 @@ export class KlassVenueSearchListComponent implements OnInit {
     this.searchTermsNaverLocal
     .debounceTime(300)        // wait for 300ms pause in events
     .distinctUntilChanged()   // ignore if next search term is same as previous
-    .switchMap(term => term   // switch to new observable each time
+    .switchMap(term => {
+
+      // 새로운 입력이 들어온다면 검색 결과리스트를 노출합니다.
+      this.isHideKlassVenue = false;
+
+      // switch to new observable each time
       // return the http search observable
-      ? this.klassService.searchKlassVenue(term)
       // or the observable of empty heroes if no search term
-      : Observable.of<KlassVenue[]>([]))
+      return (null!=term)?this.klassService.searchKlassVenue(term):Observable.of<KlassVenue[]>([]);
+    })
     .catch(error => {
       // TODO: real error handling
       console.log(error);
@@ -154,9 +160,6 @@ export class KlassVenueSearchListComponent implements OnInit {
 
       // iframe의 너비, 높이를 변경합니다.
       if(null != this.childContentWindow.setSize) {
-
-        console.log("klass-venue-search-list / callFromOutside / setSize / this.cageWidthNaverMap : ",this.cageWidthNaverMap);
-
         this.childContentWindow.setSize(this.cageWidthNaverMap, this.cageHeight);
       }
 
@@ -244,9 +247,16 @@ export class KlassVenueSearchListComponent implements OnInit {
       // iframe에 위치 업데이트
       if(null != this.childContentWindow.init) {
         this.childContentWindow.init(this.klassVenuesNaverMap);
-        // 검색 리스트 삭제.
-        this.klassVenues = null;
+
+        // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
+        // this.klassVenues = null;
+
+        // 선택한 업체 이름을 화면에 표시합니다.
         this.searchBoxText = this.removeHTMLTags(this.klassVenuesNaverMap.title);
+
+        // 결과 라스트는 화면에서 가립니다.
+        this.isHideKlassVenue = true;
+
         // DB UPDATE!
         console.log("DB UPDATE!");
       }

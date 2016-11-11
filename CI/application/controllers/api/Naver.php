@@ -175,27 +175,57 @@ class Naver extends REST_Controller implements MY_Class{
         );
 
         $location_list = array();
-        for ($i=0; $i < count($result); $i++) { 
-            $element = $result[$i];
+        if(is_array($result)) 
+        {   
+            // 2개 이상의 배열로 넘어오는 경우.
+            for ($i=0; $i < count($result); $i++) { 
+                $element = $result[$i];
 
+                $klassLocation = new KlassLocation();
+                if(isset($element->title)) {
+                    $klassLocation->title = $element->title;
+                }
+                if(isset($element->telephone)) {
+                    $klassLocation->telephone = $element->telephone;
+                }
+                if(isset($element->address)) {
+                    $klassLocation->address = $element->address;
+                }
+                if(isset($element->roadAddress)) {
+                    $klassLocation->roadAddress = $element->roadAddress;
+                }
+                if(!empty($klassLocation->title)) {
+                    // 데이터가 이상없는 객체만 추가한다.
+                    array_push($location_list, $klassLocation);
+                }
+            }
+        } 
+        else 
+        {
+            // 1개의 단독 객체로 넘어오는 경우.
+            $location_list = array();
             $klassLocation = new KlassLocation();
-            if(isset($element["title"])) {
-                $klassLocation->title = $element["title"];
+            if(isset($result->title)) {
+                $klassLocation->title = $result->title;
             }
-            if(isset($element["telephone"])) {
-                $klassLocation->telephone = $element["telephone"];
+            if(isset($result->telephone)) {
+                $klassLocation->telephone = $result->telephone;
             }
-            if(isset($element["address"])) {
-                $klassLocation->address = $element["address"];    
+            if(isset($result->address)) {
+                $klassLocation->address = $result->address;
             }
-            if(isset($element["roadAddress"])) {
-                $klassLocation->roadAddress = $element["roadAddress"];
+            if(isset($result->roadAddress)) {
+                $klassLocation->roadAddress = $result->roadAddress;
             }
-
-            array_push($location_list, $klassLocation);
+            if(!empty($klassLocation->title)) {
+                // 데이터가 이상없는 객체만 추가한다.
+                array_push($location_list, $klassLocation);
+            }
         }
 
+
         $output["result"] = $location_list;
+
 
         array_push($output, $result);
 
