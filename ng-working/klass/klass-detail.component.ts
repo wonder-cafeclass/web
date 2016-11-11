@@ -458,11 +458,13 @@ export class KlassDetailComponent implements OnInit {
     let eventName:string = myEvent.eventName;
     let myEventService:MyEventService = this.myEventService;
 
+    /*
     if(this.myEventService.is_it(eventName,myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
       console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
     } else if(this.myEventService.is_it(eventName,myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
       console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
     }
+    */
 
   }
 
@@ -472,10 +474,12 @@ export class KlassDetailComponent implements OnInit {
     let eventName:string = myEvent.eventName;
     let myEventService:MyEventService = this.myEventService;
 
+    /*
     if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
       // '수강신청일'이 변경되었습니다.
       console.log("'수강신청일'이 변경되었습니다.");
     } // end if
+    */
   }
 
   onChangedFromChild(myEvent:MyEvent) {
@@ -489,6 +493,7 @@ export class KlassDetailComponent implements OnInit {
     // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
     // console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
 
+    /*  
     if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
 
       // '수강신청일'이 변경되었습니다.
@@ -515,7 +520,6 @@ export class KlassDetailComponent implements OnInit {
         console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
 
       }
-
     } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
 
       // 드론 리스트 - klass.schedule을 수정합니다.
@@ -596,6 +600,9 @@ export class KlassDetailComponent implements OnInit {
 
       } // end if
     } // end if
+    */
+
+
   } // end method
 
   clearDronList() :void {

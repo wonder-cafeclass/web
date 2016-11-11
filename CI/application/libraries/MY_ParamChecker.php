@@ -27,10 +27,6 @@ class MY_ParamChecker {
             return;
         }
 
-        // 이미 전에 로딩한 것 아닌지?
-        // init database
-        // $this->CI->load->database();
-
         if(!isset($this->CI->my_error)) {
             return;
         }

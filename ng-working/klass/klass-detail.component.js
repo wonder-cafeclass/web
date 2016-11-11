@@ -332,21 +332,24 @@ var KlassDetailComponent = (function () {
     KlassDetailComponent.prototype.onChangedFromMiniCalendar = function (myEvent) {
         var eventName = myEvent.eventName;
         var myEventService = this.myEventService;
-        if (this.myEventService.is_it(eventName, myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
-            console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ", myEvent);
+        /*
+        if(this.myEventService.is_it(eventName,myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
+          console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
+        } else if(this.myEventService.is_it(eventName,myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
+          console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
         }
-        else if (this.myEventService.is_it(eventName, myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
-            console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ", myEvent);
-        }
+        */
     };
     // @ Deprecated
     KlassDetailComponent.prototype.onChangedFromInputView = function (myEvent) {
         var eventName = myEvent.eventName;
         var myEventService = this.myEventService;
-        if (this.myEventService.is_it(eventName, myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
-            // '수강신청일'이 변경되었습니다.
-            console.log("'수강신청일'이 변경되었습니다.");
+        /*
+        if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
+          // '수강신청일'이 변경되었습니다.
+          console.log("'수강신청일'이 변경되었습니다.");
         } // end if
+        */
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
         console.log("TEST / XXX / onChangedFromChild / myEvent : ", myEvent);
@@ -355,85 +358,114 @@ var KlassDetailComponent = (function () {
         // console.log("onChangedFromChild / eventName : ",eventName);
         // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
         // console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
-        if (this.myEventService.is_it(eventName, myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
-            // '수강신청일'이 변경되었습니다.
-            var weekInterval = +myEvent.value;
-            // 첫수업날짜가 변경됩니다.
-            if (4 === weekInterval) {
-                this.klass.enrollment_interval_week = 4;
-                this.setFirstClassDateFormat();
-                console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 4주");
-            }
-            else if (2 === weekInterval) {
-                this.klass.enrollment_interval_week = 2;
-                this.setFirstClassDateFormat();
-                console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 2주");
-            }
-            else if (1 === weekInterval) {
-                this.klass.enrollment_interval_week = 1;
-                this.setFirstClassDateFormat();
-                console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
-            }
-        }
-        else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
-            // 드론 리스트 - klass.schedule을 수정합니다.
-            this.clearDronList();
-            this.dronListKey = this.myEventService.KLASS_SCHEDULE;
-            this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
-            this.dronListSEinnerHTML = myEvent.value;
-        }
-        else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
-            console.log("onChangedFromChild / myEvent : ", myEvent);
-            console.log("onChangedFromChild / myEvent.value : ", myEvent.value);
-            // 드론 리스트의 입력 내용이 수정되었습니다.
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
-                console.log("feature 입력 내용이 수정되었습니다.");
-                this.klassFeature = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
-                console.log("target 입력 내용이 수정되었습니다.");
-                this.klassTarget = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-                console.log("schedule 입력 내용이 수정되었습니다.");
-                this.klassSchedule = myEvent.value;
-            } // end if
-        }
-        else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
-            // @ Deprecated
-            // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
-                console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
-                console.log("onChangedFromChild / myEvent.value : ", myEvent.value);
-            }
-        }
-        else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
-            // @ Deprecated
-            // 사용자가 드론리스트를 닫았습니다.
-            console.log("사용자가 드론리스트를 닫았습니다.");
-            // 관련 파라미터 초기화
-            this.clearDronList();
-        }
-        else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
-            // @ Deprecated
-            // 사용자가 드론리스트를 닫았습니다.
-            console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
-            // 관련 파라미터 초기화
-            this.clearDronList();
-            // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
-                console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-                this.klassFeature = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
-                console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-                this.klassTarget = myEvent.value;
-            }
-            else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-                console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-                this.klassSchedule = myEvent.value;
-            } // end if
+        /*
+        if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
+    
+          // '수강신청일'이 변경되었습니다.
+    
+          let weekInterval:number = +myEvent.value;
+    
+          // 첫수업날짜가 변경됩니다.
+          if(4 === weekInterval) {
+    
+            this.klass.enrollment_interval_week = 4;
+            this.setFirstClassDateFormat();
+            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 4주");
+    
+          } else if(2 === weekInterval) {
+    
+            this.klass.enrollment_interval_week = 2;
+            this.setFirstClassDateFormat();
+            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 2주");
+    
+          } else if(1 === weekInterval) {
+    
+            this.klass.enrollment_interval_week = 1;
+            this.setFirstClassDateFormat();
+            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
+    
+          }
+        } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
+    
+          // 드론 리스트 - klass.schedule을 수정합니다.
+          this.clearDronList();
+          this.dronListKey = this.myEventService.KLASS_SCHEDULE;
+          this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
+          this.dronListSEinnerHTML = myEvent.value;
+    
+          //ON_PREVIEW
+          
+        } else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
+    
+          console.log("onChangedFromChild / myEvent : ",myEvent);
+          console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+    
+          // 드론 리스트의 입력 내용이 수정되었습니다.
+          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+            
+            console.log("feature 입력 내용이 수정되었습니다.");
+            this.klassFeature = myEvent.value;
+    
+          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+            
+            console.log("target 입력 내용이 수정되었습니다.");
+            this.klassTarget = myEvent.value;
+    
+          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+            
+            console.log("schedule 입력 내용이 수정되었습니다.");
+            this.klassSchedule = myEvent.value;
+    
+          } // end if
+    
+        } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
+    
+          // @ Deprecated
+    
+          // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
+          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+            console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
+            console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
+          }
+    
+    
+        } else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
+    
+          // @ Deprecated
+    
+          // 사용자가 드론리스트를 닫았습니다.
+          console.log("사용자가 드론리스트를 닫았습니다.");
+          // 관련 파라미터 초기화
+          this.clearDronList();
+    
+        } else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
+    
+          // @ Deprecated
+    
+          // 사용자가 드론리스트를 닫았습니다.
+          console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
+          // 관련 파라미터 초기화
+          this.clearDronList();
+    
+          // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
+          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+            
+            console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+            this.klassFeature = myEvent.value;
+    
+          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+            
+            console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+            this.klassTarget = myEvent.value;
+    
+          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
+            
+            console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
+            this.klassSchedule = myEvent.value;
+    
+          } // end if
         } // end if
+        */
     }; // end method
     KlassDetailComponent.prototype.clearDronList = function () {
         this.dronListTitle = null;

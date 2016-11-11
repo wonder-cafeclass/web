@@ -5,14 +5,16 @@ import {
     Response, 
     RequestOptions 
 }                                 from '@angular/http';
+import { Observable }             from 'rxjs';
 import { Klass }                  from './model/klass';
 import { KlassLevel }             from './model/klass-level';
 import { KlassStation }           from './model/klass-station';
 import { KlassDay }               from './model/klass-day';
 import { KlassTime }              from './model/klass-time';
 import { KlassSelectile }         from './model/klass-selectile';
+import { KlassVenue }             from './model/klass-venue';
 
-import { UrlService }         from '../util/url.service';
+import { UrlService }             from '../util/url.service';
 
 @Injectable()
 export class KlassService {
@@ -21,9 +23,104 @@ export class KlassService {
     private klassUrl = '/CI/index.php/api/klass/course';
     private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
     private klassSearchUrl = '/CI/index.php/api/klass/search';
+    private klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
+    private klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
+
     private baseHref = "";
 
     constructor(private http: Http, private us:UrlService) {
+    }
+
+    searchKlassVenue (q:string): Observable<KlassVenue[]> {
+
+        let qEncoded = encodeURIComponent(q);
+        let req_url = this.us.get(this.klassVenueSearchLocalUrl);
+
+        req_url = `${ req_url }?q=${ qEncoded }`;
+        console.log("klass.service.ts / searchKlassVenue / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                        .map((r: Response) => {
+
+                          let responseJson = r.json();
+                          let result = [];
+                          if( null != responseJson && 
+                              null != responseJson.data && 
+                              null != responseJson.data.result ) {
+
+                              result = responseJson.data.result;
+                          }
+
+                          console.log("klass.service.ts / searchKlassVenue / responseJson : ",responseJson);
+
+                          // return r.json().data as KlassVenue[]; 
+                          return result as KlassVenue[];
+                        });
+
+    }
+
+    searchKlassMap (q:string): Promise<KlassVenue> {
+
+      let qEncoded = encodeURIComponent(q);
+      let req_url = this.us.get(this.klassVenueSearchMapUrl);
+
+      req_url = `${ req_url }?q=${ qEncoded }`;
+      console.log("klass.service.ts / searchKlassMap / req_url : ",req_url);
+
+      
+      return this.http.get(req_url)
+                  .toPromise()
+                  .then(this.getLatLon)
+                  .catch(this.handleError);
+    }
+    private getLatLon(r:Response)  :KlassVenue {
+
+      let responseJson = r.json();
+      let result:KlassVenue = 
+      new KlassVenue(
+        // public title:string
+        "",
+        // public telephone:string
+        "",
+        // public address:string
+        "",
+        // public roadAddress:string
+        "",
+        // public latitude:number
+        0,
+        // public longitude:number
+        0
+      );
+
+      if(!responseJson.success) {
+        return result;
+      }
+
+      // 위도 / latitude / point.y
+      // * 위도 값의 범위 : +90.00000(North)북위 90도 ~ -90.000000(South)남위 90도
+      let latitude:number = null;
+      // 경도 / longitude / point.x
+      // * 경도 값의 범위 : +180.000000(East)동경 180도 ~ -180.000000(West)서경 180도 [그리니치 천문대 기준 0도]                          
+      let longitude:number = null;
+      if( null != responseJson && 
+          null != responseJson.data && 
+          null != responseJson.data.result && 
+          null != responseJson.data.result[0] && 
+          null != responseJson.data.result[0].x &&
+          null != responseJson.data.result[0].y  ) {
+
+          longitude = parseFloat(responseJson.data.result[0].x);
+          latitude = parseFloat(responseJson.data.result[0].y);
+      }
+
+      if(null != longitude) {
+        result.longitude = longitude;
+      }
+      if(null != latitude) {
+        result.latitude = latitude;
+      }
+
+      return result;
     }
 
     searchKlassList (level:string, station:string, day:string, time:string, q:string): Promise<Klass[]> {

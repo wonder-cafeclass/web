@@ -10,8 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
-var klass_venue_1 = require('./model/klass-venue');
-var url_service_1 = require('../util/url.service');
+var url_service_1 = require('../../util/url.service');
 var KlassService = (function () {
     function KlassService(http, us) {
         this.http = http;
@@ -20,80 +19,8 @@ var KlassService = (function () {
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.klassSearchUrl = '/CI/index.php/api/klass/search';
-        this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
-        this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
         this.baseHref = "";
     }
-    KlassService.prototype.searchKlassVenue = function (q) {
-        var qEncoded = encodeURIComponent(q);
-        var req_url = this.us.get(this.klassVenueSearchLocalUrl);
-        req_url = req_url + "?q=" + qEncoded;
-        console.log("klass.service.ts / searchKlassVenue / req_url : ", req_url);
-        return this.http.get(req_url)
-            .map(function (r) {
-            var responseJson = r.json();
-            var result = [];
-            if (null != responseJson &&
-                null != responseJson.data &&
-                null != responseJson.data.result) {
-                result = responseJson.data.result;
-            }
-            console.log("klass.service.ts / searchKlassVenue / responseJson : ", responseJson);
-            // return r.json().data as KlassVenue[]; 
-            return result;
-        });
-    };
-    KlassService.prototype.searchKlassMap = function (q) {
-        var qEncoded = encodeURIComponent(q);
-        var req_url = this.us.get(this.klassVenueSearchMapUrl);
-        req_url = req_url + "?q=" + qEncoded;
-        console.log("klass.service.ts / searchKlassMap / req_url : ", req_url);
-        return this.http.get(req_url)
-            .toPromise()
-            .then(this.getLatLon)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.getLatLon = function (r) {
-        var responseJson = r.json();
-        var result = new klass_venue_1.KlassVenue(
-        // public title:string
-        "", 
-        // public telephone:string
-        "", 
-        // public address:string
-        "", 
-        // public roadAddress:string
-        "", 
-        // public latitude:number
-        0, 
-        // public longitude:number
-        0);
-        if (!responseJson.success) {
-            return result;
-        }
-        // 위도 / latitude / point.y
-        // * 위도 값의 범위 : +90.00000(North)북위 90도 ~ -90.000000(South)남위 90도
-        var latitude = null;
-        // 경도 / longitude / point.x
-        // * 경도 값의 범위 : +180.000000(East)동경 180도 ~ -180.000000(West)서경 180도 [그리니치 천문대 기준 0도]                          
-        var longitude = null;
-        if (null != responseJson &&
-            null != responseJson.data &&
-            null != responseJson.data.result &&
-            null != responseJson.data.result[0] &&
-            null != responseJson.data.result[0].x &&
-            null != responseJson.data.result[0].y) {
-            longitude = parseFloat(responseJson.data.result[0].x);
-            latitude = parseFloat(responseJson.data.result[0].y);
-        }
-        if (null != longitude) {
-            result.longitude = longitude;
-        }
-        if (null != latitude) {
-            result.latitude = latitude;
-        }
-        return result;
-    };
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
         var qEncoded = encodeURIComponent(q);
         var req_url = this.us.get(this.klassSearchUrl);

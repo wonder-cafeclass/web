@@ -1,0 +1,39 @@
+iframe.cage {
+	width: 100%;
+	border: 0px;
+}
+div.fly {
+    position: absolute;
+    top: 10px;
+    left: 50px;
+    width: 90%;
+    opacity:.9;
+}
+.cc-panel-search {
+  height: 50px;
+  margin: 0px;
+  border: 0px;
+  box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+  font-size: 20px;
+  color: #e85c41;  
+}
+li.my-style {
+	padding:5px;
+	border-color:#e85c41;
+}
+li.my-focus {
+	color:#fff;
+	background-color:#e85c41;
+}
+li.my-blur {
+	color:#e85c41;
+	background-color:#fff;
+}
+li.my-result {
+  padding-left:10px;
+}
+.cc-img-magnifier {
+  height:50px;
+  width:50px;
+}
+

@@ -29,12 +29,21 @@ export class Klass {
     public days_kor: string;
     public days_img_url: string;
     public class_day_per_week: number;
+
     public venue: string;
     public venue_subway_station: string;
     public venue_subway_station_img_url: string;
     public venue_cafe: string;
     public venue_cafe_logo_img_url: string;
     public venue_map_link: string;
+
+    public venue_title: string;
+    public venue_telephone: string;
+    public venue_address: string;
+    public venue_road_address: string;
+    public venue_latitude: string;
+    public venue_longitude: string;
+
     public search_tag: string;
     public price: number;
     public price_list: string[];

@@ -94,12 +94,23 @@
                   </ul>
             </li>
 
-            <li   class="list-group-item klass-info">지도 이미지는 절반 크기로!</li>
+            <li #klassVenue   
+                [ngClass]="{'focus':isFocusKlassVenue}"
+                class="list-group-item klass-info iframe">
+              <klass-venue-search-list  [isAdmin]="isAdmin"
+                                        [cageHeight]="350"
+                                        [cageWidth]="778"
+                                        [key]="myEventService.KLASS_VENUE"
+                                        (emitter)="onChangedFromInputRow($event)">
+              </klass-venue-search-list>
+            </li>
+            <!--
             <li   #klassVenue
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusKlassVenue}">
                   <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
             </li>
+            -->
 
             <!-- 선생님 관련 소개 정보 데이터 예시 -->
             <!-- 
