@@ -1,4 +1,3 @@
-// @ Deprecated!
 import { 
   Component, 
   OnInit, 
@@ -10,18 +9,20 @@ import {
   EventEmitter }                       from '@angular/core';
 import { Observable }                  from 'rxjs/Observable';
 import { Subject }                     from 'rxjs/Subject';
+
 import { MyEventService }              from '../../util/my-event.service';
+import { KlassService }                from '../klass.service';
 import { MyEvent }                     from '../../util/model/my-event';
-import { Location }                    from './model/location';
-import { CheckBoxOption }              from '../checkbox/model/checkbox-option';
+import { KlassVenue }                  from '../model/klass-venue';
+import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 
 @Component({
   moduleId: module.id,
-  selector: 'search-list',
-  templateUrl: 'search-list.component.html',
-  styleUrls: [ 'search-list.component.css' ]
+  selector: 'klass-venue-search-list',
+  templateUrl: 'klass-venue-search-list.component.html',
+  styleUrls: [ 'klass-venue-search-list.component.css' ]
 })
-export class SearchListComponent implements OnInit {
+export class KlassVenueSearchListComponent implements OnInit {
 
   @ViewChild('iframe') iframe:ElementRef;
   private childContentWindow;
@@ -36,19 +37,25 @@ export class SearchListComponent implements OnInit {
   inputWidth:number=-1;
   inputWidthStr:string;
   myEventCallback:MyEvent;
-  @Input() location:Location;
+  @Input() klassVenue:KlassVenue;
+  searchBoxText:string;
 
-  // 장소 검색 결과
+  // 네이버 지역 검색 결과
   searchResultList: CheckBoxOption[];
-  locations: Observable<Location[]>;
+  klassVenues: Observable<KlassVenue[]>;
+  private searchTermsNaverLocal = new Subject<string>();
 
-   private searchTerms = new Subject<string>();
+  // 네이버 지도 검색 결과
+  klassVenuesNaverMap:KlassVenue;
+  private searchTermsNaverMap = new Subject<string>();
+
 
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
 
   // 자신의 자식 객체에서 이벤트를 받는다.
   constructor(  private myEventService:MyEventService, 
+                private klassService:KlassService, 
                 private zone:NgZone  ) {
 
     // set function reference out of app. ( ex)iframe )
@@ -86,8 +93,8 @@ export class SearchListComponent implements OnInit {
     this.childContentWindow = this.iframe.nativeElement.contentWindow;
 
     // 맵 정보가 없는 경우, 기본 맵 정보를 만듭니다.
-    if(null == this.location) {
-      this.location = new Location(
+    if(null == this.klassVenue) {
+      this.klassVenue = new KlassVenue(
         // public title:string
         "&lt;b&gt;스타벅스&lt;/b&gt; 갤러리아팰리스점",
         // public telephone:string
@@ -103,39 +110,22 @@ export class SearchListComponent implements OnInit {
       );
     }
 
-
-
-    // TEST - Search Result
-    /*
-    this.searchResultList = [];
-    this.searchResultList.push(
-      new CheckBoxOption(
-        // public title:string
-        "Result - 1",
-        // public isFocus:boolean
-        false,
-        // public myEvent:MyEvent
-        null
-      )
-    );
-    this.searchResultList.push(
-      new CheckBoxOption(
-        // public title:string
-        "Result - 2",
-        // public isFocus:boolean
-        false,
-        // public myEvent:MyEvent
-        null
-      )
-    );
-    */
+    this.klassVenues = 
+    this.searchTermsNaverLocal
+    .debounceTime(300)        // wait for 300ms pause in events
+    .distinctUntilChanged()   // ignore if next search term is same as previous
+    .switchMap(term => term   // switch to new observable each time
+      // return the http search observable
+      ? this.klassService.searchKlassVenue(term)
+      // or the observable of empty heroes if no search term
+      : Observable.of<KlassVenue[]>([]))
+    .catch(error => {
+      // TODO: real error handling
+      console.log(error);
+      return Observable.of<KlassVenue[]>([]);
+    });    
 
   }
-
-  // Push a search term into the observable stream.
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }  
 
   callFromOutside(myEvent) {
 
@@ -151,8 +141,8 @@ export class SearchListComponent implements OnInit {
       }
 
       // iframe에 지도 좌표 - 위도/경도 정보를 전해줍니다.
-      if(null != this.location && null != this.childContentWindow.init) {
-        this.childContentWindow.init(this.location);
+      if(null != this.klassVenue && null != this.childContentWindow.init) {
+        this.childContentWindow.init(this.klassVenue);
       }
       
       // iframe을 시작합니다.
@@ -202,52 +192,49 @@ export class SearchListComponent implements OnInit {
   }
 
   onKeyupEnterSearch(term) :void {
-    console.log("search-list / onKeyupEnterSearch / term : ",term);
-
-    // this.searchLocationList;
-    // this.items = this.wikipediaService.search(term);
-
+    this.searchTermsNaverLocal.next(term);    
   }
 
   onKeyupSearchInput(term) :void {
-    console.log("search-list / onKeyupSearchInput / term : ",term);
-
-    // this.searchLocationList;
-    // this.items = this.wikipediaService.search(term);
-
+    this.searchTermsNaverLocal.next(term);
   }
 
   private isOverSearchResult: boolean=false;
-  onMouseenterSearchResult(searchResult:CheckBoxOption) {
-    if(null != searchResult && !searchResult.isFocus) {
-      searchResult.isFocus = true;
+  onMouseenterKlassVenue(klassVenue:KlassVenue) {
+    if(null != klassVenue && !klassVenue.isFocus) {
+      klassVenue.isFocus = true;
     }
   }
-  onMouseleaveSearchResult(searchResult:CheckBoxOption) {
-    if(null != searchResult && searchResult.isFocus) {
-      searchResult.isFocus = false;
+  onMouseleaveKlassVenue(klassVenue:KlassVenue) {
+    if(null != klassVenue && klassVenue.isFocus) {
+      klassVenue.isFocus = false;
     }
   }
-  onClickSearchResult(searchResult:CheckBoxOption) :void {
+  onClickKlassVenue(klassVenue:KlassVenue) :void {
 
-    console.log("onClickSearchResult / searchResult : ",searchResult);
+    this.klassVenuesNaverMap = klassVenue;
 
+    this.klassService.searchKlassMap(
+      // q:string
+      klassVenue.address
+    ).then(klassVenue => {
+      this.klassVenuesNaverMap.latitude = klassVenue.latitude;
+      this.klassVenuesNaverMap.longitude = klassVenue.longitude;
+
+      // iframe에 위치 업데이트
+      if(null != this.childContentWindow.init) {
+        this.childContentWindow.init(this.klassVenuesNaverMap);
+        // 검색 리스트 삭제.
+        this.klassVenues = null;
+        this.searchBoxText = this.removeHTMLTags(this.klassVenuesNaverMap.title);
+        // DB UPDATE!
+        console.log("DB UPDATE!");
+      }
+    });    
+  }
+  removeHTMLTags(targetStr:string) :string {
+    return targetStr.replace(/\<[a-zA-Z\/]+\>/gi,"");
   }
 
-
-
-  /*
-  private isOverMagnifier: boolean=false;
-  onMouseenterMagnifier() {
-    if(!this.isOverMagnifier) {
-      this.isOverMagnifier = true;
-    }
-  }
-  onMouseleaveMagnifier() {
-    if(this.isOverMagnifier) {
-      this.isOverMagnifier = false;
-    }
-  }
-  */
 
 }

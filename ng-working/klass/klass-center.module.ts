@@ -24,6 +24,7 @@ import {
 }                                    from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
+import { KlassVenueSearchListComponent } from './widget/klass-venue-search-list.component';
 
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
@@ -48,7 +49,6 @@ import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.co
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
-import { SearchListComponent }      from '../widget/search-list/search-list.component';
 // @ Deprecated
 import { DronListComponent }         from '../widget/dron-list/dron-list.component';
 
@@ -67,6 +67,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassDetailComponent,
     KlassDetailNavListComponent,
     KlassFilterTileComponent,
+    KlassVenueSearchListComponent,
     ClockBoardComponent,
     ClockDigitalComponent,
     ClockComponent,
@@ -90,7 +91,6 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     CheckBoxHListComponent,
     NavTabsComponent,
     SmartEditorComponent,
-    SearchListComponent,
     DronListComponent,    // @ Depreacted
     InputRowComponent,
     SafeHtmlPipe

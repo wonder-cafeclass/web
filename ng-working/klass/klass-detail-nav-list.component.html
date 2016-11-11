@@ -97,12 +97,12 @@
             <li #klassVenue   
                 [ngClass]="{'focus':isFocusKlassVenue}"
                 class="list-group-item klass-info iframe">
-              <search-list  [isAdmin]="isAdmin"
-                            [cageHeight]="350"
-                            [cageWidth]="778"
-                            [key]="myEventService.KLASS_VENUE"
-                            (emitter)="onChangedFromInputRow($event)">
-              </search-list>
+              <klass-venue-search-list  [isAdmin]="isAdmin"
+                                        [cageHeight]="350"
+                                        [cageWidth]="778"
+                                        [key]="myEventService.KLASS_VENUE"
+                                        (emitter)="onChangedFromInputRow($event)">
+              </klass-venue-search-list>
             </li>
             <!--
             <li   #klassVenue
