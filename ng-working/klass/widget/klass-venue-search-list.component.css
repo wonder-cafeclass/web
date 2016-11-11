@@ -33,8 +33,42 @@ li.my-blur {
 li.my-result {
   padding-left:18px;
 }
+li.my-padding {
+  padding:5px;
+  padding-left:10px;
+}
+li.my-title {
+  color:#e85c41;
+}
+li.my-content {
+  color:#777;
+  padding-top: 0px;
+}
+li.head {
+  border:0px;
+}
+li.body {
+  border:0px;
+/*  border-bottom:0px;
+  border-left:0px;
+  border-right:0px;
+*/}
+li.tail {
+  border:0px;  
+}
+
 .cc-img-magnifier {
   height:50px;
   width:50px;
+}
+td.my-style {
+  padding:0px;
+  margin:0px;
+}
+td.border-right {
+  border-right: 1px solid #ddd;
+}
+h5.my-style {
+  margin-bottom: 0px;
 }
 

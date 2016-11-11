@@ -23,6 +23,8 @@ var KlassVenueSearchListComponent = (function () {
         this.klassService = klassService;
         this.zone = zone;
         this.cageWidth = -1;
+        this.cageWidthNaverMap = -1;
+        this.cageWidthVenueInfo = -1;
         this.cageHeight = -1;
         this.inputWidth = -1;
         this.searchTermsNaverLocal = new Subject_1.Subject();
@@ -41,9 +43,15 @@ var KlassVenueSearchListComponent = (function () {
         var _this = this;
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
+            this.cageWidthNaverMap = Math.round(this.cageWidth * (2 / 3));
+            this.cageWidthNaverMapStr = this.cageWidthNaverMap + "px";
+            this.cageWidthVenueInfo = this.cageWidth - this.cageWidthNaverMap;
+            this.cageWidthVenueInfoStr = this.cageWidthVenueInfo + "px";
         }
         else {
             this.cageWidthStr = "100%";
+            this.cageWidthNaverMapStr = "80%";
+            this.cageWidthVenueInfoStr = "20%";
         }
         if (0 < this.cageHeight) {
             this.cageHeightStr = this.cageHeight + "px";
@@ -52,8 +60,8 @@ var KlassVenueSearchListComponent = (function () {
             this.cageHeightStr = "100%";
         }
         var inputPadding = 60;
-        this.inputWidth = this.cageWidth - inputPadding;
-        if (0 < this.inputWidth) {
+        this.inputWidth = this.cageWidthNaverMap - inputPadding;
+        if (0 < this.inputWidth && 0 < this.cageWidthNaverMap) {
             this.inputWidthStr = this.inputWidth + "px";
         }
         else {
@@ -98,7 +106,8 @@ var KlassVenueSearchListComponent = (function () {
         if ("ready_to_init" === myEvent.key) {
             // iframe의 너비, 높이를 변경합니다.
             if (null != this.childContentWindow.setSize) {
-                this.childContentWindow.setSize(this.cageWidth, this.cageHeight);
+                console.log("klass-venue-search-list / callFromOutside / setSize / this.cageWidthNaverMap : ", this.cageWidthNaverMap);
+                this.childContentWindow.setSize(this.cageWidthNaverMap, this.cageHeight);
             }
             // iframe에 지도 좌표 - 위도/경도 정보를 전해줍니다.
             if (null != this.klassVenue && null != this.childContentWindow.init) {
@@ -195,6 +204,14 @@ var KlassVenueSearchListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], KlassVenueSearchListComponent.prototype, "cageWidth", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], KlassVenueSearchListComponent.prototype, "cageWidthNaverMap", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], KlassVenueSearchListComponent.prototype, "cageWidthVenueInfo", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

@@ -30,8 +30,14 @@ export class KlassVenueSearchListComponent implements OnInit {
   @Input() isAdmin:Boolean;
   @Input() key:string;
   @Input() myEvent:MyEvent;
+
   @Input() cageWidth:number=-1;
   cageWidthStr:string;
+  @Input() cageWidthNaverMap:number=-1;
+  cageWidthNaverMapStr:string;
+  @Input() cageWidthVenueInfo:number=-1;
+  cageWidthVenueInfoStr:string;
+
   @Input() cageHeight:number=-1;
   cageHeightStr:string;
   inputWidth:number=-1;
@@ -69,9 +75,20 @@ export class KlassVenueSearchListComponent implements OnInit {
   ngOnInit(): void {
 
     if(0 < this.cageWidth) {
+
       this.cageWidthStr=`${this.cageWidth}px`;
+
+      this.cageWidthNaverMap = Math.round(this.cageWidth*(2/3));
+      this.cageWidthNaverMapStr = `${this.cageWidthNaverMap}px`;
+      this.cageWidthVenueInfo = this.cageWidth - this.cageWidthNaverMap;
+      this.cageWidthVenueInfoStr = `${this.cageWidthVenueInfo}px`;
+
     } else {
+
       this.cageWidthStr="100%";
+      this.cageWidthNaverMapStr="80%";
+      this.cageWidthVenueInfoStr="20%";
+
     }
 
     if(0 < this.cageHeight) {
@@ -81,8 +98,8 @@ export class KlassVenueSearchListComponent implements OnInit {
     }
 
     let inputPadding:number = 60;
-    this.inputWidth = this.cageWidth - inputPadding;
-    if(0 < this.inputWidth) {
+    this.inputWidth = this.cageWidthNaverMap - inputPadding;
+    if(0 < this.inputWidth && 0 < this.cageWidthNaverMap) {
       this.inputWidthStr=`${this.inputWidth}px`;
     } else {
       this.inputWidthStr="90%";
@@ -137,7 +154,10 @@ export class KlassVenueSearchListComponent implements OnInit {
 
       // iframe의 너비, 높이를 변경합니다.
       if(null != this.childContentWindow.setSize) {
-        this.childContentWindow.setSize(this.cageWidth, this.cageHeight);
+
+        console.log("klass-venue-search-list / callFromOutside / setSize / this.cageWidthNaverMap : ",this.cageWidthNaverMap);
+
+        this.childContentWindow.setSize(this.cageWidthNaverMap, this.cageHeight);
       }
 
       // iframe에 지도 좌표 - 위도/경도 정보를 전해줍니다.
