@@ -115,6 +115,10 @@ var KlassDetailNavListComponent = (function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
         this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
         this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
+        // 수업 강사님 정보 가져오기
+        if (null != this.klass.teacher) {
+            this.klassTeacher = this.klass.teacher;
+        }
     };
     // @ Deprecated
     KlassDetailNavListComponent.prototype.ngOnChanges = function (changes) {

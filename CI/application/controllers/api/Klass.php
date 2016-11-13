@@ -166,6 +166,7 @@ class Klass extends REST_Controller implements MY_Class{
 
         $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
         
+        // 수업 - klass 정보를 가져옵니다.
         $this->db->where('id', $id);
         $limit = 1;
         $offset = 0;
@@ -176,8 +177,27 @@ class Klass extends REST_Controller implements MY_Class{
         {
             $klass = $klass_list[0];
             $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-            // TEST
-            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass, "2016-11-15");
+        }
+
+        // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
+        $teacher_id = -1;
+        $teacher = null;
+        if(isset($klass) && isset($klass->teacher_id))
+        {
+            $teacher_id = intval($klass->teacher_id);
+        }
+        if(0 < $teacher_id)
+        {
+            $this->db->where('id', $teacher_id);
+            $limit = 1;
+            $offset = 0;
+            $query = $this->db->get('teacher', $limit, $offset);
+
+            $teacher = $this->add_klass_teacher_extra_info($query);
+        }
+        if(isset($klass))
+        {
+            $klass->teacher = $teacher;
         }
 
         $last_query = $this->db->last_query();
@@ -866,6 +886,42 @@ class Klass extends REST_Controller implements MY_Class{
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
     } 
+
+    private function add_klass_teacher_extra_info($query=null)
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassTeacher');
+        $teacher = null;
+        if(!empty($rows))
+        {
+            $teacher = $rows[0];   
+        }
+        if(isset($teacher) && !empty($teacher->resume))
+        {
+            $teacher->resume_arr = explode("|",$teacher->resume);
+        }
+        if(isset($teacher) && !empty($teacher->greeting))
+        {
+            $teacher->greeting_arr = explode("|",$teacher->greeting);
+        }
+        if(isset($teacher) && !empty($teacher->thumbnail))
+        {
+            $teacher->thumbnail_url = $this->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
+        }
+        if(isset($teacher) && empty($teacher->nickname))
+        {
+            $teacher->nickname = $teacher->last_name . " " . $teacher->first_name;
+        }
+
+        return $teacher;
+    }
 
     private function add_klass_extra_info($query=null) 
     {

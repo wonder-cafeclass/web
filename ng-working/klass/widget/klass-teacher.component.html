@@ -1,0 +1,16 @@
+<div>
+
+	<ul class="list-group" style="margin-bottom:0px;">
+		<li class="list-group-item profile">
+			<img src={{klassTeacher.thumbnail_url}} alt="..." class="img-circle profile">
+			<div><h4>{{klassTeacher.nickname}}</h4></div>
+		</li>
+		<li class="list-group-item resume">
+			<div *ngFor="let resume of klassTeacher.resume_arr">{{resume}}</div>
+		</li>
+		<li class="list-group-item greeting">
+			<div *ngFor="let greeting of klassTeacher.greeting_arr">{{greeting}}</div>
+		</li>
+	</ul>
+
+</div>

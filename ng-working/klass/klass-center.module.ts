@@ -25,6 +25,7 @@ import {
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 import { KlassVenueSearchListComponent } from './widget/klass-venue-search-list.component';
+import { KlassTeacherComponent } from './widget/klass-teacher.component';
 
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
@@ -68,6 +69,8 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassDetailNavListComponent,
     KlassFilterTileComponent,
     KlassVenueSearchListComponent,
+    KlassTeacherComponent,
+    
     ClockBoardComponent,
     ClockDigitalComponent,
     ClockComponent,

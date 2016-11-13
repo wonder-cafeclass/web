@@ -172,7 +172,7 @@ export class KlassService {
         let req_url = this.us.get(this.klassUrl);
         req_url = `${ req_url }?id=${ id }`;
 
-        // console.log("TEST / getKlass / req_url : ",req_url);
+        console.log("TEST / getKlass / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -209,7 +209,7 @@ export class KlassService {
 
         let body = res.json();
 
-        // console.log("KlassService / extractData / body ::: ",body);
+        console.log("KlassService / extractData / body ::: ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {

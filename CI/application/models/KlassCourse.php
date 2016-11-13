@@ -1,10 +1,23 @@
 <?php
 
 require APPPATH . '/models/KlassPrice.php';
+require APPPATH . '/models/KlassTeacher.php';
 
 class KlassCourse {
 
+        // 수업 id
         public $id;
+
+        // 선생님 obj / class KlassTeacher
+        public $teacher; 
+
+        // 선생님 id
+        public $teacher_id;
+        // 수업 담당 선생님의 이력
+        public $teacher_resume;
+        // 수업 담당 선생님의 인사말
+        public $teacher_greeting;
+
         // 수업이름
         public $title;
         // 수업설명

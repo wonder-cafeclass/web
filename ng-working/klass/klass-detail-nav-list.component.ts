@@ -17,7 +17,9 @@ import { MyChecker }                  from '../util/model/my-checker';
 import { ImageService }               from '../util/image.service';
 import { KlassColorService }          from './service/klass-color.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
+
 import { Klass }                      from './model/klass';
+import { KlassTeacher }               from './model/klass-teacher';
 
 @Component({
   moduleId: module.id,
@@ -32,6 +34,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
+  klassTeacher:KlassTeacher;
 
   @Input() klassFeature:string; // @ Deprecated
   @Input() klassFeatureList:string[];
@@ -185,6 +188,11 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
     this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
     this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
+
+    // 수업 강사님 정보 가져오기
+    if(null != this.klass.teacher) {
+      this.klassTeacher = this.klass.teacher;
+    }
 
   }
   // @ Deprecated

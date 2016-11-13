@@ -28,6 +28,7 @@ var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.compone
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
 var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
+var klass_teacher_component_1 = require('./widget/klass-teacher.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
@@ -70,6 +71,7 @@ var KlassCenterModule = (function () {
                 klass_detail_nav_list_component_1.KlassDetailNavListComponent,
                 klass_filter_tile_component_1.KlassFilterTileComponent,
                 klass_venue_search_list_component_1.KlassVenueSearchListComponent,
+                klass_teacher_component_1.KlassTeacherComponent,
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,

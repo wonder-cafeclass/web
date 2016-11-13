@@ -1,8 +1,16 @@
 import { Calendar }                from '../../widget/calendar/model/calendar';
 import { KlassPrice }              from './klass-price';
+import { KlassTeacher }              from './klass-teacher';
 
 export class Klass {
     public id: number;
+
+    public teacher:KlassTeacher;
+
+    public teacher_id:number;
+    public teacher_resume:string;
+    public teacher_greeting:string;
+
     public title: string;
     public desc: string;
     public feature: string;
@@ -29,6 +37,9 @@ export class Klass {
     public days_kor: string;
     public days_img_url: string;
     public class_day_per_week: number;
+
+    public resume: string;
+    public greeting: string;
 
     public venue: string;
     public venue_subway_station: string;
