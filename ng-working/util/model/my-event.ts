@@ -2,6 +2,8 @@ import { MyChecker } from './my-checker';
 
 export class MyEvent {
 
+	public parentEventList:MyEvent[];
+
 	constructor(
 		public id:number,
 	    public eventName:string,

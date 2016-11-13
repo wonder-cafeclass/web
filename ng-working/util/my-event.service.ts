@@ -42,7 +42,11 @@ export class MyEventService {
     KLASS_VENUE:string="KLASS_VENUE";           // 장소
     KLASS_TIME_BEGIN:string="KLASS_TIME_BEGIN"; // 수업시작시간
     KLASS_TIME_END:string="KLASS_TIME_END";     // 수업종료시간
-    TUTOR_DESC:string="TUTOR_DESC";             // 강사소개
+
+    TEACHER_DESC:string="TEACHER_DESC";         // 강사소개
+    TEACHER_RESUME:string="TEACHER_RESUME";     // 강사이력소개
+    TEACHER_GREETING:string="TEACHER_GREETING"; // 강사인사말
+    
     STUDENT_REVIEW:string="STUDENT_REVIEW";     // 리뷰
     STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
     CAUTION:string="CAUTION";                   // 유의사항

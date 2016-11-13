@@ -13,9 +13,9 @@ export class KlassTeacher {
 		public mobile:string,
 		public email:string,
         public resume:string,
-        public resume_arr:string,
+        public resume_arr:string[],
         public greeting:string,
-        public greeting_arr:string,
+        public greeting_arr:string[],
 		public memo:string,
 		public date_created:string,
 		public date_updated:string

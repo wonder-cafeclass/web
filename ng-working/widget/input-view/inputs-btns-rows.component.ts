@@ -63,6 +63,8 @@ export class InputsBtnsRowsComponent implements OnInit {
       )
     ];
 
+    this.updateMyRemovableBtnList();
+    /*
     this.myRemovableBtnList = [];
     for (var i = 0; i < this.myEventList.length; ++i) {
 
@@ -78,6 +80,7 @@ export class InputsBtnsRowsComponent implements OnInit {
       this.myRemovableBtnList.push(myButtonNext);
 
     }
+    */
 
     // Ready Event 발송 
     let myEventReady:MyEvent =
@@ -94,6 +97,29 @@ export class InputsBtnsRowsComponent implements OnInit {
         null    
     );
     this.emitter.emit(myEventReady);
+  }
+
+  updateMyRemovableBtnList() :void {
+
+    let myRemovableBtnListNext:MyButton[] = [];
+    let myChecker:MyChecker = this.myCheckerService.getTitleChecker();
+
+    for (var i = 0; i < this.myEventList.length; ++i) {
+
+      let curMyEvent:MyEvent = this.myEventList[i];
+      let myButtonNext:MyButton = 
+      new MyButton (
+        "빼기",
+        this.myEventService.ON_REMOVE_ROW,
+        myChecker,
+        curMyEvent
+      )
+
+      myRemovableBtnListNext.push(myButtonNext);
+
+    }
+
+    this.myRemovableBtnList = myRemovableBtnListNext;
   }
 
   getCopyEventList(myEventList:MyEvent[]) :MyEvent[] {
@@ -178,6 +204,7 @@ export class InputsBtnsRowsComponent implements OnInit {
 
       // console.log("BEFORE / this.myEventList : ",this.myEventList);
 
+      // Update my-event!
       let myEventListNext:MyEvent[] = [];
       for (var i = 0; i < this.myEventList.length; ++i) {
         let myEventNext:MyEvent = this.myEventList[i];
@@ -189,6 +216,7 @@ export class InputsBtnsRowsComponent implements OnInit {
       } // end for
       this.myEventList = myEventListNext;
 
+      // Update my-button!
       let myRemovableBtnListNext:MyButton[] = [];
       for (var i = 0; i < this.myRemovableBtnList.length; ++i) {
         let myBtnNext:MyButton = this.myRemovableBtnList[i];
@@ -208,6 +236,8 @@ export class InputsBtnsRowsComponent implements OnInit {
         // 리스트가 1개가 줄어야 부모에게 이벤트를 발송할 있다.
         let hasChanged:boolean = this.hasChanged();
         this.isDisabledSave = (hasChanged)?false:true;
+
+        myEvent.parentEventList = this.myEventList;
         this.emitter.emit(myEvent);
       } else {
         console.log("!Error! / Target Not Found!");
@@ -245,7 +275,7 @@ export class InputsBtnsRowsComponent implements OnInit {
     let myEventReturn:MyEvent = null;
     if(wannaSave) {
       this.save();
-      // wonder.jung
+      
       myEventReturn =
       this.myEventService.getMyEvent(
           // public eventName:string
@@ -259,6 +289,7 @@ export class InputsBtnsRowsComponent implements OnInit {
           // public myChecker:MyChecker
           null    
       );
+      myEventReturn.parentEventList = this.myEventList;
 
     } else {
 
@@ -276,6 +307,8 @@ export class InputsBtnsRowsComponent implements OnInit {
           // public myChecker:MyChecker
           null    
       );
+      this.rollbackMyEventListCopies();
+      myEventReturn.parentEventList = this.myEventList;
 
     }
 
@@ -380,7 +413,8 @@ export class InputsBtnsRowsComponent implements OnInit {
     // 원본과 복사본이 동일. '저장'버튼을 비활성화.
     this.isDisabledSave = true;
 
-    console.log("overwriteMyEventList / this.isDisabledSave : ",this.isDisabledSave);
+    // 이벤트 리스트가 바뀌었으므로 버튼 리스트도 바꿔줍니다.
+    this.updateMyRemovableBtnList();
   }
   rollbackMyEventListCopies() :void {
     this.myEventList = this.myEventListCopy;

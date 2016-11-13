@@ -118,9 +118,13 @@
 
             <li   #tutorDesc
                   class="list-group-item klass-info"
+                  style="padding:0px;"
                   [ngClass]="{'focus':isFocusTutorDesc}">
 
-                  <klass-teacher [klassTeacher]="klassTeacher"></klass-teacher>
+                  <klass-teacher  [isAdmin]="isAdmin"
+                                  [klassTeacher]="klassTeacher" 
+                                  [klassId]="klass.id">
+                  </klass-teacher>
                   
                   <!--
                   <ul class="list-group" style="margin-bottom:0px;">

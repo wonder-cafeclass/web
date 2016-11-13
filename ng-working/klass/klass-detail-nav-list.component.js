@@ -343,7 +343,7 @@ var KlassDetailNavListComponent = (function () {
             this.isFocusKlassVenue = true;
             box = klassVenue.getBoundingClientRect();
         }
-        else if (this.myEventService.TUTOR_DESC === myEvent.key) {
+        else if (this.myEventService.TEACHER_DESC === myEvent.key) {
             this.isFocusTutorDesc = true;
             box = tutorDesc.getBoundingClientRect();
         }

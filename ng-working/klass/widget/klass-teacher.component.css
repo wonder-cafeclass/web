@@ -18,3 +18,7 @@ li.list-group-item.greeting {
 	border: 0px;
 	padding-bottom: 10px;
 }
+li.list-group-item.admin {
+	padding: 0px;
+	border: 0px;
+}
