@@ -21,6 +21,8 @@ var MyEventService = (function () {
         this.ON_SHUTDOWN_N_ROLLBACK = "ON_SHUTDOWN_N_ROLLBACK";
         this.ON_SAVE = "ON_SAVE";
         this.ON_ADD_ROW = "ON_ADD_ROW";
+        this.ON_ADD_COMMENT = "ON_ADD_COMMENT";
+        this.ON_ADD_COMMENT_REPLY = "ON_ADD_COMMENT_REPLY";
         this.ON_REMOVE_ROW = "ON_REMOVE_ROW";
         this.ON_MOUSE_LEAVE = "ON_MOUSE_LEAVE";
         this.ON_MOUSE_ENTER = "ON_MOUSE_ENTER";
@@ -59,6 +61,9 @@ var MyEventService = (function () {
         this.KEY_SINGLE_INPUT_VIEW = "KEY_SINGLE_INPUT_VIEW"; // ?
         this.KEY_MINI_CALENDAR = "KEY_MINI_CALENDAR"; // 날짜를 한눈에 확인하는 미니 캘린더
         this.KEY_DRON_LIST = "KEY_DRON_LIST"; // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
+        this.KEY_COMMENT = "KEY_COMMENT"; // 댓글 리스트
+        this.KEY_COMMENT_REVIEW = "KEY_COMMENT_REVIEW"; // 댓글 - 수업 리뷰 리스트
+        this.KEY_COMMENT_QUESTION = "KEY_COMMENT_QUESTION"; // 댓글 - 수업 문의 리스트
         // SPECIFIC CASES - @ Deprecated
         /*
         ON_CHANGE_KLASS_DISCOUNT:string="ON_CHANGE_KLASS_DISCOUNT";

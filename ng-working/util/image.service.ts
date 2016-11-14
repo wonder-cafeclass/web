@@ -47,6 +47,8 @@ export class ImageService {
 
     mapDummy:string="assets/images/map_dummy.png";
 
+    userDummy:string="assets/images/user/user_anonymous_150x150.png";
+
     constructor(private us:UrlService) {
     }
 

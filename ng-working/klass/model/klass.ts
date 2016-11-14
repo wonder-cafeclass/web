@@ -1,11 +1,15 @@
-import { Calendar }                from '../../widget/calendar/model/calendar';
-import { KlassPrice }              from './klass-price';
-import { KlassTeacher }              from './klass-teacher';
+import { Calendar }                 from '../../widget/calendar/model/calendar';
+import { KlassPrice }               from './klass-price';
+import { KlassTeacher }             from './klass-teacher';
+import { KlassReview }              from './klass-review';
+import { KlassQuestion }            from './klass-question';
 
 export class Klass {
     public id: number;
 
     public teacher:KlassTeacher;
+    public review_list:KlassReview[];
+    public question_list:KlassQuestion[];
 
     public teacher_id:number;
     public teacher_resume:string;

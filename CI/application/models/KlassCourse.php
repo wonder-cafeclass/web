@@ -18,6 +18,11 @@ class KlassCourse {
         // 수업 담당 선생님의 인사말
         public $teacher_greeting;
 
+        // 수업 리뷰
+        public $review_list;
+        // 수업 문의
+        public $question_list;
+
         // 수업이름
         public $title;
         // 수업설명

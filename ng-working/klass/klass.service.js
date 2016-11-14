@@ -30,24 +30,6 @@ var KlassService = (function () {
         req_url = req_url + "?q=" + qEncoded;
         console.log("klass.service.ts / searchKlassVenue / req_url : ", req_url);
         return this.http.get(req_url).map(this.getKlassVenue);
-        /*
-        .map((r: Response) => {
-
-          let responseJson = r.json();
-          let result = [];
-          if( null != responseJson &&
-              null != responseJson.data &&
-              null != responseJson.data.result ) {
-
-              result = responseJson.data.result;
-          }
-
-          console.log("klass.service.ts / searchKlassVenue / responseJson : ",responseJson);
-
-          // return r.json().data as KlassVenue[];
-          return result as KlassVenue[];
-        });
-        */
     };
     KlassService.prototype.getKlassVenue = function (r) {
         var responseJson = r.json();

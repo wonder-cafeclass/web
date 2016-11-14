@@ -199,12 +199,28 @@ class MY_Time{
 
 	}	
 
+	public function get_YYYYMMDDHHMMSS_human_readable_kor($yyyy_mm_dd_hh_ss="") 
+	{
+		if(empty($yyyy_mm_dd_hh_ss)) 
+		{
+			return "";
+		}
+
+		$time_str = date('Y년 n월 j일 A g:i:s', strtotime($yyyy_mm_dd_hh_ss));
+		$time_str = str_replace("AM","오전",$time_str);
+		$time_str = str_replace("PM","오후",$time_str);
+
+		return $time_str;
+	}
+
 	// @ desc : 년/월/일/시/분/초/마이크로 로 반환합니다. / $this->get_now_YYYYMMDDHHMMSSU();
-	public function get_now_YYYYMMDDHHMMSSU() {
+	public function get_now_YYYYMMDDHHMMSSU() 
+	{
 		return date('Y-m-d H:i:s.u');
 	}
 
-	public function get_now_YYYYMMDD() {
+	public function get_now_YYYYMMDD() 
+	{
 		return date('Y-m-d');
 	}
 

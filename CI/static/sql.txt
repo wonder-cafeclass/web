@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS `cclass`;
 DROP TABLE IF EXISTS `klass`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `teacher`;
+DROP TABLE IF EXISTS `review`;
+DROP TABLE IF EXISTS `question`;
 DROP TABLE IF EXISTS `attendance`;
 
 DROP TABLE IF EXISTS `log_access`;
@@ -110,6 +112,32 @@ CREATE TABLE `klass` (
   INDEX `search` (`level`,`venue_subway_station`,`days`),
   KEY `date_begin` (`date_begin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class';
+
+CREATE TABLE `review` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `comment` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass review comment';
+
+CREATE TABLE `question` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `comment` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',  
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass question comment';
 
 CREATE TABLE `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -1,0 +1,113 @@
+<ul class="list-group" style="margin-bottom:0px;">
+    <li *ngFor="let comment of commentList"
+    	class="list-group-item" 
+    	style="padding:5px;">
+                      
+          <div class="media">
+            <div class="media-left">
+				<a href="#">
+					<img src={{comment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+				</a>
+            </div>
+            <div class="media-body">
+            	<span style="color:#777">{{comment.writer}}</span>
+            	<span style="color:#9d9d9d;float:right;">
+            		<small>{{comment.dateUpdatedHumanReadable}}</small>
+            	</span><br/>
+            	<span>{{comment.comment}}</span>
+
+            	<button 	type="button" 
+            				#replyBtn
+            				class="btn btn-default btn-xs pull-right" 
+            				(click)="onClickAddComment($event, replyContainer, replyBtn)"
+            				style="margin-top:5px;width:80px;">답글달기</button>
+
+        		<!-- child comment list / INIT -->
+				<div 	*ngFor="let childComment of comment.childCommentList" 
+						class="media child">
+					<div class="divider"></div>
+					<div class="media-left">
+						<a href="#">
+							<img src={{childComment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+						</a>
+					</div>
+					<div class="media-body">
+						<span style="color:#777">{{childComment.writer}}</span>
+						<span style="color:#9d9d9d;float:right;">
+							<small>{{childComment.dateUpdatedHumanReadable}}</small>
+						</span><br/>
+						<span>{{childComment.comment}}</span>
+					</div>
+				</div>
+        		<!-- child comment list / DONE -->
+
+
+
+        		<!-- child comment input / INIT -->
+				<div class="media child" #replyContainer style="margin-top: 11px;display:none;">
+					<div class="divider"></div>
+					<!-- <div class="media-left"> -->
+					<div class="media-body">
+						<div class="input-group">
+							<textarea 	#taNewReply
+										rows="2"
+										(click)="onClickReply($event, taNewReply, replyContainer)"
+										(blur)="onBlurReply($event, taNewReply, replyContainer)"
+										class="form-control input-text">{{placeholderReply}}</textarea>
+
+							<span class="input-group-btn">
+								<button 	class="btn btn-default" 
+											(click)="onClickPostReply($event, taNewReply, replyContainer, replyBtn, comment)"
+											style="height: 54px;"
+											type="button">답글쓰기</button>
+							</span>
+						</div>
+					</div>
+				</div>
+        		<!-- child comment input / DONE -->
+
+            </div>
+          </div>
+    </li>
+
+	<!-- comment input / INIT -->
+	<li class="list-group-item" 
+		style="padding:5px;">
+
+		<div 	*ngIf="isShowNewCommentInput" 
+				class="input-group">
+			<textarea 	#taNewComment
+						rows="2"
+						(click)="onClickTextarea($event, taNewComment)"
+						(blur)="onBlurTextarea($event, taNewComment)"
+						class="form-control input-text">{{placeholderInput}}</textarea>
+
+			<span class="input-group-btn">
+				<button 	class="btn btn-default" 
+							(click)="onClickPostNewComment($event, taNewComment)"
+							style="height: 54px;"
+							type="button">댓글쓰기</button>
+			</span>
+
+		</div>
+
+		<div 	*ngIf="!isShowNewCommentInput" 
+				class="input-group">
+			<textarea 	rows="2"
+						disabled="disabled"
+						class="form-control input-text">{{placeholderInput}}</textarea>
+
+			<span class="input-group-btn">
+				<button 	class="btn btn-default" 
+							disabled="disabled" 
+							style="height: 54px;"
+							type="button">댓글쓰기</button>
+			</span>
+
+		</div>
+
+
+	</li>
+	<!-- comment input / DONE -->
+
+</ul>

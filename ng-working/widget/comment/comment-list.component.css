@@ -1,0 +1,24 @@
+img.profile {
+	border: 1px solid #ddd;
+}
+div.divider {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: #ddd;
+    left: 0px;
+    margin-top: -6px;	
+}
+div.child {
+	margin-top: 20px;
+}
+span.input-text-btn {
+    /*border-top-right-radius: 0px;*/
+    /*border: 0px;	*/
+}
+textarea.input-text {
+    /*border-top-left-radius: 0px;*/
+    /*border: 0px;*/
+    resize: none;
+    color:#777;	
+}
