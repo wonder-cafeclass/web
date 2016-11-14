@@ -30,24 +30,6 @@ var KlassService = (function () {
         req_url = req_url + "?q=" + qEncoded;
         console.log("klass.service.ts / searchKlassVenue / req_url : ", req_url);
         return this.http.get(req_url).map(this.getKlassVenue);
-        /*
-        .map((r: Response) => {
-
-          let responseJson = r.json();
-          let result = [];
-          if( null != responseJson &&
-              null != responseJson.data &&
-              null != responseJson.data.result ) {
-
-              result = responseJson.data.result;
-          }
-
-          console.log("klass.service.ts / searchKlassVenue / responseJson : ",responseJson);
-
-          // return r.json().data as KlassVenue[];
-          return result as KlassVenue[];
-        });
-        */
     };
     KlassService.prototype.getKlassVenue = function (r) {
         var responseJson = r.json();
@@ -137,7 +119,7 @@ var KlassService = (function () {
     KlassService.prototype.getKlass = function (id) {
         var req_url = this.us.get(this.klassUrl);
         req_url = req_url + "?id=" + id;
-        // console.log("TEST / getKlass / req_url : ",req_url);
+        console.log("TEST / getKlass / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -161,7 +143,7 @@ var KlassService = (function () {
     };
     KlassService.prototype.extractData = function (res) {
         var body = res.json();
-        // console.log("KlassService / extractData / body ::: ",body);
+        console.log("KlassService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;

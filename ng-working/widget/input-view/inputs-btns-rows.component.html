@@ -11,7 +11,8 @@
 <ul class="list-group" style="margin-bottom:0px;padding:0px;">
   
   <li   *ngFor="let myBtn of myRemovableBtnList; let i = index"
-        class="list-group-item compact" [ngClass]="{'first':i === 0}">
+        class="list-group-item compact" 
+        [ngClass]="{'head':i === 0,'body':i !== 0}" >
 
     <!-- 열의 갯수가 이벤트 리스트의 갯수에 고정 -->
     <input-btns-row *ngIf="rowType=='fixed'"
@@ -49,7 +50,7 @@
 
   <!-- 열을 추가하는 입력을 받는 창 -->
   <li *ngIf="myRemovableBtnList.length < maxRowCnt" 
-      class="list-group-item compact">    
+      class="list-group-item compact body">    
     <input-btns-row *ngIf="rowType=='removable'"
                     [type]="rowType"
                     [myEventKeyEnterCallback]="myEvent"
@@ -59,7 +60,7 @@
     </input-btns-row>
   </li>
 
-  <li class="list-group-item compact last">
+  <li class="list-group-item compact tail">
 
     <div class="btn-group" role="group" aria-label="..." style="margin:5px;">
       <button (click)="dismiss($event)" type="button" class="btn btn-default">닫기</button>

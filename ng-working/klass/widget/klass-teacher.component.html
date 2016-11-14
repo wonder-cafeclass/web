@@ -1,0 +1,39 @@
+<div>
+
+	<ul class="list-group" style="margin-bottom:0px;">
+		<li class="list-group-item profile">
+			<img src={{klassTeacher.thumbnail_url}} alt="..." class="img-circle profile">
+			<div><h4>{{klassTeacher.nickname}}</h4></div>
+		</li>
+		<li class="list-group-item resume" (click)="onClickResume($event)">
+			<div *ngFor="let myEvent of myEventListForTeacherResume">{{myEvent.value}}</div>
+		</li>
+        <!-- Admin Section -->
+        <li *ngIf="isAdmin && isShowResume"
+            class="list-group-item admin">
+          <inputs-btns-rows   [key]="myEventService.TEACHER_RESUME"
+                              [rowType]="'removable'"
+                              [maxRowCnt]="3"
+                              [myEventList]="myEventListForTeacherResume" 
+                              (emitter)="onChangedFromChild($event)"
+                              [placeholderForNewRow]="'선생님의 이력을 입력해주세요.'">
+          </inputs-btns-rows>
+        </li>
+		<li class="list-group-item greeting" (click)="onClickGreeting($event)">
+			<div *ngFor="let myEvent of myEventListForTeacherGreeting">{{myEvent.value}}</div>
+		</li>
+        <!-- Admin Section -->
+        <li *ngIf="isAdmin && isShowGreeting"
+            class="list-group-item admin">
+          <inputs-btns-rows   [key]="myEventService.TEACHER_GREETING"
+                              [rowType]="'removable'"
+                              [maxRowCnt]="3"
+                              [myEventList]="myEventListForTeacherGreeting" 
+                              (emitter)="onChangedFromChild($event)"
+                              [placeholderForNewRow]="'선생님의 인사말을 입력해주세요.'">
+          </inputs-btns-rows>
+        </li>
+
+	</ul>
+
+</div>

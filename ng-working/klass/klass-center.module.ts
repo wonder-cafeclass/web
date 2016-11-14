@@ -8,8 +8,11 @@ import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassColorService }         from './service/klass-color.service';
+import { KlassCommentService }       from './service/klass-comment.service';
 import { MyRulerService }            from '../util/service/my-ruler.service';
 import { MyCheckerService }          from '../util/service/my-checker.service';
+import { ImageService }              from '../util/image.service';
+import { CommentService }            from '../widget/comment/service/comment.service';
 
 import { SafeHtmlPipe }              from '../util/pipe/safe-html-pipe';
 
@@ -25,6 +28,7 @@ import {
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 import { KlassVenueSearchListComponent } from './widget/klass-venue-search-list.component';
+import { KlassTeacherComponent }     from './widget/klass-teacher.component';
 
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
@@ -49,6 +53,8 @@ import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.co
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
 import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+import { CommentListComponent }      from '../widget/comment/comment-list.component';
+
 // @ Deprecated
 import { DronListComponent }         from '../widget/dron-list/dron-list.component';
 
@@ -68,6 +74,8 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassDetailNavListComponent,
     KlassFilterTileComponent,
     KlassVenueSearchListComponent,
+    KlassTeacherComponent,
+    
     ClockBoardComponent,
     ClockDigitalComponent,
     ClockComponent,
@@ -91,6 +99,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     CheckBoxHListComponent,
     NavTabsComponent,
     SmartEditorComponent,
+    CommentListComponent,
     DronListComponent,    // @ Depreacted
     InputRowComponent,
     SafeHtmlPipe
@@ -102,7 +111,10 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassDetailResolve,
     KlassColorService,
     MyRulerService,
-    MyCheckerService
+    MyCheckerService,
+    KlassCommentService,
+    CommentService,
+    ImageService
   ]
 })
 export class KlassCenterModule {}

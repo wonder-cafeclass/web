@@ -19,15 +19,15 @@ class MY_Response
         // Do something...
     }
 
-    public function getResBodySuccess($query="", $data=null, $error=null, $extra=null) {
+    public function getResBodySuccess($query=null, $data=null, $error=null, $extra=null) {
         return $this->getResBody(true, "Done", $query, $data, $error, $extra);        
     }
 
-    public function getResBodyFail($message="", $query="", $data=null, $error=null, $extra=null) {
+    public function getResBodyFail($message="", $query=null, $data=null, $error=null, $extra=null) {
         return $this->getResBody(false, $message, $query, $data, $error, $extra);        
     }
 
-    public function getResBody($success=false, $message="", $query="", $data=null, $error=null, $extra=null) 
+    public function getResBody($success=false, $message="", $query=null, $data=null, $error=null, $extra=null) 
     {
         $response_body = [
             'success' => $success,

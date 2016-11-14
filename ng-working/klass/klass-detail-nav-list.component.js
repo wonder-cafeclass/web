@@ -14,11 +14,13 @@ var my_event_1 = require('../util/model/my-event');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var image_service_1 = require('../util/image.service');
 var klass_color_service_1 = require('./service/klass-color.service');
+var klass_comment_service_1 = require('./service/klass-comment.service');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
 var klass_1 = require('./model/klass');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService, myEventService, myCheckerService, imageService) {
+    function KlassDetailNavListComponent(klassColorService, klassCommentService, myEventService, myCheckerService, imageService) {
         this.klassColorService = klassColorService;
+        this.klassCommentService = klassCommentService;
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.imageService = imageService;
@@ -41,6 +43,7 @@ var KlassDetailNavListComponent = (function () {
         this.emitter = new core_1.EventEmitter();
     }
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
+        console.log("klass-detail-nav-list / ngOnInit / this.klass : ", this.klass);
         // WIDTH
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -115,6 +118,46 @@ var KlassDetailNavListComponent = (function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
         this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
         this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
+        // 수업 강사님 정보 가져오기
+        if (null != this.klass.teacher) {
+            this.klassTeacher = this.klass.teacher;
+        }
+        // 수업 리뷰 가져오기
+        if (null != this.klass.review_list) {
+            this.reviewCommentList =
+                this.klassCommentService.getReviewCommentList(this.klass.review_list);
+        }
+        // 수업 질문 가져오기
+        if (null != this.klass.question_list) {
+            this.questionCommentList =
+                this.klassCommentService.getQuestionCommentList(this.klass.question_list);
+        }
+        // MyEvent for Review
+        this.myEventForReview =
+            this.myEventService.getMyEvent(
+            // eventName:string
+            this.myEventService.ANY, 
+            // key:string
+            this.myEventService.KEY_COMMENT_REVIEW, 
+            // value:string
+            "", 
+            // metaObj:any
+            this.klass, 
+            // myChecker:MyChecker
+            this.myCheckerService.getCommentChecker());
+        // MyEvent for Question
+        this.myEventForQuestion =
+            this.myEventService.getMyEvent(
+            // eventName:string
+            this.myEventService.ANY, 
+            // key:string
+            this.myEventService.KEY_COMMENT_QUESTION, 
+            // value:string
+            "", 
+            // metaObj:any
+            this.klass, 
+            // myChecker:MyChecker
+            this.myCheckerService.getCommentChecker());
     };
     // @ Deprecated
     KlassDetailNavListComponent.prototype.ngOnChanges = function (changes) {
@@ -169,6 +212,18 @@ var KlassDetailNavListComponent = (function () {
             else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
                 this.klassSchedule = myEvent.value;
                 console.log("ON_CHANGE / this.klassSchedule.length : ", this.klassSchedule.length);
+            }
+        }
+        else if (this.myEventService.ON_ADD_COMMENT === myEvent.eventName) {
+            if (this.myEventService.KEY_COMMENT === myEvent.key) {
+                console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
+                console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ", myEvent.metaObj);
+            }
+        }
+        else if (this.myEventService.ON_ADD_COMMENT_REPLY === myEvent.eventName) {
+            if (this.myEventService.KEY_COMMENT === myEvent.key) {
+                console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
+                console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ", myEvent.metaObj);
             }
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -271,40 +326,7 @@ var KlassDetailNavListComponent = (function () {
                 // 화면에 현재 작업중인 모습을 보여주지 않음.
                 this.isPreviewKlassSchedule = false;
             }
-        } /* else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
-    
-          if( this.myEventService.KLASS_FEATURE === myEvent.key ||
-              this.myEventService.KLASS_TARGET === myEvent.key ||
-              this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-    
-            this.shutdownKlassInfos();
-          }
-    
-        } else if(this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
-    
-          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-            this.klassFeature = this.klass.feature = myEvent.value;
-          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-            this.klassTarget = this.klass.target = myEvent.value;
-          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-            this.klassSchedule = this.klass.schedule = myEvent.value;
-          }
-    
-        } else if(this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
-    
-          // @ Deprecated
-    
-          // DB로 변경된 데이터를 저장합니다.
-          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-            // Not implemented!
-          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-            // Not implemented!
-          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-            // Not implemented!
-          }
-    
         }
-        */
     };
     KlassDetailNavListComponent.prototype.hasChangedFeature = function () {
         var hasChanged = this.myEventService.hasChangedList(this.myEventListForKlassFeature, this.myEventListForKlassFeatureCopy);
@@ -339,7 +361,7 @@ var KlassDetailNavListComponent = (function () {
             this.isFocusKlassVenue = true;
             box = klassVenue.getBoundingClientRect();
         }
-        else if (this.myEventService.TUTOR_DESC === myEvent.key) {
+        else if (this.myEventService.TEACHER_DESC === myEvent.key) {
             this.isFocusTutorDesc = true;
             box = tutorDesc.getBoundingClientRect();
         }
@@ -455,7 +477,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

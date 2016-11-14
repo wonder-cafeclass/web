@@ -8,10 +8,13 @@ export class MyCheckerService {
     public TYPE_NUMBER:string="TYPE_NUMBER";
     public TYPE_ARRAY:string="TYPE_ARRAY";
 
-    public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`]/g;
+    public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
 
-    public MIN_STR_SAFE_TITLE:number = 0;
+    public MIN_STR_SAFE_TITLE:number = 2;
     public MAX_STR_SAFE_TITLE:number = 48;
+
+    public MIN_STR_SAFE_COMMENT:number = 2;
+    public MAX_STR_SAFE_COMMENT:number = 120;
 
     private history:any;
     getLastHistory() :any {
@@ -84,6 +87,16 @@ export class MyCheckerService {
                 return false;
             }
 
+            let matchArr = valueStr.match(this.REGEX_SAFE_STR);
+            if(null != matchArr && 0 < matchArr.length) {
+                this.history.reason = 
+                `target string is not allowed with this.REGEX_SAFE_STR : ${this.REGEX_SAFE_STR}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+
+                return false;
+            }
+
         } else if(this.TYPE_NUMBER === myChecker.type) {
 
             if ('number' != typeof value) {
@@ -115,4 +128,18 @@ export class MyCheckerService {
           , this.REGEX_SAFE_STR
         );
     } // end method
+    getCommentChecker() :MyChecker {
+        // public myChecker:MyChecker
+        return new MyChecker(
+          // public type:string
+          this.TYPE_STRING
+          // public min:number
+          , this.MIN_STR_SAFE_COMMENT
+          // public max:number
+          , this.MAX_STR_SAFE_COMMENT
+          // public regex:string
+          , this.REGEX_SAFE_STR
+        );
+    } // end method
+
 }

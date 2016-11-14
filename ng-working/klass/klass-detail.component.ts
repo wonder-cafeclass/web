@@ -5,6 +5,7 @@ import { Router, ActivatedRoute }  from '@angular/router';
 
 import { Klass }                   from './model/klass';
 import { KlassPrice }              from './model/klass-price';
+
 import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
 import { MyEventService }          from '../util/my-event.service';
@@ -168,8 +169,6 @@ export class KlassDetailComponent implements OnInit {
       this.radiobtnOptionListNavTabs = 
       this.radiobtnService.getNavTabsKlassInfo(this.klass, this.myEventService.KLASS_DESC);
       // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
-
-      console.log("klass-detail / this.radiobtnOptionListNavTabs : ",this.radiobtnOptionListNavTabs);
 
       this.klassFeature = this.klass.feature;   // @ Deprecated
       this.klassTarget = this.klass.target;     // @ Deprecated

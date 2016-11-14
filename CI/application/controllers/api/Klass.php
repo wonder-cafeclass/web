@@ -13,6 +13,8 @@ require APPPATH . '/models/KlassStation.php';
 require APPPATH . '/models/KlassDay.php';
 require APPPATH . '/models/KlassTime.php';
 require APPPATH . '/models/KlassCalendar.php';
+require APPPATH . '/models/KlassReview.php';
+require APPPATH . '/models/KlassQuestion.php';
 
 
 /**
@@ -165,7 +167,10 @@ class Klass extends REST_Controller implements MY_Class{
         $extra['id'] = $id = $this->my_paramchecker->get('id','klass_id');
 
         $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
+
+        $query_arr = array();
         
+        // 수업 - klass 정보를 가져옵니다.
         $this->db->where('id', $id);
         $limit = 1;
         $offset = 0;
@@ -176,16 +181,126 @@ class Klass extends REST_Controller implements MY_Class{
         {
             $klass = $klass_list[0];
             $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-            // TEST
-            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass, "2016-11-15");
         }
 
-        $last_query = $this->db->last_query();
+        // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
+        $teacher_id = -1;
+        $teacher = null;
+        if(isset($klass) && isset($klass->teacher_id))
+        {
+            $teacher_id = intval($klass->teacher_id);
+        }
+        if(0 < $teacher_id)
+        {
+            $this->db->where('id', $teacher_id);
+            $limit = 1;
+            $offset = 0;
+            $query = $this->db->get('teacher', $limit, $offset);
+
+            $teacher = $this->add_klass_teacher_extra_info($query);
+        }
+        if(isset($klass))
+        {
+            $klass->teacher = $teacher;
+        }
+        array_push($query_arr, $this->db->last_query());
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        if(0 < $klass->id)
+        {
+            $this->db->select('review.id, review.klass_id, review.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->db->from('review');
+            $this->db->join('user', 'review.user_id = user.id');
+            $this->db->where('review.klass_id', $klass->id);
+            $this->db->where('review.parent_id=', 0);
+            $this->db->order_by('review.id', 'DESC');
+            $query = $this->db->get();
+
+            $review_list = $this->add_klass_review_extra_info($query);
+        }
+        if(isset($review_list))
+        {
+            $klass->review_list = $review_list;
+        }
+        array_push($query_arr, $this->db->last_query());
+
+        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
+        for ($i=0; $i < count($review_list); $i++) 
+        {
+
+            $review = $review_list[$i];
+            $review_id = intval($review->id);
+
+            if(!(0 < $review_id)) 
+            {
+                continue;
+            }
+
+            $this->db->select('review.id, review.klass_id, review.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->db->from('review');
+            $this->db->join('user', 'review.user_id = user.id');
+            $this->db->where('review.parent_id', $review_id);
+            $this->db->order_by('review.id', 'DESC');
+            $query = $this->db->get();
+
+            $review->child_review_list = $this->add_klass_review_extra_info($query);
+        }
+        array_push($query_arr, $this->db->last_query());
+
+        // 수업의 문의를 가져옵니다.
+        $question_list = null;
+        // 1. 부모 문의를 먼저 가져옵니다.(최신순)
+        if(0 < $klass->id)
+        {
+            $this->db->select('question.id, question.klass_id, question.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->db->from('question');
+            $this->db->join('user', 'question.user_id = user.id');
+            $this->db->where('question.klass_id', $klass->id);
+            $this->db->where('question.parent_id=', 0);
+            $this->db->order_by('question.id', 'DESC');
+            $query = $this->db->get();
+
+            $question_list = $this->add_klass_question_extra_info($query);
+        }
+        if(isset($question_list))
+        {
+            $klass->question_list = $question_list;
+        }
+        array_push($query_arr, $this->db->last_query());
+
+        // 2. 부모 문의에 연결된 자식 문의 댓글(답변)들을 가져옵니다.(순차시간)
+        for ($i=0; $i < count($question_list); $i++) 
+        {
+
+            $question = $question_list[$i];
+            $question_id = intval($question->id);
+
+            if(!(0 < $question_id)) 
+            {
+                continue;
+            }
+
+            $this->db->select('question.id, question.klass_id, question.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->db->from('question');
+            $this->db->join('user', 'question.user_id = user.id');
+            $this->db->where('question.parent_id', $question_id);
+            $this->db->order_by('question.id', 'DESC');
+            $query = $this->db->get();
+
+            $question->child_question_list = $this->add_klass_question_extra_info($query);
+        }
+        array_push($query_arr, $this->db->last_query());
+
+
+
+        // 조회 결과를 가져옵니다.
         if (!empty($klass))
         {
             $response_body = 
             $this->my_response->getResBodySuccess(
-                $last_query, 
+                $query_arr, 
                 $klass, 
                 $this->my_error->get(),
                 $extra
@@ -196,14 +311,14 @@ class Klass extends REST_Controller implements MY_Class{
             $response_body = 
             $this->my_response->getResBodyFail(
                 'Klass could not be found', 
-                $last_query, 
+                $query_arr, 
                 null, 
                 $this->my_error->get(),
                 $extra
             );
         }
         $this->set_response($response_body, REST_Controller::HTTP_OK); 
-    }    
+    }   
 
     public function list_get()
     {
@@ -866,6 +981,116 @@ class Klass extends REST_Controller implements MY_Class{
         ];
         $this->set_response($response_body, REST_Controller::HTTP_OK);
     } 
+
+    private function add_klass_review_extra_info($query=null)
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassReview');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }
+
+    private function add_klass_question_extra_info($query=null)
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassQuestion');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }    
+
+    private function add_klass_teacher_extra_info($query=null)
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassTeacher');
+        $teacher = null;
+        if(!empty($rows))
+        {
+            $teacher = $rows[0];   
+        }
+        if(isset($teacher) && !empty($teacher->resume))
+        {
+            $teacher->resume_arr = explode("|",$teacher->resume);
+        }
+        if(isset($teacher) && !empty($teacher->greeting))
+        {
+            $teacher->greeting_arr = explode("|",$teacher->greeting);
+        }
+        if(isset($teacher) && !empty($teacher->thumbnail))
+        {
+            $teacher->thumbnail_url = $this->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
+        }
+        if(isset($teacher) && empty($teacher->nickname))
+        {
+            $teacher->nickname = $teacher->last_name . " " . $teacher->first_name;
+        }
+
+        return $teacher;
+    }
 
     private function add_klass_extra_info($query=null) 
     {

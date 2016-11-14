@@ -16,8 +16,11 @@ var klass_service_1 = require('./klass.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_color_service_1 = require('./service/klass-color.service');
+var klass_comment_service_1 = require('./service/klass-comment.service');
 var my_ruler_service_1 = require('../util/service/my-ruler.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var image_service_1 = require('../util/image.service');
+var comment_service_1 = require('../widget/comment/service/comment.service');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
@@ -28,6 +31,7 @@ var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.compone
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
 var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
+var klass_teacher_component_1 = require('./widget/klass-teacher.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
@@ -49,6 +53,7 @@ var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.co
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var comment_list_component_1 = require('../widget/comment/comment-list.component');
 // @ Deprecated
 var dron_list_component_1 = require('../widget/dron-list/dron-list.component');
 var input_row_component_1 = require('../widget/input-row/input-row.component');
@@ -70,6 +75,7 @@ var KlassCenterModule = (function () {
                 klass_detail_nav_list_component_1.KlassDetailNavListComponent,
                 klass_filter_tile_component_1.KlassFilterTileComponent,
                 klass_venue_search_list_component_1.KlassVenueSearchListComponent,
+                klass_teacher_component_1.KlassTeacherComponent,
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,
@@ -91,6 +97,7 @@ var KlassCenterModule = (function () {
                 checkbox_h_list_component_1.CheckBoxHListComponent,
                 nav_tabs_component_1.NavTabsComponent,
                 smart_editor_component_1.SmartEditorComponent,
+                comment_list_component_1.CommentListComponent,
                 dron_list_component_1.DronListComponent,
                 input_row_component_1.InputRowComponent,
                 safe_html_pipe_1.SafeHtmlPipe
@@ -102,7 +109,10 @@ var KlassCenterModule = (function () {
                 klass_detail_resolve_service_1.KlassDetailResolve,
                 klass_color_service_1.KlassColorService,
                 my_ruler_service_1.MyRulerService,
-                my_checker_service_1.MyCheckerService
+                my_checker_service_1.MyCheckerService,
+                klass_comment_service_1.KlassCommentService,
+                comment_service_1.CommentService,
+                image_service_1.ImageService
             ]
         }), 
         __metadata('design:paramtypes', [])

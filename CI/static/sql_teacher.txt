@@ -1,0 +1,57 @@
+INSERT INTO `cafeclass`.`teacher`
+(
+`user_id`,
+`nickname`,
+`first_name`,
+`last_name`,
+`gender`,
+`birth_year`,
+`thumbnail`,
+`status`,
+`mobile`,
+`email`,
+`resume`,
+`greeting`,
+`memo`,
+`date_created`,
+`date_updated`
+)
+VALUES
+(
+## user_id
+1,
+## nickname
+"Julia",
+## first_name
+"주라",
+## last_name
+"유",								
+## gender
+"F",
+## birth_year
+1991,								
+## thumbnail
+"teacher_julia_150x150.png",			
+## status
+"A",								
+## mobile
+"010-7797-9412",					
+## email
+"joau0002@naver.com",				
+## resume
+"미국 뉴욕 디자인 회사 인턴 및 근무 2년 해외 영업 업무 4년|2016 Spring 숙명 TESOL intensive program 수료|2016 Da Vinci summer English camp TA",
+## greeting
+"일상생활에서 어떻게 하면 영어로 대화를 잘 할수 있을까요?|자주쓰이는 표현과 문구를 배우면서 자신감을 길러보아요.|시험 영어에 지치신 분들, 영어에 흥미를 잃으신 분들 모두 환영합니다! ^_^.",
+## memo
+"초보 학생들에게 인기가 많은 선생님입니다.",
+## date_created
+CURRENT_TIMESTAMP,
+## date_updated
+CURRENT_TIMESTAMP
+)
+;
+
+UPDATE klass
+SET teacher_id=1
+WHERE id=1
+;

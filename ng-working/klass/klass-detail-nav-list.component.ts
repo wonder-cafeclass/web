@@ -16,8 +16,12 @@ import { MyChecker }                  from '../util/model/my-checker';
 
 import { ImageService }               from '../util/image.service';
 import { KlassColorService }          from './service/klass-color.service';
+import { KlassCommentService }          from './service/klass-comment.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
+import { Comment }                    from '../widget/comment/model/comment';
+
 import { Klass }                      from './model/klass';
+import { KlassTeacher }               from './model/klass-teacher';
 
 @Component({
   moduleId: module.id,
@@ -32,6 +36,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
+  klassTeacher:KlassTeacher;
 
   @Input() klassFeature:string; // @ Deprecated
   @Input() klassFeatureList:string[];
@@ -61,6 +66,9 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
   myEventSIKlassFeature:MyEvent; // @ Deprecated
   myEventSIKlassTarget:MyEvent; // @ Deprecated
 
+  myEventForReview:MyEvent;
+  myEventForQuestion:MyEvent;
+
   myEventForKlassFeature:MyEvent;
   myEventListForKlassFeature:MyEvent[];
   myEventListForKlassFeatureCopy:MyEvent[];
@@ -83,14 +91,22 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   seKlassFeature:SmartEditorComponent;
 
+  // Review
+  reviewCommentList:Comment[];
+  // Question
+  questionCommentList:Comment[];
+
   @Output() emitter = new EventEmitter<any>();
 
   constructor(  private klassColorService:KlassColorService, 
+                private klassCommentService:KlassCommentService,
                 public myEventService:MyEventService, 
                 private myCheckerService:MyCheckerService, 
                 public imageService: ImageService) {}
 
   ngOnInit(): void {
+
+    console.log("klass-detail-nav-list / ngOnInit / this.klass : ", this.klass);
 
     // WIDTH
     if(0 < this.cageWidth) {
@@ -186,6 +202,57 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
     this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
 
+    // 수업 강사님 정보 가져오기
+    if(null != this.klass.teacher) {
+      this.klassTeacher = this.klass.teacher;
+    }
+
+    // 수업 리뷰 가져오기
+    if(null != this.klass.review_list) {
+      this.reviewCommentList = 
+      this.klassCommentService.getReviewCommentList(
+        this.klass.review_list
+      );
+    }
+
+    // 수업 질문 가져오기
+    if(null != this.klass.question_list) {
+      this.questionCommentList = 
+      this.klassCommentService.getQuestionCommentList(
+        this.klass.question_list
+      );
+    }
+
+    // MyEvent for Review
+    this.myEventForReview = 
+    this.myEventService.getMyEvent(
+      // eventName:string
+      this.myEventService.ANY,
+      // key:string
+      this.myEventService.KEY_COMMENT_REVIEW,
+      // value:string
+      "",
+      // metaObj:any
+      this.klass,
+      // myChecker:MyChecker
+      this.myCheckerService.getCommentChecker()
+    );
+
+    // MyEvent for Question
+    this.myEventForQuestion = 
+    this.myEventService.getMyEvent(
+      // eventName:string
+      this.myEventService.ANY,
+      // key:string
+      this.myEventService.KEY_COMMENT_QUESTION,
+      // value:string
+      "",
+      // metaObj:any
+      this.klass,
+      // myChecker:MyChecker
+      this.myCheckerService.getCommentChecker()
+    );    
+
   }
   // @ Deprecated
   ngOnChanges(changes: SimpleChanges) :void {
@@ -264,6 +331,24 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
         this.klassSchedule = myEvent.value;
         console.log("ON_CHANGE / this.klassSchedule.length : ",this.klassSchedule.length);
+
+      }
+
+    } else if(this.myEventService.ON_ADD_COMMENT === myEvent.eventName) {
+
+      if(this.myEventService.KEY_COMMENT === myEvent.key) {
+
+        console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
+        console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ",myEvent.metaObj);
+
+      }      
+
+    } else if(this.myEventService.ON_ADD_COMMENT_REPLY === myEvent.eventName) {
+
+      if(this.myEventService.KEY_COMMENT === myEvent.key) {
+
+        console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
+        console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ",myEvent.metaObj);
 
       }
 
@@ -385,40 +470,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         this.isPreviewKlassSchedule=false;
       }
 
-    }/* else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK_INPUT_ROW === myEvent.eventName) {
-
-      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
-          this.myEventService.KLASS_TARGET === myEvent.key || 
-          this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-
-        this.shutdownKlassInfos();
-      }
-
-    } else if(this.myEventService.ON_CHANGE_INPUT_ROW === myEvent.eventName) {
-
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-        this.klassFeature = this.klass.feature = myEvent.value;
-      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-        this.klassTarget = this.klass.target = myEvent.value;
-      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-        this.klassSchedule = this.klass.schedule = myEvent.value;
-      }
-
-    } else if(this.myEventService.ON_SAVE_INPUT_ROW === myEvent.eventName) {
-
-      // @ Deprecated
-
-      // DB로 변경된 데이터를 저장합니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-        // Not implemented!
-      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-        // Not implemented!
-      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-        // Not implemented!
-      }
-
     }
-    */
   }
 
   hasChangedFeature() :boolean {
@@ -471,7 +523,7 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       this.isFocusKlassVenue=true;
       box = klassVenue.getBoundingClientRect();
 
-    } else if(this.myEventService.TUTOR_DESC === myEvent.key) {
+    } else if(this.myEventService.TEACHER_DESC === myEvent.key) {
 
       this.isFocusTutorDesc=true;
       box = tutorDesc.getBoundingClientRect();

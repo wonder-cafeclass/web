@@ -15,6 +15,8 @@ export class MyEventService {
     ON_SHUTDOWN_N_ROLLBACK:string="ON_SHUTDOWN_N_ROLLBACK";
     ON_SAVE:string="ON_SAVE";
     ON_ADD_ROW:string="ON_ADD_ROW";
+    ON_ADD_COMMENT:string="ON_ADD_COMMENT";
+    ON_ADD_COMMENT_REPLY:string="ON_ADD_COMMENT_REPLY";
     ON_REMOVE_ROW:string="ON_REMOVE_ROW";
     ON_MOUSE_LEAVE:string="ON_MOUSE_LEAVE";
     ON_MOUSE_ENTER:string="ON_MOUSE_ENTER";
@@ -42,7 +44,11 @@ export class MyEventService {
     KLASS_VENUE:string="KLASS_VENUE";           // 장소
     KLASS_TIME_BEGIN:string="KLASS_TIME_BEGIN"; // 수업시작시간
     KLASS_TIME_END:string="KLASS_TIME_END";     // 수업종료시간
-    TUTOR_DESC:string="TUTOR_DESC";             // 강사소개
+
+    TEACHER_DESC:string="TEACHER_DESC";         // 강사소개
+    TEACHER_RESUME:string="TEACHER_RESUME";     // 강사이력소개
+    TEACHER_GREETING:string="TEACHER_GREETING"; // 강사인사말
+    
     STUDENT_REVIEW:string="STUDENT_REVIEW";     // 리뷰
     STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
     CAUTION:string="CAUTION";                   // 유의사항
@@ -55,6 +61,9 @@ export class MyEventService {
     KEY_SINGLE_INPUT_VIEW:string="KEY_SINGLE_INPUT_VIEW"; // ?
     KEY_MINI_CALENDAR:string="KEY_MINI_CALENDAR";         // 날짜를 한눈에 확인하는 미니 캘린더
     KEY_DRON_LIST:string="KEY_DRON_LIST";                 // 화면 구석에 노출, 스크롤에도 움직이지 않아요.
+    KEY_COMMENT:string="KEY_COMMENT";                     // 댓글 리스트
+    KEY_COMMENT_REVIEW:string="KEY_COMMENT_REVIEW";       // 댓글 - 수업 리뷰 리스트
+    KEY_COMMENT_QUESTION:string="KEY_COMMENT_QUESTION";   // 댓글 - 수업 문의 리스트
 
     // SPECIFIC CASES - @ Deprecated
     /*

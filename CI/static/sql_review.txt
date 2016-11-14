@@ -1,0 +1,42 @@
+INSERT INTO `cafeclass`.`review`
+(
+`klass_id`,
+`user_id`,
+`parent_id`,
+`comment`,
+`date_created`,
+`date_updated`)
+VALUES
+(
+1,
+2,
+0,
+"어느 수업보다도 효과적이에요!",
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP
+),
+(
+1,
+1,
+1,
+"감사합니다. 어느때보다도 열정을 보여주셔서 가능했던 것 같아요.",
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP
+),
+(
+1,
+2,
+0,
+"다음 수업도 기대가 되요!",
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP
+),
+(
+1,
+1,
+3,
+"열정적인 수업 참여와 피드백에 감사드려요.",
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP
+)
+;

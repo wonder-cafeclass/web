@@ -215,7 +215,7 @@ var KlassRadioBtnService = (function () {
             // public title:string,
             "강사소개", 
             // public key:string,
-            this.myEventService.TUTOR_DESC, 
+            this.myEventService.TEACHER_DESC, 
             // public isFocus:boolean
             false, 
             // public myEvent:MyEvent
@@ -223,7 +223,7 @@ var KlassRadioBtnService = (function () {
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
-            this.myEventService.TUTOR_DESC, 
+            this.myEventService.TEACHER_DESC, 
             // public value:string
             "Need to implement!", 
             // public metaObj:any

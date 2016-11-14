@@ -118,104 +118,37 @@
 
             <li   #tutorDesc
                   class="list-group-item klass-info"
+                  style="padding:0px;"
                   [ngClass]="{'focus':isFocusTutorDesc}">
-
-                  <ul class="list-group" style="margin-bottom:0px;">
-                        <li class="list-group-item" style="padding:5px;">
-                                          
-                              <div class="media">
-                                <div class="media-left">
-                                  <a href="#">
-                                    <img class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTgyODc0NzQ4MiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ODI4NzQ3NDgyIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy40Njg3NSIgeT0iMzYuNSI+NjR4NjQ8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="...">
-                                  </a>
-                                </div>
-                                <div class="media-body">
-                                  <h4 class="media-heading">강사소개</h4>
-                                  강사소개
-                                </div>
-                              </div>
-                        </li>
-                  </ul>  
-
+              <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
+              <klass-teacher  [isAdmin]="isAdmin"
+                              [klassTeacher]="klassTeacher" 
+                              [klassId]="klass.id">
+              </klass-teacher>
             </li>
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
-
-                  <!-- refactor me -->
-                  <ul class="list-group" style="margin-bottom:0px;">
-                        <li class="list-group-item" style="padding:5px;">
-                                          
-                              <div class="media">
-                                <div class="media-left">
-                                  <a href="#">
-                                    <img class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTgyODc0NzQ4MiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ODI4NzQ3NDgyIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy40Njg3NSIgeT0iMzYuNSI+NjR4NjQ8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="...">
-                                  </a>
-                                </div>
-                                <div class="media-body">
-                                  <h4 class="media-heading">어느 수업보다도 효과적이에요!</h4>
-                                  짧은 기간이었이지만 만족스러웠습니다.짧은 기간이었이지만 만족스러웠습니다.짧은 기간이었이지만 만족스러웠습니다.
-                                </div>
-                              </div>
-
-                        </li>
-
-                        <li class="list-group-item" style="padding:5px;">
-                                          
-                              <div class="media">
-                                <div class="media-left">
-                                  <a href="#">
-                                    <img class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTgyODc0NzQ4MiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ODI4NzQ3NDgyIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy40Njg3NSIgeT0iMzYuNSI+NjR4NjQ8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="...">
-                                  </a>
-                                </div>
-                                <div class="media-body">
-                                  <h4 class="media-heading">어느 수업보다도 효과적이에요!</h4>
-                                  짧은 기간이었이지만 만족스러웠습니다.짧은 기간이었이지만 만족스러웠습니다.짧은 기간이었이지만 만족스러웠습니다.
-                                </div>
-                              </div>
-
-                        </li>                              
-                  </ul>
-
-
+              <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
+              <comment-list [isAdmin]="isAdmin"
+                            [myEvent]="myEventForReview"
+                            [placeholderInput]="'수업을 받고 난 뒤의 느낌은 어떠셨나요?'"
+                            [placeholderReply]="'어떤 답글을 해주면 좋을까요?'"
+                            (emitter)="onChangedFromInputRow($event)"
+                            [commentList]="reviewCommentList">
+              </comment-list>
             </li>
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
-
-                  <ul class="list-group" style="margin-bottom:0px;">
-                        <li class="list-group-item" style="padding:5px;">
-                                          
-                              <div class="media">
-                                <div class="media-left">
-                                  <a href="#">
-                                    <img class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTgyODc0NzQ4MiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ODI4NzQ3NDgyIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy40Njg3NSIgeT0iMzYuNSI+NjR4NjQ8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="...">
-                                  </a>
-                                </div>
-                                <div class="media-body">
-                                  <h4 class="media-heading">커리큘럼을 확인해보고 싶어요!</h4>
-                                  커리큘럼을 확인해보고 싶어요!커리큘럼을 확인해보고 싶어요!커리큘럼을 확인해보고 싶어요!
-                                </div>
-                              </div>
-
-                        </li>
-
-                        <li class="list-group-item" style="padding:5px;">
-                                          
-                              <div class="media">
-                                <div class="media-left">
-                                  <a href="#">
-                                    <img class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTgyODc0NzQ4MiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ODI4NzQ3NDgyIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy40Njg3NSIgeT0iMzYuNSI+NjR4NjQ8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="...">
-                                  </a>
-                                </div>
-                                <div class="media-body">
-                                  <h4 class="media-heading">문의드립니다.</h4>
-                                  문의드립니다.문의드립니다.문의드립니다.문의드립니다.문의드립니다.문의드립니다.
-                                </div>
-                              </div>
-
-                        </li>                              
-                  </ul>
+              <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
+              <comment-list [isAdmin]="isAdmin"
+                            [myEvent]="myEventForQuestion"
+                            [placeholderInput]="'더 알고 싶은 것이 았다면 무엇이든 물어보세요.'"
+                            [placeholderReply]="'어떤 답변을 해주면 좋을까요?'"
+                            (emitter)="onChangedFromInputRow($event)"
+                            [commentList]="questionCommentList">
+              </comment-list>
 
             </li>
             <li   #caution

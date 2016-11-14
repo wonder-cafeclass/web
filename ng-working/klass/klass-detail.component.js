@@ -91,7 +91,6 @@ var KlassDetailComponent = (function () {
             _this.radiobtnOptionListNavTabs =
                 _this.radiobtnService.getNavTabsKlassInfo(_this.klass, _this.myEventService.KLASS_DESC);
             // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
-            console.log("klass-detail / this.radiobtnOptionListNavTabs : ", _this.radiobtnOptionListNavTabs);
             _this.klassFeature = _this.klass.feature; // @ Deprecated
             _this.klassTarget = _this.klass.target; // @ Deprecated
             _this.klassSchedule = _this.klass.schedule;

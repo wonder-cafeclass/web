@@ -37,12 +37,24 @@ var InputsBtnsRowsComponent = (function () {
         this.myAddBtnList = [
             new my_button_1.MyButton("추가하기", this.myEventService.ON_ADD_ROW, myChecker, myEvent)
         ];
+        this.updateMyRemovableBtnList();
+        /*
         this.myRemovableBtnList = [];
         for (var i = 0; i < this.myEventList.length; ++i) {
-            var curMyEvent = this.myEventList[i];
-            var myButtonNext = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, curMyEvent);
-            this.myRemovableBtnList.push(myButtonNext);
+    
+          let curMyEvent:MyEvent = this.myEventList[i];
+          let myButtonNext:MyButton =
+          new MyButton (
+            "빼기",
+            this.myEventService.ON_REMOVE_ROW,
+            myChecker,
+            curMyEvent
+          )
+    
+          this.myRemovableBtnList.push(myButtonNext);
+    
         }
+        */
         // Ready Event 발송 
         var myEventReady = this.myEventService.getMyEvent(
         // public eventName:string
@@ -56,6 +68,16 @@ var InputsBtnsRowsComponent = (function () {
         // public myChecker:MyChecker
         null);
         this.emitter.emit(myEventReady);
+    };
+    InputsBtnsRowsComponent.prototype.updateMyRemovableBtnList = function () {
+        var myRemovableBtnListNext = [];
+        var myChecker = this.myCheckerService.getTitleChecker();
+        for (var i = 0; i < this.myEventList.length; ++i) {
+            var curMyEvent = this.myEventList[i];
+            var myButtonNext = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, curMyEvent);
+            myRemovableBtnListNext.push(myButtonNext);
+        }
+        this.myRemovableBtnList = myRemovableBtnListNext;
     };
     InputsBtnsRowsComponent.prototype.getCopyEventList = function (myEventList) {
         var copyList = [];
@@ -113,6 +135,7 @@ var InputsBtnsRowsComponent = (function () {
         else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
             var listLengthPrev = this.myEventList.length;
             // console.log("BEFORE / this.myEventList : ",this.myEventList);
+            // Update my-event!
             var myEventListNext = [];
             for (var i = 0; i < this.myEventList.length; ++i) {
                 var myEventNext = this.myEventList[i];
@@ -123,6 +146,7 @@ var InputsBtnsRowsComponent = (function () {
                 myEventListNext.push(myEventNext);
             } // end for
             this.myEventList = myEventListNext;
+            // Update my-button!
             var myRemovableBtnListNext = [];
             for (var i = 0; i < this.myRemovableBtnList.length; ++i) {
                 var myBtnNext = this.myRemovableBtnList[i];
@@ -140,6 +164,7 @@ var InputsBtnsRowsComponent = (function () {
                 // 리스트가 1개가 줄어야 부모에게 이벤트를 발송할 있다.
                 var hasChanged = this.hasChanged();
                 this.isDisabledSave = (hasChanged) ? false : true;
+                myEvent.parentEventList = this.myEventList;
                 this.emitter.emit(myEvent);
             }
             else {
@@ -169,7 +194,6 @@ var InputsBtnsRowsComponent = (function () {
         var myEventReturn = null;
         if (wannaSave) {
             this.save();
-            // wonder.jung
             myEventReturn =
                 this.myEventService.getMyEvent(
                 // public eventName:string
@@ -182,6 +206,7 @@ var InputsBtnsRowsComponent = (function () {
                 this.myEventList, 
                 // public myChecker:MyChecker
                 null);
+            myEventReturn.parentEventList = this.myEventList;
         }
         else {
             // 저장하지 않습니다. 이전 값으로 돌려놓습니다.
@@ -197,6 +222,8 @@ var InputsBtnsRowsComponent = (function () {
                 this.myEventListCopy, 
                 // public myChecker:MyChecker
                 null);
+            this.rollbackMyEventListCopies();
+            myEventReturn.parentEventList = this.myEventList;
         }
         this.emitter.emit(myEventReturn);
     };
@@ -261,7 +288,8 @@ var InputsBtnsRowsComponent = (function () {
             this.myEventService.getCopyEventList(this.myEventList);
         // 원본과 복사본이 동일. '저장'버튼을 비활성화.
         this.isDisabledSave = true;
-        console.log("overwriteMyEventList / this.isDisabledSave : ", this.isDisabledSave);
+        // 이벤트 리스트가 바뀌었으므로 버튼 리스트도 바꿔줍니다.
+        this.updateMyRemovableBtnList();
     };
     InputsBtnsRowsComponent.prototype.rollbackMyEventListCopies = function () {
         this.myEventList = this.myEventListCopy;
