@@ -8,7 +8,7 @@ export class MyCheckerService {
     public TYPE_NUMBER:string="TYPE_NUMBER";
     public TYPE_ARRAY:string="TYPE_ARRAY";
 
-    public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
+    public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
 
     public MIN_STR_SAFE_TITLE:number = 2;
     public MAX_STR_SAFE_TITLE:number = 48;

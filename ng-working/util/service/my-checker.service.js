@@ -15,7 +15,7 @@ var MyCheckerService = (function () {
         this.TYPE_STRING = "TYPE_STRING";
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_ARRAY = "TYPE_ARRAY";
-        this.REGEX_SAFE_STR = /[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
+        this.REGEX_SAFE_STR = /[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
         this.MIN_STR_SAFE_TITLE = 2;
         this.MAX_STR_SAFE_TITLE = 48;
         this.MIN_STR_SAFE_COMMENT = 2;
