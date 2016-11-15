@@ -25,6 +25,10 @@
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
+		"kakao_code":"is_str",
+		"kakao_access_token":"is_str",
+		"kakao_token_type":"is_str",
+
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 

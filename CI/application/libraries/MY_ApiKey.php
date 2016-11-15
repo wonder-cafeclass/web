@@ -19,6 +19,11 @@ class MY_ApiKey {
     public $X_Naver_Client_Id="X-Naver-Client-Id";
     public $X_Naver_Client_Secret="X-Naver-Client-Secret";
 
+    public $Kakao_Native_App_Key="Kakao-Native-App-Key";
+    public $Kakao_REST_API_Key="Kakao-REST-API-Key";
+    public $Kakao_Javascript_Key="Kakao-Javascript-Key";
+    public $Kakao_Admin_Key="Kakao-Admin-Key";
+
     public function __construct($params=null)
     {
         // get singleton object.

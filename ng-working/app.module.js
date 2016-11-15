@@ -20,6 +20,7 @@ var klass_center_module_1 = require('./klass/klass-center.module');
 var login_component_1 = require('./login/login.component');
 var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
+var login_service_1 = require('./login/service/login.service');
 var url_service_1 = require('./util/url.service');
 var image_service_1 = require('./util/image.service');
 var my_event_service_1 = require('./util/my-event.service');
@@ -46,6 +47,7 @@ var AppModule = (function () {
             ],
             providers: [
                 auth_service_1.AuthService,
+                login_service_1.LoginService,
                 url_service_1.UrlService,
                 image_service_1.ImageService,
                 my_event_service_1.MyEventService,

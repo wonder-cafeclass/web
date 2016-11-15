@@ -1,0 +1,36 @@
+<!--
+<h2>LOGIN</h2>
+<p>{{message}}</p>
+<p>
+  <button (click)="login()"  *ngIf="!authService.isLoggedIn">Login</button>
+  <button (click)="logout()" *ngIf="authService.isLoggedIn">Logout</button>
+</p>
+-->
+
+<div class="container">
+	<!-- First Row -->
+	<div class="row">
+		<div class="row">
+			<div class="col-md-4" style="padding:0px;"></div>
+			<!-- Login Iframe -->
+			<div class="col-md-4 cc-div-col iframe-box">
+				<div>LOG IN</div>
+				<iframe 	id="se"
+							#iframe
+							src="./assets/plugin/multi-login/auth.html?height=600&callbackName=angularMyML" 
+							[style.height]="cageHeightStr"
+							[style.width]="cageWidthStr"
+							class="cage">
+				</iframe>
+
+				<!--
+				<a href={{kakaoAuthUrl}} alt="...">
+					<img src="./assets/images/auth/login_kakao.png">
+				</a>
+				-->
+
+			</div>
+			<div class="col-md-4" style="padding:0px;"></div>
+		</div>
+	</div>
+</div>

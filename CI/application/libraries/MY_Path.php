@@ -14,6 +14,8 @@ class MY_Path {
 
 	private $CI=null;
 	private $web_root_path=null;
+	private $http_host="";
+	private $req_uri="";
 
     public function __construct($params=null)
     {
@@ -26,8 +28,8 @@ class MY_Path {
 
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
         $path_info = $_SERVER['PATH_INFO'];
-        $http_host = $_SERVER['HTTP_HOST'];
-        $req_uri = $_SERVER['REQUEST_URI'];
+        $this->http_host = $_SERVER['HTTP_HOST'];
+        $this->req_uri = $req_uri = $_SERVER['REQUEST_URI'];
 
         // remove query string
         $result = explode("?",$req_uri);
@@ -39,6 +41,26 @@ class MY_Path {
 
         $this->web_root_path = str_replace("/CI/index.php$path_info","",$req_uri);
 	}	
+
+	// Get the full URL of the current page
+	// ex) http://devcafeclass.co.uk/cafeclass/CI/index.php/api/kakao/auth
+	public function current_page_url(){
+	    $page_url   = 'http';
+	    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+	        $page_url .= 's';
+	    }
+	    return $page_url.'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+	}	
+
+	// ex) http://devcafeclass.co.uk
+	private function current_http_referer(){
+	    $page_url   = 'http';
+	    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+	        $page_url .= 's';
+	    }
+	    return $page_url.'://'.$_SERVER['SERVER_NAME'];
+	}	
+
 
 	public function get_web_root_path() 
 	{
@@ -68,6 +90,16 @@ class MY_Path {
 		}
 		return $target_path;
 
+	}
+
+	public function get_full_path($target_path="")
+	{
+		if(empty($target_path)) 
+		{
+			return "";
+		}
+
+		return $this->current_http_referer() . $this->get($target_path);
 	}
 
 }

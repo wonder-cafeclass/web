@@ -24,8 +24,6 @@ require APPPATH . '/models/KlassLocation.php';
 class Naver extends REST_Controller implements MY_Class{
 
     // 로컬 서버에서 domain 검증으로 api 호출이 불가능한 경우, 사용해야할 api url.
-    private $api_search_shop_url="http://devcafeclass.co.uk/CI/index.php/api/naver/search_shop";
-
     private $api_search_local="https://openapi.naver.com/v1/search/local.xml?query=";
     private $api_search_map="https://openapi.naver.com/v1/map/geocode?query=";
 

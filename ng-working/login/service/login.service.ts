@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { UrlService } from "./util/url.service";
+import { UrlService } from "../../util/url.service";
 
 @Injectable()
-export class AuthService {
+export class LoginService {
 
-    private adminAuthUrl = '/CI/index.php/api/admin/auth';
-    private kakaoAuthUrl = '/CI/index.php/api/kakao/authurl';
+    private kakaoAuthLinkUrl = '/CI/index.php/api/kakao/authurl';
+    private kakaoAuthUrl = '/CI/index.php/api/kakao/auth';
+    private kakaoTokenUrl = '/CI/index.php/api/kakao/token';
+    private kakaoSingUpUrl = '/CI/index.php/api/kakao/signup';
+
     private naverAuthUrl = '/CI/index.php/api/naver/authurl';
     private facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
 
     constructor(private us:UrlService, private http: Http) {
     }
 
-    getAdminAuth (): Promise<any> {
+    getKakaoAuthUrl (): Promise<any> {
 
-        let req_url = this.us.get(this.adminAuthUrl);
-
-        console.log("auth / getAdminAuth / req_url : ",req_url);
+        let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -25,11 +26,22 @@ export class AuthService {
                       .catch(this.handleError);
     }
 
-    getKakaoAuth (): Promise<any> {
+    getKakaoAuth (code:string): Promise<any> {
 
-        let req_url = this.us.get(this.kakaoAuthUrl);
+        let req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
 
-        console.log("auth / getKakaoAuth / req_url : ",req_url);
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+// REMOVE ME
+/*
+    getKakaoToken (code:string): Promise<any> {
+
+        let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
+
+        console.log("getKakaoToken / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -37,6 +49,18 @@ export class AuthService {
                       .catch(this.handleError);
     }
 
+    getKakaoSignUp (accessToken:string, tokenType:string): Promise<any> {
+
+        let req_url = this.us.get(this.kakaoSingUpUrl) + "?access_token=" + accessToken + "&token_type=" + tokenType;
+
+        console.log("getKakaoSignUp / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+*/
     private extractData(res: Response) {
 
         let body = res.json();

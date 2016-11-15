@@ -10,33 +10,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
-var url_service_1 = require("./util/url.service");
-var AuthService = (function () {
-    function AuthService(us, http) {
+var url_service_1 = require("../../util/url.service");
+var LoginService = (function () {
+    function LoginService(us, http) {
         this.us = us;
         this.http = http;
-        this.adminAuthUrl = '/CI/index.php/api/admin/auth';
-        this.kakaoAuthUrl = '/CI/index.php/api/kakao/authurl';
+        this.kakaoAuthLinkUrl = '/CI/index.php/api/kakao/authurl';
+        this.kakaoAuthUrl = '/CI/index.php/api/kakao/auth';
+        this.kakaoTokenUrl = '/CI/index.php/api/kakao/token';
+        this.kakaoSingUpUrl = '/CI/index.php/api/kakao/signup';
         this.naverAuthUrl = '/CI/index.php/api/naver/authurl';
         this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
     }
-    AuthService.prototype.getAdminAuth = function () {
-        var req_url = this.us.get(this.adminAuthUrl);
-        console.log("auth / getAdminAuth / req_url : ", req_url);
+    LoginService.prototype.getKakaoAuthUrl = function () {
+        var req_url = this.us.get(this.kakaoAuthLinkUrl);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
-    AuthService.prototype.getKakaoAuth = function () {
-        var req_url = this.us.get(this.kakaoAuthUrl);
-        console.log("auth / getKakaoAuth / req_url : ", req_url);
+    LoginService.prototype.getKakaoAuth = function (code) {
+        var req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
-    AuthService.prototype.extractData = function (res) {
+    // REMOVE ME
+    /*
+        getKakaoToken (code:string): Promise<any> {
+    
+            let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
+    
+            console.log("getKakaoToken / req_url : ",req_url);
+    
+            return this.http.get(req_url)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+        }
+    
+        getKakaoSignUp (accessToken:string, tokenType:string): Promise<any> {
+    
+            let req_url = this.us.get(this.kakaoSingUpUrl) + "?access_token=" + accessToken + "&token_type=" + tokenType;
+    
+            console.log("getKakaoSignUp / req_url : ",req_url);
+    
+            return this.http.get(req_url)
+                          .toPromise()
+                          .then(this.extractData)
+                          .catch(this.handleError);
+        }
+    */
+    LoginService.prototype.extractData = function (res) {
         var body = res.json();
         console.log("AuthService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
@@ -47,7 +73,7 @@ var AuthService = (function () {
     };
     // New - XHR
     // promise-based
-    AuthService.prototype.handleError = function (error) {
+    LoginService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
         var errMsg = (error.message) ? error.message :
@@ -55,11 +81,11 @@ var AuthService = (function () {
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
     };
-    AuthService = __decorate([
+    LoginService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [url_service_1.UrlService, http_1.Http])
-    ], AuthService);
-    return AuthService;
+    ], LoginService);
+    return LoginService;
 }());
-exports.AuthService = AuthService;
-//# sourceMappingURL=auth.service.js.map
+exports.LoginService = LoginService;
+//# sourceMappingURL=login.service.js.map

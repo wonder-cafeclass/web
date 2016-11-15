@@ -58,6 +58,7 @@ var SmartEditorComponent = (function () {
         this.childContentWindow = this.iframe.nativeElement.contentWindow;
     }; // end method
     // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
+    // iframe에서 호출하는 함수.
     SmartEditorComponent.prototype.callFromOutside = function (myEvent) {
         if (null == myEvent || null == myEvent.key) {
             return;

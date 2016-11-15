@@ -14,6 +14,7 @@ import { KlassCenterModule }        from './klass/klass-center.module';
 import { LoginComponent }           from './login/login.component';
 import { DialogService }            from './widget/dialog.service';
 import { AuthService }              from './auth.service';
+import { LoginService }             from './login/service/login.service';
 import { UrlService }               from './util/url.service';
 import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/my-event.service';
@@ -41,6 +42,7 @@ import './rxjs-operators';
   ],
   providers: [
     AuthService,
+    LoginService,
     UrlService,
     ImageService,
     MyEventService,
