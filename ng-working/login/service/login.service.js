@@ -23,6 +23,13 @@ var LoginService = (function () {
         this.naverAuthUrl = '/CI/index.php/api/naver/authurl';
         this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
     }
+    LoginService.prototype.getNaverAuthUrl = function () {
+        var req_url = this.us.get(this.naverAuthUrl);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     LoginService.prototype.getKakaoAuthUrl = function () {
         var req_url = this.us.get(this.kakaoAuthLinkUrl);
         return this.http.get(req_url)
@@ -30,7 +37,6 @@ var LoginService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
-    // TEST
     LoginService.prototype.getKakaoToken = function (code) {
         var req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
         console.log("login.service / getKakaoToken / req_url : ", req_url);

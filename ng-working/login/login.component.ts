@@ -18,7 +18,7 @@ import { LoginService }         from './service/login.service';
 })
 export class LoginComponent implements OnInit {
 
-  @ViewChild('iframe') iframe:ElementRef;
+  // @ViewChild('iframe') iframe:ElementRef;
   private childContentWindow;
 
   kakaoAuthUrl: string;
@@ -26,6 +26,8 @@ export class LoginComponent implements OnInit {
   kakaoAccessToken: string;
   kakaoTokenType: string;
   kakaoSignupCodeAlreadyRegisterd: number=-102;
+
+  naverAuthUrl: string;
 
   angularKey: string="angularMyML";
 
@@ -41,26 +43,48 @@ export class LoginComponent implements OnInit {
                 private zone:NgZone,
                 public router: Router) {
 
+    // REMOVE ME
     // set function reference out of app. ( ex)iframe )
-    window[this.angularKey] = {
-      zone: this.zone, 
-      componentFn: (value) => this.callFromOutside(value), 
-      component: this
-    };
+    // window[this.angularKey] = {
+    //   zone: this.zone, 
+    //   componentFn: (value) => this.callFromOutside(value), 
+    //   component: this
+    // };
 
   }
 
   ngOnInit(): void {
 
+    // 외부 쿼리 스트링 값들을 가져오는 방법. 아래 "test=abc"를 가져오는 것을 의마한다.
+    // ex) http://example.com/#/page?test=abd
+    // let queryParams = this.router.currentUrlTree.queryParams; <-- private
+
+    // parseUrl(url: string) : UrlTree
+    // Parses a string into a UrlTree.
+
+
     // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+    // 1. kakao
     this.loginService
     .getKakaoAuthUrl()
     .then(kakaoAuthUrl => {
-       this.kakaoAuthUrl = kakaoAuthUrl;
-       if(this.isIframeReady) {
-         this.childContentWindow.setKakaoAuthUrl(kakaoAuthUrl); 
-       }
+      this.kakaoAuthUrl = kakaoAuthUrl;
+      
+      // if(this.isIframeReady) {
+      //   this.childContentWindow.setKakaoAuthUrl(kakaoAuthUrl); 
+      // }
     });
+    // 2. naver
+    this.loginService
+    .getNaverAuthUrl()
+    .then(naverAuthUrl => {
+      this.naverAuthUrl = naverAuthUrl;
+
+      // if(this.isIframeReady) {
+      //  this.childContentWindow.setNaverAuthUrl(naverAuthUrl); 
+      // }
+    });
+
 
     if(0 < this.cageWidth) {
       let borderWidth:number = 2;
@@ -77,7 +101,7 @@ export class LoginComponent implements OnInit {
 
     // Javascript, ifarme 통신 
     // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
-    this.childContentWindow = this.iframe.nativeElement.contentWindow;
+    // this.childContentWindow = this.iframe.nativeElement.contentWindow;
 
   }
 
@@ -97,9 +121,14 @@ export class LoginComponent implements OnInit {
       // iframe을 시작합니다.
 
       this.isIframeReady = true;
-      if(null != this.kakaoAuthUrl && "" != this.kakaoAuthUrl) {
-        this.childContentWindow.setKakaoAuthUrl(this.kakaoAuthUrl); 
-      }
+      // 1. kakao
+      // if(null != this.kakaoAuthUrl && "" != this.kakaoAuthUrl) {
+      //   this.childContentWindow.setKakaoAuthUrl(this.kakaoAuthUrl); 
+      // }
+      // 2. naver
+      // if(null != this.naverAuthUrl && "" != this.naverAuthUrl) {
+      //   this.childContentWindow.setKakaoAuthUrl(this.naverAuthUrl); 
+      // }
 
     } else if("authorized_kakao" === myEvent.key) {
       let kakaoCode:string = myEvent.value;
@@ -113,9 +142,9 @@ export class LoginComponent implements OnInit {
   } 
 
   public initIframe(kakao_auth_url:string, naver_auth_url:string, facebook_auth_url:string):void {
-    if(null != this.childContentWindow) {
-      this.childContentWindow.init(kakao_auth_url, naver_auth_url, facebook_auth_url); 
-    }
+    // if(null != this.childContentWindow) {
+    //   this.childContentWindow.init(kakao_auth_url, naver_auth_url, facebook_auth_url); 
+    // }
   }
 
   // @ Deprecated

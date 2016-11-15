@@ -1,3 +1,6 @@
+<?php
+    header('X-Frame-Options: ALLOW-FROM https://nid.naver.com/'); 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +16,11 @@
         <a id="login_kakao" href="#" alt="..." onclick="onClickLoginKakao()">
             <img src="../../images/auth/login_kakao.png">
         </a>
-        <a id="login_naver" href="#" alt="..." onclick="onClickLoginNaver()">
+        <!--
+        <a id="login_naver" href="#" alt="..." target="_blank" onclick="onClickLoginNaver()">
             <img src="../../images/auth/login_naver.png">
         </a>
+        -->
     </div>
 
 <script>

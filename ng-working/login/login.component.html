@@ -13,8 +13,20 @@
 		<div class="row">
 			<div class="col-md-4" style="padding:0px;"></div>
 			<!-- Login Iframe -->
-			<div class="col-md-4 cc-div-col iframe-box">
-				<div>LOG IN</div>
+			<div class="col-md-4 cc-div-col box">
+				
+				<div class="btn-box">
+			        <a *ngIf="kakaoAuthUrl" href={{kakaoAuthUrl}} alt="...">
+			            <img src="../../assets/images/auth/login_kakao.png">
+			        </a>
+				</div>
+				<div class="btn-box">
+			        <a *ngIf="naverAuthUrl" href={{naverAuthUrl}} alt="...">
+			            <img src="../../assets/images/auth/login_naver.png">
+			        </a>
+				</div>
+
+				<!--
 				<iframe 	id="se"
 							#iframe
 							src="./assets/plugin/multi-login/auth.html?height=600&callbackName=angularMyML" 
@@ -22,6 +34,7 @@
 							[style.width]="cageWidthStr"
 							class="cage">
 				</iframe>
+				-->
 
 				<!--
 				<a href={{kakaoAuthUrl}} alt="...">

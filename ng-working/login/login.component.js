@@ -14,7 +14,13 @@ var auth_service_1 = require('../auth/auth.service');
 var login_service_1 = require('./service/login.service');
 var LoginComponent = (function () {
     function LoginComponent(authService, loginService, zone, router) {
-        var _this = this;
+        // REMOVE ME
+        // set function reference out of app. ( ex)iframe )
+        // window[this.angularKey] = {
+        //   zone: this.zone, 
+        //   componentFn: (value) => this.callFromOutside(value), 
+        //   component: this
+        // };
         this.authService = authService;
         this.loginService = loginService;
         this.zone = zone;
@@ -24,23 +30,32 @@ var LoginComponent = (function () {
         this.cageHeight = -1;
         this.cageWidth = -1;
         this.isIframeReady = false;
-        // set function reference out of app. ( ex)iframe )
-        window[this.angularKey] = {
-            zone: this.zone,
-            componentFn: function (value) { return _this.callFromOutside(value); },
-            component: this
-        };
     }
     LoginComponent.prototype.ngOnInit = function () {
+        // 외부 쿼리 스트링 값들을 가져오는 방법. 아래 "test=abc"를 가져오는 것을 의마한다.
+        // ex) http://example.com/#/page?test=abd
+        // let queryParams = this.router.currentUrlTree.queryParams; <-- private
         var _this = this;
+        // parseUrl(url: string) : UrlTree
+        // Parses a string into a UrlTree.
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+        // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
             .then(function (kakaoAuthUrl) {
             _this.kakaoAuthUrl = kakaoAuthUrl;
-            if (_this.isIframeReady) {
-                _this.childContentWindow.setKakaoAuthUrl(kakaoAuthUrl);
-            }
+            // if(this.isIframeReady) {
+            //   this.childContentWindow.setKakaoAuthUrl(kakaoAuthUrl); 
+            // }
+        });
+        // 2. naver
+        this.loginService
+            .getNaverAuthUrl()
+            .then(function (naverAuthUrl) {
+            _this.naverAuthUrl = naverAuthUrl;
+            // if(this.isIframeReady) {
+            //  this.childContentWindow.setNaverAuthUrl(naverAuthUrl); 
+            // }
         });
         if (0 < this.cageWidth) {
             var borderWidth = 2;
@@ -57,7 +72,7 @@ var LoginComponent = (function () {
         }
         // Javascript, ifarme 통신 
         // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
-        this.childContentWindow = this.iframe.nativeElement.contentWindow;
+        // this.childContentWindow = this.iframe.nativeElement.contentWindow;
     };
     // iframe에서 호출하는 함수.
     LoginComponent.prototype.callFromOutside = function (myEvent) {
@@ -70,9 +85,6 @@ var LoginComponent = (function () {
             // this.setSize(this.cageWidth, this.cageHeight);
             // iframe을 시작합니다.
             this.isIframeReady = true;
-            if (null != this.kakaoAuthUrl && "" != this.kakaoAuthUrl) {
-                this.childContentWindow.setKakaoAuthUrl(this.kakaoAuthUrl);
-            }
         }
         else if ("authorized_kakao" === myEvent.key) {
             var kakaoCode = myEvent.value;
@@ -83,9 +95,9 @@ var LoginComponent = (function () {
         }
     };
     LoginComponent.prototype.initIframe = function (kakao_auth_url, naver_auth_url, facebook_auth_url) {
-        if (null != this.childContentWindow) {
-            this.childContentWindow.init(kakao_auth_url, naver_auth_url, facebook_auth_url);
-        }
+        // if(null != this.childContentWindow) {
+        //   this.childContentWindow.init(kakao_auth_url, naver_auth_url, facebook_auth_url); 
+        // }
     };
     // @ Deprecated
     LoginComponent.prototype.login = function () {
@@ -163,10 +175,6 @@ var LoginComponent = (function () {
             }
         });
     };
-    __decorate([
-        core_1.ViewChild('iframe'), 
-        __metadata('design:type', core_1.ElementRef)
-    ], LoginComponent.prototype, "iframe", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

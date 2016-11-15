@@ -40,7 +40,7 @@ class Kakao extends REST_Controller implements MY_Class{
     private $token_type;
     private $access_token;
 
-    private $redirect_uri_kakao="/assets/plugin/multi-login/authorized_kakao.html";
+    private $redirect_uri_kakao="/login/kakao";
 
     function __construct()
     {
@@ -135,7 +135,7 @@ class Kakao extends REST_Controller implements MY_Class{
         $is_ok = true;
 
         // API 호출에 제한이 있음.
-        // 어떤 유저가 이 메서드를 호출했는지 기록필요. - 로그 작업.
+        // 어떤 유저(ip, os, broswer)가 이 메서드를 호출했는지 기록필요. - 로그 작업.
 
         $req_url = $this->api_get_code;
         $pattern = '/\{app_key\}/i';

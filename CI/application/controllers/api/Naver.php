@@ -35,6 +35,8 @@ class Naver extends REST_Controller implements MY_Class{
     private $X_Naver_Client_Id="";
     private $X_Naver_Client_Secret="";
 
+    private $redirect_uri_naver="/login/naver";
+    
     function __construct()
     {
         // Construct the parent class
@@ -74,7 +76,6 @@ class Naver extends REST_Controller implements MY_Class{
         // set API Key
         $this->X_Naver_Client_Id = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Id);
         $this->X_Naver_Client_Secret = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Secret);
-
     }
 
     // @ Required : MyClass interface
@@ -106,6 +107,45 @@ class Naver extends REST_Controller implements MY_Class{
 
         return $is_ok;
     }
+
+    /*
+    *   @ Desc : 네이버 로그인 창으로 이동하는 url을 만들어 돌려줍니다.
+    */
+    public function authurl_get() 
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        // API 호출에 제한이 있음.
+        // 어떤 유저(ip, os, broswer)가 이 메서드를 호출했는지 기록필요. - 로그인그 작업.
+
+        // 1. client_id
+        $req_url = $this->api_auth;
+        $pattern = '/\{client_id\}/i';
+        $replacement = $this->X_Naver_Client_Id;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        // 2. redirect_uri
+        $pattern = '/\{redirect_uri\}/i';
+        $replacement = $this->my_path->get_full_path($this->redirect_uri_naver);
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        // 2. state
+        $pattern = '/\{state\}/i';
+        // 상태 토큰 가져오기.
+        $state = $this->get_new_state();
+        $replacement = $state;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        $output = $req_url;
+
+        $response_body = $this->my_response->getResBodySuccessData($output);
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+    }
+
+
 
     /*
     *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchlocal?q=스타벅스%20잠실
@@ -377,5 +417,20 @@ class Naver extends REST_Controller implements MY_Class{
         $rand = mt_rand();
         return md5($mt . $rand);
     } // end function
+
+    private function get_new_state()
+    {
+        // start session
+        session_start();
+
+        // 상태 토큰으로 사용할 랜덤 문자열을 생성
+        $state = $this->generate_state();
+
+        // 세션 또는 별도의 저장 공간에 상태 토큰을 저장
+        $_SESSION["naver_auth_state"] = $state;
+
+        return $state;        
+    }
+
 
 }

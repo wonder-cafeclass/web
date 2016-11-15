@@ -18,6 +18,16 @@ export class LoginService {
     constructor(private us:UrlService, private http: Http) {
     }
 
+    getNaverAuthUrl (): Promise<any> {
+
+        let req_url = this.us.get(this.naverAuthUrl);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+
     getKakaoAuthUrl (): Promise<any> {
 
         let req_url = this.us.get(this.kakaoAuthLinkUrl);
@@ -27,7 +37,6 @@ export class LoginService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-    // TEST
     getKakaoToken (code:string): Promise<any> {
 
         let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
@@ -38,8 +47,7 @@ export class LoginService {
                       .toPromise()
                       .then(this.extractData)
                       .catch(this.handleError);
-    }    
-
+    }
     getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
 
         let req_url = this.us.get(this.kakaoSignUpUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
@@ -51,7 +59,6 @@ export class LoginService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-
     getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
 
         let req_url = this.us.get(this.kakaoMeUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
@@ -63,7 +70,6 @@ export class LoginService {
                       .then(this.extractData)
                       .catch(this.handleError);
     }
-
     getKakaoAuth (code:string): Promise<any> {
 
         let req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
