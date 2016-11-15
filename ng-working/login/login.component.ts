@@ -107,92 +107,10 @@ export class LoginComponent implements OnInit {
       // 1. kakaoCode를 받아왔습니다. 
       // 2. kakao 사용자 토큰을 받아옵니다.
       // this.getKakaoToken(kakaoCode);
-      this.getKakaoAuth(kakaoCode);
+      this.getKakaoToken(kakaoCode);
 
     }
   } 
-  // 로그인 및 사용자 조회 정보를 일괄 조회하는 메서드.
-  private getKakaoAuth(kakaoCode:string) :void {
-
-    if(null == kakaoCode || "" == kakaoCode) {
-      console.log("!Error! / login.compoenet / ");
-      return;
-    }
-
-    this.loginService
-    .getKakaoAuth(kakaoCode)
-    .then(result => {
-      // this.kakaoToken = kakaoToken;
-
-      // 1. 새로 등록된 경우 - 카카오에서 얻은 정보롤 토대로 유저 정보 입력창으로 이동한다.
-      console.log("login.component / getKakaoAuth / result : ",result);
-
-      // 2. 이미 등록된 경우 - 유저가 로그인을 시작한 페이지로 다시 돌아간다.(to RedirectUrl)
-
-
-    });    
-
-  }
-
-
-  // REMOVE ME
-  /*
-  private getKakaoToken(kakaoCode:string) :void{
-
-    if(null == kakaoCode || "" == kakaoCode) {
-      console.log("!Error! / login.compoenet / ");
-      return;
-    }
-
-    this.loginService
-    .getKakaoToken(kakaoCode)
-    .then(result => {
-      // this.kakaoToken = kakaoToken;
-
-      console.log("login.component / getKakaoToken / result : ",result);
-
-      if( null != result && 
-          null != result.access_token && 
-          null != result.token_type) {
-
-        this.kakaoAccessToken = result.access_token;
-        this.kakaoTokenType = result.token_type;
-
-        // 유저 앱등록을 진행합니다.
-        this.getKakaoSignUp(result.access_token, result.token_type);
-      }
-
-
-    });
-  }
-
-
-  private getKakaoSignUp(kakaoAccessToken:string, kakaoTokenType:string) :void {
-
-    this.loginService
-    .getKakaoSignUp(kakaoAccessToken, kakaoTokenType)
-    .then(result => {
-      // this.kakaoToken = kakaoToken;
-
-      console.log("login.component / getKakaoSignUp / result : ",result);
-
-      if( null != result && 
-          null != result.code && 
-          null != result.msg) {
-
-        let code:number = result.code;
-        let msg:string = result.msg;
-
-        if(this.kakaoSignupCodeAlreadyRegisterd === code) {
-          // 유저 정보를 가져옵니다.
-          // this.getKakaoSignUp(result.access_token, result.token_type);
-        }
-      }
-
-    });
-
-  }
-  */
 
   public initIframe(kakao_auth_url:string, naver_auth_url:string, facebook_auth_url:string):void {
     if(null != this.childContentWindow) {
@@ -200,7 +118,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
+  // @ Deprecated
   login() {
 
     this.authService.login().subscribe(() => {
@@ -226,4 +144,77 @@ export class LoginComponent implements OnInit {
   logout() {
     this.authService.logout();
   }
+
+  // KAKAO
+  // 카카오 로그인 토큰을 가져옵니다.
+  private getKakaoToken(kakaoCode:string) :void{
+
+    if(null == kakaoCode || "" == kakaoCode) {
+      console.log("!Error! / login.compoenet / ");
+      return;
+    }
+
+    this.loginService
+    .getKakaoToken(kakaoCode)
+    .then(result => {
+      // this.kakaoToken = kakaoToken;
+
+      console.log("login.component / getKakaoToken / result : ",result);
+
+      if( null != result && 
+          null != result.access_token && 
+          null != result.token_type) {
+
+        this.kakaoAccessToken = result.access_token;
+        this.kakaoTokenType = result.token_type;
+
+        // 유저 앱등록을 진행합니다.
+        this.getKakaoSignUp(result.token_type, result.access_token);
+      }
+    });
+  }
+
+  // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
+  private getKakaoSignUp(kakaoTokenType:string, kakaoAccessToken:string) :void {
+
+    this.loginService
+    .getKakaoSignUp(kakaoTokenType, kakaoAccessToken)
+    .then(result => {
+      // this.kakaoToken = kakaoToken;
+
+      console.log("login.component / getKakaoSignUp / result : ",result);
+
+      if( null != result && 
+          null != result.code && 
+          null != result.msg) {
+
+        let code:number = result.code;
+        let msg:string = result.msg;
+
+        if(this.kakaoSignupCodeAlreadyRegisterd === code) {
+          // 유저 정보를 가져옵니다.
+          this.getKakaoMe(kakaoTokenType, kakaoAccessToken);
+        }
+      }
+    });
+  } 
+
+  private getKakaoMe(kakaoTokenType:string, kakaoAccessToken:string) :void {
+
+    this.loginService
+    .getKakaoMe(kakaoTokenType, kakaoAccessToken)
+    .then(result => {
+      // this.kakaoToken = kakaoToken;
+
+      console.log("login.component / getKakaoMe / result : ",result);
+
+      if( null != result && 
+          null != result.id) {
+
+        // 로그인이 성공하였습니다. 이전 로그인을 진행했던 페이지로 리다이렉트 합니다.
+
+      }
+
+    });
+  }    
 }

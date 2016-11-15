@@ -447,7 +447,50 @@ class MY_Curl
             $out[$index] = ( is_object ( $node ) ) ? $this->xml2array ( $node ) : $node;
 
         return $out;
-    }    
+    } 
+
+    public function download($url="",$save_to_dir="",$file_name="")
+    {
+    	if(empty($url)) 
+    	{
+    		return false;
+    	}
+    	if(empty($save_to_dir)) 
+    	{
+    		return false;
+    	}
+    	if(!file_exists($save_to_dir))
+    	{
+    		return false;
+    	}
+    	if(!is_writable($save_to_dir))
+    	{
+    		return false;
+    	}
+    	if(empty($file_name)) 
+    	{
+    		return false;
+    	}
+
+    	$saveto = $save_to_dir . "/" . $file_name;
+
+	    $ch = curl_init ($url);
+	    curl_setopt($ch, CURLOPT_HEADER, 0);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+	    $raw=curl_exec($ch);
+	    curl_close ($ch);
+
+	    if(file_exists($saveto)){
+	        unlink($saveto);
+	    }
+
+	    $fp = fopen($saveto,'x');
+	    fwrite($fp, $raw);
+	    fclose($fp);
+
+	    return true;
+	}
 
 }
 

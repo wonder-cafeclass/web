@@ -416,7 +416,6 @@ class ThumbMaker{
 		$result->success = true;
 
 		return $result;
-
 	}
 
 	private static function getHMatched($width="", $height="", $desired_width=-1) {

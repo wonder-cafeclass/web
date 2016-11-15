@@ -87,6 +87,33 @@ class MY_Response
         return $response_body;
     }
 
+    /*
+    *   @ Desc : 응답 코드에 메시지만 전달하는 경우.
+    */
+    public function getResBodyFailMsgData($message="", $data=null) 
+    {
+        if(empty($message)) 
+        {
+            return null;
+        }
+
+        $response_body = 
+        $this->getResBodyFail(
+            // $message=""
+            $message,
+            // $query="" 
+            "", 
+            // $data=null 
+            $data, 
+            // $error=null 
+            $this->CI->my_error->get(),
+            // $extra=null
+            null
+        );
+
+        return $response_body;
+    }    
+
     public function getResBody($success=false, $message="", $query=null, $data=null, $error=null, $extra=null) 
     {
         $response_body = [

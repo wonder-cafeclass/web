@@ -27,6 +27,11 @@ class Naver extends REST_Controller implements MY_Class{
     private $api_search_local="https://openapi.naver.com/v1/search/local.xml?query=";
     private $api_search_map="https://openapi.naver.com/v1/map/geocode?query=";
 
+    private $api_auth = "https://nid.naver.com/oauth2.0/authorize?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&state={state}";
+    private $api_access = "https://nid.naver.com/oauth2.0/token?client_id={client_id}&client_secret={client_secret}&grant_type=authorization_code&state={state}&code={code}";
+    private $api_me = "https://openapi.naver.com/v1/nid/me";
+
+
     private $X_Naver_Client_Id="";
     private $X_Naver_Client_Secret="";
 
@@ -352,5 +357,25 @@ class Naver extends REST_Controller implements MY_Class{
 
         $this->set_response($response_body, REST_Controller::HTTP_OK);
     }
+
+    // 인증 검증을 위한 State Token
+    // https://developers.naver.com/docs/login/web - 1.1.1. PHP로 구현한 상태 토큰 생성 코드 예
+    /*
+    
+        // @ Usage
+
+        // 상태 토큰으로 사용할 랜덤 문자열을 생성
+        $state = generate_state();
+        // 세션 또는 별도의 저장 공간에 상태 토큰을 저장
+        $session->set_state($state);
+        return $state;
+
+    */
+    private function generate_state() 
+    {
+        $mt = microtime();
+        $rand = mt_rand();
+        return md5($mt . $rand);
+    } // end function
 
 }
