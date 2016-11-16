@@ -14,90 +14,45 @@ var auth_service_1 = require('../auth/auth.service');
 var login_service_1 = require('./service/login.service');
 var LoginComponent = (function () {
     function LoginComponent(authService, loginService, zone, router) {
-        // REMOVE ME
-        // set function reference out of app. ( ex)iframe )
-        // window[this.angularKey] = {
-        //   zone: this.zone, 
-        //   componentFn: (value) => this.callFromOutside(value), 
-        //   component: this
-        // };
         this.authService = authService;
         this.loginService = loginService;
         this.zone = zone;
         this.router = router;
-        this.kakaoSignupCodeAlreadyRegisterd = -102;
         this.angularKey = "angularMyML";
         this.cageHeight = -1;
         this.cageWidth = -1;
         this.isIframeReady = false;
     }
     LoginComponent.prototype.ngOnInit = function () {
-        // 외부 쿼리 스트링 값들을 가져오는 방법. 아래 "test=abc"를 가져오는 것을 의마한다.
-        // ex) http://example.com/#/page?test=abd
-        // let queryParams = this.router.currentUrlTree.queryParams; <-- private
-        var _this = this;
-        // parseUrl(url: string) : UrlTree
-        // Parses a string into a UrlTree.
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+        var _this = this;
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
             .then(function (kakaoAuthUrl) {
             _this.kakaoAuthUrl = kakaoAuthUrl;
-            // if(this.isIframeReady) {
-            //   this.childContentWindow.setKakaoAuthUrl(kakaoAuthUrl); 
-            // }
         });
         // 2. naver
         this.loginService
             .getNaverAuthUrl()
             .then(function (naverAuthUrl) {
             _this.naverAuthUrl = naverAuthUrl;
-            // if(this.isIframeReady) {
-            //  this.childContentWindow.setNaverAuthUrl(naverAuthUrl); 
-            // }
         });
-        if (0 < this.cageWidth) {
-            var borderWidth = 2;
-            this.cageWidthStr = (this.cageWidth + borderWidth) + "px";
+        // REMOVE ME
+        /*
+        if(0 < this.cageWidth) {
+          let borderWidth:number = 2;
+          this.cageWidthStr=`${this.cageWidth + borderWidth}px`;
+        } else {
+          this.cageWidthStr="100%";
         }
-        else {
-            this.cageWidthStr = "100%";
+    
+        if(0 < this.cageHeight) {
+          this.cageHeightStr=`${this.cageHeight}px`;
+        } else {
+          this.cageHeightStr="100%";
         }
-        if (0 < this.cageHeight) {
-            this.cageHeightStr = this.cageHeight + "px";
-        }
-        else {
-            this.cageHeightStr = "100%";
-        }
-        // Javascript, ifarme 통신 
-        // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
-        // this.childContentWindow = this.iframe.nativeElement.contentWindow;
-    };
-    // iframe에서 호출하는 함수.
-    LoginComponent.prototype.callFromOutside = function (myEvent) {
-        if (null == myEvent || null == myEvent.key) {
-            return;
-        }
-        console.log("login.component / callFromOutside / myEvent : ", myEvent);
-        if ("ready_to_init" === myEvent.key) {
-            // 에디터의 너비, 높이를 변경합니다.
-            // this.setSize(this.cageWidth, this.cageHeight);
-            // iframe을 시작합니다.
-            this.isIframeReady = true;
-        }
-        else if ("authorized_kakao" === myEvent.key) {
-            var kakaoCode = myEvent.value;
-            // 1. kakaoCode를 받아왔습니다. 
-            // 2. kakao 사용자 토큰을 받아옵니다.
-            // this.getKakaoToken(kakaoCode);
-            this.getKakaoToken(kakaoCode);
-        }
-    };
-    LoginComponent.prototype.initIframe = function (kakao_auth_url, naver_auth_url, facebook_auth_url) {
-        // if(null != this.childContentWindow) {
-        //   this.childContentWindow.init(kakao_auth_url, naver_auth_url, facebook_auth_url); 
-        // }
+        */
     };
     // @ Deprecated
     LoginComponent.prototype.login = function () {
@@ -120,60 +75,6 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.logout = function () {
         this.authService.logout();
-    };
-    // KAKAO
-    // 카카오 로그인 토큰을 가져옵니다.
-    LoginComponent.prototype.getKakaoToken = function (kakaoCode) {
-        var _this = this;
-        if (null == kakaoCode || "" == kakaoCode) {
-            console.log("!Error! / login.compoenet / ");
-            return;
-        }
-        this.loginService
-            .getKakaoToken(kakaoCode)
-            .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoToken / result : ", result);
-            if (null != result &&
-                null != result.access_token &&
-                null != result.token_type) {
-                _this.kakaoAccessToken = result.access_token;
-                _this.kakaoTokenType = result.token_type;
-                // 유저 앱등록을 진행합니다.
-                _this.getKakaoSignUp(result.token_type, result.access_token);
-            }
-        });
-    };
-    // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
-    LoginComponent.prototype.getKakaoSignUp = function (kakaoTokenType, kakaoAccessToken) {
-        var _this = this;
-        this.loginService
-            .getKakaoSignUp(kakaoTokenType, kakaoAccessToken)
-            .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoSignUp / result : ", result);
-            if (null != result &&
-                null != result.code &&
-                null != result.msg) {
-                var code = result.code;
-                var msg = result.msg;
-                if (_this.kakaoSignupCodeAlreadyRegisterd === code) {
-                    // 유저 정보를 가져옵니다.
-                    _this.getKakaoMe(kakaoTokenType, kakaoAccessToken);
-                }
-            }
-        });
-    };
-    LoginComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
-        this.loginService
-            .getKakaoMe(kakaoTokenType, kakaoAccessToken)
-            .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoMe / result : ", result);
-            if (null != result &&
-                null != result.id) {
-            }
-        });
     };
     __decorate([
         core_1.Input(), 

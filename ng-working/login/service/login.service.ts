@@ -12,15 +12,60 @@ export class LoginService {
     private kakaoMeUrl = '/CI/index.php/api/kakao/me';
 
     private naverAuthUrl = '/CI/index.php/api/naver/authurl';
+    private naverStateUrl = '/CI/index.php/api/naver/state';
+    private naverAccessUrl = '/CI/index.php/api/naver/access';
+    private naverMeUrl = '/CI/index.php/api/naver/me';
     
     private facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
 
     constructor(private us:UrlService, private http: Http) {
     }
 
+    getNaverMe (naver_token_type:string, naver_access_token:string): Promise<any> {
+
+        let req_url = 
+        this.us.get(this.naverMeUrl) + 
+        "?token_type=" + naver_token_type +
+        "&access_token=" + naver_access_token
+        ;
+
+        console.log("login.service / getNaverMe / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+
+    getNaverAccess (naver_code:string): Promise<any> {
+
+        let req_url = this.us.get(this.naverAccessUrl) + "?naver_code=" + naver_code;
+
+        console.log("login.service / getNaverAccess / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+
+    getNaverState (state:string): Promise<any> {
+
+        let req_url = this.us.get(this.naverStateUrl) + "?state=" + state;
+
+        console.log("login.service / getNaverState / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+
     getNaverAuthUrl (): Promise<any> {
 
         let req_url = this.us.get(this.naverAuthUrl);
+
+        console.log("login.service / getNaverAuthUrl / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -31,6 +76,8 @@ export class LoginService {
     getKakaoAuthUrl (): Promise<any> {
 
         let req_url = this.us.get(this.kakaoAuthLinkUrl);
+
+        console.log("login.service / getKakaoAuthUrl / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -86,12 +133,15 @@ export class LoginService {
 
         let body = res.json();
 
-        console.log("AuthService / extractData / body ::: ",body);
+        console.log("login.service / extractData / body ::: ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {
+            console.log("login.service / extractData / 데이터가 없습니다.");
             return null;
         }
+
+        console.log("login.service / extractData / 3");
 
         return body.data;
     }

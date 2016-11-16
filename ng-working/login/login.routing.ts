@@ -9,35 +9,13 @@ import { FacebookCallbackComponent } 	from './facebook/facebook-callback.compone
 
 export const loginRoutes: Routes = 
 [
-	{ 
-		path: 'login', 
-		component: LoginComponent,
-		children: 
-		[
-			{
-				path: 'kakao',
-				component: KakaoCallbackComponent
-			},
-			{
-				path: 'naver',
-				component: NaverCallbackComponent
-			},
-			{
-				path: 'facebook',
-				component: FacebookCallbackComponent
-			}
-		]
-	}
+	{ path: 'login', component: LoginComponent },
+	{ path: 'login/kakao', component: KakaoCallbackComponent },
+	{ path: 'login/naver', component: NaverCallbackComponent },
+	{ path: 'login/facebook', component: FacebookCallbackComponent }
 ];
 
 export const authProviders = [
   AuthGuard,
   AuthService
 ];
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

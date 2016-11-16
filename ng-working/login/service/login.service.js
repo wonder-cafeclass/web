@@ -21,10 +21,40 @@ var LoginService = (function () {
         this.kakaoSignUpUrl = '/CI/index.php/api/kakao/signup';
         this.kakaoMeUrl = '/CI/index.php/api/kakao/me';
         this.naverAuthUrl = '/CI/index.php/api/naver/authurl';
+        this.naverStateUrl = '/CI/index.php/api/naver/state';
+        this.naverAccessUrl = '/CI/index.php/api/naver/access';
+        this.naverMeUrl = '/CI/index.php/api/naver/me';
         this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
     }
+    LoginService.prototype.getNaverMe = function (naver_token_type, naver_access_token) {
+        var req_url = this.us.get(this.naverMeUrl) +
+            "?token_type=" + naver_token_type +
+            "&access_token=" + naver_access_token;
+        console.log("login.service / getNaverMe / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    LoginService.prototype.getNaverAccess = function (naver_code) {
+        var req_url = this.us.get(this.naverAccessUrl) + "?naver_code=" + naver_code;
+        console.log("login.service / getNaverAccess / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    LoginService.prototype.getNaverState = function (state) {
+        var req_url = this.us.get(this.naverStateUrl) + "?state=" + state;
+        console.log("login.service / getNaverState / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     LoginService.prototype.getNaverAuthUrl = function () {
         var req_url = this.us.get(this.naverAuthUrl);
+        console.log("login.service / getNaverAuthUrl / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -32,6 +62,7 @@ var LoginService = (function () {
     };
     LoginService.prototype.getKakaoAuthUrl = function () {
         var req_url = this.us.get(this.kakaoAuthLinkUrl);
+        console.log("login.service / getKakaoAuthUrl / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -71,11 +102,13 @@ var LoginService = (function () {
     };
     LoginService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("AuthService / extractData / body ::: ", body);
+        console.log("login.service / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
+            console.log("login.service / extractData / 데이터가 없습니다.");
             return null;
         }
+        console.log("login.service / extractData / 3");
         return body.data;
     };
     // New - XHR

@@ -40,7 +40,7 @@ class Kakao extends REST_Controller implements MY_Class{
     private $token_type;
     private $access_token;
 
-    private $redirect_uri_kakao="/login/kakao";
+    private $redirect_uri_kakao="/assets/plugin/multi-login/authorized_kakao.html";
 
     function __construct()
     {

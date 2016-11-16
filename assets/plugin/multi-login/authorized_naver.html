@@ -4,19 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <!-- KAKAO / NAVER / FACEBOOK -->
-    <title>멀티로그인</title>
+    <title>CafeClass</title>
 </head>
 <body style="margin:0px;padding:0px;">
-    
-    <div id="cage" style="text-align: center;padding: 15px;">
-        <a id="login_kakao" href="#" alt="..." onclick="onClickLoginKakao()">
-            <img src="../../images/auth/login_kakao.png">
-        </a>
-    </div>
-
 <script>
-// https://navermaps.github.io/maps.js/docs/naver.maps.html#.MapOptions
 
 // custom
 function getParameterByName(name, url) {
@@ -31,39 +22,30 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-// quiery string으로 넘어온 인자들을 화면에 적용합니다.
-function callbackParent(myEvent) {
-    if(null !== angularCallback) {
-        angularCallback.zone.run(function () { angularCallback.componentFn(myEvent)});
-    }   
-}
-
-function authorized(code) {
-    // 페이지 로딩이 완료되었습니다.
-    // 부모 객체에서 SE 설정값을 전달받습니다.
-    var myEvent = {
-        key:"authorized_kakao",
-        value:code
-    };
-    callbackParent(myEvent);
-}
-
-
-// interaction with angular2
-// var callbackName = getParameterByName("callbackName");
-var callbackName = "angularMyML";
-var parentWindow = window.parent.window;
-var angularCallback = null;
-if(null != parentWindow[callbackName]) {
-    angularCallback = parentWindow[callbackName];
-}
-
 // get authorized code from kakao
 var code = getParameterByName("code");
-console.log("authorized_kakao / angularCallback : ",angularCallback);
-console.log("authorized_kakao / code : ",code);
-authorized(code);
+var state = getParameterByName("state");
 
+// redirect to kakao login
+var redirectUrl = "";
+if( null != code && 
+    "" != code && 
+    null != state && 
+    "" != state) {
+
+    redirectUrl = 
+    "http://" + 
+    window.location.hostname + 
+    "/#/login/naver?code=" + 
+    code + 
+    "&state=" + 
+    state;
+}
+if( null != redirectUrl && 
+    "" != redirectUrl) {
+    
+    window.location = redirectUrl;
+}
 
 </script>
 </body>

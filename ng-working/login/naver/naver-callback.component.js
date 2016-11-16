@@ -15,11 +15,89 @@ var NaverCallbackComponent = (function () {
     function NaverCallbackComponent(loginService, router) {
         this.loginService = loginService;
         this.router = router;
+        this.isValidState = false;
         // Do something...
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
-        // Do something...
+        if (null != this.router &&
+            null != this.router.currentUrlTree &&
+            null != this.router.currentUrlTree.queryParams &&
+            null != this.router.currentUrlTree.queryParams.code &&
+            null != this.router.currentUrlTree.queryParams.state) {
+            this.code = this.router.currentUrlTree.queryParams.code;
+            this.state = this.router.currentUrlTree.queryParams.state;
+        }
+        this.getNaverState(this.state, this.code);
     }; // end function
+    NaverCallbackComponent.prototype.getNaverState = function (state, code) {
+        var _this = this;
+        if (null == state || "" == state) {
+            return;
+        }
+        if (null == code || "" == code) {
+            return;
+        }
+        this.loginService
+            .getNaverState(state)
+            .then(function (result) {
+            if (null != result &&
+                null != result.is_valid_state) {
+                _this.isValidState = result.is_valid_state;
+            }
+            // Session에 저장된 state와 비교합니다.
+            if (_this.isValidState) {
+                // 1. state가 정상적일 경우, 다음 단계를 진행
+                console.log("login.component / getNaverStateUrl / result : ", result);
+                _this.getNaverAccess(code);
+            }
+            else {
+            }
+        });
+    };
+    // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
+    NaverCallbackComponent.prototype.getNaverAccess = function (code) {
+        var _this = this;
+        console.log("naver-callback / getNaverAccess / 1 / code : ", code);
+        if (null == code || "" == code) {
+            return;
+        }
+        console.log("naver-callback / getNaverAccess / 2 / code : ", code);
+        this.loginService
+            .getNaverAccess(code)
+            .then(function (result) {
+            console.log("naver-callback / getNaverAccess / result : ", result);
+            console.log("naver-callback / getNaverAccess / result.access_token : ", result.access_token);
+            console.log("naver-callback / getNaverAccess / result.token_type : ", result.token_type);
+            if (null != result &&
+                null != result.access_token &&
+                null != result.token_type) {
+                _this.getNaverMe(result.token_type, result.access_token);
+            } // end if
+        }); // end method
+    }; // end method
+    // @ Desc : Naver REST API로 회원정보를 가져옵니다.
+    NaverCallbackComponent.prototype.getNaverMe = function (token_type, access_token) {
+        if (null == token_type || "" == token_type) {
+            return;
+        }
+        if (null == access_token || "" == access_token) {
+            return;
+        }
+        this.loginService
+            .getNaverMe(token_type, access_token)
+            .then(function (result) {
+            console.log("naver-callback / getNaverMe / result : ", result);
+            /*
+            if( null != result.data &&
+                null != result.data.access_token &&
+                null != result.data.token_type ) {
+      
+              this.getNaverMe(result.data.token_type, result.data.access_token);
+      
+            } // end if
+            */
+        }); // end method    
+    };
     NaverCallbackComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

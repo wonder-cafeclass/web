@@ -370,6 +370,7 @@ class MY_Curl
 	private function call($url="", $is_xml=false, $is_post=false, $header_arr=null, $attr_arr=null, $post_params=null) 
 	{
 		$is_debug = false;
+		// $is_debug = true;
 
 		if(empty($url)) 
 		{
@@ -401,8 +402,8 @@ class MY_Curl
         {
         	$headers[] = "$key: $value";
         }
-        if($is_debug) echo "MY_Curl.php / call / \$headers<br/>\n";
-        if($is_debug) print_r($headers);
+        // if($is_debug) echo "MY_Curl.php / call / \$headers<br/>\n";
+        // if($is_debug) print_r($headers);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 

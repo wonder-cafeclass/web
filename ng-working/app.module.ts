@@ -11,7 +11,11 @@ import { routing,
 import { UsersModule }              from './users/users.module';
 import { KlassCenterModule }        from './klass/klass-center.module';
 
-import { LoginComponent }           from './login/login.component';
+import { LoginComponent }             from './login/login.component';
+import { KakaoCallbackComponent }     from './login/kakao/kakao-callback.component';
+import { NaverCallbackComponent }     from './login/naver/naver-callback.component';
+import { FacebookCallbackComponent }  from './login/facebook/facebook-callback.component';
+
 import { DialogService }            from './widget/dialog.service';
 import { AuthService }              from './auth.service';
 import { LoginService }             from './login/service/login.service';
@@ -38,7 +42,10 @@ import './rxjs-operators';
   ],
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    KakaoCallbackComponent,
+    NaverCallbackComponent,
+    FacebookCallbackComponent
   ],
   providers: [
     AuthService,

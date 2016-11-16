@@ -35,7 +35,9 @@ class Naver extends REST_Controller implements MY_Class{
     private $X_Naver_Client_Id="";
     private $X_Naver_Client_Secret="";
 
-    private $redirect_uri_naver="/login/naver";
+    private $session_state_key="naver_auth_state";
+
+    private $redirect_uri_naver="/assets/plugin/multi-login/authorized_naver.html";
     
     function __construct()
     {
@@ -73,9 +75,13 @@ class Naver extends REST_Controller implements MY_Class{
         // init MyAPIKey
         $this->load->library('MY_ApiKey');
 
+        // start session
+        session_start();
+
         // set API Key
         $this->X_Naver_Client_Id = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Id);
         $this->X_Naver_Client_Secret = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Secret);
+
     }
 
     // @ Required : MyClass interface
@@ -121,8 +127,9 @@ class Naver extends REST_Controller implements MY_Class{
         // API 호출에 제한이 있음.
         // 어떤 유저(ip, os, broswer)가 이 메서드를 호출했는지 기록필요. - 로그인그 작업.
 
-        // 1. client_id
         $req_url = $this->api_auth;
+
+        // 1. client_id
         $pattern = '/\{client_id\}/i';
         $replacement = $this->X_Naver_Client_Id;
         $req_url = preg_replace($pattern, $replacement, $req_url);
@@ -132,10 +139,11 @@ class Naver extends REST_Controller implements MY_Class{
         $replacement = $this->my_path->get_full_path($this->redirect_uri_naver);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-        // 2. state
-        $pattern = '/\{state\}/i';
         // 상태 토큰 가져오기.
         $state = $this->get_new_state();
+
+        // 3. state
+        $pattern = '/\{state\}/i';
         $replacement = $state;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
@@ -145,6 +153,141 @@ class Naver extends REST_Controller implements MY_Class{
         $this->set_response($response_body, REST_Controller::HTTP_OK);
     }
 
+    /*
+    *   @ Desc : 네이버에서 인증코드를 입력, Access Key를 가져옵니다.
+    */
+    public function access_get()
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        // 콜백 응답에서 naver_code 파라미터의 값을 가져옴
+        $naver_code = $this->my_paramchecker->get('naver_code','naver_code');
+        if(empty($naver_code)) 
+        {
+            $response_body =
+            $this->my_response->getResBodyFailMsg('naver_code is not valid!');
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        $req_url = $this->api_access;
+
+        // 1. client_id
+        $pattern = '/\{client_id\}/i';
+        $replacement = $this->X_Naver_Client_Id;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        // 2. client_secret
+        $pattern = '/\{client_secret\}/i';
+        $replacement = $this->X_Naver_Client_Secret;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        // 상태 토큰 가져오기.
+        $state = $this->get_new_state();
+
+        // 3. state
+        $pattern = '/\{state\}/i';
+        $replacement = $state;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+
+        // 4. state
+        $pattern = '/\{code\}/i';
+        $replacement = $naver_code;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
+        $result =
+        $this->my_curl->get_json(
+            // $url=""
+            $req_url,
+            // $header_arr=null
+            [],
+            // $attr_arr=null
+            []
+        );        
+
+        $output = $result;
+        $response_body = $this->my_response->getResBodySuccessData($output);
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+    }
+
+    /*
+    *   @ Desc : 네이버의 회원 정보를 가져옵니다. !접근 토큰(Access Token)이 필요합니다!
+    */
+    public function me_get()
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        // 콜백 응답에서 naver_token_type, naver_access_token 파라미터의 값을 가져옴
+        $token_type = $this->my_paramchecker->get('token_type','naver_token_type');
+        if(empty($token_type)) 
+        {
+            $response_body =
+            $this->my_response->getResBodyFailMsg('token_type is not valid!');
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+        $access_token = $this->my_paramchecker->get('access_token','naver_access_token');
+        if(empty($access_token)) 
+        {
+            $response_body =
+            $this->my_response->getResBodyFailMsg('access_token is not valid!');
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        // wonder.jung
+        $result =
+        $this->my_curl->post_json(
+            // $url=""
+            $this->api_me,
+            // $header_arr=null
+            [
+                "Authorization"=>"$token_type $access_token"
+            ],
+            // $attr_arr=null
+            [   "response",
+                [   
+                    "age",
+                    "birthday",
+                    "email",
+                    "gender",
+                    "name",
+                    "nickname",
+                    "profile_image"
+                ]
+            ],
+            // $post_params
+            []
+        );
+
+        /*
+        // Sample Data
+        {
+            age: "30-39"
+            birthday: "03-29"
+            email: "wonder13662@naver.com"
+            enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
+            gender: "M"
+            id: "67025373"
+            name: "정원덕"
+            nickname: "wonder1****"
+            profile_image: "https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif"
+        }
+        */
+
+        // 회원 정보를 검사, 없다면 회원으로 추가합니다.
+
+        $output = $result;
+        $response_body = $this->my_response->getResBodySuccessData($output);
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+    }
 
 
     /*
@@ -169,23 +312,9 @@ class Naver extends REST_Controller implements MY_Class{
         $is_ok = true;
         if(empty($query)) 
         {
-            $is_ok = false;
-
             $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                'Search query is not valid!', 
-                // $query=""
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
+            $this->my_response->getResBodyFailMsg('Search query is not valid!');
             $this->set_response($response_body, REST_Controller::HTTP_OK);
-
             return;
         }
 
@@ -266,44 +395,10 @@ class Naver extends REST_Controller implements MY_Class{
             }
         }
 
-
         $output["result"] = $location_list;
 
-
         array_push($output, $result);
-
-        $response_body = array();
-        if ($is_ok)
-        {
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-        }
-        else
-        {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                'Naver API is not valid!', 
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-        }        
-
+        $response_body = $this->my_response->getResBodySuccessData($output);
         $this->set_response($response_body, REST_Controller::HTTP_OK);
 
     }
@@ -318,26 +413,11 @@ class Naver extends REST_Controller implements MY_Class{
         $query = $this->my_paramchecker->get('q','search_q_naver_map');
 
         $output = array();
-        $is_ok = true;
         if(empty($query)) 
         {
-            $is_ok = false;
-
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                'Search query is not valid!', 
-                // $query=""
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
+            $response_body =
+            $this->my_response->getResBodyFailMsg('Search query is not valid!');
             $this->set_response($response_body, REST_Controller::HTTP_OK);
-
             return;
         } 
 
@@ -363,40 +443,55 @@ class Naver extends REST_Controller implements MY_Class{
         );
         $output["result"] = $result;
 
-        $response_body = array();
-        if ($is_ok)
-        {
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-        }
-        else
-        {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                'Naver API is not valid!', 
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-        }        
-
+        $response_body = $this->my_response->getResBodySuccessData($output);
         $this->set_response($response_body, REST_Controller::HTTP_OK);
     }
+
+
+
+
+    /*
+    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchlocal?q=스타벅스%20잠실
+    */
+    public function state_get() 
+    {
+        // CSRF 방지를 위한 상태 토큰 검증
+        // 세션 또는 별도의 저장 공간에 저장된 상태 토큰과 콜백으로 전달받은 state 파라미터의 값이 일치해야 함
+
+        // 콜백 응답에서 state 파라미터의 값을 가져옴
+        $state = $this->my_paramchecker->get('state','naver_login_state');
+        if(empty($state)) 
+        {
+            $response_body =
+            $this->my_response->getResBodyFailMsg('state is not valid!');
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            return;
+        }
+
+        // 세션 또는 별도의 저장 공간에서 상태 토큰을 가져옴
+        if(array_key_exists($this->session_state_key, $_SESSION)) 
+        {
+            $stored_state = $_SESSION[$this->session_state_key];
+        }
+
+        $is_valid_state = false;
+        if( !empty($stored_state) && $state == $stored_state ) 
+        {
+            $is_valid_state = true;
+        }
+
+        $output["is_valid_state"] = $is_valid_state;
+        $output["param_state"] = $state;
+        $output["stored_state"] = "";
+        if($is_valid_state)
+        {
+            $output["stored_state"] = $stored_state;
+        }
+
+        $response_body = $this->my_response->getResBodySuccessData($output);
+        $this->set_response($response_body, REST_Controller::HTTP_OK);
+    }
+
 
     // 인증 검증을 위한 State Token
     // https://developers.naver.com/docs/login/web - 1.1.1. PHP로 구현한 상태 토큰 생성 코드 예
@@ -420,17 +515,12 @@ class Naver extends REST_Controller implements MY_Class{
 
     private function get_new_state()
     {
-        // start session
-        session_start();
-
         // 상태 토큰으로 사용할 랜덤 문자열을 생성
         $state = $this->generate_state();
 
         // 세션 또는 별도의 저장 공간에 상태 토큰을 저장
-        $_SESSION["naver_auth_state"] = $state;
+        $_SESSION[$this->session_state_key] = $state;
 
         return $state;        
     }
-
-
 }
