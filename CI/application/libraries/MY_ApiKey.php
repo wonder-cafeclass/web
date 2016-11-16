@@ -16,6 +16,9 @@ class MY_ApiKey {
 	private $json_path="/static/api.json";
 	private $CI=null;
 
+    public $Facebook_App_Id="Facebook-App-Id";
+    public $Facebook_App_Secret="Facebook-App-Secret";
+
     public $X_Naver_Client_Id="X-Naver-Client-Id";
     public $X_Naver_Client_Secret="X-Naver-Client-Secret";
 

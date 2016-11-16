@@ -18,7 +18,7 @@ var LoginComponent = (function () {
         this.loginService = loginService;
         this.zone = zone;
         this.router = router;
-        this.angularKey = "angularMyML";
+        // angularKey: string="angularMyML";
         this.cageHeight = -1;
         this.cageWidth = -1;
         this.isIframeReady = false;
@@ -37,6 +37,12 @@ var LoginComponent = (function () {
             .getNaverAuthUrl()
             .then(function (naverAuthUrl) {
             _this.naverAuthUrl = naverAuthUrl;
+        });
+        // 3. facebook
+        this.loginService
+            .getFacebookAuthUrl()
+            .then(function (facebookAuthUrl) {
+            _this.facebookAuthUrl = facebookAuthUrl;
         });
         // REMOVE ME
         /*

@@ -15,11 +15,63 @@ var FacebookCallbackComponent = (function () {
     function FacebookCallbackComponent(loginService, router) {
         this.loginService = loginService;
         this.router = router;
+        this.isValidState = false;
         // Do something...
     } // end function
     FacebookCallbackComponent.prototype.ngOnInit = function () {
-        // Do something...
+        if (null != this.router &&
+            null != this.router.currentUrlTree &&
+            null != this.router.currentUrlTree.queryParams &&
+            null != this.router.currentUrlTree.queryParams.code &&
+            null != this.router.currentUrlTree.queryParams.state) {
+            this.code = this.router.currentUrlTree.queryParams.code;
+            this.state = this.router.currentUrlTree.queryParams.state;
+        }
+        this.getState(this.state, this.code);
     }; // end function
+    FacebookCallbackComponent.prototype.getState = function (state, code) {
+        var _this = this;
+        if (null == state || "" == state) {
+            return;
+        }
+        if (null == code || "" == code) {
+            return;
+        }
+        this.loginService
+            .getFacebookState(state)
+            .then(function (result) {
+            if (null != result &&
+                null != result.is_valid_state) {
+                _this.isValidState = result.is_valid_state;
+            }
+            // Session에 저장된 state와 비교합니다.
+            if (_this.isValidState) {
+                // 1. state가 정상적일 경우, 다음 단계를 진행
+                console.log("login.component / getFacebookState / result : ", result);
+                _this.getAccessToken(code);
+            }
+            else {
+            }
+        });
+    }; // end function
+    FacebookCallbackComponent.prototype.getAccessToken = function (code) {
+        var _this = this;
+        this.loginService
+            .getFacebookAccess(code)
+            .then(function (result) {
+            console.log("login.component / getFacebookAccess / result : ", result);
+            if (null != result && null != result.access_token) {
+                _this.getMe();
+            }
+        });
+    };
+    FacebookCallbackComponent.prototype.getMe = function () {
+        this.loginService
+            .getFacebookMe()
+            .then(function (result) {
+            console.log("login.component / getFacebookMe / result : ", result);
+        });
+    };
     FacebookCallbackComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

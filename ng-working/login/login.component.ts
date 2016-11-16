@@ -25,7 +25,9 @@ export class LoginComponent implements OnInit {
 
   naverAuthUrl: string;
 
-  angularKey: string="angularMyML";
+  facebookAuthUrl: string;
+
+  // angularKey: string="angularMyML";
 
   @Input() cageHeight:number=-1;
   cageHeightStr:string;
@@ -57,6 +59,13 @@ export class LoginComponent implements OnInit {
     .getNaverAuthUrl()
     .then(naverAuthUrl => {
       this.naverAuthUrl = naverAuthUrl;
+    });
+
+    // 3. facebook
+    this.loginService
+    .getFacebookAuthUrl()
+    .then(facebookAuthUrl => {
+      this.facebookAuthUrl = facebookAuthUrl;
     });
 
     // REMOVE ME

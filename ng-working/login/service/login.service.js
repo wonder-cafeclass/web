@@ -25,7 +25,42 @@ var LoginService = (function () {
         this.naverAccessUrl = '/CI/index.php/api/naver/access';
         this.naverMeUrl = '/CI/index.php/api/naver/me';
         this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
+        this.facebookStateUrl = '/CI/index.php/api/facebook/state';
+        this.facebookAccessUrl = '/CI/index.php/api/facebook/access';
+        this.facebookMeUrl = '/CI/index.php/api/facebook/me';
     }
+    LoginService.prototype.getFacebookMe = function () {
+        var req_url = this.us.get(this.facebookMeUrl);
+        console.log("login.service / facebookMeUrl / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    LoginService.prototype.getFacebookAccess = function (code) {
+        var req_url = this.us.get(this.facebookAccessUrl) + "?code=" + code;
+        console.log("login.service / getFacebookAccess / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    LoginService.prototype.getFacebookState = function (state) {
+        var req_url = this.us.get(this.facebookStateUrl) + "?state=" + state;
+        console.log("login.service / getFacebookState / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    LoginService.prototype.getFacebookAuthUrl = function () {
+        var req_url = this.us.get(this.facebookAuthUrl);
+        console.log("login.service / getFacebookAuthUrl / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     LoginService.prototype.getNaverMe = function () {
         var req_url = this.us.get(this.naverMeUrl);
         console.log("login.service / getNaverMe / req_url : ", req_url);

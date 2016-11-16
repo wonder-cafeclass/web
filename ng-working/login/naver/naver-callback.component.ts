@@ -16,8 +16,6 @@ export class NaverCallbackComponent implements OnInit {
   private code:string;
   private state:string;
 
-  private stateStored:string;
-
   private isValidState:boolean=false;
 
   constructor(  public loginService: LoginService,

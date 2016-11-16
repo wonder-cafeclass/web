@@ -20,26 +20,57 @@ require APPPATH . '/models/User.php';
 
 /*
 *   @ Author : Wonder Jung
-*   @ Desc : 네이버 API 호출을 관리하는 클래스. 검색-지역(상점), 지도-주소검색 의 2가지 API를 사용합니다.
+*   @ Desc : 페이스북 로그인 API 호출을 관리하는 클래스. \
+*   @ Referer : https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow
+*   @ SDK : https://developers.facebook.com/docs/reference/php
+*   @ API Explorer : https://developers.facebook.com/tools/explorer/145634995501895/?method=GET&path=me&version=v2.8
+*   @ Graph API GUIDE : https://developers.facebook.com/docs/graph-api/reference/user
 */
-class Naver extends REST_Controller implements MY_Class{
+class Facebook extends REST_Controller implements MY_Class{
 
-    private $api_search_local="https://openapi.naver.com/v1/search/local.xml?query=";
-    private $api_search_map="https://openapi.naver.com/v1/map/geocode?query=";
+    private $api_get_auth = "https://www.facebook.com/v2.8/dialog/oauth?client_id={app-id}&redirect_uri={redirect-uri}&state={state}&response_type=code&scope=public_profile,email";
 
-    private $api_auth = "https://nid.naver.com/oauth2.0/authorize?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&state={state}";
-    private $api_access = "https://nid.naver.com/oauth2.0/token?client_id={client_id}&client_secret={client_secret}&grant_type=authorization_code&state={state}&code={code}";
-    private $api_me = "https://openapi.naver.com/v1/nid/me";
+    private $api_get_access = "https://graph.facebook.com/v2.8/oauth/access_token?client_id={app-id}&redirect_uri={redirect-uri}&client_secret={app-secret}&code={code-parameter}";
+
+    private $api_inspect_access_token = "https://graph.facebook.com/debug_token?input_token={token-to-inspect}&access_token={app-token-or-admin-token}";
+
+    private $api_get_me = "https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cpicture%2Cemail&access_token={access_token}";
+
+    private $api_get_big_picture = "https://graph.facebook.com/{user-id}/picture?type=large";
+
+    /*
+    // 사용자 섬네일 큰사진 가져오기 (200 x 200)
+    https://graph.facebook.com/881025428610124/picture?type=large
+    https://graph.facebook.com/{user-id}/picture?type=large
+
+    // curl sample
+
+    // fields=id,name,picture,email
+
+    curl -i -X GET \
+     "https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cpicture%2Cemail&access_token=EAACEdEose0cBAAovyXn0GROl3ZCi8WQJVd6yfZBrvNkU66b25OUCLmveKjTWI2XM2PrGio6LKc9QpimZA5OO4VjfDi7brCZBUyLzmXfKGt18REWlAQJTT0qZA80KYOaENbHzWm2oTlZCljlIpCrXHnf9EFZCB5jARBQ0Czb77I9DQZDZD"
+    */
+
+    /*
+    
+    // Canceled Login
+
+    YOUR_REDIRECT_URI?
+    error_reason=user_denied
+    &error=access_denied
+    &error_description=The+user+denied+your+request.
+
+    */
 
 
-    private $X_Naver_Client_Id="";
-    private $X_Naver_Client_Secret="";
+    private $Facebook_App_Id="";
+    private $Facebook_App_Secret="";
 
-    private $session_state_key="naver_auth_state";
-    private $session_access_token="naver_access_token";
-    private $session_token_type="naver_token_type";
+    private $session_state_key="facebook_auth_state";
+    private $session_access_token="facebook_access_token";
+    private $session_token_type="facebook_token_type";
 
-    private $redirect_uri_naver="/assets/plugin/multi-login/authorized_naver.html";
+    private $redirect_uri="/assets/plugin/multi-login/authorized_facebook.html";
     
     function __construct()
     {
@@ -90,9 +121,10 @@ class Naver extends REST_Controller implements MY_Class{
         session_start();
 
         // set API Key
-        $this->X_Naver_Client_Id = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Id);
-        $this->X_Naver_Client_Secret = $this->my_apikey->get($this->my_apikey->X_Naver_Client_Secret);
+        $this->Facebook_App_Id = $this->my_apikey->get($this->my_apikey->Facebook_App_Id);
+        $this->Facebook_App_Secret = $this->my_apikey->get($this->my_apikey->Facebook_App_Secret);
 
+        // Do someting...
     }
 
     // @ Required : MyClass interface
@@ -138,16 +170,18 @@ class Naver extends REST_Controller implements MY_Class{
         // API 호출에 제한이 있음.
         // 어떤 유저(ip, os, broswer)가 이 메서드를 호출했는지 기록필요. - 로그인그 작업.
 
-        $req_url = $this->api_auth;
+        $req_url = $this->api_get_auth;
+
+        // private $api_get_auth = "https://www.facebook.com/v2.8/dialog/oauth?client_id={app-id}&redirect_uri={redirect-uri}&state={state}&response_type=token";
 
         // 1. client_id
-        $pattern = '/\{client_id\}/i';
-        $replacement = $this->X_Naver_Client_Id;
+        $pattern = '/\{app-id\}/i';
+        $replacement = $this->Facebook_App_Id;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 2. redirect_uri
-        $pattern = '/\{redirect_uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri_naver);
+        $pattern = '/\{redirect-uri\}/i';
+        $replacement = $this->my_path->get_full_path($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
@@ -161,6 +195,10 @@ class Naver extends REST_Controller implements MY_Class{
         $output = $req_url;
 
         $this->respond_200($output);
+
+        // http://devcafeclass.co.uk/assets/plugin/multi-login/authorized_facebook.html?#state=60b33f10ebeaedd1f3c4b6657e5b2499&access_token=EAAXvZBHVXolIBAIx1Lcna8PXNsjIZCatcEXaZCKZB6wQXdfQUtr84k2WSGZC3fub57L6DD6ZAIUG7KNZB6D4tsUKZA5pBjH6MjAG5RptsmfRj3EynyJLgZAlHBDHGOt3ntlCpEK3e8mVtJYH5ZBRDqgZBN70AS1o7ae2dy1Y17dHw0fsAZDZD&expires_in=3974
+
+        // http://devcafeclass.co.uk/assets/plugin/multi-login/authorized_facebook.html?code=AQBG_bzPBQn_cYYrjrIFqC4wlE50kt-hsO28qhaFfYxbEfrTlkonuw8Upfn5l6dtrJia9mIHRyn4F2C9ykmdty9HSsCdhzNpaqicBwANuYG2FvNPIhR20BDd9UIk382SCkwYGyZxI2YNr2d-LDZrOB2F2SMzIkbByvS9rh9iMEmk0nI4CCVPJ9fCQxBFiN1XlI96xLzdi4iGbuSglkU3w0b6Bu6YOGRXsZNo25C1uCU0gBJJCmW25QoRonrx2GH6hCq7aMjvJMHonVkz8__OkrwSIGpFw5XusxqTr1NsqyVNwDVErFhryCJZObCsGvBZfM5BnkDBDvoKuowWuWFKDnSa&state=d46e3622d9d32a748217ee8b78291c0e#_=_
     }
 
     /*
@@ -173,39 +211,34 @@ class Naver extends REST_Controller implements MY_Class{
             return;
         }
 
-        // 콜백 응답에서 naver_code 파라미터의 값을 가져옴
-        $naver_code = $this->my_paramchecker->get('naver_code','naver_code');
-        if(empty($naver_code)) 
+        // 콜백 응답에서 facebook_code 파라미터의 값을 가져옴
+        $facebook_code = $this->my_paramchecker->get('code','facebook_code');
+        if(empty($facebook_code)) 
         {
-            $response_body =
-            $this->my_response->getResBodyFailMsg('naver_code is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_500('facebook_code is not valid!');
             return;
         }
 
-        $req_url = $this->api_access;
+        $req_url = $this->api_get_access;
 
-        // 1. client_id
-        $pattern = '/\{client_id\}/i';
-        $replacement = $this->X_Naver_Client_Id;
+        // 1. app-id
+        $pattern = '/\{app-id\}/i';
+        $replacement = $this->Facebook_App_Id;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-        // 2. client_secret
-        $pattern = '/\{client_secret\}/i';
-        $replacement = $this->X_Naver_Client_Secret;
+        // 2. redirect-uri
+        $pattern = '/\{redirect-uri\}/i';
+        $replacement = $this->my_path->get_full_path($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-        // 상태 토큰 가져오기.
-        $state = $this->get_new_state();
-
-        // 3. state
-        $pattern = '/\{state\}/i';
-        $replacement = $state;
+        // 3. client_secret
+        $pattern = '/\{app-secret\}/i';
+        $replacement = $this->Facebook_App_Secret;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-        // 4. state
-        $pattern = '/\{code\}/i';
-        $replacement = $naver_code;
+        // 4. code
+        $pattern = '/\{code-parameter\}/i';
+        $replacement = $facebook_code;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         $result =
@@ -218,6 +251,15 @@ class Naver extends REST_Controller implements MY_Class{
             []
         );
         $output = $result;
+
+        /*
+        // Example Response
+        {
+          "access_token": {access-token}, 
+          "token_type": {type},
+          "expires_in": {seconds-til-expiration}
+        }
+        */
 
         // access token이 있다면 session에 저장.
         $access_token = $this->my_keyvalue->get($result, "access_token");
@@ -236,7 +278,7 @@ class Naver extends REST_Controller implements MY_Class{
     }
 
     /*
-    *   @ Desc : 네이버의 회원 정보를 가져옵니다. !접근 토큰(Access Token)이 필요합니다!
+    *   @ Desc : 페이스북의 회원 정보를 가져옵니다. !접근 토큰(Access Token)이 필요합니다!
     */
     public function me_get()
     {
@@ -245,7 +287,8 @@ class Naver extends REST_Controller implements MY_Class{
             return;
         }
 
-        // 콜백 응답에서 naver_token_type, naver_access_token 파라미터의 값을 가져옴
+        // 콜백 응답에서 facebook_token_type, facebook_access_token 파라미터의 값을 가져옴
+        /*
         $token_type = $_SESSION[$this->session_token_type];
         if(empty($token_type)) 
         {
@@ -254,6 +297,7 @@ class Naver extends REST_Controller implements MY_Class{
             $this->set_response($response_body, REST_Controller::HTTP_OK);
             return;
         }
+        */
         $access_token = $_SESSION[$this->session_access_token];
         if(empty($access_token)) 
         {
@@ -263,30 +307,37 @@ class Naver extends REST_Controller implements MY_Class{
             return;
         }
 
-        // wonder.jung
+        // private $api_get_me = "https://graph.facebook.com/v2.8/me?access_token={access_token}";
+
+        $req_url = $this->api_get_me;
+
+        // 1. app-id
+        $pattern = '/\{access_token\}/i';
+        $replacement = $access_token;
+        $req_url = preg_replace($pattern, $replacement, $req_url);
+
         $result =
         $this->my_curl->get_json(
             // $url=""
-            $this->api_me,
+            $req_url,
             // $header_arr=null
-            [
-                "Authorization"=>"$token_type $access_token"
-                // "Authorization"=>"Bearer $access_token"
-            ],
+            [],
             // $attr_arr=null
-            [
-                "response"
-            ],
+            [],
             // $post_params
             []
         );
+
+        // TEST
+        $this->respond_200($result);
+        return;
 
         /*
         // Sample Data
         {
             age: "30-39"
             birthday: "03-29"
-            email: "wonder13662@naver.com"
+            email: "wonder13662@facebook.com"
             enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
             gender: "M"
             id: "67025373"
@@ -296,20 +347,20 @@ class Naver extends REST_Controller implements MY_Class{
         }
         */
 
-        $naver_id = $this->my_keyvalue->get_number($result, "id");
+        $facebook_id = $this->my_keyvalue->get_number($result, "id");
         $user = null;
-        if(0 < $naver_id) 
+        if(0 < $facebook_id) 
         {
-            $user = $this->get_user($naver_id);
+            $user = $this->get_user($facebook_id);
         }
-        if(0 < $naver_id && is_null($user))
+        if(0 < $facebook_id && is_null($user))
         {
             // 회원 정보를 검사, 없다면 회원으로 추가합니다.
             // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
             $this->add_user($result);
-            $user = $this->get_user($naver_id);   
+            $user = $this->get_user($facebook_id);   
         }
-        else if(0 < $naver_id)
+        else if(0 < $facebook_id)
         {
             // 등록되어 있다면 등록하지 않는다.
             // 뷰에 정상적으로 로그인된 것을 알려줌.
@@ -330,164 +381,7 @@ class Naver extends REST_Controller implements MY_Class{
 
 
     /*
-    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchlocal?q=스타벅스%20잠실
-    */
-    public function searchlocal_get() 
-    {
-
-        if($this->is_not_ok()) 
-        {
-            return;
-        }
-
-        // 선생님/운영자인 경우에만 해당 메서드를 쓸수 있도록 제한해야 함. 
-        // API 호출에 제한이 있음.
-        // 어떤 유저가 이 메서드를 호출했는지 기록필요. - 로그 작업.
-
-        // check params
-        $query = $this->my_paramchecker->get('q','search_q_klass_venue');
-
-        $output = array();
-        $is_ok = true;
-        if(empty($query)) 
-        {
-            $response_body = 
-            $this->my_response->getResBodyFailMsg('Search query is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
-        }
-
-        // 1. 네이버 지역 검색 (도메인 영향없음.)
-        // 검색 - 지역 을 통해서 카페의 주소 정보를 가져온다. 
-        // 필요한 정보는 다음과 같습니다. - 
-        // 1.상호명(title) / 5.전화번호(telephone) / 6.주소(address) / 7.도로명 주소(roadAddress)
-        $query_encoded = urlencode($query);
-
-        $result =
-        $this->my_curl->get_xml(
-            // $url=""
-            $this->api_search_local . $query_encoded,
-            // $header_arr=null
-            [
-                $this->my_apikey->X_Naver_Client_Id => $this->X_Naver_Client_Id,
-                $this->my_apikey->X_Naver_Client_Secret => $this->X_Naver_Client_Secret
-            ],
-            // $attr_arr=null
-            [
-                "channel",
-                "item",
-                [
-                    "title",
-                    "telephone",
-                    "address",
-                    "roadAddress"
-                ]
-            ]
-        );
-
-        $location_list = array();
-        if(is_array($result)) 
-        {   
-            // 2개 이상의 배열로 넘어오는 경우.
-            for ($i=0; $i < count($result); $i++) { 
-                $element = $result[$i];
-
-                $klassLocation = new KlassLocation();
-                if(isset($element->title)) {
-                    $klassLocation->title = $element->title;
-                }
-                if(isset($element->telephone)) {
-                    $klassLocation->telephone = $element->telephone;
-                }
-                if(isset($element->address)) {
-                    $klassLocation->address = $element->address;
-                }
-                if(isset($element->roadAddress)) {
-                    $klassLocation->roadAddress = $element->roadAddress;
-                }
-                if(!empty($klassLocation->title)) {
-                    // 데이터가 이상없는 객체만 추가한다.
-                    array_push($location_list, $klassLocation);
-                }
-            }
-        } 
-        else 
-        {
-            // 1개의 단독 객체로 넘어오는 경우.
-            $location_list = array();
-            $klassLocation = new KlassLocation();
-            if(isset($result->title)) {
-                $klassLocation->title = $result->title;
-            }
-            if(isset($result->telephone)) {
-                $klassLocation->telephone = $result->telephone;
-            }
-            if(isset($result->address)) {
-                $klassLocation->address = $result->address;
-            }
-            if(isset($result->roadAddress)) {
-                $klassLocation->roadAddress = $result->roadAddress;
-            }
-            if(!empty($klassLocation->title)) {
-                // 데이터가 이상없는 객체만 추가한다.
-                array_push($location_list, $klassLocation);
-            }
-        }
-
-        $output["result"] = $location_list;
-
-        array_push($output, $result);
-        $this->respond_200($output);
-    }
-
-    /*
-    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchmap?q=서울특별시 송파구 올림픽로 212 갤러리아팰리스
-    */
-
-    public function searchmap_get() {
-
-        // check params
-        $query = $this->my_paramchecker->get('q','search_q_naver_map');
-
-        $output = array();
-        if(empty($query)) 
-        {
-            $response_body =
-            $this->my_response->getResBodyFailMsg('Search query is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
-        } 
-
-        // TEST 주소명 테스트 - param checker에서 일반 주소명을 검색할때 문제가 없는지 확인해본다.       
-
-        $query_encoded = urlencode($query);
-
-        $result =
-        $this->my_curl->get_json(
-            // $url=""
-            $this->api_search_map . $query_encoded,
-            // $header_arr=null
-            [
-                $this->my_apikey->X_Naver_Client_Id => $this->X_Naver_Client_Id,
-                $this->my_apikey->X_Naver_Client_Secret => $this->X_Naver_Client_Secret
-            ],
-            // $attr_arr=null
-            [
-                "result",
-                "items",
-                "point"
-            ]
-        );
-        $output["result"] = $result;
-
-        $this->respond_200($output);
-    }
-
-
-
-
-    /*
-    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchlocal?q=스타벅스%20잠실
+    *   @ Usage : http://${base_domain}/CI/index.php/api/facebook/searchlocal?q=스타벅스%20잠실
     */
     public function state_get() 
     {
@@ -495,7 +389,7 @@ class Naver extends REST_Controller implements MY_Class{
         // 세션 또는 별도의 저장 공간에 저장된 상태 토큰과 콜백으로 전달받은 state 파라미터의 값이 일치해야 함
 
         // 콜백 응답에서 state 파라미터의 값을 가져옴
-        $state = $this->my_paramchecker->get('state','naver_login_state');
+        $state = $this->my_paramchecker->get('state','facebook_login_state');
         if(empty($state)) 
         {
             $response_body =
@@ -529,7 +423,7 @@ class Naver extends REST_Controller implements MY_Class{
 
 
     // 인증 검증을 위한 State Token
-    // https://developers.naver.com/docs/login/web - 1.1.1. PHP로 구현한 상태 토큰 생성 코드 예
+    // https://developers.facebook.com/docs/login/web - 1.1.1. PHP로 구현한 상태 토큰 생성 코드 예
     /*
     
         // @ Usage
@@ -571,29 +465,29 @@ class Naver extends REST_Controller implements MY_Class{
     /*
     *   @ Desc : 유저 정보를 가져옵니다.
     */
-    public function get_user($naver_id=-1) 
+    public function get_user($facebook_id=-1) 
     {
-        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
             return null;   
         }
 
-        return $this->my_sql->get_user_naver($naver_id);
+        return $this->my_sql->get_user_facebook($facebook_id);
     }
 
 
     /*
     *   @ Desc : 새로운 유저를 추가합니다.
     */
-    public function add_user($naver_user=null) 
+    public function add_user($facebook_user=null) 
     {
         // $is_debug = true;
         $is_debug = false;
 
-        if($is_debug) print_r($naver_user);
+        if($is_debug) print_r($facebook_user);
         if($is_debug) echo "add_user 1-1 <br/>\n";
 
-        if(is_null($naver_user)) 
+        if(is_null($facebook_user)) 
         {
             return;
         }
@@ -602,7 +496,7 @@ class Naver extends REST_Controller implements MY_Class{
         {
             age: "30-39"
             birthday: "03-29"
-            email: "wonder13662@naver.com"
+            email: "wonder13662@facebook.com"
             enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
             gender: "M"
             id: "67025373"
@@ -612,7 +506,7 @@ class Naver extends REST_Controller implements MY_Class{
         }
         */
         
-        $age = $this->my_keyvalue->get($naver_user, "age");
+        $age = $this->my_keyvalue->get($facebook_user, "age");
         if(empty($age))
         {
             return;
@@ -638,20 +532,20 @@ class Naver extends REST_Controller implements MY_Class{
             $year_birth = -1;
         }
         
-        $birthday = $this->my_keyvalue->get($naver_user, "birthday");
+        $birthday = $this->my_keyvalue->get($facebook_user, "birthday");
         if($this->my_paramchecker->is_not_ok("user_birthday", $birthday))
         {
             // 기본값 설정
             $birthday = "";
         }
         
-        $email = $this->my_keyvalue->get($naver_user, "email");
+        $email = $this->my_keyvalue->get($facebook_user, "email");
         if($this->my_paramchecker->is_not_ok("user_email", $email))
         {
             $this->respond_500('email is not valid!');
             return;
         }
-        $gender = $this->my_keyvalue->get($naver_user, "gender");
+        $gender = $this->my_keyvalue->get($facebook_user, "gender");
         if($this->my_paramchecker->is_not_ok("user_gender", $gender))
         {
             // 기본값 설정 / 선택
@@ -665,25 +559,25 @@ class Naver extends REST_Controller implements MY_Class{
 
         if($is_debug) echo "add_user 1-3 <br/>\n";
 
-        $naver_id = $this->my_keyvalue->get($naver_user, "id");
-        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        $facebook_id = $this->my_keyvalue->get($facebook_user, "id");
+        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
-            $this->respond_500('naver_id is not valid!');
+            $this->respond_500('facebook_id is not valid!');
             return;
         }
-        $name = $this->my_keyvalue->get($naver_user, "name");
+        $name = $this->my_keyvalue->get($facebook_user, "name");
         if(empty($name))
         {
             $this->respond_500('name is not valid!');
             return;
         }
-        $nickname = $this->my_keyvalue->get($naver_user, "nickname");
+        $nickname = $this->my_keyvalue->get($facebook_user, "nickname");
         if(empty($nickname))
         {
             $this->respond_500('nickname is not valid!');
             return;
         }
-        $profile_image = $this->my_keyvalue->get($naver_user, "profile_image");
+        $profile_image = $this->my_keyvalue->get($facebook_user, "profile_image");
         if(empty($profile_image))
         {
             $this->respond_500('profile_image is not valid!');
@@ -704,9 +598,9 @@ class Naver extends REST_Controller implements MY_Class{
         $thumbnail_url = $this->get_const("user_thumbnail_default");
 
         $last_query = 
-        $this->my_sql->insert_user_naver(
-            // $naver_id=-1, 
-            $naver_id,
+        $this->my_sql->insert_user_facebook(
+            // $facebook_id=-1, 
+            $facebook_id,
             // $year="", 
             $year_birth,
             // $birthday="", 

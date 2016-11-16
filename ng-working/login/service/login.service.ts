@@ -17,9 +17,60 @@ export class LoginService {
     private naverMeUrl = '/CI/index.php/api/naver/me';
     
     private facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
+    private facebookStateUrl = '/CI/index.php/api/facebook/state';
+    private facebookAccessUrl = '/CI/index.php/api/facebook/access';
+    private facebookMeUrl = '/CI/index.php/api/facebook/me';
 
     constructor(private us:UrlService, private http: Http) {
     }
+
+    getFacebookMe (): Promise<any> {
+
+        let req_url = this.us.get(this.facebookMeUrl);
+
+        console.log("login.service / facebookMeUrl / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    } 
+
+    getFacebookAccess (code:string): Promise<any> {
+
+        let req_url = this.us.get(this.facebookAccessUrl) + "?code=" + code;
+
+        console.log("login.service / getFacebookAccess / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }    
+
+    getFacebookState (state:string): Promise<any> {
+
+        let req_url = this.us.get(this.facebookStateUrl) + "?state=" + state;
+
+        console.log("login.service / getFacebookState / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }
+
+    getFacebookAuthUrl (): Promise<any> {
+
+        let req_url = this.us.get(this.facebookAuthUrl);
+
+        console.log("login.service / getFacebookAuthUrl / req_url : ",req_url);
+
+        return this.http.get(req_url)
+                      .toPromise()
+                      .then(this.extractData)
+                      .catch(this.handleError);
+    }    
 
     getNaverMe (): Promise<any> {
 

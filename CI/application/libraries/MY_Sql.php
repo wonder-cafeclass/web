@@ -75,6 +75,15 @@ class MY_Sql
     }
 
 
+    public function insert_user_facebook()
+    {
+        // Do something...
+    }
+
+    public function get_user_facebook()
+    {
+        // Do something...
+    }
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $first_name="", $thumbnail_url="")
     {
@@ -128,14 +137,14 @@ class MY_Sql
         // TODO - Shield - 같은 ip에서 연속으로 같은 쿼리 시도를 막는다.(1분 주기?)
 
         $data = array(
-                'naver_id' => $naver_id,
-                'birth_year'=> $birth_year,
-                'birthday' => $birthday,
-                'gender' => $gender,
-                'email' => $email,
-                'nickname' => $nickname,
-                'first_name' => $first_name,
-                'thumbnail' => $thumbnail_url
+            'naver_id' => $naver_id,
+            'birth_year'=> $birth_year,
+            'birthday' => $birthday,
+            'gender' => $gender,
+            'email' => $email,
+            'nickname' => $nickname,
+            'first_name' => $first_name,
+            'thumbnail' => $thumbnail_url
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다. / logger
