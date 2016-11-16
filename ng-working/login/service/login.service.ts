@@ -21,13 +21,9 @@ export class LoginService {
     constructor(private us:UrlService, private http: Http) {
     }
 
-    getNaverMe (naver_token_type:string, naver_access_token:string): Promise<any> {
+    getNaverMe (): Promise<any> {
 
-        let req_url = 
-        this.us.get(this.naverMeUrl) + 
-        "?token_type=" + naver_token_type +
-        "&access_token=" + naver_access_token
-        ;
+        let req_url = this.us.get(this.naverMeUrl);
 
         console.log("login.service / getNaverMe / req_url : ",req_url);
 

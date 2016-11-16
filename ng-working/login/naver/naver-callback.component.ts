@@ -101,24 +101,18 @@ export class NaverCallbackComponent implements OnInit {
           null != result.access_token && 
           null != result.token_type ) {
 
-        this.getNaverMe(result.token_type, result.access_token);
+        this.getNaverMe();
 
       } // end if
     }); // end method
   } // end method
 
   // @ Desc : Naver REST API로 회원정보를 가져옵니다.
-  private getNaverMe(token_type:string, access_token:string) :void {
+  private getNaverMe() :void {
 
-    if(null == token_type || "" == token_type) {
-      return;
-    }
-    if(null == access_token || "" == access_token) {
-      return;
-    }
 
     this.loginService
-    .getNaverMe(token_type, access_token)
+    .getNaverMe()
     .then(result => {
 
       console.log("naver-callback / getNaverMe / result : ",result);

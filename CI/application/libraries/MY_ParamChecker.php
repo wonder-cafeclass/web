@@ -354,6 +354,11 @@ class MY_ParamChecker {
 		return $output;
     }
 
+    public function is_not_ok($key="", $value="")
+    {
+        return !$this->is_ok($key, $value);
+    }
+
     public function is_ok($key="", $value="")
     {
 

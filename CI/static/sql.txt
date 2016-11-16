@@ -26,7 +26,8 @@ CREATE TABLE `user` (
   `first_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
   `last_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
   `gender` char(1) NOT NULL DEFAULT "" COMMENT 'Optional M(Male)/F(Female)/U(Unknown)', 
-  `birthday` varchar(15) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 1990-03-22, 2000-03-22, 2010-03-22, ...', 
+  `birth_year` int(4) NOT NULL DEFAULT 0 COMMENT 'Required ex) 1980, 1990, 2000, 2010', 
+  `birthday` char(8) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 03-22, 03-22, 03-22, 03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "Optional",
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)',
   `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
@@ -41,7 +42,12 @@ CREATE TABLE `user` (
   `date_updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_unique_id` (`email`,`mobile`),
-  KEY `first_name` (`first_name`)
+  KEY `first_name` (`first_name`),
+  KEY `kakao_id` (`kakao_id`),
+  KEY `naver_id` (`naver_id`),
+  KEY `google_id` (`google_id`),
+  KEY `fb_id` (`fb_id`),
+  KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
 
 CREATE TABLE `teacher` (

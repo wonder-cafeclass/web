@@ -16,6 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/libraries/MY_Class.php';
 require APPPATH . '/models/KlassLocation.php';
+require APPPATH . '/models/User.php';
 
 /*
 *   @ Author : Wonder Jung
@@ -36,6 +37,8 @@ class Naver extends REST_Controller implements MY_Class{
     private $X_Naver_Client_Secret="";
 
     private $session_state_key="naver_auth_state";
+    private $session_access_token="naver_access_token";
+    private $session_token_type="naver_token_type";
 
     private $redirect_uri_naver="/assets/plugin/multi-login/authorized_naver.html";
     
@@ -60,6 +63,9 @@ class Naver extends REST_Controller implements MY_Class{
         // init error logger
         $this->load->library('MY_Error');
 
+        // init My_KeyValue
+        $this->load->library('MY_KeyValue');
+
         // init param checker
         $this->load->library('MY_ParamChecker');
 
@@ -74,6 +80,12 @@ class Naver extends REST_Controller implements MY_Class{
 
         // init MyAPIKey
         $this->load->library('MY_ApiKey');
+
+        // init MySql
+        $this->load->library('MY_Sql');
+
+        // init MyThumbnail
+        $this->load->library('MY_Thumbnail');
 
         // start session
         session_start();
@@ -149,8 +161,7 @@ class Naver extends REST_Controller implements MY_Class{
 
         $output = $req_url;
 
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        $this->respond_200($output);
     }
 
     /*
@@ -193,7 +204,6 @@ class Naver extends REST_Controller implements MY_Class{
         $replacement = $state;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-
         // 4. state
         $pattern = '/\{code\}/i';
         $replacement = $naver_code;
@@ -207,11 +217,23 @@ class Naver extends REST_Controller implements MY_Class{
             [],
             // $attr_arr=null
             []
-        );        
-
+        );
         $output = $result;
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+
+        // access token이 있다면 session에 저장.
+        $access_token = $this->my_keyvalue->get($result, "access_token");
+        if(!empty($access_token))
+        {
+            $_SESSION[$this->session_access_token] = $access_token;
+        }
+
+        $token_type = $this->my_keyvalue->get($result, "token_type");
+        if(!empty($token_type))
+        {
+            $_SESSION[$this->session_token_type] = $token_type;
+        }
+
+        $this->respond_200($output);
     }
 
     /*
@@ -225,7 +247,7 @@ class Naver extends REST_Controller implements MY_Class{
         }
 
         // 콜백 응답에서 naver_token_type, naver_access_token 파라미터의 값을 가져옴
-        $token_type = $this->my_paramchecker->get('token_type','naver_token_type');
+        $token_type = $_SESSION[$this->session_token_type];
         if(empty($token_type)) 
         {
             $response_body =
@@ -233,7 +255,7 @@ class Naver extends REST_Controller implements MY_Class{
             $this->set_response($response_body, REST_Controller::HTTP_OK);
             return;
         }
-        $access_token = $this->my_paramchecker->get('access_token','naver_access_token');
+        $access_token = $_SESSION[$this->session_access_token];
         if(empty($access_token)) 
         {
             $response_body =
@@ -244,24 +266,17 @@ class Naver extends REST_Controller implements MY_Class{
 
         // wonder.jung
         $result =
-        $this->my_curl->post_json(
+        $this->my_curl->get_json(
             // $url=""
             $this->api_me,
             // $header_arr=null
             [
                 "Authorization"=>"$token_type $access_token"
+                // "Authorization"=>"Bearer $access_token"
             ],
             // $attr_arr=null
-            [   "response",
-                [   
-                    "age",
-                    "birthday",
-                    "email",
-                    "gender",
-                    "name",
-                    "nickname",
-                    "profile_image"
-                ]
+            [
+                "response"
             ],
             // $post_params
             []
@@ -282,11 +297,36 @@ class Naver extends REST_Controller implements MY_Class{
         }
         */
 
-        // 회원 정보를 검사, 없다면 회원으로 추가합니다.
+        $naver_id = $this->my_keyvalue->get_number($result, "id");
+        $user = null;
+        if(0 < $naver_id) 
+        {
+            $user = $this->get_user($naver_id);
+        }
+        if(0 < $naver_id && is_null($user))
+        {
+            // 회원 정보를 검사, 없다면 회원으로 추가합니다.
+            // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
+            $this->add_user($result);
+            $user = $this->get_user($naver_id);   
+        }
+        else if(0 < $naver_id)
+        {
+            // 등록되어 있다면 등록하지 않는다.
+            // 뷰에 정상적으로 로그인된 것을 알려줌.
+            // (Redirect)유저 등록이 이미 완료된 상태라면, 로그인을 호출한 위치로 돌아간다.
+        }
 
-        $output = $result;
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        if(is_null($user))
+        {
+            // 그 외의 상황.
+            // 에러 등록.
+            // 사용자에게 서비스 이상 메시지로 알림.
+            $this->respond_500(MY_Response::$EVENT_UNKNOWN_ERROR_OCCURED);
+            return;
+        }
+
+        $this->respond_200($user);
     }
 
 
@@ -398,9 +438,7 @@ class Naver extends REST_Controller implements MY_Class{
         $output["result"] = $location_list;
 
         array_push($output, $result);
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
+        $this->respond_200($output);
     }
 
     /*
@@ -443,8 +481,7 @@ class Naver extends REST_Controller implements MY_Class{
         );
         $output["result"] = $result;
 
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        $this->respond_200($output);
     }
 
 
@@ -488,8 +525,7 @@ class Naver extends REST_Controller implements MY_Class{
             $output["stored_state"] = $stored_state;
         }
 
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        $this->respond_200($output);
     }
 
 
@@ -523,4 +559,232 @@ class Naver extends REST_Controller implements MY_Class{
 
         return $state;        
     }
+
+
+    /*
+    *   @ Desc : 네이버 로그아웃
+    */
+    public function logout_get()
+    {
+        // Need to implement
+    }
+
+    /*
+    *   @ Desc : 유저 정보를 가져옵니다.
+    */
+    public function get_user($naver_id=-1) 
+    {
+        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        {
+            return null;   
+        }
+
+        return $this->my_sql->get_user_naver($naver_id);
+    }
+
+
+    /*
+    *   @ Desc : 새로운 유저를 추가합니다.
+    */
+    public function add_user($naver_user=null) 
+    {
+        // $is_debug = true;
+        $is_debug = false;
+
+        if($is_debug) print_r($naver_user);
+        if($is_debug) echo "add_user 1-1 <br/>\n";
+
+        if(is_null($naver_user)) 
+        {
+            return;
+        }
+
+        /*
+        {
+            age: "30-39"
+            birthday: "03-29"
+            email: "wonder13662@naver.com"
+            enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
+            gender: "M"
+            id: "67025373"
+            name: "정원덕"
+            nickname: "wonder1****"
+            profile_image: "https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif"
+        }
+        */
+        
+        $age = $this->my_keyvalue->get($naver_user, "age");
+        if(empty($age))
+        {
+            return;
+        }
+
+        if($is_debug) echo "add_user 1-2 <br/>\n";
+
+        // age: "30-39" --> 2016 - 35 = 1981 년생
+        $age_arr = explode("-", $age);
+        $year_birth = -1;        
+        if(!empty($age_arr) && (2 == count($age_arr))) 
+        {
+            $head = intval($age_arr[0]);
+            $tail = intval($age_arr[1]);
+            $inbetween = round(($head + $tail)/2);
+
+            $year_now = intval($this->my_time->get_now_YYYY());
+            $year_birth = $year_now - $inbetween;
+        }
+        if($this->my_paramchecker->is_not_ok("user_birth_range", $year_birth))
+        {
+            // 기본값 설정
+            $year_birth = -1;
+        }
+        
+        $birthday = $this->my_keyvalue->get($naver_user, "birthday");
+        if($this->my_paramchecker->is_not_ok("user_birthday", $birthday))
+        {
+            // 기본값 설정
+            $birthday = "";
+        }
+        
+        $email = $this->my_keyvalue->get($naver_user, "email");
+        if($this->my_paramchecker->is_not_ok("user_email", $email))
+        {
+            $this->respond_500('email is not valid!');
+            return;
+        }
+        $gender = $this->my_keyvalue->get($naver_user, "gender");
+        if($this->my_paramchecker->is_not_ok("user_gender", $gender))
+        {
+            // 기본값 설정 / 선택
+            $user_gender_list = $this->get_const("user_gender_list");
+            $gender = "";
+            if(!empty($user_gender_list))
+            {
+                $gender = $user_gender_list[count($user_gender_list) - 1];
+            }
+        }
+
+        if($is_debug) echo "add_user 1-3 <br/>\n";
+
+        $naver_id = $this->my_keyvalue->get($naver_user, "id");
+        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        {
+            $this->respond_500('naver_id is not valid!');
+            return;
+        }
+        $name = $this->my_keyvalue->get($naver_user, "name");
+        if(empty($name))
+        {
+            $this->respond_500('name is not valid!');
+            return;
+        }
+        $nickname = $this->my_keyvalue->get($naver_user, "nickname");
+        if(empty($nickname))
+        {
+            $this->respond_500('nickname is not valid!');
+            return;
+        }
+        $profile_image = $this->my_keyvalue->get($naver_user, "profile_image");
+        if(empty($profile_image))
+        {
+            $this->respond_500('profile_image is not valid!');
+            return;
+        }
+
+        if($is_debug) echo "add_user 1-4 <br/>\n";
+
+        // 1. 전달받은 프로파일 이미지로 섬네일을 만듭니다.
+        // 1-1. 이미지가 지정되지 않은 상태라면, 기본 이미지 주소를 사용합니다.
+
+        // 2. 나이는 연령대의 중간 연도를 사용합니다.
+        // 3. 생일은 그대로 저장.
+        // 4. 이메일 그대로 저장.
+
+        // 섬네일 다운로드. - 네이버는 기본 33x33 사이즈.
+        // 다운로드 받지 않고 기본 섬네일을 사용합니다.
+        $thumbnail_url = $this->get_const("user_thumbnail_default");
+
+        $last_query = 
+        $this->my_sql->insert_user_naver(
+            // $naver_id=-1, 
+            $naver_id,
+            // $year="", 
+            $year_birth,
+            // $birthday="", 
+            $birthday,
+            // $gender="",
+            $gender,
+            // $email="",
+            $email, 
+            // $nickname="", 
+            $nickname,
+            // $first_name="", 
+            $name,
+            // $thumbnail_url=""
+            $thumbnail_url
+        );
+
+        if($is_debug) echo "add_user 1-5 <br/>\n";
+
+        return $last_query;
+    } 
+
+
+    /*
+    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
+    */
+    public function respond_500($msg="")
+    {
+        if(empty($msg)) 
+        {
+            return;
+        }
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $this->set_response(
+                // $response_body
+                $this->my_response->getResBodyFailMsg($msg),
+                // status code
+                REST_Controller::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    } 
+
+    /*
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
+    */
+    public function respond_200($data=null)
+    {
+        if(is_null($data)) 
+        {
+            return;
+        }
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $response_body = $this->my_response->getResBodySuccessData($data);
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        }
+    } 
+
+
+    /*
+    *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
+    */
+    private function get_const($key="") 
+    {
+        if(empty($key)) 
+        {
+            return null;
+        }
+        if(!isset($this->my_paramchecker)) 
+        {
+            return null;
+        }
+
+        return $this->my_paramchecker->get_const($key);
+    }
+
+
 }

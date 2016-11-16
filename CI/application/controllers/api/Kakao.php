@@ -84,7 +84,6 @@ class Kakao extends REST_Controller implements MY_Class{
         // init MyThumbnail
         $this->load->library('MY_Thumbnail');
 
-
         // set API Key
         $this->Kakao_Native_App_Key = $this->my_apikey->get($this->my_apikey->Kakao_Native_App_Key);
         $this->Kakao_REST_API_Key = $this->my_apikey->get($this->my_apikey->Kakao_REST_API_Key);

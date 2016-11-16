@@ -6,6 +6,7 @@
 		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
+		"user_birthday":"is_str|||min_length[5]|||max_length[5]|||regex_match[/^([0][0-9]|[1][0-2])-([012][0-9]|[3][01])$/]",
 		"user_birth_range":"is_natural_no_zero|||greater_than_equal_to[1900]|||less_than_equal_to[2020]",
 		"user_thumbnail":"valid_url",
 		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
@@ -29,6 +30,7 @@
 		"kakao_access_token":"is_str",
 		"kakao_token_type":"is_str",
 
+		"naver_id":"is_natural_no_zero",
 		"naver_code":"is_str",
 		"naver_login_state":"is_str",
 		"naver_access_token":"is_str",
@@ -212,6 +214,8 @@
 			"assets/images/event/no_image.svg",
 			"assets/images/event/error.svg"
 		],
+
+		"user_thumbnail_default":"user_anonymous_150x150.png",
 
 		"EOL":""
 	}

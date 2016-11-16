@@ -224,6 +224,11 @@ class MY_Time{
 		return date('Y-m-d');
 	}
 
+	public function get_now_YYYY() 
+	{
+		return date('Y');
+	}
+
 	// $this->get_days_ago(3);
 	public function get_days_ago($day_cnt=-1, $target_YYYYMMDD="") {
 		if(empty($target_YYYYMMDD)) {

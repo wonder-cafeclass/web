@@ -26,10 +26,8 @@ var LoginService = (function () {
         this.naverMeUrl = '/CI/index.php/api/naver/me';
         this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
     }
-    LoginService.prototype.getNaverMe = function (naver_token_type, naver_access_token) {
-        var req_url = this.us.get(this.naverMeUrl) +
-            "?token_type=" + naver_token_type +
-            "&access_token=" + naver_access_token;
+    LoginService.prototype.getNaverMe = function () {
+        var req_url = this.us.get(this.naverMeUrl);
         console.log("login.service / getNaverMe / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()

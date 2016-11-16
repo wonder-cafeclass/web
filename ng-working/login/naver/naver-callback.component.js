@@ -71,20 +71,14 @@ var NaverCallbackComponent = (function () {
             if (null != result &&
                 null != result.access_token &&
                 null != result.token_type) {
-                _this.getNaverMe(result.token_type, result.access_token);
+                _this.getNaverMe();
             } // end if
         }); // end method
     }; // end method
     // @ Desc : Naver REST API로 회원정보를 가져옵니다.
-    NaverCallbackComponent.prototype.getNaverMe = function (token_type, access_token) {
-        if (null == token_type || "" == token_type) {
-            return;
-        }
-        if (null == access_token || "" == access_token) {
-            return;
-        }
+    NaverCallbackComponent.prototype.getNaverMe = function () {
         this.loginService
-            .getNaverMe(token_type, access_token)
+            .getNaverMe()
             .then(function (result) {
             console.log("naver-callback / getNaverMe / result : ", result);
             /*
