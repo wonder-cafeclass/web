@@ -4,6 +4,7 @@ import {  Component,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
 import { LoginService }         from '../service/login.service';
+import { MyLoggerService }      from '../../util/service/my-logger.service';
 
 @Component({
   moduleId: module.id,
@@ -19,12 +20,16 @@ export class FacebookCallbackComponent implements OnInit {
   private isValidState:boolean=false;
 
   constructor(  public loginService: LoginService,
+                public myLoggerService:MyLoggerService,
                 public router: Router) {
 
     // Do something...
   } // end function
 
   ngOnInit(): void {
+
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginFacebook);
 
     if( null != this.router && 
         null != this.router.currentUrlTree && 

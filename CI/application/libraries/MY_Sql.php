@@ -34,6 +34,31 @@ class MY_Sql
         }
     }
 
+    /*
+    *   @ Desc : 이 클래스를 실행하기 전에 준비해야 하는 사전 정보들에 대한 검사.
+    */
+    private function is_not_ready()
+    {
+        return !$this->is_ready();
+    }
+    private function is_ready()
+    {
+        if(is_null($this->CI->my_error)) 
+        {
+            return false;
+        }
+        if(is_null($this->CI->my_paramchecker)) 
+        {
+            return false;
+        }
+        if(is_null($this->CI->my_logger))
+        {
+            return false;   
+        }
+
+        return true;
+    }    
+
     private function is_not_ok($key=null, $value=null) 
     {
         if(is_null($key)) 
@@ -75,8 +100,170 @@ class MY_Sql
     }
 
 
+
+
+    public function insert_log_error($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $msg="")
+    {   
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if(empty($agent))
+        {
+            return;
+        }
+        if($this->is_not_ok("agent_type", $agent_type))
+        {
+            return;
+        }
+        if(empty($ip))
+        {
+            return;
+        }
+        if(empty($type))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if(empty($msg))
+        {
+            return;
+        }
+
+        $data = array(
+            'agent' => $agent,
+            'agent_type' => $agent_type,
+            'ip' => $ip,
+            'type' => $type,
+            'user_id' => $user_id,
+            'msg' => $msg
+        );
+
+        $this->CI->db->insert('log_error', $data);
+    }
+    public function select_log_error()
+    {
+        
+    }
+
+    /*
+    *   @ Desc : 사용자들의 중요한 클릭, 페이지 진입등의 행동에 대해 기록합니다.
+    */
+    public function insert_log_action($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $key="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if(empty($agent))
+        {
+            return;
+        }
+        if($this->is_not_ok("agent_type", $agent_type))
+        {
+            return;
+        }
+        if(empty($ip))
+        {
+            return;
+        }
+        if(empty($type))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if(empty($key))
+        {
+            return;
+        }
+
+        $data = array(
+            'agent' => $agent,
+            'agent_type' => $agent_type,
+            'ip' => $ip,
+            'type' => $type,
+            'user_id' => $user_id,
+            'key' => $key
+        );
+
+        $this->CI->db->insert('log_action', $data);
+    }
+    public function select_log_action()
+    {
+        
+    }
+
+    /*
+    *   @ Desc : 사용자들이 수행한 INSERT/UPDATE/DELETE 쿼리에 대해 기록합니다.
+    */
+    public function insert_log_query($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $query="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if(empty($agent))
+        {
+            return;
+        }
+        if($this->is_not_ok("agent_type", $agent_type))
+        {
+            return;
+        }
+        if(empty($ip))
+        {
+            return;
+        }
+        if(empty($type))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if(empty($query))
+        {
+            return;
+        }
+
+        $data = array(
+            'agent' => $agent,
+            'agent_type' => $agent_type,
+            'ip' => $ip,
+            'type' => $type,
+            'user_id' => $user_id,
+            'query' => $query
+        );
+
+        $this->CI->db->insert('log_query', $data);
+    }
+    public function select_log_query()
+    {
+        
+    }    
+
+
+
+
+
+
     public function insert_user_facebook($facebook_id=-1, $email="", $nickname="", $first_name="", $last_name="", $thumbnail_url="")
     {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
         if($this->is_not_ok("facebook_id", $facebook_id))
         {
             // @ Required / 필수
@@ -125,9 +312,16 @@ class MY_Sql
             'thumbnail' => $thumbnail_url
         );
 
-        // Logging - 짧은 쿼리들은 모두 등록한다. / logger
-
+        // Logging - 짧은 쿼리들은 모두 등록한다.
         $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
 
         $this->CI->db->insert('user', $data);
     }
@@ -152,6 +346,10 @@ class MY_Sql
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $first_name="", $thumbnail_url="")
     {
+        if($this->is_not_ready())
+        {
+            return;
+        }        
 
         if($this->is_not_ok("naver_id", $naver_id))
         {
@@ -212,9 +410,16 @@ class MY_Sql
             'thumbnail' => $thumbnail_url
         );
 
-        // Logging - 짧은 쿼리들은 모두 등록한다. / logger
-
+        // Logging - 짧은 쿼리들은 모두 등록한다.
         $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
 
         $this->CI->db->insert('user', $data);
     }
@@ -239,6 +444,11 @@ class MY_Sql
 
     public function insert_user_kakao($kakao_id=-1, $nickname="", $thumbnail_url="")
     {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
         if(!(0 < $kakao_id)) 
         {
             return;
@@ -264,8 +474,43 @@ class MY_Sql
 
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
 
         $this->CI->db->insert('user', $data);
+    }
+
+    private function log_query($user_id=-1, $action_type="", $query="") {
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if(empty($action_type))
+        {
+            return;
+        }
+
+        if(empty($query))
+        {
+            return;
+        }
+
+        $this->CI->my_logger->add_query(
+            // $user_id=-1, 
+            $user_id,
+            // $action_type="", 
+            $action_type,
+            // $query=""
+            $query
+        );
     }
 
 	public function get_user_kakao($kakao_id=-1) 

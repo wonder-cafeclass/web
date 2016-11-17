@@ -28,6 +28,7 @@ var url_service_1 = require('./util/url.service');
 var image_service_1 = require('./util/image.service');
 var my_event_service_1 = require('./util/my-event.service');
 var my_asset_service_1 = require('./util/my-asset.service');
+var my_logger_service_1 = require('./util/service/my-logger.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -58,6 +59,7 @@ var AppModule = (function () {
                 image_service_1.ImageService,
                 my_event_service_1.MyEventService,
                 my_asset_service_1.MyAssetService,
+                my_logger_service_1.MyLoggerService,
                 app_routing_1.appRoutingProviders,
                 { provide: common_1.LocationStrategy, useClass: common_1.HashLocationStrategy },
                 dialog_service_1.DialogService

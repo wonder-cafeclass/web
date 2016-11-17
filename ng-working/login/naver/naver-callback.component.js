@@ -11,14 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
+var my_logger_service_1 = require('../../util/service/my-logger.service');
 var NaverCallbackComponent = (function () {
-    function NaverCallbackComponent(loginService, router) {
+    function NaverCallbackComponent(loginService, myLoggerService, router) {
         this.loginService = loginService;
+        this.myLoggerService = myLoggerService;
         this.router = router;
         this.isValidState = false;
         // Do something...
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginNaver);
         if (null != this.router &&
             null != this.router.currentUrlTree &&
             null != this.router.currentUrlTree.queryParams &&
@@ -99,7 +103,7 @@ var NaverCallbackComponent = (function () {
             templateUrl: 'naver-callback.component.html',
             styleUrls: ['naver-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
     ], NaverCallbackComponent);
     return NaverCallbackComponent;
 }());

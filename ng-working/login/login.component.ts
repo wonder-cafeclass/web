@@ -1,14 +1,12 @@
 import {  Component, 
-          ElementRef,
-          ViewChild,
-          NgZone, 
           Input, 
           Output,
-          OnInit }    from '@angular/core';
+          OnInit }              from '@angular/core';
 import { Router,
          NavigationExtras }     from '@angular/router';
 import { AuthService }          from '../auth/auth.service';
 import { LoginService }         from './service/login.service';
+import { MyLoggerService }      from '../util/service/my-logger.service';
 
 @Component({
   moduleId: module.id,
@@ -18,16 +16,11 @@ import { LoginService }         from './service/login.service';
 })
 export class LoginComponent implements OnInit {
 
-  // @ViewChild('iframe') iframe:ElementRef;
   private childContentWindow;
 
   kakaoAuthUrl: string;
-
   naverAuthUrl: string;
-
   facebookAuthUrl: string;
-
-  // angularKey: string="angularMyML";
 
   @Input() cageHeight:number=-1;
   cageHeightStr:string;
@@ -38,15 +31,17 @@ export class LoginComponent implements OnInit {
 
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
-                private zone:NgZone,
+                public myLoggerService: MyLoggerService, 
                 public router: Router) {
 
   }
 
   ngOnInit(): void {
 
-    // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);    
 
+    // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
     // 1. kakao
     this.loginService
     .getKakaoAuthUrl()

@@ -81,6 +81,12 @@ class Kakao extends REST_Controller implements MY_Class{
         // init MySql
         $this->load->library('MY_Sql');
 
+        // init UserAgent
+        $this->load->library('user_agent');
+
+        // init MyLogger
+        $this->load->library('MY_Logger');
+
         // init MyThumbnail
         $this->load->library('MY_Thumbnail');
 

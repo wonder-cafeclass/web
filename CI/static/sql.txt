@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS `attendance`;
 DROP TABLE IF EXISTS `log_access`;
 DROP TABLE IF EXISTS `log_error`;
 DROP TABLE IF EXISTS `log_action`;
+DROP TABLE IF EXISTS `log_query`;
 
 DROP TABLE IF EXISTS `keys`;
 
@@ -155,41 +156,46 @@ CREATE TABLE `attendance` (
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
 
-CREATE TABLE `log_access` (
-  `id` int(32) NOT NULL AUTO_INCREMENT,
-  `os` varchar(255) NOT NULL,
-  `browser` varchar(255) NOT NULL,
-  `ip` varchar(32) NOT NULL,
-  `user_id` int(32) NOT NULL,
-  `msg` text,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service access log';
-
 CREATE TABLE `log_error` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
-  `os` varchar(255) NOT NULL,
-  `browser` varchar(255) NOT NULL,
+  `agent` varchar(255) NOT NULL,
+  `agent_type` char(1) NOT NULL DEFAULT "B" COMMENT 'B(PC Browser),M(Mobile Browser),R(Robot)',  
   `ip` varchar(32) NOT NULL,
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
-  `msg` text,
+  `msg` varchar(255) NOT NULL DEFAULT "",
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service error log';
 
 CREATE TABLE `log_action` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
-  `os` varchar(255) COLLATE utf8_bin NOT NULL,
-  `browser` varchar(255) COLLATE utf8_bin NOT NULL,
+  `agent` varchar(255) NOT NULL,
+  `agent_type` char(1) NOT NULL DEFAULT "B" COMMENT 'B(PC Browser),M(Mobile Browser),R(Robot)',
   `ip` varchar(32) COLLATE utf8_bin NOT NULL,
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
-  `msg` text COLLATE utf8_bin,
+  `key` varchar(32) COLLATE utf8_bin NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `user_id` (`user_id`)
+  INDEX `user_id` (`user_id`),
+  INDEX `ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
+
+CREATE TABLE `log_query` (
+  `id` int(32) NOT NULL AUTO_INCREMENT,
+  `agent` varchar(255) NOT NULL,
+  `agent_type` char(1) NOT NULL DEFAULT "B" COMMENT 'B(PC Browser),M(Mobile Browser),R(Robot)',
+  `ip` varchar(32) COLLATE utf8_bin NOT NULL,
+  `type` varchar(32) COLLATE utf8_bin NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `query` text COLLATE utf8_bin,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`),
+  INDEX `ip` (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service action log';
+
 
 CREATE TABLE `keys` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,

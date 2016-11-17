@@ -4,6 +4,7 @@ import {  Component,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
 import { LoginService }         from '../service/login.service';
+import { MyLoggerService }      from '../../util/service/my-logger.service';
 
 @Component({
   moduleId: module.id,
@@ -18,13 +19,16 @@ export class KakaoCallbackComponent implements OnInit {
   private kakaoSignupCodeAlreadyRegisterd: number=-102;
 
   constructor(  public loginService: LoginService,
+                public myLoggerService:MyLoggerService,
                 public router: Router) {
 
     // Do something...
   } // end function
 
   ngOnInit(): void {
-    // Do something...
+
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginKakao);
 
     if( null != this.router && 
         null != this.router.currentUrlTree && 

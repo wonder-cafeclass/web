@@ -23,6 +23,7 @@ import { UrlService }               from './util/url.service';
 import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
+import { MyLoggerService }          from './util/service/my-logger.service';
 
 
 
@@ -54,6 +55,7 @@ import './rxjs-operators';
     ImageService,
     MyEventService,
     MyAssetService,
+    MyLoggerService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService

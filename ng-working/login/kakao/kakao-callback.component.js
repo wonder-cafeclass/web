@@ -11,15 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
+var my_logger_service_1 = require('../../util/service/my-logger.service');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, router) {
+    function KakaoCallbackComponent(loginService, myLoggerService, router) {
         this.loginService = loginService;
+        this.myLoggerService = myLoggerService;
         this.router = router;
         this.kakaoSignupCodeAlreadyRegisterd = -102;
         // Do something...
     } // end function
     KakaoCallbackComponent.prototype.ngOnInit = function () {
-        // Do something...
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginKakao);
         if (null != this.router &&
             null != this.router.currentUrlTree &&
             null != this.router.currentUrlTree.queryParams &&
@@ -91,7 +94,7 @@ var KakaoCallbackComponent = (function () {
             templateUrl: 'kakao-callback.component.html',
             styleUrls: ['kakao-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
     ], KakaoCallbackComponent);
     return KakaoCallbackComponent;
 }());

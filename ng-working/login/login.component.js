@@ -12,20 +12,22 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var auth_service_1 = require('../auth/auth.service');
 var login_service_1 = require('./service/login.service');
+var my_logger_service_1 = require('../util/service/my-logger.service');
 var LoginComponent = (function () {
-    function LoginComponent(authService, loginService, zone, router) {
+    function LoginComponent(authService, loginService, myLoggerService, router) {
         this.authService = authService;
         this.loginService = loginService;
-        this.zone = zone;
+        this.myLoggerService = myLoggerService;
         this.router = router;
-        // angularKey: string="angularMyML";
         this.cageHeight = -1;
         this.cageWidth = -1;
         this.isIframeReady = false;
     }
     LoginComponent.prototype.ngOnInit = function () {
-        // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         var _this = this;
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);
+        // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
@@ -97,7 +99,7 @@ var LoginComponent = (function () {
             templateUrl: 'login.component.html',
             styleUrls: ['login.component.css']
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, core_1.NgZone, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
     ], LoginComponent);
     return LoginComponent;
 }());
