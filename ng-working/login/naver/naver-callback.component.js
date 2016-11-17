@@ -13,26 +13,34 @@ var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var NaverCallbackComponent = (function () {
-    function NaverCallbackComponent(loginService, myLoggerService, router) {
+    function NaverCallbackComponent(loginService, myLoggerService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.activatedRoute = activatedRoute;
         this.router = router;
         this.isValidState = false;
         // Do something...
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
+        var _this = this;
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginNaver);
-        if (null != this.router &&
-            null != this.router.currentUrlTree &&
-            null != this.router.currentUrlTree.queryParams &&
-            null != this.router.currentUrlTree.queryParams.code &&
-            null != this.router.currentUrlTree.queryParams.state) {
-            this.code = this.router.currentUrlTree.queryParams.code;
-            this.state = this.router.currentUrlTree.queryParams.state;
-        }
-        this.getNaverState(this.state, this.code);
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
+            _this.code = param['code'];
+            _this.state = param['state'];
+            if (null != _this.code &&
+                "" != _this.code &&
+                null != _this.state &&
+                "" != _this.state) {
+                _this.getNaverState(_this.state, _this.code);
+            } // end if
+        }); // end subscribe
     }; // end function
+    NaverCallbackComponent.prototype.ngOnDestroy = function () {
+        // prevent memory leak by unsubscribing
+        this.subscription.unsubscribe();
+    };
     NaverCallbackComponent.prototype.getNaverState = function (state, code) {
         var _this = this;
         if (null == state || "" == state) {
@@ -51,7 +59,6 @@ var NaverCallbackComponent = (function () {
             // Session에 저장된 state와 비교합니다.
             if (_this.isValidState) {
                 // 1. state가 정상적일 경우, 다음 단계를 진행
-                console.log("login.component / getNaverStateUrl / result : ", result);
                 _this.getNaverAccess(code);
             }
             else {
@@ -61,17 +68,12 @@ var NaverCallbackComponent = (function () {
     // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
     NaverCallbackComponent.prototype.getNaverAccess = function (code) {
         var _this = this;
-        console.log("naver-callback / getNaverAccess / 1 / code : ", code);
         if (null == code || "" == code) {
             return;
         }
-        console.log("naver-callback / getNaverAccess / 2 / code : ", code);
         this.loginService
             .getNaverAccess(code)
             .then(function (result) {
-            console.log("naver-callback / getNaverAccess / result : ", result);
-            console.log("naver-callback / getNaverAccess / result.access_token : ", result.access_token);
-            console.log("naver-callback / getNaverAccess / result.token_type : ", result.token_type);
             if (null != result &&
                 null != result.access_token &&
                 null != result.token_type) {
@@ -103,7 +105,7 @@ var NaverCallbackComponent = (function () {
             templateUrl: 'naver-callback.component.html',
             styleUrls: ['naver-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], NaverCallbackComponent);
     return NaverCallbackComponent;
 }());

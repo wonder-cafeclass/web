@@ -13,26 +13,34 @@ var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var FacebookCallbackComponent = (function () {
-    function FacebookCallbackComponent(loginService, myLoggerService, router) {
+    function FacebookCallbackComponent(loginService, myLoggerService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.activatedRoute = activatedRoute;
         this.router = router;
         this.isValidState = false;
         // Do something...
     } // end function
     FacebookCallbackComponent.prototype.ngOnInit = function () {
+        var _this = this;
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginFacebook);
-        if (null != this.router &&
-            null != this.router.currentUrlTree &&
-            null != this.router.currentUrlTree.queryParams &&
-            null != this.router.currentUrlTree.queryParams.code &&
-            null != this.router.currentUrlTree.queryParams.state) {
-            this.code = this.router.currentUrlTree.queryParams.code;
-            this.state = this.router.currentUrlTree.queryParams.state;
-        }
-        this.getState(this.state, this.code);
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
+            _this.code = param['code'];
+            _this.state = param['state'];
+            if (null != _this.code &&
+                "" != _this.code &&
+                null != _this.state &&
+                "" != _this.state) {
+                _this.getState(_this.state, _this.code);
+            } // end if
+        }); // end subscribe
     }; // end function
+    FacebookCallbackComponent.prototype.ngOnDestroy = function () {
+        // prevent memory leak by unsubscribing
+        this.subscription.unsubscribe();
+    };
     FacebookCallbackComponent.prototype.getState = function (state, code) {
         var _this = this;
         if (null == state || "" == state) {
@@ -83,7 +91,7 @@ var FacebookCallbackComponent = (function () {
             templateUrl: 'facebook-callback.component.html',
             styleUrls: ['facebook-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], FacebookCallbackComponent);
     return FacebookCallbackComponent;
 }());

@@ -1,8 +1,11 @@
 import {  Component, 
           Input, 
           Output,
-          OnInit }              from '@angular/core';
-import { Router }               from '@angular/router';
+          OnInit, 
+          OnDestroy}            from '@angular/core';
+import {  Subscription }        from 'rxjs';          
+import {  Router,
+          ActivatedRoute }      from '@angular/router';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
 
@@ -12,15 +15,18 @@ import { MyLoggerService }      from '../../util/service/my-logger.service';
   templateUrl: 'facebook-callback.component.html',
   styleUrls: [ 'facebook-callback.component.css' ]
 })
-export class FacebookCallbackComponent implements OnInit {
+export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private code:string;
   private state:string;
 
   private isValidState:boolean=false;
 
+  private subscription: Subscription;
+
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
+                private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
     // Do something...
@@ -31,20 +37,31 @@ export class FacebookCallbackComponent implements OnInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginFacebook);
 
-    if( null != this.router && 
-        null != this.router.currentUrlTree && 
-        null != this.router.currentUrlTree.queryParams &&
-        null != this.router.currentUrlTree.queryParams.code &&
-        null != this.router.currentUrlTree.queryParams.state ) {
+    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
 
-      this.code = this.router.currentUrlTree.queryParams.code;
-      this.state = this.router.currentUrlTree.queryParams.state;
+        this.code = param['code'];
+        this.state = param['state'];
 
-    }
+        if(  null != this.code && 
+             "" != this.code && 
+             null != this.state && 
+             "" != this.state) {
 
-    this.getState(this.state, this.code);
+          this.getState(this.state, this.code);
+        } // end if
+      }
+    ); // end subscribe
+
 
   } // end function
+
+  ngOnDestroy() {
+    // prevent memory leak by unsubscribing
+    this.subscription.unsubscribe();
+  }  
+
 
   private getState(state:string, code:string) :void {
 

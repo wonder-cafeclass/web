@@ -13,26 +13,30 @@ var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, myLoggerService, router) {
+    function KakaoCallbackComponent(loginService, myLoggerService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.activatedRoute = activatedRoute;
         this.router = router;
         this.kakaoSignupCodeAlreadyRegisterd = -102;
         // Do something...
     } // end function
     KakaoCallbackComponent.prototype.ngOnInit = function () {
+        var _this = this;
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginKakao);
-        if (null != this.router &&
-            null != this.router.currentUrlTree &&
-            null != this.router.currentUrlTree.queryParams &&
-            null != this.router.currentUrlTree.queryParams.code) {
-            this.code = this.router.currentUrlTree.queryParams.code;
-        }
-        if (null != this.code && "" != this.code) {
-            this.getKakaoToken(this.code);
-        }
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
+            _this.code = param['code'];
+            if (null != _this.code && "" != _this.code) {
+                _this.getKakaoToken(_this.code);
+            }
+        }); // end subscribe
     }; // end function
+    KakaoCallbackComponent.prototype.ngOnDestroy = function () {
+        // prevent memory leak by unsubscribing
+        this.subscription.unsubscribe();
+    };
     // KAKAO
     // 카카오 로그인 토큰을 가져옵니다.
     KakaoCallbackComponent.prototype.getKakaoToken = function (kakaoCode) {
@@ -94,7 +98,7 @@ var KakaoCallbackComponent = (function () {
             templateUrl: 'kakao-callback.component.html',
             styleUrls: ['kakao-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], KakaoCallbackComponent);
     return KakaoCallbackComponent;
 }());

@@ -1,8 +1,11 @@
 import {  Component, 
           Input, 
           Output,
-          OnInit }              from '@angular/core';
-import { Router }               from '@angular/router';
+          OnInit, 
+          OnDestroy}            from '@angular/core';
+import {  Subscription }        from 'rxjs';          
+import {  Router,
+          ActivatedRoute }      from '@angular/router';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
 
@@ -12,14 +15,17 @@ import { MyLoggerService }      from '../../util/service/my-logger.service';
   templateUrl: 'kakao-callback.component.html',
   styleUrls: [ 'kakao-callback.component.css' ]
 })
-export class KakaoCallbackComponent implements OnInit {
+export class KakaoCallbackComponent implements OnInit, OnDestroy {
 
   private code:string;
 
   private kakaoSignupCodeAlreadyRegisterd: number=-102;
 
+  private subscription: Subscription;
+
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
+                private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
     // Do something...
@@ -30,20 +36,25 @@ export class KakaoCallbackComponent implements OnInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginKakao);
 
-    if( null != this.router && 
-        null != this.router.currentUrlTree && 
-        null != this.router.currentUrlTree.queryParams &&
-        null != this.router.currentUrlTree.queryParams.code ) {
+    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
 
-      this.code = this.router.currentUrlTree.queryParams.code;
-
-    }
-
-    if(null != this.code && "" != this.code) {
-      this.getKakaoToken(this.code);
-    }
+        this.code = param['code'];
+        if(null != this.code && "" != this.code) {
+          this.getKakaoToken(this.code);
+        }
+      }
+    ); // end subscribe
+    
 
   } // end function
+
+  ngOnDestroy() {
+    // prevent memory leak by unsubscribing
+    this.subscription.unsubscribe();
+  }  
+
 
   // KAKAO
   // 카카오 로그인 토큰을 가져옵니다.

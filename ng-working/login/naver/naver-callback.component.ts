@@ -1,8 +1,11 @@
 import {  Component, 
           Input, 
           Output,
-          OnInit }              from '@angular/core';
-import { Router }               from '@angular/router';
+          OnInit, 
+          OnDestroy}            from '@angular/core';
+import {  Subscription }        from 'rxjs';          
+import {  Router,
+          ActivatedRoute }      from '@angular/router';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
 
@@ -12,15 +15,18 @@ import { MyLoggerService }      from '../../util/service/my-logger.service';
   templateUrl: 'naver-callback.component.html',
   styleUrls: [ 'naver-callback.component.css' ]
 })
-export class NaverCallbackComponent implements OnInit {
+export class NaverCallbackComponent implements OnInit, OnDestroy {
 
   private code:string;
   private state:string;
 
   private isValidState:boolean=false;
 
+  private subscription: Subscription;
+
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
+                private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
     // Do something...
@@ -31,20 +37,29 @@ export class NaverCallbackComponent implements OnInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginNaver);
 
-    if( null != this.router && 
-        null != this.router.currentUrlTree && 
-        null != this.router.currentUrlTree.queryParams &&
-        null != this.router.currentUrlTree.queryParams.code &&
-        null != this.router.currentUrlTree.queryParams.state ) {
+    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
 
-      this.code = this.router.currentUrlTree.queryParams.code;
-      this.state = this.router.currentUrlTree.queryParams.state;
+        this.code = param['code'];
+        this.state = param['state'];
 
-    }
-
-    this.getNaverState(this.state, this.code);
+        if(  null != this.code && 
+             "" != this.code && 
+             null != this.state && 
+             "" != this.state) {
+          
+          this.getNaverState(this.state, this.code);
+        } // end if
+      }
+    ); // end subscribe
 
   } // end function
+
+  ngOnDestroy() {
+    // prevent memory leak by unsubscribing
+    this.subscription.unsubscribe();
+  }  
 
   private getNaverState(state:string, code:string) :void {
 
@@ -69,8 +84,6 @@ export class NaverCallbackComponent implements OnInit {
       if(this.isValidState) {
 
         // 1. state가 정상적일 경우, 다음 단계를 진행
-        console.log("login.component / getNaverStateUrl / result : ",result);
-
         this.getNaverAccess(code);
 
       } else {
@@ -84,21 +97,13 @@ export class NaverCallbackComponent implements OnInit {
   // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
   private getNaverAccess(code:string) :void {
 
-    console.log("naver-callback / getNaverAccess / 1 / code : ",code);
-
     if(null == code || "" == code) {
       return;
     }
 
-    console.log("naver-callback / getNaverAccess / 2 / code : ",code);
-
     this.loginService
     .getNaverAccess(code)
     .then(result => {
-
-      console.log("naver-callback / getNaverAccess / result : ",result);
-      console.log("naver-callback / getNaverAccess / result.access_token : ",result.access_token);
-      console.log("naver-callback / getNaverAccess / result.token_type : ",result.token_type);
 
       if( null != result && 
           null != result.access_token && 
