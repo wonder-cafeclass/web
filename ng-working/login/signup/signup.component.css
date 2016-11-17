@@ -1,0 +1,172 @@
+div.box {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 0px 4px 1px rgba(204,204,204,0.5);
+  margin-bottom: 10px;
+  margin-top: 10px; 
+  padding-right: 0px;
+  padding-left: 0px;
+}
+table.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout.border-top {
+  border-top: 1px solid #ddd;
+}
+td.layout.border-bottom {
+  border-bottom: 1px solid #ddd;
+}
+td.layout.border-right {
+  border-right: 1px solid #ddd; 
+}
+td.layout.btn-box {
+  text-align: right;
+}
+img.logo {
+    width: 50%;
+    padding: 35px;
+}
+img.title-signup {
+    width: 10%;
+    margin-bottom: 12px;  
+}
+.btn-orange {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+}
+button.save {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-right: 10px;  
+  margin-bottom: 0px;  
+}
+.input-glass {
+  height: 42px;
+  margin: 0px;
+  border: 0px;
+  box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+  font-size: 20px;
+  color: #e85c41;  
+}
+div.radius-border {
+  border-radius: 5px;
+  border: 1px solid #e85c41;
+  width:300px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+div.btn-box {
+  padding: 10px;
+  width: 380px;
+}
+div.btn-box-phone {
+  padding: 10px;
+  width: 93px;
+  float:left;
+}
+div.phone-dash {
+  float: left;
+  padding-left: 20px;
+  padding-right: 10px;
+  padding-top: 23px;
+  font-size: 24px;
+  color: #999;
+}
+button.toggle-MW {
+  width:190px;
+  height:50px;
+}
+button.toggle-age {
+  width:40px;
+  height:50px;
+}
+
+div.btn-group.padding {
+  padding:5px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+div.padding-progressbar {
+  padding:10px;
+}
+div.prgrs-handle {
+  width: 30px;
+  height: 30px;
+  background-color: #eee;
+  position: absolute;
+  margin-left: 222px;
+  margin-top: -5px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0px 1px 1px 0px rgba(204,204,204,0.7);  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+div.btn-box.other {
+	text-align: right;
+}
+div.above-border {
+	padding-bottom: 20px;
+}
+div.below-border {
+	padding-top: 20px;
+}
+img.login-btn {
+	width:300px;
+}
+div.border {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    padding: 0px;
+    position: absolute;
+    left: 0px;
+}
+div.radius-border.top {
+	margin-top: 10px;
+}
+a.orange {
+	color:#e85c41;
+}
+a.signup {
+	float:left;
+}
+span.orange {
+	color:#e85c41;
+}
+
+
+
+
+
+
