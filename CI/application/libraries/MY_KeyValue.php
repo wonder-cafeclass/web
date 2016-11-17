@@ -64,4 +64,36 @@ class MY_KeyValue
             }
         }
     }
+
+    public function dig($_target=null, $key_arr=null)
+    {
+        // search value into several key layers.
+        if(is_null($_target))
+        {
+            return null;
+        }
+
+        if(empty($key_arr))
+        {
+            return null;
+        }
+
+        $_key = array_shift($key_arr);
+        if(empty($_key))
+        {
+            return null;
+        }
+
+        $value = $this->get($_target, $_key);
+
+        if(empty($key_arr))
+        {
+            return $value;
+        }
+        else
+        {
+            // still have keys to search? Let's dig into it!
+            return $this->dig($value, $key_arr);
+        }
+    }
 }

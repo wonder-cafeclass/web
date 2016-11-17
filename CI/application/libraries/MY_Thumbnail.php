@@ -14,13 +14,13 @@ class MY_Thumbnail {
 
 	private $CI=null;
     private $curl=null;
-    public $thumbnail_path="assets/images/thumbnail";
+    public $download_path="assets/images/download";
     public $thumbnail_path_user="assets/images/user";
 
-    private $IMAGE_FILE_TYPE_JPG="jpg";
-    private $IMAGE_FILE_TYPE_JPEG="jpeg";
-    private $IMAGE_FILE_TYPE_PNG="png";
-    private $IMAGE_FILE_TYPE_GIF="gif";
+    public $IMAGE_FILE_TYPE_JPG="jpg";
+    public $IMAGE_FILE_TYPE_JPEG="jpeg";
+    public $IMAGE_FILE_TYPE_PNG="png";
+    public $IMAGE_FILE_TYPE_GIF="gif";
 
     public function __construct($params=null)
     {
@@ -42,7 +42,7 @@ class MY_Thumbnail {
         }
         $this->curl = $this->CI->my_curl;
 
-        $target_path = $this->get_thumb_dir_path_user();
+        $target_path = $this->get_download_path();
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -59,6 +59,24 @@ class MY_Thumbnail {
             );
             return;
         }
+
+        $target_path = $this->get_user_thumb_path();
+        if(!is_writable($target_path))
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_DIR_PATH_IS_NOT_WRITABLE,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }        
     }
 
     public function is_not_ok() {
@@ -68,7 +86,7 @@ class MY_Thumbnail {
         return ($this->CI->my_error->hasError())?false:true;
     }    
 
-    public function get_file_name_from_url($url="") 
+    public function get_file_name_from_uri($url="") 
     {
         if($this->is_not_ok()) 
         {
@@ -100,26 +118,27 @@ class MY_Thumbnail {
     /*
     *   @ Desc : 원격 서버에 저장된 이미지를 curl로 다운로드 합니다.
     */
-    public function download_image($url="")
+    public function download_image($url="", $filename="")
     {
         if($this->is_not_ok()) 
         {
             return;
         }
-
         if(empty($url)) 
         {
             return;
         }
-
-        $filename = $this->get_file_name_from_url($url);
+        if(empty($filename))
+        {
+            $filename = $this->get_file_name_from_uri($url);
+        }
         if(empty($filename))
         {
             return;
         }
 
         // 저장할 파일 이름을 지정합니다.
-        $thumb_dir_path = $this->get_thumb_dir_path();
+        $thumb_dir_path = $this->get_download_path();
         $is_success = $this->curl->download($url, $thumb_dir_path, $filename);
 
         return ($is_success)?"$thumb_dir_path/$filename":null;
@@ -239,7 +258,7 @@ class MY_Thumbnail {
     }
 
 
-    private function get_thumbnail_name($file_type="") {
+    public function get_thumbnail_name($file_type="") {
 
         if(empty($file_type)) {
             return "";
@@ -257,7 +276,7 @@ class MY_Thumbnail {
     
     private function is_jpg($img_url) {
 
-        $regex = "\.jpg$"; // SCHEME
+        $regex = "\.jpg"; // SCHEME
         preg_match("/$regex/i", $img_url, $m, PREG_OFFSET_CAPTURE);
 
         if(!empty($m)) {
@@ -269,7 +288,7 @@ class MY_Thumbnail {
 
     private function is_jpeg($img_url) {
 
-        $regex = "\.jpeg$"; // SCHEME
+        $regex = "\.jpeg"; // SCHEME
         preg_match("/$regex/i", $img_url, $m, PREG_OFFSET_CAPTURE);
 
         if(!empty($m)) {
@@ -281,7 +300,7 @@ class MY_Thumbnail {
 
     private function is_png($img_url) {
 
-        $regex = "\.png$"; // SCHEME
+        $regex = "\.png"; // SCHEME
         preg_match("/$regex/i", $img_url, $m, PREG_OFFSET_CAPTURE);
 
         if(!empty($m)) {
@@ -293,7 +312,7 @@ class MY_Thumbnail {
 
     private function is_gif($img_url) {
 
-        $regex = "\.gif$"; // SCHEME
+        $regex = "\.gif"; // SCHEME
         preg_match("/$regex/i", $img_url, $m, PREG_OFFSET_CAPTURE);
 
         if(!empty($m)) {
@@ -310,7 +329,7 @@ class MY_Thumbnail {
             return "";
         }
 
-        $thumb_dir_path = $this->get_thumb_dir_path();
+        $thumb_dir_path = $this->get_download_path();
         if(empty($thumb_dir_path)) 
         {
             return "";
@@ -333,17 +352,17 @@ class MY_Thumbnail {
         return $dir_path . "/" . $filename;
     }    
 
-    private function get_thumb_dir_path() 
+    private function get_download_path() 
     {
         $string = __FILE__;
         $pattern = '/(.+\/)CI\/.+/i';
-        $replacement = '${1}' . $this->thumbnail_path;
+        $replacement = '${1}' . $this->download_path;
         $thumb_dir_path = preg_replace($pattern, $replacement, $string);
 
         return $thumb_dir_path;
     }
 
-    public function get_thumb_dir_path_user() 
+    public function get_user_thumb_path() 
     {
         if($this->is_not_ok()) 
         {
@@ -356,6 +375,74 @@ class MY_Thumbnail {
         $thumb_dir_path = preg_replace($pattern, $replacement, $string);
 
         return $thumb_dir_path;
+    }
+
+    /*
+    *   @ Desc : 임시 섬네일을 지웁니다.
+    */
+    private function delete_thumbnail($file_path = "") {
+
+        if(empty($file_path))
+        {
+            return;
+        }
+        if(!file_exists($file_path)) 
+        {
+            return;
+        }
+        if(!is_writable($file_path)) 
+        {
+            return;
+        }
+
+        return unlink($file_path);
+    }    
+
+    /*
+    *   @ Desc : 유저 섬네일을 만듭니다.
+    */
+    public function get_user_thumbnail($remote_image_url="")
+    {   
+        // 외부 서버의 이미지를 다운로드, 임시로 저장합니다.
+        $temp_image_uri = $this->download_image($remote_image_url);
+
+        if(empty($temp_image_uri))
+        {
+            // 섬네일 다운로드에 실패했습니다.
+            return "";
+        }
+
+        // 섬네일 다운로드에 성공!
+        // 서비스 정책에 맞게 resize 합니다.
+        // 유저 섬네일은 150x150.
+        $file_name = $this->get_file_name_from_uri($temp_image_uri);
+        $file_path = $this->get_user_thumb_path() . "/" . $file_name;
+
+        $output = 
+        $this->resize(
+            // $src="", 
+            $temp_image_uri,
+            // $dest="", 
+            $file_path,
+            // $crop_size=-1
+            150
+        );
+
+        $thumbnail_url = "";
+        if(isset($output) && isset($output->success) && $output->success) 
+        {
+            $thumbnail_url = $file_name;
+        }
+        else
+        {
+            // 섬네일 만들기에 실패했습니다.
+            // 기록합니다.
+        }
+
+        // 임시 저장한 섬네일을 지웁니다.
+        $this->delete_thumbnail($temp_image_uri);
+
+        return $thumbnail_url;
     }
 
 }

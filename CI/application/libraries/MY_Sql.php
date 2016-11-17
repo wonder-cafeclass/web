@@ -75,14 +75,79 @@ class MY_Sql
     }
 
 
-    public function insert_user_facebook()
+    public function insert_user_facebook($facebook_id=-1, $email="", $nickname="", $first_name="", $last_name="", $thumbnail_url="")
     {
-        // Do something...
+        if($this->is_not_ok("facebook_id", $facebook_id))
+        {
+            // @ Required / 필수
+            return;   
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            // 기본값 설정 / 선택
+            $email = "";
+        }
+        if(empty($nickname))
+        {
+            // @ Required / 필수
+            return;   
+        }
+        if(empty($first_name)) 
+        {
+            // @ Required / 필수
+            return;
+        }
+        if(empty($last_name)) 
+        {
+            // @ Required / 필수
+            return;
+        }
+        if(empty($thumbnail_url)) 
+        {
+            // @ Required / 필수
+            return;
+        }
+
+        /*
+        {
+            email:"wonder13662@gmail.com"
+            id:"1209558789090118"
+            name:"Wonder Jung"    
+        }
+        */
+
+        $data = array(
+            'facebook_id' => $facebook_id,
+            'email' => $email,
+            'nickname' => $nickname,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'thumbnail' => $thumbnail_url
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다. / logger
+
+        $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+
+        $this->CI->db->insert('user', $data);
     }
 
-    public function get_user_facebook()
+    public function get_user_facebook($facebook_id=-1)
     {
         // Do something...
+        if(!(0 < $facebook_id)) 
+        {
+            return null;
+        }
+
+        $this->CI->db->where('facebook_id', $facebook_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user');
+
+        $row = $query->custom_row_object(0, 'User');
+
+        return $this->decorate_user($row);        
     }
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $first_name="", $thumbnail_url="")
@@ -148,6 +213,7 @@ class MY_Sql
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다. / logger
+
         $sql = $this->CI->db->set($data)->get_compiled_insert('user');
 
         $this->CI->db->insert('user', $data);

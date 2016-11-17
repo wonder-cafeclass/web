@@ -33,7 +33,7 @@ CREATE TABLE `user` (
   `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
   `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `naver_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
-  `fb_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
+  `facebook_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `google_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Google recommend use user token key not using user id directly. We encode google user token by MD5',
   `mobile` varchar(65) COLLATE utf8_bin DEFAULT NULL,
   `email` varchar(65) COLLATE utf8_bin NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `user` (
   KEY `kakao_id` (`kakao_id`),
   KEY `naver_id` (`naver_id`),
   KEY `google_id` (`google_id`),
-  KEY `fb_id` (`fb_id`),
+  KEY `facebook_id` (`facebook_id`),
   KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
 

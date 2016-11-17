@@ -11,7 +11,7 @@ INSERT INTO `cafeclass`.`user`
 `permission`,
 `kakao_id`,
 `naver_id`,
-`fb_id`,
+`facebook_id`,
 `google_id`,
 `mobile`,
 `email`,
@@ -31,7 +31,7 @@ VALUES
 "T",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-7797-9412",				## mobile
 "joau0002@naver.com",			## email
@@ -51,7 +51,7 @@ CURRENT_TIMESTAMP				## date_updated
 "U",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-6319-8799",				## mobile
 "richardyoo93@gmail.com",		## email 
@@ -71,7 +71,7 @@ CURRENT_TIMESTAMP				## date_updated
 "U",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-3442-7705",				## mobile
 "iam.hyunkyung@gmail.com",		## email 

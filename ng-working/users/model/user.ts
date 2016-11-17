@@ -11,7 +11,7 @@ export class User {
 		public permission:string,
 		public kakao_id:string,
 		public naver_id:string,
-		public fb_id:string,
+		public facebook_id:string,
 		public google_id:string,
 		public mobile:string,
 		public email:string,

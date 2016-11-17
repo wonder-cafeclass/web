@@ -34,9 +34,9 @@ class Facebook extends REST_Controller implements MY_Class{
 
     private $api_inspect_access_token = "https://graph.facebook.com/debug_token?input_token={token-to-inspect}&access_token={app-token-or-admin-token}";
 
-    private $api_get_me = "https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cpicture%2Cemail&access_token={access_token}";
+    private $api_get_me = "https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cemail%2Cpicture.width(300).height(300)&access_token={access_token}";
 
-    private $api_get_big_picture = "https://graph.facebook.com/{user-id}/picture?type=large";
+    // private $api_get_big_picture = "https://graph.facebook.com/{user-id}/picture?type=large";
 
     /*
     // 사용자 섬네일 큰사진 가져오기 (200 x 200)
@@ -288,16 +288,6 @@ class Facebook extends REST_Controller implements MY_Class{
         }
 
         // 콜백 응답에서 facebook_token_type, facebook_access_token 파라미터의 값을 가져옴
-        /*
-        $token_type = $_SESSION[$this->session_token_type];
-        if(empty($token_type)) 
-        {
-            $response_body =
-            $this->my_response->getResBodyFailMsg('token_type is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            return;
-        }
-        */
         $access_token = $_SESSION[$this->session_access_token];
         if(empty($access_token)) 
         {
@@ -306,8 +296,6 @@ class Facebook extends REST_Controller implements MY_Class{
             $this->set_response($response_body, REST_Controller::HTTP_OK);
             return;
         }
-
-        // private $api_get_me = "https://graph.facebook.com/v2.8/me?access_token={access_token}";
 
         $req_url = $this->api_get_me;
 
@@ -328,26 +316,39 @@ class Facebook extends REST_Controller implements MY_Class{
             []
         );
 
-        // TEST
-        $this->respond_200($result);
-        return;
-
-        /*
-        // Sample Data
+        // 페이스북 유저 기본 정보
+        $facebook_id = $this->my_keyvalue->dig($result, ["id"]);
+        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
-            age: "30-39"
-            birthday: "03-29"
-            email: "wonder13662@facebook.com"
-            enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
-            gender: "M"
-            id: "67025373"
-            name: "정원덕"
-            nickname: "wonder1****"
-            profile_image: "https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif"
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("facebook_id is not valid!");
+            return;
         }
-        */
+        $name = $this->my_keyvalue->dig($result, ["name"]);
+        if($this->my_paramchecker->is_not_ok("facebook_name", $name))
+        {
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("name is not valid!");
+            return;
+        }
+        $email = $this->my_keyvalue->dig($result, ["email"]);
+        if($this->my_paramchecker->is_not_ok("user_email", $email))
+        {
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("email is not valid!");
+            return;
+        }
 
-        $facebook_id = $this->my_keyvalue->get_number($result, "id");
+        // wonder.jung
+        // 페이스북 유저 추가 정보
+        $fb_thumbnail_url = $this->my_keyvalue->dig($result, ["picture","data","url"]);
+        if(empty($fb_thumbnail_url))
+        {
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("fb_thumbnail_url is not valid!");
+            return;
+        }
+
         $user = null;
         if(0 < $facebook_id) 
         {
@@ -355,9 +356,27 @@ class Facebook extends REST_Controller implements MY_Class{
         }
         if(0 < $facebook_id && is_null($user))
         {
+            // 섬네일을 추가합니다. 신규 유저 등록시에만 작동합니다.
+            $thumbnail_url = $this->my_thumbnail->get_user_thumbnail($fb_thumbnail_url);
+            if(empty($thumbnail_url))
+            {
+                // TODO - 실패시에 반드시 기록해야 합니다.
+                $this->respond_500("thumbnail_url is not valid!");
+                return;
+            }
+
             // 회원 정보를 검사, 없다면 회원으로 추가합니다.
             // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
-            $this->add_user($result);
+            $this->add_user(
+                // $facebook_id=-1
+                $facebook_id,
+                // $name="" 
+                $name,
+                // $email=""
+                $email,
+                // $thumbnail_url=""
+                $thumbnail_url
+            );
             $user = $this->get_user($facebook_id);   
         }
         else if(0 < $facebook_id)
@@ -378,7 +397,6 @@ class Facebook extends REST_Controller implements MY_Class{
 
         $this->respond_200($user);
     }
-
 
     /*
     *   @ Usage : http://${base_domain}/CI/index.php/api/facebook/searchlocal?q=스타벅스%20잠실
@@ -479,147 +497,70 @@ class Facebook extends REST_Controller implements MY_Class{
     /*
     *   @ Desc : 새로운 유저를 추가합니다.
     */
-    public function add_user($facebook_user=null) 
+    public function add_user($facebook_id=-1, $name="", $email="", $thumbnail_url="") 
     {
         // $is_debug = true;
         $is_debug = false;
 
-        if($is_debug) print_r($facebook_user);
         if($is_debug) echo "add_user 1-1 <br/>\n";
 
-        if(is_null($facebook_user)) 
-        {
-            return;
-        }
-
-        /*
-        {
-            age: "30-39"
-            birthday: "03-29"
-            email: "wonder13662@facebook.com"
-            enc_id: "883922d718931108f3c278a9b5e33e6661728b694efc5003684c011e76d14c4b"
-            gender: "M"
-            id: "67025373"
-            name: "정원덕"
-            nickname: "wonder1****"
-            profile_image: "https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif"
-        }
-        */
-        
-        $age = $this->my_keyvalue->get($facebook_user, "age");
-        if(empty($age))
-        {
-            return;
-        }
-
-        if($is_debug) echo "add_user 1-2 <br/>\n";
-
-        // age: "30-39" --> 2016 - 35 = 1981 년생
-        $age_arr = explode("-", $age);
-        $year_birth = -1;        
-        if(!empty($age_arr) && (2 == count($age_arr))) 
-        {
-            $head = intval($age_arr[0]);
-            $tail = intval($age_arr[1]);
-            $inbetween = round(($head + $tail)/2);
-
-            $year_now = intval($this->my_time->get_now_YYYY());
-            $year_birth = $year_now - $inbetween;
-        }
-        if($this->my_paramchecker->is_not_ok("user_birth_range", $year_birth))
-        {
-            // 기본값 설정
-            $year_birth = -1;
-        }
-        
-        $birthday = $this->my_keyvalue->get($facebook_user, "birthday");
-        if($this->my_paramchecker->is_not_ok("user_birthday", $birthday))
-        {
-            // 기본값 설정
-            $birthday = "";
-        }
-        
-        $email = $this->my_keyvalue->get($facebook_user, "email");
-        if($this->my_paramchecker->is_not_ok("user_email", $email))
-        {
-            $this->respond_500('email is not valid!');
-            return;
-        }
-        $gender = $this->my_keyvalue->get($facebook_user, "gender");
-        if($this->my_paramchecker->is_not_ok("user_gender", $gender))
-        {
-            // 기본값 설정 / 선택
-            $user_gender_list = $this->get_const("user_gender_list");
-            $gender = "";
-            if(!empty($user_gender_list))
-            {
-                $gender = $user_gender_list[count($user_gender_list) - 1];
-            }
-        }
-
-        if($is_debug) echo "add_user 1-3 <br/>\n";
-
-        $facebook_id = $this->my_keyvalue->get($facebook_user, "id");
         if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
+            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500('facebook_id is not valid!');
             return;
         }
-        $name = $this->my_keyvalue->get($facebook_user, "name");
-        if(empty($name))
+        if($this->my_paramchecker->is_not_ok("user_email", $email))
         {
-            $this->respond_500('name is not valid!');
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500('email is not valid!');
             return;
         }
-        $nickname = $this->my_keyvalue->get($facebook_user, "nickname");
-        if(empty($nickname))
+        if($this->my_paramchecker->is_not_ok("facebook_name", $name))
         {
-            $this->respond_500('nickname is not valid!');
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("name is not valid!");
             return;
         }
-        $profile_image = $this->my_keyvalue->get($facebook_user, "profile_image");
-        if(empty($profile_image))
+        if(empty($thumbnail_url))
         {
-            $this->respond_500('profile_image is not valid!');
+            // TODO - 실패시에 반드시 기록해야 합니다.
+            $this->respond_500("thumbnail_url is not valid!");
             return;
+        }
+
+        // 페이스북 유저 이름은 다음과 같은 형식이다. 공백을 기준으로 2개 이상의 이름이 있다면 First Name, Last Name으로 사용한다.
+        // {"name": "Wonder Jung"}
+
+        $name_arr = explode(" ", $name);
+        $first_name = "";
+        $last_name = "";
+        if(!empty($name_arr) && 1 < count($name_arr)) 
+        {
+            // 영어식 이름으로 이름/성 기준으로 구분한다.
+            $first_name = $name_arr[0];
+            $last_name = $name_arr[1];
         }
 
         if($is_debug) echo "add_user 1-4 <br/>\n";
 
-        // 1. 전달받은 프로파일 이미지로 섬네일을 만듭니다.
-        // 1-1. 이미지가 지정되지 않은 상태라면, 기본 이미지 주소를 사용합니다.
-
-        // 2. 나이는 연령대의 중간 연도를 사용합니다.
-        // 3. 생일은 그대로 저장.
-        // 4. 이메일 그대로 저장.
-
-        // 섬네일 다운로드. - 네이버는 기본 33x33 사이즈.
-        // 다운로드 받지 않고 기본 섬네일을 사용합니다.
-        $thumbnail_url = $this->get_const("user_thumbnail_default");
-
         $last_query = 
         $this->my_sql->insert_user_facebook(
-            // $facebook_id=-1, 
+            // $facebook_id=-1 
             $facebook_id,
-            // $year="", 
-            $year_birth,
-            // $birthday="", 
-            $birthday,
-            // $gender="",
-            $gender,
-            // $email="",
-            $email, 
+            // $email=""
+            $email,
             // $nickname="", 
-            $nickname,
-            // $first_name="", 
             $name,
+            // $first_name="", 
+            $first_name,
+            // $last_name="", 
+            $last_name,
             // $thumbnail_url=""
             $thumbnail_url
         );
 
-        if($is_debug) echo "add_user 1-5 <br/>\n";
-
-        return $last_query;
+        if($is_debug) echo "add_user 1-5 / \$last_query : $last_query <br/>\n";
     } 
 
 

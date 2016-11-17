@@ -12,7 +12,7 @@ class User {
         public $permission;
         public $kakao_id;
         public $naver_id;
-        public $fb_id;
+        public $facebook_id;
         public $google_id;
         public $mobile;
         public $email;

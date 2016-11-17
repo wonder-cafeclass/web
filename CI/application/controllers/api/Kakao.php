@@ -310,46 +310,19 @@ class Kakao extends REST_Controller implements MY_Class{
             // 4-1-1-2. 유저 닉네임(nickname) 등록.
             // 닉네임은 first name으로 등록합니다.
 
-
             // 4-1-1-3. 프로필 이미지를 서버에 업로드. 업로드한 이미지 주소를 DB에 등록한다.
-            $image_url = $this->my_thumbnail->download_image($profile_image);
-            if(!empty($image_url))
+            $thumbnail_url = $this->my_thumbnail->get_user_thumbnail($profile_image);
+            if(!empty($thumbnail_url))
             {
-                // 섬네일 다운로드에 성공!
-                // 서비스 정책에 맞게 resize 합니다.
-                // 섬네일은 150x150.
-                $file_name = $this->my_thumbnail->get_file_name_from_url($profile_image);
-                $file_path = $this->my_thumbnail->get_thumb_dir_path_user() . "/" . $file_name;
-                $output = 
-                $this->my_thumbnail->resize(
-                    // $src="", 
-                    $image_url,
-                    // $dest="", 
-                    $file_path,
-                    // $crop_size=-1
-                    150
+                $this->add_user(
+                    // $kakao_id=-1
+                    $kakao_id,
+                    // $nickname=""
+                    $nickname, 
+                    // $thumbnail_url=""
+                    $thumbnail_url
                 );
-
-                $thumbnail_url = "";
-                if(isset($output) && isset($output->success) && $output->success) 
-                {
-                    $thumbnail_url = $file_name;
-                }
-
-                if(!empty($thumbnail_url))
-                {
-                    $this->add_user(
-                        // $kakao_id=-1
-                        $kakao_id,
-                        // $nickname=""
-                        $nickname, 
-                        // $thumbnail_url=""
-                        $thumbnail_url
-                    );
-                }
-                $output = $user = $this->get_user($kakao_id);
             }
-
             // 4-1-1-4. 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
 
         }

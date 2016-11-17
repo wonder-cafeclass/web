@@ -36,8 +36,10 @@
 		"naver_access_token":"is_str",
 		"naver_token_type":"is_str",
 
+		"facebook_id":"is_natural_no_zero",
 		"facebook_login_state":"is_str",
 		"facebook_code":"is_str",
+		"facebook_name":"is_str|||min_length[4]|||max_length[32]",
 
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
