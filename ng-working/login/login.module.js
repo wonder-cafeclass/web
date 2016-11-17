@@ -8,34 +8,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+require('../rxjs-extensions');
 var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
-var user_list_component_1 = require('./user-list.component');
-var user_detail_component_1 = require('./user-detail.component');
-var user_service_1 = require('./user.service');
-var users_routing_1 = require('./users.routing');
-var UsersModule = (function () {
-    function UsersModule() {
+var common_1 = require('@angular/common');
+// import { loginRouting }        		 from './login.routing';
+var login_component_1 = require('./login.component');
+var facebook_callback_component_1 = require('./facebook/facebook-callback.component');
+var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
+var naver_callback_component_1 = require('./naver/naver-callback.component');
+var signup_component_1 = require('./signup/signup.component');
+var login_service_1 = require('./service/login.service');
+var LoginModule = (function () {
+    function LoginModule() {
     }
-    UsersModule = __decorate([
+    LoginModule = __decorate([
         core_1.NgModule({
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
-                users_routing_1.usersRouting
             ],
             declarations: [
-                user_list_component_1.UserListComponent,
-                user_detail_component_1.UserDetailComponent
+                login_component_1.LoginComponent,
+                facebook_callback_component_1.FacebookCallbackComponent,
+                kakao_callback_component_1.KakaoCallbackComponent,
+                naver_callback_component_1.NaverCallbackComponent,
+                signup_component_1.SignupComponent
             ],
             providers: [
-                user_service_1.UserService
+                login_service_1.LoginService
             ]
         }), 
         __metadata('design:paramtypes', [])
-    ], UsersModule);
-    return UsersModule;
+    ], LoginModule);
+    return LoginModule;
 }());
-exports.UsersModule = UsersModule;
-//# sourceMappingURL=users.module.js.map
+exports.LoginModule = LoginModule;
+//# sourceMappingURL=login.module.js.map

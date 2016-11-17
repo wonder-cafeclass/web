@@ -19,9 +19,7 @@ var LoginComponent = (function () {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.router = router;
-        this.cageHeight = -1;
-        this.cageWidth = -1;
-        this.isIframeReady = false;
+        this.cafeclassAuthUrl = "http://google.co.kr";
     }
     LoginComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -46,52 +44,7 @@ var LoginComponent = (function () {
             .then(function (facebookAuthUrl) {
             _this.facebookAuthUrl = facebookAuthUrl;
         });
-        // REMOVE ME
-        /*
-        if(0 < this.cageWidth) {
-          let borderWidth:number = 2;
-          this.cageWidthStr=`${this.cageWidth + borderWidth}px`;
-        } else {
-          this.cageWidthStr="100%";
-        }
-    
-        if(0 < this.cageHeight) {
-          this.cageHeightStr=`${this.cageHeight}px`;
-        } else {
-          this.cageHeightStr="100%";
-        }
-        */
     };
-    // @ Deprecated
-    LoginComponent.prototype.login = function () {
-        var _this = this;
-        this.authService.login().subscribe(function () {
-            if (_this.authService.isLoggedIn) {
-                // Get the redirect URL from our auth service
-                // If no redirect has been set, use the default
-                var redirect = _this.authService.redirectUrl ? _this.authService.redirectUrl : '/admin';
-                // Set our navigation extras object
-                // that passes on our global query params and fragment
-                var navigationExtras = {
-                    preserveQueryParams: true,
-                    preserveFragment: true
-                };
-                // Redirect the user
-                _this.router.navigate([redirect], navigationExtras);
-            }
-        });
-    };
-    LoginComponent.prototype.logout = function () {
-        this.authService.logout();
-    };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], LoginComponent.prototype, "cageHeight", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], LoginComponent.prototype, "cageWidth", void 0);
     LoginComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -16,18 +16,10 @@ import { MyLoggerService }      from '../util/service/my-logger.service';
 })
 export class LoginComponent implements OnInit {
 
-  private childContentWindow;
-
   kakaoAuthUrl: string;
   naverAuthUrl: string;
   facebookAuthUrl: string;
-
-  @Input() cageHeight:number=-1;
-  cageHeightStr:string;
-  @Input() cageWidth:number=-1;
-  cageWidthStr:string;
-
-  isIframeReady:boolean=false;
+  cafeclassAuthUrl: string="http://google.co.kr";
 
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
@@ -63,48 +55,5 @@ export class LoginComponent implements OnInit {
       this.facebookAuthUrl = facebookAuthUrl;
     });
 
-    // REMOVE ME
-    /*
-    if(0 < this.cageWidth) {
-      let borderWidth:number = 2;
-      this.cageWidthStr=`${this.cageWidth + borderWidth}px`;
-    } else {
-      this.cageWidthStr="100%";
-    }
-
-    if(0 < this.cageHeight) {
-      this.cageHeightStr=`${this.cageHeight}px`;
-    } else {
-      this.cageHeightStr="100%";
-    }
-    */
   }
-
-  // @ Deprecated
-  login() {
-
-    this.authService.login().subscribe(() => {
-      if (this.authService.isLoggedIn) {
-
-        // Get the redirect URL from our auth service
-        // If no redirect has been set, use the default
-        let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/admin';
-
-        // Set our navigation extras object
-        // that passes on our global query params and fragment
-        let navigationExtras: NavigationExtras = {
-          preserveQueryParams: true,
-          preserveFragment: true
-        };
-
-        // Redirect the user
-        this.router.navigate([redirect], navigationExtras);
-      }
-    });
-  }
-
-  logout() {
-    this.authService.logout();
-  }
-   
 }

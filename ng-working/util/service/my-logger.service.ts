@@ -13,6 +13,8 @@ export class MyLoggerService {
 	public pageKeyLoginKakao:string="LOG_IN_KAKAO";
 	public pageKeyLoginNaver:string="LOG_IN_NAVER";
 
+	public pageKeySignup:string="SIGNUP";
+
 	constructor(	private us:UrlService, 
 					private http: Http) {}
 
