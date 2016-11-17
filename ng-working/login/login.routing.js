@@ -1,6 +1,5 @@
 "use strict";
-var auth_guard_service_1 = require('../auth/auth-guard.service');
-var auth_service_1 = require('../auth/auth.service');
+var router_1 = require('@angular/router');
 var login_component_1 = require('./login.component');
 var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
@@ -11,8 +10,5 @@ exports.loginRoutes = [
     { path: 'login/naver', component: naver_callback_component_1.NaverCallbackComponent },
     { path: 'login/facebook', component: facebook_callback_component_1.FacebookCallbackComponent }
 ];
-exports.authProviders = [
-    auth_guard_service_1.AuthGuard,
-    auth_service_1.AuthService
-];
+exports.loginRouting = router_1.RouterModule.forChild(exports.loginRoutes);
 //# sourceMappingURL=login.routing.js.map

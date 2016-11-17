@@ -12,7 +12,7 @@ require('../rxjs-extensions');
 var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
-// import { loginRouting }        		 from './login.routing';
+var login_routing_1 = require('./login.routing');
 var login_component_1 = require('./login.component');
 var facebook_callback_component_1 = require('./facebook/facebook-callback.component');
 var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
@@ -27,6 +27,7 @@ var LoginModule = (function () {
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
+                login_routing_1.loginRouting
             ],
             declarations: [
                 login_component_1.LoginComponent,

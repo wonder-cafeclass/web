@@ -1,6 +1,5 @@
-import { Routes }         				from '@angular/router';
-import { AuthGuard }      				from '../auth/auth-guard.service';
-import { AuthService }    				from '../auth/auth.service';
+import { ModuleWithProviders }      from '@angular/core';
+import { Routes, RouterModule }     from '@angular/router';
 
 import { LoginComponent } 				from './login.component';
 import { KakaoCallbackComponent } 		from './kakao/kakao-callback.component';
@@ -15,7 +14,4 @@ export const loginRoutes: Routes =
 	{ path: 'login/facebook', component: FacebookCallbackComponent }
 ];
 
-export const authProviders = [
-  AuthGuard,
-  AuthService
-];
+export const loginRouting: ModuleWithProviders = RouterModule.forChild(loginRoutes);

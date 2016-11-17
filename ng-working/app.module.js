@@ -17,10 +17,7 @@ var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
 var klass_center_module_1 = require('./klass/klass-center.module');
-var login_component_1 = require('./login/login.component');
-var kakao_callback_component_1 = require('./login/kakao/kakao-callback.component');
-var naver_callback_component_1 = require('./login/naver/naver-callback.component');
-var facebook_callback_component_1 = require('./login/facebook/facebook-callback.component');
+var login_module_1 = require('./login/login.module');
 var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
 var login_service_1 = require('./login/service/login.service');
@@ -42,15 +39,12 @@ var AppModule = (function () {
                 app_routing_1.routing,
                 users_module_1.UsersModule,
                 klass_center_module_1.KlassCenterModule,
+                login_module_1.LoginModule,
                 http_1.HttpModule,
                 http_1.JsonpModule
             ],
             declarations: [
-                app_component_1.AppComponent,
-                login_component_1.LoginComponent,
-                kakao_callback_component_1.KakaoCallbackComponent,
-                naver_callback_component_1.NaverCallbackComponent,
-                facebook_callback_component_1.FacebookCallbackComponent
+                app_component_1.AppComponent
             ],
             providers: [
                 auth_service_1.AuthService,

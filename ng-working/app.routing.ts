@@ -1,11 +1,11 @@
 import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { loginRoutes,
-         authProviders }      from './login/login.routing';
+import { loginRoutes }      from './login/login.routing';
 
 import { CanDeactivateGuard } from './guard/can-deactivate-guard.service';
 import { AuthGuard }          from './auth/auth-guard.service';
+import { AuthService }            from './auth/auth.service';
 
 const adminRoutes: Routes = [
   {
@@ -16,12 +16,12 @@ const adminRoutes: Routes = [
 ];
 
 const appRoutes: Routes = [
-  ...loginRoutes,
   ...adminRoutes
 ];
 
 export const appRoutingProviders: any[] = [
-  authProviders,
+  AuthGuard,
+  AuthService,
   CanDeactivateGuard
 ];
 

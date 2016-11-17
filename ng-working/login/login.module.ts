@@ -3,7 +3,7 @@ import '../rxjs-extensions';
 import { NgModule }                  from '@angular/core';
 import { FormsModule }               from '@angular/forms';
 import { CommonModule }              from '@angular/common';
-// import { loginRouting }        		 from './login.routing';
+import { loginRouting }        		 from './login.routing';
 
 import { LoginComponent }      		 from './login.component';
 import { FacebookCallbackComponent } from './facebook/facebook-callback.component';
@@ -17,7 +17,7 @@ import { LoginService }              from './service/login.service';
   imports: [
     CommonModule,
     FormsModule,
-    // loginRouting
+    loginRouting
   ],
   declarations: [
     LoginComponent,

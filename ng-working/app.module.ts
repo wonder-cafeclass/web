@@ -10,11 +10,7 @@ import { routing,
 
 import { UsersModule }              from './users/users.module';
 import { KlassCenterModule }        from './klass/klass-center.module';
-
-import { LoginComponent }             from './login/login.component';
-import { KakaoCallbackComponent }     from './login/kakao/kakao-callback.component';
-import { NaverCallbackComponent }     from './login/naver/naver-callback.component';
-import { FacebookCallbackComponent }  from './login/facebook/facebook-callback.component';
+import { LoginModule }              from './login/login.module';
 
 import { DialogService }            from './widget/dialog.service';
 import { AuthService }              from './auth.service';
@@ -24,9 +20,6 @@ import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
-
-
-
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -38,15 +31,12 @@ import './rxjs-operators';
     routing,
     UsersModule,
     KlassCenterModule,
+    LoginModule,
     HttpModule,
     JsonpModule
   ],
   declarations: [
-    AppComponent,
-    LoginComponent,
-    KakaoCallbackComponent,
-    NaverCallbackComponent,
-    FacebookCallbackComponent
+    AppComponent
   ],
   providers: [
     AuthService,
