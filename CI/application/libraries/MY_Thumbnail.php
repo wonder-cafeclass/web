@@ -14,6 +14,7 @@ class MY_Thumbnail {
 
 	private $CI=null;
     private $curl=null;
+    private $my_path=null;
     public $download_path="assets/images/download";
     public $thumbnail_path_user="assets/images/user";
 
@@ -28,6 +29,18 @@ class MY_Thumbnail {
         $this->CI =& get_instance();
         if(!isset($this->CI)) 
         {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_INSTANCE_NOT_EXIST,
+                // $message=""
+                "\$this->CI", 
+                // $extra=null
+                null
+            );            
             return;
         }
 
@@ -38,11 +51,42 @@ class MY_Thumbnail {
 
         if(!isset($this->CI->my_curl)) 
         {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_INSTANCE_NOT_EXIST,
+                // $message=""
+                "\$this->CI->my_curl",
+                // $extra=null
+                null
+            );
             return;
         }
         $this->curl = $this->CI->my_curl;
 
-        $target_path = $this->get_download_path();
+        if(!isset($this->CI->my_path)) 
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_INSTANCE_NOT_EXIST,
+                // $message=""
+                "\$this->CI->my_path",
+                // $extra=null
+                null
+            );
+            return;
+        }
+        $this->my_path = $this->CI->my_path;
+
+
+        $target_path = $this->my_path->get_download_path(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -60,7 +104,7 @@ class MY_Thumbnail {
             return;
         }
 
-        $target_path = $this->get_user_thumb_path();
+        $target_path = $this->my_path->get_user_thumb_path(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -138,7 +182,7 @@ class MY_Thumbnail {
         }
 
         // 저장할 파일 이름을 지정합니다.
-        $thumb_dir_path = $this->get_download_path();
+        $thumb_dir_path = $this->my_path->get_download_path(__FILE__);
         $is_success = $this->curl->download($url, $thumb_dir_path, $filename);
 
         return ($is_success)?"$thumb_dir_path/$filename":null;
@@ -329,7 +373,7 @@ class MY_Thumbnail {
             return "";
         }
 
-        $thumb_dir_path = $this->get_download_path();
+        $thumb_dir_path = $this->my_path->get_download_path(__FILE__);
         if(empty($thumb_dir_path)) 
         {
             return "";
@@ -352,6 +396,8 @@ class MY_Thumbnail {
         return $dir_path . "/" . $filename;
     }    
 
+    // REMOVE ME
+    /*
     private function get_download_path() 
     {
         $string = __FILE__;
@@ -376,6 +422,7 @@ class MY_Thumbnail {
 
         return $thumb_dir_path;
     }
+    */
 
     /*
     *   @ Desc : 임시 섬네일을 지웁니다.
@@ -396,7 +443,51 @@ class MY_Thumbnail {
         }
 
         return unlink($file_path);
-    }    
+    } 
+
+    /*
+    *   @ Desc : 서버 내부의 이미지를 가져와 유저 프로필 이미지크기로 변경, 유저 프로필 디렉토리에 저장합니다. 원본은 지웁니다.
+    */
+    public function resize_user_thumbnail($inner_image_uri="")
+    {
+        if(empty($inner_image_uri))
+        {
+            return;
+        }
+        if(!is_writable($inner_image_uri))
+        {
+            return;
+        }
+
+        $file_name = $this->get_file_name_from_uri($inner_image_uri);
+        $file_path = $this->my_path->get_user_thumb_path(__FILE__) . "/" . $file_name;
+
+        $output = 
+        $this->resize(
+            // $src="", 
+            $inner_image_uri,
+            // $dest="", 
+            $file_path,
+            // $crop_size=-1
+            150
+        );
+
+        $thumbnail_url = "";
+        if(isset($output) && isset($output->success) && $output->success) 
+        {
+            $thumbnail_url = $file_name;
+        }
+        else
+        {
+            // 섬네일 만들기에 실패했습니다.
+            // 기록합니다.
+        }
+
+        // 임시 저장한 섬네일을 지웁니다.
+        $this->delete_thumbnail($inner_image_uri); 
+        
+        return $thumbnail_url;
+    }   
 
     /*
     *   @ Desc : 유저 섬네일을 만듭니다.
@@ -415,8 +506,13 @@ class MY_Thumbnail {
         // 섬네일 다운로드에 성공!
         // 서비스 정책에 맞게 resize 합니다.
         // 유저 섬네일은 150x150.
+
+        return $this->resize_user_thumbnail($temp_image_uri);
+
+        // REMOVE ME
+        /*
         $file_name = $this->get_file_name_from_uri($temp_image_uri);
-        $file_path = $this->get_user_thumb_path() . "/" . $file_name;
+        $file_path = $this->my_path->get_user_thumb_path(__FILE__) . "/" . $file_name;
 
         $output = 
         $this->resize(
@@ -441,8 +537,9 @@ class MY_Thumbnail {
 
         // 임시 저장한 섬네일을 지웁니다.
         $this->delete_thumbnail($temp_image_uri);
-
         return $thumbnail_url;
+        */
+
     }
 
 }

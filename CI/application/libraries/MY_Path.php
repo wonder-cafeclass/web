@@ -17,6 +17,9 @@ class MY_Path {
 	private $http_host="";
 	private $req_uri="";
 
+    private $download_path="assets/images/download";
+    private $thumbnail_path_user="assets/images/user";
+
     public function __construct($params=null)
     {
         // get singleton object.
@@ -25,6 +28,47 @@ class MY_Path {
         {
             return;
         }
+
+        if(!isset($this->CI->my_error)) 
+        {
+            return;
+        }
+
+        $target_path = $this->get_download_path(__FILE__);
+        if(!is_writable($target_path))
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_DIR_PATH_IS_NOT_WRITABLE,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }
+
+        $target_path = $this->get_user_thumb_path(__FILE__);
+        if(!is_writable($target_path))
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_DIR_PATH_IS_NOT_WRITABLE,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }        
 
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
         $path_info = $_SERVER['PATH_INFO'];
@@ -101,5 +145,35 @@ class MY_Path {
 
 		return $this->current_http_referer() . $this->get($target_path);
 	}
+
+    public function get_download_path($cur_class_path="") 
+    {
+    	if(empty($cur_class_path))
+    	{
+    		return "";
+    	}
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $this->download_path;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+    }
+
+    public function get_user_thumb_path($cur_class_path="") 
+    {
+    	if(empty($cur_class_path))
+    	{
+    		return "";
+    	}
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $this->thumbnail_path_user;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+    }	
 
 }

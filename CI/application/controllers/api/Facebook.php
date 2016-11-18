@@ -87,11 +87,11 @@ class Facebook extends REST_Controller implements MY_Class{
         // init database
         $this->load->database();
 
-        // init path util
-        $this->load->library('MY_Path');
-
         // init error logger
         $this->load->library('MY_Error');
+
+        // init path util
+        $this->load->library('MY_Path');
 
         // init My_KeyValue
         $this->load->library('MY_KeyValue');

@@ -3,6 +3,7 @@
 class MY_Error
 {
 	public static $EVENT_FILE_NOT_EXIST="File not exist!";
+	public static $EVENT_INSTANCE_NOT_EXIST="instance not exist!";
 	public static $EVENT_PARAM_IS_EMPTY="Param is empty!";
 	public static $EVENT_PARAM_IS_NOT_VALID="Param is not valid!";
 	public static $EVENT_DIR_PATH_IS_NOT_WRITABLE="Dir path is not writable!";

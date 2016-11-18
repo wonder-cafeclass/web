@@ -20,6 +20,7 @@ import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
+import { UploadService }          from './util/service/upload.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -48,7 +49,8 @@ import './rxjs-operators';
     MyLoggerService,
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
-    DialogService
+    DialogService,
+    UploadService
   ],
   bootstrap: [ AppComponent ]
 })

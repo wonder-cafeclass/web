@@ -12,16 +12,44 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var upload_service_1 = require('../../util/service/upload.service');
+var url_service_1 = require("../../util/url.service");
 var SignupComponent = (function () {
-    function SignupComponent(loginService, myLoggerService, router) {
+    // TODO - 서버에서 anonymous 이미지 받아와야 함.
+    function SignupComponent(loginService, myLoggerService, uploadService, urlService, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.uploadService = uploadService;
+        this.urlService = urlService;
         this.router = router;
+        this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
+        this.userProfilePath = "/assets/images/user/";
+        this.userProfileUrl = "/assets/images/user/user_anonymous_150x150.png";
     }
     SignupComponent.prototype.ngOnInit = function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
         // Do something...
+    };
+    SignupComponent.prototype.onChangeFile = function (event) {
+        var _this = this;
+        console.log('onChange');
+        var files = event.srcElement.files;
+        if (null == files || 1 != files.length) {
+            // 1개의 파일만 업로드할 수 있습니다.
+            return;
+        }
+        console.log(files);
+        var req_url = this.urlService.get(this.uploadUserProfileUrl);
+        this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (response) {
+            // 섬네일 주소를 받아와서 화면에 표시해야 한다.
+            console.log('sent / response : ', response);
+            if (null != response &&
+                null != response.data &&
+                null != response.data.thumbnail) {
+                _this.userProfileUrl = _this.userProfilePath + response.data.thumbnail;
+            }
+        });
     };
     SignupComponent = __decorate([
         core_1.Component({
@@ -30,7 +58,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, upload_service_1.UploadService, url_service_1.UrlService, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());

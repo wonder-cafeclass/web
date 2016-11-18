@@ -78,10 +78,14 @@
 	</div>
 </div>
 <!-- 프로필 이미지 -->
+<!-- 파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview -->
 <div class="btn-box text-left">
 	<label class="title">프로필 이미지</label>
 </div>
-<div class="btn-box radius-border">섬네일 업로더</div>
+<div class="btn-box radius-border">
+	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
+	<input type="file" name="userfile" placeholder="It's placeholder!" (change)="onChangeFile($event)"/>
+</div>
 
 								
 							</td> 
