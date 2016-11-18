@@ -19,6 +19,20 @@ td.layout {
   padding:0px;
   margin:0px;
 }
+td.layout.select {
+  padding:10px;
+  padding-top: 5px;
+}
+div.border-r {
+  border-right: 1px solid #ddd;
+}
+div.shim-select {
+  width: 10px;
+  height: 40px;
+  position: relative;
+  top: -44px;
+  left: 112px;  
+}
 td.layout.border-top {
   border-top: 1px solid #ddd;
 }
@@ -53,7 +67,7 @@ button.save {
   margin-bottom: 0px;  
 }
 .input-glass {
-  height: 42px;
+  height: 28px;
   margin: 0px;
   border: 0px;
   box-shadow: inset 0 0px 0px rgba(0,0,0,0);
@@ -69,19 +83,29 @@ div.radius-border {
     margin-left: 10px;
 }
 div.btn-box {
+  margin-top: 5px;
   padding: 10px;
   width: 380px;
 }
 div.btn-box-phone {
+  margin-top: 5px;
   padding: 10px;
   width: 93px;
   float:left;
+}
+div.btn-box.text-left {
+  text-align: left;
+  color:#777;
+  padding-bottom: 0px;
+}
+label.title {
+  margin:0px;
 }
 div.phone-dash {
   float: left;
   padding-left: 20px;
   padding-right: 10px;
-  padding-top: 23px;
+  padding-top: 10px;
   font-size: 24px;
   color: #999;
 }
@@ -93,11 +117,11 @@ button.toggle-age {
   width:40px;
   height:50px;
 }
-
 div.btn-group.padding {
+  margin-top: 0px;
   padding:5px;
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top:5px;
+  padding-bottom:5px;
 }
 
 div.padding-progressbar {
@@ -113,6 +137,10 @@ div.prgrs-handle {
   border: 1px solid #ccc;
   border-radius: 15px;
   box-shadow: 0px 1px 1px 0px rgba(204,204,204,0.7);  
+}
+select.padding {
+  width:110px;
+  height:50px;
 }
 
 
