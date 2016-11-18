@@ -1,17 +1,18 @@
 import '../rxjs-extensions';
 
-import { NgModule }                  from '@angular/core';
-import { FormsModule }               from '@angular/forms';
-import { CommonModule }              from '@angular/common';
-import { loginRouting }        		 from './login.routing';
+import { NgModule }                       from '@angular/core';
+import { FormsModule }                    from '@angular/forms';
+import { CommonModule }                   from '@angular/common';
+import { loginRouting }        		        from './login.routing';
 
-import { LoginComponent }      		 from './login.component';
-import { FacebookCallbackComponent } from './facebook/facebook-callback.component';
-import { KakaoCallbackComponent } 	 from './kakao/kakao-callback.component';
-import { NaverCallbackComponent } 	 from './naver/naver-callback.component';
-import { SignupComponent } 	 		 from './signup/signup.component';
+import { LoginComponent }      		        from './login.component';
+import { FacebookCallbackComponent }      from './facebook/facebook-callback.component';
+import { KakaoCallbackComponent } 	      from './kakao/kakao-callback.component';
+import { NaverCallbackComponent } 	      from './naver/naver-callback.component';
+import { SignupComponent } 	 		          from './signup/signup.component';
 
-import { LoginService }              from './service/login.service';
+import { LoginService }                   from './service/login.service';
+import { MyBirthdayService }              from '../util/service/my-birthday.service';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { LoginService }              from './service/login.service';
     SignupComponent
   ],
   providers: [
-  	LoginService
+  	LoginService,
+    MyBirthdayService
   ]
 })
 export class LoginModule {}

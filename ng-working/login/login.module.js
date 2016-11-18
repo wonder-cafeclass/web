@@ -19,6 +19,7 @@ var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
 var login_service_1 = require('./service/login.service');
+var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var LoginModule = (function () {
     function LoginModule() {
     }
@@ -37,7 +38,8 @@ var LoginModule = (function () {
                 signup_component_1.SignupComponent
             ],
             providers: [
-                login_service_1.LoginService
+                login_service_1.LoginService,
+                my_birthday_service_1.MyBirthdayService
             ]
         }), 
         __metadata('design:paramtypes', [])

@@ -12,12 +12,14 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_birthday_service_1 = require("../../util/service/my-birthday.service");
 var upload_service_1 = require('../../util/service/upload.service');
 var url_service_1 = require("../../util/url.service");
 var SignupComponent = (function () {
-    function SignupComponent(loginService, myLoggerService, uploadService, urlService, renderer, router) {
+    function SignupComponent(loginService, myLoggerService, myBirthdayService, uploadService, urlService, renderer, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.myBirthdayService = myBirthdayService;
         this.uploadService = uploadService;
         this.urlService = urlService;
         this.renderer = renderer;
@@ -33,11 +35,21 @@ var SignupComponent = (function () {
         this.isFocusPhoneNumHead = false;
         this.isFocusPhoneNumBody = false;
         this.isFocusPhoneNumTail = false;
+        this.isFocusNickname = false;
+        this.selectedYear = -1;
+        this.selectedMonth = -1;
+        this.selectedDay = -1;
     }
     SignupComponent.prototype.ngOnInit = function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
         // Do something...
+        this.birthYearArr = this.myBirthdayService.getYear();
+        this.selectedYear = this.birthYearArr[Math.round(this.birthYearArr.length * 2 / 3)];
+        this.birthMonthArr = this.myBirthdayService.getMonth();
+        this.selectedMonth = this.birthMonthArr[Math.round(this.birthMonthArr.length / 2)];
+        this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
+        this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length / 2)];
     };
     SignupComponent.prototype.onClickFileUpload = function (event) {
         event.stopPropagation();
@@ -165,6 +177,32 @@ var SignupComponent = (function () {
             this.isFocusPhoneNumTail = false;
         } // end if
     };
+    SignupComponent.prototype.onClickNickname = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusNickname) {
+            this.isFocusNickname = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurNickname = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusNickname) {
+            this.isFocusNickname = false;
+        } // end if
+    };
+    SignupComponent.prototype.onChangeBirthYear = function (selectBirthYear) {
+        this.selectedYear = selectBirthYear;
+    };
+    SignupComponent.prototype.onChangeBirthMonth = function (selectBirthMonth) {
+        this.selectedMonth = selectBirthMonth;
+        // 월이 바뀌었습니다. 월별 날짜도 연동되어 바꿉니다.
+        this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
+        this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length / 2)];
+    };
+    SignupComponent.prototype.onChangeBirthDay = function (selectBirthDay) {
+        this.selectedDay = selectBirthDay;
+    };
     __decorate([
         core_1.ViewChild('fileInput'), 
         __metadata('design:type', core_1.ElementRef)
@@ -176,7 +214,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, upload_service_1.UploadService, url_service_1.UrlService, core_1.Renderer, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_birthday_service_1.MyBirthdayService, upload_service_1.UploadService, url_service_1.UrlService, core_1.Renderer, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());

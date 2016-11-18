@@ -150,7 +150,7 @@ select.padding {
 img.user-profile {
     border: 1px solid #ddd;
     width: 100px;
-    margin: 10px;
+    margin: 0px;
 }
 button.selected {
   font-weight: bold;
@@ -160,7 +160,14 @@ button.unselected {
   font-weight: lighter;
   color: #999;
 }
-
+div.profile-img {
+  text-align: left;
+  padding: 0px;
+}
+button.profile-img {
+  position: absolute;
+  margin-left: 10px;  
+}
 
 
 

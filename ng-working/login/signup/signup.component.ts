@@ -8,6 +8,7 @@ import {  Component,
 import { Router }               from '@angular/router';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
+import { MyBirthdayService }    from "../../util/service/my-birthday.service";
 import { UploadService }        from '../../util/service/upload.service';
 import { UrlService }           from "../../util/url.service";
 
@@ -33,11 +34,20 @@ export class SignupComponent implements OnInit {
   isFocusPhoneNumHead:boolean=false;
   isFocusPhoneNumBody:boolean=false;
   isFocusPhoneNumTail:boolean=false;
+  isFocusNickname:boolean=false;
+
+  birthYearArr:number[];
+  selectedYear:number=-1;
+  birthMonthArr:number[];
+  selectedMonth:number=-1;
+  birthDayArr:number[];
+  selectedDay:number=-1;
 
   @ViewChild('fileInput') fileInput:ElementRef;
 
   constructor(  private loginService: LoginService, 
                 private myLoggerService: MyLoggerService, 
+                private myBirthdayService: MyBirthdayService,
                 private uploadService: UploadService, 
                 private urlService:UrlService,
                 private renderer:Renderer,
@@ -51,8 +61,15 @@ export class SignupComponent implements OnInit {
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);    
 
     // Do something...
+    this.birthYearArr = this.myBirthdayService.getYear();
+    this.selectedYear = this.birthYearArr[Math.round(this.birthYearArr.length*2/3)];
+    this.birthMonthArr = this.myBirthdayService.getMonth();
+    this.selectedMonth = this.birthMonthArr[Math.round(this.birthMonthArr.length/2)];
+    this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
+    this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length/2)];
 
   }
+
 
   onClickFileUpload(event) :void {
     event.stopPropagation();
@@ -213,6 +230,40 @@ export class SignupComponent implements OnInit {
     if(this.isFocusPhoneNumTail) {
       this.isFocusPhoneNumTail = false;
     } // end if
-  }          
+  } 
+
+  onClickNickname(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocusNickname) {
+      this.isFocusNickname = true;      
+    } // end if
+  } 
+
+  onBlurNickname(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isFocusNickname) {
+      this.isFocusNickname = false;
+    } // end if
+  }            
+
+  onChangeBirthYear(selectBirthYear) :void {
+    this.selectedYear = selectBirthYear;
+  }
+
+  onChangeBirthMonth(selectBirthMonth) :void {
+    this.selectedMonth = selectBirthMonth;
+
+    // 월이 바뀌었습니다. 월별 날짜도 연동되어 바꿉니다.
+    this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
+    this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length/2)];    
+  }
+
+  onChangeBirthDay(selectBirthDay) :void {
+    this.selectedDay = selectBirthDay;
+  }
 
 }

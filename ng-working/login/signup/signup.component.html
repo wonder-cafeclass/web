@@ -97,7 +97,7 @@
 <div class="btn-box text-left">
 	<label class="title">프로필 이미지</label>
 </div>
-<div class="btn-box radius-border">
+<div class="btn-box radius-border profile-img">
 	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
 	<input  #fileInput 
 			style="display:none;"
@@ -107,7 +107,8 @@
 
 	<button type="button" 
 			(click)="onClickFileUpload($event)"
-			class="btn btn-default">Upload!
+			class="btn btn-default profile-img">
+		<span>이미지 업로드</span>
 	</button>
 </div>
 
@@ -120,8 +121,10 @@
 <div class="btn-box text-left">
 	<label class="title">닉네임</label>
 </div>
-<div class="btn-box radius-border">
-	<input 	id="email" 
+<div 	[ngClass]="{'rb-focus':isFocusNickname,'rb-blur':!isFocusNickname}"
+		class="btn-box radius-border">
+	<input 	(click)="onClickNickname($event)"
+			(blur)="onBlurNickname($event)"
 			class="form-control input-glass" 
 			placeholder="닉네임">
 </div>
@@ -159,17 +162,10 @@
 <!-- 연령대 -->
 <!-- <div class="btn-box"> -->
 <div>
-	<select class="form-control padding">
-		<option value="15">20대 이하</option>
-		<option value="20">20대 초반</option>
-		<option value="25">20대 중반</option>
-		<option value="30">30대 초반</option>
-		<option value="35">30대 중반</option>
-		<option value="40">40대 초반</option>
-		<option value="45">40대 중반</option>
-		<option value="50">50대 초반</option>
-		<option value="55">50대 중반</option>
-		<option value="60">60대 이상</option>
+	<select class="form-control padding" (change)="onChangeBirthYear($event.target.value)">
+		<option 	*ngFor="let birthYear of birthYearArr" 
+					[selected]="birthYear == selectedYear"
+					value={{birthYear}}>{{birthYear}}년</option>
 	</select>
 	<div class="shim-select border-r"></div>
 </div>
@@ -179,19 +175,10 @@
 <!-- 월 -->
 <!-- <div class="btn-box"> -->
 <div>
-	<select class="form-control padding">
-		<option value="1">1월</option>
-		<option value="2">2월</option>
-		<option value="3">3월</option>
-		<option value="4">4월</option>
-		<option value="5">5월</option>
-		<option value="6">6월</option>
-		<option value="7">7월</option>
-		<option value="8">8월</option>
-		<option value="9">9월</option>
-		<option value="10">10월</option>
-		<option value="11">11월</option>
-		<option value="12">12월</option>
+	<select class="form-control padding" (change)="onChangeBirthMonth($event.target.value)">
+		<option 	*ngFor="let birthMonth of birthMonthArr" 
+					[selected]="birthMonth == selectedMonth"
+					value={{birthMonth}}>{{birthMonth}}월</option>
 	</select>
 	<div class="shim-select border-r"></div>
 </div>
@@ -199,40 +186,12 @@
 			</td>
 			<td class="layout select">
 <!-- 일 -->
-<!-- <div class="btn-box"> -->
+<!-- <div class="btn-box"> birthDayArr-->
 <div>
-	<select class="form-control padding">
-		<option value="1">1일</option>
-		<option value="2">2일</option>
-		<option value="3">3일</option>
-		<option value="4">4일</option>
-		<option value="5">5일</option>
-		<option value="6">6일</option>
-		<option value="7">7일</option>
-		<option value="8">8일</option>
-		<option value="9">9일</option>
-		<option value="10">10일</option>
-		<option value="11">11일</option>
-		<option value="12">12일</option>
-		<option value="13">13일</option>
-		<option value="14">14일</option>
-		<option value="15">15일</option>
-		<option value="16">16일</option>
-		<option value="17">17일</option>
-		<option value="18">18일</option>
-		<option value="19">19일</option>
-		<option value="20">20일</option>
-		<option value="21">21일</option>
-		<option value="22">22일</option>
-		<option value="23">23일</option>
-		<option value="24">24일</option>
-		<option value="25">25일</option>
-		<option value="26">26일</option>
-		<option value="27">27일</option>
-		<option value="28">28일</option>
-		<option value="29">29일</option>
-		<option value="30">30일</option>
-		<option value="31">31일</option>
+	<select class="form-control padding" (change)="onChangeBirthDay($event.target.value)">
+		<option 	*ngFor="let birthDay of birthDayArr" 
+					[selected]="birthDay == selectedDay"
+					value={{birthDay}}>{{birthDay}}일</option>
 	</select>
 </div>
 <!-- </div> -->
