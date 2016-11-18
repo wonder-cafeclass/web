@@ -15,21 +15,37 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var upload_service_1 = require('../../util/service/upload.service');
 var url_service_1 = require("../../util/url.service");
 var SignupComponent = (function () {
-    // TODO - 서버에서 anonymous 이미지 받아와야 함.
-    function SignupComponent(loginService, myLoggerService, uploadService, urlService, router) {
+    function SignupComponent(loginService, myLoggerService, uploadService, urlService, renderer, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.uploadService = uploadService;
         this.urlService = urlService;
+        this.renderer = renderer;
         this.router = router;
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150.png";
+        // TODO - 서버에서 anonymous 이미지 받아와야 함.
+        this.isFemale = false;
+        this.isFocusEmail = false;
+        this.isFocusPassword = false;
+        this.isFocusName = false;
+        this.isFocusPhoneNumHead = false;
+        this.isFocusPhoneNumBody = false;
+        this.isFocusPhoneNumTail = false;
     }
     SignupComponent.prototype.ngOnInit = function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
         // Do something...
+    };
+    SignupComponent.prototype.onClickFileUpload = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // from http://stackoverflow.com/a/32010791/217408
+        var eventClick = new MouseEvent('click', { bubbles: true });
+        this.renderer.invokeElementMethod(this.fileInput.nativeElement, 'dispatchEvent', [eventClick]);
+        return;
     };
     SignupComponent.prototype.onChangeFile = function (event) {
         var _this = this;
@@ -51,6 +67,108 @@ var SignupComponent = (function () {
             }
         });
     };
+    SignupComponent.prototype.onClickGenderFemale = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFemale) {
+            this.isFemale = true;
+        } // end if    
+    };
+    SignupComponent.prototype.onClickGenderMale = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFemale) {
+            this.isFemale = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickEmail = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusEmail) {
+            this.isFocusEmail = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurEmail = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusEmail) {
+            this.isFocusEmail = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickPassword = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusPassword) {
+            this.isFocusPassword = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurPassword = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusPassword) {
+            this.isFocusPassword = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickName = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusName) {
+            this.isFocusName = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurName = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusName) {
+            this.isFocusName = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickPhoneNumHead = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusPhoneNumHead) {
+            this.isFocusPhoneNumHead = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurPhoneNumHead = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusPhoneNumHead) {
+            this.isFocusPhoneNumHead = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickPhoneNumBody = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusPhoneNumBody) {
+            this.isFocusPhoneNumBody = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurPhoneNumBody = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusPhoneNumBody) {
+            this.isFocusPhoneNumBody = false;
+        } // end if
+    };
+    SignupComponent.prototype.onClickPhoneNumTail = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusPhoneNumTail) {
+            this.isFocusPhoneNumTail = true;
+        } // end if
+    };
+    SignupComponent.prototype.onBlurPhoneNumTail = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusPhoneNumTail) {
+            this.isFocusPhoneNumTail = false;
+        } // end if
+    };
+    __decorate([
+        core_1.ViewChild('fileInput'), 
+        __metadata('design:type', core_1.ElementRef)
+    ], SignupComponent.prototype, "fileInput", void 0);
     SignupComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -58,7 +176,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, upload_service_1.UploadService, url_service_1.UrlService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, upload_service_1.UploadService, url_service_1.UrlService, core_1.Renderer, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());

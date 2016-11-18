@@ -76,11 +76,16 @@ button.save {
 }
 div.radius-border {
   border-radius: 5px;
-  border: 1px solid #e85c41;
   width:300px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.rb-blur {
+  border: 1px solid #ddd;
+}
+.rb-focus {
+  border: 1px solid #e85c41;
 }
 div.btn-box {
   margin-top: 5px;
@@ -146,6 +151,14 @@ img.user-profile {
     border: 1px solid #ddd;
     width: 100px;
     margin: 10px;
+}
+button.selected {
+  font-weight: bold;
+  color: #e85c41;
+}
+button.unselected {
+  font-weight: lighter;
+  color: #999;
 }
 
 

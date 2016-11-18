@@ -12,7 +12,7 @@ export class UploadService {
         */
     }
 
-    private makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
+    makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
         return Observable.create(observer => {
             let formData: FormData = new FormData(),
                 xhr: XMLHttpRequest = new XMLHttpRequest();

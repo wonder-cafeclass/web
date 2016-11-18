@@ -30,8 +30,11 @@
 <div class="btn-box text-left">
 	<label class="title">이메일</label>
 </div>
-<div class="btn-box radius-border">
+<div 	[ngClass]="{'rb-focus':isFocusEmail,'rb-blur':!isFocusEmail}"
+		class="btn-box radius-border">
 	<input 	id="email" 
+			(click)="onClickEmail($event)"
+			(blur)="onBlurEmail($event)"
 			class="form-control input-glass" 
 			placeholder="이메일이 필요해요.">
 </div>
@@ -39,40 +42,52 @@
 <div class="btn-box text-left">
 	<label class="title">비밀번호</label>
 </div>
-<div class="btn-box radius-border">
+<div 	[ngClass]="{'rb-focus':isFocusPassword,'rb-blur':!isFocusPassword}"
+		class="btn-box radius-border">
 	<input 	id="password" 
+			(click)="onClickPassword($event)"
+			(blur)="onBlurPassword($event)"
 			type="password"
 			class="form-control input-glass" 
 			placeholder="비밀번호를 입력해주세요.">
 </div>
-<!-- 닉네임 -->
+<!-- 이름 -->
 <div class="btn-box text-left">
-	<label class="title">닉네임</label>
+	<label class="title">이름</label>
 </div>
-<div class="btn-box radius-border">
-	<input 	id="email" 
+<div 	[ngClass]="{'rb-focus':isFocusName,'rb-blur':!isFocusName}"
+		class="btn-box radius-border">
+	<input 	id="name" 
+			(click)="onClickName($event)"
+			(blur)="onBlurName($event)"
 			class="form-control input-glass" 
-			placeholder="닉네임">
+			placeholder="이름">
 </div>
 <!-- 전화번호 -->
 <div class="btn-box text-left">
 	<label class="title">전화번호</label>
 </div>
 <div style="height: 52px;margin-bottom: 10px;">
-	<div class="btn-box-phone radius-border">
-		<input 	id="email" 
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumHead,'rb-blur':!isFocusPhoneNumHead}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumHead($event)"
+				(blur)="onBlurPhoneNumHead($event)"
 				class="form-control input-glass" 
 				placeholder="010">
 	</div>
-	<div class="phone-dash"><strong>-</strong></div>
-	<div class="btn-box-phone radius-border">
-		<input 	id="email" 
+	<div class="phone-dash">-</div>
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumBody,'rb-blur':!isFocusPhoneNumBody}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumBody($event)"
+				(blur)="onBlurPhoneNumBody($event)"
 				class="form-control input-glass" 
 				placeholder="1***">
 	</div>
-	<div class="phone-dash"><strong>-</strong></div>
-	<div class="btn-box-phone radius-border">
-		<input 	id="email" 
+	<div class="phone-dash">-</div>
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumTail,'rb-blur':!isFocusPhoneNumTail}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumTail($event)"
+				(blur)="onBlurPhoneNumTail($event)"
 				class="form-control input-glass" 
 				placeholder="2***">
 	</div>
@@ -84,7 +99,16 @@
 </div>
 <div class="btn-box radius-border">
 	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
-	<input type="file" name="userfile" placeholder="It's placeholder!" (change)="onChangeFile($event)"/>
+	<input  #fileInput 
+			style="display:none;"
+			type="file" 
+			name="userfile" 
+			(change)="onChangeFile($event)"/>
+
+	<button type="button" 
+			(click)="onClickFileUpload($event)"
+			class="btn btn-default">Upload!
+	</button>
 </div>
 
 								
@@ -92,34 +116,36 @@
 							<!-- First Column done -->
 							<!-- Second Column init -->
 							<td class="layout">
-
-<!-- 성 -->
+<!-- 닉네임 -->
 <div class="btn-box text-left">
-	<label class="title">성</label>
+	<label class="title">닉네임</label>
 </div>
 <div class="btn-box radius-border">
 	<input 	id="email" 
 			class="form-control input-glass" 
-			placeholder="성">
+			placeholder="닉네임">
 </div>
-
-<!-- 이름 -->
-<div class="btn-box text-left">
-	<label class="title">이름</label>
-</div>
-<div class="btn-box radius-border">
-	<input 	id="email" 
-			class="form-control input-glass" 
-			placeholder="이름">
-</div>
-
 <!-- 성별 -->
 <div class="btn-box text-left">
 	<label class="title">성별</label>
 </div>
 <div class="btn-group padding" role="group">
-	<button type="button" class="btn btn-default toggle-MW">여성</button>
-	<button type="button" class="btn btn-default toggle-MW">남성</button>
+	<button type="button" 
+			[ngClass]="{'selected':isFemale,'unselected':!isFemale}"
+			(click)="onClickGenderFemale($event)"
+			class="btn btn-default toggle-MW">
+		<span 	*ngIf="isFemale"
+				class="glyphicon glyphicon-ok" 
+				style="padding-right: 10px;"></span>여성
+	</button>
+	<button type="button" 
+			[ngClass]="{'selected':!isFemale,'unselected':isFemale}"
+			(click)="onClickGenderMale($event)"
+			class="btn btn-default toggle-MW">
+		<span 	*ngIf="!isFemale"
+				class="glyphicon glyphicon-ok" 
+				style="padding-right: 10px;"></span>남성
+	</button>
 </div>
 
 <!-- 연령 / 월 / 일 -->
