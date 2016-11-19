@@ -27,8 +27,21 @@
 							<td class="layout border-right">
 
 <!-- Email -->			
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">이메일</label>
+	<!-- Popover - info -->
+	<div 	class="popover top"
+			[ngClass]="{'popover-show':isFocusEmailInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">이메일 주소가 왜 필요한가요?</h3> 
+		<div class="popover-content"> 
+			<p>수업에 참여하실 때, 이메일은 수업 정보, 과제, 피드백을 받는 중요한 역할을 합니다. 그리고 이메일은 사용자의 id 역할을 합니다.</p> 
+		</div> 
+	</div>	
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusEmailInfo}"
+			(mouseover)="onMouseOverEmailInfo($event)"
+			(mouseout)="onMouseOutEmailInfo($event)"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocusEmail,'rb-blur':!isFocusEmail}"
 		class="btn-box radius-border">
@@ -39,8 +52,22 @@
 			placeholder="이메일이 필요해요.">
 </div>
 <!-- 비밀번호 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">비밀번호</label>
+	<!-- Popover - info -->
+	<div 	class="popover top"
+			[ngClass]="{'popover-show-password':isFocusPasswordInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">비밀번호 조건은 어떻게 되나요?</h3> 
+		<div class="popover-content"> 
+			<p>8자리이상의 글자면 됩니다.알파벳,숫자,특수기호가 한글자 이상 포함되어 있어야 합니다.</p> 
+		</div> 
+	</div>	
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusPasswordInfo}"
+			(mouseover)="onMouseOverPasswordInfo($event)"
+			(mouseout)="onMouseOutPasswordInfo($event)"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocusPassword,'rb-blur':!isFocusPassword}"
 		class="btn-box radius-border">
@@ -52,8 +79,21 @@
 			placeholder="비밀번호를 입력해주세요.">
 </div>
 <!-- 이름 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">이름</label>
+	<!-- Popover - info -->
+	<div 	class="popover top"
+			[ngClass]="{'popover-show-name':isFocusNameInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">이름이 왜 필요한가요?</h3> 
+		<div class="popover-content"> 
+			<p>강사님께서 여러분을 부를 때 사용할 이름입니다. 닉네임이 있다면 닉네임을 먼저 사용합니다.</p> 
+		</div> 
+	</div>	
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusNameInfo}"
+			(mouseover)="onMouseOverNameInfo($event)"
+			(mouseout)="onMouseOutNameInfo($event)"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocusName,'rb-blur':!isFocusName}"
 		class="btn-box radius-border">
@@ -64,8 +104,9 @@
 			placeholder="이름">
 </div>
 <!-- 전화번호 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">전화번호</label>
+	<span class="glyphicon glyphicon-info-sign info" aria-hidden="true"></span>
 </div>
 <div style="height: 52px;margin-bottom: 10px;">
 	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumHead,'rb-blur':!isFocusPhoneNumHead}"
@@ -94,8 +135,9 @@
 </div>
 <!-- 프로필 이미지 -->
 <!-- 파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">프로필 이미지</label>
+	<span class="glyphicon glyphicon-info-sign info" aria-hidden="true"></span>
 </div>
 <div class="btn-box radius-border profile-img">
 	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
@@ -118,8 +160,9 @@
 							<!-- Second Column init -->
 							<td class="layout">
 <!-- 닉네임 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">닉네임</label>
+	<span class="glyphicon glyphicon-info-sign info" aria-hidden="true"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocusNickname,'rb-blur':!isFocusNickname}"
 		class="btn-box radius-border">
@@ -129,8 +172,9 @@
 			placeholder="닉네임">
 </div>
 <!-- 성별 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">성별</label>
+	<span class="glyphicon glyphicon-info-sign info" aria-hidden="true"></span>
 </div>
 <div class="btn-group padding" role="group">
 	<button type="button" 
@@ -152,15 +196,15 @@
 </div>
 
 <!-- 연령 / 월 / 일 -->
-<div class="btn-box text-left">
+<div class="btn-box text-left info">
 	<label class="title">생년월일</label>
+	<span class="glyphicon glyphicon-info-sign info" aria-hidden="true"></span>
 </div>
 <table class="table layout"> 
 	<tbody> 
 		<tr> 
 			<td class="layout select">
 <!-- 연령대 -->
-<!-- <div class="btn-box"> -->
 <div>
 	<select class="form-control padding" (change)="onChangeBirthYear($event.target.value)">
 		<option 	*ngFor="let birthYear of birthYearArr" 
@@ -169,11 +213,9 @@
 	</select>
 	<div class="shim-select border-r"></div>
 </div>
-<!-- </div> -->
 			</td>
 			<td class="layout select">
 <!-- 월 -->
-<!-- <div class="btn-box"> -->
 <div>
 	<select class="form-control padding" (change)="onChangeBirthMonth($event.target.value)">
 		<option 	*ngFor="let birthMonth of birthMonthArr" 
@@ -182,11 +224,9 @@
 	</select>
 	<div class="shim-select border-r"></div>
 </div>
-<!-- </div> -->
 			</td>
 			<td class="layout select">
 <!-- 일 -->
-<!-- <div class="btn-box"> birthDayArr-->
 <div>
 	<select class="form-control padding" (change)="onChangeBirthDay($event.target.value)">
 		<option 	*ngFor="let birthDay of birthDayArr" 
@@ -194,7 +234,6 @@
 					value={{birthDay}}>{{birthDay}}일</option>
 	</select>
 </div>
-<!-- </div> -->
 			</td>
 		</tr>
 	</tbody>
@@ -229,33 +268,6 @@
 						</tr>
 					</tbody> 
 				</table>
-
-
-				<!--
-				<div>
-					<img class="logo" src="../../assets/images/cafeclass_logo_text_only.svg">
-				</div>
-				<div>
-					<img class="login-title" src="../../assets/images/login/signup_kor.svg">
-				</div>
-
-				<div class="btn-box radius-border">
-					<input 	id="email" 
-							class="form-control input-glass" 
-							placeholder="이메일을 입력해주세요.">
-
-				</div>
-				<div class="btn-box radius-border">
-					<input 	id="password" 
-							type="password"
-							class="form-control input-glass" 
-							placeholder="비밀번호를 입력해주세요.">
-				</div>
-
-				<button type="button" class="btn btn-orange login">로그인</button>
-				-->
-				
-
 			</div>
 			<!-- Column done -->			
 

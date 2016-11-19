@@ -103,6 +103,14 @@ div.btn-box.text-left {
   color:#777;
   padding-bottom: 0px;
 }
+div.btn-box.text-left.info {
+  padding-right: 0px;
+  width: 390px;  
+}
+span.info {
+  float: right;
+  font-size: 18px;  
+}
 label.title {
   margin:0px;
 }
@@ -167,6 +175,24 @@ div.profile-img {
 button.profile-img {
   position: absolute;
   margin-left: 10px;  
+}
+.popover-show {
+  display: block;
+  top: 58px;
+  left: 243px;
+}
+.popover-show-info {
+  color:#e85c41;
+}
+.popover-show-password {
+  display: block;
+  top: 153px;
+  left: 243px;
+}
+.popover-show-name {
+  display: block;
+  top: 248px;
+  left: 243px;
 }
 
 

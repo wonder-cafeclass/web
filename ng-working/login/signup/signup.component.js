@@ -28,14 +28,18 @@ var SignupComponent = (function () {
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150.png";
         // TODO - 서버에서 anonymous 이미지 받아와야 함.
-        this.isFemale = false;
+        this.isFemale = true;
         this.isFocusEmail = false;
+        this.isFocusEmailInfo = false;
         this.isFocusPassword = false;
+        this.isFocusPasswordInfo = false;
         this.isFocusName = false;
+        this.isFocusNameInfo = false;
         this.isFocusPhoneNumHead = false;
         this.isFocusPhoneNumBody = false;
         this.isFocusPhoneNumTail = false;
         this.isFocusNickname = false;
+        this.isFocusNicknameInfo = false;
         this.selectedYear = -1;
         this.selectedMonth = -1;
         this.selectedDay = -1;
@@ -93,6 +97,20 @@ var SignupComponent = (function () {
             this.isFemale = false;
         } // end if
     };
+    SignupComponent.prototype.onMouseOverEmailInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusEmailInfo) {
+            this.isFocusEmailInfo = true;
+        } // end if
+    };
+    SignupComponent.prototype.onMouseOutEmailInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusEmailInfo) {
+            this.isFocusEmailInfo = false;
+        } // end if
+    };
     SignupComponent.prototype.onClickEmail = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -107,6 +125,20 @@ var SignupComponent = (function () {
             this.isFocusEmail = false;
         } // end if
     };
+    SignupComponent.prototype.onMouseOverPasswordInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusPasswordInfo) {
+            this.isFocusPasswordInfo = true;
+        } // end if
+    };
+    SignupComponent.prototype.onMouseOutPasswordInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusPasswordInfo) {
+            this.isFocusPasswordInfo = false;
+        } // end if
+    };
     SignupComponent.prototype.onClickPassword = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -119,6 +151,20 @@ var SignupComponent = (function () {
         event.preventDefault();
         if (this.isFocusPassword) {
             this.isFocusPassword = false;
+        } // end if
+    };
+    SignupComponent.prototype.onMouseOverNameInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocusNameInfo) {
+            this.isFocusNameInfo = true;
+        } // end if
+    };
+    SignupComponent.prototype.onMouseOutNameInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocusNameInfo) {
+            this.isFocusNameInfo = false;
         } // end if
     };
     SignupComponent.prototype.onClickName = function (event) {

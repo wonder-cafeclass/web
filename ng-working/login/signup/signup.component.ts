@@ -26,15 +26,19 @@ export class SignupComponent implements OnInit {
 
   // TODO - 서버에서 anonymous 이미지 받아와야 함.
 
-  isFemale:boolean=false;
+  isFemale:boolean=true;
 
   isFocusEmail:boolean=false;
+  isFocusEmailInfo:boolean=false;
   isFocusPassword:boolean=false;
+  isFocusPasswordInfo:boolean=false;
   isFocusName:boolean=false;
+  isFocusNameInfo:boolean=false;
   isFocusPhoneNumHead:boolean=false;
   isFocusPhoneNumBody:boolean=false;
   isFocusPhoneNumTail:boolean=false;
   isFocusNickname:boolean=false;
+  isFocusNicknameInfo:boolean=false;
 
   birthYearArr:number[];
   selectedYear:number=-1;
@@ -122,7 +126,25 @@ export class SignupComponent implements OnInit {
     if(this.isFemale) {
       this.isFemale = false;      
     } // end if
-  }  
+  } 
+
+  onMouseOverEmailInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocusEmailInfo) {
+      this.isFocusEmailInfo = true;      
+    } // end if
+  }
+
+  onMouseOutEmailInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isFocusEmailInfo) {
+      this.isFocusEmailInfo = false;
+    } // end if
+  }   
 
   onClickEmail(event) :void {
     event.stopPropagation();
@@ -142,6 +164,24 @@ export class SignupComponent implements OnInit {
     } // end if
   }
 
+  onMouseOverPasswordInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocusPasswordInfo) {
+      this.isFocusPasswordInfo = true;      
+    } // end if
+  }
+
+  onMouseOutPasswordInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isFocusPasswordInfo) {
+      this.isFocusPasswordInfo = false;
+    } // end if
+  }    
+
   onClickPassword(event) :void {
     event.stopPropagation();
     event.preventDefault();
@@ -159,6 +199,24 @@ export class SignupComponent implements OnInit {
       this.isFocusPassword = false;
     } // end if
   } 
+
+  onMouseOverNameInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocusNameInfo) {
+      this.isFocusNameInfo = true;      
+    } // end if
+  }
+
+  onMouseOutNameInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isFocusNameInfo) {
+      this.isFocusNameInfo = false;
+    } // end if
+  }   
 
   onClickName(event) :void {
     event.stopPropagation();
