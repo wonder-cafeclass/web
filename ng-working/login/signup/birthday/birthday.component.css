@@ -1,0 +1,76 @@
+div.btn-box {
+  margin-top: 5px;
+  padding: 10px;
+  width: 380px;
+}
+div.btn-box.text-left {
+  text-align: left;
+  color:#777;
+  padding-bottom: 0px;
+}
+div.btn-box.text-left.info {
+  padding-right: 0px;
+  width: 390px;  
+}
+label.title {
+  margin:0px;
+}
+span.info {
+  float: right;
+  font-size: 18px;  
+}
+div.radius-border {
+  border-radius: 5px;
+  width: 380px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.popover-show-info {
+  color:#e85c41;
+}
+.popover-show {
+  display: block;
+}
+.rb-blur {
+  border: 1px solid #ddd;
+}
+.rb-focus {
+  border: 1px solid #e85c41;
+}
+.input-glass {
+  height: 28px;
+  margin: 0px;
+  border: 0px;
+  box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+  font-size: 20px;
+  color: #e85c41;  
+}
+table.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout.select {
+  padding:10px;
+  padding-top: 5px;
+}
+select.padding {
+  width:110px;
+  height:50px;
+}
+div.border-r {
+  border-right: 1px solid #ddd;
+}
+div.shim-select {
+  width: 10px;
+  height: 40px;
+  position: relative;
+  top: -44px;
+  left: 112px;  
+}

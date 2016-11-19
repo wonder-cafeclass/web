@@ -1,0 +1,25 @@
+<div class="btn-box text-left info">
+	<label class="title">닉네임</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">닉네임은 어떻게 사용되나요?</h3> 
+		<div class="popover-content"> 
+			<p>수업에서 선생님과 다른 학생들에게 불릴 이름으로 사용됩니다. 닉네임은 언제든지 수정이 가능합니다. 다만 다른 닉네임과 겹치면 안됩니다.</p> 
+		</div> 
+	</div>
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+</div>
+<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
+		class="btn-box radius-border">
+	<input 	(click)="onClick($event)"
+			(blur)="onBlur($event)"
+			class="form-control input-glass" 
+			placeholder="닉네임">
+</div>

@@ -1,0 +1,43 @@
+<div class="btn-box text-left info">
+	<label class="title">전화번호</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"	
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">전화번호가 필요한 이유는 무엇인가요?</h3> 
+		<div class="popover-content"> 
+			<p>카페클래스의 모든 수업은 카페에서 진행됩니다. 그러므로 강사님과 학생분들의 빠른 연락을 위해 전화번호를 등록, 메신저 등으로 연락을 주고 받을 수 있도록 도와드리고 있습니다.</p> 
+		</div> 
+	</div>	
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+</div>
+<div style="height: 52px;margin-bottom: 10px;">
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumHead,'rb-blur':!isFocusPhoneNumHead}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumHead($event)"
+				(blur)="onBlurPhoneNumHead($event)"
+				class="form-control input-glass" 
+				placeholder="010">
+	</div>
+	<div class="phone-dash">-</div>
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumBody,'rb-blur':!isFocusPhoneNumBody}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumBody($event)"
+				(blur)="onBlurPhoneNumBody($event)"
+				class="form-control input-glass" 
+				placeholder="1***">
+	</div>
+	<div class="phone-dash">-</div>
+	<div 	[ngClass]="{'rb-focus':isFocusPhoneNumTail,'rb-blur':!isFocusPhoneNumTail}"
+			class="btn-box-phone radius-border">
+		<input 	(click)="onClickPhoneNumTail($event)"
+				(blur)="onBlurPhoneNumTail($event)"
+				class="form-control input-glass" 
+				placeholder="2***">
+	</div>
+</div>

@@ -10,6 +10,14 @@ import { FacebookCallbackComponent }      from './facebook/facebook-callback.com
 import { KakaoCallbackComponent } 	      from './kakao/kakao-callback.component';
 import { NaverCallbackComponent } 	      from './naver/naver-callback.component';
 import { SignupComponent } 	 		          from './signup/signup.component';
+import { EmailComponent }                 from './signup/email/email.component';
+import { PasswordComponent }              from './signup/password/password.component';
+import { NameComponent }                  from './signup/name/name.component';
+import { PhoneNumberComponent }           from './signup/phone-number/phone-number.component';
+import { ProfileImgUploadComponent }      from './signup/profile-img-upload/profile-img-upload.component';
+import { NicknameComponent }              from './signup/nickname/nickname.component';
+import { GenderComponent }                from './signup/gender/gender.component';
+import { BirthdayComponent }              from './signup/birthday/birthday.component';
 
 import { LoginService }                   from './service/login.service';
 import { MyBirthdayService }              from '../util/service/my-birthday.service';
@@ -25,7 +33,15 @@ import { MyBirthdayService }              from '../util/service/my-birthday.serv
     FacebookCallbackComponent,
     KakaoCallbackComponent,
     NaverCallbackComponent,
-    SignupComponent
+    SignupComponent,
+    EmailComponent,
+    PasswordComponent,
+    NameComponent,
+    PhoneNumberComponent,
+    ProfileImgUploadComponent,
+    NicknameComponent,
+    GenderComponent,
+    BirthdayComponent
   ],
   providers: [
   	LoginService,
