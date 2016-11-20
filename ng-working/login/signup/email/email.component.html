@@ -20,8 +20,9 @@
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
 	<input 	id="email" 
+			#email
 			(click)="onClick($event)"
-			(blur)="onBlur($event)"
+			(blur)="onBlur($event, email.value)"
 			class="form-control input-glass" 
 			placeholder="이메일이 필요해요.">
 </div>

@@ -21,6 +21,7 @@ import { BirthdayComponent }              from './signup/birthday/birthday.compo
 
 import { LoginService }                   from './service/login.service';
 import { MyBirthdayService }              from '../util/service/my-birthday.service';
+import { MyCheckerService }               from '../util/service/my-checker.service';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import { MyBirthdayService }              from '../util/service/my-birthday.serv
   ],
   providers: [
   	LoginService,
-    MyBirthdayService
+    MyBirthdayService,
+    MyCheckerService
   ]
 })
 export class LoginModule {}

@@ -215,6 +215,15 @@ class MY_ParamChecker {
     	return $this->json_obj;
     }
 
+    public function get_checker_map()
+    {
+        if(isset($this->json_obj) && isset($this->json_obj->checker)) {
+            return $this->json_obj->checker;  
+        }
+
+        return null;
+    }
+
     public function get_const_map()
     {
     	if(isset($this->json_obj) && isset($this->json_obj->const)) {
