@@ -691,10 +691,19 @@ var MyCheckerService = (function () {
         }
         for (var i = 0; i < this.dirtyWordList.length; ++i) {
             var dirtyWord = this.dirtyWordList[i];
-            if (target.indexOf(dirtyWord) != -1) {
-                target = target.replace(dirtyWord, "");
-            }
-        }
+            // 대소문자 구분 없이 검색, 금칙어 삭제.
+            var regExp = new RegExp(dirtyWord, 'gi');
+            var matchArr = target.match(regExp);
+            if (null != matchArr && 0 < matchArr.length) {
+                for (var j = 0; j < matchArr.length; ++j) {
+                    var matched = matchArr[j];
+                    if (null == matched || "" == matched) {
+                        continue;
+                    }
+                    target = target.replace(matched, "");
+                } // end inner for
+            } // end if
+        } // end outer for
         return target;
     };
     MyCheckerService = __decorate([

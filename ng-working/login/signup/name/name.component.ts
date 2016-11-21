@@ -25,13 +25,12 @@ export class NameComponent implements OnInit {
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
-  isSuccessInput:boolean = false;
+  isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
   tooltipHeadNotAllowed:string="이름에 문제가 있습니다.";
-  tooltipHeadAllowed:string="성공! 이름이 완벽합니다.";
+  tooltipHeadAllowed:string="성공! 멋진 이름이네요.";
 
   myChecker:MyChecker;
-  dirtyWordList:string[];
 
   constructor(private myLoggerService:MyLoggerService) {}
 
@@ -102,6 +101,8 @@ export class NameComponent implements OnInit {
 
             // 최소 문자 갯수보다 적은 경우.
             this.tooltipHeadMsg = history.msg;
+            this.isSuccessInput = false;
+            return;
 
           } else if("max" === history.key) {
 
@@ -110,6 +111,9 @@ export class NameComponent implements OnInit {
 
             // 넘는 문자열은 지웁니다.
             element.value = name = name.slice(0, history.value);
+
+            this.isSuccessInput = false;
+            return;
 
           } else if("regexExclude" === history.key) {
 
@@ -130,11 +134,19 @@ export class NameComponent implements OnInit {
                   element.value = name = name.replace(keywordNotAllowed, "");
                 } // end for
               } // end if
+
+              this.isSuccessInput = false;
+              return;
+
             } // end if
 
           } else {
             // 이에 해당되지 않는 예외 실패.
             this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+
+            this.isSuccessInput = false;
+            return;
+
           } // end if
         } // end if
       } // end if - isOK
@@ -143,13 +155,11 @@ export class NameComponent implements OnInit {
       let nameBeforeSanitize:string = name;
       name = this.myCheckerService.sanitizeDirtyWord(name);
 
-      console.log("TEST / 1 / nameBeforeSanitize : ",nameBeforeSanitize);
-      console.log("TEST / 1 / name : ",name);
-
       if(nameBeforeSanitize != name) {
         // 비속어, 욕설이 제거되었습니다. 
         // 사용자에게 금칙어임을 알립니다.
         this.tooltipHeadMsg = "금칙어는 제외됩니다.";
+        this.isSuccessInput = false;
         element.value = name;
 
         let _self = this;
@@ -162,6 +172,22 @@ export class NameComponent implements OnInit {
 
         // Logger - Spam 행위로 등록.
         this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+
+        return;
+
+      } else {
+
+        // 성공! 비속어가 포함되지 않았습니다.
+        this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        this.isSuccessInput = true;
+        element.value = name;
+
+        let _self = this;
+        setTimeout(function() {
+          // 메시지를 3초 뒤에 화면에서 지웁니다.
+          _self.tooltipHeadMsg = null;
+          element.focus();
+        }, 2500);        
 
       } // end if - dirty word
 

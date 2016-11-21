@@ -25,8 +25,8 @@
 						<tr> 
 							<!-- First Column init -->
 							<td class="layout border-right">
-								<!-- Email -->
-								<email 	[top]="133" 
+								<!-- Email / Unique 검사 진행해야 함. -->
+								<email 	[top]="133"
 										[left]="91"
 										[topWarning]="175"
 										[leftWarning]="117"
@@ -40,7 +40,7 @@
 											[myCheckerService]="myCheckerService">
 								</password>
 								<!-- 이름 -->
-								<name 	[top]="418" 
+								<name 	[top]="408" 
 										[left]="91"
 										[topWarning]="460"
 										[leftWarning]="117"
@@ -48,7 +48,10 @@
 								</name>
 								<!-- 닉네임 -->
 								<nickname 	[top]="503" 
-											[left]="91">
+											[left]="91"
+											[topWarning]="560"
+											[leftWarning]="117"
+											[myCheckerService]="myCheckerService">
 								</nickname>
 							</td> 
 							<!-- First Column done -->

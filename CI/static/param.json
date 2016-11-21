@@ -1,7 +1,7 @@
 {
 	"checker":{
 		"user_id":"is_natural_no_zero",
-		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
+		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_exclude[/[^a-zA-Z가-힣0-9 ]+/]",
 		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
 		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
 		"user_name":"is_str|||min_length[2]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_exclude[/[^a-zA-Z가-힣0-9 ]+/]",

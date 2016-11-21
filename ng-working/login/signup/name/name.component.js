@@ -24,7 +24,7 @@ var NameComponent = (function () {
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "이름에 문제가 있습니다.";
-        this.tooltipHeadAllowed = "성공! 이름이 완벽합니다.";
+        this.tooltipHeadAllowed = "성공! 멋진 이름이네요.";
     }
     NameComponent.prototype.ngOnInit = function () { };
     NameComponent.prototype.setMyChecker = function () {
@@ -75,12 +75,16 @@ var NameComponent = (function () {
                     if ("min" === history_1.key) {
                         // 최소 문자 갯수보다 적은 경우.
                         this.tooltipHeadMsg = history_1.msg;
+                        this.isSuccessInput = false;
+                        return;
                     }
                     else if ("max" === history_1.key) {
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipHeadMsg = history_1.msg;
                         // 넘는 문자열은 지웁니다.
                         element.value = name = name.slice(0, history_1.value);
+                        this.isSuccessInput = false;
+                        return;
                     }
                     else if ("regexExclude" === history_1.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
@@ -97,23 +101,26 @@ var NameComponent = (function () {
                                     element.value = name = name.replace(keywordNotAllowed, "");
                                 } // end for
                             } // end if
+                            this.isSuccessInput = false;
+                            return;
                         } // end if
                     }
                     else {
                         // 이에 해당되지 않는 예외 실패.
                         this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+                        this.isSuccessInput = false;
+                        return;
                     } // end if
                 } // end if
             } // end if - isOK
             // 비속어, 욕설 검사.
             var nameBeforeSanitize = name;
             name = this.myCheckerService.sanitizeDirtyWord(name);
-            console.log("TEST / 1 / nameBeforeSanitize : ", nameBeforeSanitize);
-            console.log("TEST / 1 / name : ", name);
             if (nameBeforeSanitize != name) {
                 // 비속어, 욕설이 제거되었습니다. 
                 // 사용자에게 금칙어임을 알립니다.
                 this.tooltipHeadMsg = "금칙어는 제외됩니다.";
+                this.isSuccessInput = false;
                 element.value = name;
                 var _self_1 = this;
                 setTimeout(function () {
@@ -123,6 +130,19 @@ var NameComponent = (function () {
                 }, 2500);
                 // Logger - Spam 행위로 등록.
                 this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+                return;
+            }
+            else {
+                // 성공! 비속어가 포함되지 않았습니다.
+                this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                this.isSuccessInput = true;
+                element.value = name;
+                var _self_2 = this;
+                setTimeout(function () {
+                    // 메시지를 3초 뒤에 화면에서 지웁니다.
+                    _self_2.tooltipHeadMsg = null;
+                    element.focus();
+                }, 2500);
             } // end if - dirty word
         } // end if - check Name
     }; // end method

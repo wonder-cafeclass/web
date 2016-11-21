@@ -884,10 +884,21 @@ export class MyCheckerService {
         for (var i = 0; i < this.dirtyWordList.length; ++i) {
             let dirtyWord:string = this.dirtyWordList[i];
 
-            if(target.indexOf(dirtyWord) != -1) {
-                target = target.replace(dirtyWord, "");
-            }
-        }
+            // 대소문자 구분 없이 검색, 금칙어 삭제.
+            let regExp:RegExp = new RegExp(dirtyWord,'gi');
+
+            let matchArr:RegExpMatchArray = target.match(regExp);
+            if(null != matchArr && 0 <  matchArr.length) {
+                for (var j = 0; j < matchArr.length; ++j) {
+                    let matched:string = matchArr[j];
+                    if(null == matched || "" == matched) {
+                        continue;
+                    }
+
+                    target = target.replace(matched, "");
+                } // end inner for
+            } // end if
+        } // end outer for
 
         return target;
     }
