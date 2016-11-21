@@ -13,6 +13,7 @@ export class MyCheckerService {
     private apiGetChecker:string = '/CI/index.php/api/admin/checker';
     private checkerMap;
     private constMap;
+    private dirtyWordList;
 
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
@@ -33,15 +34,23 @@ export class MyCheckerService {
                     private http: Http) {}
 
     getReady() :void {
+
+        if(null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
+            return;
+        }
+
         this.getChecker()
         .then(data => {
             if(null != data.checker_map) {
                 this.checkerMap = data.checker_map;
-                console.log(">>> this.checkerMap : ",this.checkerMap);
             } // end if
             if(null != data.const_map) {
                 this.constMap = data.const_map;
             } // end if
+            if(null != data.dirty_word_list) {
+                this.dirtyWordList = data.dirty_word_list;
+            } // end if
+            
         });
     }
 
@@ -111,7 +120,9 @@ export class MyCheckerService {
         let lessThanEqualTo:number = -1;
 
         let regexInclude:RegExp = null;
+        let regexIncludeArr:RegExp[] = [];
         let regexExclude:RegExp = null;
+        let regexExcludeArr:RegExp[] = [];
 
         for (var i = 0; i < filterArr.length; ++i) {
             let filter:string = filterArr[i];
@@ -201,6 +212,7 @@ export class MyCheckerService {
             let regExpExcludeRecevied:RegExp = this.getRegExExcludeMatch(filter);
             if(null != regExpExcludeRecevied) {
                 regexExclude = regExpExcludeRecevied;
+                regexExcludeArr.push(regexExclude);
                 continue;
             } // end if
 
@@ -208,6 +220,7 @@ export class MyCheckerService {
             let regExpIncludeRecevied:RegExp = this.getRegExIncludeMatch(filter);
             if(null != regExpIncludeRecevied) {
                 regexInclude = regExpIncludeRecevied;
+                regexIncludeArr.push(regexInclude);
                 continue;
             } // end if
 
@@ -268,6 +281,12 @@ export class MyCheckerService {
             if( null != regexInclude ) {
                 myChecker.regexInclude = regexInclude;
             }
+            if( null != regexExcludeArr ) {
+                myChecker.regexExcludeArr = regexExcludeArr;
+            }
+            if( null != regexIncludeArr ) {
+                myChecker.regexIncludeArr = regexIncludeArr;
+            }
 
             if( null != matches && 0 < matches.length ) {
                 myChecker.matches = matches;
@@ -283,8 +302,8 @@ export class MyCheckerService {
                 -1,
                 // public max:number,
                 -1,
-                // public regex:RegExp
-                regExp
+                // public regexExclude:RegExp
+                regexExclude
             ); 
 
             if(-1 < greaterThan) {
@@ -368,7 +387,7 @@ export class MyCheckerService {
             // Remove first & last slashes
             patternStr = patternStr.replace(/(^\/|\/$)/gi,"");
 
-            var re = new RegExp(patternStr);
+            var re = new RegExp(patternStr, 'g');
 
             return re;
         }
@@ -397,7 +416,7 @@ export class MyCheckerService {
             // Remove first & last slashes
             patternStr = patternStr.replace(/(^\/|\/$)/gi,"");
 
-            var re = new RegExp(patternStr);
+            var re = new RegExp(patternStr, 'g');
 
             return re;
         }
@@ -641,13 +660,13 @@ export class MyCheckerService {
 
 
 
-    isOK(myChecker:MyChecker, value:any) :boolean {
+    isOK(myChecker:MyChecker, input:any) :boolean {
 
         let isDebug:boolean = false;
 
         this.history = {
             myChecker:myChecker,
-            value:value,
+            input:input,
             reason:"",
             success:true,
             msg:""
@@ -663,12 +682,12 @@ export class MyCheckerService {
 
             return false;
         }
-        if(undefined === value || null === value) {
-            this.history.reason = "null === value";
+        if(undefined === input || null === input) {
+            this.history.reason = "null === input";
             this.history.success = false;
 
             if(isDebug) {
-                console.log("my-checker / isOK / value is not valid!");
+                console.log("my-checker / isOK / input is not valid!");
             }
 
             return false;
@@ -676,13 +695,13 @@ export class MyCheckerService {
 
         if(this.TYPE_STRING === myChecker.type) {
 
-            if ('string' != typeof value) {
+            if ('string' != typeof input) {
 
-                this.history.reason = "'string' != typeof value";
+                this.history.reason = "'string' != typeof input";
                 this.history.success = false;
 
                 if(isDebug) {
-                    console.log("my-checker / isOK / 'string' != typeof value");
+                    console.log("my-checker / isOK / 'string' != typeof input");
                 }
 
                 return false;
@@ -692,19 +711,21 @@ export class MyCheckerService {
                 console.log("my-checker / isOK / myChecker : ",myChecker);
             }
 
-            let valueStr:string = value;
+            let inputStr:string = input;
 
             // 음수는 검사 영역에 포함되지 않습니다.
             let max = -1;
             if(null != myChecker.max) {
                 max = myChecker.max;
             }
-            if(0 < max && max < valueStr.length) {
+            if(0 < max && max < inputStr.length) {
 
                 this.history.reason = 
-                "0 < max && max < valueStr.length / max : " + max + " / valueStr.length : " + valueStr.length;
+                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
                 this.history.success = false;
-                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있습니다.`;
+                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
+                this.history.key = "max";
+                this.history.value = max;
 
                 return false;
             }
@@ -713,12 +734,14 @@ export class MyCheckerService {
             if(null != myChecker.min) {
                 min = myChecker.min;
             }
-            if(0 <= min && valueStr.length < min) {
+            if(0 <= min && inputStr.length < min) {
 
                 this.history.reason = 
-                "0 <= min && valueStr.length < min / min : " + min + " / valueStr.length : " + valueStr.length;
+                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
                 this.history.success = false;
-                this.history.msg = myChecker.msg = `최소 ${min}자까지 입력할 수 있습니다.`;
+                this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
+                this.history.key = "min";
+                this.history.value = min;
 
                 return false;
             }
@@ -726,38 +749,92 @@ export class MyCheckerService {
             let regexExclude:RegExp = myChecker.regexExclude;
             if(null != regexExclude) {
                 // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
-                let matchArr = valueStr.match(regexExclude);
+                let matchArr = inputStr.match(regexExclude);
                 if(null != matchArr && 0 < matchArr.length) {
                     this.history.reason = 
                     `target string is not allowed with regexExclude : ${regexExclude}`;
                     this.history.success = false;
                     this.history.matchArr = matchArr;
                     this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                    this.history.key = "regexExclude";
+                    this.history.value = regexExclude;
+                    this.history.matchArr = matchArr;
 
                     return false;
                 }
             }
 
+            let regexExcludeArr:RegExp[] = myChecker.regexExcludeArr;
+            if(null != regexExcludeArr && 0 < regexExcludeArr.length) {
+                for (var i = 0; i < regexExcludeArr.length; ++i) {
+                    let _regexExclude:RegExp = regexExcludeArr[i];
+                    if(null == _regexExclude) {
+                        continue;
+                    } // end if
+
+                    let matchArr = inputStr.match(_regexExclude);
+                    if(null != matchArr && 0 < matchArr.length) {
+                        this.history.reason = 
+                        `target string is not allowed with regexExclude : ${regexExclude}`;
+                        this.history.success = false;
+                        this.history.matchArr = matchArr;
+                        this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                        this.history.key = "regexExclude";
+                        this.history.value = _regexExclude;
+                        this.history.matchArr = matchArr;
+
+                        return false;
+                    } // end if
+                } // end for
+            } // end for
+
+
             let regexInclude:RegExp = myChecker.regexInclude;
             if(null != regexInclude) {
                 // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
-                let matchArr = valueStr.match(regexInclude);
+                let matchArr = inputStr.match(regexInclude);
                 if(null == matchArr || 0 == matchArr.length) {
                     this.history.reason = 
                     `target string is not allowed with regexInclude : ${regexInclude}`;
                     this.history.success = false;
                     this.history.msg = myChecker.msg = "허용되는 문자 범위 밖입니다.";
+                    this.history.key = "regexInclude";
+                    this.history.value = regexInclude;
+                    this.history.matchArr = matchArr;
 
                     return false;
                 }
             }
 
+            let regexIncludeArr:RegExp[] = myChecker.regexIncludeArr;
+            if(null != regexIncludeArr && 0 < regexIncludeArr.length) {
+                for (var i = 0; i < regexIncludeArr.length; ++i) {
+                    let _regexInclude:RegExp = regexIncludeArr[i];
+                    if(null == _regexInclude) {
+                        continue;
+                    }
+
+                    let matchArr = inputStr.match(_regexInclude);
+                    if(null == matchArr || 0 == matchArr.length) {
+                        this.history.reason = 
+                        `target string is not allowed with _regexInclude : ${_regexInclude}`;
+                        this.history.success = false;
+                        this.history.msg = myChecker.msg = "허용되는 문자 범위 밖입니다.";
+                        this.history.key = "regexInclude";
+                        this.history.value = _regexInclude;
+                        this.history.matchArr = matchArr;
+
+                        return false;
+                    } // end if
+                } // end for
+            } // end for
+
 
         } else if(this.TYPE_NUMBER === myChecker.type) {
 
-            if ('number' != typeof value) {
+            if ('number' != typeof input) {
 
-                this.history.reason = "'number' != typeof value";
+                this.history.reason = "'number' != typeof input";
                 this.history.success = false;
 
                 return false;
@@ -797,5 +874,22 @@ export class MyCheckerService {
           , this.REGEX_SAFE_STR
         );
     } // end method
+
+    sanitizeDirtyWord(target:string) :string {
+
+        if(null == this.dirtyWordList || 0 == this.dirtyWordList.length) {
+            return target;
+        }
+
+        for (var i = 0; i < this.dirtyWordList.length; ++i) {
+            let dirtyWord:string = this.dirtyWordList[i];
+
+            if(target.indexOf(dirtyWord) != -1) {
+                target = target.replace(dirtyWord, "");
+            }
+        }
+
+        return target;
+    }
 
 }

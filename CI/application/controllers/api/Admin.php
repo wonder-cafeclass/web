@@ -108,8 +108,9 @@ class Admin extends REST_Controller implements MY_Class{
         $output = array();
         $output["checker_map"] = $this->my_paramchecker->get_checker_map();
         $output["const_map"] = $this->my_paramchecker->get_const_map();
+        $output["dirty_word_list"] = $this->my_paramchecker->get_dirty_word_list();
+
         $this->respond_200($output);
-        
     } 
 
 

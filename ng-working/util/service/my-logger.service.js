@@ -30,6 +30,18 @@ var MyLoggerService = (function () {
         req_url += "?pageKey=" + pageKey;
         this.http.get(req_url).toPromise().then().catch();
     };
+    MyLoggerService.prototype.logActionDirtyWord = function (dirtyWord) {
+        if (null == dirtyWord || "" == dirtyWord) {
+            return;
+        }
+        // Need to implement!
+        /*
+        let req_url = this.us.get(this.apiLogActionPageUrl);
+        req_url += "?dirtyWord=" + dirtyWord;
+
+        this.http.get(req_url).toPromise().then().catch();
+        */
+    };
     MyLoggerService.prototype.logError = function (pageKey) {
         // Do something...
     };

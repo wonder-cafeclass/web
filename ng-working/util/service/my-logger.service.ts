@@ -29,6 +29,23 @@ export class MyLoggerService {
 		this.http.get(req_url).toPromise().then().catch();
 	}
 
+	logActionDirtyWord (dirtyWord:string): Promise<any> {
+
+		if(null == dirtyWord || "" == dirtyWord) {
+			return;
+		}
+
+		// Need to implement!
+
+		/*
+		let req_url = this.us.get(this.apiLogActionPageUrl);
+		req_url += "?dirtyWord=" + dirtyWord;
+
+		this.http.get(req_url).toPromise().then().catch();
+		*/
+	}
+
+
 	logError (pageKey:string): void {
 		// Do something...
 	}

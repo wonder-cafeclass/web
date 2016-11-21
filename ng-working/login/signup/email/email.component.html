@@ -19,10 +19,34 @@
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
+
 	<input 	id="email" 
 			#email
 			(click)="onClick($event)"
-			(blur)="onBlur($event, email.value)"
+			(focus)="onFocus($event)"
+			(blur)="onBlur($event, email.value, email)"
+			autocomplete="off"
 			class="form-control input-glass" 
 			placeholder="이메일이 필요해요.">
+
+	<span 	*ngIf="isWarning"
+			class="glyphicon glyphicon-exclamation-sign warning"
+			aria-hidden="true"></span>
+			
+	<!-- tooltip -->
+	<div 	class="tooltip top" 
+			*ngIf="tooltipMsg"
+			[style.top]="topWarning + 'px'"
+			[style.left]="leftWarning + 'px'"
+			style="opacity:1;"
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isSuccessInput,'tooltip-warning-arrow':!isSuccessInput}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isSuccessInput,'tooltip-warning-inner':!isSuccessInput}">{{tooltipMsg}}</div> 
+
+	</div>
+
 </div>

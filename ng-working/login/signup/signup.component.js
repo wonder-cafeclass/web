@@ -12,11 +12,15 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
 var SignupComponent = (function () {
-    function SignupComponent(loginService, myLoggerService, router) {
+    function SignupComponent(loginService, myLoggerService, myCheckerService, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
         this.router = router;
+        // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
+        this.myCheckerService.getReady();
     }
     SignupComponent.prototype.ngOnInit = function () {
         // 페이지 진입을 기록으로 남깁니다.
@@ -29,7 +33,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());

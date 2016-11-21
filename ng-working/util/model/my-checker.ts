@@ -22,12 +22,21 @@ export class MyChecker {
 
 	// RegExp / 매칭 결과가 있어어야 함.
 	public regexInclude:RegExp;
+	public regexIncludeArr:RegExp[];
+
+	public regexExcludeArr:RegExp[];
 
 	constructor(
 	    public type:string,
 	    public min:number,
 	    public max:number,
 	    public regexExclude:RegExp // 매칭 결과가 없어야 함.
-	) {}
+	) {
+
+		// initialize
+		this.regexIncludeArr = [];
+		this.regexExcludeArr = [];
+
+	}
 
 }
