@@ -12,7 +12,12 @@
 		"user_thumbnail":"valid_url",
 		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
 		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
-		"user_mobile":"valid_mobile_kor",
+
+		"user_mobile":"valid_mobile_kor|||is_unique[user.mobile]",
+		"user_mobile_kor_head":"is_str|||regex_match_include[/^01[0-9]$/]",
+		"user_mobile_kor_body":"is_str|||min_length[3]|||max_length[4]|||regex_match_include[/^[0-9]{3,4}$/]",
+		"user_mobile_kor_tail":"is_str|||exact_length[4]|||regex_match_include[/^[0-9]{4}$/]",
+
 		"user_email":"valid_emails|||is_unique[user.email]",
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
 

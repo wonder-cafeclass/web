@@ -33,7 +33,6 @@ var NicknameComponent = (function () {
         }
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_name");
-            console.log("name / this.myChecker : ", this.myChecker);
         }
     };
     NicknameComponent.prototype.isOK = function (input) {
@@ -143,7 +142,6 @@ var NicknameComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
-            element.focus();
         }, 1000 * sec);
     };
     NicknameComponent.prototype.onMouseOverInfo = function (event) {

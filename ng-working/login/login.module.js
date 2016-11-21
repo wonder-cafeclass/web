@@ -21,7 +21,7 @@ var signup_component_1 = require('./signup/signup.component');
 var email_component_1 = require('./signup/email/email.component');
 var password_component_1 = require('./signup/password/password.component');
 var name_component_1 = require('./signup/name/name.component');
-var phone_number_component_1 = require('./signup/phone-number/phone-number.component');
+var mobile_component_1 = require('./signup/mobile/mobile.component');
 var profile_img_upload_component_1 = require('./signup/profile-img-upload/profile-img-upload.component');
 var nickname_component_1 = require('./signup/nickname/nickname.component');
 var gender_component_1 = require('./signup/gender/gender.component');
@@ -48,7 +48,7 @@ var LoginModule = (function () {
                 email_component_1.EmailComponent,
                 password_component_1.PasswordComponent,
                 name_component_1.NameComponent,
-                phone_number_component_1.PhoneNumberComponent,
+                mobile_component_1.MobileComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 nickname_component_1.NicknameComponent,
                 gender_component_1.GenderComponent,

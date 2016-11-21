@@ -13,7 +13,7 @@ import { SignupComponent } 	 		          from './signup/signup.component';
 import { EmailComponent }                 from './signup/email/email.component';
 import { PasswordComponent }              from './signup/password/password.component';
 import { NameComponent }                  from './signup/name/name.component';
-import { PhoneNumberComponent }           from './signup/phone-number/phone-number.component';
+import { MobileComponent }                from './signup/mobile/mobile.component';
 import { ProfileImgUploadComponent }      from './signup/profile-img-upload/profile-img-upload.component';
 import { NicknameComponent }              from './signup/nickname/nickname.component';
 import { GenderComponent }                from './signup/gender/gender.component';
@@ -38,7 +38,7 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     EmailComponent,
     PasswordComponent,
     NameComponent,
-    PhoneNumberComponent,
+    MobileComponent,
     ProfileImgUploadComponent,
     NicknameComponent,
     GenderComponent,

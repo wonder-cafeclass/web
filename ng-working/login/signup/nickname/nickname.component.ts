@@ -3,9 +3,8 @@ import {  Component,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
 import { MyCheckerService }     from '../../../util/service/my-checker.service';
-import { MyLoggerService }     from '../../../util/service/my-logger.service';
+import { MyLoggerService }      from '../../../util/service/my-logger.service';
 import { MyChecker }            from '../../../util/model/my-checker';
-
 
 @Component({
   moduleId: module.id,
@@ -44,8 +43,6 @@ export class NicknameComponent implements OnInit {
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_name");
-
-      console.log("name / this.myChecker : ",this.myChecker);
     }
   }
   isOK(input:string) :boolean {
@@ -198,7 +195,6 @@ export class NicknameComponent implements OnInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipHeadMsg = null;
-      element.focus();
     }, 1000 * sec);        
 
   }

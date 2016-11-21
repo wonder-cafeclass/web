@@ -127,6 +127,20 @@ export class MyCheckerService {
         for (var i = 0; i < filterArr.length; ++i) {
             let filter:string = filterArr[i];
 
+            // 필터 - 문자열 타입?
+            let isTypeStr:boolean = this.isTypeStr(filter);
+            if(isTypeStr) {
+                type = this.TYPE_STRING;
+                continue;
+            }
+
+            // 필터 - 숫자 타입?
+            let isTypeNumber:boolean = this.isTypeNumber(filter);
+            if(isTypeNumber) {
+                type = this.TYPE_NUMBER;
+                continue;
+            }
+
             // 필터 - 문자열 최소 문자수
             let minLengthReceived:number = this.getMinLength(filter);
             if(-1 < minLengthReceived) {
@@ -150,6 +164,17 @@ export class MyCheckerService {
                 regexInclude = regExpValidEmailReceived;
                 continue;
             } // end if
+
+            // REMOVE ME
+            // 필터 - 정상 모바일 검증
+            /*
+            let regExpValidMobileReceived:RegExp[] = this.getValidMobiles(filter);
+            if(null != regExpValidMobileReceived) {
+                type = this.TYPE_STRING;
+                regexIncludeArr = regExpValidMobileReceived;
+                continue;
+            } // end if
+            */
 
             // 필터 - 자연수만 허용
             let isNaturalNoZero = this.getNaturalNoZero(filter);
@@ -323,6 +348,36 @@ export class MyCheckerService {
         return myChecker;
     }
 
+    private regExpIsStr:RegExp=/is_str/i;
+    private isTypeStr(filter:string) : boolean {
+
+        if(null == filter || 0 == filter.length) {
+            return -1;
+        }
+
+        let matchArr:RegExpMatchArray = filter.match(this.regExpIsStr);
+        if(null != matchArr) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private regExpIsNumber:RegExp=/is_number/i;
+    private isTypeNumber(filter:string) : boolean {
+
+        if(null == filter || 0 == filter.length) {
+            return -1;
+        }
+
+        let matchArr:RegExpMatchArray = filter.match(this.regExpIsNumber);
+        if(null != matchArr) {
+            return true;
+        }
+
+        return false;
+    }
+
     private regExpMinLength:RegExp=/min_length\[([\d]+)\]/i;
     private getMinLength(filter:string) : number {
 
@@ -451,7 +506,45 @@ export class MyCheckerService {
         }
         
         return null;
-    }  
+    }
+
+    /*
+    private regValidMobile:RegExp = /user_mobile/i;
+    private getValidMobiles(filter:string):RegExp[] {
+
+        let isDebug:boolean = false;
+        if(isDebug) {
+            console.log("my-checker / getValidMobile / filter : ",filter);
+        }
+
+        // ex) "user_email":"valid_emails"
+        if(null == filter || 0 == filter.length) {
+            return null;
+        }
+
+        let matchArr:RegExpMatchArray = filter.match(this.regValidEmail);
+
+        if(isDebug) {
+            console.log("my-checker / getValidEmails / matchArr : ",matchArr);
+        }
+
+        if(null != matchArr && 1 == matchArr.length) {
+            // mobile 검증을 할 수 있는 정규표현식을 돌려줍니다.
+
+            let regexArr:RegExp[] = [];
+            let regexMobileHead:RegExp = /01[0-9]/i;
+            regexArr.push(regexMobileHead);
+            let regexMobileBody:RegExp = /[0-9]{3,4}/i;
+            regexArr.push(regexMobileBody);
+            let regexMobileTail:RegExp = /[0-9]{4}/i;
+            regexArr.push(regexMobileTail);
+
+            return regexArr;
+        }
+        
+        return null;
+    }
+    */
 
     // is_natural_no_zero
     private regIsNaturalNoZero:RegExp = /is_natural_no_zero/i;
