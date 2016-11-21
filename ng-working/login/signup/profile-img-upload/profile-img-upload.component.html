@@ -1,0 +1,33 @@
+<!-- 파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview -->
+<div class="btn-box text-left info">
+	<label class="title">프로필 이미지</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">프로필 이미지</h3> 
+		<div class="popover-content"> 
+			<p>정사각형의 프로필 이미지를 업로드해주세요.</p> 
+		</div> 
+	</div>
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+</div>
+<div class="btn-box radius-border profile-img">
+	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
+	<input  #fileInput 
+			style="display:none;"
+			type="file" 
+			name="userfile" 
+			(change)="onChangeFile($event)"/>
+
+	<button type="button" 
+			(click)="onClickFileUpload($event)"
+			class="btn btn-default profile-img">
+		<span>이미지 업로드</span>
+	</button>
+</div>

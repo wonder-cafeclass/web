@@ -43,7 +43,6 @@ var KlassDetailNavListComponent = (function () {
         this.emitter = new core_1.EventEmitter();
     }
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
-        console.log("klass-detail-nav-list / ngOnInit / this.klass : ", this.klass);
         // WIDTH
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";

@@ -42,12 +42,12 @@ export class ImageService {
     clock3hr30mNoticePMUrl:string="assets/images/clock/clock-3hr-30m-notice-pm.svg";
 
     clockBGUrl:string="assets/images/clock/clock-bg.svg";
-
     classFeatureUrl:string="assets/images/class/info/points.png";
 
     mapDummy:string="assets/images/map_dummy.png";
-
     userDummy:string="assets/images/user/user_anonymous_150x150.png";
+
+    loginBtnKakao:string="assets/images/auth/login_kakao.png";
 
     constructor(private us:UrlService) {
     }

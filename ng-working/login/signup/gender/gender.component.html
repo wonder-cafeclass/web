@@ -1,0 +1,36 @@
+<div class="btn-box text-left info">
+	<label class="title">성별</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">성별은 어떻게 사용되나요?</h3> 
+		<div class="popover-content"> 
+			<p>설명 필요함.</p>
+		</div> 
+	</div>
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+</div>
+<div class="btn-group padding" role="group">
+	<button type="button" 
+			[ngClass]="{'selected':isFemale,'unselected':!isFemale}"
+			(click)="onClickGenderFemale($event)"
+			class="btn btn-default toggle-MW">
+		<span 	*ngIf="isFemale"
+				class="glyphicon glyphicon-ok" 
+				style="padding-right: 10px;"></span>여성
+	</button>
+	<button type="button" 
+			[ngClass]="{'selected':!isFemale,'unselected':isFemale}"
+			(click)="onClickGenderMale($event)"
+			class="btn btn-default toggle-MW">
+		<span 	*ngIf="!isFemale"
+				class="glyphicon glyphicon-ok" 
+				style="padding-right: 10px;"></span>남성
+	</button>
+</div>

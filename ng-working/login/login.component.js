@@ -11,51 +11,50 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var auth_service_1 = require('../auth/auth.service');
+var login_service_1 = require('./service/login.service');
+var my_logger_service_1 = require('../util/service/my-logger.service');
 var LoginComponent = (function () {
-    function LoginComponent(authService, router) {
+    function LoginComponent(authService, loginService, myLoggerService, router) {
         this.authService = authService;
+        this.loginService = loginService;
+        this.myLoggerService = myLoggerService;
         this.router = router;
-        this.setMessage();
+        this.cafeclassAuthUrl = "http://google.co.kr";
     }
-    LoginComponent.prototype.setMessage = function () {
-        this.message = 'Logged ' + (this.authService.isLoggedIn ? 'in' : 'out');
-    };
-    LoginComponent.prototype.login = function () {
+    LoginComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.message = 'Trying to log in ...';
-        this.authService.login().subscribe(function () {
-            _this.setMessage();
-            if (_this.authService.isLoggedIn) {
-                // Get the redirect URL from our auth service
-                // If no redirect has been set, use the default
-                var redirect = _this.authService.redirectUrl ? _this.authService.redirectUrl : '/admin';
-                // Set our navigation extras object
-                // that passes on our global query params and fragment
-                var navigationExtras = {
-                    preserveQueryParams: true,
-                    preserveFragment: true
-                };
-                // Redirect the user
-                _this.router.navigate([redirect], navigationExtras);
-            }
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);
+        // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+        // 1. kakao
+        this.loginService
+            .getKakaoAuthUrl()
+            .then(function (kakaoAuthUrl) {
+            _this.kakaoAuthUrl = kakaoAuthUrl;
         });
-    };
-    LoginComponent.prototype.logout = function () {
-        this.authService.logout();
-        this.setMessage();
+        // 2. naver
+        this.loginService
+            .getNaverAuthUrl()
+            .then(function (naverAuthUrl) {
+            _this.naverAuthUrl = naverAuthUrl;
+        });
+        // 3. facebook
+        this.loginService
+            .getFacebookAuthUrl()
+            .then(function (facebookAuthUrl) {
+            _this.facebookAuthUrl = facebookAuthUrl;
+        });
     };
     LoginComponent = __decorate([
         core_1.Component({
-            template: "\n    <h2>LOGIN</h2>\n    <p>{{message}}</p>\n    <p>\n      <button (click)=\"login()\"  *ngIf=\"!authService.isLoggedIn\">Login</button>\n      <button (click)=\"logout()\" *ngIf=\"authService.isLoggedIn\">Logout</button>\n    </p>"
+            moduleId: module.id,
+            selector: 'login',
+            templateUrl: 'login.component.html',
+            styleUrls: ['login.component.css']
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
     ], LoginComponent);
     return LoginComponent;
 }());
 exports.LoginComponent = LoginComponent;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=login.component.js.map

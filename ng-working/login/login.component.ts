@@ -1,60 +1,59 @@
-import { Component }        from '@angular/core';
+import {  Component, 
+          Input, 
+          Output,
+          OnInit }              from '@angular/core';
 import { Router,
-         NavigationExtras } from '@angular/router';
-import { AuthService }      from '../auth/auth.service';
+         NavigationExtras }     from '@angular/router';
+import { AuthService }          from '../auth/auth.service';
+import { LoginService }         from './service/login.service';
+import { MyLoggerService }      from '../util/service/my-logger.service';
 
 @Component({
-  template: `
-    <h2>LOGIN</h2>
-    <p>{{message}}</p>
-    <p>
-      <button (click)="login()"  *ngIf="!authService.isLoggedIn">Login</button>
-      <button (click)="logout()" *ngIf="authService.isLoggedIn">Logout</button>
-    </p>`
+  moduleId: module.id,
+  selector: 'login',
+  templateUrl: 'login.component.html',
+  styleUrls: [ 'login.component.css' ]
 })
-export class LoginComponent {
-  message: string;
+export class LoginComponent implements OnInit {
 
-  constructor(public authService: AuthService, public router: Router) {
-    this.setMessage();
+  kakaoAuthUrl: string;
+  naverAuthUrl: string;
+  facebookAuthUrl: string;
+  cafeclassAuthUrl: string="http://google.co.kr";
+
+  constructor(  public authService: AuthService, 
+                public loginService: LoginService, 
+                public myLoggerService: MyLoggerService, 
+                public router: Router) {
+
   }
 
-  setMessage() {
-    this.message = 'Logged ' + (this.authService.isLoggedIn ? 'in' : 'out');
-  }
+  ngOnInit(): void {
 
-  login() {
-    this.message = 'Trying to log in ...';
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);    
 
-    this.authService.login().subscribe(() => {
-      this.setMessage();
-      if (this.authService.isLoggedIn) {
-        // Get the redirect URL from our auth service
-        // If no redirect has been set, use the default
-        let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/admin';
-
-        // Set our navigation extras object
-        // that passes on our global query params and fragment
-        let navigationExtras: NavigationExtras = {
-          preserveQueryParams: true,
-          preserveFragment: true
-        };
-
-        // Redirect the user
-        this.router.navigate([redirect], navigationExtras);
-      }
+    // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
+    // 1. kakao
+    this.loginService
+    .getKakaoAuthUrl()
+    .then(kakaoAuthUrl => {
+      this.kakaoAuthUrl = kakaoAuthUrl;      
     });
-  }
 
-  logout() {
-    this.authService.logout();
-    this.setMessage();
+    // 2. naver
+    this.loginService
+    .getNaverAuthUrl()
+    .then(naverAuthUrl => {
+      this.naverAuthUrl = naverAuthUrl;
+    });
+
+    // 3. facebook
+    this.loginService
+    .getFacebookAuthUrl()
+    .then(facebookAuthUrl => {
+      this.facebookAuthUrl = facebookAuthUrl;
+    });
+
   }
 }
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

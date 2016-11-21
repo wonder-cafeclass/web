@@ -1,0 +1,47 @@
+<div class="btn-box text-left info">
+	<label class="title">닉네임<small class="title-desc">2 ~ 32자리의 한글, 알파벳 대소문자,숫자</small></label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">닉네임은 어떻게 사용되나요?</h3> 
+		<div class="popover-content"> 
+			<p>수업에서 선생님과 다른 학생들에게 불릴 이름으로 사용됩니다. 닉네임은 언제든지 수정이 가능합니다. 다만 다른 닉네임과 겹치면 안됩니다.2 ~ 32자리의 한글, 알파벳 대소문자,숫자가 가능합니다.</p> 
+		</div> 
+	</div>
+
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+</div>
+<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
+		class="btn-box radius-border">
+	<input 	#input
+			(click)="onClick($event, input)"
+			(blur)="onBlur($event, input)"
+			class="form-control input-glass" 
+			placeholder="닉네임">
+
+	<!-- icon - warning -->
+	<span 	*ngIf="isWarning"
+			class="glyphicon glyphicon-exclamation-sign warning"
+			aria-hidden="true"></span>
+			
+	<!-- tooltip -->
+	<div 	class="tooltip top" 
+			*ngIf="tooltipHeadMsg"
+			[style.top]="topWarning + 'px'"
+			[style.left]="leftWarning + 'px'"
+			style="opacity:1;"
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isSuccessInput,'tooltip-warning-arrow':!isSuccessInput}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isSuccessInput,'tooltip-warning-inner':!isSuccessInput}">{{tooltipHeadMsg}}</div> 
+
+	</div>			
+</div>

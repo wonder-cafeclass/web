@@ -48,6 +48,7 @@ var ImageService = (function () {
         this.classFeatureUrl = "assets/images/class/info/points.png";
         this.mapDummy = "assets/images/map_dummy.png";
         this.userDummy = "assets/images/user/user_anonymous_150x150.png";
+        this.loginBtnKakao = "assets/images/auth/login_kakao.png";
     }
     ImageService.prototype.get = function (imgUrl) {
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.

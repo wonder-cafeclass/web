@@ -1,0 +1,103 @@
+<div class="container">
+	<!-- First Row -->
+	<div class="row">
+		<div class="row">
+			<!-- Column padding -->
+			<div class="col-md-2" style="padding:0px;"></div>
+			
+
+			<!-- Column init -->
+			<div class="col-md-8 box">
+
+				<table class="table layout"> 
+					<tbody> 
+						<tr> 
+							<td class="layout border-bottom" colspan="2">
+								<div>
+									<img class="logo" src="../../assets/images/cafeclass_logo_text_only.svg">
+								</div>
+								<div>
+									<img class="title-signup" src="../../assets/images/login/signup_kor.svg">
+								</div>
+							</td> 
+						</tr>
+
+						<tr> 
+							<!-- First Column init -->
+							<td class="layout border-right">
+								<!-- Email / Unique 검사 진행해야 함. -->
+								<email 	[top]="133"
+										[left]="91"
+										[topWarning]="175"
+										[leftWarning]="117"
+										[myCheckerService]="myCheckerService">
+								</email>
+								<!-- Password -->
+								<password 	[top]="228"
+											[left]="91"
+											[topWarning]="270"
+											[leftWarning]="117"
+											[myCheckerService]="myCheckerService">
+								</password>
+								<!-- 이름 -->
+								<name 	[top]="408" 
+										[left]="91"
+										[topWarning]="460"
+										[leftWarning]="117"
+										[myCheckerService]="myCheckerService">
+								</name>
+								<!-- 닉네임 -->
+								<nickname 	[top]="503" 
+											[left]="91"
+											[topWarning]="555"
+											[leftWarning]="117"
+											[myCheckerService]="myCheckerService">
+								</nickname>
+							</td> 
+							<!-- First Column done -->
+							<!-- Second Column init -->
+							<td class="layout">
+
+								<!-- 프로필 이미지 -->
+								<profile-img-upload [top]="143"
+													[left]="490">
+								</profile-img-upload>
+
+								<!-- 전화번호 -->
+								<mobile 	[top]="258" 
+											[left]="490"
+											[topWarning]="321"
+											[leftWarning]="361"
+											[myCheckerService]="myCheckerService">
+								</mobile>
+
+								<!-- 성별 -->
+								<gender 	[top]="390" 
+											[left]="586">
+								</gender>
+
+								<!-- 연령 / 월 / 일 -->
+								<birthday 	[top]="485" 
+											[left]="586">
+								</birthday>
+
+							</td> 
+							<!-- Second Column done -->
+						</tr>
+
+						<tr> 
+							<td class="layout border-top btn-box" colspan="2">
+								<button type="button" class="btn btn-orange save">저장</button>
+							</td> 
+						</tr>
+					</tbody> 
+				</table>
+			</div>
+			<!-- Column done -->			
+
+
+			<!-- Column padding -->
+			<div class="col-md-2" style="padding:0px;"></div>
+		</div>
+	</div>
+</div>

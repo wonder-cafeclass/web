@@ -4,13 +4,14 @@ INSERT INTO `cafeclass`.`user`
 `last_name`,
 `nickname`,
 `gender`,
+`birth_year`,
 `birthday`,
 `thumbnail`,
 `status`,
 `permission`,
 `kakao_id`,
 `naver_id`,
-`fb_id`,
+`facebook_id`,
 `google_id`,
 `mobile`,
 `email`,
@@ -23,13 +24,14 @@ VALUES
 "유",							## last_name
 "Julia",						## nickname
 "F",							## gender
-"1991-08-11",					## birthday
+"1991",							## birth_year
+"08-11",						## birthday
 "user_julia_150x150.png",		## thumbnail
 "A",							## status
 "T",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-7797-9412",				## mobile
 "joau0002@naver.com",			## email
@@ -42,13 +44,14 @@ CURRENT_TIMESTAMP				## date_updated
 "유",							## last_name
 "Richard",						## nickname
 "M",							## gender
-"1993-06-10",					## birthday
+"1993",							## birth_year
+"06-10",						## birthday
 "user_richard_150x150.png",		## thumbnail
 "A",							## status
 "U",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-6319-8799",				## mobile
 "richardyoo93@gmail.com",		## email 
@@ -61,13 +64,14 @@ CURRENT_TIMESTAMP				## date_updated
 "김",							## last_name
 "Claire",						## nickname
 "F",							## gender
-"1983-05-05",					## birthday
+"1983",							## birth_year
+"05-05",						## birthday
 "user_claire_150x150.png",		## thumbnail
 "A",							## status
 "U",							## permission
 "",								## kakao_id
 "",								## naver_id
-"",								## fb_id
+"",								## facebook_id
 "",								## google_id
 "010-3442-7705",				## mobile
 "iam.hyunkyung@gmail.com",		## email 

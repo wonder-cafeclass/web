@@ -28,12 +28,12 @@ class Admin extends REST_Controller implements MY_Class{
         // init database
         $this->load->database();
 
-        // init path util
-        $this->load->library('MY_Path');
-
         // init error logger
         $this->load->library('MY_Error');
 
+        // init path util
+        $this->load->library('MY_Path');
+        
         // init param checker
         $this->load->library('MY_ParamChecker');
 
@@ -78,9 +78,12 @@ class Admin extends REST_Controller implements MY_Class{
         }
 
         $output = array();
-        $is_ok = true;
-
         $output["is_admin"] = $this->my_auth->is_admin();
+        $this->respond_200($output);
+
+        // REMOVE ME
+        /*
+        $is_ok = true;
         $response_body = 
         $this->my_response->getResBodySuccess(
             // $query="" 
@@ -94,7 +97,59 @@ class Admin extends REST_Controller implements MY_Class{
         );
 
         $this->set_response($response_body, REST_Controller::HTTP_OK);
+        */
+    } 
 
-    }    
+    public function checker_get() {
+        if($this->is_not_ok()) {
+            return;
+        }
+        
+        $output = array();
+        $output["checker_map"] = $this->my_paramchecker->get_checker_map();
+        $output["const_map"] = $this->my_paramchecker->get_const_map();
+        $output["dirty_word_list"] = $this->my_paramchecker->get_dirty_word_list();
+
+        $this->respond_200($output);
+    } 
+
+
+    /*
+    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
+    */
+    public function respond_500($msg="")
+    {
+        if(empty($msg)) 
+        {
+            return;
+        }
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $this->set_response(
+                // $response_body
+                $this->my_response->getResBodyFailMsg($msg),
+                // status code
+                REST_Controller::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    } 
+
+    /*
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
+    */
+    public function respond_200($data=null)
+    {
+        if(is_null($data)) 
+        {
+            return;
+        }
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $response_body = $this->my_response->getResBodySuccessData($data);
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        }
+    } 
 
 }

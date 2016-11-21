@@ -13,7 +13,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_ParamChecker {
 
 	private $json_obj;
-	private $json_path="/static/param.json";
+	private $json_path_param="static/param.json";
+    private $json_obj_dirty_word;
+    private $json_path_dirty_word="static/dirty-word.json";
 	private $CI=null;
 
 	public static $mysql_int_max = 2147483647;
@@ -31,9 +33,9 @@ class MY_ParamChecker {
             return;
         }
 
-    	// Fetch ParamChecker.json
+    	// Fetch CI/static/ParamChecker.json
     	$param_check_json_str = "";
-    	$target_path = FCPATH . $this->json_path;
+    	$target_path = FCPATH . $this->json_path_param;
 
     	if(file_exists($target_path)) 
     	{
@@ -86,12 +88,76 @@ class MY_ParamChecker {
                 // $event=""
                 MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
                 // $message=""
-                "", 
+                "json_obj", 
                 // $extra=null
                 null
             );
             return;            
         }
+
+        // Fetch CI/static/dirty-word.json
+        $param_check_json_str = "";
+        $target_path = FCPATH . $this->json_path_dirty_word;
+
+        if(file_exists($target_path)) 
+        {
+            $param_check_json_str = file_get_contents($target_path);
+        } 
+        else 
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_FILE_NOT_EXIST,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }
+        
+
+        if(!empty($param_check_json_str)) 
+        {
+            $this->json_obj_dirty_word = json_decode($param_check_json_str);
+        } 
+        else 
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_EMPTY,
+                // $message=""
+                "\$param_check_json_str", 
+                // $extra=null
+                null
+            );
+            return;
+        } // end if
+
+        if(is_null($this->json_obj_dirty_word) || empty($this->json_obj_dirty_word)) {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
+                // $message=""
+                "json_obj_dirty_word", 
+                // $extra=null
+                null
+            );
+            return;            
+        }
+
     }
 
 
@@ -215,6 +281,15 @@ class MY_ParamChecker {
     	return $this->json_obj;
     }
 
+    public function get_checker_map()
+    {
+        if(isset($this->json_obj) && isset($this->json_obj->checker)) {
+            return $this->json_obj->checker;  
+        }
+
+        return null;
+    }
+
     public function get_const_map()
     {
     	if(isset($this->json_obj) && isset($this->json_obj->const)) {
@@ -223,6 +298,16 @@ class MY_ParamChecker {
 
     	return null;
     }
+
+    public function get_dirty_word_list()
+    {
+        if(isset($this->json_obj_dirty_word) && isset($this->json_obj_dirty_word->dirty)) {
+            return $this->json_obj_dirty_word->dirty;
+        }
+
+        return null;
+    }
+
 
     public function get_const($key="") {
         if(empty($key)) 
@@ -352,6 +437,11 @@ class MY_ParamChecker {
 		$output["result"] = $result;
 		$output["extracted_value"] = $extracted_value;
 		return $output;
+    }
+
+    public function is_not_ok($key="", $value="")
+    {
+        return !$this->is_ok($key, $value);
     }
 
     public function is_ok($key="", $value="")

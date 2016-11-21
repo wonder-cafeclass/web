@@ -1,17 +1,16 @@
 "use strict";
-var auth_guard_service_1 = require('../auth/auth-guard.service');
-var auth_service_1 = require('../auth/auth.service');
+var router_1 = require('@angular/router');
 var login_component_1 = require('./login.component');
+var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
+var naver_callback_component_1 = require('./naver/naver-callback.component');
+var facebook_callback_component_1 = require('./facebook/facebook-callback.component');
+var signup_component_1 = require('./signup/signup.component');
 exports.loginRoutes = [
-    { path: 'login', component: login_component_1.LoginComponent }
+    { path: 'login', component: login_component_1.LoginComponent },
+    { path: 'login/kakao', component: kakao_callback_component_1.KakaoCallbackComponent },
+    { path: 'login/naver', component: naver_callback_component_1.NaverCallbackComponent },
+    { path: 'login/facebook', component: facebook_callback_component_1.FacebookCallbackComponent },
+    { path: 'login/signup', component: signup_component_1.SignupComponent }
 ];
-exports.authProviders = [
-    auth_guard_service_1.AuthGuard,
-    auth_service_1.AuthService
-];
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
+exports.loginRouting = router_1.RouterModule.forChild(exports.loginRoutes);
 //# sourceMappingURL=login.routing.js.map

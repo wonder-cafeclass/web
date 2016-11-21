@@ -106,8 +106,6 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
-    console.log("klass-detail-nav-list / ngOnInit / this.klass : ", this.klass);
-
     // WIDTH
     if(0 < this.cageWidth) {
       this.cageWidthStr=`${this.cageWidth}px`;

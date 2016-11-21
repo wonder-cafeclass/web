@@ -16,11 +16,21 @@ var AuthService = (function () {
         this.us = us;
         this.http = http;
         this.adminAuthUrl = '/CI/index.php/api/admin/auth';
+        this.kakaoAuthUrl = '/CI/index.php/api/kakao/authurl';
+        this.naverAuthUrl = '/CI/index.php/api/naver/authurl';
+        this.facebookAuthUrl = '/CI/index.php/api/facebook/authurl';
     }
     AuthService.prototype.getAdminAuth = function () {
         var req_url = this.us.get(this.adminAuthUrl);
-        ;
-        // console.log("TEST / req_url : ",req_url);
+        console.log("auth / getAdminAuth / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    AuthService.prototype.getKakaoAuth = function () {
+        var req_url = this.us.get(this.kakaoAuthUrl);
+        console.log("auth / getKakaoAuth / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -28,7 +38,7 @@ var AuthService = (function () {
     };
     AuthService.prototype.extractData = function (res) {
         var body = res.json();
-        // console.log("AuthService / extractData / body ::: ",body);
+        console.log("AuthService / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;
@@ -40,6 +50,7 @@ var AuthService = (function () {
     AuthService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
+        console.log(">>> auth.service / error : ", error);
         var errMsg = (error.message) ? error.message :
             error.status ? error.status + " - " + error.statusText : 'Server error';
         console.error(errMsg); // log to console instead

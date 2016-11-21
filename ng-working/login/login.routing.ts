@@ -1,20 +1,19 @@
-import { Routes }         from '@angular/router';
-import { AuthGuard }      from '../auth/auth-guard.service';
-import { AuthService }    from '../auth/auth.service';
-import { LoginComponent } from './login.component';
+import { ModuleWithProviders }      from '@angular/core';
+import { Routes, RouterModule }     from '@angular/router';
 
-export const loginRoutes: Routes = [
-  { path: 'login', component: LoginComponent }
+import { LoginComponent } 				from './login.component';
+import { KakaoCallbackComponent } 		from './kakao/kakao-callback.component';
+import { NaverCallbackComponent } 		from './naver/naver-callback.component';
+import { FacebookCallbackComponent } 	from './facebook/facebook-callback.component';
+import { SignupComponent } 	from './signup/signup.component';
+
+export const loginRoutes: Routes = 
+[
+	{ path: 'login', component: LoginComponent },
+	{ path: 'login/kakao', component: KakaoCallbackComponent },
+	{ path: 'login/naver', component: NaverCallbackComponent },
+	{ path: 'login/facebook', component: FacebookCallbackComponent },
+	{ path: 'login/signup', component: SignupComponent }
 ];
 
-export const authProviders = [
-  AuthGuard,
-  AuthService
-];
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/
+export const loginRouting: ModuleWithProviders = RouterModule.forChild(loginRoutes);

@@ -17,13 +17,16 @@ var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
 var klass_center_module_1 = require('./klass/klass-center.module');
-var login_component_1 = require('./login/login.component');
+var login_module_1 = require('./login/login.module');
 var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
+var login_service_1 = require('./login/service/login.service');
 var url_service_1 = require('./util/url.service');
 var image_service_1 = require('./util/image.service');
 var my_event_service_1 = require('./util/my-event.service');
 var my_asset_service_1 = require('./util/my-asset.service');
+var my_logger_service_1 = require('./util/service/my-logger.service');
+var upload_service_1 = require('./util/service/upload.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -37,22 +40,25 @@ var AppModule = (function () {
                 app_routing_1.routing,
                 users_module_1.UsersModule,
                 klass_center_module_1.KlassCenterModule,
+                login_module_1.LoginModule,
                 http_1.HttpModule,
                 http_1.JsonpModule
             ],
             declarations: [
-                app_component_1.AppComponent,
-                login_component_1.LoginComponent
+                app_component_1.AppComponent
             ],
             providers: [
                 auth_service_1.AuthService,
+                login_service_1.LoginService,
                 url_service_1.UrlService,
                 image_service_1.ImageService,
                 my_event_service_1.MyEventService,
                 my_asset_service_1.MyAssetService,
+                my_logger_service_1.MyLoggerService,
                 app_routing_1.appRoutingProviders,
                 { provide: common_1.LocationStrategy, useClass: common_1.HashLocationStrategy },
-                dialog_service_1.DialogService
+                dialog_service_1.DialogService,
+                upload_service_1.UploadService
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

@@ -70,32 +70,32 @@ class MY_Curl
 		return $this->call($url, $is_xml, false, $header_arr, $attr_arr);
 	}
 
-	public function post_json($url="", $header_arr=null, $attr_arr=null) 
+	public function post_json($url="", $header_arr=null, $attr_arr=null, $post_params=null) 
 	{
 		if(empty($url)) 
 		{
 			return null;
 		}
 
-		return $this->call($url, false, true, $header_arr, $attr_arr);
+		return $this->call($url, false, true, $header_arr, $attr_arr, $post_params);
 	}
-	public function post_xml($url="", $header_arr=null, $attr_arr=null) 
+	public function post_xml($url="", $header_arr=null, $attr_arr=null, $post_params=null) 
 	{
 		if(empty($url)) 
 		{
 			return null;
 		}
 
-		return $this->call($url, true, true, $header_arr, $attr_arr);
+		return $this->call($url, true, true, $header_arr, $attr_arr, $post_params);
 	}
-	public function post($url="", $is_xml=false, $header_arr=null, $attr_arr=null) 
+	public function post($url="", $is_xml=false, $header_arr=null, $attr_arr=null, $post_params=null) 
 	{
 		if(empty($url)) 
 		{
 			return null;
 		}
 
-		return $this->call($url, $is_xml, true, $header_arr, $attr_arr);
+		return $this->call($url, $is_xml, true, $header_arr, $attr_arr, $post_params);
 	}
 
 	private function isNumericKeyArr($target_arr=null) 
@@ -367,10 +367,14 @@ class MY_Curl
 		return $json;
 	}
 
-	private function call($url="", $is_xml=false, $is_post=false, $header_arr=null, $attr_arr=null) 
+	private function call($url="", $is_xml=false, $is_post=false, $header_arr=null, $attr_arr=null, $post_params=null) 
 	{
+		$is_debug = false;
+		// $is_debug = true;
+
 		if(empty($url)) 
 		{
+			// if($is_debug) echo "MY_Curl.php / call - 001<br/>";
 			return null;
 		}
 
@@ -379,23 +383,44 @@ class MY_Curl
         curl_setopt($ch, CURLOPT_POST, $is_post);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        // parameters
+        if($is_post && !empty($post_params)) {
+			//create name value pairs seperated by &
+			$postData = "";
+			foreach($post_params as $k => $v) 
+			{ 
+				$postData .= $k . '='.$v.'&'; 
+			}
+			$postData = rtrim($postData, '&');
+
+			curl_setopt($ch, CURLOPT_POSTFIELDS,$postData);        
+        }
+
         // param - header_arr - key/value array
         $headers = array();
         foreach ($header_arr as $key => $value) 
         {
         	$headers[] = "$key: $value";
         }
+        // if($is_debug) echo "MY_Curl.php / call / \$headers<br/>\n";
+        // if($is_debug) print_r($headers);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $response = curl_exec ($ch);
+        $response = curl_exec($ch);
         curl_close ($ch);
+
+        if($is_debug) print_r($response);
+        if($is_debug) echo "\$response : $response<br/>\n";
 
         if(is_null($response) || empty($response)) 
         {
         	// error report!
+        	if($is_debug) echo "!Error! / MY_Curl.php / call / - 002<br/>\n";
         	return null;
         }
+
+        
 
         if($is_xml) {
         	// parse xml to json
@@ -412,6 +437,8 @@ class MY_Curl
 			$result = $this->extract($json, $attr_arr);
         }
 
+        if($is_debug) echo "MY_Curl.php / call - 003<br/>";
+
         return $result;
 	}
 
@@ -421,7 +448,50 @@ class MY_Curl
             $out[$index] = ( is_object ( $node ) ) ? $this->xml2array ( $node ) : $node;
 
         return $out;
-    }    
+    } 
+
+    public function download($url="",$save_to_dir="",$file_name="")
+    {
+    	if(empty($url)) 
+    	{
+    		return false;
+    	}
+    	if(empty($save_to_dir)) 
+    	{
+    		return false;
+    	}
+    	if(!file_exists($save_to_dir))
+    	{
+    		return false;
+    	}
+    	if(!is_writable($save_to_dir))
+    	{
+    		return false;
+    	}
+    	if(empty($file_name)) 
+    	{
+    		return false;
+    	}
+
+    	$saveto = $save_to_dir . "/" . $file_name;
+
+	    $ch = curl_init ($url);
+	    curl_setopt($ch, CURLOPT_HEADER, 0);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+	    $raw=curl_exec($ch);
+	    curl_close ($ch);
+
+	    if(file_exists($saveto)){
+	        unlink($saveto);
+	    }
+
+	    $fp = fopen($saveto,'x');
+	    fwrite($fp, $raw);
+	    fclose($fp);
+
+	    return true;
+	}
 
 }
 

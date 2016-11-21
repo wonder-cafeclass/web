@@ -16,8 +16,16 @@ class MY_ApiKey {
 	private $json_path="/static/api.json";
 	private $CI=null;
 
+    public $Facebook_App_Id="Facebook-App-Id";
+    public $Facebook_App_Secret="Facebook-App-Secret";
+
     public $X_Naver_Client_Id="X-Naver-Client-Id";
     public $X_Naver_Client_Secret="X-Naver-Client-Secret";
+
+    public $Kakao_Native_App_Key="Kakao-Native-App-Key";
+    public $Kakao_REST_API_Key="Kakao-REST-API-Key";
+    public $Kakao_Javascript_Key="Kakao-Javascript-Key";
+    public $Kakao_Admin_Key="Kakao-Admin-Key";
 
     public function __construct($params=null)
     {

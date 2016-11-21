@@ -14,6 +14,11 @@ class MY_Path {
 
 	private $CI=null;
 	private $web_root_path=null;
+	private $http_host="";
+	private $req_uri="";
+
+    private $download_path="assets/images/download";
+    private $thumbnail_path_user="assets/images/user";
 
     public function __construct($params=null)
     {
@@ -24,10 +29,51 @@ class MY_Path {
             return;
         }
 
+        if(!isset($this->CI->my_error)) 
+        {
+            return;
+        }
+
+        $target_path = $this->get_download_path(__FILE__);
+        if(!is_writable($target_path))
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_DIR_PATH_IS_NOT_WRITABLE,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }
+
+        $target_path = $this->get_user_thumb_path(__FILE__);
+        if(!is_writable($target_path))
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_DIR_PATH_IS_NOT_WRITABLE,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }        
+
     	$abs_path = $_SERVER['DOCUMENT_ROOT'];
         $path_info = $_SERVER['PATH_INFO'];
-        $http_host = $_SERVER['HTTP_HOST'];
-        $req_uri = $_SERVER['REQUEST_URI'];
+        $this->http_host = $_SERVER['HTTP_HOST'];
+        $this->req_uri = $req_uri = $_SERVER['REQUEST_URI'];
 
         // remove query string
         $result = explode("?",$req_uri);
@@ -39,6 +85,26 @@ class MY_Path {
 
         $this->web_root_path = str_replace("/CI/index.php$path_info","",$req_uri);
 	}	
+
+	// Get the full URL of the current page
+	// ex) http://devcafeclass.co.uk/cafeclass/CI/index.php/api/kakao/auth
+	public function current_page_url(){
+	    $page_url   = 'http';
+	    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+	        $page_url .= 's';
+	    }
+	    return $page_url.'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+	}	
+
+	// ex) http://devcafeclass.co.uk
+	private function current_http_referer(){
+	    $page_url   = 'http';
+	    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+	        $page_url .= 's';
+	    }
+	    return $page_url.'://'.$_SERVER['SERVER_NAME'];
+	}	
+
 
 	public function get_web_root_path() 
 	{
@@ -69,5 +135,45 @@ class MY_Path {
 		return $target_path;
 
 	}
+
+	public function get_full_path($target_path="")
+	{
+		if(empty($target_path)) 
+		{
+			return "";
+		}
+
+		return $this->current_http_referer() . $this->get($target_path);
+	}
+
+    public function get_download_path($cur_class_path="") 
+    {
+    	if(empty($cur_class_path))
+    	{
+    		return "";
+    	}
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $this->download_path;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+    }
+
+    public function get_user_thumb_path($cur_class_path="") 
+    {
+    	if(empty($cur_class_path))
+    	{
+    		return "";
+    	}
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $this->thumbnail_path_user;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+    }	
 
 }
