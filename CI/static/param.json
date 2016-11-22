@@ -4,7 +4,7 @@
 		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_exclude[/[^a-zA-Z가-힣0-9 ]+/]",
 		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
 		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
-		"user_name":"is_str|||min_length[2]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_exclude[/[^a-zA-Z가-힣0-9 ]+/]",
+		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match[/^[가-힣 ]+$/]|||regex_match_include[/[가-힣 ]+/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
 		"user_birthday":"is_str|||min_length[5]|||max_length[5]|||regex_match[/^([0][0-9]|[1][0-2])-([012][0-9]|[3][01])$/]|||regex_match_include[/^([0][0-9]|[1][0-2])-([012][0-9]|[3][01])$/]",
@@ -14,7 +14,7 @@
 		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
 
 		"user_mobile":"valid_mobile_kor|||is_unique[user.mobile]",
-		"user_mobile_kor_head":"is_str|||regex_match_include[/^01[0-9]$/]",
+		"user_mobile_kor_head":"is_str|||exact_length[3]|||regex_match_include[/^01[0-9]$/]",
 		"user_mobile_kor_body":"is_str|||min_length[3]|||max_length[4]|||regex_match_include[/^[0-9]{3,4}$/]",
 		"user_mobile_kor_tail":"is_str|||exact_length[4]|||regex_match_include[/^[0-9]{4}$/]",
 

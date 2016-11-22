@@ -21,7 +21,7 @@
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileHead
 				(click)="onClickMobileHead($event, inputMobileHead)"
-				(keyup)="onKeyupHead($event, inputMobileHead)"
+				(keyup)="onKeyupHead($event, inputMobileHead, inputMobileBody)"
 				(blur)="onBlurMobileHead($event, inputMobileHead, inputMobileBody)"
 				class="form-control input-glass" 
 				value="010"
@@ -50,7 +50,7 @@
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileBody
 				(click)="onClickMobileBody($event, inputMobileBody)"
-				(keyup)="onKeyupBody($event, inputMobileBody)"
+				(keyup)="onKeyupBody($event, inputMobileBody, inputMobileTail)"
 				(blur)="onBlurMobileBody($event, inputMobileBody, inputMobileTail)"
 				class="form-control input-glass" 
 				placeholder="1***">
@@ -77,7 +77,7 @@
 	<div 	[ngClass]="{'rb-focus':isFocusMobileTail,'rb-blur':!isFocusMobileTail}"
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileTail
-				(click)="onClickMobileTail($event, inputMobileTail)"
+				(click)="onClickMobileTail($event, inputMobileTail, inputMobileBody)"
 				(keyup)="onKeyupTail($event, inputMobileTail)"
 				(blur)="onBlurMobileTail($event, inputMobileTail)"
 				class="form-control input-glass" 

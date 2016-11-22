@@ -17,7 +17,7 @@ var PasswordComponent = (function () {
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
-        this.isFocus = false;
+        this.isFocusPassword = false;
         this.isFocusInfo = false;
         this.isFocusRepassword = false;
         this.password = "";
@@ -26,11 +26,13 @@ var PasswordComponent = (function () {
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "패스워드에 문제가 있습니다.";
         this.tooltipHeadAllowed = "성공! 패스워드가 완벽합니다.";
-        this.isSuccessInput = false;
+        this.isValidRepassword = false;
         this.tooltipTailMsg = null;
         this.tooltipTailInit = "입력한 패스워드를 확인해볼께요.";
         this.tooltipTailNotMatch = "패스워드가 일치하지 않습니다!";
         this.tooltipTailMatched = "성공! 패스워드가 정확히 일치합니다.";
+        this.passwordPrev = "";
+        this.repasswordPrev = "";
     }
     PasswordComponent.prototype.ngOnInit = function () { };
     PasswordComponent.prototype.setMyChecker = function () {
@@ -47,36 +49,50 @@ var PasswordComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myChecker, input);
     };
-    PasswordComponent.prototype.onClick = function (event, element) {
+    PasswordComponent.prototype.onClickPassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        if (!this.isFocus) {
-            this.isFocus = true;
+        if (!this.isFocusPassword) {
+            this.isFocusPassword = true;
         } // end if
         this.password = element.value;
         // Checker가 없다면, Checker를 가져옵니다.
         this.setMyChecker();
     };
-    PasswordComponent.prototype.onBlur = function (event, element, elementNext) {
+    PasswordComponent.prototype.onBlurPassword = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;    
         if (null == this.myCheckerService) {
+            if (isDebug)
+                console.log("password / onBlurPassword / 중단 / null == this.myCheckerService");
             return;
         }
-        if (this.isFocus) {
-            this.isFocus = false;
-        } // end if
         this.password = element.value;
+        // REMOVE ME
+        // 내용이 동일하다면 중단합니다.
+        /*
+        if(null != this.passwordPrev && this.passwordPrev === this.password) {
+          if(isDebug) console.log("password / onBlurPassword / 중단 / 내용이 동일하다면 중단합니다.");
+          this.isFocusPassword = false;
+          return;
+        }
+        this.passwordPrev = this.password;
+        */
+        if (this.isFocusPassword) {
+            this.isFocusPassword = false;
+        } // end if
         // 패스워드를 검사합니다.
         if (null != this.password && "" != this.password) {
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
             var isOK = this.isOK(this.password);
             if (!isOK) {
                 // 패스워드에 문제가 있습니다.
-                // wonder.jung
                 // 원인을 찾아봅니다.
                 var history_1 = this.myCheckerService.getLastHistory();
-                console.log("password / onBlur / history : ", history_1);
+                if (isDebug)
+                    console.log("password / onBlurPassword / history : ", history_1);
                 if (null != history_1 && null != history_1.key && null != history_1.msg) {
                     if ("min" === history_1.key) {
                         // 최소 문자 갯수보다 적은 경우.
@@ -89,11 +105,10 @@ var PasswordComponent = (function () {
                     else if ("regexInclude" === history_1.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
                         this.tooltipHeadMsg = history_1.msg;
-                        console.log("TEST / history.value : ", history_1.value);
                         var regExpStr = history_1.value + "";
-                        var regExpStrSpecialChar = /[!@#\\$%\^\&*\)\(+=._-]+/ + "";
-                        var regExpStrNumbers = /[0-9]+/ + "";
-                        var regExpAlphabet = /[a-z]+/ + "";
+                        var regExpStrSpecialChar = /[!@#\\$%\^\&*\)\(+=._-]+/g + "";
+                        var regExpStrNumbers = /[0-9]+/g + "";
+                        var regExpAlphabet = /[a-z]+/g + "";
                         if (regExpStr == regExpStrSpecialChar) {
                             this.tooltipHeadMsg = "특수문자가 최소 1글자가 있어야 해요.";
                         }
@@ -109,7 +124,7 @@ var PasswordComponent = (function () {
                         this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
                     }
                 }
-                this.isFocus = true;
+                this.isFocusPassword = true;
                 element.focus();
             }
             else {
@@ -119,31 +134,83 @@ var PasswordComponent = (function () {
                 // 입력 성공을 유저에게 알립니다.
                 this.tooltipHeadMsg = this.tooltipHeadAllowed;
                 this.isValidPassword = true;
-                var _self_1 = this;
-                setTimeout(function () {
-                    // 성공 안내메시지를 3초 뒤에 화면에서 지웁니다.
-                    _self_1.tooltipHeadMsg = null;
-                    _self_1.isValidPassword = false;
-                }, 2500);
+                this.isFocusPassword = false;
+                this.hideTooltipHead(2);
             } // end if
         } // end if
     };
-    PasswordComponent.prototype.onKeyup = function (event, element) {
+    PasswordComponent.prototype.hideTooltipHead = function (sec) {
+        if (null == sec || !(0 < sec)) {
+            sec = 3;
+        }
+        var _self = this;
+        setTimeout(function () {
+            // 메시지를 3초 뒤에 화면에서 지웁니다.
+            _self.tooltipHeadMsg = null;
+            _self.isValidPassword = false;
+        }, 1000 * sec);
+    };
+    PasswordComponent.prototype.hideTooltipTail = function (sec) {
+        if (null == sec || !(0 < sec)) {
+            sec = 3;
+        }
+        var _self = this;
+        setTimeout(function () {
+            // 메시지를 3초 뒤에 화면에서 지웁니다.
+            _self.tooltipTailMsg = null;
+            _self.isValidRepassword = false;
+        }, 1000 * sec);
+    };
+    PasswordComponent.prototype.onKeyupPassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;    
         if (null == this.myCheckerService) {
             return;
         }
         // 입력 글자수가 최대글자수를 넘지 않았는지 검사합니다.
         // 모든 영문을 소문자로 고정 변경.
         this.password = element.value.toLowerCase();
+        // 비어있는 문자열이라면 검사하지 않습니다.
+        if (null == this.password || "" == this.password) {
+            if (isDebug)
+                console.log("password / onKeyupPassword / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+            return;
+        }
+        // 바뀌지 않았다면 검사하지 않습니다.
+        if (this.passwordPrev === this.password) {
+            if (isDebug)
+                console.log("password / onKeyupPassword / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+            return;
+        }
+        this.passwordPrev = this.password;
         // 패스워드를 검사합니다.
-        if (null != this.password && "" != this.password) {
+        if (isDebug)
+            console.log("password / onKeyupPassword / this.password : ", this.password);
+        var regExpNotAllowed = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
+        var matchArr = this.password.match(regExpNotAllowed);
+        if (null != matchArr && 0 < matchArr.length) {
+            // 한글 및 공백 입력시 삭제 처리.
+            for (var i = 0; i < matchArr.length; ++i) {
+                var match = matchArr[i];
+                if (null == match || "" == match) {
+                    continue;
+                }
+                element.value = this.passwordPrev = this.password = this.password.replace(match, "");
+            }
+            // 1-1-2. 삭제 안내 메시지를 노출합니다.
+            this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
+            this.isValidPassword = false;
+            this.hideTooltipHead(2);
+            if (isDebug)
+                console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
+        }
+        else {
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
             var isOK = this.isOK(this.password);
             if (!isOK) {
                 // 패스워드에 문제가 있습니다.
-                // wonder.jung
                 // 원인을 찾아봅니다.
                 var history_2 = this.myCheckerService.getLastHistory();
                 if (null != history_2 &&
@@ -151,18 +218,18 @@ var PasswordComponent = (function () {
                     null != history_2.msg &&
                     null != history_2.value) {
                     if ("max" === history_2.key) {
-                        console.log("password / onKeyup / history : ", history_2);
+                        console.log("password / onKeyupPassword / history : ", history_2);
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipHeadMsg = history_2.msg;
                         // 글자수를 줄여줍니다.
                         var max = history_2.value;
-                        element.value = this.password = this.password.slice(0, max);
+                        element.value = this.passwordPrev = this.password = this.password.slice(0, max);
                     }
                 }
-                this.isFocus = true;
+                this.isFocusPassword = true;
                 element.focus();
             } // end inner if
-        } // end outer if
+        } // end if
     }; // end method
     PasswordComponent.prototype.showRepassword = function (element, msgWarning) {
         if (null == element) {
@@ -186,23 +253,124 @@ var PasswordComponent = (function () {
             this.isFocusInfo = false;
         } // end if
     };
-    PasswordComponent.prototype.onClickRepassword = function (event, element) {
+    PasswordComponent.prototype.onClickRepassword = function (event, element, elementPassword) {
         event.stopPropagation();
         event.preventDefault();
+        // password가 입력되지 않았다면, 패스워드 입력을 먼저 하도록 합니다.
+        // password 입력창으로 포커스를 이동시킵니다.
+        if (null == this.password || "" == this.password) {
+            if (null != element) {
+                // 패스워드 재입력 창도 공백이 되어야 합니다.
+                element.value = "";
+                // 패스워드 재입력 창의 포커싱을 지웁니다.
+                element.blur();
+            }
+            if (null != elementPassword) {
+                // 패스워드 입력창에 포커싱을 줍니다.
+                elementPassword.focus();
+                this.isFocusPassword = true;
+            }
+            // 패스워드를 먼저 입력해야 한다고 유저에게 알립니다.
+            this.tooltipHeadMsg = "먼저 비밀번호를 입력해주세요.";
+            this.isValidPassword = false;
+            this.hideTooltipHead(2);
+            return;
+        }
         if (!this.isFocusRepassword) {
             this.isFocusRepassword = true;
         } // end if
         this.repassword = element.value;
     };
+    PasswordComponent.prototype.onKeyupRepassword = function (event, element) {
+        event.stopPropagation();
+        event.preventDefault();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (null == this.myCheckerService) {
+            return;
+        }
+        // 입력 글자수가 최대글자수를 넘지 않았는지 검사합니다.
+        // 모든 영문을 소문자로 고정 변경.
+        this.repassword = element.value.toLowerCase();
+        // 비어있는 문자열이라면 검사하지 않습니다.
+        if (null == this.repassword || "" == this.repassword) {
+            if (isDebug)
+                console.log("password / onKeyupRepassword / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+            return;
+        }
+        // 바뀌지 않았다면 검사하지 않습니다.
+        if (this.repasswordPrev === this.repassword) {
+            if (isDebug)
+                console.log("password / onKeyupRepassword / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+            return;
+        }
+        // 패스워드를 검사합니다.
+        if (isDebug)
+            console.log("password / onKeyupRepassword / this.repassword : ", this.repassword);
+        var regExpNotAllowed = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
+        var matchArr = this.repassword.match(regExpNotAllowed);
+        if (null != matchArr && 0 < matchArr.length) {
+            // 한글 및 공백 입력시 삭제 처리.
+            for (var i = 0; i < matchArr.length; ++i) {
+                var match = matchArr[i];
+                if (null == match || "" == match) {
+                    continue;
+                }
+                element.value = this.repassword = this.repassword.replace(match, "");
+            }
+            // 1-1-2. 삭제 안내 메시지를 노출합니다.
+            this.tooltipTailMsg = "한글 및 공백을 사용할 수 없어요.";
+            this.isValidPassword = false;
+            this.hideTooltipTail(2);
+            if (isDebug)
+                console.log("password / onKeyupRepassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
+        }
+        else {
+            // 1. 사용자가 입력한 이메일 주소를 검사합니다.
+            var isOK = this.isOK(this.repassword);
+            if (!isOK) {
+                // 패스워드에 문제가 있습니다.
+                // 원인을 찾아봅니다.
+                var history_3 = this.myCheckerService.getLastHistory();
+                if (null != history_3 &&
+                    null != history_3.key &&
+                    null != history_3.msg &&
+                    null != history_3.value) {
+                    if ("max" === history_3.key) {
+                        console.log("password / onKeyupRepassword / history : ", history_3);
+                        // 최대 문자 갯수보다 많은 경우.
+                        this.tooltipTailMsg = history_3.msg;
+                        // 글자수를 줄여줍니다.
+                        var max = history_3.value;
+                        element.value = this.repasswordPrev = this.repassword = this.repassword.slice(0, max);
+                    }
+                }
+                this.isFocusRepassword = true;
+                element.focus();
+            } // end inner if
+        } // end if
+    }; // end method  
     PasswordComponent.prototype.onBlurRepassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
+        this.repassword = element.value;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        // 비어있는 문자열이라면 검사하지 않습니다.
+        if (null == this.repassword || "" == this.repassword) {
+            if (isDebug)
+                console.log("repassword / onKeyup / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+            return;
+        }
+        // 바뀌지 않았다면 검사하지 않습니다.
+        if (this.repasswordPrev === this.repassword) {
+            if (isDebug)
+                console.log("repassword / onKeyup / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+            return;
+        }
         if (this.isFocusRepassword) {
             this.isFocusRepassword = false;
         } // end if
-        this.repassword = element.value;
-        console.log("onBlurRepassword / this.password : ", this.password);
-        console.log("onBlurRepassword / this.repassword : ", this.repassword);
         if (null != this.password &&
             "" != this.password &&
             null != this.repassword &&
@@ -210,22 +378,18 @@ var PasswordComponent = (function () {
             // 1. 패스워드와 재입력 패스워드를 비교합니다.
             if (this.password != this.repassword) {
                 // 1-1. 처음 입력한 패스워드와 재확인 패스워드가 다를 경우.
-                console.log("TEST / this.tooltipTailNotMatch : ", this.tooltipTailNotMatch);
                 this.showRepassword(element, this.tooltipTailNotMatch);
-                this.isSuccessInput = false;
+                this.isValidRepassword = false;
             }
             else {
                 // 1-2. 성공! 똑같은 패스워드를 입력했습니다.
                 this.tooltipTailMsg = this.tooltipTailMatched;
-                this.isSuccessInput = true;
-                var _self_2 = this;
-                setTimeout(function () {
-                    // 성공 안내메시지를 3초 뒤에 화면에서 지웁니다.
-                    _self_2.tooltipTailMsg = null;
-                    _self_2.isSuccessInput = false;
-                }, 2500);
+                this.isValidRepassword = true;
+                this.hideTooltipTail(2);
             }
         } // end if
+        // 최종 패스워드 재입력을 업데이트합니다.
+        element.value = this.repasswordPrev = this.repassword;
     }; // end method
     __decorate([
         core_1.Input(), 

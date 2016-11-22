@@ -58,11 +58,23 @@ export class EmailComponent implements OnInit {
   }
 
   private lockFocus;
+  private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
     event.stopPropagation();
     event.preventDefault();
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("email / onBlur / 중단 / null == this.myCheckerService");
+      return;
+    }
+
+    // 내용이 동일하다면 중단합니다.
+    if(null != this.inputStrPrevOnBlur && this.inputStrPrevOnBlur === email) {
+      if(isDebug) console.log("email / onBlur / 중단 / 내용이 동일하다면 중단합니다.");
+      this.isFocus = false;
       return;
     }
 
@@ -77,7 +89,7 @@ export class EmailComponent implements OnInit {
       if(!isOK) {
         // 1-1-1. 이메일 주소에 문제가 있습니다!
         let lastHistory = this.myCheckerService.getLastHistory();
-        console.log("email / onBlur / lastHistory : ",lastHistory);
+        // console.log("email / onBlur / lastHistory : ",lastHistory);
 
         this.isWarning = true;
 
@@ -98,18 +110,80 @@ export class EmailComponent implements OnInit {
         this.tooltipMsg = this.tooltipMsgEmailValid;
         this.isSuccessInput = true;
 
-        let _self = this;
-        setTimeout(function() {
-          // 성공 안내메시지를 3초 뒤에 화면에서 지웁니다.
-          _self.tooltipMsg = null;
-          _self.isSuccessInput = false;
-        }, 2500);
-
+        this.hideTooltip(2);
 
       } // end if
+
+      // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
+      let regExpLastEmptySpace:RegExp = /[\s]+$/gi;
+      element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
+
     } // end if
 
   } 
+
+  hideTooltip(sec:number) :void {
+    if(null == sec || !(0 < sec)) {
+      sec = 3;
+    }
+
+    let _self = this;
+    setTimeout(function() {
+      // 메시지를 3초 뒤에 화면에서 지웁니다.
+      _self.tooltipMsg = null;
+      _self.isSuccessInput = false;
+    }, 1000 * sec);        
+
+  }    
+
+  private inputStrPrevOnKeyup:string="";
+  onKeyup(event, element) :void {
+
+    event.stopPropagation();
+    event.preventDefault();    
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+
+    if(isDebug) console.log("email / onKeyup / init");
+
+    let inputStr:string = element.value;
+
+    // 비어있는 문자열이라면 검사하지 않습니다.
+    if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("email / onKeyup / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+      return;
+    }
+
+    // 바뀌지 않았다면 검사하지 않습니다.
+    if(this.inputStrPrevOnKeyup === inputStr) {
+      if(isDebug) console.log("email / onKeyup / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      return;
+    }
+
+    // 한글 및 공백 입력시 삭제 처리.
+    let regExpNotAllowed:RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
+    let matchArr:RegExpMatchArray = inputStr.match(regExpNotAllowed);
+    if(null != matchArr && 0 < matchArr.length) {
+      for (var i = 0; i < matchArr.length; ++i) {
+        let match:string = matchArr[i];
+        if(null == match || "" == match) {
+          continue;
+        }
+
+        inputStr = inputStr.replace(match, "");
+      }
+
+      // 1-1-2. 삭제 안내 메시지를 노출합니다.
+      this.tooltipMsg = "한글 및 공백을 사용할 수 없어요.";
+      this.isSuccessInput = false;
+      this.hideTooltip(2);
+
+      if(isDebug) console.log("email / onKeyup / 한글 및 공백 입력시 삭제 처리.");
+    }
+
+    element.value = this.inputStrPrevOnKeyup = inputStr;
+  }  
 
   onFocus(event) :void {
     event.stopPropagation();

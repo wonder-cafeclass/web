@@ -42,7 +42,7 @@ export class NicknameComponent implements OnInit {
     }
 
     if(null == this.myChecker) {
-      this.myChecker = this.myCheckerService.getMyChecker("user_name");
+      this.myChecker = this.myCheckerService.getMyChecker("user_nickname");
     }
   }
   isOK(input:string) :boolean {
@@ -87,7 +87,7 @@ export class NicknameComponent implements OnInit {
 
         // 원인을 찾아봅니다.
         let history = this.myCheckerService.getLastHistory();
-        // console.log("password / onBlur / history : ",history);
+        console.log("password / onBlur / history : ",history);
 
         if(null != history && null != history.key && null != history.msg) {
           // Do something..
@@ -159,7 +159,7 @@ export class NicknameComponent implements OnInit {
         this.tooltipHeadMsg = "금칙어는 제외됩니다.";
         element.value = inputStr;
 
-        this.hideTooltop(3, element);
+        this.hideTooltip(2, element);
 
         // Logger - Spam 행위로 등록.
         this.myLoggerService.logActionDirtyWord(inputStrBeforeSanitize);
@@ -172,16 +172,82 @@ export class NicknameComponent implements OnInit {
         this.tooltipHeadMsg = this.tooltipHeadAllowed;
         this.isSuccessInput = true;
 
-        this.hideTooltop(3, element);
+        this.hideTooltip(2, element);
 
         return;
 
       }// end if - dirty word
 
     } // end if - check inputStr    
-  }  
+  } 
 
-  hideTooltop(sec:number, element) :void {
+  private inputStrPrev:string="";
+  onKeyup(event, element) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+
+    if(isDebug) console.log("nickname / onKeyup / init");
+
+    let inputStr:string = element.value;
+
+    if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("nickname / onKeyup / 중단 / inputStr is not valid!");
+      return;
+    }
+    // 바뀌지 않았다면 검사하지 않습니다.
+    if(this.inputStrPrev === inputStr) {
+      if(isDebug) console.log("nickname / onKeyup / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      return;
+    }
+    this.inputStrPrev = inputStr;
+
+    let regExpNotAllowed:RegExp = /[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣a-zA-Z0-9 ]/gi;
+
+    // 한글이 아닌 문자에 대해서 삭제 처리
+    let matchArr:RegExpMatchArray = inputStr.match(regExpNotAllowed);
+    if(null != matchArr && 0 < matchArr.length) {
+      for (var i = 0; i < matchArr.length; ++i) {
+        let match:string = matchArr[i];
+        if(null == match || "" == match) {
+          continue;
+        }
+
+        inputStr = inputStr.replace(match, "");
+      } // end for
+
+      if(isDebug) console.log("nickname / onKeyup / 한글이 아닌 문자에 대해서 삭제 처리 / matchArr : ",matchArr);
+    } // end if
+
+    // 최대 길이 제한 검사
+    let isOK:boolean = this.isOK(inputStr);
+    if(!isOK) {
+
+      // 원인을 찾아봅니다.
+      let history = this.myCheckerService.getLastHistory();
+      if(null != history && null != history.key && null != history.msg) {
+        // Do something..
+        if("max" === history.key) {
+
+          // 최대 문자 갯수보다 많은 경우.
+          this.tooltipHeadMsg = history.msg;
+
+          // 넘는 문자열은 지웁니다.
+          element.value = inputStr = inputStr.slice(0, history.value);
+          this.isSuccessInput = false;
+
+          if(isDebug) console.log("nickname / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ",history);
+        } // end if
+      } // end if
+    } // end if
+
+    element.value = this.inputStrPrev = inputStr;
+  }   
+
+  hideTooltip(sec:number, element) :void {
 
     if(null == element) {
       return;

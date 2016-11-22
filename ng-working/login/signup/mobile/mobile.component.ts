@@ -111,6 +111,7 @@ export class MobileComponent implements OnInit {
     } // end if
   }
 
+  private mobileHeadPrev:string = "";
   onClickMobileHead(event, element) :void {
     event.stopPropagation();
     event.preventDefault();
@@ -120,33 +121,139 @@ export class MobileComponent implements OnInit {
     } // end if
 
     this.setMyChecker();
+
+    let inputStr:string = element.value;
+    this.mobileHeadPrev = inputStr;
   }
 
-  onKeyupHead(event, element) :void {
+  
+  onKeyupHead(event, element, elementNext) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;  
+
+    if(isDebug) console.log("mobile / onKeyupHead / init");  
+
     let inputStr:string = element.value;
     if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("mobile / onKeyupHead / 중단 / 입력된 내용이 없습니다.");
       return;
     } 
-    
-    // 숫자가 아닌 글자들은 모두 삭제해준다.
-    element.value = inputStr.replace(/[^0-9]/gi,"");
 
-    // 툴팁을 보여줍니다.
-    if(element.value != inputStr) {
+    if(this.mobileHeadPrev === inputStr) {
+      // 방향키로 움직이는 경우를 방어
+      if(isDebug) console.log("mobile / onKeyupHead / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      return;
+    }
+
+    // 숫자가 아닌 글자들은 모두 삭제해준다.
+    let inputStrFiltered:string = inputStr.replace(/[^0-9]/gi,"");
+    if(element.value != inputStrFiltered) {
+      // 툴팁을 보여줍니다.
       this.tooltipHeadMsg = "숫자만 가능합니다.";
       this.isFocusMobileHead = true;
       this.isSuccessHeadInput = false;
       element.focus();
-      this.hideTooltipHead(2, element);
-    }    
-  }
+      this.hideTooltipHead(2);
 
+      if(isDebug) console.log("mobile / onKeyupHead / 숫자가 아닌 글자들은 모두 삭제해준다.");
+
+      inputStr = inputStrFiltered;
+    }
+
+    let max:number = this.myCheckerMobileHead.max;
+    let isOK:boolean = true;
+    if(0 < max && max < inputStr.length) {
+      isOK = false;
+    }
+    if(isDebug) console.log("mobile / onKeyupHead / isOK : ",isOK);
+    if(isDebug) console.log("mobile / onKeyupHead / max : ",max);
+
+    if(!isOK) {
+      // 최대 길이보다 깁니다.
+      this.tooltipHeadMsg = "숫자 3자리를 입력해주세요.";
+      this.isFocusMobileHead = true;
+      this.isSuccessHeadInput = false;
+      element.focus();
+      this.hideTooltipHead(2);
+
+      // 마지막으로 입력한 문자를 지웁니다.
+      inputStr = inputStr.slice(0, (inputStr.length - 1));
+
+      if(isDebug) console.log("mobile / onKeyupHead / 마지막으로 입력한 문자를 지웁니다.");
+
+    } // end if
+
+    // 전체 필터 검사를 진행합니다.
+    isOK = this.isOKHead(inputStr);
+    if(!isOK) {
+
+      // 조건에 맞지 않습니다.
+      // 원인을 찾아봅니다.
+      let history = this.myCheckerService.getLastHistory();
+
+      if( null != history && 
+          null != history.key && 
+          null != history.msg ) {
+
+        if(isDebug) console.log("mobile / onKeyupHead / 전체 필터 검사 / history : ",history);
+        if(isDebug) console.log("mobile / onKeyupHead / 전체 필터 검사 / this.mobileHeadPrev : ",this.mobileHeadPrev);
+
+        if("regexInclude" === history.key) {
+
+            let regExpStr:string = history.value + "";
+            let regExpStrInputStrRange:string =  /^01[0-9]$/g + "";
+
+            if(regExpStr == regExpStrInputStrRange) {
+              this.tooltipHeadMsg = "휴대전화 형식이 맞지 않습니다.";
+              this.isFocusMobileHead = true;
+              this.isSuccessHeadInput = false;
+              element.focus();
+
+              this.hideTooltipHead(2);
+
+              // 직전 내용으로 롤백.
+              inputStr = this.mobileHeadPrev;
+              
+            }
+        }
+
+      } // end inner if
+    } else {
+      // 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.
+      if(isDebug) console.log("mobile / onKeyupHead / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
+
+      this.tooltipHeadMsg = this.tooltipHeadAllowed;
+      this.isFocusMobileHead = false;
+      this.isSuccessHeadInput = true;
+
+      this.hideTooltipHead(2);
+
+      if(null != elementNext && !this.isSuccessBodyInput) {
+        elementNext.focus();
+      }
+
+
+    }
+
+
+
+    this.mobileHeadPrev = element.value = inputStr;
+  } // end method
+
+  
   onBlurMobileHead(event, element, elementNext) :void {
     event.stopPropagation();
     event.preventDefault();
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+
+    if(isDebug) console.log("mobile / onBlurMobileHead / init");
+
 
     if(this.isFocusMobileHead) {
       this.isFocusMobileHead = false;
@@ -188,15 +295,13 @@ export class MobileComponent implements OnInit {
 
       } // end inner if
     } else {
-      // 성공! 정상적인 입력입니다.
 
+      // 성공! 정상적인 입력입니다.
       this.tooltipHeadMsg = this.tooltipHeadAllowed;
       this.isFocusMobileHead = false;
       this.isSuccessHeadInput = true;
 
-      this.hideTooltipHead(2, element);
-
-
+      this.hideTooltipHead(2);
 
       if(null != elementNext && !this.isSuccessBodyInput) {
         elementNext.focus();
@@ -206,11 +311,7 @@ export class MobileComponent implements OnInit {
 
   } 
 
-  hideTooltipHead(sec:number, element) :void {
-
-    if(null == element) {
-      return;
-    }
+  hideTooltipHead(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -224,11 +325,7 @@ export class MobileComponent implements OnInit {
 
   }  
 
-  hideTooltipBody(sec:number, element) :void {
-
-    if(null == element) {
-      return;
-    }
+  hideTooltipBody(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -242,11 +339,7 @@ export class MobileComponent implements OnInit {
 
   }   
 
-  hideTooltipTail(sec:number, element) :void {
-
-    if(null == element) {
-      return;
-    }
+  hideTooltipTail(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -260,6 +353,7 @@ export class MobileComponent implements OnInit {
 
   }   
 
+  private mobileBodyPrev:string = "";
   onClickMobileBody(event, element) :void {
     event.stopPropagation();
     event.preventDefault();
@@ -269,16 +363,31 @@ export class MobileComponent implements OnInit {
     } // end if
 
     this.setMyChecker();
+
+    this.mobileBodyPrev = element.value;
   }
 
-  onKeyupBody(event, element) :void {
+  onKeyupBody(event, element, elementNext) :void {
+
+    // wonder.jung
+
     event.stopPropagation();
     event.preventDefault();
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+
     let inputStr:string = element.value;
     if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("mobile / onKeyupBody / 중단 / inputStr is not valid!");
       return;
     } 
+
+    if(this.mobileBodyPrev === inputStr) {
+      // 방향키로 움직이는 경우를 방어
+      if(isDebug) console.log("mobile / onKeyupBody / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      return;
+    }
     
     // 숫자가 아닌 글자들은 모두 삭제해준다.
     element.value = inputStr.replace(/[^0-9]/gi,"");
@@ -289,9 +398,87 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileBody = true;
       this.isSuccessBodyInput = false;
       element.focus();
-      this.hideTooltipBody(2, element);
+      this.hideTooltipBody(2);
     }
 
+    let max:number = this.myCheckerMobileBody.max;
+    let isOK:boolean = true;
+    if(0 < max && max < inputStr.length) {
+      isOK = false;
+    }
+    if(isDebug) console.log("mobile / onKeyupBody / isOK : ",isOK);
+    if(isDebug) console.log("mobile / onKeyupBody / max : ",max);
+
+    if(!isOK) {
+      // 최대 길이보다 깁니다.
+      this.tooltipBodyMsg = "숫자 3자리를 입력해주세요.";
+      this.isFocusMobileBody = true;
+      this.isSuccessBodyInput = false;
+      element.focus();
+      this.hideTooltipBody(2);
+
+      // 마지막으로 입력한 문자를 지웁니다.
+      inputStr = inputStr.slice(0, (inputStr.length - 1));
+
+      if(isDebug) console.log("mobile / onKeyupBody / 마지막으로 입력한 문자를 지웁니다.");
+
+    } // end if
+
+    // 전체 필터 검사를 진행합니다.
+    isOK = this.isOKBody(inputStr);
+    if(!isOK) {
+
+      // 조건에 맞지 않습니다.
+      // 원인을 찾아봅니다.
+      let history = this.myCheckerService.getLastHistory();
+
+      if( null != history && 
+          null != history.key && 
+          null != history.msg ) {
+
+        if(isDebug) console.log("mobile / onKeyupBody / 전체 필터 검사 / history : ",history);
+        if(isDebug) console.log("mobile / onKeyupBody / 전체 필터 검사 / this.mobileBodyPrev : ",this.mobileBodyPrev);
+
+        if("regexInclude" === history.key) {
+
+            let regExpStr:string = history.value + "";
+            let regExpStrInputStrRange:string =  /^01[0-9]$/g + "";
+
+            if(regExpStr == regExpStrInputStrRange) {
+              this.tooltipBodyMsg = "휴대전화 형식이 맞지 않습니다.";
+              this.isFocusMobileBody = true;
+              this.isSuccessBodyInput = false;
+              element.focus();
+
+              this.hideTooltipBody(2);
+
+              // 직전 내용으로 롤백.
+              inputStr = this.mobileBodyPrev;
+              
+            }
+        }
+
+      } // end inner if
+    } else if(max === inputStr.length) {
+      // 사용자가 입력한 전화번호가 가장 긴 4자리인 경우, 입력은 완료한 것으로 판단합니다.
+      // 모든 조건이 맞습니다. 
+      if(isDebug) console.log("mobile / onKeyupBody / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
+
+      this.tooltipBodyMsg = this.tooltipHeadAllowed;
+      this.isFocusMobileBody = false;
+      this.isSuccessBodyInput = true;
+
+      this.hideTooltipBody(2);
+
+      // 다음 번호 입력창으로 넘어갑니다.
+      if(null != elementNext && !this.isSuccessTailInput) {
+        elementNext.focus();
+        this.isFocusMobileTail = true;
+      }
+    }    
+
+
+    this.mobileBodyPrev = element.value = inputStr;
   }   
 
   onBlurMobileBody(event, element, elementNext) :void {
@@ -356,14 +543,11 @@ export class MobileComponent implements OnInit {
       } // end inner if
     } else {
       // 성공! 정상적인 입력입니다.
-
-      console.log("TEST / 성공! 정상적인 입력입니다.");
-
       this.tooltipBodyMsg = this.tooltipHeadAllowed;
       this.isFocusMobileBody = false;
       this.isSuccessBodyInput = true;
 
-      this.hideTooltipBody(2, element);
+      this.hideTooltipBody(2);
 
       if(null != elementNext && !this.isSuccessTailInput) {
         elementNext.focus();
@@ -374,25 +558,63 @@ export class MobileComponent implements OnInit {
 
   }  
 
-  onClickMobileTail(event, element) :void {
+  private mobileTailPrev:string = "";
+  onClickMobileTail(event, element, elementPrev) :void {
+
     event.stopPropagation();
     event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+
+    if(isDebug) console.log("mobile / onClickMobileTail / init");
 
     if(!this.isFocusMobileTail) {
       this.isFocusMobileTail = true;      
     } // end if
 
     this.setMyChecker();
+
+    this.mobileTailPrev = element.value;
+
+    // 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.
+    if(null != elementPrev && (null == elementPrev.value || "" === elementPrev.value)) {
+
+      if(isDebug) console.log("mobile / onClickMobileTail / 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.");
+
+      this.isFocusMobileTail = false;
+
+      // 사용자에게 안내메시지 노출.
+      this.tooltipBodyMsg = "휴대전화 번호를 먼저 확인해주세요.";
+      this.isFocusMobileBody = true;
+      this.isSuccessBodyInput = false;
+      elementPrev.focus();
+
+      this.hideTooltipTail(2);
+    }
   }
 
   onKeyupTail(event, element) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
+    // wonder.jung
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
+
     let inputStr:string = element.value;
     if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("mobile / onKeyupTail / 중단 / inputStr is not valid!");
       return;
     } 
+
+    if(this.mobileTailPrev === inputStr) {
+      // 방향키로 움직이는 경우를 방어
+      if(isDebug) console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      return;
+    }
     
     // 숫자가 아닌 글자들은 모두 삭제해준다.
     element.value = inputStr.replace(/[^0-9]/gi,"");
@@ -403,8 +625,83 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileTail = true;
       this.isSuccessTailInput = false;
       element.focus();
-      this.hideTooltipTail(2, element);
+      this.hideTooltipTail(2);
     }
+
+    let max:number = this.myCheckerMobileTail.max;
+    let isOK:boolean = true;
+    if(0 < max && max < inputStr.length) {
+      isOK = false;
+    }
+    if(isDebug) console.log("mobile / onKeyupTail / isOK : ",isOK);
+    if(isDebug) console.log("mobile / onKeyupTail / max : ",max);
+
+    if(!isOK) {
+      // 최대 길이보다 깁니다.
+      this.tooltipTailMsg = "숫자 3자리를 입력해주세요.";
+      this.isFocusMobileTail = true;
+      this.isSuccessTailInput = false;
+      element.focus();
+      this.hideTooltipTail(2);
+
+      // 마지막으로 입력한 문자를 지웁니다.
+      inputStr = inputStr.slice(0, (inputStr.length - 1));
+
+      if(isDebug) console.log("mobile / onKeyupTail / 마지막으로 입력한 문자를 지웁니다.");
+
+    } // end if
+
+    // 전체 필터 검사를 진행합니다.
+    isOK = this.isOKTail(inputStr);
+    if(!isOK) {
+
+      // 조건에 맞지 않습니다.
+      // 원인을 찾아봅니다.
+      let history = this.myCheckerService.getLastHistory();
+
+      if( null != history && 
+          null != history.key && 
+          null != history.msg ) {
+
+        if(isDebug) console.log("mobile / onKeyupTail / 전체 필터 검사 / history : ",history);
+        if(isDebug) console.log("mobile / onKeyupTail / 전체 필터 검사 / this.mobileTailPrev : ",this.mobileTailPrev);
+
+        if("regexInclude" === history.key) {
+
+            let regExpStr:string = history.value + "";
+            let regExpStrInputStrRange:string =  /^01[0-9]$/g + "";
+
+            if(regExpStr == regExpStrInputStrRange) {
+              this.tooltipTailMsg = "휴대전화 형식이 맞지 않습니다.";
+              this.isFocusMobileTail = true;
+              this.isSuccessTailInput = false;
+              element.focus();
+
+              this.hideTooltipTail(2);
+
+              // 직전 내용으로 롤백.
+              inputStr = this.mobileTailPrev;
+              
+            }
+        }
+
+      } // end inner if
+    } else if(max === inputStr.length) {
+      // 사용자가 입력한 전화번호가 가장 긴 4자리인 경우, 입력은 완료한 것으로 판단합니다.
+      // 모든 조건이 맞습니다. 
+      if(isDebug) console.log("mobile / onKeyupTail / 모든 조건이 맞습니다. 전화번호 입력을 종료합니다.");
+
+      this.tooltipTailMsg = this.tooltipHeadAllowed;
+      this.isFocusMobileTail = false;
+      this.isSuccessTailInput = true;
+
+      this.hideTooltipTail(2);
+
+      element.blur();
+    }    
+
+
+    this.mobileBodyPrev = element.value = inputStr;    
   }   
 
   onBlurMobileTail(event, element, elementNext) :void {
@@ -471,7 +768,7 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileTail = false;
       this.isSuccessTailInput = true;
 
-      this.hideTooltipTail(2, element);
+      this.hideTooltipTail(2);
 
       if(null != elementNext) {
         elementNext.focus();
