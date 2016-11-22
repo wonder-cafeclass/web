@@ -51,6 +51,25 @@ var NicknameComponent = (function () {
         // Checker가 없다면, Checker를 가져옵니다.
         this.setMyChecker();
     };
+    NicknameComponent.prototype.onFocus = function (event, element) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (!this.isFocus) {
+            this.isFocus = true;
+        } // end if
+        // Checker가 없다면, Checker를 가져옵니다.
+        this.setMyChecker();
+    };
+    NicknameComponent.prototype.onKeydownTab = function (event) {
+        // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+        // 포커싱을 잃습니다.
+        this.isFocus = false;
+    };
+    NicknameComponent.prototype.onKeydownTabShift = function (event) {
+        // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+        // 포커싱을 잃습니다.
+        this.isFocus = false;
+    };
     NicknameComponent.prototype.onBlur = function (event, element) {
         event.stopPropagation();
         event.preventDefault();

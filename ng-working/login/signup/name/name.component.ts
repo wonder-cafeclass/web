@@ -61,12 +61,24 @@ export class NameComponent implements OnInit {
     event.preventDefault();
 
     if(!this.isFocus) {
-      this.isFocus = true;      
+      this.isFocus = true;
     } // end if
 
     // Checker가 없다면, Checker를 가져옵니다.
     this.setMyChecker();
   } 
+
+  onFocus(event, element) :void {
+    if(!this.isFocus) {
+      this.isFocus = true;
+    } // end if
+  }
+
+  onKeydownTab(event) :void {
+    // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+    // 포커싱을 잃습니다.
+    this.isFocus = false;
+  }  
 
   onBlur(event, element) :void {
 

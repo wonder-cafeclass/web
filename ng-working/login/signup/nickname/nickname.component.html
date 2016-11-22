@@ -20,8 +20,11 @@
 		class="btn-box radius-border">
 	<input 	#input
 			(click)="onClick($event, input)"
+			(focus)="onFocus($event, input)"
 			(blur)="onBlur($event, input)"
 			(keyup)="onKeyup($event, input)"
+			(keydown.tab)="onKeydownTab($event)"
+			(keydown.shift.tab)="onKeydownTabShift($event)"
 			class="form-control input-glass" 
 			placeholder="닉네임">
 

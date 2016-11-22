@@ -57,9 +57,10 @@ export class EmailComponent implements OnInit {
     this.setMyChecker();
   }
 
-  private lockFocus;
+  // private lockFocus;
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
@@ -89,14 +90,13 @@ export class EmailComponent implements OnInit {
       if(!isOK) {
         // 1-1-1. 이메일 주소에 문제가 있습니다!
         let lastHistory = this.myCheckerService.getLastHistory();
-        // console.log("email / onBlur / lastHistory : ",lastHistory);
 
         this.isWarning = true;
 
-        if(null == this.lockFocus) {
-          this.lockFocus = {};
-          element.focus();
-        } // end if
+        // if(null == this.lockFocus) {
+        //   this.lockFocus = {};
+        //   element.focus();
+        // } // end if
 
         // 1-1-2. 경고 메시지를 노출합니다.
         this.tooltipMsg = this.tooltipMsgEmailNotValid;
@@ -192,9 +192,10 @@ export class EmailComponent implements OnInit {
     if(!this.isFocus) {
       this.isFocus = true;      
     } // end if
-    
+      
+    // REMOVE ME
     // release lock
-    this.lockFocus = null;
+    // this.lockFocus = null;
   }  
 
   isOK(email:string) :boolean {

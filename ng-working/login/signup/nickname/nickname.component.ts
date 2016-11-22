@@ -56,6 +56,7 @@ export class NicknameComponent implements OnInit {
 
 
   onClick(event, element) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
@@ -66,6 +67,30 @@ export class NicknameComponent implements OnInit {
     // Checker가 없다면, Checker를 가져옵니다.
     this.setMyChecker();
   } 
+
+  onFocus(event, element) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocus) {
+      this.isFocus = true;      
+    } // end if
+
+    // Checker가 없다면, Checker를 가져옵니다.
+    this.setMyChecker();
+  }
+
+  onKeydownTab(event) :void {
+    // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+    // 포커싱을 잃습니다.
+    this.isFocus = false;
+  }
+
+  onKeydownTabShift(event) :void {
+    // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+    // 포커싱을 잃습니다.
+    this.isFocus = false;
+  }
 
   onBlur(event, element) :void {
     event.stopPropagation();

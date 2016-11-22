@@ -24,6 +24,7 @@ var EmailComponent = (function () {
         this.tooltipMsg = "";
         this.tooltipMsgEmailNotValid = "이메일 주소를 다시 확인해주세요.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
+        // private lockFocus;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
@@ -69,12 +70,11 @@ var EmailComponent = (function () {
             if (!isOK) {
                 // 1-1-1. 이메일 주소에 문제가 있습니다!
                 var lastHistory = this.myCheckerService.getLastHistory();
-                // console.log("email / onBlur / lastHistory : ",lastHistory);
                 this.isWarning = true;
-                if (null == this.lockFocus) {
-                    this.lockFocus = {};
-                    element.focus();
-                } // end if
+                // if(null == this.lockFocus) {
+                //   this.lockFocus = {};
+                //   element.focus();
+                // } // end if
                 // 1-1-2. 경고 메시지를 노출합니다.
                 this.tooltipMsg = this.tooltipMsgEmailNotValid;
                 this.isSuccessInput = false;
@@ -149,8 +149,9 @@ var EmailComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
+        // REMOVE ME
         // release lock
-        this.lockFocus = null;
+        // this.lockFocus = null;
     };
     EmailComponent.prototype.isOK = function (email) {
         if (null == this.myCheckerService) {

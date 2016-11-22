@@ -97,6 +97,16 @@ var MobileComponent = (function () {
         var inputStr = element.value;
         this.mobileHeadPrev = inputStr;
     };
+    MobileComponent.prototype.onFocusMobileHead = function (event, element) {
+        this.isFocusMobileHead = true;
+        this.setMyChecker();
+    };
+    MobileComponent.prototype.onKeydownTabMobileHead = function (event, element) {
+        this.isFocusMobileHead = true;
+    };
+    MobileComponent.prototype.onKeydownTabShiftMobileHead = function (event, element) {
+        this.isFocusMobileHead = true;
+    };
     MobileComponent.prototype.onKeyupHead = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
@@ -279,6 +289,16 @@ var MobileComponent = (function () {
         this.setMyChecker();
         this.mobileBodyPrev = element.value;
     };
+    MobileComponent.prototype.onFocusMobileBody = function (event, element) {
+        this.isFocusMobileBody = true;
+        this.setMyChecker();
+    };
+    MobileComponent.prototype.onKeydownTabMobileBody = function (event, element) {
+        this.isFocusMobileBody = true;
+    };
+    MobileComponent.prototype.onKeydownTabShiftMobileBody = function (event, element) {
+        this.isFocusMobileBody = true;
+    };
     MobileComponent.prototype.onKeyupBody = function (event, element, elementNext) {
         // wonder.jung
         event.stopPropagation();
@@ -453,6 +473,16 @@ var MobileComponent = (function () {
             elementPrev.focus();
             this.hideTooltipTail(2);
         }
+    };
+    MobileComponent.prototype.onFocusMobileTail = function (event, element) {
+        this.isFocusMobileTail = true;
+        this.setMyChecker();
+    };
+    MobileComponent.prototype.onKeydownTabMobileTail = function (event, element) {
+        this.isFocusMobileTail = true;
+    };
+    MobileComponent.prototype.onKeydownTabShiftMobileTail = function (event, element) {
+        this.isFocusMobileTail = true;
     };
     MobileComponent.prototype.onKeyupTail = function (event, element) {
         event.stopPropagation();

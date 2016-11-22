@@ -52,6 +52,16 @@ var NameComponent = (function () {
         // Checker가 없다면, Checker를 가져옵니다.
         this.setMyChecker();
     };
+    NameComponent.prototype.onFocus = function (event, element) {
+        if (!this.isFocus) {
+            this.isFocus = true;
+        } // end if
+    };
+    NameComponent.prototype.onKeydownTab = function (event) {
+        // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
+        // 포커싱을 잃습니다.
+        this.isFocus = false;
+    };
     NameComponent.prototype.onBlur = function (event, element) {
         event.stopPropagation();
         event.preventDefault();

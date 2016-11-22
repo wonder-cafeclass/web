@@ -126,6 +126,16 @@ export class MobileComponent implements OnInit {
     this.mobileHeadPrev = inputStr;
   }
 
+  onFocusMobileHead(event, element) :void {
+    this.isFocusMobileHead = true;
+    this.setMyChecker();
+  }
+  onKeydownTabMobileHead(event, element) :void {
+    this.isFocusMobileHead = true;
+  }
+  onKeydownTabShiftMobileHead(event, element) :void {
+    this.isFocusMobileHead = true;
+  }
   
   onKeyupHead(event, element, elementNext) :void {
 
@@ -367,6 +377,18 @@ export class MobileComponent implements OnInit {
     this.mobileBodyPrev = element.value;
   }
 
+  onFocusMobileBody(event, element) :void {
+    this.isFocusMobileBody = true;
+    this.setMyChecker();
+  }
+  onKeydownTabMobileBody(event, element) :void {
+    this.isFocusMobileBody = true;
+  }
+  onKeydownTabShiftMobileBody(event, element) :void {
+    this.isFocusMobileBody = true;
+  }
+
+
   onKeyupBody(event, element, elementNext) :void {
 
     // wonder.jung
@@ -593,6 +615,19 @@ export class MobileComponent implements OnInit {
       this.hideTooltipTail(2);
     }
   }
+
+  onFocusMobileTail(event, element) :void {
+    this.isFocusMobileTail = true;
+    this.setMyChecker();
+  }
+  onKeydownTabMobileTail(event, element) :void {
+    this.isFocusMobileTail = true;
+  }
+  onKeydownTabShiftMobileTail(event, element) :void {
+    this.isFocusMobileTail = true;
+  }
+  
+  
 
   onKeyupTail(event, element) :void {
 

@@ -21,6 +21,9 @@
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileHead
 				(click)="onClickMobileHead($event, inputMobileHead)"
+				(focus)="onFocusMobileHead($event, inputMobileHead)"
+				(keydown.tab)="onKeydownTabMobileHead($event, inputMobileHead)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileHead($event, inputMobileHead)"
 				(keyup)="onKeyupHead($event, inputMobileHead, inputMobileBody)"
 				(blur)="onBlurMobileHead($event, inputMobileHead, inputMobileBody)"
 				class="form-control input-glass" 
@@ -50,6 +53,9 @@
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileBody
 				(click)="onClickMobileBody($event, inputMobileBody)"
+				(focus)="onFocusMobileBody($event, inputMobileBody)"
+				(keydown.tab)="onKeydownTabMobileBody($event, inputMobileBody)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileBody($event, inputMobileBody)"
 				(keyup)="onKeyupBody($event, inputMobileBody, inputMobileTail)"
 				(blur)="onBlurMobileBody($event, inputMobileBody, inputMobileTail)"
 				class="form-control input-glass" 
@@ -78,6 +84,9 @@
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileTail
 				(click)="onClickMobileTail($event, inputMobileTail, inputMobileBody)"
+				(focus)="onFocusMobileTail($event, inputMobileTail)"
+				(keydown.tab)="onKeydownTabMobileTail($event, inputMobileTail)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileTail($event, inputMobileTail)"
 				(keyup)="onKeyupTail($event, inputMobileTail)"
 				(blur)="onBlurMobileTail($event, inputMobileTail)"
 				class="form-control input-glass" 

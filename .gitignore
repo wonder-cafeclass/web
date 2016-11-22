@@ -6,3 +6,5 @@ application/config/database.php
 CI/static/admin.json
 
 CI/static/api.json
+
+phpinfo.php
