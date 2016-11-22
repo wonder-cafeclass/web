@@ -44,15 +44,12 @@ var MobileComponent = (function () {
         }
         if (null == this.myCheckerMobileHead) {
             this.myCheckerMobileHead = this.myCheckerService.getMyChecker("user_mobile_kor_head");
-            console.log("mobile / this.myCheckerMobileHead : ", this.myCheckerMobileHead);
         }
         if (null == this.myCheckerMobileBody) {
             this.myCheckerMobileBody = this.myCheckerService.getMyChecker("user_mobile_kor_body");
-            console.log("mobile / this.myCheckerMobileBody : ", this.myCheckerMobileBody);
         }
         if (null == this.myCheckerMobileTail) {
             this.myCheckerMobileTail = this.myCheckerService.getMyChecker("user_mobile_kor_tail");
-            console.log("mobile / this.myCheckerMobileTail : ", this.myCheckerMobileTail);
         }
     };
     MobileComponent.prototype.isOKHead = function (input) {
@@ -192,7 +189,7 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.
             if (isDebug)
                 console.log("mobile / onKeyupHead / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
-            this.tooltipHeadMsg = this.tooltipHeadAllowed;
+            // this.tooltipHeadMsg = this.tooltipHeadAllowed;
             this.isFocusMobileHead = false;
             this.isSuccessHeadInput = true;
             this.hideTooltipHead(2);
@@ -241,7 +238,7 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
-            this.tooltipHeadMsg = this.tooltipHeadAllowed;
+            // this.tooltipHeadMsg = this.tooltipHeadAllowed;
             this.isFocusMobileHead = false;
             this.isSuccessHeadInput = true;
             this.hideTooltipHead(2);
@@ -381,7 +378,7 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 
             if (isDebug)
                 console.log("mobile / onKeyupBody / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
-            this.tooltipBodyMsg = this.tooltipHeadAllowed;
+            // this.tooltipBodyMsg = this.tooltipHeadAllowed;
             this.isFocusMobileBody = false;
             this.isSuccessBodyInput = true;
             this.hideTooltipBody(2);
@@ -440,7 +437,7 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
-            this.tooltipBodyMsg = this.tooltipHeadAllowed;
+            // this.tooltipBodyMsg = this.tooltipHeadAllowed;
             this.isFocusMobileBody = false;
             this.isSuccessBodyInput = true;
             this.hideTooltipBody(2);
@@ -566,7 +563,7 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 
             if (isDebug)
                 console.log("mobile / onKeyupTail / 모든 조건이 맞습니다. 전화번호 입력을 종료합니다.");
-            this.tooltipTailMsg = this.tooltipHeadAllowed;
+            // this.tooltipTailMsg = this.tooltipHeadAllowed;
             this.isFocusMobileTail = false;
             this.isSuccessTailInput = true;
             this.hideTooltipTail(2);
@@ -621,7 +618,7 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
-            this.tooltipTailMsg = this.tooltipHeadAllowed;
+            // this.tooltipTailMsg = this.tooltipHeadAllowed;
             this.isFocusMobileTail = false;
             this.isSuccessTailInput = true;
             this.hideTooltipTail(2);

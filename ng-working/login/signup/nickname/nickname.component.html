@@ -1,6 +1,9 @@
 <div class="btn-box text-left info">
-	<label class="title">닉네임<small class="title-desc">2 ~ 32자리의 한글, 알파벳 대소문자,숫자</small></label>
-	<div 	class="popover left"
+	<label class="title">닉네임</label>
+	<small class="title-desc">2 ~ 32자리의 한글, 알파벳 대소문자,숫자</small>
+
+	<div 	*ngIf="isShowPopover"
+			class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
@@ -11,7 +14,8 @@
 		</div> 
 	</div>
 
-	<span 	class="glyphicon glyphicon-info-sign info"
+	<span 	*ngIf="isShowPopover"
+			class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>

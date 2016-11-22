@@ -32,6 +32,8 @@ export class NicknameComponent implements OnInit {
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
+  isShowPopover:boolean=false;
+
   constructor(private myLoggerService:MyLoggerService) {}
 
   ngOnInit(): void {}
@@ -194,7 +196,7 @@ export class NicknameComponent implements OnInit {
 
       } else {
 
-        this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
         this.isSuccessInput = true;
 
         this.hideTooltip(2, element);

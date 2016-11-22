@@ -40,6 +40,9 @@ var PasswordComponent = (function () {
         this.tooltipTailMatched = "성공! 패스워드가 정확히 일치합니다.";
         // 마지막에 사용자가 누른 키의 타입을 추적, 탭 이동시 패스워드 중복 성공 표시를 하지 않도록 합니다.
         this.lastKeyupTypeRP = "";
+        // 패스워드 입력 기준 (네이버)
+        // 6~16 characters with letters(a-z), numbers, and special letters.
+        this.isShowPopover = false;
         this.passwordPrev = "";
         this.repasswordPrev = "";
     }

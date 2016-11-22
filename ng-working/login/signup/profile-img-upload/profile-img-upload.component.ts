@@ -31,6 +31,8 @@ export class ProfileImgUploadComponent implements OnInit {
 
   @ViewChild('fileInput') fileInput:ElementRef;
 
+  isShowPopover:boolean=false;
+
   constructor(  private loginService: LoginService, 
                 private uploadService: UploadService, 
                 private renderer:Renderer,

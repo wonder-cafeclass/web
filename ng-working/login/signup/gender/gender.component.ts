@@ -19,6 +19,8 @@ export class GenderComponent implements OnInit {
 
   isFemale:boolean=true;
 
+  isShowPopover:boolean=false;
+
   constructor() {}
 
   ngOnInit(): void {}

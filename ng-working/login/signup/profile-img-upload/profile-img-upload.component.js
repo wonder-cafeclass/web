@@ -25,6 +25,7 @@ var ProfileImgUploadComponent = (function () {
         this.left = -1;
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.isShowPopover = false;
     }
     ProfileImgUploadComponent.prototype.ngOnInit = function () { };
     ProfileImgUploadComponent.prototype.onClick = function (event) {

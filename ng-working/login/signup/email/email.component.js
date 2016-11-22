@@ -24,6 +24,7 @@ var EmailComponent = (function () {
         this.tooltipMsg = "";
         this.tooltipMsgEmailNotValid = "이메일 주소를 다시 확인해주세요.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
+        this.isShowPopover = false;
         // private lockFocus;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
@@ -83,7 +84,7 @@ var EmailComponent = (function () {
                 // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
                 this.isWarning = false;
                 // 1-1-2. 성공 메시지를 노출합니다.
-                this.tooltipMsg = this.tooltipMsgEmailValid;
+                // this.tooltipMsg = this.tooltipMsgEmailValid;
                 this.isSuccessInput = true;
                 this.hideTooltip(2);
             } // end if

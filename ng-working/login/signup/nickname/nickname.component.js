@@ -25,6 +25,7 @@ var NicknameComponent = (function () {
         this.tooltipHeadAllowed = "성공! 근사한 닉네임이네요.";
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.isShowPopover = false;
         this.inputStrPrev = "";
     }
     NicknameComponent.prototype.ngOnInit = function () { };
@@ -144,7 +145,7 @@ var NicknameComponent = (function () {
                 return;
             }
             else {
-                this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                // this.tooltipHeadMsg = this.tooltipHeadAllowed;
                 this.isSuccessInput = true;
                 this.hideTooltip(2, element);
                 return;

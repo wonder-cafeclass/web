@@ -33,6 +33,8 @@ export class EmailComponent implements OnInit {
   tooltipMsgEmailNotValid:string="이메일 주소를 다시 확인해주세요.";
   tooltipMsgEmailValid:string="성공! 이메일 주소가 완벽해요.";
 
+  isShowPopover:boolean=false;
+
   constructor() {}
 
   ngOnInit(): void {}
@@ -107,7 +109,7 @@ export class EmailComponent implements OnInit {
         this.isWarning = false;
 
         // 1-1-2. 성공 메시지를 노출합니다.
-        this.tooltipMsg = this.tooltipMsgEmailValid;
+        // this.tooltipMsg = this.tooltipMsgEmailValid;
         this.isSuccessInput = true;
 
         this.hideTooltip(2);

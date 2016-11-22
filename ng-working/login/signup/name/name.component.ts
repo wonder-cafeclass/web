@@ -32,6 +32,8 @@ export class NameComponent implements OnInit {
 
   myChecker:MyChecker;
 
+  isShowPopover:boolean=false;
+
   constructor(private myLoggerService:MyLoggerService) {}
 
   ngOnInit(): void {}
@@ -185,7 +187,7 @@ export class NameComponent implements OnInit {
       } else {
 
         // 성공! 비속어가 포함되지 않았습니다.
-        this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
         this.isSuccessInput = true;
         element.value = name;
 

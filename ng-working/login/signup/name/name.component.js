@@ -25,6 +25,7 @@ var NameComponent = (function () {
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "이름에 문제가 있습니다.";
         this.tooltipHeadAllowed = "성공! 멋진 이름이네요.";
+        this.isShowPopover = false;
         this.inputStrPrev = "";
     }
     NameComponent.prototype.ngOnInit = function () { };
@@ -141,7 +142,7 @@ var NameComponent = (function () {
             }
             else {
                 // 성공! 비속어가 포함되지 않았습니다.
-                this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                // this.tooltipHeadMsg = this.tooltipHeadAllowed;
                 this.isSuccessInput = true;
                 element.value = name;
                 this.hideTooltip(2, element);

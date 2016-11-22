@@ -1,6 +1,9 @@
 <div class="btn-box text-left info">
-	<label class="title">이름<small class="title-desc">2 ~ 5자리의 한글</small></label>
-	<div 	class="popover left"
+	<label class="title">이름</label>
+	<small class="title-desc">2 ~ 5자리의 한글</small>
+
+	<div 	*ngIf="isShowPopover"
+			class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
@@ -10,7 +13,8 @@
 			<p>강사님께서 여러분을 부를 때 사용할 이름입니다. 닉네임이 있다면 닉네임을 먼저 사용합니다.2 ~ 5자리의 한글만 가능합니다.</p> 
 		</div> 
 	</div>	
-	<span 	class="glyphicon glyphicon-info-sign info"
+	<span 	*ngIf="isShowPopover"
+			class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>

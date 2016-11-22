@@ -54,6 +54,8 @@ export class PasswordComponent implements OnInit {
   // 패스워드 입력 기준 (네이버)
   // 6~16 characters with letters(a-z), numbers, and special letters.
 
+  isShowPopover:boolean=false;
+
   myChecker:MyChecker;
 
   constructor() {}
