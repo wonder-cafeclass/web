@@ -1,7 +1,10 @@
 <!-- 파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview -->
 <div class="btn-box text-left info">
 	<label class="title">프로필 이미지</label>
-	<div 	class="popover left"
+	<small class="title-desc">1:1 비율의 정사각형 이미지</small>
+
+	<div 	*ngIf="isShowPopover"
+			class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
@@ -12,7 +15,8 @@
 		</div> 
 	</div>
 
-	<span 	class="glyphicon glyphicon-info-sign info"
+	<span 	*ngIf="isShowPopover"
+			class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>
@@ -27,7 +31,7 @@
 
 	<button type="button" 
 			(click)="onClickFileUpload($event)"
-			class="btn btn-default profile-img">
-		<span>이미지 업로드</span>
+			class="btn btn-default profile-img btn-orange">
+		<span>올리기</span>
 	</button>
 </div>

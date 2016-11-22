@@ -21,7 +21,7 @@ export class ProfileImgUploadComponent implements OnInit {
 
   private uploadUserProfileUrl:string = '/CI/index.php/api/upload/userprofile';
   public userProfilePath:string = "/assets/images/user/";
-  public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150.png";
+  public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
   @Input() top:number=-1;
   @Input() left:number=-1;
@@ -30,6 +30,8 @@ export class ProfileImgUploadComponent implements OnInit {
   isFocusInfo:boolean=false;
 
   @ViewChild('fileInput') fileInput:ElementRef;
+
+  isShowPopover:boolean=false;
 
   constructor(  private loginService: LoginService, 
                 private uploadService: UploadService, 

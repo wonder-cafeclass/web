@@ -16,6 +16,7 @@ var GenderComponent = (function () {
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isFemale = true;
+        this.isShowPopover = false;
     }
     GenderComponent.prototype.ngOnInit = function () { };
     GenderComponent.prototype.onClick = function (event) {

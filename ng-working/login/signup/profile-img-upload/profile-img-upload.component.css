@@ -52,10 +52,22 @@ div.profile-img {
 }
 button.profile-img {
   position: absolute;
-  margin-left: 10px;  
+  margin-left: 10px;
+  width:100px;
 }
 img.user-profile {
-  border: 1px solid #ddd;
+  border: 1px solid #e85c41;
   width: 100px;
   margin: 0px;
+}
+.btn-orange {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+}
+.title-desc {
+  float: right;
+  color: #e85c41;
+  font-size: 10px;
+  padding-top: 5px;
 }

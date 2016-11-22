@@ -1,6 +1,8 @@
 <div class="btn-box text-left info">
 	<label class="title">성별</label>
-	<div 	class="popover left"
+
+	<div 	*ngIf="isShowPopover"
+			class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
@@ -11,7 +13,8 @@
 		</div> 
 	</div>
 
-	<span 	class="glyphicon glyphicon-info-sign info"
+	<span 	*ngIf="isShowPopover"
+			class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>

@@ -20,11 +20,12 @@ var ProfileImgUploadComponent = (function () {
         this.urlService = urlService;
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
-        this.userProfileUrl = "/assets/images/user/user_anonymous_150x150.png";
+        this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
         this.top = -1;
         this.left = -1;
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.isShowPopover = false;
     }
     ProfileImgUploadComponent.prototype.ngOnInit = function () { };
     ProfileImgUploadComponent.prototype.onClick = function (event) {

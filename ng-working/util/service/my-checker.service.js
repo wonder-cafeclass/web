@@ -27,6 +27,7 @@ var MyCheckerService = (function () {
         this.MAX_STR_SAFE_COMMENT = 120;
         this.regExpIsStr = /is_str/i;
         this.regExpIsNumber = /is_number/i;
+        this.regExpExactLength = /exact_length\[([\d]+)\]/i;
         this.regExpMinLength = /min_length\[([\d]+)\]/i;
         this.regExpMaxLength = /max_length\[([\d]+)\]/i;
         this.regExpRegExExcludeMatch = /regex_match_exclude\[(.+)\]/i;
@@ -34,43 +35,6 @@ var MyCheckerService = (function () {
         // @ Referer : http://jsfiddle.net/ghvj4gy9/embedded/result,js/
         this.regValidEmail = /valid_emails/i;
         this.EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        /*
-        private regValidMobile:RegExp = /user_mobile/i;
-        private getValidMobiles(filter:string):RegExp[] {
-    
-            let isDebug:boolean = false;
-            if(isDebug) {
-                console.log("my-checker / getValidMobile / filter : ",filter);
-            }
-    
-            // ex) "user_email":"valid_emails"
-            if(null == filter || 0 == filter.length) {
-                return null;
-            }
-    
-            let matchArr:RegExpMatchArray = filter.match(this.regValidEmail);
-    
-            if(isDebug) {
-                console.log("my-checker / getValidEmails / matchArr : ",matchArr);
-            }
-    
-            if(null != matchArr && 1 == matchArr.length) {
-                // mobile 검증을 할 수 있는 정규표현식을 돌려줍니다.
-    
-                let regexArr:RegExp[] = [];
-                let regexMobileHead:RegExp = /01[0-9]/i;
-                regexArr.push(regexMobileHead);
-                let regexMobileBody:RegExp = /[0-9]{3,4}/i;
-                regexArr.push(regexMobileBody);
-                let regexMobileTail:RegExp = /[0-9]{4}/i;
-                regexArr.push(regexMobileTail);
-    
-                return regexArr;
-            }
-            
-            return null;
-        }
-        */
         // is_natural_no_zero
         this.regIsNaturalNoZero = /is_natural_no_zero/i;
         // is_unique
@@ -140,6 +104,7 @@ var MyCheckerService = (function () {
         if (null == filterArr || 0 == filterArr.length) {
             return null;
         }
+        // let isDebug:boolean = true;
         var isDebug = false;
         var type = ""; // @ Required
         // Type : String
@@ -174,6 +139,14 @@ var MyCheckerService = (function () {
                 type = this.TYPE_NUMBER;
                 continue;
             }
+            // 필터 - 문자열 고정 문자수
+            var exactLengthReceived = this.getExactLength(filter);
+            if (-1 < exactLengthReceived) {
+                minLength = exactLengthReceived;
+                maxLength = exactLengthReceived;
+                type = this.TYPE_STRING;
+                continue;
+            } // end if
             // 필터 - 문자열 최소 문자수
             var minLengthReceived = this.getMinLength(filter);
             if (-1 < minLengthReceived) {
@@ -353,7 +326,7 @@ var MyCheckerService = (function () {
     };
     MyCheckerService.prototype.isTypeStr = function (filter) {
         if (null == filter || 0 == filter.length) {
-            return -1;
+            return false;
         }
         var matchArr = filter.match(this.regExpIsStr);
         if (null != matchArr) {
@@ -363,13 +336,33 @@ var MyCheckerService = (function () {
     };
     MyCheckerService.prototype.isTypeNumber = function (filter) {
         if (null == filter || 0 == filter.length) {
-            return -1;
+            return false;
         }
         var matchArr = filter.match(this.regExpIsNumber);
         if (null != matchArr) {
             return true;
         }
         return false;
+    };
+    MyCheckerService.prototype.getExactLength = function (filter) {
+        if (null == filter || 0 == filter.length) {
+            return -1;
+        }
+        /*
+            ex) "min_length[2]"
+            
+            result)
+            Array[2]
+            [
+                0:"min_length[2]",
+                1:"2"
+            ];
+        */
+        var matchArr = filter.match(this.regExpExactLength);
+        if (null != matchArr && 2 == matchArr.length) {
+            return parseInt(matchArr[1]);
+        }
+        return -1;
     };
     MyCheckerService.prototype.getMinLength = function (filter) {
         if (null == filter || 0 == filter.length) {
@@ -439,6 +432,7 @@ var MyCheckerService = (function () {
         return null;
     };
     MyCheckerService.prototype.getValidEmails = function (filter) {
+        // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug) {
             console.log("my-checker / getValidEmails / filter : ", filter);
@@ -474,6 +468,7 @@ var MyCheckerService = (function () {
     };
     MyCheckerService.prototype.getIsUnique = function (filter) {
         // ex) "user_email":"is_unique[user.nickname]"
+        // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug) {
             console.log("my-checker / getIsUnique / filter : ", filter);
@@ -606,6 +601,7 @@ var MyCheckerService = (function () {
         return Promise.reject(errMsg);
     };
     MyCheckerService.prototype.isOK = function (myChecker, input) {
+        // let isDebug:boolean = true;
         var isDebug = false;
         this.history = {
             myChecker: myChecker,
