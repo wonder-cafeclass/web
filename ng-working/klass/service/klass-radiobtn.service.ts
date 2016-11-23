@@ -1,5 +1,5 @@
 import { Injectable }        from '@angular/core';
-import { MyEventService }    from '../../util/my-event.service';
+import { MyEventService }    from '../../util/service/my-event.service';
 import { MyEvent }           from '../../util/model/my-event';
 import { RadioBtnOption }    from '../../widget/radiobtn/model/radiobtn-option';
 import { Klass }             from '../model/klass';

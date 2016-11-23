@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var my_event_1 = require('../../util/model/my-event');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var image_service_1 = require('../../util/image.service');

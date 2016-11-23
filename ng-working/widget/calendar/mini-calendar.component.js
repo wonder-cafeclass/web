@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var MiniCalendarComponent = (function () {
     function MiniCalendarComponent(imageService, myEventService) {
         this.imageService = imageService;

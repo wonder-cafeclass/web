@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var comment_1 = require('../model/comment');
-var my_event_service_1 = require('../../../util/my-event.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var CommentService = (function () {
     // 카페 클래스에서 댓글 객체를 만들기 위한 로직을 관리하는 클래스.
     function CommentService(myEventService) {

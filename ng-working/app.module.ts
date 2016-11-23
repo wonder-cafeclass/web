@@ -17,7 +17,7 @@ import { AuthService }              from './auth.service';
 import { LoginService }             from './login/service/login.service';
 import { UrlService }               from './util/url.service';
 import { ImageService }             from './util/image.service';
-import { MyEventService }           from './util/my-event.service';
+import { MyEventService }           from './util/service/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
 import { UploadService }          from './util/service/upload.service';

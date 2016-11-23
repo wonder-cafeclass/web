@@ -18,7 +18,8 @@
 		"user_mobile_kor_body":"is_str|||min_length[3]|||max_length[4]|||regex_match_include[/^[0-9]{3,4}$/]",
 		"user_mobile_kor_tail":"is_str|||exact_length[4]|||regex_match_include[/^[0-9]{4}$/]",
 
-		"user_email":"valid_emails|||is_unique[user.email]",
+		"user_email_insert":"valid_emails|||is_unique[user.email]",
+		"user_email":"valid_emails",
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
 
 		"klass_id":"is_natural_no_zero",

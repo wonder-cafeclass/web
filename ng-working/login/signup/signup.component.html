@@ -30,7 +30,8 @@
 										[left]="91"
 										[topWarning]="175"
 										[leftWarning]="117"
-										[myCheckerService]="myCheckerService">
+										[myCheckerService]="myCheckerService"
+										(emitter)="onChangedFromChild($event)">
 								</email>
 								<!-- Password -->
 								<password 	[top]="228"
@@ -87,7 +88,9 @@
 
 						<tr> 
 							<td class="layout border-top btn-box" colspan="2">
-								<button type="button" class="btn btn-orange save">저장</button>
+								<button 	(click)="onClickSave($event)"
+											type="button" 
+											class="btn btn-orange save">저장</button>
 							</td> 
 						</tr>
 					</tbody> 

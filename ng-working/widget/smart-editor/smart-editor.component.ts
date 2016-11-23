@@ -8,7 +8,7 @@ import {
   ViewChild,
   EventEmitter }                    from '@angular/core';
 import { MyEvent }                  from '../../util/model/my-event';
-import { MyEventService }           from '../../util/my-event.service';
+import { MyEventService }           from '../../util/service/my-event.service';
 import { MyAssetService }           from '../../util/my-asset.service';
 
 /*

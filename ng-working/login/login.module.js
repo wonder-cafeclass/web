@@ -27,6 +27,7 @@ var nickname_component_1 = require('./signup/nickname/nickname.component');
 var gender_component_1 = require('./signup/gender/gender.component');
 var birthday_component_1 = require('./signup/birthday/birthday.component');
 var login_service_1 = require('./service/login.service');
+var user_service_1 = require('../users/service/user.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var LoginModule = (function () {
@@ -56,6 +57,7 @@ var LoginModule = (function () {
             ],
             providers: [
                 login_service_1.LoginService,
+                user_service_1.UserService,
                 my_birthday_service_1.MyBirthdayService,
                 my_checker_service_1.MyCheckerService
             ]

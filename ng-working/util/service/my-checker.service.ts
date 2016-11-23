@@ -125,6 +125,8 @@ export class MyCheckerService {
         let regexExclude:RegExp = null;
         let regexExcludeArr:RegExp[] = [];
 
+        let dbQueryUnique:string = "";
+
         for (var i = 0; i < filterArr.length; ++i) {
             let filter:string = filterArr[i];
 
@@ -174,17 +176,6 @@ export class MyCheckerService {
                 regexInclude = regExpValidEmailReceived;
                 continue;
             } // end if
-
-            // REMOVE ME
-            // 필터 - 정상 모바일 검증
-            /*
-            let regExpValidMobileReceived:RegExp[] = this.getValidMobiles(filter);
-            if(null != regExpValidMobileReceived) {
-                type = this.TYPE_STRING;
-                regexIncludeArr = regExpValidMobileReceived;
-                continue;
-            } // end if
-            */
 
             // 필터 - 자연수만 허용
             let isNaturalNoZero = this.getNaturalNoZero(filter);
@@ -259,6 +250,14 @@ export class MyCheckerService {
                 continue;
             } // end if
 
+            // 필터 - DB Query Unique
+            let dbQueryUniqueReceived:string = this.getRegExpDBQueryUnique(filter);
+            if(null != dbQueryUniqueReceived) {
+                type = this.TYPE_STRING;
+                dbQueryUnique = dbQueryUniqueReceived;
+                continue;
+            } // end if
+
         }
 
         // DEBUG
@@ -278,6 +277,8 @@ export class MyCheckerService {
 
             console.log("my-checker / getMyCheckerByFilters / regexExclude : ",regexExclude);
             console.log("my-checker / getMyCheckerByFilters / regexInclude : ",regexInclude);
+
+            console.log("my-checker / getMyCheckerByFilters / dbQueryUnique : ",dbQueryUnique);
         }
 
         // 핕터를 모두 확인했습니다. 
@@ -325,6 +326,10 @@ export class MyCheckerService {
 
             if( null != matches && 0 < matches.length ) {
                 myChecker.matches = matches;
+            }
+
+            if( null != dbQueryUnique && "" != dbQueryUnique ) {
+                myChecker.dbQueryUnique = dbQueryUnique;   
             }
 
         } else if(this.TYPE_NUMBER === type) {
@@ -484,7 +489,7 @@ export class MyCheckerService {
         }
         
         return null;
-    } 
+    }
 
     private regExpRegExIncludeMatch:RegExp=/regex_match_include\[(.+)\]/i;
     private getRegExIncludeMatch(filter:string) : RegExp {
@@ -715,6 +720,20 @@ export class MyCheckerService {
         
         return -1;
     }
+    private regExpDBQueryUnique:RegExp=/is_unique\[(.+)\]/i;
+    private getRegExpDBQueryUnique(filter:string) : string {
+
+        // ex) is_unique[user.nickname]
+
+        if(null == filter || 0 == filter.length) {
+            return null;
+        }
+
+        let matchArr:RegExpMatchArray = filter.match(this.regExpRegExIncludeMatch);
+        console.log("TEST / matchArr : ",matchArr);
+
+        return "";
+    }    
 
 
     getChecker (): Promise<any> {

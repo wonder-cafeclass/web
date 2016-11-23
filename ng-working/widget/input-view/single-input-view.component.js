@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var my_event_1 = require('../../util/model/my-event');
 var SingleInputViewComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.

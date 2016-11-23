@@ -1,6 +1,6 @@
 import { Injectable }        from '@angular/core';
 import { Comment }           from '../model/comment';
-import { MyEventService }    from '../../../util/my-event.service';
+import { MyEventService }    from '../../../util/service/my-event.service';
 
 @Injectable()
 export class CommentService {

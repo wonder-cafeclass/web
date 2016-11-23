@@ -1,14 +1,10 @@
-/* REMOVE ME */
-
 import { Injectable }             from '@angular/core';
-// import { MyEvent }                from './model/my-event';
-// import { MyChecker }              from './model/my-checker';
+import { MyEvent }                from '../model/my-event';
+import { MyChecker }              from '../model/my-checker';
 
 @Injectable()
 export class MyEventService {
 
-    // @ Deprecated
-/*
     // 부모 자식간의 컴포넌트 통신시 어떤 이벤트가 발생했는지 정의하는 서비스 객체.
 
     // GENERAL PURPOSE
@@ -68,6 +64,8 @@ export class MyEventService {
     KEY_COMMENT:string="KEY_COMMENT";                     // 댓글 리스트
     KEY_COMMENT_REVIEW:string="KEY_COMMENT_REVIEW";       // 댓글 - 수업 리뷰 리스트
     KEY_COMMENT_QUESTION:string="KEY_COMMENT_QUESTION";   // 댓글 - 수업 문의 리스트
+
+    KEY_USER_EMAIL:string="KEY_USER_EMAIL";   // 유저 - 이메일주소
 
     private uniqueIdx:number=0;
 
@@ -216,5 +214,5 @@ export class MyEventService {
         return myEvent;
     }
 
-*/
+
 }

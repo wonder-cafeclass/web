@@ -15,13 +15,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */ 
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/libraries/MY_Class.php';
-require APPPATH . '/models/KlassLocation.php';
 
 /*
 *   @ Author : Wonder Jung
-*   @ Desc : 서비스 뷰의 특이사항을 기록하는 로거. Logger.
+*   @ Desc : Controller에서 자주 사용되는 메서드들을 모아 만든 Wrapper Class
 */
-class Log extends REST_Controller implements MY_Class{
+class MY_REST_Controller extends REST_Controller implements MY_Class{
 
     function __construct()
     {
@@ -55,6 +54,9 @@ class Log extends REST_Controller implements MY_Class{
 
         // init MyTime
         $this->load->library('MY_Time');
+
+        // init MyCurl
+        $this->load->library('MY_Curl');
 
         // init MyAPIKey
         $this->load->library('MY_ApiKey');
@@ -100,25 +102,63 @@ class Log extends REST_Controller implements MY_Class{
         return $is_ok;
     }
 
+    // Add methods ...
+
     /*
-    *   @ Desc : 유저가 특정 페이지로 진입한 것을 기록합니다.
+    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
     */
-    public function page_get() 
+    public function respond_500($msg="")
     {
-        // 콜백 응답에서 facebook_code 파라미터의 값을 가져옴
-        $page_key = $this->my_paramchecker->get('pageKey','logger_page_key');
-        if(empty($page_key)) 
+        if(empty($msg)) 
         {
             return;
         }
 
-        $this->my_logger->add_action(
-            // $user_id=-1
-            -1,
-            // $action_type=""
-            $this->my_logger->ACTION_PAGE_ENTER,
-            // $action_key=""
-            $page_key
-        );
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $this->set_response(
+                // $response_body
+                $this->my_response->getResBodyFailMsg($msg),
+                // status code
+                REST_Controller::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    } 
+
+    /*
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
+    */
+    public function respond_200($data=null)
+    {
+        if(is_null($data)) 
+        {
+            return;
+        }
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $response_body = $this->my_response->getResBodySuccessData($data);
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        }
+    } 
+
+
+    /*
+    *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
+    */
+    private function get_const($key="") 
+    {
+        if(empty($key)) 
+        {
+            return null;
+        }
+        if(!isset($this->my_paramchecker)) 
+        {
+            return null;
+        }
+
+        return $this->my_paramchecker->get_const($key);
     }
+
+
 }

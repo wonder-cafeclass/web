@@ -10,8 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
+var user_service_1 = require('../../../users/service/user.service');
 var EmailComponent = (function () {
-    function EmailComponent() {
+    function EmailComponent(myEventService, userService) {
+        this.myEventService = myEventService;
+        this.userService = userService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
@@ -23,8 +27,10 @@ var EmailComponent = (function () {
         this.isSuccessInput = false;
         this.tooltipMsg = "";
         this.tooltipMsgEmailNotValid = "이메일 주소를 다시 확인해주세요.";
+        this.tooltipMsgEmailNotUnique = "이미 등록되어 있는 이메일입니다.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
         this.isShowPopover = false;
+        this.emitter = new core_1.EventEmitter();
         // private lockFocus;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
@@ -45,6 +51,7 @@ var EmailComponent = (function () {
         this.setMyChecker();
     };
     EmailComponent.prototype.onBlur = function (event, email, element) {
+        var _this = this;
         event.stopPropagation();
         event.preventDefault();
         // let isDebug:boolean = true;
@@ -66,32 +73,74 @@ var EmailComponent = (function () {
         } // end if
         // 이메일 주소가 입력된 경우에만 검사를 진행합니다.
         if (null != email && "" != email) {
-            // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-            var isOK = this.isOK(email);
-            if (!isOK) {
-                // 1-1-1. 이메일 주소에 문제가 있습니다!
-                var lastHistory = this.myCheckerService.getLastHistory();
-                this.isWarning = true;
-                // if(null == this.lockFocus) {
-                //   this.lockFocus = {};
-                //   element.focus();
-                // } // end if
-                // 1-1-2. 경고 메시지를 노출합니다.
-                this.tooltipMsg = this.tooltipMsgEmailNotValid;
-                this.isSuccessInput = false;
-            }
-            else {
-                // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
-                this.isWarning = false;
-                // 1-1-2. 성공 메시지를 노출합니다.
-                // this.tooltipMsg = this.tooltipMsgEmailValid;
-                this.isSuccessInput = true;
-                this.hideTooltip(2);
-            } // end if
             // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
             var regExpLastEmptySpace = /[\s]+$/gi;
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
+            // 1. 사용자가 입력한 이메일 주소를 검사합니다.
+            var isOK_1 = this.isOK(email);
+            console.log("TEST - 001");
+            if (isOK_1) {
+                this.userService
+                    .getUserByEmail(email)
+                    .then(function (result) {
+                    if (null != result &&
+                        null != result.user) {
+                        // 이미 등록된 유저가 있습니다.
+                        isOK_1 = false;
+                    }
+                    console.log("TEST - 002 / result : ", result);
+                    console.log("TEST - 002 / isOK : ", isOK_1);
+                    if (isOK_1) {
+                        console.log("TEST - 003");
+                        _this.emailSuccess(email);
+                    }
+                    else {
+                        console.log("TEST - 004");
+                        _this.emailFailed(_this.tooltipMsgEmailNotUnique);
+                    }
+                });
+            }
+            else {
+                this.emailFailed(this.tooltipMsgEmailNotValid);
+            }
         } // end if
+    };
+    EmailComponent.prototype.emailFailed = function (msgWarning) {
+        if (null == msgWarning || "" == msgWarning) {
+            return;
+        }
+        // 1-1-1. 이메일 주소에 문제가 있습니다!
+        var lastHistory = this.myCheckerService.getLastHistory();
+        this.isWarning = true;
+        // 1-1-2. 경고 메시지를 노출합니다.
+        this.tooltipMsg = msgWarning;
+        this.isSuccessInput = false;
+    };
+    EmailComponent.prototype.emailSuccess = function (email) {
+        if (null == email || "" == email) {
+            return;
+        }
+        // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
+        this.isWarning = false;
+        // 1-1-2. 성공 메시지를 노출합니다.
+        // this.tooltipMsg = this.tooltipMsgEmailValid;
+        this.tooltipMsg = null;
+        this.isSuccessInput = true;
+        // 1-1-3. 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+        // 부모 객체에게 Ready Event 발송 
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        this.myEventService.KEY_USER_EMAIL, 
+        // public value:string
+        email, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        this.hideTooltip(2);
     };
     EmailComponent.prototype.hideTooltip = function (sec) {
         if (null == sec || !(0 < sec)) {
@@ -155,9 +204,11 @@ var EmailComponent = (function () {
         // this.lockFocus = null;
     };
     EmailComponent.prototype.isOK = function (email) {
+        var isOK = false;
         if (null == this.myCheckerService) {
-            return false;
+            return isOK;
         }
+        // 1. myChecker로 검사.
         return this.myCheckerService.isOK(this.myChecker, email);
     };
     EmailComponent.prototype.onMouseOverInfo = function (event) {
@@ -194,6 +245,10 @@ var EmailComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)
     ], EmailComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], EmailComponent.prototype, "emitter", void 0);
     EmailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -201,7 +256,7 @@ var EmailComponent = (function () {
             templateUrl: 'email.component.html',
             styleUrls: ['email.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, user_service_1.UserService])
     ], EmailComponent);
     return EmailComponent;
 }());
