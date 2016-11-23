@@ -1,7 +1,6 @@
 <!-- 파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview -->
 <div class="btn-box text-left info">
 	<label class="title">프로필 이미지</label>
-	<small class="title-desc">1:1 비율의 정사각형 이미지</small>
 
 	<div 	*ngIf="isShowPopover"
 			class="popover left"
@@ -22,17 +21,45 @@
 			(mouseout)="onMouseOutInfo($event)"></span>
 </div>
 <div class="btn-box radius-border profile-img">
-	<img *ngIf="userProfileUrl" src={{userProfileUrl}} alt="..." class="img-rounded user-profile">
-	<input  #fileInput 
-			style="display:none;"
-			type="file" 
-			name="userfile" 
-			(change)="onChangeFile($event)"/>
 
-	<button type="button" 
-			(click)="onClickFileUpload($event)"
-			(focus)="onFocusFileUpload($event)"
-			class="btn btn-default profile-img btn-orange">
-		<span>올리기</span>
-	</button>
+	<table class="table layout"> 
+		<tbody> 
+			<tr> 
+				<td class="layout no-border" 
+					style="width:110px;" 
+					rowspan="2">
+					<img 	*ngIf="userProfileUrl" 
+							src={{userProfileUrl}} 
+							alt="..." 
+							class="img-rounded user-profile">
+				</td> 
+				<td class="layout no-border" 
+					style="height: 55px;">
+					<img 	*ngFor="let thumbnail of userProfileSampleArr; let isLast = last; let i = index"
+							src={{thumbnail}} 
+							alt="..." 
+							[ngClass]="{'not-last':!isLast}"
+							(click)="onClickSampleThumb($event, i)"
+							class="img-rounded sample-profile">
+				</td> 
+			</tr>
+			<tr> 
+				<td class="layout no-border">
+					<input  #fileInput 
+							style="display:none;"
+							type="file" 
+							name="userfile" 
+							(change)="onChangeFile($event)"/>
+
+					<button type="button" 
+							(click)="onClickFileUpload($event)"
+							(focus)="onFocusFileUpload($event)"
+							class="btn btn-default profile-img btn-orange">
+						<span>올리기</span>
+					</button>
+				</td> 
+			</tr>
+		</tbody>
+	</table>
+
 </div>

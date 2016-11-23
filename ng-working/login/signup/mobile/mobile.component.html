@@ -3,6 +3,7 @@
 	<div 	class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"	
+			(click)="onClickInfo($event)"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
 		<div class="arrow"></div> 
 		<h3 class="popover-title">전화번호가 필요한 이유는 무엇인가요?</h3> 
@@ -11,10 +12,16 @@
 		</div> 
 	</div>	
 
+	<a 	href="#" 
+		(click)="onClickInfo($event)"
+		class="info">왜 전화번호가 필요한가요?</a>
+	
+	<!--
 	<span 	class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>
+	-->
 </div>
 <div style="height: 52px;margin-bottom: 13px;">
 	<div 	[ngClass]="{'rb-focus':isFocusMobileHead,'rb-blur':!isFocusMobileHead}"

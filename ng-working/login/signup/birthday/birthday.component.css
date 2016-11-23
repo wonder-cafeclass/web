@@ -74,3 +74,9 @@ div.shim-select {
   top: -44px;
   left: 112px;  
 }
+a.info {
+  float: right;
+  font-size: 11px;
+  padding-top: 5px;
+  text-decoration: underline;
+}

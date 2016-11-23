@@ -19,6 +19,12 @@ span.info {
   float: right;
   font-size: 18px;  
 }
+a.info {
+  float: right;
+  font-size: 11px;
+  padding-top: 5px;
+  text-decoration: underline;
+}
 div.radius-border {
   border-radius: 5px;
   width: 380px;

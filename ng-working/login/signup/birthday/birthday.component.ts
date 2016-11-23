@@ -115,7 +115,14 @@ export class BirthdayComponent implements OnInit {
     if(this.isFocus) {
       this.isFocus = false;
     } // end if
-  }  
+  } 
+
+  onClickInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.isFocusInfo = !this.isFocusInfo;
+  }
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();
@@ -181,8 +188,8 @@ export class BirthdayComponent implements OnInit {
 
     this.setMyChecker();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birtday / onChangeBirthMonth / init");    
 
     this.selectedMonth = selectBirthMonth;
@@ -229,8 +236,8 @@ export class BirthdayComponent implements OnInit {
 
     this.setMyChecker();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birtday / onChangeBirthDay / init");    
 
     this.selectedDay = selectBirthDay;

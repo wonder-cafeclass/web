@@ -56,6 +56,9 @@ export class SignupComponent implements OnInit {
 
   onClickSave(event): void {
 
+    event.preventDefault();
+    event.stopPropagation();
+
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickSave / 시작");
@@ -65,6 +68,32 @@ export class SignupComponent implements OnInit {
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
 
   }
+
+  onClickTerms(event): void {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / onClickTerms / 시작");
+
+    // 이용약관 페이지로 이동.
+
+  }
+
+  onClickPrivatePolicy(event): void {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / onClickPrivatePolicy / 시작");
+
+    // 개인정보 취급방침 페이지로 이동.
+
+  }  
 
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
