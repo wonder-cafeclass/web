@@ -1,7 +1,4 @@
 <?php
-
-require APPPATH . '/models/User.php';
-
 class KlassTeacher {
         public $id;
         public $user_id;

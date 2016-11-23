@@ -16,7 +16,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/libraries/MY_Class.php';
 require APPPATH . '/models/KlassLocation.php';
-require APPPATH . '/models/User.php';
 
 /*
 *   @ Author : Wonder Jung
