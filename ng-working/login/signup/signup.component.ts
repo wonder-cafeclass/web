@@ -79,6 +79,7 @@ export class SignupComponent implements OnInit {
     if(isDebug) console.log("signup / onClickTerms / 시작");
 
     // 이용약관 페이지로 이동.
+    window.open("http://www.w3schools.com");
 
   }
 
@@ -92,6 +93,7 @@ export class SignupComponent implements OnInit {
     if(isDebug) console.log("signup / onClickPrivatePolicy / 시작");
 
     // 개인정보 취급방침 페이지로 이동.
+    window.open("http://www.google.com");
 
   }  
 
