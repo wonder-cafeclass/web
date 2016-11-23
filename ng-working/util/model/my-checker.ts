@@ -26,6 +26,9 @@ export class MyChecker {
 
 	public regexExcludeArr:RegExp[];
 
+	// DB Query
+	public dbQueryUnique:string;
+
 	constructor(
 	    public type:string,
 	    public min:number,

@@ -7,7 +7,7 @@ import {
 import { RadioBtnLinearComponent }     from './../radiobtn/radiobtn-linear.component';
 import { RadioBtnOption }              from './../radiobtn/model/radiobtn-option';
 import { InputViewUpdown }             from './model/input-view-updown';
-import { MyEventService }              from '../../util/my-event.service';
+import { MyEventService }              from '../../util/service/my-event.service';
 import { MyEvent }                     from '../../util/model/my-event';
 
 @Component({

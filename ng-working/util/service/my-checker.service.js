@@ -49,6 +49,7 @@ var MyCheckerService = (function () {
         this.regExpLessThan = /less_than\[(.+)\]/i;
         // lessThanEqualTo
         this.regExpLessThanEqualTo = /less_than_equal_to\[(.+)\]/i;
+        this.regExpDBQueryUnique = /is_unique\[(.+)\]/i;
     }
     MyCheckerService.prototype.getReady = function () {
         var _this = this;
@@ -125,6 +126,7 @@ var MyCheckerService = (function () {
         var regexIncludeArr = [];
         var regexExclude = null;
         var regexExcludeArr = [];
+        var dbQueryUnique = "";
         for (var i = 0; i < filterArr.length; ++i) {
             var filter = filterArr[i];
             // 필터 - 문자열 타입?
@@ -168,16 +170,6 @@ var MyCheckerService = (function () {
                 regexInclude = regExpValidEmailReceived;
                 continue;
             } // end if
-            // REMOVE ME
-            // 필터 - 정상 모바일 검증
-            /*
-            let regExpValidMobileReceived:RegExp[] = this.getValidMobiles(filter);
-            if(null != regExpValidMobileReceived) {
-                type = this.TYPE_STRING;
-                regexIncludeArr = regExpValidMobileReceived;
-                continue;
-            } // end if
-            */
             // 필터 - 자연수만 허용
             var isNaturalNoZero = this.getNaturalNoZero(filter);
             if (isNaturalNoZero) {
@@ -242,6 +234,13 @@ var MyCheckerService = (function () {
                 regexIncludeArr.push(regexInclude);
                 continue;
             } // end if
+            // 필터 - DB Query Unique
+            var dbQueryUniqueReceived = this.getRegExpDBQueryUnique(filter);
+            if (null != dbQueryUniqueReceived) {
+                type = this.TYPE_STRING;
+                dbQueryUnique = dbQueryUniqueReceived;
+                continue;
+            } // end if
         }
         // DEBUG
         if (isDebug) {
@@ -257,6 +256,7 @@ var MyCheckerService = (function () {
             console.log("my-checker / getMyCheckerByFilters / lessThanEqualTo : ", lessThanEqualTo);
             console.log("my-checker / getMyCheckerByFilters / regexExclude : ", regexExclude);
             console.log("my-checker / getMyCheckerByFilters / regexInclude : ", regexInclude);
+            console.log("my-checker / getMyCheckerByFilters / dbQueryUnique : ", dbQueryUnique);
         }
         // 핕터를 모두 확인했습니다. 
         // MyChecker 객체를 만듭니다.
@@ -296,6 +296,9 @@ var MyCheckerService = (function () {
             }
             if (null != matches && 0 < matches.length) {
                 myChecker.matches = matches;
+            }
+            if (null != dbQueryUnique && "" != dbQueryUnique) {
+                myChecker.dbQueryUnique = dbQueryUnique;
             }
         }
         else if (this.TYPE_NUMBER === type) {
@@ -572,6 +575,15 @@ var MyCheckerService = (function () {
             return parseInt(matchArr[1]);
         }
         return -1;
+    };
+    MyCheckerService.prototype.getRegExpDBQueryUnique = function (filter) {
+        // ex) is_unique[user.nickname]
+        if (null == filter || 0 == filter.length) {
+            return null;
+        }
+        var matchArr = filter.match(this.regExpRegExIncludeMatch);
+        console.log("TEST / matchArr : ", matchArr);
+        return "";
     };
     MyCheckerService.prototype.getChecker = function () {
         var req_url = this.us.get(this.apiGetChecker);

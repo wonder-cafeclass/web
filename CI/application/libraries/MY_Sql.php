@@ -9,6 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @license   MIT
  */
 
+require APPPATH . '/models/User.php';
 
 class MY_Sql
 {
@@ -530,6 +531,34 @@ class MY_Sql
         return $this->decorate_user($row);
 
 	}
+
+    public function get_user_by_email($email="") 
+    {
+        if(empty($email))
+        {
+            return null;
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_email", $email);
+        }
+
+        if(!$is_ok) {
+            return null;
+        }
+
+        $this->CI->db->select('id, nickname, first_name, gender, birth_year, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('email', $email);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user');
+
+        $row = $query->custom_row_object(0, 'User');
+
+        return $this->decorate_user($row);
+    }
+
 	private function decorate_user($user=null)
 	{
 		if(is_null($user)) 

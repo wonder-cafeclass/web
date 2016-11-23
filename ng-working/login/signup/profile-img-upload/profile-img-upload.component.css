@@ -54,6 +54,7 @@ button.profile-img {
   position: absolute;
   margin-left: 10px;
   width:225px;
+  height: 50px;
 }
 img.user-profile {
   border: 1px solid #e85c41;

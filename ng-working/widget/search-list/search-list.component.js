@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 // @ Deprecated!
 var core_1 = require('@angular/core');
 var Subject_1 = require('rxjs/Subject');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var my_event_1 = require('../../util/model/my-event');
 var location_1 = require('./model/location');
 var SearchListComponent = (function () {

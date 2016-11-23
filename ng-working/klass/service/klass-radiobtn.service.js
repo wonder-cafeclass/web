@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var radiobtn_option_1 = require('../../widget/radiobtn/model/radiobtn-option');
 var KlassRadioBtnService = (function () {
     // 카페 클래스에서 사용하는 대표적인 체크박스 설정값 - week_min,week_max,...

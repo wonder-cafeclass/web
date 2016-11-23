@@ -5,7 +5,7 @@ import {
   Output, 
   EventEmitter }                      from '@angular/core';
 import { ImageService }               from '../../util/image.service';
-import { MyEventService }             from '../../util/my-event.service';
+import { MyEventService }             from '../../util/service/my-event.service';
 import { MyEvent }               	  from '../../util/model/my-event';
 import { Calendar }                   from './model/calendar';
 

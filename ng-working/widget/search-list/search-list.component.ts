@@ -10,7 +10,7 @@ import {
   EventEmitter }                       from '@angular/core';
 import { Observable }                  from 'rxjs/Observable';
 import { Subject }                     from 'rxjs/Subject';
-import { MyEventService }              from '../../util/my-event.service';
+import { MyEventService }              from '../../util/service/my-event.service';
 import { MyEvent }                     from '../../util/model/my-event';
 import { Location }                    from './model/location';
 import { CheckBoxOption }              from '../checkbox/model/checkbox-option';

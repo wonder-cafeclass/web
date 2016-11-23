@@ -3,42 +3,71 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
-require APPPATH . '/libraries/REST_Controller.php';
+/*
+    !Caution/주의!
 
-/**
- * This is an example of a few basic user interaction methods you could use
- * all done with a hardcoded array
- *
- * @package         CodeIgniter
- * @subpackage      Rest Server
- * @category        Controller
- * @author          Phil Sturgeon, Chris Kacerguis
- * @license         MIT
- * @link            https://github.com/chriskacerguis/codeigniter-restserver
- */
-class Users extends REST_Controller {
+    require APPPATH . '${your-class-path}';
+    ...
+    $this->load->library(${your-class-path});
+
+    // 위의 경우처럼 2번 동일한 클래스를 호출하게 되면 $this->${your-class-path} 의 경우, null을 돌려주게 됩니다.
+
+*/
+require APPPATH . '/libraries/MY_REST_Controller.php';
+
+/*
+*   @ Author : Wonder Jung
+*   @ Desc : 카페클래스 유저 정보를 조회,추가,삭제,변경하는 API 클래스.
+*/
+
+class Users extends MY_REST_Controller {
 
     function __construct()
     {
         // Construct the parent class
         parent::__construct();
 
-        // Configure limits on our controller methods
-        // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
-        $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
-
-        // init database
+        // Library Loaded from parent - MY_REST_Controller
+        /*
+        date_default_timezone_set('Asia/Seoul');
         $this->load->database();
+        $this->load->library('MY_Error');
+        $this->load->library('MY_Path');
+        $this->load->library('MY_KeyValue');
+        $this->load->library('MY_ParamChecker');
+        $this->load->library('MY_Response');
+        $this->load->library('MY_Time');
+        $this->load->library('MY_Curl');
+        $this->load->library('MY_ApiKey');
+        $this->load->library('MY_Sql');
+        $this->load->library('user_agent');
+        $this->load->library('MY_Logger');
+        */
 
-        // TEST
-        // init param checker
-        $this->load->library('paramChecker');
+        // Please add library you need here!
+        // ...
+    }
+
+    public function email_get()
+    {
+        $email = $this->my_paramchecker->get('q','user_email');
+
+        $output = [];
+        $user = null;
+        if(!empty($email)) 
+        {
+            $user = $this->my_sql->get_user_by_email($email);
+        }
+
+        $output["user"] = $user;
+        $output["email"] = $email;
+        $this->respond_200($output);
     }
 
     public function list_get()
     {
         // TEST - PHPUnit test로 검증해야 함! wonder.jung
-        $check_result = $this->paramchecker->is_ok("user_id", 0);
+        $check_result = $this->my_paramchecker->is_ok("user_id", 0);
 
         // Users from a data store e.g. database
         $query = $this->db->query('SELECT id, name FROM z_test_user');
@@ -72,6 +101,8 @@ class Users extends REST_Controller {
         }
     }
 
+    // Example - Legacy
+    /*
     public function insert_post() {
 
         // TODO 지정된 파라미터만 통과, json으로 파라미터 validation 하도록 변경. 
@@ -229,4 +260,6 @@ class Users extends REST_Controller {
         }
 
     }
+    */
+   
 }

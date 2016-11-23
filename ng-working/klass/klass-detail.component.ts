@@ -8,7 +8,7 @@ import { KlassPrice }              from './model/klass-price';
 
 import { Calendar }                from '../widget/calendar/model/calendar';
 import { ImageService }            from '../util/image.service';
-import { MyEventService }          from '../util/my-event.service';
+import { MyEventService }          from '../util/service/my-event.service';
 import { MyCheckerService }        from '../util/service/my-checker.service';
 import { MyEvent }                 from '../util/model/my-event';
 

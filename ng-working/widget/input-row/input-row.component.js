@@ -19,7 +19,7 @@ var radiobtn_h_list_component_1 = require('../radiobtn/radiobtn-h-list.component
 var radiobtn_linear_component_1 = require('../radiobtn/radiobtn-linear.component');
 var klass_color_service_1 = require('../../klass/service/klass-color.service');
 var my_ruler_service_1 = require('../../util/service/my-ruler.service');
-var my_event_service_1 = require('../../util/my-event.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var my_event_1 = require('../../util/model/my-event');
 /*
 *

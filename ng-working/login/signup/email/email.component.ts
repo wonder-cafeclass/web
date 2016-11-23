@@ -1,9 +1,16 @@
 import {  Component, 
           Input, 
+          Output,
+          EventEmitter,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
+
 import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyChecker }            from '../../../util/model/my-checker';
+import { MyEventService }       from '../../../util/service/my-event.service';
+import { MyEvent }              from '../../../util/model/my-event';
+
+import { UserService }          from '../../../users/service/user.service';
 
 @Component({
   moduleId: module.id,
@@ -21,6 +28,8 @@ export class EmailComponent implements OnInit {
 
   @Input() myCheckerService:MyCheckerService = null;
 
+  @Output() emitter = new EventEmitter<MyEvent>();
+
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
@@ -31,11 +40,13 @@ export class EmailComponent implements OnInit {
   isSuccessInput:boolean=false;
   tooltipMsg:string="";
   tooltipMsgEmailNotValid:string="이메일 주소를 다시 확인해주세요.";
+  tooltipMsgEmailNotUnique:string="이미 등록되어 있는 이메일입니다.";
   tooltipMsgEmailValid:string="성공! 이메일 주소가 완벽해요.";
 
   isShowPopover:boolean=false;
 
-  constructor() {}
+  constructor(  private myEventService:MyEventService, 
+                private userService:UserService) {}
 
   ngOnInit(): void {}
 
@@ -87,42 +98,90 @@ export class EmailComponent implements OnInit {
 
     // 이메일 주소가 입력된 경우에만 검사를 진행합니다.
     if(null != email && "" != email) {
-      // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-      let isOK:boolean = this.isOK(email);
-      if(!isOK) {
-        // 1-1-1. 이메일 주소에 문제가 있습니다!
-        let lastHistory = this.myCheckerService.getLastHistory();
-
-        this.isWarning = true;
-
-        // if(null == this.lockFocus) {
-        //   this.lockFocus = {};
-        //   element.focus();
-        // } // end if
-
-        // 1-1-2. 경고 메시지를 노출합니다.
-        this.tooltipMsg = this.tooltipMsgEmailNotValid;
-        this.isSuccessInput = false;
-
-      } else {
-        // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
-        this.isWarning = false;
-
-        // 1-1-2. 성공 메시지를 노출합니다.
-        // this.tooltipMsg = this.tooltipMsgEmailValid;
-        this.isSuccessInput = true;
-
-        this.hideTooltip(2);
-
-      } // end if
 
       // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
       let regExpLastEmptySpace:RegExp = /[\s]+$/gi;
       element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
 
+      // 1. 사용자가 입력한 이메일 주소를 검사합니다.
+      let isOK:boolean = this.isOK(email);
+      if(isOK) {
+
+        this.userService
+        .getUserByEmail(email)
+        .then(result => {
+
+          if( null != result &&
+              null != result.user ) {
+
+            // 이미 등록된 유저가 있습니다.
+            isOK = false;
+          }
+          if(isOK) {
+            this.emailSuccess(email);
+          } else {
+            this.emailFailed(this.tooltipMsgEmailNotUnique);
+          }
+        });
+
+      } else {
+        this.emailFailed(this.tooltipMsgEmailNotValid);
+      }
+
     } // end if
 
   } 
+
+  private emailFailed(msgWarning:string) :void {
+
+    if(null == msgWarning || "" == msgWarning) {
+      return;
+    }
+
+    // 1-1-1. 이메일 주소에 문제가 있습니다!
+    let lastHistory = this.myCheckerService.getLastHistory();
+
+    this.isWarning = true;
+
+    // 1-1-2. 경고 메시지를 노출합니다.
+    this.tooltipMsg = msgWarning;
+    this.isSuccessInput = false;
+
+  }
+
+  private emailSuccess(email:string) :void {
+
+    if(null == email || "" == email) {
+      return;
+    }
+
+    // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
+    this.isWarning = false;
+
+    // 1-1-2. 성공 메시지를 노출합니다.
+    // this.tooltipMsg = this.tooltipMsgEmailValid;
+    this.tooltipMsg = null;
+    this.isSuccessInput = true;
+
+    // 1-1-3. 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+    // 부모 객체에게 Ready Event 발송 
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      this.myEventService.KEY_USER_EMAIL,
+      // public value:string
+      email,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    this.hideTooltip(2);    
+  }
 
   hideTooltip(sec:number) :void {
     if(null == sec || !(0 < sec)) {
@@ -202,10 +261,13 @@ export class EmailComponent implements OnInit {
 
   isOK(email:string) :boolean {
 
+    let isOK:boolean = false;
+
     if(null == this.myCheckerService) {
-      return false;
+      return isOK;
     }
 
+    // 1. myChecker로 검사.
     return this.myCheckerService.isOK(this.myChecker, email);
   } 
 

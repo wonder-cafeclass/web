@@ -20,6 +20,8 @@ import { GenderComponent }                from './signup/gender/gender.component
 import { BirthdayComponent }              from './signup/birthday/birthday.component';
 
 import { LoginService }                   from './service/login.service';
+import { UserService }                    from '../users/service/user.service';
+
 import { MyBirthdayService }              from '../util/service/my-birthday.service';
 import { MyCheckerService }               from '../util/service/my-checker.service';
 
@@ -46,6 +48,7 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
   ],
   providers: [
   	LoginService,
+    UserService,
     MyBirthdayService,
     MyCheckerService
   ]

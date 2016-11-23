@@ -16,7 +16,7 @@ import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.compone
 
 import { KlassColorService }           from '../../klass/service/klass-color.service';
 import { MyRulerService }              from '../../util/service/my-ruler.service';
-import { MyEventService }              from '../../util/my-event.service';
+import { MyEventService }              from '../../util/service/my-event.service';
 import { MyEvent }                     from '../../util/model/my-event';
 
 /*

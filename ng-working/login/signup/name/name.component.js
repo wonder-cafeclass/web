@@ -9,16 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var NameComponent = (function () {
-    function NameComponent(myLoggerService) {
+    function NameComponent(myLoggerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
+        this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isSuccessInput = false;
@@ -35,7 +38,6 @@ var NameComponent = (function () {
         }
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_name");
-            console.log("name / this.myChecker : ", this.myChecker);
         }
     };
     NameComponent.prototype.isOK = function (input) {
@@ -146,6 +148,20 @@ var NameComponent = (function () {
                 this.isSuccessInput = true;
                 element.value = name;
                 this.hideTooltip(2, element);
+                // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+                // 부모 객체에게 Ready Event 발송 
+                var myEventOnChange = this.myEventService.getMyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE, 
+                // public key:string
+                this.myEventService.KEY_USER_NAME, 
+                // public value:string
+                name, 
+                // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
+                this.myChecker);
+                this.emitter.emit(myEventOnChange);
             } // end if - dirty word
             // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
             var regExpLastEmptySpace = /[\s]+$/gi;
@@ -264,6 +280,10 @@ var NameComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)
     ], NameComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], NameComponent.prototype, "emitter", void 0);
     NameComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -271,7 +291,7 @@ var NameComponent = (function () {
             templateUrl: 'name.component.html',
             styleUrls: ['name.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
     ], NameComponent);
     return NameComponent;
 }());

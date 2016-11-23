@@ -9,16 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var MobileComponent = (function () {
-    function MobileComponent(myLoggerService) {
+    function MobileComponent(myLoggerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
+        this.emitter = new core_1.EventEmitter();
         this.isSuccessHeadInput = false;
         this.isSuccessBodyInput = false;
         this.isSuccessTailInput = false;
@@ -196,6 +199,19 @@ var MobileComponent = (function () {
             if (null != elementNext && !this.isSuccessBodyInput) {
                 elementNext.focus();
             }
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_HEAD, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileHead);
+            this.emitter.emit(myEventOnChange);
         }
         this.mobileHeadPrev = element.value = inputStr;
     }; // end method
@@ -245,6 +261,19 @@ var MobileComponent = (function () {
             if (null != elementNext && !this.isSuccessBodyInput) {
                 elementNext.focus();
             }
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_HEAD, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileHead);
+            this.emitter.emit(myEventOnChange);
         } // end if
     };
     MobileComponent.prototype.hideTooltipHead = function (sec) {
@@ -387,6 +416,19 @@ var MobileComponent = (function () {
                 elementNext.focus();
                 this.isFocusMobileTail = true;
             }
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_BODY, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileBody);
+            this.emitter.emit(myEventOnChange);
         }
         this.mobileBodyPrev = element.value = inputStr;
     };
@@ -444,6 +486,19 @@ var MobileComponent = (function () {
             if (null != elementNext && !this.isSuccessTailInput) {
                 elementNext.focus();
             }
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_BODY, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileBody);
+            this.emitter.emit(myEventOnChange);
         } // end if   
     };
     MobileComponent.prototype.onClickMobileTail = function (event, element, elementPrev) {
@@ -568,6 +623,19 @@ var MobileComponent = (function () {
             this.isSuccessTailInput = true;
             this.hideTooltipTail(2);
             element.blur();
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileTail);
+            this.emitter.emit(myEventOnChange);
         }
         this.mobileBodyPrev = element.value = inputStr;
     };
@@ -625,6 +693,19 @@ var MobileComponent = (function () {
             if (null != elementNext) {
                 elementNext.focus();
             } // end if
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
+            // public value:string
+            inputStr, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerMobileTail);
+            this.emitter.emit(myEventOnChange);
         } // end if 
     }; // end method
     __decorate([
@@ -647,6 +728,10 @@ var MobileComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)
     ], MobileComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], MobileComponent.prototype, "emitter", void 0);
     MobileComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -654,7 +739,7 @@ var MobileComponent = (function () {
             templateUrl: 'mobile.component.html',
             styleUrls: ['mobile.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
     ], MobileComponent);
     return MobileComponent;
 }());
