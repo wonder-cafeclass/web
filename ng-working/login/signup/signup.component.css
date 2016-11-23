@@ -52,3 +52,12 @@ button.save {
   margin-right: 10px;  
   margin-bottom: 0px;  
 }
+a.info {
+  float: left;
+  font-size: 11px;
+  padding-right: 5px;
+  padding-left: 15px;
+  padding-top: 35px;
+  padding-bottom: 0px;
+  text-decoration: underline;
+}

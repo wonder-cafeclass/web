@@ -31,6 +31,14 @@ export class ProfileImgUploadComponent implements OnInit {
   public userProfilePath:string = "/assets/images/user/";
   public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
+  public userProfileSampleArr:string[] = [
+    "/assets/images/user/user_anonymous_150x150_bear.png",
+    "/assets/images/user/user_anonymous_150x150_duck.png",
+    "/assets/images/user/user_anonymous_150x150_hippo.png",
+    "/assets/images/user/user_anonymous_150x150_rabbit.png",
+    "/assets/images/user/user_anonymous_150x150_zebu.png"
+  ];
+
   @Input() top:number=-1;
   @Input() left:number=-1;
   @Input() myCheckerService:MyCheckerService;
@@ -70,6 +78,21 @@ export class ProfileImgUploadComponent implements OnInit {
     }
 
     return this.myCheckerService.isOK(this.myChecker, input);
+  }
+
+  onClickSampleThumb(event, idx) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let profileUrlNext:string = "";
+    if(null != idx && -1 < idx && idx < this.userProfileSampleArr.length) {
+      profileUrlNext = this.userProfileSampleArr[idx];
+    } // end if
+    if(null != profileUrlNext && "" != profileUrlNext) {
+      this.userProfileUrl = profileUrlNext;
+    } // end if
+
   }
 
   onClick(event) :void {

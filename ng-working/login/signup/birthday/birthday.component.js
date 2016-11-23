@@ -82,6 +82,11 @@ var BirthdayComponent = (function () {
             this.isFocus = false;
         } // end if
     };
+    BirthdayComponent.prototype.onClickInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.isFocusInfo = !this.isFocusInfo;
+    };
     BirthdayComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -131,8 +136,8 @@ var BirthdayComponent = (function () {
     };
     BirthdayComponent.prototype.onChangeBirthMonth = function (selectBirthMonth) {
         this.setMyChecker();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birtday / onChangeBirthMonth / init");
         this.selectedMonth = selectBirthMonth;
@@ -168,8 +173,8 @@ var BirthdayComponent = (function () {
     };
     BirthdayComponent.prototype.onChangeBirthDay = function (selectBirthDay) {
         this.setMyChecker();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birtday / onChangeBirthDay / init");
         this.selectedDay = selectBirthDay;

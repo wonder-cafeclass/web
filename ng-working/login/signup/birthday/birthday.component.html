@@ -3,6 +3,7 @@
 	<div 	class="popover left"
 			[style.top]="top + 'px'"
 			[style.left]="left + 'px'"
+			(click)="onClickInfo($event)"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
 		<div class="arrow"></div> 
 		<h3 class="popover-title">생일은 어떻게 사용되나요?</h3> 
@@ -11,10 +12,16 @@
 		</div> 
 	</div>
 
+	<a 	href="#" 
+		(click)="onClickInfo($event)"
+		class="info">생일은 어떻게 사용되나요?</a>
+	
+	<!-- 
 	<span 	class="glyphicon glyphicon-info-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>
+	-->
 </div>
 <table class="table layout"> 
 	<tbody> 

@@ -96,6 +96,12 @@ export class MobileComponent implements OnInit {
     return this.myCheckerService.isOK(this.myCheckerMobileTail, input);
   }
 
+  onClickInfo(event) :void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.isFocusInfo = !this.isFocusInfo;
+  }
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();

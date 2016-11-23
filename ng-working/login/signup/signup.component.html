@@ -70,8 +70,8 @@
 								</profile-img-upload>
 
 								<!-- 전화번호 -->
-								<mobile 	[top]="303" 
-											[left]="490"
+								<mobile 	[top]="305" 
+											[left]="390"
 											[topWarning]="321"
 											[leftWarning]="361"
 											[myCheckerService]="myCheckerService"
@@ -88,7 +88,7 @@
 
 								<!-- 연령 / 월 / 일 -->
 								<birthday 	[top]="534" 
-											[left]="586"
+											[left]="486"
 											[myCheckerService]="myCheckerService"
 											(emitter)="onChangedFromChild($event)">
 								</birthday>
@@ -97,8 +97,17 @@
 							<!-- Second Column done -->
 						</tr>
 
-						<tr> 
+						<tr>
 							<td class="layout border-top btn-box" colspan="2">
+
+								<a 	href="#" 
+									(click)="onClickTerms($event)"
+									class="info">이용약관</a>
+
+								<a 	href="#" 
+									(click)="onClickPrivatePolicy($event)"
+									class="info">개인정보 취급방침</a>
+
 								<button 	(click)="onClickSave($event)"
 											type="button" 
 											class="btn btn-orange save">저장</button>

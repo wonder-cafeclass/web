@@ -32,12 +32,32 @@ var SignupComponent = (function () {
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
     };
     SignupComponent.prototype.onClickSave = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("signup / onClickSave / 시작");
         // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
         // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
+    };
+    SignupComponent.prototype.onClickTerms = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / onClickTerms / 시작");
+        // 이용약관 페이지로 이동.
+    };
+    SignupComponent.prototype.onClickPrivatePolicy = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / onClickPrivatePolicy / 시작");
+        // 개인정보 취급방침 페이지로 이동.
     };
     SignupComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리

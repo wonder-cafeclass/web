@@ -73,6 +73,11 @@ var MobileComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myCheckerMobileTail, input);
     };
+    MobileComponent.prototype.onClickInfo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.isFocusInfo = !this.isFocusInfo;
+    };
     MobileComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();
         event.preventDefault();

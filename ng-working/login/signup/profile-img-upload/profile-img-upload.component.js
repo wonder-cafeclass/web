@@ -24,6 +24,13 @@ var ProfileImgUploadComponent = (function () {
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
+        this.userProfileSampleArr = [
+            "/assets/images/user/user_anonymous_150x150_bear.png",
+            "/assets/images/user/user_anonymous_150x150_duck.png",
+            "/assets/images/user/user_anonymous_150x150_hippo.png",
+            "/assets/images/user/user_anonymous_150x150_rabbit.png",
+            "/assets/images/user/user_anonymous_150x150_zebu.png"
+        ];
         this.top = -1;
         this.left = -1;
         this.emitter = new core_1.EventEmitter();
@@ -45,6 +52,17 @@ var ProfileImgUploadComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    ProfileImgUploadComponent.prototype.onClickSampleThumb = function (event, idx) {
+        event.stopPropagation();
+        event.preventDefault();
+        var profileUrlNext = "";
+        if (null != idx && -1 < idx && idx < this.userProfileSampleArr.length) {
+            profileUrlNext = this.userProfileSampleArr[idx];
+        } // end if
+        if (null != profileUrlNext && "" != profileUrlNext) {
+            this.userProfileUrl = profileUrlNext;
+        } // end if
     };
     ProfileImgUploadComponent.prototype.onClick = function (event) {
         event.stopPropagation();
