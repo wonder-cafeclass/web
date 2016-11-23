@@ -10,13 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var PasswordComponent = (function () {
-    function PasswordComponent() {
+    function PasswordComponent(myEventService) {
+        this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
+        this.emitter = new core_1.EventEmitter();
         this.isFocusPassword = false;
         this.isFocusInfo = false;
         this.isFocusRepassword = false;
@@ -509,6 +512,20 @@ var PasswordComponent = (function () {
         if (isKeyup) {
             this.tooltipTailMsg = this.tooltipTailMatched;
             this.hideTooltipTail(2);
+            // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+            // 부모 객체에게 Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_PASSWORD, 
+            // public value:string
+            this.password, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myChecker);
+            this.emitter.emit(myEventOnChange);
         }
         this.isValidRepassword = true;
         this.isWarningPassword = false;
@@ -574,6 +591,10 @@ var PasswordComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)
     ], PasswordComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], PasswordComponent.prototype, "emitter", void 0);
     PasswordComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -581,7 +602,7 @@ var PasswordComponent = (function () {
             templateUrl: 'password.component.html',
             styleUrls: ['password.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService])
     ], PasswordComponent);
     return PasswordComponent;
 }());

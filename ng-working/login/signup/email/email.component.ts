@@ -28,6 +28,8 @@ export class EmailComponent implements OnInit {
 
   @Input() myCheckerService:MyCheckerService = null;
 
+  @Output() emitter = new EventEmitter<MyEvent>();
+
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
@@ -42,8 +44,6 @@ export class EmailComponent implements OnInit {
   tooltipMsgEmailValid:string="성공! 이메일 주소가 완벽해요.";
 
   isShowPopover:boolean=false;
-
-  @Output() emitter = new EventEmitter<MyEvent>();
 
   constructor(  private myEventService:MyEventService, 
                 private userService:UserService) {}
@@ -105,9 +105,6 @@ export class EmailComponent implements OnInit {
 
       // 1. 사용자가 입력한 이메일 주소를 검사합니다.
       let isOK:boolean = this.isOK(email);
-
-      console.log("TEST - 001");
-
       if(isOK) {
 
         this.userService
@@ -120,15 +117,9 @@ export class EmailComponent implements OnInit {
             // 이미 등록된 유저가 있습니다.
             isOK = false;
           }
-
-          console.log("TEST - 002 / result : ",result);
-          console.log("TEST - 002 / isOK : ",isOK);
-
           if(isOK) {
-            console.log("TEST - 003");
             this.emailSuccess(email);
           } else {
-            console.log("TEST - 004");
             this.emailFailed(this.tooltipMsgEmailNotUnique);
           }
         });

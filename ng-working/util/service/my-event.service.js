@@ -65,6 +65,17 @@ var MyEventService = (function () {
         this.KEY_COMMENT_REVIEW = "KEY_COMMENT_REVIEW"; // 댓글 - 수업 리뷰 리스트
         this.KEY_COMMENT_QUESTION = "KEY_COMMENT_QUESTION"; // 댓글 - 수업 문의 리스트
         this.KEY_USER_EMAIL = "KEY_USER_EMAIL"; // 유저 - 이메일주소
+        this.KEY_USER_PASSWORD = "KEY_USER_PASSWORD"; // 유저 - 비밀번호
+        this.KEY_USER_NAME = "KEY_USER_NAME"; // 유저 - 이름
+        this.KEY_USER_NICKNAME = "KEY_USER_NICKNAME"; // 유저 - 닉네임
+        this.KEY_USER_THUMBNAIL = "KEY_USER_THUMBNAIL"; // 유저 - 150x150 섬네일
+        this.KEY_USER_MOBILE_NUM_HEAD = "KEY_USER_MOBILE_NUM_HEAD"; // 유저 - 휴대전화 앞 3자리 010,011,019...
+        this.KEY_USER_MOBILE_NUM_BODY = "KEY_USER_MOBILE_NUM_BODY"; // 유저 - 휴대전화 두번째 3~4자리 
+        this.KEY_USER_MOBILE_NUM_TAIL = "KEY_USER_MOBILE_NUM_TAIL"; // 유저 - 휴대전화 마지막 4자리 
+        this.KEY_USER_GENDER = "KEY_USER_GENDER"; // 유저 - 성별
+        this.KEY_USER_BIRTH_YEAR = "KEY_USER_BIRTH_YEAR"; // 유저 - 생년
+        this.KEY_USER_BIRTH_MONTH = "KEY_USER_BIRTH_MONTH"; // 유저 - 생월
+        this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
         this.uniqueIdx = 0;
     }
     // @ Deprecated

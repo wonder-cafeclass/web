@@ -12,10 +12,13 @@ var core_1 = require('@angular/core');
 var login_service_1 = require('../../service/login.service');
 var upload_service_1 = require('../../../util/service/upload.service');
 var url_service_1 = require("../../../util/url.service");
+var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var ProfileImgUploadComponent = (function () {
-    function ProfileImgUploadComponent(loginService, uploadService, renderer, urlService) {
+    function ProfileImgUploadComponent(loginService, uploadService, myEventService, renderer, urlService) {
         this.loginService = loginService;
         this.uploadService = uploadService;
+        this.myEventService = myEventService;
         this.renderer = renderer;
         this.urlService = urlService;
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
@@ -23,17 +26,33 @@ var ProfileImgUploadComponent = (function () {
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
         this.top = -1;
         this.left = -1;
+        this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isShowPopover = false;
     }
     ProfileImgUploadComponent.prototype.ngOnInit = function () { };
+    ProfileImgUploadComponent.prototype.setMyChecker = function () {
+        if (null == this.myCheckerService) {
+            return;
+        }
+        if (null == this.myChecker) {
+            this.myChecker = this.myCheckerService.getMyChecker("user_thumbnail");
+        }
+    };
+    ProfileImgUploadComponent.prototype.isOK = function (input) {
+        if (null == this.myCheckerService) {
+            return false;
+        }
+        return this.myCheckerService.isOK(this.myChecker, input);
+    };
     ProfileImgUploadComponent.prototype.onClick = function (event) {
         event.stopPropagation();
         event.preventDefault();
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
+        this.setMyChecker();
     };
     ProfileImgUploadComponent.prototype.onBlur = function (event) {
         event.stopPropagation();
@@ -56,17 +75,25 @@ var ProfileImgUploadComponent = (function () {
             this.isFocusInfo = false;
         } // end if
     };
+    ProfileImgUploadComponent.prototype.onFocusFileUpload = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.setMyChecker();
+    };
     ProfileImgUploadComponent.prototype.onClickFileUpload = function (event) {
         event.stopPropagation();
         event.preventDefault();
         // from http://stackoverflow.com/a/32010791/217408
         var eventClick = new MouseEvent('click', { bubbles: true });
         this.renderer.invokeElementMethod(this.fileInput.nativeElement, 'dispatchEvent', [eventClick]);
-        return;
+        this.setMyChecker();
     };
     ProfileImgUploadComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        console.log('onChange');
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("profile-img / onChangeFile / init");
         var files = event.srcElement.files;
         if (null == files || 1 != files.length) {
             // 1개의 파일만 업로드할 수 있습니다.
@@ -76,11 +103,34 @@ var ProfileImgUploadComponent = (function () {
         var req_url = this.urlService.get(this.uploadUserProfileUrl);
         this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (response) {
             // 섬네일 주소를 받아와서 화면에 표시해야 한다.
-            console.log('sent / response : ', response);
+            if (isDebug)
+                console.log("profile-img / onChangeFile / response : ", response);
             if (null != response &&
                 null != response.data &&
                 null != response.data.thumbnail) {
                 _this.userProfileUrl = _this.userProfilePath + response.data.thumbnail;
+                if (isDebug)
+                    console.log("profile-img / onChangeFile / this.userProfileUrl : ", _this.userProfileUrl);
+                var isOK = _this.isOK(_this.userProfileUrl);
+                if (isDebug)
+                    console.log("profile-img / onChangeFile / isOK : ", isOK);
+                if (isDebug)
+                    console.log("profile-img / onChangeFile / this.myChecker : ", _this.myChecker);
+                if (isOK) {
+                    // 부모 객체에게 Change Event 발송 
+                    var myEventOnChange = _this.myEventService.getMyEvent(
+                    // public eventName:string
+                    _this.myEventService.ON_CHANGE, 
+                    // public key:string
+                    _this.myEventService.KEY_USER_THUMBNAIL, 
+                    // public value:string
+                    _this.userProfileUrl, 
+                    // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
+                    _this.myChecker);
+                    _this.emitter.emit(myEventOnChange);
+                }
             }
         });
     };
@@ -93,6 +143,14 @@ var ProfileImgUploadComponent = (function () {
         __metadata('design:type', Number)
     ], ProfileImgUploadComponent.prototype, "left", void 0);
     __decorate([
+        core_1.Input(), 
+        __metadata('design:type', my_checker_service_1.MyCheckerService)
+    ], ProfileImgUploadComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], ProfileImgUploadComponent.prototype, "emitter", void 0);
+    __decorate([
         core_1.ViewChild('fileInput'), 
         __metadata('design:type', core_1.ElementRef)
     ], ProfileImgUploadComponent.prototype, "fileInput", void 0);
@@ -103,7 +161,7 @@ var ProfileImgUploadComponent = (function () {
             templateUrl: 'profile-img-upload.component.html',
             styleUrls: ['profile-img-upload.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, upload_service_1.UploadService, core_1.Renderer, url_service_1.UrlService])
+        __metadata('design:paramtypes', [login_service_1.LoginService, upload_service_1.UploadService, my_event_service_1.MyEventService, core_1.Renderer, url_service_1.UrlService])
     ], ProfileImgUploadComponent);
     return ProfileImgUploadComponent;
 }());

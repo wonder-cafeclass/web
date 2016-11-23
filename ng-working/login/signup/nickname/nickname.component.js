@@ -9,16 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../../util/service/my-checker.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var NicknameComponent = (function () {
-    function NicknameComponent(myLoggerService) {
+    function NicknameComponent(myLoggerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
+        this.emitter = new core_1.EventEmitter();
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "닉네임에 문제가 있습니다.";
@@ -148,6 +151,19 @@ var NicknameComponent = (function () {
                 // this.tooltipHeadMsg = this.tooltipHeadAllowed;
                 this.isSuccessInput = true;
                 this.hideTooltip(2, element);
+                // 부모 객체에게 Change Event 발송 
+                var myEventOnChange = this.myEventService.getMyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE, 
+                // public key:string
+                this.myEventService.KEY_USER_NICKNAME, 
+                // public value:string
+                inputStr, 
+                // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
+                this.myChecker);
+                this.emitter.emit(myEventOnChange);
                 return;
             } // end if - dirty word
         } // end if - check inputStr    
@@ -253,6 +269,10 @@ var NicknameComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)
     ], NicknameComponent.prototype, "myCheckerService", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], NicknameComponent.prototype, "emitter", void 0);
     NicknameComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -260,7 +280,7 @@ var NicknameComponent = (function () {
             templateUrl: 'nickname.component.html',
             styleUrls: ['nickname.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
     ], NicknameComponent);
     return NicknameComponent;
 }());

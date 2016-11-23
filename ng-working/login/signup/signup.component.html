@@ -38,21 +38,24 @@
 											[left]="91"
 											[topWarning]="270"
 											[leftWarning]="117"
-											[myCheckerService]="myCheckerService">
+											[myCheckerService]="myCheckerService"
+											(emitter)="onChangedFromChild($event)">
 								</password>
 								<!-- 이름 -->
 								<name 	[top]="408" 
 										[left]="91"
 										[topWarning]="460"
 										[leftWarning]="117"
-										[myCheckerService]="myCheckerService">
+										[myCheckerService]="myCheckerService"
+										(emitter)="onChangedFromChild($event)">
 								</name>
 								<!-- 닉네임 -->
 								<nickname 	[top]="503" 
 											[left]="91"
 											[topWarning]="555"
 											[leftWarning]="117"
-											[myCheckerService]="myCheckerService">
+											[myCheckerService]="myCheckerService"
+											(emitter)="onChangedFromChild($event)">
 								</nickname>
 							</td> 
 							<!-- First Column done -->
@@ -61,7 +64,9 @@
 
 								<!-- 프로필 이미지 -->
 								<profile-img-upload [top]="143"
-													[left]="490">
+													[left]="490"
+													[myCheckerService]="myCheckerService"
+													(emitter)="onChangedFromChild($event)">
 								</profile-img-upload>
 
 								<!-- 전화번호 -->
@@ -69,17 +74,23 @@
 											[left]="490"
 											[topWarning]="321"
 											[leftWarning]="361"
-											[myCheckerService]="myCheckerService">
+											[myCheckerService]="myCheckerService"
+											(emitter)="onChangedFromChild($event)">
 								</mobile>
 
 								<!-- 성별 -->
 								<gender 	[top]="390" 
-											[left]="586">
+											[left]="586"
+											[gender]="gender"
+											[myCheckerService]="myCheckerService"
+											(emitter)="onChangedFromChild($event)">
 								</gender>
 
 								<!-- 연령 / 월 / 일 -->
 								<birthday 	[top]="534" 
-											[left]="586">
+											[left]="586"
+											[myCheckerService]="myCheckerService"
+											(emitter)="onChangedFromChild($event)">
 								</birthday>
 
 							</td> 

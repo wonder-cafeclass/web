@@ -1,9 +1,14 @@
 import {  Component, 
           Input, 
+          Output,
+          EventEmitter,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
 import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyChecker }            from '../../../util/model/my-checker';
+import { MyEventService }       from '../../../util/service/my-event.service';
+import { MyEvent }              from '../../../util/model/my-event';
+
 
 @Component({
   moduleId: module.id,
@@ -20,6 +25,8 @@ export class PasswordComponent implements OnInit {
   @Input() leftWarning:number=-1;
 
   @Input() myCheckerService:MyCheckerService = null;
+
+  @Output() emitter = new EventEmitter<MyEvent>();
 
   isFocusPassword:boolean=false;
   isFocusInfo:boolean=false;
@@ -58,7 +65,7 @@ export class PasswordComponent implements OnInit {
 
   myChecker:MyChecker;
 
-  constructor() {}
+  constructor(private myEventService:MyEventService) {}
 
   ngOnInit(): void {}
 
@@ -213,6 +220,7 @@ export class PasswordComponent implements OnInit {
         this.isWarningPassword = false;
 
         this.hideTooltipHead(2);
+      
       } // end if
     } // end if
 
@@ -621,6 +629,24 @@ export class PasswordComponent implements OnInit {
     if(isKeyup) {
       this.tooltipTailMsg = this.tooltipTailMatched;
       this.hideTooltipTail(2);
+
+      // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+      // 부모 객체에게 Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_PASSWORD,
+        // public value:string
+        this.password,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myChecker
+      );
+      this.emitter.emit(myEventOnChange);
+              
     }
     this.isValidRepassword = true;
     this.isWarningPassword = false;

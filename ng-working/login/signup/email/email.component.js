@@ -21,6 +21,7 @@ var EmailComponent = (function () {
         this.topWarning = -1;
         this.leftWarning = -1;
         this.myCheckerService = null;
+        this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isWarning = false;
@@ -30,7 +31,6 @@ var EmailComponent = (function () {
         this.tooltipMsgEmailNotUnique = "이미 등록되어 있는 이메일입니다.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
         this.isShowPopover = false;
-        this.emitter = new core_1.EventEmitter();
         // private lockFocus;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
@@ -78,7 +78,6 @@ var EmailComponent = (function () {
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
             var isOK_1 = this.isOK(email);
-            console.log("TEST - 001");
             if (isOK_1) {
                 this.userService
                     .getUserByEmail(email)
@@ -88,14 +87,10 @@ var EmailComponent = (function () {
                         // 이미 등록된 유저가 있습니다.
                         isOK_1 = false;
                     }
-                    console.log("TEST - 002 / result : ", result);
-                    console.log("TEST - 002 / isOK : ", isOK_1);
                     if (isOK_1) {
-                        console.log("TEST - 003");
                         _this.emailSuccess(email);
                     }
                     else {
-                        console.log("TEST - 004");
                         _this.emailFailed(_this.tooltipMsgEmailNotUnique);
                     }
                 });

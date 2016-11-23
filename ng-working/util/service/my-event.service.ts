@@ -65,7 +65,21 @@ export class MyEventService {
     KEY_COMMENT_REVIEW:string="KEY_COMMENT_REVIEW";       // 댓글 - 수업 리뷰 리스트
     KEY_COMMENT_QUESTION:string="KEY_COMMENT_QUESTION";   // 댓글 - 수업 문의 리스트
 
-    KEY_USER_EMAIL:string="KEY_USER_EMAIL";   // 유저 - 이메일주소
+    KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
+    KEY_USER_PASSWORD:string="KEY_USER_PASSWORD";         // 유저 - 비밀번호
+    KEY_USER_NAME:string="KEY_USER_NAME";                 // 유저 - 이름
+    KEY_USER_NICKNAME:string="KEY_USER_NICKNAME";         // 유저 - 닉네임
+    KEY_USER_THUMBNAIL:string="KEY_USER_THUMBNAIL";       // 유저 - 150x150 섬네일
+
+    KEY_USER_MOBILE_NUM_HEAD:string="KEY_USER_MOBILE_NUM_HEAD"; // 유저 - 휴대전화 앞 3자리 010,011,019...
+    KEY_USER_MOBILE_NUM_BODY:string="KEY_USER_MOBILE_NUM_BODY"; // 유저 - 휴대전화 두번째 3~4자리 
+    KEY_USER_MOBILE_NUM_TAIL:string="KEY_USER_MOBILE_NUM_TAIL"; // 유저 - 휴대전화 마지막 4자리 
+
+    KEY_USER_GENDER:string="KEY_USER_GENDER";             // 유저 - 성별
+
+    KEY_USER_BIRTH_YEAR:string="KEY_USER_BIRTH_YEAR";     // 유저 - 생년
+    KEY_USER_BIRTH_MONTH:string="KEY_USER_BIRTH_MONTH";   // 유저 - 생월
+    KEY_USER_BIRTH_DAY:string="KEY_USER_BIRTH_DAY";       // 유저 - 생일
 
     private uniqueIdx:number=0;
 

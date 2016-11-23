@@ -21,6 +21,19 @@ import { MyEvent }              from '../../util/model/my-event';
 export class SignupComponent implements OnInit {
 
   private email:string;
+  private password:string;
+  private name:string;
+  private nickname:string;
+  private thumbnail:string;
+  private mobileNumHead:string;
+  private mobileNumBody:string;
+  private mobileNumTail:string;
+  gender:string="F";
+
+  private birthYear:string;
+  private birthMonth:string;
+  private birthDay:string;
+
 
   constructor(  private loginService: LoginService, 
                 private userService:UserService,
@@ -38,6 +51,18 @@ export class SignupComponent implements OnInit {
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);    
+
+  }
+
+  onClickSave(event): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / onClickSave / 시작");
+
+    // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
+
+    // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
 
   }
 
@@ -75,6 +100,7 @@ export class SignupComponent implements OnInit {
     if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
       if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+
         let email:string = myEvent.value;
 
         // DB Unique test
@@ -92,6 +118,62 @@ export class SignupComponent implements OnInit {
             if(isDebug) console.log("signup / onChangedFromChild / email 등록이 가능합니다.");
           } // end if
         }); // end service
+
+      } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+
+        this.password = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.password : ",this.password);
+
+      } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
+
+        this.name = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.name : ",this.name);
+
+      } else if(this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+
+        this.nickname = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.nickname : ",this.nickname);
+
+      } else if(this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+
+        this.thumbnail = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.thumbnail : ",this.thumbnail);
+
+      } else if(this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+
+        this.mobileNumHead = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumHead : ",this.mobileNumHead);
+
+      } else if(this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+
+        this.mobileNumBody = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumBody : ",this.mobileNumBody);
+
+      } else if(this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+
+        this.mobileNumTail = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumTail : ",this.mobileNumTail);
+
+      } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
+
+        this.gender = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.gender : ",this.gender);
+
+      } else if(this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+
+        this.birthYear = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.birthYear : ",this.birthYear);
+
+      } else if(this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+
+        this.birthMonth = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.birthMonth : ",this.birthMonth);
+
+      } else if(this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+
+        this.birthDay = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.birthDay : ",this.birthDay);
+
       } // end if
 
     } // end if

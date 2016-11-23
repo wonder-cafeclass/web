@@ -1,10 +1,14 @@
 import {  Component, 
           Input, 
+          Output,
+          EventEmitter,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
-import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyLoggerService }      from '../../../util/service/my-logger.service';
+import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyChecker }            from '../../../util/model/my-checker';
+import { MyEventService }       from '../../../util/service/my-event.service';
+import { MyEvent }              from '../../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
@@ -21,6 +25,8 @@ export class MobileComponent implements OnInit {
   @Input() leftWarning:number=-1;
 
   @Input() myCheckerService:MyCheckerService = null;
+
+  @Output() emitter = new EventEmitter<MyEvent>();
 
   isSuccessHeadInput:boolean=false;
   isSuccessBodyInput:boolean=false;
@@ -45,7 +51,8 @@ export class MobileComponent implements OnInit {
   isFocusMobileTail:boolean=false;
   isFocusMobileInfo:boolean=false;  
 
-  constructor(private myLoggerService:MyLoggerService) {}
+  constructor(  private myLoggerService:MyLoggerService, 
+                private myEventService:MyEventService) {}
 
   ngOnInit(): void {}
 
@@ -243,6 +250,22 @@ export class MobileComponent implements OnInit {
         elementNext.focus();
       }
 
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_HEAD,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileHead
+      );
+      this.emitter.emit(myEventOnChange);
+
 
     }
 
@@ -313,6 +336,22 @@ export class MobileComponent implements OnInit {
       if(null != elementNext && !this.isSuccessBodyInput) {
         elementNext.focus();
       }
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_HEAD,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileHead
+      );
+      this.emitter.emit(myEventOnChange);      
 
     }// end if
 
@@ -494,6 +533,22 @@ export class MobileComponent implements OnInit {
         elementNext.focus();
         this.isFocusMobileTail = true;
       }
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_BODY,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileBody
+      );
+      this.emitter.emit(myEventOnChange);      
     }    
 
 
@@ -571,6 +626,22 @@ export class MobileComponent implements OnInit {
       if(null != elementNext && !this.isSuccessTailInput) {
         elementNext.focus();
       }
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_BODY,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileBody
+      );
+      this.emitter.emit(myEventOnChange);      
 
 
     }// end if   
@@ -730,6 +801,22 @@ export class MobileComponent implements OnInit {
       this.hideTooltipTail(2);
 
       element.blur();
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileTail
+      );
+      this.emitter.emit(myEventOnChange);      
     }    
 
 
@@ -805,6 +892,22 @@ export class MobileComponent implements OnInit {
       if(null != elementNext) {
         elementNext.focus();
       } // end if
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
+        // public value:string
+        inputStr,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerMobileTail
+      );
+      this.emitter.emit(myEventOnChange);      
     } // end if 
   } // end method
 } // end class
