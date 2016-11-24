@@ -24,6 +24,7 @@ var NameComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.isWarning = false;
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "이름에 문제가 있습니다.";
@@ -47,6 +48,20 @@ var NameComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+    NameComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    NameComponent.prototype.hasDone = function () {
+        return this.isOK(this.inputStrPrev);
+    };
+    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    NameComponent.prototype.showWarning = function () {
+        this.isFocus = true;
+        this.isWarning = true;
+        this.isSuccessInput = false;
+        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
     };
     NameComponent.prototype.onClick = function (event, element) {
         event.stopPropagation();
@@ -145,8 +160,11 @@ var NameComponent = (function () {
                 return;
             }
             else {
+                // 이전에 노출한 툴팁을 내립니다.
+                this.hideTooltipNow();
                 // 성공! 비속어가 포함되지 않았습니다.
                 // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                this.isWarning = false;
                 this.isSuccessInput = true;
                 element.value = name;
                 this.hideTooltip(2);
@@ -253,6 +271,9 @@ var NameComponent = (function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
         }, 1000 * sec);
+    };
+    NameComponent.prototype.hideTooltipNow = function () {
+        this.tooltipHeadMsg = null;
     };
     NameComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();

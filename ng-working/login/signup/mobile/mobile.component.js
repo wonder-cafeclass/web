@@ -36,7 +36,7 @@ var MobileComponent = (function () {
         this.isFocusMobileBody = false;
         this.isFocusMobileTail = false;
         this.isFocusMobileInfo = false;
-        this.mobileHeadPrev = "";
+        this.mobileHeadPrev = "010";
         this.mobileBodyPrev = "";
         this.mobileTailPrev = "";
     }
@@ -72,6 +72,56 @@ var MobileComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+    };
+    // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
+    MobileComponent.prototype.hasNotDoneMobileHead = function () {
+        return !this.hasDoneMobileHead();
+    };
+    MobileComponent.prototype.hasDoneMobileHead = function () {
+        console.log("hasDoneMobileHead / this.mobileHeadPrev : ", this.mobileHeadPrev);
+        this.setMyChecker();
+        var isOKHead = this.isOKHead(this.mobileHeadPrev);
+        console.log("hasDoneMobileHead / isOKHead : ", isOKHead);
+        return isOKHead;
+    };
+    // @ Desc : 전화번호 앞자리를 확인해 달라는 표시를 보여줍니다.
+    MobileComponent.prototype.showWarningMobileHead = function () {
+        this.isFocusMobileHead = true;
+        this.isSuccessHeadInput = false;
+        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+    };
+    MobileComponent.prototype.hideWarningMobileHead = function () {
+        this.isFocusMobileHead = false;
+        this.isSuccessHeadInput = true;
+        this.tooltipHeadMsg = null;
+    };
+    // @ Desc : 전화번호 가운데 자리가 제대로 입력되었는지 확인합니다.
+    MobileComponent.prototype.hasNotDoneMobileBody = function () {
+        return !this.hasDoneMobileBody();
+    };
+    MobileComponent.prototype.hasDoneMobileBody = function () {
+        this.setMyChecker();
+        return this.isOKBody(this.mobileBodyPrev);
+    };
+    // @ Desc : 전화번호 가운데 자리를 확인해 달라는 표시를 보여줍니다.
+    MobileComponent.prototype.showWarningMobileBody = function () {
+        this.isFocusMobileBody = true;
+        this.isSuccessBodyInput = false;
+        this.tooltipBodyMsg = this.tooltipHeadNotAllowed;
+    };
+    // @ Desc : 전화번호 마지막 자리가 제대로 입력되었는지 확인합니다.
+    MobileComponent.prototype.hasNotDoneMobileTail = function () {
+        return !this.hasDoneMobileTail();
+    };
+    MobileComponent.prototype.hasDoneMobileTail = function () {
+        this.setMyChecker();
+        return this.isOKTail(this.mobileTailPrev);
+    };
+    // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
+    MobileComponent.prototype.showWarningMobileTail = function () {
+        this.isFocusMobileTail = true;
+        this.isSuccessTailInput = false;
+        this.tooltipTailMsg = this.tooltipHeadNotAllowed;
     };
     MobileComponent.prototype.onClickInfo = function (event) {
         event.stopPropagation();
@@ -197,10 +247,12 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.
             if (isDebug)
                 console.log("mobile / onKeyupHead / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
+            // hide tooltip
+            this.tooltipHeadMsg = null;
             // this.tooltipHeadMsg = this.tooltipHeadAllowed;
             this.isFocusMobileHead = false;
             this.isSuccessHeadInput = true;
-            this.hideTooltipHead(2);
+            // this.hideTooltipHead(2);
             if (null != elementNext && !this.isSuccessBodyInput) {
                 elementNext.focus();
             }
@@ -259,10 +311,11 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
+            this.tooltipHeadMsg = null;
             // this.tooltipHeadMsg = this.tooltipHeadAllowed;
             this.isFocusMobileHead = false;
             this.isSuccessHeadInput = true;
-            this.hideTooltipHead(2);
+            // this.hideTooltipHead(2);
             if (null != elementNext && !this.isSuccessBodyInput) {
                 elementNext.focus();
             }
@@ -412,10 +465,12 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 
             if (isDebug)
                 console.log("mobile / onKeyupBody / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
+            // hide tooltip
+            this.tooltipBodyMsg = null;
             // this.tooltipBodyMsg = this.tooltipHeadAllowed;
+            // this.hideTooltipBody(2);
             this.isFocusMobileBody = false;
             this.isSuccessBodyInput = true;
-            this.hideTooltipBody(2);
             // 다음 번호 입력창으로 넘어갑니다.
             if (null != elementNext && !this.isSuccessTailInput) {
                 elementNext.focus();
@@ -484,10 +539,11 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
+            this.tooltipBodyMsg = null;
             // this.tooltipBodyMsg = this.tooltipHeadAllowed;
             this.isFocusMobileBody = false;
             this.isSuccessBodyInput = true;
-            this.hideTooltipBody(2);
+            // this.hideTooltipBody(2);
             if (null != elementNext && !this.isSuccessTailInput) {
                 elementNext.focus();
             }
@@ -623,10 +679,12 @@ var MobileComponent = (function () {
             // 모든 조건이 맞습니다. 
             if (isDebug)
                 console.log("mobile / onKeyupTail / 모든 조건이 맞습니다. 전화번호 입력을 종료합니다.");
+            // hide tooltip
+            this.tooltipTailMsg = null;
             // this.tooltipTailMsg = this.tooltipHeadAllowed;
             this.isFocusMobileTail = false;
             this.isSuccessTailInput = true;
-            this.hideTooltipTail(2);
+            // this.hideTooltipTail(2);
             element.blur();
             // 부모 객체에게 Change Event 발송 
             var myEventOnChange = this.myEventService.getMyEvent(
@@ -691,10 +749,12 @@ var MobileComponent = (function () {
         }
         else {
             // 성공! 정상적인 입력입니다.
+            // hide tooltip
+            this.tooltipTailMsg = null;
             // this.tooltipTailMsg = this.tooltipHeadAllowed;
             this.isFocusMobileTail = false;
             this.isSuccessTailInput = true;
-            this.hideTooltipTail(2);
+            // this.hideTooltipTail(2);
             if (null != elementNext) {
                 elementNext.focus();
             } // end if

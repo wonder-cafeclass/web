@@ -32,6 +32,8 @@ export class NameComponent implements OnInit {
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
+  isWarning:boolean=false;
+
   isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
   tooltipHeadNotAllowed:string="이름에 문제가 있습니다.";
@@ -65,6 +67,21 @@ export class NameComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myChecker, input);
   }
+
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+    return this.isOK(this.inputStrPrev);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    this.isFocus = true;
+    this.isWarning = true;
+    this.isSuccessInput = false;
+    this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+  }  
 
   onClick(event, element) :void {
     event.stopPropagation();
@@ -194,8 +211,12 @@ export class NameComponent implements OnInit {
 
       } else {
 
+        // 이전에 노출한 툴팁을 내립니다.
+        this.hideTooltipNow();
+
         // 성공! 비속어가 포함되지 않았습니다.
         // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        this.isWarning = false;
         this.isSuccessInput = true;
         element.value = name;
 
@@ -332,7 +353,11 @@ export class NameComponent implements OnInit {
       _self.tooltipHeadMsg = null;
     }, 1000 * sec);        
 
-  }  
+  }
+
+  hideTooltipNow() :void {
+    this.tooltipHeadMsg = null;
+  }    
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();

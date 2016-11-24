@@ -1,11 +1,21 @@
 import {  Component, 
           Input, 
           Output,
+          ViewChild,
           OnInit }              from '@angular/core';
 import { Router }               from '@angular/router';
 
 import { LoginService }         from '../service/login.service';
 import { UserService }          from '../../users/service/user.service';
+
+import { EmailComponent }                 from './email/email.component';
+import { PasswordComponent }              from './password/password.component';
+import { NameComponent }                  from './name/name.component';
+import { NicknameComponent }              from './nickname/nickname.component';
+import { MobileComponent }                from './mobile/mobile.component';
+import { ProfileImgUploadComponent }      from './profile-img-upload/profile-img-upload.component';
+import { GenderComponent }                from './gender/gender.component';
+import { BirthdayComponent }              from './birthday/birthday.component';
 
 import { MyLoggerService }      from '../../util/service/my-logger.service';
 import { MyCheckerService }     from '../../util/service/my-checker.service';
@@ -28,11 +38,29 @@ export class SignupComponent implements OnInit {
   private mobileNumHead:string;
   private mobileNumBody:string;
   private mobileNumTail:string;
-  gender:string="F";
+  public gender:string="";
 
   private birthYear:string;
   private birthMonth:string;
   private birthDay:string;
+
+  @ViewChild(EmailComponent)
+  private emailComponent: EmailComponent;
+
+  @ViewChild(PasswordComponent)
+  private passwordComponent: PasswordComponent;
+
+  @ViewChild(NameComponent)
+  private nameComponent: NameComponent;
+
+  @ViewChild(NicknameComponent)
+  private nicknameComponent: NicknameComponent;
+
+  @ViewChild(MobileComponent)
+  private mobileComponent: MobileComponent;  
+
+  @ViewChild(GenderComponent)
+  private genderComponent: GenderComponent;  
 
 
   constructor(  private loginService: LoginService, 
@@ -48,10 +76,8 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);    
-
+    this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
   }
 
   onClickSave(event): void {
@@ -64,6 +90,61 @@ export class SignupComponent implements OnInit {
     if(isDebug) console.log("signup / onClickSave / 시작");
 
     // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
+    // 문제가 있다면 해당 필드에 경고를 보여줍니다.
+    let hasNotDoneEmail:boolean = this.emailComponent.hasNotDone();
+    if(hasNotDoneEmail) {
+      this.emailComponent.showWarning();
+    }
+
+    let hasNotDonePassword:boolean = this.passwordComponent.hasNotDoneP();
+    let hasNotDoneRepassword:boolean = false;
+    if(hasNotDonePassword) {
+      this.passwordComponent.showWarningP();
+    } else {
+      // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
+      hasNotDoneRepassword = this.passwordComponent.hasNotDoneRP();
+    }
+    if(hasNotDoneRepassword) {
+      // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
+      this.passwordComponent.showWarningRP();
+    }
+
+    let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
+    if(hasNotDoneName) {
+      this.nameComponent.showWarning();
+    }
+
+    let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
+    if(hasNotDoneNickname) {
+      this.nicknameComponent.showWarning();
+    }
+
+    let hasNotDoneMobileHead:boolean = this.mobileComponent.hasNotDoneMobileHead();
+    let hasNotDoneMobileBody:boolean = false;
+    let hasNotDoneMobileTail:boolean = false;
+
+    if(hasNotDoneMobileHead) {
+      this.mobileComponent.showWarningMobileHead();
+    } else {
+      // 휴대전화 첫번째 3자리가 문제가 없다면 휴대전화 두번째 4자리를 검사합니다.
+      hasNotDoneMobileBody = this.mobileComponent.hasNotDoneMobileBody();
+    }
+    if(!hasNotDoneMobileHead && hasNotDoneMobileBody) {
+      this.mobileComponent.showWarningMobileBody();
+    } else if(!hasNotDoneMobileHead) {
+      // 휴대전화 두번째 4자리가 문제가 없다면 휴대전화 세번째 4자리를 검사합니다.
+      hasNotDoneMobileTail = this.mobileComponent.hasNotDoneMobileTail();
+    }
+    if(!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
+      this.mobileComponent.showWarningMobileTail();
+    } 
+
+    let hasNotDoneGender:boolean = this.genderComponent.hasNotDone();   
+    console.log("hasNotDoneGender : ",hasNotDoneGender);
+    if(hasNotDoneGender) {
+      console.log("hasNotDoneGender / 2");
+      this.genderComponent.showWarning();
+    }
 
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
 

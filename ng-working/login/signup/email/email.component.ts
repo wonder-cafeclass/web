@@ -62,6 +62,21 @@ export class EmailComponent implements OnInit {
     
   }
 
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+    return this.isOK(this.inputStrPrevOnKeyup);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    this.isFocus = true;
+    this.isWarning = true;
+    this.isSuccessInput = false;
+    this.tooltipMsg = this.tooltipMsgEmailNotValid;
+  }
+
   onClick(event) :void {
     event.stopPropagation();
     event.preventDefault();
@@ -70,7 +85,6 @@ export class EmailComponent implements OnInit {
     this.setMyChecker();
   }
 
-  // private lockFocus;
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
 
@@ -155,6 +169,9 @@ export class EmailComponent implements OnInit {
       return;
     }
 
+    // 노출되어 있는 툴팁이 있다면 내립니다.
+    this.hideTooltipNow();
+
     // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
     this.isWarning = false;
 
@@ -195,7 +212,14 @@ export class EmailComponent implements OnInit {
       _self.isSuccessInput = false;
     }, 1000 * sec);        
 
-  }    
+  }
+
+  hideTooltipNow() :void {
+
+    this.tooltipMsg = null;
+    this.isSuccessInput = false;
+
+  }
 
   private inputStrPrevOnKeyup:string="";
   onKeyup(event, element) :void {

@@ -29,6 +29,8 @@ export class NicknameComponent implements OnInit {
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
+  isWarning:boolean=false;
+
   isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
   tooltipHeadNotAllowed:string="닉네임에 문제가 있습니다.";
@@ -66,6 +68,20 @@ export class NicknameComponent implements OnInit {
     return this.myCheckerService.isOK(this.myChecker, input);
   }
 
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+    return this.isOK(this.inputStrPrev);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    this.isFocus = true;
+    this.isWarning = true;
+    this.isSuccessInput = false;
+    this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+  } 
 
   onClick(event, element) :void {
 
@@ -206,7 +222,10 @@ export class NicknameComponent implements OnInit {
 
       } else {
 
+        this.hideTooltipNow();
+
         // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        this.isWarning = false;
         this.isSuccessInput = true;
 
         this.hideTooltip(2);
@@ -338,6 +357,11 @@ export class NicknameComponent implements OnInit {
     }, 1000 * sec);        
 
   }
+
+  hideTooltipNow() :void {
+    this.tooltipHeadMsg = null;
+  }
+
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();

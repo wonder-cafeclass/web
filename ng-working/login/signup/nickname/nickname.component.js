@@ -22,6 +22,7 @@ var NicknameComponent = (function () {
         this.leftWarning = -1;
         this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
+        this.isWarning = false;
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "닉네임에 문제가 있습니다.";
@@ -47,6 +48,20 @@ var NicknameComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+    NicknameComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    NicknameComponent.prototype.hasDone = function () {
+        return this.isOK(this.inputStrPrev);
+    };
+    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    NicknameComponent.prototype.showWarning = function () {
+        this.isFocus = true;
+        this.isWarning = true;
+        this.isSuccessInput = false;
+        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
     };
     NicknameComponent.prototype.onClick = function (event, element) {
         event.stopPropagation();
@@ -150,7 +165,9 @@ var NicknameComponent = (function () {
                 return;
             }
             else {
+                this.hideTooltipNow();
                 // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                this.isWarning = false;
                 this.isSuccessInput = true;
                 this.hideTooltip(2);
                 // 부모 객체에게 Change Event 발송 
@@ -254,6 +271,9 @@ var NicknameComponent = (function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
         }, 1000 * sec);
+    };
+    NicknameComponent.prototype.hideTooltipNow = function () {
+        this.tooltipHeadMsg = null;
     };
     NicknameComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();

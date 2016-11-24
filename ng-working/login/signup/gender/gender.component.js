@@ -18,24 +18,21 @@ var GenderComponent = (function () {
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
+        this.topWarning = -1;
+        this.leftWarning = -1;
         this.gender = "";
         this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
+        this.tooltipMsgGenderNotValid = "앗! 성별이 필요합니다.";
         this.isFocus = false;
         this.isFocusInfo = false;
-        this.isFemale = true;
+        this.isSuccessInput = false;
         this.keyFemale = "F";
         this.keyMale = "M";
+        this.keyNoGender = "U";
         this.isShowPopover = false;
     }
-    GenderComponent.prototype.ngOnInit = function () {
-        if (this.keyFemale === this.gender) {
-            this.isFemale = true;
-        }
-        else if (this.keyMale === this.gender) {
-            this.isFemale = false;
-        }
-    };
+    GenderComponent.prototype.ngOnInit = function () { };
     GenderComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -49,6 +46,18 @@ var GenderComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+    GenderComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    GenderComponent.prototype.hasDone = function () {
+        return this.isOK(this.gender);
+    };
+    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    GenderComponent.prototype.showWarning = function () {
+        this.isSuccessInput = false;
+        this.tooltipMsg = this.tooltipMsgGenderNotValid;
     };
     GenderComponent.prototype.onClick = function (event) {
         event.stopPropagation();
@@ -101,19 +110,21 @@ var GenderComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         this.setMyChecker();
-        if (!this.isFemale) {
-            this.isFemale = true;
-        } // end if 
+        if (this.gender === this.keyMale) {
+            this.gender = this.keyMale;
+        }
         this.emitGenderSelected(this.keyFemale);
+        this.tooltipMsg = null;
     };
     GenderComponent.prototype.onClickGenderMale = function (event) {
         event.stopPropagation();
         event.preventDefault();
         this.setMyChecker();
-        if (this.isFemale) {
-            this.isFemale = false;
-        } // end if
+        if (this.gender === this.keyFemale) {
+            this.gender = this.keyFemale;
+        }
         this.emitGenderSelected(this.keyMale);
+        this.tooltipMsg = null;
     };
     __decorate([
         core_1.Input(), 
@@ -123,6 +134,14 @@ var GenderComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], GenderComponent.prototype, "left", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], GenderComponent.prototype, "topWarning", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], GenderComponent.prototype, "leftWarning", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)

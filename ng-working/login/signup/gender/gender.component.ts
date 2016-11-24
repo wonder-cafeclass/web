@@ -21,19 +21,27 @@ export class GenderComponent implements OnInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
+
+  @Input() topWarning:number=-1;
+  @Input() leftWarning:number=-1;
+
   @Input() gender:string="";
 
   @Input() myCheckerService:MyCheckerService = null;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
+  tooltipMsgGenderNotValid:string="앗! 성별이 필요합니다.";
+  tooltipMsg:string;
+
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
-  isFemale:boolean=true;
+  isSuccessInput:boolean=false;
 
-  private keyFemale:string="F";
-  private keyMale:string="M";
+  keyFemale:string="F";
+  keyMale:string="M";
+  keyNoGender:string="U";
 
   isShowPopover:boolean=false;
 
@@ -42,15 +50,7 @@ export class GenderComponent implements OnInit {
   constructor(  private myLoggerService:MyLoggerService, 
                 private myEventService:MyEventService) {}
 
-  ngOnInit(): void {
-
-    if(this.keyFemale === this.gender) {
-      this.isFemale = true;
-    } else if(this.keyMale === this.gender) {
-      this.isFemale = false;
-    }
-
-  }
+  ngOnInit(): void {}
 
   private setMyChecker() :void {
     if(null == this.myCheckerService) {
@@ -68,7 +68,20 @@ export class GenderComponent implements OnInit {
     }
 
     return this.myCheckerService.isOK(this.myChecker, input);
-  }  
+  } 
+
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+    return this.isOK(this.gender);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    this.isSuccessInput = false;
+    this.tooltipMsg = this.tooltipMsgGenderNotValid;
+  }
 
   onClick(event) :void {
     event.stopPropagation();
@@ -139,11 +152,13 @@ export class GenderComponent implements OnInit {
 
     this.setMyChecker();
 
-    if(!this.isFemale) {
-      this.isFemale = true;
-    } // end if 
+    if(this.gender === this.keyMale) {
+      this.gender = this.keyMale;
+    }
 
     this.emitGenderSelected(this.keyFemale);
+
+    this.tooltipMsg = null;
   }
 
   onClickGenderMale(event) :void {
@@ -153,11 +168,13 @@ export class GenderComponent implements OnInit {
 
     this.setMyChecker();
 
-    if(this.isFemale) {
-      this.isFemale = false;      
-    } // end if
+    if(this.gender === this.keyFemale) {
+      this.gender = this.keyFemale;
+    }
 
     this.emitGenderSelected(this.keyMale);
+
+    this.tooltipMsg = null;
   }   
 
 }
