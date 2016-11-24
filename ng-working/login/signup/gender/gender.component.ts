@@ -63,6 +63,8 @@ export class GenderComponent implements OnInit {
   }
   isOK(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }

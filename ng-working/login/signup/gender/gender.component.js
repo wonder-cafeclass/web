@@ -42,6 +42,7 @@ var GenderComponent = (function () {
         }
     };
     GenderComponent.prototype.isOK = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }

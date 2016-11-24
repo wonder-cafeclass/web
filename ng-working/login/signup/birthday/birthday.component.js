@@ -51,18 +51,21 @@ var BirthdayComponent = (function () {
         }
     };
     BirthdayComponent.prototype.isOKBirthYear = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthYear, input);
     };
     BirthdayComponent.prototype.isOKBirthMonth = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
     };
     BirthdayComponent.prototype.isOKBirthDay = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }

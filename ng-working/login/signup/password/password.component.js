@@ -59,6 +59,7 @@ var PasswordComponent = (function () {
         }
     };
     PasswordComponent.prototype.isOK = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return;
         }

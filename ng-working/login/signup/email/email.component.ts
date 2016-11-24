@@ -67,6 +67,7 @@ export class EmailComponent implements OnInit {
     return !this.hasDone();
   }
   public hasDone() :boolean {
+    this.setMyChecker();
     return this.isOK(this.inputStrPrevOnKeyup);
   }
   // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
@@ -284,6 +285,8 @@ export class EmailComponent implements OnInit {
   }  
 
   isOK(email:string) :boolean {
+
+    this.setMyChecker();
 
     let isOK:boolean = false;
 

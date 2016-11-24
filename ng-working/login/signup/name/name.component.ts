@@ -61,6 +61,8 @@ export class NameComponent implements OnInit {
   }
   isOK(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
@@ -73,7 +75,17 @@ export class NameComponent implements OnInit {
     return !this.hasDone();
   }
   public hasDone() :boolean {
-    return this.isOK(this.inputStrPrev);
+
+    console.log("name / hasDone / this.inputStrPrev : ",this.inputStrPrev);
+
+    let isOK:boolean = this.isOK(this.inputStrPrev);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("name / history : ",history);
+    }
+
+    return isOK;
   }
   // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
   public showWarning() :void {

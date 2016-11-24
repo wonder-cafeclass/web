@@ -56,22 +56,41 @@ var MobileComponent = (function () {
         }
     };
     MobileComponent.prototype.isOKHead = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
-        return this.myCheckerService.isOK(this.myCheckerMobileHead, input);
+        var isOK = this.myCheckerService.isOK(this.myCheckerMobileHead, input);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            console.log("mobile / isOKHead / history : ", history_1);
+        }
+        return isOK;
     };
     MobileComponent.prototype.isOKBody = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
-        return this.myCheckerService.isOK(this.myCheckerMobileBody, input);
+        var isOK = this.myCheckerService.isOK(this.myCheckerMobileBody, input);
+        if (!isOK) {
+            var history_2 = this.myCheckerService.getLastHistory();
+            console.log("mobile / isOKBody / history : ", history_2);
+        }
+        return isOK;
     };
     MobileComponent.prototype.isOKTail = function (input) {
+        console.log("mobile / isOKTail / input : ", input);
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
-        return this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+        var isOK = this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+        if (!isOK) {
+            var history_3 = this.myCheckerService.getLastHistory();
+            console.log("mobile / isOKTail / history : ", history_3);
+        }
+        return isOK;
     };
     // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
     MobileComponent.prototype.hasNotDoneMobileHead = function () {
@@ -115,6 +134,7 @@ var MobileComponent = (function () {
     };
     MobileComponent.prototype.hasDoneMobileTail = function () {
         this.setMyChecker();
+        console.log("XXX / hasDoneMobileTail / this.mobileTailPrev : ", this.mobileTailPrev);
         return this.isOKTail(this.mobileTailPrev);
     };
     // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
@@ -220,16 +240,16 @@ var MobileComponent = (function () {
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_1 = this.myCheckerService.getLastHistory();
-            if (null != history_1 &&
-                null != history_1.key &&
-                null != history_1.msg) {
+            var history_4 = this.myCheckerService.getLastHistory();
+            if (null != history_4 &&
+                null != history_4.key &&
+                null != history_4.msg) {
                 if (isDebug)
-                    console.log("mobile / onKeyupHead / 전체 필터 검사 / history : ", history_1);
+                    console.log("mobile / onKeyupHead / 전체 필터 검사 / history : ", history_4);
                 if (isDebug)
                     console.log("mobile / onKeyupHead / 전체 필터 검사 / this.mobileHeadPrev : ", this.mobileHeadPrev);
-                if ("regexInclude" === history_1.key) {
-                    var regExpStr = history_1.value + "";
+                if ("regexInclude" === history_4.key) {
+                    var regExpStr = history_4.value + "";
                     var regExpStrInputStrRange = /^01[0-9]$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipHeadMsg = "휴대전화 형식이 맞지 않습니다.";
@@ -290,13 +310,13 @@ var MobileComponent = (function () {
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_2 = this.myCheckerService.getLastHistory();
-            if (null != history_2 &&
-                null != history_2.key &&
-                null != history_2.msg) {
-                history_2.value;
-                if ("regexInclude" === history_2.key) {
-                    var regExpStr = history_2.value + "";
+            var history_5 = this.myCheckerService.getLastHistory();
+            if (null != history_5 &&
+                null != history_5.key &&
+                null != history_5.msg) {
+                history_5.value;
+                if ("regexInclude" === history_5.key) {
+                    var regExpStr = history_5.value + "";
                     var regExpStrInputStrRange = /^01[0-9]$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipHeadMsg = "휴대전화 번호를 다시 확인해주세요.";
@@ -437,16 +457,16 @@ var MobileComponent = (function () {
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_3 = this.myCheckerService.getLastHistory();
-            if (null != history_3 &&
-                null != history_3.key &&
-                null != history_3.msg) {
+            var history_6 = this.myCheckerService.getLastHistory();
+            if (null != history_6 &&
+                null != history_6.key &&
+                null != history_6.msg) {
                 if (isDebug)
-                    console.log("mobile / onKeyupBody / 전체 필터 검사 / history : ", history_3);
+                    console.log("mobile / onKeyupBody / 전체 필터 검사 / history : ", history_6);
                 if (isDebug)
                     console.log("mobile / onKeyupBody / 전체 필터 검사 / this.mobileBodyPrev : ", this.mobileBodyPrev);
-                if ("regexInclude" === history_3.key) {
-                    var regExpStr = history_3.value + "";
+                if ("regexInclude" === history_6.key) {
+                    var regExpStr = history_6.value + "";
                     var regExpStrInputStrRange = /^01[0-9]$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipBodyMsg = "휴대전화 형식이 맞지 않습니다.";
@@ -506,25 +526,25 @@ var MobileComponent = (function () {
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_4 = this.myCheckerService.getLastHistory();
-            if (null != history_4 &&
-                null != history_4.key &&
-                null != history_4.msg) {
+            var history_7 = this.myCheckerService.getLastHistory();
+            if (null != history_7 &&
+                null != history_7.key &&
+                null != history_7.msg) {
                 //min
-                if ("min" === history_4.key) {
-                    this.tooltipBodyMsg = history_4.msg;
+                if ("min" === history_7.key) {
+                    this.tooltipBodyMsg = history_7.msg;
                     this.isFocusMobileBody = true;
                     this.isSuccessBodyInput = false;
                     element.focus();
                 }
-                else if ("max" === history_4.key) {
-                    this.tooltipBodyMsg = history_4.msg;
+                else if ("max" === history_7.key) {
+                    this.tooltipBodyMsg = history_7.msg;
                     this.isFocusMobileBody = true;
                     this.isSuccessBodyInput = false;
                     element.focus();
                 }
-                else if ("regexInclude" === history_4.key) {
-                    var regExpStr = history_4.value + "";
+                else if ("regexInclude" === history_7.key) {
+                    var regExpStr = history_7.value + "";
                     var regExpStrInputStrRange = /^[0-9]{3,4}$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipBodyMsg = "휴대전화 번호를 다시 확인해주세요.";
@@ -615,8 +635,10 @@ var MobileComponent = (function () {
                 console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
+        console.log("onKeyupTail / 1 / inputStr : ", inputStr);
         // 숫자가 아닌 글자들은 모두 삭제해준다.
         element.value = inputStr.replace(/[^0-9]/gi, "");
+        console.log("onKeyupTail / 2 / inputStr : ", inputStr);
         // 툴팁을 보여줍니다.
         if (element.value != inputStr) {
             this.tooltipTailMsg = "숫자만 가능합니다.";
@@ -651,16 +673,16 @@ var MobileComponent = (function () {
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_5 = this.myCheckerService.getLastHistory();
-            if (null != history_5 &&
-                null != history_5.key &&
-                null != history_5.msg) {
+            var history_8 = this.myCheckerService.getLastHistory();
+            if (null != history_8 &&
+                null != history_8.key &&
+                null != history_8.msg) {
                 if (isDebug)
-                    console.log("mobile / onKeyupTail / 전체 필터 검사 / history : ", history_5);
+                    console.log("mobile / onKeyupTail / 전체 필터 검사 / history : ", history_8);
                 if (isDebug)
                     console.log("mobile / onKeyupTail / 전체 필터 검사 / this.mobileTailPrev : ", this.mobileTailPrev);
-                if ("regexInclude" === history_5.key) {
-                    var regExpStr = history_5.value + "";
+                if ("regexInclude" === history_8.key) {
+                    var regExpStr = history_8.value + "";
                     var regExpStrInputStrRange = /^01[0-9]$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipTailMsg = "휴대전화 형식이 맞지 않습니다.";
@@ -700,7 +722,7 @@ var MobileComponent = (function () {
             this.myCheckerMobileTail);
             this.emitter.emit(myEventOnChange);
         }
-        this.mobileBodyPrev = element.value = inputStr;
+        this.mobileTailPrev = element.value = inputStr;
     };
     MobileComponent.prototype.onBlurMobileTail = function (event, element, elementNext) {
         event.stopPropagation();
@@ -712,29 +734,30 @@ var MobileComponent = (function () {
         if (null == inputStr || "" == inputStr) {
             return;
         }
+        console.log("onBlurMobileTail / inputStr : ", inputStr);
         var isOK = this.isOKTail(inputStr);
         if (!isOK) {
             // 조건에 맞지 않습니다.
             // 원인을 찾아봅니다.
-            var history_6 = this.myCheckerService.getLastHistory();
-            if (null != history_6 &&
-                null != history_6.key &&
-                null != history_6.msg) {
+            var history_9 = this.myCheckerService.getLastHistory();
+            if (null != history_9 &&
+                null != history_9.key &&
+                null != history_9.msg) {
                 //min
-                if ("min" === history_6.key) {
-                    this.tooltipTailMsg = history_6.msg;
+                if ("min" === history_9.key) {
+                    this.tooltipTailMsg = history_9.msg;
                     this.isFocusMobileTail = true;
                     this.isSuccessTailInput = false;
                     element.focus();
                 }
-                else if ("max" === history_6.key) {
-                    this.tooltipTailMsg = history_6.msg;
+                else if ("max" === history_9.key) {
+                    this.tooltipTailMsg = history_9.msg;
                     this.isFocusMobileTail = true;
                     this.isSuccessTailInput = false;
                     element.focus();
                 }
-                else if ("regexInclude" === history_6.key) {
-                    var regExpStr = history_6.value + "";
+                else if ("regexInclude" === history_9.key) {
+                    var regExpStr = history_9.value + "";
                     var regExpStrInputStrRange = /^[0-9]{3,4}$/g + "";
                     if (regExpStr == regExpStrInputStrRange) {
                         this.tooltipTailMsg = "휴대전화 번호를 다시 확인해주세요.";
