@@ -31,6 +31,7 @@ export class ProfileImgUploadComponent implements OnInit {
   public userProfilePath:string = "/assets/images/user/";
   public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
+  /*
   public userProfileSampleArr:string[] = [
     "/assets/images/user/user_anonymous_150x150_bear.png",
     "/assets/images/user/user_anonymous_150x150_duck.png",
@@ -38,6 +39,16 @@ export class ProfileImgUploadComponent implements OnInit {
     "/assets/images/user/user_anonymous_150x150_rabbit.png",
     "/assets/images/user/user_anonymous_150x150_zebu.png"
   ];
+  */
+
+  public userProfileSampleArr:string[] = [
+    "/assets/images/user/user_anonymous_150x150_cat.jpg",
+    "/assets/images/user/user_anonymous_150x150_lion.jpg",
+    "/assets/images/user/user_anonymous_150x150_dolphin.jpg",
+    "/assets/images/user/user_anonymous_150x150_parrot.jpg",
+    "/assets/images/user/user_anonymous_150x150_poppy.jpg"
+  ];
+
 
   @Input() top:number=-1;
   @Input() left:number=-1;

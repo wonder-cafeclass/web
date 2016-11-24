@@ -24,9 +24,12 @@ var NameComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.isWarning = false;
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "이름에 문제가 있습니다.";
+        this.tooltipHeadRemoved = "한글 2~5자까지 입력 가능합니다.";
+        this.tooltipHeadRemovedEmpties = "빈칸을 2칸 이상 입력할 수 없습니다.";
         this.tooltipHeadAllowed = "성공! 멋진 이름이네요.";
         this.isShowPopover = false;
         this.inputStrPrev = "";
@@ -45,6 +48,20 @@ var NameComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+    NameComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    NameComponent.prototype.hasDone = function () {
+        return this.isOK(this.inputStrPrev);
+    };
+    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    NameComponent.prototype.showWarning = function () {
+        this.isFocus = true;
+        this.isWarning = true;
+        this.isSuccessInput = false;
+        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
     };
     NameComponent.prototype.onClick = function (event, element) {
         event.stopPropagation();
@@ -136,18 +153,21 @@ var NameComponent = (function () {
                 this.tooltipHeadMsg = "금칙어는 제외됩니다.";
                 this.isSuccessInput = false;
                 element.value = name;
-                this.hideTooltip(2, element);
+                this.hideTooltip(2);
                 element.focus();
                 // Logger - Spam 행위로 등록.
                 this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
                 return;
             }
             else {
+                // 이전에 노출한 툴팁을 내립니다.
+                this.hideTooltipNow();
                 // 성공! 비속어가 포함되지 않았습니다.
                 // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                this.isWarning = false;
                 this.isSuccessInput = true;
                 element.value = name;
-                this.hideTooltip(2, element);
+                this.hideTooltip(2);
                 // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
                 // 부모 객체에게 Ready Event 발송 
                 var myEventOnChange = this.myEventService.getMyEvent(
@@ -192,6 +212,7 @@ var NameComponent = (function () {
         var regExpNotAllowed = /[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
         var matchArr = inputStr.match(regExpNotAllowed);
         if (null != matchArr && 0 < matchArr.length) {
+            // 지워야 할 문자를 발견했습니다.
             for (var i = 0; i < matchArr.length; ++i) {
                 var match = matchArr[i];
                 if (null == match || "" == match) {
@@ -199,12 +220,15 @@ var NameComponent = (function () {
                 }
                 inputStr = inputStr.replace(match, "");
             }
+            // 예외 문자를 삭제했음을 사용자에게 알려줍니다.
+            // wonder.jung
+            this.tooltipHeadMsg = this.tooltipHeadRemoved;
+            this.hideTooltip(2);
         }
         // 2칸 이상 공백에 대해 1칸으로 줄임.
         var regExpEmptySpaces = /[\s]{2,10}/gi;
         var matchArrEmptySpaces = inputStr.match(regExpEmptySpaces);
         if (null != matchArrEmptySpaces && 0 < matchArrEmptySpaces.length) {
-            console.log("TEST / matchArrEmptySpaces : ", matchArrEmptySpaces);
             for (var i = 0; i < matchArrEmptySpaces.length; ++i) {
                 var match = matchArrEmptySpaces[i];
                 if (null == match || "" == match) {
@@ -212,6 +236,10 @@ var NameComponent = (function () {
                 }
                 inputStr = inputStr.replace(match, " ");
             }
+            // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
+            // wonder.jung
+            this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
+            this.hideTooltip(2);
         }
         // 최대 길이 제한 검사
         var isOK = this.isOK(inputStr);
@@ -223,20 +251,18 @@ var NameComponent = (function () {
                 if ("max" === history_2.key) {
                     // 최대 문자 갯수보다 많은 경우.
                     this.tooltipHeadMsg = history_2.msg;
+                    this.hideTooltip(2);
                     // 넘는 문자열은 지웁니다.
-                    element.value = this.inputStrPrev = inputStr = inputStr.slice(0, history_2.value);
+                    inputStr = inputStr.slice(0, history_2.value);
                     this.isSuccessInput = false;
                     if (isDebug)
                         console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_2);
                 } // end if
             } // end if
-        } // end if    
+        } // end if 
         element.value = this.inputStrPrev = inputStr;
     };
-    NameComponent.prototype.hideTooltip = function (sec, element) {
-        if (null == element) {
-            return;
-        }
+    NameComponent.prototype.hideTooltip = function (sec) {
         if (null == sec || !(0 < sec)) {
             sec = 3;
         }
@@ -245,6 +271,9 @@ var NameComponent = (function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
         }, 1000 * sec);
+    };
+    NameComponent.prototype.hideTooltipNow = function () {
+        this.tooltipHeadMsg = null;
     };
     NameComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();

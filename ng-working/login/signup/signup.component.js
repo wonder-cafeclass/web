@@ -12,6 +12,12 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var user_service_1 = require('../../users/service/user.service');
+var email_component_1 = require('./email/email.component');
+var password_component_1 = require('./password/password.component');
+var name_component_1 = require('./name/name.component');
+var nickname_component_1 = require('./nickname/nickname.component');
+var mobile_component_1 = require('./mobile/mobile.component');
+var gender_component_1 = require('./gender/gender.component');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
@@ -23,7 +29,7 @@ var SignupComponent = (function () {
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.router = router;
-        this.gender = "F";
+        this.gender = "";
         // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
         this.myCheckerService.getReady();
     }
@@ -39,6 +45,58 @@ var SignupComponent = (function () {
         if (isDebug)
             console.log("signup / onClickSave / 시작");
         // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
+        // 문제가 있다면 해당 필드에 경고를 보여줍니다.
+        var hasNotDoneEmail = this.emailComponent.hasNotDone();
+        if (hasNotDoneEmail) {
+            this.emailComponent.showWarning();
+        }
+        var hasNotDonePassword = this.passwordComponent.hasNotDoneP();
+        var hasNotDoneRepassword = false;
+        if (hasNotDonePassword) {
+            this.passwordComponent.showWarningP();
+        }
+        else {
+            // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
+            hasNotDoneRepassword = this.passwordComponent.hasNotDoneRP();
+        }
+        if (hasNotDoneRepassword) {
+            // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
+            this.passwordComponent.showWarningRP();
+        }
+        var hasNotDoneName = this.nameComponent.hasNotDone();
+        if (hasNotDoneName) {
+            this.nameComponent.showWarning();
+        }
+        var hasNotDoneNickname = this.nicknameComponent.hasNotDone();
+        if (hasNotDoneNickname) {
+            this.nicknameComponent.showWarning();
+        }
+        var hasNotDoneMobileHead = this.mobileComponent.hasNotDoneMobileHead();
+        var hasNotDoneMobileBody = false;
+        var hasNotDoneMobileTail = false;
+        if (hasNotDoneMobileHead) {
+            this.mobileComponent.showWarningMobileHead();
+        }
+        else {
+            // 휴대전화 첫번째 3자리가 문제가 없다면 휴대전화 두번째 4자리를 검사합니다.
+            hasNotDoneMobileBody = this.mobileComponent.hasNotDoneMobileBody();
+        }
+        if (!hasNotDoneMobileHead && hasNotDoneMobileBody) {
+            this.mobileComponent.showWarningMobileBody();
+        }
+        else if (!hasNotDoneMobileHead) {
+            // 휴대전화 두번째 4자리가 문제가 없다면 휴대전화 세번째 4자리를 검사합니다.
+            hasNotDoneMobileTail = this.mobileComponent.hasNotDoneMobileTail();
+        }
+        if (!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
+            this.mobileComponent.showWarningMobileTail();
+        }
+        var hasNotDoneGender = this.genderComponent.hasNotDone();
+        console.log("hasNotDoneGender : ", hasNotDoneGender);
+        if (hasNotDoneGender) {
+            console.log("hasNotDoneGender / 2");
+            this.genderComponent.showWarning();
+        }
         // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
     };
     SignupComponent.prototype.onClickTerms = function (event) {
@@ -49,7 +107,7 @@ var SignupComponent = (function () {
         if (isDebug)
             console.log("signup / onClickTerms / 시작");
         // 이용약관 페이지로 이동.
-        window.open("http://www.w3schools.com");
+        window.open("/#/policy");
     };
     SignupComponent.prototype.onClickPrivatePolicy = function (event) {
         event.preventDefault();
@@ -59,7 +117,7 @@ var SignupComponent = (function () {
         if (isDebug)
             console.log("signup / onClickPrivatePolicy / 시작");
         // 개인정보 취급방침 페이지로 이동.
-        window.open("http://www.google.com");
+        window.open("/#/private-info");
     };
     SignupComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
@@ -170,6 +228,30 @@ var SignupComponent = (function () {
         if (isDebug)
             console.log("signup / onChangedFromChild / done");
     };
+    __decorate([
+        core_1.ViewChild(email_component_1.EmailComponent), 
+        __metadata('design:type', email_component_1.EmailComponent)
+    ], SignupComponent.prototype, "emailComponent", void 0);
+    __decorate([
+        core_1.ViewChild(password_component_1.PasswordComponent), 
+        __metadata('design:type', password_component_1.PasswordComponent)
+    ], SignupComponent.prototype, "passwordComponent", void 0);
+    __decorate([
+        core_1.ViewChild(name_component_1.NameComponent), 
+        __metadata('design:type', name_component_1.NameComponent)
+    ], SignupComponent.prototype, "nameComponent", void 0);
+    __decorate([
+        core_1.ViewChild(nickname_component_1.NicknameComponent), 
+        __metadata('design:type', nickname_component_1.NicknameComponent)
+    ], SignupComponent.prototype, "nicknameComponent", void 0);
+    __decorate([
+        core_1.ViewChild(mobile_component_1.MobileComponent), 
+        __metadata('design:type', mobile_component_1.MobileComponent)
+    ], SignupComponent.prototype, "mobileComponent", void 0);
+    __decorate([
+        core_1.ViewChild(gender_component_1.GenderComponent), 
+        __metadata('design:type', gender_component_1.GenderComponent)
+    ], SignupComponent.prototype, "genderComponent", void 0);
     SignupComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

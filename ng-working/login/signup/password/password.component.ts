@@ -40,7 +40,7 @@ export class PasswordComponent implements OnInit {
   isWarningPassword:boolean = false;
   tooltipHeadMsg:string=null;
   tooltipHeadPasswordNeeds:string="패스워드를 먼저 입력해주세요.";
-  tooltipHeadNotAllowed:string="패스워드에 문제가 있습니다.";
+  tooltipHeadNotAllowed:string="앗! 패스워드에 문제가 있습니다.";
   tooltipHeadAllowed:string="성공! 패스워드가 완벽합니다.";
 
   KeyupTypeTab:string="tab";
@@ -52,7 +52,7 @@ export class PasswordComponent implements OnInit {
   isWarningRepassword:boolean = false;
   tooltipTailMsg:string=null;
   tooltipTailInit:string="입력한 패스워드를 확인해볼께요.";
-  tooltipTailNotMatch:string="패스워드가 일치하지 않습니다!";
+  tooltipTailNotMatch:string="앗! 패스워드가 일치하지 않습니다.";
   tooltipTailMatched:string="성공! 패스워드가 정확히 일치합니다.";
 
   // 마지막에 사용자가 누른 키의 타입을 추적, 탭 이동시 패스워드 중복 성공 표시를 하지 않도록 합니다.
@@ -87,6 +87,73 @@ export class PasswordComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myChecker, input);
   }
+
+  private hasNotDonePassword(elementPassword):boolean {
+    return !this.hasDonePassword(elementPassword);
+  }
+  private hasDonePassword(elementPassword):boolean {
+    if(null == elementPassword) {
+      return false;
+    }
+
+    if(!this.hasPassword(elementPassword) || this.isWarningPassword) {
+      // 패스워드가 없거나, 패스워드에 문제가 있는 경우.
+      return false;
+    }
+
+    // 패스워드 문제 없음!
+    return true;
+  } 
+
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDoneP() :boolean {
+    return !this.hasDoneP();
+  }
+  public hasDoneP() :boolean {
+    return this.isOK(this.password);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarningP() :void {
+
+    this.isFocusPassword = true;
+    this.isWarningPassword = true;
+    this.isValidPassword = false;
+    this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+
+  }
+  // @ Desc : 이메일 재입력이 제대로 입력되었는지 확인합니다.
+  public hasNotDoneRP() :boolean {
+    return !this.hasDoneRP();
+  }
+  public hasDoneRP() :boolean {
+    let isOK:boolean = this.isOK(this.repassword);
+
+    if(isOK) {
+      // 정상적인 패스워드 포맷이라면 이전에 입력한 패스워드와 비교한다.
+      // 동일한 패스워드여야 합니다.
+      isOK = (this.password === this.repassword)?true:false;
+    }
+
+    return isOK;
+  }
+  // @ Desc : 이메일 재입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarningRP() :void {
+
+    console.log(">>> showWarningRP");
+
+    this.isFocusRepassword = true;
+    this.isWarningRepassword = true;
+    this.isValidRepassword = false;
+
+    if((this.password !== this.repassword)) {
+      this.tooltipTailMsg = this.tooltipTailNotMatch;  
+    } else {
+      this.tooltipTailMsg = this.tooltipHeadNotAllowed;
+    }
+
+  }  
+
+
 
   onClickPassword(event, element) :void {
 
@@ -250,7 +317,7 @@ export class PasswordComponent implements OnInit {
       _self.tooltipTailMsg = null;
     }, 1000 * sec);        
 
-  }      
+  }  
 
   onKeydownTabShiftPassword(event, elementPassword) :void {
 
@@ -404,22 +471,6 @@ export class PasswordComponent implements OnInit {
     } // end if
   }
 
-  private hasNotDonePassword(elementPassword):boolean {
-    return !this.hasDonePassword(elementPassword);
-  }
-  private hasDonePassword(elementPassword):boolean {
-    if(null == elementPassword) {
-      return false;
-    }
-
-    if(!this.hasPassword(elementPassword) || this.isWarningPassword) {
-      // 패스워드가 없거나, 패스워드에 문제가 있는 경우.
-      return false;
-    }
-
-    // 패스워드 문제 없음!
-    return true;
-  }
   private returnToPassword(elementPassword) :void{
     // 패스워드가 완료되지 않은 경우는 중단.
     // 강제로 패스워드를 먼저 완료하도록 합니다.

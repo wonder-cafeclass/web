@@ -18,6 +18,7 @@ var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
 var klass_center_module_1 = require('./klass/klass-center.module');
 var login_module_1 = require('./login/login.module');
+var policy_module_1 = require('./policy/policy.module');
 var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
 var login_service_1 = require('./login/service/login.service');
@@ -41,6 +42,7 @@ var AppModule = (function () {
                 users_module_1.UsersModule,
                 klass_center_module_1.KlassCenterModule,
                 login_module_1.LoginModule,
+                policy_module_1.PolicyModule,
                 http_1.HttpModule,
                 http_1.JsonpModule
             ],

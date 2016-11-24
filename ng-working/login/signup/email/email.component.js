@@ -31,7 +31,6 @@ var EmailComponent = (function () {
         this.tooltipMsgEmailNotUnique = "이미 등록되어 있는 이메일입니다.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
         this.isShowPopover = false;
-        // private lockFocus;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
@@ -43,6 +42,20 @@ var EmailComponent = (function () {
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_email");
         }
+    };
+    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+    EmailComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    EmailComponent.prototype.hasDone = function () {
+        return this.isOK(this.inputStrPrevOnKeyup);
+    };
+    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    EmailComponent.prototype.showWarning = function () {
+        this.isFocus = true;
+        this.isWarning = true;
+        this.isSuccessInput = false;
+        this.tooltipMsg = this.tooltipMsgEmailNotValid;
     };
     EmailComponent.prototype.onClick = function (event) {
         event.stopPropagation();
@@ -115,6 +128,8 @@ var EmailComponent = (function () {
         if (null == email || "" == email) {
             return;
         }
+        // 노출되어 있는 툴팁이 있다면 내립니다.
+        this.hideTooltipNow();
         // 1-2-1. 정상적인 이메일 주소를 등록했습니다.
         this.isWarning = false;
         // 1-1-2. 성공 메시지를 노출합니다.
@@ -147,6 +162,10 @@ var EmailComponent = (function () {
             _self.tooltipMsg = null;
             _self.isSuccessInput = false;
         }, 1000 * sec);
+    };
+    EmailComponent.prototype.hideTooltipNow = function () {
+        this.tooltipMsg = null;
+        this.isSuccessInput = false;
     };
     EmailComponent.prototype.onKeyup = function (event, element) {
         event.stopPropagation();

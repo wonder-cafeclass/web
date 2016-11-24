@@ -32,9 +32,13 @@ export class NameComponent implements OnInit {
   isFocus:boolean=false;
   isFocusInfo:boolean=false;
 
+  isWarning:boolean=false;
+
   isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
   tooltipHeadNotAllowed:string="이름에 문제가 있습니다.";
+  tooltipHeadRemoved:string="한글 2~5자까지 입력 가능합니다.";
+  tooltipHeadRemovedEmpties:string="빈칸을 2칸 이상 입력할 수 없습니다.";
   tooltipHeadAllowed:string="성공! 멋진 이름이네요.";
 
   myChecker:MyChecker;
@@ -63,6 +67,21 @@ export class NameComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myChecker, input);
   }
+
+  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+    return this.isOK(this.inputStrPrev);
+  }
+  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    this.isFocus = true;
+    this.isWarning = true;
+    this.isSuccessInput = false;
+    this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+  }  
 
   onClick(event, element) :void {
     event.stopPropagation();
@@ -182,7 +201,7 @@ export class NameComponent implements OnInit {
         this.isSuccessInput = false;
         element.value = name;
 
-        this.hideTooltip(2, element);
+        this.hideTooltip(2);
         element.focus();
 
         // Logger - Spam 행위로 등록.
@@ -192,12 +211,16 @@ export class NameComponent implements OnInit {
 
       } else {
 
+        // 이전에 노출한 툴팁을 내립니다.
+        this.hideTooltipNow();
+
         // 성공! 비속어가 포함되지 않았습니다.
         // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        this.isWarning = false;
         this.isSuccessInput = true;
         element.value = name;
 
-        this.hideTooltip(2, element);
+        this.hideTooltip(2);
 
         // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
         // 부모 객체에게 Ready Event 발송 
@@ -255,6 +278,7 @@ export class NameComponent implements OnInit {
     let regExpNotAllowed:RegExp = /[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
     let matchArr:RegExpMatchArray = inputStr.match(regExpNotAllowed);
     if(null != matchArr && 0 < matchArr.length) {
+      // 지워야 할 문자를 발견했습니다.
       for (var i = 0; i < matchArr.length; ++i) {
         let match:string = matchArr[i];
         if(null == match || "" == match) {
@@ -263,13 +287,19 @@ export class NameComponent implements OnInit {
 
         inputStr = inputStr.replace(match, "");
       }
+
+      // 예외 문자를 삭제했음을 사용자에게 알려줍니다.
+      // wonder.jung
+      this.tooltipHeadMsg = this.tooltipHeadRemoved;
+      this.hideTooltip(2);
+
     }
 
     // 2칸 이상 공백에 대해 1칸으로 줄임.
     let regExpEmptySpaces:RegExp = /[\s]{2,10}/gi;
     let matchArrEmptySpaces:RegExpMatchArray = inputStr.match(regExpEmptySpaces);
     if(null != matchArrEmptySpaces && 0 < matchArrEmptySpaces.length) {
-      console.log("TEST / matchArrEmptySpaces : ",matchArrEmptySpaces);
+      
       for (var i = 0; i < matchArrEmptySpaces.length; ++i) {
         let match:string = matchArrEmptySpaces[i];
         if(null == match || "" == match) {
@@ -278,6 +308,11 @@ export class NameComponent implements OnInit {
 
         inputStr = inputStr.replace(match, " ");
       }      
+
+      // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
+      // wonder.jung
+      this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
+      this.hideTooltip(2);
     }
 
     // 최대 길이 제한 검사
@@ -292,24 +327,21 @@ export class NameComponent implements OnInit {
 
           // 최대 문자 갯수보다 많은 경우.
           this.tooltipHeadMsg = history.msg;
+          this.hideTooltip(2);
 
           // 넘는 문자열은 지웁니다.
-          element.value = this.inputStrPrev = inputStr = inputStr.slice(0, history.value);
+          inputStr = inputStr.slice(0, history.value);
           this.isSuccessInput = false;
 
           if(isDebug) console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ",history);
         } // end if
       } // end if
-    } // end if    
+    } // end if 
 
     element.value = this.inputStrPrev = inputStr;
   }
 
-  hideTooltip(sec:number, element) :void {
-
-    if(null == element) {
-      return;
-    }
+  hideTooltip(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -321,7 +353,11 @@ export class NameComponent implements OnInit {
       _self.tooltipHeadMsg = null;
     }, 1000 * sec);        
 
-  }  
+  }
+
+  hideTooltipNow() :void {
+    this.tooltipHeadMsg = null;
+  }    
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();
