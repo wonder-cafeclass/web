@@ -48,6 +48,7 @@ var EmailComponent = (function () {
         return !this.hasDone();
     };
     EmailComponent.prototype.hasDone = function () {
+        this.setMyChecker();
         return this.isOK(this.inputStrPrevOnKeyup);
     };
     // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
@@ -218,6 +219,7 @@ var EmailComponent = (function () {
         // this.lockFocus = null;
     };
     EmailComponent.prototype.isOK = function (email) {
+        this.setMyChecker();
         var isOK = false;
         if (null == this.myCheckerService) {
             return isOK;

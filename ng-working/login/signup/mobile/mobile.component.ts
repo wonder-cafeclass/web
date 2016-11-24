@@ -73,27 +73,56 @@ export class MobileComponent implements OnInit {
   }
   isOKHead(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
 
-    return this.myCheckerService.isOK(this.myCheckerMobileHead, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileHead, input);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("mobile / isOKHead / history : ",history);
+    }
+
+    return isOK;
   }
   isOKBody(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
 
-    return this.myCheckerService.isOK(this.myCheckerMobileBody, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileBody, input);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("mobile / isOKBody / history : ",history);
+    }
+
+    return isOK;
   }
   isOKTail(input:string) :boolean {
 
+    console.log("mobile / isOKTail / input : ",input);
+
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
 
-    return this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("mobile / isOKTail / history : ",history);
+    }
+
+    return isOK;
   }
 
   // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
@@ -142,6 +171,9 @@ export class MobileComponent implements OnInit {
   }
   public hasDoneMobileTail() :boolean {
     this.setMyChecker();
+
+    console.log("XXX / hasDoneMobileTail / this.mobileTailPrev : ",this.mobileTailPrev)
+
     return this.isOKTail(this.mobileTailPrev);
   }
   // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
@@ -786,9 +818,13 @@ export class MobileComponent implements OnInit {
       if(isDebug) console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
       return;
     }
+
+    console.log("onKeyupTail / 1 / inputStr : ",inputStr);
     
     // 숫자가 아닌 글자들은 모두 삭제해준다.
     element.value = inputStr.replace(/[^0-9]/gi,"");
+
+    console.log("onKeyupTail / 2 / inputStr : ",inputStr);
 
     // 툴팁을 보여줍니다.
     if(element.value != inputStr) {
@@ -887,10 +923,9 @@ export class MobileComponent implements OnInit {
         this.myCheckerMobileTail
       );
       this.emitter.emit(myEventOnChange);      
-    }    
-
-
-    this.mobileBodyPrev = element.value = inputStr;    
+    }
+    
+    this.mobileTailPrev = element.value = inputStr;    
   }   
 
   onBlurMobileTail(event, element, elementNext) :void {
@@ -905,6 +940,8 @@ export class MobileComponent implements OnInit {
     if(null == inputStr || "" == inputStr) {
       return;
     }
+
+    console.log("onBlurMobileTail / inputStr : ",inputStr);
 
     let isOK:boolean = this.isOKTail(inputStr);
     if(!isOK) {

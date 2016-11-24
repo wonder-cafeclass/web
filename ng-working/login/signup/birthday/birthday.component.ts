@@ -76,6 +76,8 @@ export class BirthdayComponent implements OnInit {
   }
   isOKBirthYear(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
@@ -84,6 +86,8 @@ export class BirthdayComponent implements OnInit {
   }  
   isOKBirthMonth(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
@@ -91,6 +95,8 @@ export class BirthdayComponent implements OnInit {
     return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
   }  
   isOKBirthDay(input:string) :boolean {
+
+    this.setMyChecker();
 
     if(null == this.myCheckerService) {
       return false;

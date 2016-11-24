@@ -44,6 +44,7 @@ var NameComponent = (function () {
         }
     };
     NameComponent.prototype.isOK = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
@@ -54,7 +55,13 @@ var NameComponent = (function () {
         return !this.hasDone();
     };
     NameComponent.prototype.hasDone = function () {
-        return this.isOK(this.inputStrPrev);
+        console.log("name / hasDone / this.inputStrPrev : ", this.inputStrPrev);
+        var isOK = this.isOK(this.inputStrPrev);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            console.log("name / history : ", history_1);
+        }
+        return isOK;
     };
     // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
     NameComponent.prototype.showWarning = function () {
@@ -99,32 +106,32 @@ var NameComponent = (function () {
             var isOK = this.isOK(name);
             if (!isOK) {
                 // 원인을 찾아봅니다.
-                var history_1 = this.myCheckerService.getLastHistory();
-                console.log("password / onBlur / history : ", history_1);
-                if (null != history_1 && null != history_1.key && null != history_1.msg) {
+                var history_2 = this.myCheckerService.getLastHistory();
+                console.log("password / onBlur / history : ", history_2);
+                if (null != history_2 && null != history_2.key && null != history_2.msg) {
                     // Do something..
-                    if ("min" === history_1.key) {
+                    if ("min" === history_2.key) {
                         // 최소 문자 갯수보다 적은 경우.
-                        this.tooltipHeadMsg = history_1.msg;
+                        this.tooltipHeadMsg = history_2.msg;
                         this.isSuccessInput = false;
                         return;
                     }
-                    else if ("max" === history_1.key) {
+                    else if ("max" === history_2.key) {
                         // 최대 문자 갯수보다 많은 경우.
-                        this.tooltipHeadMsg = history_1.msg;
+                        this.tooltipHeadMsg = history_2.msg;
                         // 넘는 문자열은 지웁니다.
-                        element.value = name = name.slice(0, history_1.value);
+                        element.value = name = name.slice(0, history_2.value);
                         this.isSuccessInput = false;
                         return;
                     }
-                    else if ("regexExclude" === history_1.key) {
+                    else if ("regexExclude" === history_2.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
-                        this.tooltipHeadMsg = history_1.msg;
-                        var regExpStr = history_1.value + "";
+                        this.tooltipHeadMsg = history_2.msg;
+                        var regExpStr = history_2.value + "";
                         var regExpStrNameRange = /[^a-zA-Z가-힣0-9 ]+/g + "";
                         if (regExpStr == regExpStrNameRange) {
                             this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
-                            var matchArr = history_1.matchArr;
+                            var matchArr = history_2.matchArr;
                             if (null != matchArr && 0 < matchArr.length) {
                                 for (var i = 0; i < matchArr.length; ++i) {
                                     var keywordNotAllowed = matchArr[i];
@@ -245,18 +252,18 @@ var NameComponent = (function () {
         var isOK = this.isOK(inputStr);
         if (!isOK) {
             // 원인을 찾아봅니다.
-            var history_2 = this.myCheckerService.getLastHistory();
-            if (null != history_2 && null != history_2.key && null != history_2.msg) {
+            var history_3 = this.myCheckerService.getLastHistory();
+            if (null != history_3 && null != history_3.key && null != history_3.msg) {
                 // Do something..
-                if ("max" === history_2.key) {
+                if ("max" === history_3.key) {
                     // 최대 문자 갯수보다 많은 경우.
-                    this.tooltipHeadMsg = history_2.msg;
+                    this.tooltipHeadMsg = history_3.msg;
                     this.hideTooltip(2);
                     // 넘는 문자열은 지웁니다.
-                    inputStr = inputStr.slice(0, history_2.value);
+                    inputStr = inputStr.slice(0, history_3.value);
                     this.isSuccessInput = false;
                     if (isDebug)
-                        console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_2);
+                        console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
                 } // end if
             } // end if
         } // end if 
