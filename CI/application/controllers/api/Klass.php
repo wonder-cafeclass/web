@@ -210,7 +210,7 @@ class Klass extends REST_Controller implements MY_Class{
         // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
         if(0 < $klass->id)
         {
-            $this->db->select('review.id, review.klass_id, review.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
             $this->db->from('review');
             $this->db->join('user', 'review.user_id = user.id');
             $this->db->where('review.klass_id', $klass->id);
@@ -238,7 +238,7 @@ class Klass extends REST_Controller implements MY_Class{
                 continue;
             }
 
-            $this->db->select('review.id, review.klass_id, review.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
             $this->db->from('review');
             $this->db->join('user', 'review.user_id = user.id');
             $this->db->where('review.parent_id', $review_id);
@@ -254,7 +254,7 @@ class Klass extends REST_Controller implements MY_Class{
         // 1. 부모 문의를 먼저 가져옵니다.(최신순)
         if(0 < $klass->id)
         {
-            $this->db->select('question.id, question.klass_id, question.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
             $this->db->from('question');
             $this->db->join('user', 'question.user_id = user.id');
             $this->db->where('question.klass_id', $klass->id);
@@ -282,7 +282,7 @@ class Klass extends REST_Controller implements MY_Class{
                 continue;
             }
 
-            $this->db->select('question.id, question.klass_id, question.user_id, user.first_name, user.last_name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
             $this->db->from('question');
             $this->db->join('user', 'question.user_id = user.id');
             $this->db->where('question.parent_id', $question_id);
@@ -1086,7 +1086,7 @@ class Klass extends REST_Controller implements MY_Class{
         }
         if(isset($teacher) && empty($teacher->nickname))
         {
-            $teacher->nickname = $teacher->last_name . " " . $teacher->first_name;
+            $teacher->nickname = $teacher->name;
         }
 
         return $teacher;

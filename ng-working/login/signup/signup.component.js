@@ -17,7 +17,9 @@ var password_component_1 = require('./password/password.component');
 var name_component_1 = require('./name/name.component');
 var nickname_component_1 = require('./nickname/nickname.component');
 var mobile_component_1 = require('./mobile/mobile.component');
+var profile_img_upload_component_1 = require('./profile-img-upload/profile-img-upload.component');
 var gender_component_1 = require('./gender/gender.component');
+var birthday_component_1 = require('./birthday/birthday.component');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
@@ -40,6 +42,7 @@ var SignupComponent = (function () {
     SignupComponent.prototype.onClickSave = function (event) {
         event.preventDefault();
         event.stopPropagation();
+        var isAllOK = true;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -49,11 +52,17 @@ var SignupComponent = (function () {
         var hasNotDoneEmail = this.emailComponent.hasNotDone();
         if (hasNotDoneEmail) {
             this.emailComponent.showWarning();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneEmail : ", hasNotDoneEmail);
+            isAllOK = false;
         }
         var hasNotDonePassword = this.passwordComponent.hasNotDoneP();
         var hasNotDoneRepassword = false;
         if (hasNotDonePassword) {
             this.passwordComponent.showWarningP();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDonePassword : ", hasNotDonePassword);
+            isAllOK = false;
         }
         else {
             // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
@@ -62,42 +71,151 @@ var SignupComponent = (function () {
         if (hasNotDoneRepassword) {
             // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
             this.passwordComponent.showWarningRP();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneRepassword : ", hasNotDoneRepassword);
+            isAllOK = false;
         }
         var hasNotDoneName = this.nameComponent.hasNotDone();
         if (hasNotDoneName) {
             this.nameComponent.showWarning();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneName : ", hasNotDoneName);
+            isAllOK = false;
         }
         var hasNotDoneNickname = this.nicknameComponent.hasNotDone();
         if (hasNotDoneNickname) {
             this.nicknameComponent.showWarning();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneNickname : ", hasNotDoneNickname);
+            isAllOK = false;
         }
         var hasNotDoneMobileHead = this.mobileComponent.hasNotDoneMobileHead();
         var hasNotDoneMobileBody = false;
         var hasNotDoneMobileTail = false;
         if (hasNotDoneMobileHead) {
             this.mobileComponent.showWarningMobileHead();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneMobileHead : ", hasNotDoneMobileHead);
+            isAllOK = false;
         }
         else {
             // 휴대전화 첫번째 3자리가 문제가 없다면 휴대전화 두번째 4자리를 검사합니다.
             hasNotDoneMobileBody = this.mobileComponent.hasNotDoneMobileBody();
         }
+        if (null == this.mobileNumHead || "" === this.mobileNumHead) {
+            // 전화번호 첫 3자리가 기본값 '010'일 경우, 컴포넌트에서 기본값을 가져온다.
+            this.mobileNumHead = this.mobileComponent.getMobileHead();
+        }
         if (!hasNotDoneMobileHead && hasNotDoneMobileBody) {
             this.mobileComponent.showWarningMobileBody();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneMobileBody : ", hasNotDoneMobileBody);
+            isAllOK = false;
         }
         else if (!hasNotDoneMobileHead) {
             // 휴대전화 두번째 4자리가 문제가 없다면 휴대전화 세번째 4자리를 검사합니다.
             hasNotDoneMobileTail = this.mobileComponent.hasNotDoneMobileTail();
         }
         if (!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneMobileTail : ", hasNotDoneMobileTail);
             this.mobileComponent.showWarningMobileTail();
+            isAllOK = false;
         }
         var hasNotDoneGender = this.genderComponent.hasNotDone();
-        console.log("hasNotDoneGender : ", hasNotDoneGender);
         if (hasNotDoneGender) {
-            console.log("hasNotDoneGender / 2");
             this.genderComponent.showWarning();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneGender : ", hasNotDoneGender);
+            isAllOK = false;
         }
+        // 생년월일 검사
+        var hasNotDoneBirthYear = this.birthdayComponent.hasNotDoneBirthYear();
+        if (hasNotDoneBirthYear) {
+            this.birthdayComponent.showWarningBirthYear();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneBirthYear : ", hasNotDoneBirthYear);
+            isAllOK = false;
+        }
+        if (null == this.birthYear || "" === this.birthYear) {
+            this.birthYear = this.birthdayComponent.getBirthYear();
+        }
+        var hasNotDoneBirthMonth = this.birthdayComponent.hasNotDoneBirthMonth();
+        if (hasNotDoneBirthMonth) {
+            this.birthdayComponent.showWarningBirthMonth();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneBirthMonth : ", hasNotDoneBirthMonth);
+            isAllOK = false;
+        }
+        if (null == this.birthMonth || "" === this.birthMonth) {
+            this.birthMonth = this.birthdayComponent.getBirthMonth();
+        }
+        var hasNotDoneBirthDay = this.birthdayComponent.hasNotDoneBirthDay();
+        if (hasNotDoneBirthDay) {
+            this.birthdayComponent.showWarningBirthDay();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneBirthDay : ", hasNotDoneBirthDay);
+            isAllOK = false;
+        }
+        if (null == this.birthDay || "" === this.birthDay) {
+            this.birthDay = this.birthdayComponent.getBirthDay();
+        }
+        // 프로필 이미지 검사
+        var hasNotDoneProfileImg = this.profileImgUploadComponent.hasNotDone();
+        if (hasNotDoneProfileImg) {
+            this.profileImgUploadComponent.showWarning();
+            if (isDebug)
+                console.log("signup / onClickSave / hasNotDoneProfileImg : ", hasNotDoneProfileImg);
+            isAllOK = false;
+        }
+        if (null == this.thumbnail || "" === this.thumbnail) {
+            this.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+        }
+        // 전화번호 검사
+        if (isDebug)
+            console.log("signup / onClickSave / isAllOK : ", isAllOK);
         // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
+        if (isAllOK) {
+            if (isDebug)
+                console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
+            this.userService
+                .addUser(
+            // email:string
+            this.email, 
+            // password:string
+            this.password, 
+            // name:string
+            this.name, 
+            // nickname:string
+            this.nickname, 
+            // gender:string
+            this.gender, 
+            // birthYear:string
+            this.birthYear, 
+            // birthMonth:string
+            this.birthMonth, 
+            // birthDay:string  
+            this.birthDay, 
+            // thumbnail:string
+            this.thumbnail, 
+            // mobileHead:string
+            this.mobileNumHead, 
+            // mobileBody:string
+            this.mobileNumBody, 
+            // mobileTail:string
+            this.mobileNumTail).then(function (result) {
+                if (isDebug)
+                    console.log("signup / onClickSave / result : ", result);
+                /*
+                if( null != result &&
+                    null == result.user ) {
+        
+                  // Do something...
+        
+                } // end if
+                */
+            }); // end service      
+        }
     };
     SignupComponent.prototype.onClickTerms = function (event) {
         event.preventDefault();
@@ -252,6 +370,14 @@ var SignupComponent = (function () {
         core_1.ViewChild(gender_component_1.GenderComponent), 
         __metadata('design:type', gender_component_1.GenderComponent)
     ], SignupComponent.prototype, "genderComponent", void 0);
+    __decorate([
+        core_1.ViewChild(birthday_component_1.BirthdayComponent), 
+        __metadata('design:type', birthday_component_1.BirthdayComponent)
+    ], SignupComponent.prototype, "birthdayComponent", void 0);
+    __decorate([
+        core_1.ViewChild(profile_img_upload_component_1.ProfileImgUploadComponent), 
+        __metadata('design:type', profile_img_upload_component_1.ProfileImgUploadComponent)
+    ], SignupComponent.prototype, "profileImgUploadComponent", void 0);
     SignupComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

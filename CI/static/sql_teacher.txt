@@ -2,10 +2,9 @@ INSERT INTO `cafeclass`.`teacher`
 (
 `user_id`,
 `nickname`,
-`first_name`,
-`last_name`,
+`name`,
 `gender`,
-`birth_year`,
+`birthday`,
 `thumbnail`,
 `status`,
 `mobile`,
@@ -22,14 +21,12 @@ VALUES
 1,
 ## nickname
 "Julia",
-## first_name
-"주라",
-## last_name
-"유",								
+## name
+"유주라",
 ## gender
 "F",
-## birth_year
-1991,								
+## birthday
+"1991-10-31",								
 ## thumbnail
 "teacher_julia_150x150.png",			
 ## status

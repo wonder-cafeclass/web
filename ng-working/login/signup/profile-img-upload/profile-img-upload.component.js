@@ -57,10 +57,30 @@ var ProfileImgUploadComponent = (function () {
         }
     };
     ProfileImgUploadComponent.prototype.isOK = function (input) {
+        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    // @ Desc : 프로필 이미지가 제대로 입력되었는지 확인합니다.
+    ProfileImgUploadComponent.prototype.hasNotDone = function () {
+        return !this.hasDone();
+    };
+    ProfileImgUploadComponent.prototype.hasDone = function () {
+        var isOK = this.isOK(this.userProfileUrl);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            console.log("profile-img / hasDone / history : ", history_1);
+        }
+        return isOK;
+    };
+    // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
+    ProfileImgUploadComponent.prototype.showWarning = function () {
+        // Do something...
+    };
+    ProfileImgUploadComponent.prototype.getProfileImgUrl = function () {
+        return this.userProfileUrl;
     };
     ProfileImgUploadComponent.prototype.onClickSampleThumb = function (event, idx) {
         event.stopPropagation();

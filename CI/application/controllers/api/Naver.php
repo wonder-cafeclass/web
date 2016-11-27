@@ -722,7 +722,7 @@ class Naver extends REST_Controller implements MY_Class{
             $email, 
             // $nickname="", 
             $nickname,
-            // $first_name="", 
+            // $name="", 
             $name,
             // $thumbnail_url=""
             $thumbnail_url

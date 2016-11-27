@@ -3,8 +3,7 @@
 class User {
         public $id;
         public $nickname;
-        public $first_name;
-        public $last_name;
+        public $name;
         public $gender;
         public $birthday; 
         public $thumbnail;

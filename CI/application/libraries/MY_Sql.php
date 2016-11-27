@@ -258,7 +258,7 @@ class MY_Sql
 
 
 
-    public function insert_user_facebook($facebook_id=-1, $email="", $nickname="", $first_name="", $last_name="", $thumbnail_url="")
+    public function insert_user_facebook($facebook_id=-1, $email="", $nickname="", $name="", $thumbnail_url="")
     {
         if($this->is_not_ready())
         {
@@ -280,12 +280,7 @@ class MY_Sql
             // @ Required / 필수
             return;   
         }
-        if(empty($first_name)) 
-        {
-            // @ Required / 필수
-            return;
-        }
-        if(empty($last_name)) 
+        if(empty($name)) 
         {
             // @ Required / 필수
             return;
@@ -308,8 +303,7 @@ class MY_Sql
             'facebook_id' => $facebook_id,
             'email' => $email,
             'nickname' => $nickname,
-            'first_name' => $first_name,
-            'last_name' => $last_name,
+            'name' => $name,
             'thumbnail' => $thumbnail_url
         );
 
@@ -345,7 +339,7 @@ class MY_Sql
         return $this->decorate_user($row);        
     }
 
-    public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $first_name="", $thumbnail_url="")
+    public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $name="", $thumbnail_url="")
     {
         if($this->is_not_ready())
         {
@@ -387,7 +381,7 @@ class MY_Sql
             // @ Required / 필수
             return;   
         }
-        if(empty($first_name)) 
+        if(empty($name)) 
         {
             // @ Required / 필수
             return;
@@ -402,12 +396,11 @@ class MY_Sql
 
         $data = array(
             'naver_id' => $naver_id,
-            'birth_year'=> $birth_year,
             'birthday' => $birthday,
             'gender' => $gender,
             'email' => $email,
             'nickname' => $nickname,
-            'first_name' => $first_name,
+            'name' => $name,
             'thumbnail' => $thumbnail_url
         );
 
@@ -469,7 +462,7 @@ class MY_Sql
         $data = array(
                 'kakao_id' => $kakao_id,
                 'nickname' => $nickname,
-                'first_name' => $nickname,
+                'name' => $nickname,
                 'thumbnail' => $thumbnail_url
         );
 
@@ -548,7 +541,7 @@ class MY_Sql
             return null;
         }
 
-        $this->CI->db->select('id, nickname, first_name, gender, birth_year, thumbnail, status, date_created, date_updated');
+        $this->CI->db->select('id, nickname, name, gender, birthday, thumbnail, status, date_created, date_updated');
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;

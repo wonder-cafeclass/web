@@ -114,6 +114,9 @@ var MobileComponent = (function () {
         this.isSuccessHeadInput = true;
         this.tooltipHeadMsg = null;
     };
+    MobileComponent.prototype.getMobileHead = function () {
+        return this.mobileHeadPrev;
+    };
     // @ Desc : 전화번호 가운데 자리가 제대로 입력되었는지 확인합니다.
     MobileComponent.prototype.hasNotDoneMobileBody = function () {
         return !this.hasDoneMobileBody();

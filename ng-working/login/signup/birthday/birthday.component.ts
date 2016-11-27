@@ -103,7 +103,83 @@ export class BirthdayComponent implements OnInit {
     }
 
     return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
+  } 
+
+  // @ Desc : 생년이 제대로 입력되었는지 확인합니다.
+  public hasNotDoneBirthYear() :boolean {
+    return !this.hasDoneBirthYear();
+  }
+  public hasDoneBirthYear() :boolean {
+
+    let isOK:boolean = this.isOKBirthYear(""+this.selectedYear);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("birthday / hasDoneBirthYear / history : ",history);
+    }
+
+    return isOK;
+  }
+  // @ Desc : 생년을 입력해달라는 표시를 화면에 보여줍니다.
+  public showWarningBirthYear() :void {
+    // Do something...
+  }
+  public getBirthYear() :string {
+    return "" + this.selectedYear;
+  }
+
+  public hasNotDoneBirthMonth() :boolean {
+    return !this.hasDoneBirthMonth();
+  }
+  public hasDoneBirthMonth() :boolean {
+
+    let monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+    let isOK:boolean = this.isOKBirthMonth(monthCalFormat);
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("birthday / hasDoneBirthMonth / history : ",history);
+    }
+
+    return isOK;
   }  
+  // @ Desc : 생월을 입력해달라는 표시를 화면에 보여줍니다.
+  public showWarningBirthMonth() :void {
+    // Do something...
+  }  
+  public getBirthMonth() :string {
+    let monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+    return monthCalFormat;
+  }
+
+
+  public hasNotDoneBirthDay() :boolean {
+    return !this.hasDoneBirthDay();
+  }
+  public hasDoneBirthDay() :boolean {
+
+    let dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
+    let isOK:boolean = this.isOKBirthDay(dayCalFormat);
+
+    console.log("TEST / hasDoneBirthDay / dayCalFormat : ",dayCalFormat);
+    console.log("TEST / hasDoneBirthDay / isOK : ",isOK);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("birthday / hasDoneBirthDay / history : ",history);
+    }
+
+    return isOK;
+  }   
+  // @ Desc : 생일을 입력해달라는 표시를 화면에 보여줍니다.
+  public showWarningBirthDay() :void {
+    // Do something...
+  }
+  public getBirthDay() :string {
+    let monthCalFormat = this.setCalendarFormat("" + this.selectedDay);
+    return monthCalFormat;
+  }
+
+
 
   onClick(event) :void {
     event.stopPropagation();

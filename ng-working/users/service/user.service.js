@@ -17,12 +17,14 @@ var UserService = (function () {
         this.us = us;
         this.http = http;
         this.getUserByEmailUrl = '/CI/index.php/api/users/email';
+        this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
+        this.addUserUrl = '/CI/index.php/api/users/add';
     }
     UserService.prototype.getUserByEmail = function (email) {
         var req_url = this.us.get(this.getUserByEmailUrl);
         req_url = req_url + "?q=" + email;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByEmail / 시작");
         if (isDebug)
@@ -30,6 +32,77 @@ var UserService = (function () {
         if (isDebug)
             console.log("user.service / getUserByEmail / req_url : ", req_url);
         return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.getUserByMobile = function (mobile) {
+        var req_url = this.us.get(this.getUserByMobileUrl);
+        req_url = req_url + "?q=" + mobile;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / getUserByMobile / 시작");
+        if (isDebug)
+            console.log("user.service / getUserByMobile / mobile : ", mobile);
+        if (isDebug)
+            console.log("user.service / getUserByMobile / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.addUser = function (email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / addUser / 시작");
+        if (isDebug)
+            console.log("user.service / addUser / email : ", email);
+        if (isDebug)
+            console.log("user.service / addUser / password : ", password);
+        if (isDebug)
+            console.log("user.service / addUser / name : ", name);
+        if (isDebug)
+            console.log("user.service / addUser / nickname : ", nickname);
+        if (isDebug)
+            console.log("user.service / addUser / gender : ", gender);
+        if (isDebug)
+            console.log("user.service / addUser / birthYear : ", birthYear);
+        if (isDebug)
+            console.log("user.service / addUser / birthMonth : ", birthMonth);
+        if (isDebug)
+            console.log("user.service / addUser / birthDay : ", birthDay);
+        if (isDebug)
+            console.log("user.service / addUser / thumbnail : ", thumbnail);
+        if (isDebug)
+            console.log("user.service / addUser / mobileHead : ", mobileHead);
+        if (isDebug)
+            console.log("user.service / addUser / mobileBody : ", mobileBody);
+        if (isDebug)
+            console.log("user.service / addUser / mobileTail : ", mobileTail);
+        // $output["mobile_head"] = $mobile_head;
+        // $output["mobile_body"] = $mobile_body;
+        // $output["mobile_tail"] = $mobile_tail;
+        // POST
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.addUserUrl);
+        var params = {
+            email: email,
+            password: password,
+            name: name,
+            nickname: nickname,
+            gender: gender,
+            birth_year: birthYear,
+            birth_month: birthMonth,
+            birth_day: birthDay,
+            thumbnail: thumbnail,
+            mobile_head: mobileHead,
+            mobile_body: mobileBody,
+            mobile_tail: mobileTail
+        };
+        return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

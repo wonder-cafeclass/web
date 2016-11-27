@@ -62,6 +62,12 @@ export class SignupComponent implements OnInit {
   @ViewChild(GenderComponent)
   private genderComponent: GenderComponent;  
 
+  @ViewChild(BirthdayComponent)
+  private birthdayComponent: BirthdayComponent;  
+
+  @ViewChild(ProfileImgUploadComponent)
+  private profileImgUploadComponent: ProfileImgUploadComponent;  
+
 
   constructor(  private loginService: LoginService, 
                 private userService:UserService,
@@ -72,7 +78,6 @@ export class SignupComponent implements OnInit {
 
     // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
     this.myCheckerService.getReady();
-
   }
 
   ngOnInit(): void {
@@ -85,6 +90,8 @@ export class SignupComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
+    let isAllOK:boolean = true;
+
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickSave / 시작");
@@ -94,12 +101,16 @@ export class SignupComponent implements OnInit {
     let hasNotDoneEmail:boolean = this.emailComponent.hasNotDone();
     if(hasNotDoneEmail) {
       this.emailComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneEmail : ",hasNotDoneEmail);
+      isAllOK = false;
     }
 
     let hasNotDonePassword:boolean = this.passwordComponent.hasNotDoneP();
     let hasNotDoneRepassword:boolean = false;
     if(hasNotDonePassword) {
       this.passwordComponent.showWarningP();
+      if(isDebug) console.log("signup / onClickSave / hasNotDonePassword : ",hasNotDonePassword);
+      isAllOK = false;
     } else {
       // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
       hasNotDoneRepassword = this.passwordComponent.hasNotDoneRP();
@@ -107,16 +118,22 @@ export class SignupComponent implements OnInit {
     if(hasNotDoneRepassword) {
       // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
       this.passwordComponent.showWarningRP();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneRepassword : ",hasNotDoneRepassword);
+      isAllOK = false;
     }
 
     let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
     if(hasNotDoneName) {
       this.nameComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneName : ",hasNotDoneName);
+      isAllOK = false;
     }
 
     let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
     if(hasNotDoneNickname) {
       this.nicknameComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneNickname : ",hasNotDoneNickname);
+      isAllOK = false;
     }
 
     let hasNotDoneMobileHead:boolean = this.mobileComponent.hasNotDoneMobileHead();
@@ -125,28 +142,130 @@ export class SignupComponent implements OnInit {
 
     if(hasNotDoneMobileHead) {
       this.mobileComponent.showWarningMobileHead();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneMobileHead : ",hasNotDoneMobileHead);
+      isAllOK = false;
     } else {
       // 휴대전화 첫번째 3자리가 문제가 없다면 휴대전화 두번째 4자리를 검사합니다.
       hasNotDoneMobileBody = this.mobileComponent.hasNotDoneMobileBody();
     }
+    if(null == this.mobileNumHead || "" === this.mobileNumHead) {
+      // 전화번호 첫 3자리가 기본값 '010'일 경우, 컴포넌트에서 기본값을 가져온다.
+      this.mobileNumHead = this.mobileComponent.getMobileHead();
+    }
     if(!hasNotDoneMobileHead && hasNotDoneMobileBody) {
       this.mobileComponent.showWarningMobileBody();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneMobileBody : ",hasNotDoneMobileBody);
+      isAllOK = false;
     } else if(!hasNotDoneMobileHead) {
       // 휴대전화 두번째 4자리가 문제가 없다면 휴대전화 세번째 4자리를 검사합니다.
       hasNotDoneMobileTail = this.mobileComponent.hasNotDoneMobileTail();
     }
     if(!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneMobileTail : ",hasNotDoneMobileTail);
       this.mobileComponent.showWarningMobileTail();
+      isAllOK = false;
     } 
 
     let hasNotDoneGender:boolean = this.genderComponent.hasNotDone();   
-    console.log("hasNotDoneGender : ",hasNotDoneGender);
     if(hasNotDoneGender) {
-      console.log("hasNotDoneGender / 2");
       this.genderComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneGender : ",hasNotDoneGender);
+      isAllOK = false;
     }
 
+    // 생년월일 검사
+    let hasNotDoneBirthYear:boolean = this.birthdayComponent.hasNotDoneBirthYear();
+    if(hasNotDoneBirthYear) {
+      this.birthdayComponent.showWarningBirthYear();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneBirthYear : ",hasNotDoneBirthYear);
+      isAllOK = false;
+    }
+    if(null == this.birthYear || "" === this.birthYear) {
+      this.birthYear = this.birthdayComponent.getBirthYear();
+    }
+
+    let hasNotDoneBirthMonth:boolean = this.birthdayComponent.hasNotDoneBirthMonth();
+    if(hasNotDoneBirthMonth) {
+      this.birthdayComponent.showWarningBirthMonth();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneBirthMonth : ",hasNotDoneBirthMonth);
+      isAllOK = false;
+    }
+    if(null == this.birthMonth || "" === this.birthMonth) {
+      this.birthMonth = this.birthdayComponent.getBirthMonth();
+    }
+
+    let hasNotDoneBirthDay:boolean = this.birthdayComponent.hasNotDoneBirthDay();
+    if(hasNotDoneBirthDay) {
+      this.birthdayComponent.showWarningBirthDay();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneBirthDay : ",hasNotDoneBirthDay);
+      isAllOK = false;
+    }
+    if(null == this.birthDay || "" === this.birthDay) {
+      this.birthDay = this.birthdayComponent.getBirthDay();
+    }
+
+    // 프로필 이미지 검사
+    let hasNotDoneProfileImg:boolean = this.profileImgUploadComponent.hasNotDone();
+    if(hasNotDoneProfileImg) {
+      this.profileImgUploadComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSave / hasNotDoneProfileImg : ",hasNotDoneProfileImg);
+      isAllOK = false;
+    }
+    if(null == this.thumbnail || "" === this.thumbnail) {
+      this.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+    }
+
+    // 전화번호 검사
+
+
+
+
+    if(isDebug) console.log("signup / onClickSave / isAllOK : ",isAllOK);
+
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
+    if(isAllOK) {
+      if(isDebug) console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
+
+      this.userService
+      .addUser(
+        // email:string
+        this.email,
+        // password:string
+        this.password,
+        // name:string
+        this.name, 
+        // nickname:string
+        this.nickname,
+        // gender:string
+        this.gender,
+        // birthYear:string
+        this.birthYear,
+        // birthMonth:string
+        this.birthMonth,
+        // birthDay:string  
+        this.birthDay,
+        // thumbnail:string
+        this.thumbnail,
+        // mobileHead:string
+        this.mobileNumHead,
+        // mobileBody:string
+        this.mobileNumBody,
+        // mobileTail:string
+        this.mobileNumTail
+      ).then(result => {
+
+        if(isDebug) console.log("signup / onClickSave / result : ",result);
+
+        /*
+        if( null != result &&
+            null == result.user ) {
+
+          // Do something...
+
+        } // end if
+        */
+      }); // end service      
+    }
 
   }
 
@@ -265,6 +384,9 @@ export class SignupComponent implements OnInit {
 
         this.mobileNumTail = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumTail : ",this.mobileNumTail);
+
+        // 휴대전화 번호가 모두 확인되었습니다. 
+        // TODO - 이미 등록된 번호는 아닌지 확인.
 
       } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
 

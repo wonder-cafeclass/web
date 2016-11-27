@@ -970,6 +970,26 @@ class MY_ParamChecker {
 		    		return $result;
 		        }
 			}
+            else if(strpos($filter, 'regex_match_include') !== false)
+            {
+                $pattern = "/regex_match_include\[(.+)\]$/";
+                preg_match($pattern, $filter, $match_in_filter);
+                if(empty($match_in_filter)) 
+                {
+                    $result["message"]="empty(\$match_in_filter)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+
+                $pattern = $match_in_filter[1];
+                preg_match($pattern, $value, $match_in_value);
+                if(empty($match_in_value)) 
+                {
+                    $result["message"]="empty(\$match_in_value)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+            }
     		else if(strpos($filter, 'regex_match') !== false) 
     		{
     			$pattern = "/regex_match\[(.+)\]$/";

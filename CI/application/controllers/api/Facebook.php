@@ -537,16 +537,6 @@ class Facebook extends REST_Controller implements MY_Class{
         // 페이스북 유저 이름은 다음과 같은 형식이다. 공백을 기준으로 2개 이상의 이름이 있다면 First Name, Last Name으로 사용한다.
         // {"name": "Wonder Jung"}
 
-        $name_arr = explode(" ", $name);
-        $first_name = "";
-        $last_name = "";
-        if(!empty($name_arr) && 1 < count($name_arr)) 
-        {
-            // 영어식 이름으로 이름/성 기준으로 구분한다.
-            $first_name = $name_arr[0];
-            $last_name = $name_arr[1];
-        }
-
         if($is_debug) echo "add_user 1-4 <br/>\n";
 
         $last_query = 
@@ -557,10 +547,8 @@ class Facebook extends REST_Controller implements MY_Class{
             $email,
             // $nickname="", 
             $name,
-            // $first_name="", 
-            $first_name,
-            // $last_name="", 
-            $last_name,
+            // $name="", 
+            $name,
             // $thumbnail_url=""
             $thumbnail_url
         );

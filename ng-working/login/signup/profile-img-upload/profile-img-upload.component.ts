@@ -84,12 +84,38 @@ export class ProfileImgUploadComponent implements OnInit {
   }
   isOK(input:string) :boolean {
 
+    this.setMyChecker();
+
     if(null == this.myCheckerService) {
       return false;
     }
 
     return this.myCheckerService.isOK(this.myChecker, input);
   }
+
+  // @ Desc : 프로필 이미지가 제대로 입력되었는지 확인합니다.
+  public hasNotDone() :boolean {
+    return !this.hasDone();
+  }
+  public hasDone() :boolean {
+
+    let isOK:boolean = this.isOK(this.userProfileUrl);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("profile-img / hasDone / history : ",history);
+    }
+
+    return isOK;
+  } 
+  // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
+  public showWarning() :void {
+    // Do something...
+  } 
+  public getProfileImgUrl() :string {
+    return this.userProfileUrl;
+  } 
+
 
   onClickSampleThumb(event, idx) :void {
 

@@ -24,11 +24,9 @@ DROP TABLE IF EXISTS `z_test_class`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT, 
   `nickname` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
-  `first_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
-  `last_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
+  `name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required', 
   `gender` char(1) NOT NULL DEFAULT "" COMMENT 'Optional M(Male)/F(Female)/U(Unknown)', 
-  `birth_year` int(4) NOT NULL DEFAULT 0 COMMENT 'Required ex) 1980, 1990, 2000, 2010', 
-  `birthday` char(8) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 03-22, 03-22, 03-22, 03-22, ...', 
+  `birthday` char(16) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 2001-03-22, 1976-03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "Optional",
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)',
   `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
@@ -42,23 +40,21 @@ CREATE TABLE `user` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `user_unique_id` (`email`,`mobile`),
-  KEY `first_name` (`first_name`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `mobile` (`mobile`),
   KEY `kakao_id` (`kakao_id`),
   KEY `naver_id` (`naver_id`),
   KEY `google_id` (`google_id`),
-  KEY `facebook_id` (`facebook_id`),
-  KEY `email` (`email`)
+  KEY `facebook_id` (`facebook_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
 
 CREATE TABLE `teacher` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT 0 COMMENT 'Required', 
   `nickname` varchar(65) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Optional 서비스에 노출되는 이름입니다.',
-  `first_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required 닉네임이 없는 경우 서비스에 노출', 
-  `last_name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required 닉네임이 없는 경우 서비스에 노출', 
+  `name` varchar(65) COLLATE utf8_bin NOT NULL COMMENT 'Required 닉네임이 없는 경우 서비스에 노출', 
   `gender` char(1) NOT NULL DEFAULT "" COMMENT 'Required M(Male)/F(Female)/U(Unknown)',
-  `birth_year` int(4) NOT NULL DEFAULT 0 COMMENT 'Required ex) 1980, 1990, 2000, 2010, ... / 서비스에서는 "20대 중반, 후반"으로 표시', 
+  `birthday` char(16) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 2001-03-22, 1976-03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "" COMMENT 'Required 내부 업로드 섬네일 주소입니다. 150x150 / jpeg,jpg,png만 허용', 
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'Required 선생님의 상태입니다. 진행-A(Available)/대기-B(Blocked)//휴식-F(Frozen)/제한-N(Not in action)',
   `mobile` varchar(65) COLLATE utf8_bin DEFAULT NULL COMMENT 'Required',
@@ -70,7 +66,7 @@ CREATE TABLE `teacher` (
   `date_updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `teacher_unique_id` (`mobile`,`email`),
-  KEY `first_name` (`first_name`)
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass teacher';
 
 CREATE TABLE `klass` (

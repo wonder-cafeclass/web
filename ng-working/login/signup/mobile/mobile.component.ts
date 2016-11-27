@@ -151,6 +151,9 @@ export class MobileComponent implements OnInit {
     this.isSuccessHeadInput = true;
     this.tooltipHeadMsg = null;
   }
+  public getMobileHead() :string {
+    return this.mobileHeadPrev;
+  }
   // @ Desc : 전화번호 가운데 자리가 제대로 입력되었는지 확인합니다.
   public hasNotDoneMobileBody() :boolean {
     return !this.hasDoneMobileBody();

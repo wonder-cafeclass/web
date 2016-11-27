@@ -71,6 +71,67 @@ var BirthdayComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
     };
+    // @ Desc : 생년이 제대로 입력되었는지 확인합니다.
+    BirthdayComponent.prototype.hasNotDoneBirthYear = function () {
+        return !this.hasDoneBirthYear();
+    };
+    BirthdayComponent.prototype.hasDoneBirthYear = function () {
+        var isOK = this.isOKBirthYear("" + this.selectedYear);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            console.log("birthday / hasDoneBirthYear / history : ", history_1);
+        }
+        return isOK;
+    };
+    // @ Desc : 생년을 입력해달라는 표시를 화면에 보여줍니다.
+    BirthdayComponent.prototype.showWarningBirthYear = function () {
+        // Do something...
+    };
+    BirthdayComponent.prototype.getBirthYear = function () {
+        return "" + this.selectedYear;
+    };
+    BirthdayComponent.prototype.hasNotDoneBirthMonth = function () {
+        return !this.hasDoneBirthMonth();
+    };
+    BirthdayComponent.prototype.hasDoneBirthMonth = function () {
+        var monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+        var isOK = this.isOKBirthMonth(monthCalFormat);
+        if (!isOK) {
+            var history_2 = this.myCheckerService.getLastHistory();
+            console.log("birthday / hasDoneBirthMonth / history : ", history_2);
+        }
+        return isOK;
+    };
+    // @ Desc : 생월을 입력해달라는 표시를 화면에 보여줍니다.
+    BirthdayComponent.prototype.showWarningBirthMonth = function () {
+        // Do something...
+    };
+    BirthdayComponent.prototype.getBirthMonth = function () {
+        var monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+        return monthCalFormat;
+    };
+    BirthdayComponent.prototype.hasNotDoneBirthDay = function () {
+        return !this.hasDoneBirthDay();
+    };
+    BirthdayComponent.prototype.hasDoneBirthDay = function () {
+        var dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
+        var isOK = this.isOKBirthDay(dayCalFormat);
+        console.log("TEST / hasDoneBirthDay / dayCalFormat : ", dayCalFormat);
+        console.log("TEST / hasDoneBirthDay / isOK : ", isOK);
+        if (!isOK) {
+            var history_3 = this.myCheckerService.getLastHistory();
+            console.log("birthday / hasDoneBirthDay / history : ", history_3);
+        }
+        return isOK;
+    };
+    // @ Desc : 생일을 입력해달라는 표시를 화면에 보여줍니다.
+    BirthdayComponent.prototype.showWarningBirthDay = function () {
+        // Do something...
+    };
+    BirthdayComponent.prototype.getBirthDay = function () {
+        var monthCalFormat = this.setCalendarFormat("" + this.selectedDay);
+        return monthCalFormat;
+    };
     BirthdayComponent.prototype.onClick = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -132,9 +193,9 @@ var BirthdayComponent = (function () {
             this.emitter.emit(myEventOnChange);
         }
         else {
-            var history_1 = this.myCheckerService.getLastHistory();
+            var history_4 = this.myCheckerService.getLastHistory();
             if (isDebug)
-                console.log("birtday / onChangeBirthYear / history : ", history_1);
+                console.log("birtday / onChangeBirthYear / history : ", history_4);
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthMonth = function (selectBirthMonth) {
@@ -169,9 +230,9 @@ var BirthdayComponent = (function () {
             this.emitter.emit(myEventOnChange);
         }
         else {
-            var history_2 = this.myCheckerService.getLastHistory();
+            var history_5 = this.myCheckerService.getLastHistory();
             if (isDebug)
-                console.log("birtday / onChangeBirthMonth / history : ", history_2);
+                console.log("birtday / onChangeBirthMonth / history : ", history_5);
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthDay = function (selectBirthDay) {
@@ -205,9 +266,9 @@ var BirthdayComponent = (function () {
             this.emitter.emit(myEventOnChange);
         }
         else {
-            var history_3 = this.myCheckerService.getLastHistory();
+            var history_6 = this.myCheckerService.getLastHistory();
             if (isDebug)
-                console.log("birtday / onChangeBirthDay / history : ", history_3);
+                console.log("birtday / onChangeBirthDay / history : ", history_6);
         } // end if
     };
     BirthdayComponent.prototype.setCalendarFormat = function (calNumStr) {
