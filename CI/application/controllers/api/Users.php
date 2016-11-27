@@ -101,6 +101,49 @@ class Users extends MY_REST_Controller {
         }
     }
 
+    // @ Desc : 비밀 번호를 해싱해서 돌려줍니다.
+    public function hash_get()
+    {
+        $password = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "password",
+            // $key_filter=""
+            "user_password"
+        );
+
+        $output = array();
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        if( isset($check_list) && 
+            isset($check_list->fail) && 
+            (0 < count($check_list->fail))) 
+        {
+            $output["check_list"] = $check_list;
+            $is_ok = false;
+        }
+        $$password_hashed = "";
+        if($is_ok) {
+            // INSERT
+            $password_hashed = $this->getHash($password);
+        }
+
+        $output["password_hashed"] = $$password_hashed;
+
+        $this->respond_200($output);
+    }
+
+    // @ Referer : http://php.net/manual/kr/function.password-hash.php
+    private function getHash($value="")
+    {
+        if(empty($value)) {
+            return "";
+        }
+        return password_hash($value, PASSWORD_DEFAULT);
+    }
+
     public function add_post()
     {
         $email = 
@@ -188,8 +231,15 @@ class Users extends MY_REST_Controller {
             "user_mobile_kor_tail"
         );
 
+        $output = array();
+
+
+
+
+
 
         // PARAM - ECHO
+        /*
         $output["password"] = $password;
         $output["email"] = $email;
         $output["name"] = $name;
@@ -202,6 +252,7 @@ class Users extends MY_REST_Controller {
         $output["mobile_head"] = $mobile_head;
         $output["mobile_body"] = $mobile_body;
         $output["mobile_tail"] = $mobile_tail;
+        */
 
         // CHECK LIST
         $is_ok = true;
@@ -215,7 +266,43 @@ class Users extends MY_REST_Controller {
             $is_ok = false;
         }
         if($is_ok) {
-            // INSERT
+
+            // 1. 플랫폼(카카오, 페이스북, 네이버)으로 로그인, 추가 정보를 등록하는 경우.
+
+            // 2. 최초 등록일 경우.
+
+            // 유저 정보를 추가합니다.
+            // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
+            $this->my_sql->insert_user(
+                // $password_hashed=""
+                $this->getHash($password),
+                // $email=""
+                $email,
+                // $name=""
+                $name,
+                // $nickname=""
+                $nickname,
+                // $gender=""
+                $gender,
+                // $birth_year=""
+                $birth_year,
+                // $birth_month=""
+                $birth_month,
+                // $birth_day=""
+                $birth_day,
+                // $thumbnail=""
+                $thumbnail,
+                // $mobile_head=""
+                $mobile_head,
+                // $mobile_body=""
+                $mobile_body,
+                // $mobile_tail,=""
+                $mobile_tail
+            ); // end insert
+
+            // 등록한 유저 정보를 가져옵니다. 
+            $user = $this->my_sql->get_user_by_email($email);
+            $output["user"] = $user;
             
         }
 

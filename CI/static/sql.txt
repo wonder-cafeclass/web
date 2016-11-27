@@ -28,7 +28,7 @@ CREATE TABLE `user` (
   `gender` char(1) NOT NULL DEFAULT "" COMMENT 'Optional M(Male)/F(Female)/U(Unknown)', 
   `birthday` char(16) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 2001-03-22, 1976-03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "Optional",
-  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)/C(Candidate/회원등록후, 인증메일 확인이 필요한 상황)',
   `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
   `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `naver_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
@@ -36,9 +36,9 @@ CREATE TABLE `user` (
   `google_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Google recommend use user token key not using user id directly. We encode google user token by MD5',
   `mobile` varchar(65) COLLATE utf8_bin DEFAULT NULL,
   `email` varchar(65) COLLATE utf8_bin NOT NULL,
-  `password` varchar(65) COLLATE utf8_bin DEFAULT NULL,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `password` char(255) COLLATE utf8_bin DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `mobile` (`mobile`),
@@ -47,6 +47,11 @@ CREATE TABLE `user` (
   KEY `google_id` (`google_id`),
   KEY `facebook_id` (`facebook_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
+
+CREATE TABLE `login_attempts` (
+  `user_id` INT(11) NOT NULL,
+  `time` VARCHAR(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass login attempts';
 
 CREATE TABLE `teacher` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -62,8 +67,8 @@ CREATE TABLE `teacher` (
   `resume` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Required 선생님 이력. 한글 124자까지 입력 가능. ex) "캐나다 10년 거주 & 토론토 대학교 졸업"',
   `greeting` varchar(255) COLLATE utf8_bin NOT NULL COMMENT "Required 선생님 인사말 - 수업에도 동일한 항목이 있습니다.",
   `memo` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Optional 운영자들이 선생님에 대한 간략한 메모. 서비스에서 노출되지 않습니다.',
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `teacher_unique_id` (`mobile`,`email`),
   KEY `name` (`name`)
@@ -109,8 +114,8 @@ CREATE TABLE `klass` (
   `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '월별 수강료. 최대 천만원 단위까지 표시.',
   `discount` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '월별 수강료 할인. ex)1000|2000|3000 --> 4주 1000원 할인, 8주 2000원, 12주 3000원 할인.',
   `class_img_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업을 안내하는 이미지 - 페이스북 광고에 사용되는 메인 이미지.',
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `search` (`level`,`venue_subway_station`,`days`),
   KEY `date_begin` (`date_begin`)
@@ -123,8 +128,8 @@ CREATE TABLE `review` (
   `parent_id` int(11) NOT NULL,
   `comment` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass review comment';
@@ -136,8 +141,8 @@ CREATE TABLE `question` (
   `parent_id` int(11) NOT NULL,
   `comment` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',  
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass question comment';
@@ -146,8 +151,8 @@ CREATE TABLE `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `klass_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` timestamp NULL DEFAULT NULL,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
@@ -160,7 +165,7 @@ CREATE TABLE `log_error` (
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
   `msg` varchar(255) NOT NULL DEFAULT "",
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='service error log';
 
@@ -172,7 +177,7 @@ CREATE TABLE `log_action` (
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
   `key` varchar(32) COLLATE utf8_bin NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   INDEX `user_id` (`user_id`),
   INDEX `ip` (`ip`)
@@ -186,7 +191,7 @@ CREATE TABLE `log_query` (
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
   `query` text COLLATE utf8_bin,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   INDEX `user_id` (`user_id`),
   INDEX `ip` (`ip`)
@@ -198,6 +203,6 @@ CREATE TABLE `keys` (
     `key` VARCHAR(40) NOT NULL,
     `level` INT(2) NOT NULL,
     `ignore_limits` TINYINT(1) NOT NULL DEFAULT '0',
-    `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
