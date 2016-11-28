@@ -2,7 +2,7 @@
 	"checker":{
 		"user_id":"is_natural_no_zero",
 		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match_include[/[가-힣 ]+/]",
-		"user_nickname":"is_str|||min_length[3]|||max_length[32]|||is_unique[user.nickname]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
+		"user_nickname":"is_str|||min_length[3]|||max_length[32]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
 
@@ -28,6 +28,7 @@
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
 		"user_password_hashed":"is_str|||min_length[60]",
 
+		"user_validation_key":"is_str|||min_length[60]",
 		"rest_api_key":"is_str|||min_length[60]",
 
 		"klass_id":"is_natural_no_zero",

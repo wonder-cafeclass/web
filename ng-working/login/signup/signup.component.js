@@ -75,8 +75,8 @@ var SignupComponent = (function () {
         }).subscribe(function (result) {
             if (isDebug)
                 console.log("signup / ngOnInit / subscribe / result : ", result);
-            if (null != result && null != result.user) {
-                _this.user = result.user;
+            if (null != result && null != result["user"]) {
+                _this.user = result["user"];
             }
             if (isDebug)
                 console.log("signup / ngOnInit / subscribe / this.user : ", _this.user);
@@ -87,32 +87,43 @@ var SignupComponent = (function () {
                 // 페이스북 로그인 - 유저 정보 가져오기.
                 // email
                 _this.emailComponent.setEmail(_this.user.email);
+                _this.email = _this.user.email;
                 // name
                 _this.nameComponent.setName(_this.user.name);
+                _this.name = _this.user.name;
                 // nickname
                 _this.nicknameComponent.setNickname(_this.user.nickname);
+                _this.nickname = _this.user.nickname;
                 // thumbnail
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
+                _this.thumbnail = _this.user.thumbnail;
             }
             else if (null != _this.user.kakao_id && "" != _this.user.kakao_id) {
                 // 카카오 로그인 - 유저 정보 가져오기.
                 // name
                 _this.nameComponent.setName(_this.user.name);
+                _this.name = _this.user.name;
                 // nickname
                 _this.nicknameComponent.setNickname(_this.user.nickname);
+                _this.nickname = _this.user.nickname;
                 // thumbnail
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
+                _this.thumbnail = _this.user.thumbnail;
             }
             else if (null != _this.user.naver_id && "" != _this.user.naver_id) {
                 // 네이버 로그인 - 유저 정보 가져오기.
                 // email
                 _this.emailComponent.setEmail(_this.user.email);
+                _this.email = _this.user.email;
                 // name
                 _this.nameComponent.setName(_this.user.name);
+                _this.name = _this.user.name;
                 // nickname
                 _this.nicknameComponent.setNickname(_this.user.nickname);
+                _this.nickname = _this.user.nickname;
                 // gender
                 _this.genderComponent.setGender(_this.user.gender);
+                _this.gender = _this.user.gender;
             }
         });
     };
@@ -268,6 +279,7 @@ var SignupComponent = (function () {
         } // end outer if
     }; // end method
     SignupComponent.prototype.updateUser = function () {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -305,10 +317,13 @@ var SignupComponent = (function () {
             if (isDebug)
                 console.log("signup / updateUser / result : ", result);
             if (null != result.user) {
+                // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+                _this.sendMailUserValidation(result.user.id, result.user.email);
             }
         }); // end service     
     };
     SignupComponent.prototype.addUser = function () {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -344,8 +359,29 @@ var SignupComponent = (function () {
             if (isDebug)
                 console.log("signup / addUser / result : ", result);
             if (null != result.user) {
+                // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+                _this.sendMailUserValidation(result.user.id, result.user.email);
             }
         }); // end service      
+    };
+    SignupComponent.prototype.sendMailUserValidation = function (userId, email) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / sendMailUserValidation / 시작");
+        this.userService
+            .sendMailUserValidation(
+        // apiKey:string
+        this.myCheckerService.getAPIKey(), 
+        // userId:number
+        userId, 
+        // email:string
+        email).then(function (result) {
+            if (isDebug)
+                console.log("signup / sendMailUserValidation / result : ", result);
+            if (null != result && null != result.user_validation_key) {
+            }
+        }); // end service     
     };
     SignupComponent.prototype.onClickTerms = function (event) {
         event.preventDefault();

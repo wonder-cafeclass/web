@@ -45,7 +45,7 @@ class Users extends MY_REST_Controller {
         */
 
         // Please add library you need here!
-        // ...
+        $this->load->library('email');
     }
 
     public function email_get()
@@ -367,7 +367,7 @@ class Users extends MY_REST_Controller {
             // $key=""
             "email",
             // $key_filter=""
-            "user_email_insert"
+            "user_email"
         );
         $password = 
         $this->my_paramchecker->post(
@@ -447,15 +447,32 @@ class Users extends MY_REST_Controller {
             "user_mobile_kor_tail"
         );
 
+        $params = array(
+            "user_id"=>$user_id,
+            "email"=>$email,
+            "password"=>$password,
+            "name"=>$name,
+            "nickname"=>$nickname,
+            "gender"=>$gender,
+            "birth_year"=>$birth_year,
+            "birth_month"=>$birth_month,
+            "birth_day"=>$birth_day,
+            "thumbnail"=>$thumbnail,
+            "mobile_head"=>$mobile_head,
+            "mobile_body"=>$mobile_body,
+            "mobile_tail"=>$mobile_tail
+        );
+        $output["params"] = $params;
+
         // CHECK LIST
         $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
         if( isset($check_list) && 
             isset($check_list->fail) && 
             (0 < count($check_list->fail))) 
         {
-            $output["check_list"] = $check_list;
             $is_ok = false;
         }
         if($is_ok) {
@@ -466,7 +483,9 @@ class Users extends MY_REST_Controller {
 
             // 유저 정보를 추가합니다.
             // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
-            $this->my_sql->insert_user(
+            $this->my_sql->update_user(
+                // $user_id=-1
+                $user_id,
                 // $password_hashed=""
                 $this->getHash($password),
                 // $email=""
@@ -499,7 +518,83 @@ class Users extends MY_REST_Controller {
         }
 
         $this->respond_200($output);
-    }         
+    } 
+
+    /*
+    *   @ Desc : 등록한 유저에게 인증 메일을 발송합니다.
+    */
+    public function validation_post()
+    {
+        // wonder.jung
+        
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        }
+
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email"
+        );
+
+        $user = $this->my_sql->get_user_by_email($email);
+        if(is_null($user)) 
+        {
+            $output["success"] = false;
+            $output["reason"] = "email is not valid!";
+            $output["email"] = $email;
+            $this->respond_200($output);
+            return;
+        }
+        $output["user"] = $user;
+
+        // 인증키 만들기 - DB에 저장. / 인증키는 30분간 유효합니다.
+        $password_hashed = $user->password;
+        $time_now = $this->my_time->get_now_YYYYMMDDHHMMSSU();
+        $key_hashed = $this->getHash($time_now . $password_hashed);
+
+        $output["key_hashed"] = $key_hashed;
+
+        $this->my_sql->insert_user_validation_key(
+            // $user_id=-1
+            $user->id,
+            // $key=""
+            $key_hashed
+        );
+        $user_validation_key = 
+        $this->my_sql->select_user_validation_key(
+            // $user_id=-1
+            $user->id
+        );
+        $output["user_validation_key"] = $user_validation_key;
+
+        // 인증키가 포함된 링크주소 만들기.
+        // 인증키를 확인할 페이지 만들기.
+        $path_user_validation = $this->my_path->get_path_user_validation();
+        $path_user_validation = $path_user_validation . "/" . $user_validation_key->key;
+        $output["path_user_validation"] = $path_user_validation;
+
+        $this->email->from('info@cafeclass.kr', '카페클래스');
+        $this->email->to($email);
+        // $this->email->cc('another@another-example.com');
+        // $this->email->bcc('them@their-example.com');
+
+        $this->email->subject('Email Test');
+        $this->email->message($path_user_validation);
+
+        $this->email->send();
+
+        $this->respond_200($output);
+
+    }
+
 
     // Example - Legacy
     /*

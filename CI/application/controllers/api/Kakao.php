@@ -147,7 +147,7 @@ class Kakao extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         $pattern = '/\{redirect_uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri_kakao);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri_kakao);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         $output = $req_url;
@@ -317,7 +317,7 @@ class Kakao extends REST_Controller implements MY_Class{
 
             // 4-1-1-3. 프로필 이미지를 서버에 업로드. 업로드한 이미지 주소를 DB에 등록한다.
             $thumbnail_url = $this->my_thumbnail->get_user_thumbnail($profile_image);
-            $thumbnail_url = $this->my_path->get_user_thumb_loadable_path($thumbnail_url);
+            $thumbnail_url = $this->my_path->get_path_user_thumb_loadable($thumbnail_url);
             if(!empty($thumbnail_url))
             {
                 $this->add_user(
@@ -358,7 +358,7 @@ class Kakao extends REST_Controller implements MY_Class{
 
         // authorization code 유효 시간은 3분 - https://devtalk.kakao.com/t/invalid-grant/18816/3
 
-        $redirect_uri = $this->my_path->get_full_path($this->redirect_uri_kakao);
+        $redirect_uri = $this->my_path->get_path_full($this->redirect_uri_kakao);
         $result =
         $this->my_curl->post_json(
             // $url=""

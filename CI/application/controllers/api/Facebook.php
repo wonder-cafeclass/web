@@ -188,7 +188,7 @@ class Facebook extends REST_Controller implements MY_Class{
 
         // 2. redirect_uri
         $pattern = '/\{redirect-uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
@@ -235,7 +235,7 @@ class Facebook extends REST_Controller implements MY_Class{
 
         // 2. redirect-uri
         $pattern = '/\{redirect-uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 3. client_secret
@@ -366,7 +366,7 @@ class Facebook extends REST_Controller implements MY_Class{
                 $this->respond_500("thumbnail_url is not valid!");
                 return;
             }
-            $thumbnail_url = $this->my_path->get_user_thumb_loadable_path($thumbnail_url);
+            $thumbnail_url = $this->my_path->get_path_user_thumb_loadable($thumbnail_url);
 
             // 회원 정보를 검사, 없다면 회원으로 추가합니다.
             // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.

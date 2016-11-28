@@ -10,6 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 
 require APPPATH . '/models/User.php';
+require APPPATH . '/models/UserValidation.php';
 
 class MY_Sql
 {
@@ -143,7 +144,7 @@ class MY_Sql
             'user_id' => $user_id,
             'msg' => $msg
         );
-
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_error', $data);
     }
     public function select_log_error()
@@ -194,7 +195,7 @@ class MY_Sql
             'user_id' => $user_id,
             'key' => $key
         );
-
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_action', $data);
     }
     public function select_log_action()
@@ -245,7 +246,7 @@ class MY_Sql
             'user_id' => $user_id,
             'query' => $query
         );
-
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_query', $data);
     }
     public function select_log_query()
@@ -662,17 +663,17 @@ class MY_Sql
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.
-        $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
         $this->log_query(
             // $user_id=-1
-            -1,
+            intval($user_id),
             // $action_type=""
             $this->CI->my_logger->QUERY_TYPE_UPDATE,
             // $query=""
             $sql
         );
 
-        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        // QUERY EXECUTION
         $this->CI->db->where('id', $user_id);
         $this->CI->db->update('user', $data);
     }        
@@ -711,7 +712,7 @@ class MY_Sql
             return null;
         }
 
-        $this->CI->db->select('id, nickname, email, name, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;
@@ -734,6 +735,55 @@ class MY_Sql
 
 		return $user;
 	}
+
+    public function insert_user_validation_key($user_id=-1, $key="")
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_validation_key", $key))
+        {
+            return;
+        }
+
+        $data = array(
+            'user_id' => $user_id,
+            'key' => $key
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('user_validation');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('user_validation', $data);        
+
+    }
+    public function select_user_validation_key($user_id=-1)
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select("user_id, key, status, date_created, date_updated");
+        $this->CI->db->where('user_id', $user_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user_validation');
+
+        $row = $query->custom_row_object(0, 'UserValidation');
+
+        return $row;
+    }
 
 }
 

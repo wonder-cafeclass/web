@@ -21,6 +21,7 @@ var UserService = (function () {
         this.getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
         this.getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
+        this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
         this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
@@ -143,7 +144,9 @@ var UserService = (function () {
             'Cafeclass-REST-API-Key': apiKey
         });
         var options = new http_1.RequestOptions({ headers: headers });
-        var req_url = this.us.get(this.addUserUrl);
+        var req_url = this.us.get(this.updateUserUrl);
+        if (isDebug)
+            console.log("user.service / updateUser / req_url : ", req_url);
         var params = {
             user_id: userId,
             email: email,
@@ -221,15 +224,43 @@ var UserService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
+    UserService.prototype.sendMailUserValidation = function (apiKey, userId, email) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / sendMailUserValidation / 시작");
+        if (isDebug)
+            console.log("user.service / sendMailUserValidation / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / sendMailUserValidation / userId : ", userId);
+        if (isDebug)
+            console.log("user.service / sendMailUserValidation / email : ", email);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.sendMailUserValidationUrl);
+        if (isDebug)
+            console.log("user.service / sendMailUserValidation / req_url : ", req_url);
+        var params = {
+            user_id: userId,
+            email: email
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     UserService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("login.service / extractData / body ::: ", body);
+        console.log("user.service / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
-            console.log("login.service / extractData / 데이터가 없습니다.");
+            console.log("user.service / extractData / 데이터가 없습니다.");
             return null;
         }
-        console.log("login.service / extractData / 3");
         return body.data;
     };
     // New - XHR

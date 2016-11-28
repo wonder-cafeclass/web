@@ -15,6 +15,8 @@ export class UserService {
   private getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
   private getUserByMobileUrl = '/CI/index.php/api/users/mobile';
 
+  private sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
+
   private updateUserUrl = '/CI/index.php/api/users/update';
   private addUserUrl = '/CI/index.php/api/users/add';
 
@@ -151,7 +153,10 @@ export class UserService {
     );
     let options = new RequestOptions({ headers: headers });    
 
-    let req_url = this.us.get(this.addUserUrl);
+    let req_url = this.us.get(this.updateUserUrl);
+
+    if(isDebug) console.log("user.service / updateUser / req_url : ",req_url);
+
     let params = {
       user_id:userId,
       email:email,
@@ -237,19 +242,51 @@ export class UserService {
             .catch(this.handleError);
   }
 
+  public sendMailUserValidation(apiKey:string, userId:number, email:string) {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / sendMailUserValidation / 시작");
+    if(isDebug) console.log("user.service / sendMailUserValidation / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / sendMailUserValidation / userId : ",userId);
+    if(isDebug) console.log("user.service / sendMailUserValidation / email : ",email);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.sendMailUserValidationUrl);
+
+    if(isDebug) console.log("user.service / sendMailUserValidation / req_url : ",req_url);
+
+    let params = {
+      user_id:userId,
+      email:email
+    }
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+
+
+  }
+
   private extractData(res: Response) {
 
       let body = res.json();
 
-      console.log("login.service / extractData / body ::: ",body);
+      console.log("user.service / extractData / body ::: ",body);
 
       // TODO - 데이터 검증 프로세스.
       if(null == body.data || !body.success) {
-          console.log("login.service / extractData / 데이터가 없습니다.");
+          console.log("user.service / extractData / 데이터가 없습니다.");
           return null;
       }
-
-      console.log("login.service / extractData / 3");
 
       return body.data;
   }

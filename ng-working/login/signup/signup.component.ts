@@ -139,8 +139,8 @@ export class SignupComponent implements OnInit {
     }).subscribe((result) => {
 
       if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);
-      if(null != result && null != result.user) {
-        this.user = result.user;
+      if(null != result && null != result["user"]) {
+        this.user = result["user"];
       }
 
       if(isDebug) console.log("signup / ngOnInit / subscribe / this.user : ",this.user);
@@ -153,34 +153,45 @@ export class SignupComponent implements OnInit {
         // 페이스북 로그인 - 유저 정보 가져오기.
         // email
         this.emailComponent.setEmail(this.user.email);
+        this.email = this.user.email;
         // name
         this.nameComponent.setName(this.user.name);
+        this.name = this.user.name;
         // nickname
         this.nicknameComponent.setNickname(this.user.nickname);
+        this.nickname = this.user.nickname;
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+        this.thumbnail = this.user.thumbnail;
 
       } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
 
         // 카카오 로그인 - 유저 정보 가져오기.
         // name
         this.nameComponent.setName(this.user.name);
+        this.name = this.user.name;
         // nickname
         this.nicknameComponent.setNickname(this.user.nickname);
+        this.nickname = this.user.nickname;
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+        this.thumbnail = this.user.thumbnail;
 
       } else if(null != this.user.naver_id && "" != this.user.naver_id) {
 
         // 네이버 로그인 - 유저 정보 가져오기.
         // email
         this.emailComponent.setEmail(this.user.email);
+        this.email = this.user.email;
         // name
         this.nameComponent.setName(this.user.name);
+        this.name = this.user.name;
         // nickname
         this.nicknameComponent.setNickname(this.user.nickname);
+        this.nickname = this.user.nickname;
         // gender
         this.genderComponent.setGender(this.user.gender);
+        this.gender = this.user.gender;
 
       }
 
@@ -378,10 +389,8 @@ export class SignupComponent implements OnInit {
       if(isDebug) console.log("signup / updateUser / result : ",result);
 
       if(null != result.user) {
-        // 유저 정보가 제대로 추가되었다면, redirect 페이지로 이동.
-        // 로그인 상태가 되어야 함.
-        // 로그인 쿠키를 만듦.
-        
+        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+        this.sendMailUserValidation(result.user.id, result.user.email);
       }
 
     }); // end service     
@@ -426,13 +435,38 @@ export class SignupComponent implements OnInit {
       if(isDebug) console.log("signup / addUser / result : ",result);
 
       if(null != result.user) {
-        // 유저 정보가 제대로 추가되었다면, redirect 페이지로 이동.
-        // 로그인 상태가 되어야 함.
-        // 로그인 쿠키를 만듦.
-
+        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+        this.sendMailUserValidation(result.user.id, result.user.email);
       }
 
     }); // end service      
+  }
+
+  sendMailUserValidation(userId:number, email:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / sendMailUserValidation / 시작");
+
+    this.userService
+    .sendMailUserValidation(
+      // apiKey:string
+      this.myCheckerService.getAPIKey(),
+      // userId:number
+      userId,
+      // email:string
+      email
+    ).then(result => {
+
+      if(isDebug) console.log("signup / sendMailUserValidation / result : ",result);
+      if(null != result && null != result.user_validation_key) {
+        // wonder.jung
+        // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
+
+      }
+
+    }); // end service     
+
   }
 
   onClickTerms(event): void {
