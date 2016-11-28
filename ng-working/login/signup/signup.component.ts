@@ -319,59 +319,120 @@ export class SignupComponent implements OnInit {
     }
 
     // 전화번호 검사
-
-
-
-
     if(isDebug) console.log("signup / onClickSave / isAllOK : ",isAllOK);
 
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
     if(isAllOK) {
       if(isDebug) console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
 
-      this.userService
-      .addUser(
-        // apiKey:string
-        this.myCheckerService.getAPIKey(),
-        // email:string
-        this.email,
-        // password:string
-        this.password,
-        // name:string
-        this.name, 
-        // nickname:string
-        this.nickname,
-        // gender:string
-        this.gender,
-        // birthYear:string
-        this.birthYear,
-        // birthMonth:string
-        this.birthMonth,
-        // birthDay:string  
-        this.birthDay,
-        // thumbnail:string
-        this.thumbnail,
-        // mobileHead:string
-        this.mobileNumHead,
-        // mobileBody:string
-        this.mobileNumBody,
-        // mobileTail:string
-        this.mobileNumTail
-      ).then(result => {
+      if(null != this.user) {
+        // 1-1. 플랫폼을 통해 가입 - facebook
+        // 1-2. 플랫폼을 통해 가입 - kakao
+        // 1-3. 플랫폼을 통해 가입 - naver
+        this.updateUser();
+      } else if(null == this.user) {
+        // 2. 플랫폼을 통하지 않고 직접 가입.
+        this.addUser();
+      } // end inner if
+    } // end outer if
+  } // end method
 
-        if(isDebug) console.log("signup / onClickSave / result : ",result);
+  updateUser() :void {
 
-        /*
-        if( null != result &&
-            null == result.user ) {
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / updateUser / 시작");
 
-          // Do something...
+    this.userService
+    .updateUser(
+      // apiKey:string
+      this.myCheckerService.getAPIKey(),
+      // userId:number
+      this.user.id,
+      // email:string
+      this.email,
+      // password:string
+      this.password,
+      // name:string
+      this.name, 
+      // nickname:string
+      this.nickname,
+      // gender:string
+      this.gender,
+      // birthYear:string
+      this.birthYear,
+      // birthMonth:string
+      this.birthMonth,
+      // birthDay:string  
+      this.birthDay,
+      // thumbnail:string
+      this.thumbnail,
+      // mobileHead:string
+      this.mobileNumHead,
+      // mobileBody:string
+      this.mobileNumBody,
+      // mobileTail:string
+      this.mobileNumTail
+    ).then(result => {
 
-        } // end if
-        */
-      }); // end service      
-    }
+      if(isDebug) console.log("signup / updateUser / result : ",result);
 
+      if(null != result.user) {
+        // 유저 정보가 제대로 추가되었다면, redirect 페이지로 이동.
+        // 로그인 상태가 되어야 함.
+        // 로그인 쿠키를 만듦.
+        
+      }
+
+    }); // end service     
+
+  }
+  addUser(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / addUser / 시작");
+
+    this.userService
+    .addUser(
+      // apiKey:string
+      this.myCheckerService.getAPIKey(),
+      // email:string
+      this.email,
+      // password:string
+      this.password,
+      // name:string
+      this.name, 
+      // nickname:string
+      this.nickname,
+      // gender:string
+      this.gender,
+      // birthYear:string
+      this.birthYear,
+      // birthMonth:string
+      this.birthMonth,
+      // birthDay:string  
+      this.birthDay,
+      // thumbnail:string
+      this.thumbnail,
+      // mobileHead:string
+      this.mobileNumHead,
+      // mobileBody:string
+      this.mobileNumBody,
+      // mobileTail:string
+      this.mobileNumTail
+    ).then(result => {
+
+      if(isDebug) console.log("signup / addUser / result : ",result);
+
+      if(null != result.user) {
+        // 유저 정보가 제대로 추가되었다면, redirect 페이지로 이동.
+        // 로그인 상태가 되어야 함.
+        // 로그인 쿠키를 만듦.
+
+      }
+
+    }); // end service      
   }
 
   onClickTerms(event): void {

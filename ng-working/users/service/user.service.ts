@@ -14,6 +14,8 @@ export class UserService {
   private getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
   private getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
   private getUserByMobileUrl = '/CI/index.php/api/users/mobile';
+
+  private updateUserUrl = '/CI/index.php/api/users/update';
   private addUserUrl = '/CI/index.php/api/users/add';
 
   // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
@@ -104,7 +106,73 @@ export class UserService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
-  }   
+  } 
+
+
+  updateUser (  apiKey:string, 
+                userId:number, 
+                email:string, 
+                password:string, 
+                name:string, 
+                nickname:string, 
+                gender:string,
+                birthYear:string,
+                birthMonth:string,
+                birthDay:string,
+                thumbnail:string,
+                mobileHead:string,
+                mobileBody:string,
+                mobileTail:string): Promise<any> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / updateUser / 시작");
+    if(isDebug) console.log("user.service / updateUser / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / updateUser / userId : ",userId);
+    if(isDebug) console.log("user.service / updateUser / email : ",email);
+    if(isDebug) console.log("user.service / updateUser / password : ",password);
+    if(isDebug) console.log("user.service / updateUser / name : ",name);
+    if(isDebug) console.log("user.service / updateUser / nickname : ",nickname);
+    if(isDebug) console.log("user.service / updateUser / gender : ",gender);
+    if(isDebug) console.log("user.service / updateUser / birthYear : ",birthYear);
+    if(isDebug) console.log("user.service / updateUser / birthMonth : ",birthMonth);
+    if(isDebug) console.log("user.service / updateUser / birthDay : ",birthDay);
+    if(isDebug) console.log("user.service / updateUser / thumbnail : ",thumbnail);
+    if(isDebug) console.log("user.service / updateUser / mobileHead : ",mobileHead);
+    if(isDebug) console.log("user.service / updateUser / mobileBody : ",mobileBody);
+    if(isDebug) console.log("user.service / updateUser / mobileTail : ",mobileTail);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });    
+
+    let req_url = this.us.get(this.addUserUrl);
+    let params = {
+      user_id:userId,
+      email:email,
+      password:password,
+      name:name,
+      nickname:nickname,
+      gender:gender,
+      birth_year:birthYear,
+      birth_month:birthMonth,
+      birth_day:birthDay,
+      thumbnail:thumbnail,
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
 
   addUser ( apiKey:string, 
             email:string, 

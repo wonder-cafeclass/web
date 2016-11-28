@@ -21,6 +21,7 @@ var UserService = (function () {
         this.getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
         this.getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
+        this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
     UserService.prototype.getUserByEmail = function (email) {
@@ -99,6 +100,66 @@ var UserService = (function () {
         if (isDebug)
             console.log("user.service / getUserByMobile / req_url : ", req_url);
         return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.updateUser = function (apiKey, userId, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / updateUser / 시작");
+        if (isDebug)
+            console.log("user.service / updateUser / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / updateUser / userId : ", userId);
+        if (isDebug)
+            console.log("user.service / updateUser / email : ", email);
+        if (isDebug)
+            console.log("user.service / updateUser / password : ", password);
+        if (isDebug)
+            console.log("user.service / updateUser / name : ", name);
+        if (isDebug)
+            console.log("user.service / updateUser / nickname : ", nickname);
+        if (isDebug)
+            console.log("user.service / updateUser / gender : ", gender);
+        if (isDebug)
+            console.log("user.service / updateUser / birthYear : ", birthYear);
+        if (isDebug)
+            console.log("user.service / updateUser / birthMonth : ", birthMonth);
+        if (isDebug)
+            console.log("user.service / updateUser / birthDay : ", birthDay);
+        if (isDebug)
+            console.log("user.service / updateUser / thumbnail : ", thumbnail);
+        if (isDebug)
+            console.log("user.service / updateUser / mobileHead : ", mobileHead);
+        if (isDebug)
+            console.log("user.service / updateUser / mobileBody : ", mobileBody);
+        if (isDebug)
+            console.log("user.service / updateUser / mobileTail : ", mobileTail);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.addUserUrl);
+        var params = {
+            user_id: userId,
+            email: email,
+            password: password,
+            name: name,
+            nickname: nickname,
+            gender: gender,
+            birth_year: birthYear,
+            birth_month: birthMonth,
+            birth_day: birthDay,
+            thumbnail: thumbnail,
+            mobile_head: mobileHead,
+            mobile_body: mobileBody,
+            mobile_tail: mobileTail
+        };
+        return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

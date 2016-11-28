@@ -255,46 +255,97 @@ var SignupComponent = (function () {
         if (isAllOK) {
             if (isDebug)
                 console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
-            this.userService
-                .addUser(
-            // apiKey:string
-            this.myCheckerService.getAPIKey(), 
-            // email:string
-            this.email, 
-            // password:string
-            this.password, 
-            // name:string
-            this.name, 
-            // nickname:string
-            this.nickname, 
-            // gender:string
-            this.gender, 
-            // birthYear:string
-            this.birthYear, 
-            // birthMonth:string
-            this.birthMonth, 
-            // birthDay:string  
-            this.birthDay, 
-            // thumbnail:string
-            this.thumbnail, 
-            // mobileHead:string
-            this.mobileNumHead, 
-            // mobileBody:string
-            this.mobileNumBody, 
-            // mobileTail:string
-            this.mobileNumTail).then(function (result) {
-                if (isDebug)
-                    console.log("signup / onClickSave / result : ", result);
-                /*
-                if( null != result &&
-                    null == result.user ) {
-        
-                  // Do something...
-        
-                } // end if
-                */
-            }); // end service      
-        }
+            if (null != this.user) {
+                // 1-1. 플랫폼을 통해 가입 - facebook
+                // 1-2. 플랫폼을 통해 가입 - kakao
+                // 1-3. 플랫폼을 통해 가입 - naver
+                this.updateUser();
+            }
+            else if (null == this.user) {
+                // 2. 플랫폼을 통하지 않고 직접 가입.
+                this.addUser();
+            } // end inner if
+        } // end outer if
+    }; // end method
+    SignupComponent.prototype.updateUser = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / updateUser / 시작");
+        this.userService
+            .updateUser(
+        // apiKey:string
+        this.myCheckerService.getAPIKey(), 
+        // userId:number
+        this.user.id, 
+        // email:string
+        this.email, 
+        // password:string
+        this.password, 
+        // name:string
+        this.name, 
+        // nickname:string
+        this.nickname, 
+        // gender:string
+        this.gender, 
+        // birthYear:string
+        this.birthYear, 
+        // birthMonth:string
+        this.birthMonth, 
+        // birthDay:string  
+        this.birthDay, 
+        // thumbnail:string
+        this.thumbnail, 
+        // mobileHead:string
+        this.mobileNumHead, 
+        // mobileBody:string
+        this.mobileNumBody, 
+        // mobileTail:string
+        this.mobileNumTail).then(function (result) {
+            if (isDebug)
+                console.log("signup / updateUser / result : ", result);
+            if (null != result.user) {
+            }
+        }); // end service     
+    };
+    SignupComponent.prototype.addUser = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / addUser / 시작");
+        this.userService
+            .addUser(
+        // apiKey:string
+        this.myCheckerService.getAPIKey(), 
+        // email:string
+        this.email, 
+        // password:string
+        this.password, 
+        // name:string
+        this.name, 
+        // nickname:string
+        this.nickname, 
+        // gender:string
+        this.gender, 
+        // birthYear:string
+        this.birthYear, 
+        // birthMonth:string
+        this.birthMonth, 
+        // birthDay:string  
+        this.birthDay, 
+        // thumbnail:string
+        this.thumbnail, 
+        // mobileHead:string
+        this.mobileNumHead, 
+        // mobileBody:string
+        this.mobileNumBody, 
+        // mobileTail:string
+        this.mobileNumTail).then(function (result) {
+            if (isDebug)
+                console.log("signup / addUser / result : ", result);
+            if (null != result.user) {
+            }
+        }); // end service      
     };
     SignupComponent.prototype.onClickTerms = function (event) {
         event.preventDefault();

@@ -589,7 +589,93 @@ class MY_Sql
 
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
-    }    
+    } 
+
+    public function update_user($user_id=-1, $password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_password_hashed", $password_hashed))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email_insert", $email))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        $data = array(
+            'nickname' => $nickname,
+            'name' => $name,
+            'gender' => $gender,
+            'birthday' => "$birth_year-$birth_month-$birth_day",
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
+            'email' => $email,
+            'password' => $password_hashed
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('user');
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->where('id', $user_id);
+        $this->CI->db->update('user', $data);
+    }        
 
 	public function get_user_kakao($kakao_id=-1) 
 	{

@@ -342,7 +342,164 @@ class Users extends MY_REST_Controller {
         }
 
         $this->respond_200($output);
-    }    
+    } 
+
+    public function update_post()
+    {
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email_insert"
+        );
+        $password = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "password",
+            // $key_filter=""
+            "user_password"
+        );
+        $name = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "name",
+            // $key_filter=""
+            "user_name"
+        );
+        $nickname = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "nickname",
+            // $key_filter=""
+            "user_nickname"
+        );
+        $gender = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "gender",
+            // $key_filter=""
+            "user_gender"
+        );
+        $birth_year = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_year",
+            // $key_filter=""
+            "user_birth_year"
+        );
+        $birth_month = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_month",
+            // $key_filter=""
+            "user_birth_month"
+        );
+        $birth_day = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_day",
+            // $key_filter=""
+            "user_birth_day"
+        );
+        $thumbnail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "thumbnail",
+            // $key_filter=""
+            "user_thumbnail"
+        );
+        $mobile_head = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_head",
+            // $key_filter=""
+            "user_mobile_kor_head"
+        );
+        $mobile_body = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_body",
+            // $key_filter=""
+            "user_mobile_kor_body"
+        );
+        $mobile_tail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_tail",
+            // $key_filter=""
+            "user_mobile_kor_tail"
+        );
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        if( isset($check_list) && 
+            isset($check_list->fail) && 
+            (0 < count($check_list->fail))) 
+        {
+            $output["check_list"] = $check_list;
+            $is_ok = false;
+        }
+        if($is_ok) {
+
+            // 1. 플랫폼(카카오, 페이스북, 네이버)으로 로그인, 추가 정보를 등록하는 경우.
+
+            // 2. 최초 등록일 경우.
+
+            // 유저 정보를 추가합니다.
+            // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
+            $this->my_sql->insert_user(
+                // $password_hashed=""
+                $this->getHash($password),
+                // $email=""
+                $email,
+                // $name=""
+                $name,
+                // $nickname=""
+                $nickname,
+                // $gender=""
+                $gender,
+                // $birth_year=""
+                $birth_year,
+                // $birth_month=""
+                $birth_month,
+                // $birth_day=""
+                $birth_day,
+                // $thumbnail=""
+                $thumbnail,
+                // $mobile_head=""
+                $mobile_head,
+                // $mobile_body=""
+                $mobile_body,
+                // $mobile_tail,=""
+                $mobile_tail
+            ); // end insert
+
+            // 등록한 유저 정보를 가져옵니다.
+            $user = $this->my_sql->get_user_by_email($email);
+            $output["user"] = $user;
+        }
+
+        $this->respond_200($output);
+    }         
 
     // Example - Legacy
     /*
