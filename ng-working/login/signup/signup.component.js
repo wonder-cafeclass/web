@@ -84,7 +84,7 @@ var SignupComponent = (function () {
                 return;
             }
             if (null != _this.user.facebook_id && "" != _this.user.facebook_id) {
-                // 페이스북 로그인
+                // 페이스북 로그인 - 유저 정보 가져오기.
                 // email
                 _this.emailComponent.setEmail(_this.user.email);
                 // name
@@ -95,7 +95,7 @@ var SignupComponent = (function () {
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
             }
             else if (null != _this.user.kakao_id && "" != _this.user.kakao_id) {
-                // 카카오 로그인
+                // 카카오 로그인 - 유저 정보 가져오기.
                 // name
                 _this.nameComponent.setName(_this.user.name);
                 // nickname
@@ -104,6 +104,15 @@ var SignupComponent = (function () {
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
             }
             else if (null != _this.user.naver_id && "" != _this.user.naver_id) {
+                // 네이버 로그인 - 유저 정보 가져오기.
+                // email
+                _this.emailComponent.setEmail(_this.user.email);
+                // name
+                _this.nameComponent.setName(_this.user.name);
+                // nickname
+                _this.nicknameComponent.setNickname(_this.user.nickname);
+                // gender
+                _this.genderComponent.setGender(_this.user.gender);
             }
         });
     };

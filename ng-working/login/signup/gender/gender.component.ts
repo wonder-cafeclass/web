@@ -71,6 +71,11 @@ export class GenderComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myChecker, input);
   } 
+  setGender(gender:string) :void {
+    if(this.isOK(gender)) {
+      this.gender = gender;
+    }
+  }
 
   // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
   public hasNotDone() :boolean {

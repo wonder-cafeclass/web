@@ -39,7 +39,6 @@ export class ProfileImgUploadComponent implements OnInit {
     "/assets/images/user/user_anonymous_150x150_poppy.jpg"
   ];
 
-
   @Input() top:number=-1;
   @Input() left:number=-1;
   @Input() myCheckerService:MyCheckerService;

@@ -139,20 +139,18 @@ export class SignupComponent implements OnInit {
     }).subscribe((result) => {
 
       if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);
-
       if(null != result && null != result.user) {
         this.user = result.user;
       }
 
       if(isDebug) console.log("signup / ngOnInit / subscribe / this.user : ",this.user);
-
       if(null == this.user) {
         return;
       }
 
       if(null != this.user.facebook_id && "" != this.user.facebook_id) {
 
-        // 페이스북 로그인
+        // 페이스북 로그인 - 유저 정보 가져오기.
         // email
         this.emailComponent.setEmail(this.user.email);
         // name
@@ -164,7 +162,7 @@ export class SignupComponent implements OnInit {
 
       } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
 
-        // 카카오 로그인
+        // 카카오 로그인 - 유저 정보 가져오기.
         // name
         this.nameComponent.setName(this.user.name);
         // nickname
@@ -173,7 +171,16 @@ export class SignupComponent implements OnInit {
         this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
 
       } else if(null != this.user.naver_id && "" != this.user.naver_id) {
-        // 네이버 로그인
+
+        // 네이버 로그인 - 유저 정보 가져오기.
+        // email
+        this.emailComponent.setEmail(this.user.email);
+        // name
+        this.nameComponent.setName(this.user.name);
+        // nickname
+        this.nicknameComponent.setNickname(this.user.nickname);
+        // gender
+        this.genderComponent.setGender(this.user.gender);
 
       }
 

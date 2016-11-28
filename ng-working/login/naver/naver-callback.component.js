@@ -18,6 +18,7 @@ var NaverCallbackComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.activatedRoute = activatedRoute;
         this.router = router;
+        this.redirectUrl = "/class-center";
         this.isValidState = false;
         // Do something...
     } // end function
@@ -83,19 +84,32 @@ var NaverCallbackComponent = (function () {
     }; // end method
     // @ Desc : Naver REST API로 회원정보를 가져옵니다.
     NaverCallbackComponent.prototype.getNaverMe = function () {
+        var _this = this;
+        var isDebug = true;
+        if (isDebug)
+            console.log("naver-callback / getNaverMe / init");
         this.loginService
             .getNaverMe()
             .then(function (result) {
-            console.log("naver-callback / getNaverMe / result : ", result);
-            /*
-            if( null != result.data &&
-                null != result.data.access_token &&
-                null != result.data.token_type ) {
-      
-              this.getNaverMe(result.data.token_type, result.data.access_token);
-      
+            if (isDebug)
+                console.log("naver-callback / getNaverMe / result : ", result);
+            if (null == result || null == result.kakao_id) {
+                // TODO - 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
+                return;
+            }
+            // 페이스북 로그인 성공!
+            // 로그인한 유저 정보를 가져오는데 성공했습니다!
+            if (null == result.gender ||
+                "" === result.gender ||
+                null == result.mobile ||
+                "" === result.mobile) {
+                // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
+                _this.router.navigate(['/login/signup/naver', result.naver_id]);
+            }
+            else {
+                // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
+                _this.router.navigate([_this.redirectUrl]);
             } // end if
-            */
         }); // end method    
     };
     NaverCallbackComponent = __decorate([

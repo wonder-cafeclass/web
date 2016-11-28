@@ -48,6 +48,11 @@ var GenderComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myChecker, input);
     };
+    GenderComponent.prototype.setGender = function (gender) {
+        if (this.isOK(gender)) {
+            this.gender = gender;
+        }
+    };
     // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
     GenderComponent.prototype.hasNotDone = function () {
         return !this.hasDone();
