@@ -14,6 +14,7 @@ export class MyCheckerService {
     private checkerMap;
     private constMap;
     private dirtyWordList;
+    private apiKey:string;
 
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
@@ -50,8 +51,14 @@ export class MyCheckerService {
             if(null != data.dirty_word_list) {
                 this.dirtyWordList = data.dirty_word_list;
             } // end if
-            
+            if(null != data.api_key) {
+                this.apiKey = data.api_key;
+            } // end if
         });
+    }
+
+    public getAPIKey() :string {
+        return this.apiKey;
     }
 
     getLastHistory() :any {

@@ -228,6 +228,8 @@ export class SignupComponent implements OnInit {
 
       this.userService
       .addUser(
+        // apiKey:string
+        this.myCheckerService.getAPIKey(),
         // email:string
         this.email,
         // password:string

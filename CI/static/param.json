@@ -28,6 +28,8 @@
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
 		"user_password_hashed":"is_str|||min_length[60]",
 
+		"rest_api_key":"is_str|||min_length[60]",
+
 		"klass_id":"is_natural_no_zero",
 		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9|]+$/]",
 		"klass_level":"is_str|||matches[class_level_list]|||exclude[class_level_list|0]",

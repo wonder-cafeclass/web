@@ -67,7 +67,13 @@ var MyCheckerService = (function () {
             if (null != data.dirty_word_list) {
                 _this.dirtyWordList = data.dirty_word_list;
             } // end if
+            if (null != data.api_key) {
+                _this.apiKey = data.api_key;
+            } // end if
         });
+    };
+    MyCheckerService.prototype.getAPIKey = function () {
+        return this.apiKey;
     };
     MyCheckerService.prototype.getLastHistory = function () {
         return this.history;

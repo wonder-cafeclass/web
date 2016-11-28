@@ -15,7 +15,6 @@ class User {
         public $google_id;
         public $mobile;
         public $email;
-        public $password;
         public $date_created;
         public $date_updated;
 }

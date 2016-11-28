@@ -180,6 +180,8 @@ var SignupComponent = (function () {
                 console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
             this.userService
                 .addUser(
+            // apiKey:string
+            this.myCheckerService.getAPIKey(), 
             // email:string
             this.email, 
             // password:string

@@ -146,6 +146,15 @@ class Users extends MY_REST_Controller {
 
     public function add_post()
     {
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        }
+
         $email = 
         $this->my_paramchecker->post(
             // $key=""
@@ -231,7 +240,7 @@ class Users extends MY_REST_Controller {
             "user_mobile_kor_tail"
         );
 
-        $output = array();
+        
 
 
 
@@ -305,6 +314,7 @@ class Users extends MY_REST_Controller {
             $output["user"] = $user;
             
         }
+
 
         $this->respond_200($output);
     }    

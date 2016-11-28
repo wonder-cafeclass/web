@@ -52,11 +52,13 @@ var UserService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
-    UserService.prototype.addUser = function (email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
+    UserService.prototype.addUser = function (apiKey, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / addUser / 시작");
+        if (isDebug)
+            console.log("user.service / addUser / apiKey : ", apiKey);
         if (isDebug)
             console.log("user.service / addUser / email : ", email);
         if (isDebug)
@@ -81,11 +83,11 @@ var UserService = (function () {
             console.log("user.service / addUser / mobileBody : ", mobileBody);
         if (isDebug)
             console.log("user.service / addUser / mobileTail : ", mobileTail);
-        // $output["mobile_head"] = $mobile_head;
-        // $output["mobile_body"] = $mobile_body;
-        // $output["mobile_tail"] = $mobile_tail;
         // POST
-        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
         var options = new http_1.RequestOptions({ headers: headers });
         var req_url = this.us.get(this.addUserUrl);
         var params = {

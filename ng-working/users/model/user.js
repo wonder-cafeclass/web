@@ -1,6 +1,6 @@
 "use strict";
 var User = (function () {
-    function User(id, nickname, name, gender, birthday, thumbnail, status, permission, kakao_id, naver_id, facebook_id, google_id, mobile, email, password, date_created, date_updated) {
+    function User(id, nickname, name, gender, birthday, thumbnail, status, permission, kakao_id, naver_id, facebook_id, google_id, mobile, email, date_created, date_updated) {
         this.id = id;
         this.nickname = nickname;
         this.name = name;
@@ -15,7 +15,6 @@ var User = (function () {
         this.google_id = google_id;
         this.mobile = mobile;
         this.email = email;
-        this.password = password;
         this.date_created = date_created;
         this.date_updated = date_updated;
     }

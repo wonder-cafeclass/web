@@ -52,7 +52,8 @@ export class UserService {
             .catch(this.handleError);
   }   
 
-  addUser ( email:string, 
+  addUser ( apiKey:string, 
+            email:string, 
             password:string, 
             name:string, 
             nickname:string, 
@@ -69,6 +70,7 @@ export class UserService {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / addUser / 시작");
+    if(isDebug) console.log("user.service / addUser / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / addUser / email : ",email);
     if(isDebug) console.log("user.service / addUser / password : ",password);
     if(isDebug) console.log("user.service / addUser / name : ",name);
@@ -82,12 +84,13 @@ export class UserService {
     if(isDebug) console.log("user.service / addUser / mobileBody : ",mobileBody);
     if(isDebug) console.log("user.service / addUser / mobileTail : ",mobileTail);
 
-        // $output["mobile_head"] = $mobile_head;
-        // $output["mobile_body"] = $mobile_body;
-        // $output["mobile_tail"] = $mobile_tail;
-
     // POST
-    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
     let options = new RequestOptions({ headers: headers });    
 
     let req_url = this.us.get(this.addUserUrl);

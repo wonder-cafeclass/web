@@ -14,7 +14,6 @@ export class User {
 		public google_id:string,
 		public mobile:string,
 		public email:string,
-		public password:string,
 		public date_created:string,
 		public date_updated:string
 	) {}    
