@@ -317,6 +317,7 @@ class Kakao extends REST_Controller implements MY_Class{
 
             // 4-1-1-3. 프로필 이미지를 서버에 업로드. 업로드한 이미지 주소를 DB에 등록한다.
             $thumbnail_url = $this->my_thumbnail->get_user_thumbnail($profile_image);
+            $thumbnail_url = $this->my_path->get_user_thumb_loadable_path($thumbnail_url);
             if(!empty($thumbnail_url))
             {
                 $this->add_user(
@@ -329,7 +330,7 @@ class Kakao extends REST_Controller implements MY_Class{
                 );
             }
             // 4-1-1-4. 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
-
+            $output = $user = $this->get_user($kakao_id);
         }
         else 
         {

@@ -10,7 +10,10 @@ exports.loginRoutes = [
     { path: 'login/kakao', component: kakao_callback_component_1.KakaoCallbackComponent },
     { path: 'login/naver', component: naver_callback_component_1.NaverCallbackComponent },
     { path: 'login/facebook', component: facebook_callback_component_1.FacebookCallbackComponent },
-    { path: 'login/signup', component: signup_component_1.SignupComponent }
+    { path: 'login/signup', component: signup_component_1.SignupComponent },
+    { path: 'login/signup/facebook/:facebookId', component: signup_component_1.SignupComponent },
+    { path: 'login/signup/kakao/:kakaoId', component: signup_component_1.SignupComponent },
+    { path: 'login/signup/naver/:naverId', component: signup_component_1.SignupComponent }
 ];
 exports.loginRouting = router_1.RouterModule.forChild(exports.loginRoutes);
 //# sourceMappingURL=login.routing.js.map

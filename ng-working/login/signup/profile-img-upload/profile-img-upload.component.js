@@ -24,15 +24,6 @@ var ProfileImgUploadComponent = (function () {
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
-        /*
-        public userProfileSampleArr:string[] = [
-          "/assets/images/user/user_anonymous_150x150_bear.png",
-          "/assets/images/user/user_anonymous_150x150_duck.png",
-          "/assets/images/user/user_anonymous_150x150_hippo.png",
-          "/assets/images/user/user_anonymous_150x150_rabbit.png",
-          "/assets/images/user/user_anonymous_150x150_zebu.png"
-        ];
-        */
         this.userProfileSampleArr = [
             "/assets/images/user/user_anonymous_150x150_cat.jpg",
             "/assets/images/user/user_anonymous_150x150_lion.jpg",
@@ -62,6 +53,11 @@ var ProfileImgUploadComponent = (function () {
             return false;
         }
         return this.myCheckerService.isOK(this.myChecker, input);
+    };
+    ProfileImgUploadComponent.prototype.setProfileImg = function (thumbnail) {
+        if (this.isOK(thumbnail)) {
+            this.userProfileUrl = thumbnail;
+        }
     };
     // @ Desc : 프로필 이미지가 제대로 입력되었는지 확인합니다.
     ProfileImgUploadComponent.prototype.hasNotDone = function () {
@@ -155,7 +151,8 @@ var ProfileImgUploadComponent = (function () {
             if (null != response &&
                 null != response.data &&
                 null != response.data.thumbnail) {
-                _this.userProfileUrl = _this.userProfilePath + response.data.thumbnail;
+                // this.userProfileUrl = this.userProfilePath + response.data.thumbnail;
+                _this.userProfileUrl = response.data.thumbnail;
                 if (isDebug)
                     console.log("profile-img / onChangeFile / this.userProfileUrl : ", _this.userProfileUrl);
                 var isOK = _this.isOK(_this.userProfileUrl);

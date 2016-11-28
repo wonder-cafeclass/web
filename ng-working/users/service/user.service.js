@@ -17,20 +17,71 @@ var UserService = (function () {
         this.us = us;
         this.http = http;
         this.getUserByEmailUrl = '/CI/index.php/api/users/email';
+        this.getUserByFacebookIdUrl = '/CI/index.php/api/users/facebook';
+        this.getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
+        this.getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
     UserService.prototype.getUserByEmail = function (email) {
         var req_url = this.us.get(this.getUserByEmailUrl);
         req_url = req_url + "?q=" + email;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / getUserByEmail / 시작");
         if (isDebug)
             console.log("user.service / getUserByEmail / email : ", email);
         if (isDebug)
             console.log("user.service / getUserByEmail / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.getUserByFacebookId = function (facebookId) {
+        var req_url = this.us.get(this.getUserByFacebookIdUrl);
+        req_url = req_url + "?q=" + facebookId;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / getUserByFacebookId / 시작");
+        if (isDebug)
+            console.log("user.service / getUserByFacebookId / facebookId : ", facebookId);
+        if (isDebug)
+            console.log("user.service / getUserByFacebookId / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.getUserByNaverId = function (naverId) {
+        var req_url = this.us.get(this.getUserByNaverIdUrl);
+        req_url = req_url + "?q=" + naverId;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / getUserByNaverId / 시작");
+        if (isDebug)
+            console.log("user.service / getUserByNaverId / naverId : ", naverId);
+        if (isDebug)
+            console.log("user.service / getUserByNaverId / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.getUserByKakaoId = function (kakaoId) {
+        var req_url = this.us.get(this.getUserByKakaoIdUrl);
+        req_url = req_url + "?q=" + kakaoId;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / getUserByKakaoId / 시작");
+        if (isDebug)
+            console.log("user.service / getUserByKakaoId / kakaoId : ", kakaoId);
+        if (isDebug)
+            console.log("user.service / getUserByKakaoId / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)

@@ -64,6 +64,56 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }
 
+    public function facebook_get()
+    {
+        $facebook_id = $this->my_paramchecker->get('q','facebook_id');
+
+        $output = [];
+        $user = null;
+        if(!empty($facebook_id)) 
+        {
+            $user = $this->my_sql->get_user_facebook($facebook_id);
+        }
+
+        $output["user"] = $user;
+        $output["facebook_id"] = $facebook_id;
+        $this->respond_200($output);
+    }
+
+    public function naver_get()
+    {
+        $naver_id = $this->my_paramchecker->get('q','naver_id');
+        $naver_id_num = intval($naver_id);
+
+        $output = [];
+        $user = null;
+        if(!empty($naver_id) && (0 < $naver_id_num)) 
+        {
+            $user = $this->my_sql->get_user_naver($naver_id);
+        }
+
+        $output["user"] = $user;
+        $output["naver_id"] = $naver_id;
+        $this->respond_200($output);
+    }
+
+    public function kakao_get()
+    {
+        $kakao_id = $this->my_paramchecker->get('q','kakao_id');
+        $kakao_id_num = intval($kakao_id);
+
+        $output = [];
+        $user = null;
+        if(!empty($kakao_id) && (0 < $kakao_id_num)) 
+        {
+            $user = $this->my_sql->get_user_kakao($kakao_id_num);
+        }
+
+        $output["user"] = $user;
+        $output["kakao_id"] = $kakao_id;
+        $this->respond_200($output);
+    }    
+
     public function list_get()
     {
         // TEST - PHPUnit test로 검증해야 함! wonder.jung
@@ -240,29 +290,6 @@ class Users extends MY_REST_Controller {
             "user_mobile_kor_tail"
         );
 
-        
-
-
-
-
-
-
-        // PARAM - ECHO
-        /*
-        $output["password"] = $password;
-        $output["email"] = $email;
-        $output["name"] = $name;
-        $output["nickname"] = $nickname;
-        $output["gender"] = $gender;
-        $output["birth_year"] = $birth_year;
-        $output["birth_month"] = $birth_month;
-        $output["birth_day"] = $birth_day;
-        $output["thumbnail"] = $thumbnail;
-        $output["mobile_head"] = $mobile_head;
-        $output["mobile_body"] = $mobile_body;
-        $output["mobile_tail"] = $mobile_tail;
-        */
-
         // CHECK LIST
         $is_ok = true;
         $check_list = 
@@ -309,12 +336,10 @@ class Users extends MY_REST_Controller {
                 $mobile_tail
             ); // end insert
 
-            // 등록한 유저 정보를 가져옵니다. 
+            // 등록한 유저 정보를 가져옵니다.
             $user = $this->my_sql->get_user_by_email($email);
             $output["user"] = $user;
-            
         }
-
 
         $this->respond_200($output);
     }    

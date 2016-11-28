@@ -123,7 +123,42 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
                 REST_Controller::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    } 
+
+        $this->report_error(
+            // $error_type=null
+            $this->my_logger->ERROR_INTERNAL_SERVER_500,
+            // $error_msg=""
+            $msg
+        );
+    }
+
+    /*
+    *   @ Desc : 에러 상황을 기록하는 Logger method wrapper
+    */
+    public function report_error($error_type=null, $error_msg="")
+    {
+        if(is_null($error_type)) 
+        {
+            return;
+        }
+        if(empty($error_msg))
+        {
+            return;
+        }
+        if(is_null($this->my_logger)) 
+        {
+            return;
+        }
+
+        $this->my_logger->add_error(
+            // $user_id=-1
+            -1,
+            // $error_type=""
+            $error_type,
+            // $error_msg=""
+            $error_msg
+        );
+    }     
 
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method

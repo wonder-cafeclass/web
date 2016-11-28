@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `review`;
 DROP TABLE IF EXISTS `question`;
 DROP TABLE IF EXISTS `attendance`;
 
+DROP TABLE IF EXISTS `login_attempts`;
 DROP TABLE IF EXISTS `log_access`;
 DROP TABLE IF EXISTS `log_error`;
 DROP TABLE IF EXISTS `log_action`;
@@ -28,7 +29,7 @@ CREATE TABLE `user` (
   `gender` char(1) NOT NULL DEFAULT "" COMMENT 'Optional M(Male)/F(Female)/U(Unknown)', 
   `birthday` char(16) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 2001-03-22, 1976-03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "Optional",
-  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)/C(Candidate/회원등록후, 인증메일 확인이 필요한 상황)',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "C" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)/C(Candidate/회원등록후, 인증메일 확인이 필요한 상황)',
   `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
   `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `naver_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",

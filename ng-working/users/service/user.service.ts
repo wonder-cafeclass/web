@@ -10,6 +10,9 @@ import { User }                 from "../model/user";
 export class UserService {
 
   private getUserByEmailUrl = '/CI/index.php/api/users/email';
+  private getUserByFacebookIdUrl = '/CI/index.php/api/users/facebook';
+  private getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
+  private getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
   private getUserByMobileUrl = '/CI/index.php/api/users/mobile';
   private addUserUrl = '/CI/index.php/api/users/add';
 
@@ -23,8 +26,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByEmailUrl);
     req_url = `${ req_url }?q=${ email }`;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByEmail / 시작");
     if(isDebug) console.log("user.service / getUserByEmail / email : ",email);
     if(isDebug) console.log("user.service / getUserByEmail / req_url : ",req_url);
@@ -33,7 +36,58 @@ export class UserService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+  }
+
+  getUserByFacebookId (facebookId:string): Promise<any> {
+
+    let req_url = this.us.get(this.getUserByFacebookIdUrl);
+    req_url = `${ req_url }?q=${ facebookId }`;
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / getUserByFacebookId / 시작");
+    if(isDebug) console.log("user.service / getUserByFacebookId / facebookId : ",facebookId);
+    if(isDebug) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
+
+    return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  getUserByNaverId (naverId:string): Promise<any> {
+
+    let req_url = this.us.get(this.getUserByNaverIdUrl);
+    req_url = `${ req_url }?q=${ naverId }`;
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / getUserByNaverId / 시작");
+    if(isDebug) console.log("user.service / getUserByNaverId / naverId : ",naverId);
+    if(isDebug) console.log("user.service / getUserByNaverId / req_url : ",req_url);
+
+    return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
   } 
+
+  getUserByKakaoId (kakaoId:string): Promise<any> {
+
+    let req_url = this.us.get(this.getUserByKakaoIdUrl);
+    req_url = `${ req_url }?q=${ kakaoId }`;
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / getUserByKakaoId / 시작");
+    if(isDebug) console.log("user.service / getUserByKakaoId / kakaoId : ",kakaoId);
+    if(isDebug) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
+
+    return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }    
 
   getUserByMobile (mobile:string): Promise<any> {
 

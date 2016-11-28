@@ -50,12 +50,16 @@ var NameComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myChecker, input);
     };
+    NameComponent.prototype.setName = function (name) {
+        if (this.isOK(name)) {
+            this.inputStrPrev = name;
+        }
+    };
     // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
     NameComponent.prototype.hasNotDone = function () {
         return !this.hasDone();
     };
     NameComponent.prototype.hasDone = function () {
-        console.log("name / hasDone / this.inputStrPrev : ", this.inputStrPrev);
         var isOK = this.isOK(this.inputStrPrev);
         if (!isOK) {
             var history_1 = this.myCheckerService.getLastHistory();

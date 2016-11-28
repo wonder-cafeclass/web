@@ -218,6 +218,20 @@ var EmailComponent = (function () {
         // release lock
         // this.lockFocus = null;
     };
+    EmailComponent.prototype.setEmail = function (email) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("email / setEmail / init");
+        if (isDebug)
+            console.log("email / setEmail / email : ", email);
+        // 외부에서 email주소를 지정하는 경우.
+        if (this.isOK(email)) {
+            if (isDebug)
+                console.log("email / setEmail / 2");
+            this.inputStrPrevOnKeyup = email;
+        }
+    };
     EmailComponent.prototype.isOK = function (email) {
         this.setMyChecker();
         var isOK = false;

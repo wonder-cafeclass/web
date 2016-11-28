@@ -18,6 +18,7 @@ var KakaoCallbackComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.activatedRoute = activatedRoute;
         this.router = router;
+        this.redirectUrl = "/class-center";
         this.kakaoSignupCodeAlreadyRegisterd = -102;
         // Do something...
     } // end function
@@ -49,7 +50,7 @@ var KakaoCallbackComponent = (function () {
             .getKakaoToken(kakaoCode)
             .then(function (result) {
             // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoToken / result : ", result);
+            console.log("kakao-callback / getKakaoToken / result : ", result);
             if (null != result &&
                 null != result.access_token &&
                 null != result.token_type) {
@@ -67,7 +68,7 @@ var KakaoCallbackComponent = (function () {
             .getKakaoSignUp(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
             // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoSignUp / result : ", result);
+            console.log("kakao-callback / getKakaoSignUp / result : ", result);
             if (null != result &&
                 null != result.code &&
                 null != result.msg) {
@@ -81,16 +82,24 @@ var KakaoCallbackComponent = (function () {
         });
     };
     KakaoCallbackComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
+        var _this = this;
         this.loginService
             .getKakaoMe(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoMe / result : ", result);
             if (null != result &&
                 null != result.id) {
+                // 로그인이 성공하였습니다.
+                // 1. 최초 등록된 유저라면 유저 정보 등록 창으로 이동.
+                // 2. 이미 등록된 유저라면 이전 페이지로 리다이렉트 합니다. 
+                // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
+                _this.router.navigate(['/login/signup/kakao', result.kakao_id]);
             }
-        });
-    };
+            else {
+                // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
+                _this.router.navigate([_this.redirectUrl]);
+            } // end if
+        }); // end service
+    }; // end method  
     KakaoCallbackComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -7,7 +7,9 @@ import {  Subscription }        from 'rxjs';
 import {  Router,
           ActivatedRoute }      from '@angular/router';
 import { LoginService }         from '../service/login.service';
+import { UserService }          from '../../users/service/user.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
+
 
 @Component({
   moduleId: module.id,
@@ -20,12 +22,15 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   private code:string;
   private state:string;
 
+  private redirectUrl:string="/class-center";
+
   private isValidState:boolean=false;
 
   private subscription: Subscription;
 
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
+                private userService:UserService,
                 private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
@@ -86,7 +91,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       if(this.isValidState) {
 
         // 1. state가 정상적일 경우, 다음 단계를 진행
-        console.log("login.component / getFacebookState / result : ",result);
+        console.log("facebook-callback / getFacebookState / result : ",result);
 
         this.getAccessToken(code);
 
@@ -105,7 +110,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     .getFacebookAccess(code)
     .then(result => {
 
-      console.log("login.component / getFacebookAccess / result : ",result);
+      console.log("facebook-callback / getAccessToken / result : ",result);
 
       if( null != result && null != result.access_token ) {
         this.getMe();
@@ -116,13 +121,39 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   }
 
   private getMe() :void {
+
+    let isDebug:boolean = true;
+    if(isDebug) console.log("facebook-callback / getMe / init");
+
     this.loginService
     .getFacebookMe()
     .then(result => {
 
-      console.log("login.component / getFacebookMe / result : ",result);
+      if(isDebug) console.log("facebook-callback / getMe / result : ",result);
 
-    });     
+      if(null == result || null == result.facebook_id) {
+        // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
+        return;
+      }
+
+      // 페이스북 로그인 성공!
+      // 로그인한 유저 정보를 가져오는데 성공했습니다!
+      if( null == result.gender ||
+          "" === result.gender ||
+          null == result.mobile ||
+          "" === result.mobile ) {
+
+        // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
+        this.router.navigate(['/login/signup/facebook', result.facebook_id]);
+          
+      } else {
+
+        // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
+        this.router.navigate([this.redirectUrl]);
+        
+      } // end if
+
+    }); // end service
 
   }
 

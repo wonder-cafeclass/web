@@ -2,7 +2,7 @@
 	"checker":{
 		"user_id":"is_natural_no_zero",
 		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match_include[/[가-힣 ]+/]",
-		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
+		"user_nickname":"is_str|||min_length[3]|||max_length[32]|||is_unique[user.nickname]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
 
@@ -41,17 +41,18 @@
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
+		"kakao_id":"is_str",
 		"kakao_code":"is_str",
 		"kakao_access_token":"is_str",
 		"kakao_token_type":"is_str",
 
-		"naver_id":"is_natural_no_zero",
+		"naver_id":"is_str",
 		"naver_code":"is_str",
 		"naver_login_state":"is_str",
 		"naver_access_token":"is_str",
 		"naver_token_type":"is_str",
 
-		"facebook_id":"is_natural_no_zero",
+		"facebook_id":"is_str|||regex_match_include[/^[0-9]+$/]",
 		"facebook_login_state":"is_str",
 		"facebook_code":"is_str",
 		"facebook_name":"is_str|||min_length[4]|||max_length[32]",

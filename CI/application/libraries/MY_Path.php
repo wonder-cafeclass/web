@@ -174,6 +174,14 @@ class MY_Path {
         $thumb_dir_path = preg_replace($pattern, $replacement, $string);
 
         return $thumb_dir_path;
-    }	
+    }
 
+    public function get_user_thumb_loadable_path($thumbnail="") 
+    {
+        if(empty($thumbnail))
+        {
+            return "";
+        }
+        return $this->thumbnail_path_user . "/" . $thumbnail;
+    }
 }

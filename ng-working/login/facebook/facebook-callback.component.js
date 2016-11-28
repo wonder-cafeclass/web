@@ -11,13 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
+var user_service_1 = require('../../users/service/user.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var FacebookCallbackComponent = (function () {
-    function FacebookCallbackComponent(loginService, myLoggerService, activatedRoute, router) {
+    function FacebookCallbackComponent(loginService, myLoggerService, userService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.userService = userService;
         this.activatedRoute = activatedRoute;
         this.router = router;
+        this.redirectUrl = "/class-center";
         this.isValidState = false;
         // Do something...
     } // end function
@@ -59,7 +62,7 @@ var FacebookCallbackComponent = (function () {
             // Session에 저장된 state와 비교합니다.
             if (_this.isValidState) {
                 // 1. state가 정상적일 경우, 다음 단계를 진행
-                console.log("login.component / getFacebookState / result : ", result);
+                console.log("facebook-callback / getFacebookState / result : ", result);
                 _this.getAccessToken(code);
             }
             else {
@@ -71,18 +74,40 @@ var FacebookCallbackComponent = (function () {
         this.loginService
             .getFacebookAccess(code)
             .then(function (result) {
-            console.log("login.component / getFacebookAccess / result : ", result);
+            console.log("facebook-callback / getAccessToken / result : ", result);
             if (null != result && null != result.access_token) {
                 _this.getMe();
             }
         });
     };
     FacebookCallbackComponent.prototype.getMe = function () {
+        var _this = this;
+        var isDebug = true;
+        if (isDebug)
+            console.log("facebook-callback / getMe / init");
         this.loginService
             .getFacebookMe()
             .then(function (result) {
-            console.log("login.component / getFacebookMe / result : ", result);
-        });
+            if (isDebug)
+                console.log("facebook-callback / getMe / result : ", result);
+            if (null == result || null == result.facebook_id) {
+                // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
+                return;
+            }
+            // 페이스북 로그인 성공!
+            // 로그인한 유저 정보를 가져오는데 성공했습니다!
+            if (null == result.gender ||
+                "" === result.gender ||
+                null == result.mobile ||
+                "" === result.mobile) {
+                // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
+                _this.router.navigate(['/login/signup/facebook', result.facebook_id]);
+            }
+            else {
+                // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
+                _this.router.navigate([_this.redirectUrl]);
+            } // end if
+        }); // end service
     };
     FacebookCallbackComponent = __decorate([
         core_1.Component({
@@ -91,7 +116,7 @@ var FacebookCallbackComponent = (function () {
             templateUrl: 'facebook-callback.component.html',
             styleUrls: ['facebook-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
     ], FacebookCallbackComponent);
     return FacebookCallbackComponent;
 }());

@@ -31,16 +31,6 @@ export class ProfileImgUploadComponent implements OnInit {
   public userProfilePath:string = "/assets/images/user/";
   public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
-  /*
-  public userProfileSampleArr:string[] = [
-    "/assets/images/user/user_anonymous_150x150_bear.png",
-    "/assets/images/user/user_anonymous_150x150_duck.png",
-    "/assets/images/user/user_anonymous_150x150_hippo.png",
-    "/assets/images/user/user_anonymous_150x150_rabbit.png",
-    "/assets/images/user/user_anonymous_150x150_zebu.png"
-  ];
-  */
-
   public userProfileSampleArr:string[] = [
     "/assets/images/user/user_anonymous_150x150_cat.jpg",
     "/assets/images/user/user_anonymous_150x150_lion.jpg",
@@ -91,6 +81,11 @@ export class ProfileImgUploadComponent implements OnInit {
     }
 
     return this.myCheckerService.isOK(this.myChecker, input);
+  }
+  public setProfileImg(thumbnail:string) :void {
+    if(this.isOK(thumbnail)) {
+      this.userProfileUrl = thumbnail;
+    }
   }
 
   // @ Desc : 프로필 이미지가 제대로 입력되었는지 확인합니다.
@@ -210,7 +205,8 @@ export class ProfileImgUploadComponent implements OnInit {
           null != response.data && 
           null != response.data.thumbnail) {
 
-        this.userProfileUrl = this.userProfilePath + response.data.thumbnail;
+        // this.userProfileUrl = this.userProfilePath + response.data.thumbnail;
+        this.userProfileUrl = response.data.thumbnail;
 
         if(isDebug) console.log("profile-img / onChangeFile / this.userProfileUrl : ",this.userProfileUrl);
 

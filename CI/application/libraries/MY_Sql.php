@@ -318,13 +318,14 @@ class MY_Sql
             $sql
         );
 
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
     }
 
-    public function get_user_facebook($facebook_id=-1)
+    public function get_user_facebook($facebook_id="")
     {
         // Do something...
-        if(!(0 < $facebook_id)) 
+        if(empty($facebook_id)) 
         {
             return null;
         }
@@ -415,6 +416,7 @@ class MY_Sql
             $sql
         );
 
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
     }
 
@@ -477,6 +479,7 @@ class MY_Sql
             $sql
         );
 
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
     }
 
@@ -568,8 +571,6 @@ class MY_Sql
             'gender' => $gender,
             'birthday' => "$birth_year-$birth_month-$birth_day",
             'thumbnail' => $thumbnail,
-            'status' => "C",
-            'permission' => "U",
             'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
             'email' => $email,
             'password' => $password_hashed

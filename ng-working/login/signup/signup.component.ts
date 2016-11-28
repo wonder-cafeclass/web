@@ -1,9 +1,13 @@
+import 'rxjs/add/operator/switchMap';
+import {  Observable }          from 'rxjs/Observable';
 import {  Component, 
           Input, 
           Output,
           ViewChild,
           OnInit }              from '@angular/core';
-import { Router }               from '@angular/router';
+import {  Router,
+          ActivatedRoute,
+          Params }              from '@angular/router';
 
 import { LoginService }         from '../service/login.service';
 import { UserService }          from '../../users/service/user.service';
@@ -21,6 +25,8 @@ import { MyLoggerService }      from '../../util/service/my-logger.service';
 import { MyCheckerService }     from '../../util/service/my-checker.service';
 import { MyEventService }       from '../../util/service/my-event.service';
 import { MyEvent }              from '../../util/model/my-event';
+
+import { User }                 from '../../users/model/user';
 
 @Component({
   moduleId: module.id,
@@ -43,6 +49,12 @@ export class SignupComponent implements OnInit {
   private birthYear:string;
   private birthMonth:string;
   private birthDay:string;
+
+  private facebookId:string;
+  private kakaoId:string;
+  private naverId:string;
+
+  private user:User;
 
   @ViewChild(EmailComponent)
   private emailComponent: EmailComponent;
@@ -74,6 +86,7 @@ export class SignupComponent implements OnInit {
                 private myLoggerService: MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
+                private route: ActivatedRoute,
                 public router: Router) {
 
     // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
@@ -81,8 +94,91 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    let isDebug:boolean = true;
+    if(isDebug) console.log("signup / ngOnInit / init");
+
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
+
+    // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
+    this.route.params.switchMap((params: Params) => {
+
+      if(isDebug) console.log("signup / ngOnInit / switchMap / params : ",params);
+
+      if(null != params['facebookId']) {
+
+        this.facebookId = params['facebookId'];
+        if(isDebug) console.log("signup / ngOnInit / switchMap / this.facebookId : ",this.facebookId);
+
+        if(null != this.facebookId && "" != this.facebookId) {
+          return this.userService.getUserByFacebookId(this.facebookId);
+        }
+      }
+
+      if(null != params['kakaoId']) {
+
+        this.kakaoId = params['kakaoId'];
+        if(isDebug) console.log("signup / ngOnInit / switchMap / this.kakaoId : ",this.kakaoId);
+
+        if(null != this.kakaoId && "" != this.kakaoId) {
+          return this.userService.getUserByKakaoId(this.kakaoId);
+        }
+      }
+
+      if(null != params['naverId']) {
+
+        this.naverId = params['naverId'];
+        if(isDebug) console.log("signup / ngOnInit / switchMap / this.naverId : ",this.naverId);
+
+        if(null != this.naverId && "" != this.naverId) {
+          return this.userService.getUserByNaverId(this.naverId);
+        }
+      }
+
+    }).subscribe((result) => {
+
+      if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);
+
+      if(null != result && null != result.user) {
+        this.user = result.user;
+      }
+
+      if(isDebug) console.log("signup / ngOnInit / subscribe / this.user : ",this.user);
+
+      if(null == this.user) {
+        return;
+      }
+
+      if(null != this.user.facebook_id && "" != this.user.facebook_id) {
+
+        // 페이스북 로그인
+        // email
+        this.emailComponent.setEmail(this.user.email);
+        // name
+        this.nameComponent.setName(this.user.name);
+        // nickname
+        this.nicknameComponent.setNickname(this.user.nickname);
+        // thumbnail
+        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+
+      } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
+
+        // 카카오 로그인
+        // name
+        this.nameComponent.setName(this.user.name);
+        // nickname
+        this.nicknameComponent.setNickname(this.user.nickname);
+        // thumbnail
+        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+
+      } else if(null != this.user.naver_id && "" != this.user.naver_id) {
+        // 네이버 로그인
+
+      }
+
+    });
+
   }
 
   onClickSave(event): void {

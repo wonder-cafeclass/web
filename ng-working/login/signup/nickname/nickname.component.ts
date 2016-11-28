@@ -65,7 +65,20 @@ export class NicknameComponent implements OnInit {
       return false;
     }
 
+    this.setMyChecker();
+
     return this.myCheckerService.isOK(this.myChecker, input);
+  }
+  public setNickname(nickname:string) :void {
+
+    console.log("TEST / nickname : ",nickname);
+
+    if(this.isOK(nickname)) {
+      this.inputStrPrev = nickname;
+    } else {
+      let history = this.myCheckerService.getLastHistory();
+      console.log("nickname / setNickname / history : ",history);
+    }
   }
 
   // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
@@ -140,7 +153,7 @@ export class NicknameComponent implements OnInit {
 
         // 원인을 찾아봅니다.
         let history = this.myCheckerService.getLastHistory();
-        console.log("password / onBlur / history : ",history);
+        console.log("nickname / onBlur / history : ",history);
 
         if(null != history && null != history.key && null != history.msg) {
           // Do something..
@@ -253,7 +266,7 @@ export class NicknameComponent implements OnInit {
     } // end if - check inputStr    
   } 
 
-  private inputStrPrev:string="";
+  public inputStrPrev:string="";
   onKeyup(event, element) :void {
 
     event.stopPropagation();

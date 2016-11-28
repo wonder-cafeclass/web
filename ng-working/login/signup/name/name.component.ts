@@ -69,14 +69,17 @@ export class NameComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myChecker, input);
   }
+  setName(name:string) :void {
+    if(this.isOK(name)) {
+      this.inputStrPrev = name;
+    }
+  }
 
   // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
   public hasNotDone() :boolean {
     return !this.hasDone();
   }
   public hasDone() :boolean {
-
-    console.log("name / hasDone / this.inputStrPrev : ",this.inputStrPrev);
 
     let isOK:boolean = this.isOK(this.inputStrPrev);
 

@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+require('rxjs/add/operator/switchMap');
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
@@ -24,20 +25,87 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var SignupComponent = (function () {
-    function SignupComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, router) {
+    function SignupComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, route, router) {
         this.loginService = loginService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
+        this.route = route;
         this.router = router;
         this.gender = "";
         // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
         this.myCheckerService.getReady();
     }
     SignupComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        var isDebug = true;
+        if (isDebug)
+            console.log("signup / ngOnInit / init");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
+        // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
+        this.route.params.switchMap(function (params) {
+            if (isDebug)
+                console.log("signup / ngOnInit / switchMap / params : ", params);
+            if (null != params['facebookId']) {
+                _this.facebookId = params['facebookId'];
+                if (isDebug)
+                    console.log("signup / ngOnInit / switchMap / this.facebookId : ", _this.facebookId);
+                if (null != _this.facebookId && "" != _this.facebookId) {
+                    return _this.userService.getUserByFacebookId(_this.facebookId);
+                }
+            }
+            if (null != params['kakaoId']) {
+                _this.kakaoId = params['kakaoId'];
+                if (isDebug)
+                    console.log("signup / ngOnInit / switchMap / this.kakaoId : ", _this.kakaoId);
+                if (null != _this.kakaoId && "" != _this.kakaoId) {
+                    return _this.userService.getUserByKakaoId(_this.kakaoId);
+                }
+            }
+            if (null != params['naverId']) {
+                _this.naverId = params['naverId'];
+                if (isDebug)
+                    console.log("signup / ngOnInit / switchMap / this.naverId : ", _this.naverId);
+                if (null != _this.naverId && "" != _this.naverId) {
+                    return _this.userService.getUserByNaverId(_this.naverId);
+                }
+            }
+        }).subscribe(function (result) {
+            if (isDebug)
+                console.log("signup / ngOnInit / subscribe / result : ", result);
+            if (null != result && null != result.user) {
+                _this.user = result.user;
+            }
+            if (isDebug)
+                console.log("signup / ngOnInit / subscribe / this.user : ", _this.user);
+            if (null == _this.user) {
+                return;
+            }
+            if (null != _this.user.facebook_id && "" != _this.user.facebook_id) {
+                // 페이스북 로그인
+                // email
+                _this.emailComponent.setEmail(_this.user.email);
+                // name
+                _this.nameComponent.setName(_this.user.name);
+                // nickname
+                _this.nicknameComponent.setNickname(_this.user.nickname);
+                // thumbnail
+                _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
+            }
+            else if (null != _this.user.kakao_id && "" != _this.user.kakao_id) {
+                // 카카오 로그인
+                // name
+                _this.nameComponent.setName(_this.user.name);
+                // nickname
+                _this.nicknameComponent.setNickname(_this.user.nickname);
+                // thumbnail
+                _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
+            }
+            else if (null != _this.user.naver_id && "" != _this.user.naver_id) {
+            }
+        });
     };
     SignupComponent.prototype.onClickSave = function (event) {
         event.preventDefault();
@@ -387,7 +455,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, router_1.ActivatedRoute, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());
