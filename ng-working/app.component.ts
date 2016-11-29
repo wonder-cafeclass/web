@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
 
 	isAdmin:boolean=false;
 	ngOnInit(): void {
+
+		// 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
 		this.authService.getAdminAuth().then(
 			result => {
 				if(null != result.is_admin) {
@@ -27,6 +29,9 @@ export class AppComponent implements OnInit {
 				}
 			}
 		);
+
+		// 회원 로그인 쿠키를 가져옵니다.
+		console.log("회원 로그인 쿠키를 가져옵니다.");
 	}
 
 }

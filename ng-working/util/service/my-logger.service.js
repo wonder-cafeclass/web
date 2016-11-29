@@ -22,6 +22,7 @@ var MyLoggerService = (function () {
         this.pageKeyLoginNaver = "LOG_IN_NAVER";
         this.pageKeyPolicy = "POLICY";
         this.pageKeySignup = "SIGNUP";
+        this.pageKeySignupSelect = "SIGNUP_SELECT";
     }
     MyLoggerService.prototype.logActionPage = function (pageKey) {
         if (null == pageKey || "" == pageKey) {

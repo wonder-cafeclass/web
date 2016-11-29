@@ -18,6 +18,7 @@ var facebook_callback_component_1 = require('./facebook/facebook-callback.compon
 var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
+var signup_select_component_1 = require('./signup/signup-select.component');
 var email_component_1 = require('./signup/email/email.component');
 var password_component_1 = require('./signup/password/password.component');
 var name_component_1 = require('./signup/name/name.component');
@@ -47,6 +48,7 @@ var LoginModule = (function () {
                 kakao_callback_component_1.KakaoCallbackComponent,
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
+                signup_select_component_1.SignupSelectComponent,
                 email_component_1.EmailComponent,
                 password_component_1.PasswordComponent,
                 name_component_1.NameComponent,

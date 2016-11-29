@@ -1,0 +1,41 @@
+<div class="container">
+	<!-- First Row -->
+	<div class="row">
+		<div class="row">
+			<div class="col-md-4" style="padding:0px;"></div>
+			<!-- Login Iframe -->
+			<div class="col-md-4 cc-div-col box">
+				
+				<div>
+					<img class="logo" src="../../assets/images/cafeclass_logo_text_only.svg">
+				</div>
+				<div>
+					<img class="login-title" src="../../assets/images/login/signup_kor.svg">
+				</div>
+
+				<div class="btn-box below-border">
+			        <a *ngIf="kakaoAuthUrl" href={{kakaoAuthUrl}} alt="...">
+			            <img class="login-btn" src="../../assets/images/login/signup_kakao.svg">
+			        </a>
+				</div>
+				<div class="btn-box">
+			        <a *ngIf="facebookAuthUrl" href={{facebookAuthUrl}} alt="...">
+			            <img class="login-btn" src="../../assets/images/login/signup_facebook.svg">
+			        </a>
+				</div>
+				<div class="btn-box">
+			        <a *ngIf="naverAuthUrl" href={{naverAuthUrl}} alt="...">
+			            <img class="login-btn" src="../../assets/images/login/signup_naver.svg">
+			        </a>
+				</div>
+				<div class="btn-box">
+			        <a *ngIf="cafeclassAuthUrl" href={{cafeclassAuthUrl}} alt="...">
+			            <img class="login-btn" src="../../assets/images/login/signup_cafeclass.svg">
+			        </a>
+				</div>
+
+			</div>
+			<div class="col-md-4" style="padding:0px;"></div>
+		</div>
+	</div>
+</div>

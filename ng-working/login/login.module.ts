@@ -10,6 +10,7 @@ import { FacebookCallbackComponent }      from './facebook/facebook-callback.com
 import { KakaoCallbackComponent } 	      from './kakao/kakao-callback.component';
 import { NaverCallbackComponent } 	      from './naver/naver-callback.component';
 import { SignupComponent } 	 		          from './signup/signup.component';
+import { SignupSelectComponent }          from './signup/signup-select.component';
 import { EmailComponent }                 from './signup/email/email.component';
 import { PasswordComponent }              from './signup/password/password.component';
 import { NameComponent }                  from './signup/name/name.component';
@@ -38,6 +39,7 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     KakaoCallbackComponent,
     NaverCallbackComponent,
     SignupComponent,
+    SignupSelectComponent,
     EmailComponent,
     PasswordComponent,
     NameComponent,
