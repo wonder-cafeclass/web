@@ -22,6 +22,7 @@ var UserService = (function () {
         this.getUserByNaverIdUrl = '/CI/index.php/api/users/naver';
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
         this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
+        this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
         this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
@@ -247,6 +248,32 @@ var UserService = (function () {
         var params = {
             user_id: userId,
             email: email
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.confirmUserValidation = function (apiKey, key) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / confirmUserValidation / 시작");
+        if (isDebug)
+            console.log("user.service / confirmUserValidation / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / confirmUserValidation / key : ", key);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.confirmUserValidationUrl);
+        if (isDebug)
+            console.log("user.service / confirmUserValidation / req_url : ", req_url);
+        var params = {
+            key: key
         };
         return this.http.post(req_url, params, options)
             .toPromise()

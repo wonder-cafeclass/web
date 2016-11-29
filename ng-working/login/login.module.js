@@ -26,6 +26,7 @@ var profile_img_upload_component_1 = require('./signup/profile-img-upload/profil
 var nickname_component_1 = require('./signup/nickname/nickname.component');
 var gender_component_1 = require('./signup/gender/gender.component');
 var birthday_component_1 = require('./signup/birthday/birthday.component');
+var validation_component_1 = require('./validation/validation.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
@@ -53,7 +54,8 @@ var LoginModule = (function () {
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 nickname_component_1.NicknameComponent,
                 gender_component_1.GenderComponent,
-                birthday_component_1.BirthdayComponent
+                birthday_component_1.BirthdayComponent,
+                validation_component_1.ValidationComponent
             ],
             providers: [
                 login_service_1.LoginService,

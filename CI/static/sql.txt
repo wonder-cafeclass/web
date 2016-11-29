@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS `cclass`;
 DROP TABLE IF EXISTS `klass`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `user_validation`;
+DROP TABLE IF EXISTS `user_cookie`;
+
 DROP TABLE IF EXISTS `teacher`;
 DROP TABLE IF EXISTS `review`;
 DROP TABLE IF EXISTS `question`;
@@ -49,6 +51,13 @@ CREATE TABLE `user` (
   KEY `google_id` (`google_id`),
   KEY `facebook_id` (`facebook_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user';
+
+CREATE TABLE `user_cookie` (
+  `user_id` INT(11) NOT NULL,
+  `key` char(255) COLLATE utf8_bin NOT NULL,
+  `date_expire` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  KEY `key` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user login cookie';
 
 CREATE TABLE `user_validation` (
   `user_id` INT(11) NOT NULL,

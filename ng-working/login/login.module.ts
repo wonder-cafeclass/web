@@ -18,6 +18,7 @@ import { ProfileImgUploadComponent }      from './signup/profile-img-upload/prof
 import { NicknameComponent }              from './signup/nickname/nickname.component';
 import { GenderComponent }                from './signup/gender/gender.component';
 import { BirthdayComponent }              from './signup/birthday/birthday.component';
+import { ValidationComponent }            from './validation/validation.component';
 
 import { LoginService }                   from './service/login.service';
 import { UserService }                    from '../users/service/user.service';
@@ -44,7 +45,8 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     ProfileImgUploadComponent,
     NicknameComponent,
     GenderComponent,
-    BirthdayComponent
+    BirthdayComponent,
+    ValidationComponent
   ],
   providers: [
   	LoginService,

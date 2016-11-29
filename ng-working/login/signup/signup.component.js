@@ -127,21 +127,21 @@ var SignupComponent = (function () {
             }
         });
     };
-    SignupComponent.prototype.onClickSave = function (event) {
+    SignupComponent.prototype.onClickSignup = function (event) {
         event.preventDefault();
         event.stopPropagation();
         var isAllOK = true;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("signup / onClickSave / 시작");
+            console.log("signup / onClickSignup / 시작");
         // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
         // 문제가 있다면 해당 필드에 경고를 보여줍니다.
         var hasNotDoneEmail = this.emailComponent.hasNotDone();
         if (hasNotDoneEmail) {
             this.emailComponent.showWarning();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneEmail : ", hasNotDoneEmail);
+                console.log("signup / onClickSignup / hasNotDoneEmail : ", hasNotDoneEmail);
             isAllOK = false;
         }
         var hasNotDonePassword = this.passwordComponent.hasNotDoneP();
@@ -149,7 +149,7 @@ var SignupComponent = (function () {
         if (hasNotDonePassword) {
             this.passwordComponent.showWarningP();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDonePassword : ", hasNotDonePassword);
+                console.log("signup / onClickSignup / hasNotDonePassword : ", hasNotDonePassword);
             isAllOK = false;
         }
         else {
@@ -160,21 +160,21 @@ var SignupComponent = (function () {
             // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
             this.passwordComponent.showWarningRP();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneRepassword : ", hasNotDoneRepassword);
+                console.log("signup / onClickSignup / hasNotDoneRepassword : ", hasNotDoneRepassword);
             isAllOK = false;
         }
         var hasNotDoneName = this.nameComponent.hasNotDone();
         if (hasNotDoneName) {
             this.nameComponent.showWarning();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneName : ", hasNotDoneName);
+                console.log("signup / onClickSignup / hasNotDoneName : ", hasNotDoneName);
             isAllOK = false;
         }
         var hasNotDoneNickname = this.nicknameComponent.hasNotDone();
         if (hasNotDoneNickname) {
             this.nicknameComponent.showWarning();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneNickname : ", hasNotDoneNickname);
+                console.log("signup / onClickSignup / hasNotDoneNickname : ", hasNotDoneNickname);
             isAllOK = false;
         }
         var hasNotDoneMobileHead = this.mobileComponent.hasNotDoneMobileHead();
@@ -183,7 +183,7 @@ var SignupComponent = (function () {
         if (hasNotDoneMobileHead) {
             this.mobileComponent.showWarningMobileHead();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneMobileHead : ", hasNotDoneMobileHead);
+                console.log("signup / onClickSignup / hasNotDoneMobileHead : ", hasNotDoneMobileHead);
             isAllOK = false;
         }
         else {
@@ -197,7 +197,7 @@ var SignupComponent = (function () {
         if (!hasNotDoneMobileHead && hasNotDoneMobileBody) {
             this.mobileComponent.showWarningMobileBody();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneMobileBody : ", hasNotDoneMobileBody);
+                console.log("signup / onClickSignup / hasNotDoneMobileBody : ", hasNotDoneMobileBody);
             isAllOK = false;
         }
         else if (!hasNotDoneMobileHead) {
@@ -206,7 +206,7 @@ var SignupComponent = (function () {
         }
         if (!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneMobileTail : ", hasNotDoneMobileTail);
+                console.log("signup / onClickSignup / hasNotDoneMobileTail : ", hasNotDoneMobileTail);
             this.mobileComponent.showWarningMobileTail();
             isAllOK = false;
         }
@@ -214,7 +214,7 @@ var SignupComponent = (function () {
         if (hasNotDoneGender) {
             this.genderComponent.showWarning();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneGender : ", hasNotDoneGender);
+                console.log("signup / onClickSignup / hasNotDoneGender : ", hasNotDoneGender);
             isAllOK = false;
         }
         // 생년월일 검사
@@ -222,7 +222,7 @@ var SignupComponent = (function () {
         if (hasNotDoneBirthYear) {
             this.birthdayComponent.showWarningBirthYear();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneBirthYear : ", hasNotDoneBirthYear);
+                console.log("signup / onClickSignup / hasNotDoneBirthYear : ", hasNotDoneBirthYear);
             isAllOK = false;
         }
         if (null == this.birthYear || "" === this.birthYear) {
@@ -232,7 +232,7 @@ var SignupComponent = (function () {
         if (hasNotDoneBirthMonth) {
             this.birthdayComponent.showWarningBirthMonth();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneBirthMonth : ", hasNotDoneBirthMonth);
+                console.log("signup / onClickSignup / hasNotDoneBirthMonth : ", hasNotDoneBirthMonth);
             isAllOK = false;
         }
         if (null == this.birthMonth || "" === this.birthMonth) {
@@ -242,7 +242,7 @@ var SignupComponent = (function () {
         if (hasNotDoneBirthDay) {
             this.birthdayComponent.showWarningBirthDay();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneBirthDay : ", hasNotDoneBirthDay);
+                console.log("signup / onClickSignup / hasNotDoneBirthDay : ", hasNotDoneBirthDay);
             isAllOK = false;
         }
         if (null == this.birthDay || "" === this.birthDay) {
@@ -253,7 +253,7 @@ var SignupComponent = (function () {
         if (hasNotDoneProfileImg) {
             this.profileImgUploadComponent.showWarning();
             if (isDebug)
-                console.log("signup / onClickSave / hasNotDoneProfileImg : ", hasNotDoneProfileImg);
+                console.log("signup / onClickSignup / hasNotDoneProfileImg : ", hasNotDoneProfileImg);
             isAllOK = false;
         }
         if (null == this.thumbnail || "" === this.thumbnail) {
@@ -261,11 +261,11 @@ var SignupComponent = (function () {
         }
         // 전화번호 검사
         if (isDebug)
-            console.log("signup / onClickSave / isAllOK : ", isAllOK);
+            console.log("signup / onClickSignup / isAllOK : ", isAllOK);
         // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
         if (isAllOK) {
             if (isDebug)
-                console.log("signup / onClickSave / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
+                console.log("signup / onClickSignup / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
             if (null != this.user) {
                 // 1-1. 플랫폼을 통해 가입 - facebook
                 // 1-2. 플랫폼을 통해 가입 - kakao
@@ -365,6 +365,7 @@ var SignupComponent = (function () {
         }); // end service      
     };
     SignupComponent.prototype.sendMailUserValidation = function (userId, email) {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -380,6 +381,10 @@ var SignupComponent = (function () {
             if (isDebug)
                 console.log("signup / sendMailUserValidation / result : ", result);
             if (null != result && null != result.user_validation_key) {
+                // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
+                _this.router.navigate(['/login/signup/validation']);
+            }
+            else {
             }
         }); // end service     
     };

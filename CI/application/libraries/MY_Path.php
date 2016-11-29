@@ -19,7 +19,7 @@ class MY_Path {
 
     private $path_download="assets/images/download";
     private $path_thumbnail_user="assets/images/user";
-    private $path_user_validation="login/validation";
+    private $path_user_validation="login/signup/validation";
 
     public function __construct($params=null)
     {

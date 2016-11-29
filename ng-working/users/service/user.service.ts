@@ -16,6 +16,7 @@ export class UserService {
   private getUserByMobileUrl = '/CI/index.php/api/users/mobile';
 
   private sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
+  private confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
 
   private updateUserUrl = '/CI/index.php/api/users/update';
   private addUserUrl = '/CI/index.php/api/users/add';
@@ -274,6 +275,35 @@ export class UserService {
             .catch(this.handleError);
 
 
+  }
+
+  public confirmUserValidation(apiKey:string, key:string) {
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / confirmUserValidation / 시작");
+    if(isDebug) console.log("user.service / confirmUserValidation / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / confirmUserValidation / key : ",key);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.confirmUserValidationUrl);
+
+    if(isDebug) console.log("user.service / confirmUserValidation / req_url : ",req_url);
+
+    let params = {
+      key:key
+    }
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);    
   }
 
   private extractData(res: Response) {

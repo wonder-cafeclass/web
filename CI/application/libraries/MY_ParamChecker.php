@@ -390,7 +390,7 @@ class MY_ParamChecker {
     }
     public function is_allowed_api_call() 
     {
-        $api_key_from_request = $this->CI->input->get_request_header($this->api_key, TRUE);
+        $api_key_from_request = $this->get_api_key_from_request();
         $api_key = $this->get_api_key();
         $is_allowed_api = false;
         if(!empty($api_key) && $api_key === $api_key_from_request) 
@@ -398,6 +398,10 @@ class MY_ParamChecker {
             $is_allowed_api = true;
         }
         return $is_allowed_api;
+    }
+    public function get_api_key_from_request()
+    {
+        return $this->CI->input->get_request_header($this->api_key, TRUE);
     }
 
     public function get_const($key="") {

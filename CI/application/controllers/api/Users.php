@@ -46,6 +46,8 @@ class Users extends MY_REST_Controller {
 
         // Please add library you need here!
         $this->load->library('email');
+
+        $this->load->library('MY_Cookie');
     }
 
     public function email_get()
@@ -116,7 +118,7 @@ class Users extends MY_REST_Controller {
 
     public function list_get()
     {
-        // TEST - PHPUnit test로 검증해야 함! wonder.jung
+        // TEST - PHPUnit test로 검증해야 함!
         $check_result = $this->my_paramchecker->is_ok("user_id", 0);
 
         // Users from a data store e.g. database
@@ -125,7 +127,7 @@ class Users extends MY_REST_Controller {
 
         if (!empty($users))
         {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
+            // TODO response body 만들어주는 custom helper 만들기.
             $response_body = [
                 'status' => TRUE,
                 'message' => 'Success',
@@ -138,7 +140,7 @@ class Users extends MY_REST_Controller {
         }
         else
         {
-            // TODO response body 만들어주는 custom helper 만들기. - wonder.jung
+            // TODO response body 만들어주는 custom helper 만들기.
             $response_body = [
                 'status' => FALSE,
                 'message' => 'User could not be found',
@@ -520,13 +522,139 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     } 
 
+    public function test_get()
+    {
+        $key_user_login = $this->my_cookie->set_user_login(1);
+        $output["key_user_login"] = $key_user_login;
+        $output["cookie_reason"] = $this->my_cookie->get_reason();
+
+        $this->respond_200($output);
+    }
+
+    public function show_get()
+    {
+        $cookie_user_login = $this->my_cookie->get_user_login();
+        $output["cookie_user_login"] = $cookie_user_login;
+        $output["cookie_reason"] = $this->my_cookie->get_reason();
+
+        $this->respond_200($output);
+    }
+
+    /*
+    *   @ Desc : 유저가 회원인증링크를 클릭했을 때, 호출합니다. 회원 인증을 완료합니다.
+    */
+    public function confirmvalidation_post()
+    {
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            // 1-2. apikey 있지 않은 경우. 공격을 의심. 로거에 등록.
+            $api_key_from_request = $this->my_paramchecker->get_api_key_from_request();
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
+                // $error_msg=""
+                "Detected not allowed access to validation check : $api_key_from_request"
+            );
+
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        } 
+
+        $key = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "key",
+            // $key_filter=""
+            "user_validation_key"
+        );
+
+        // wonder.jung
+        $user_validation = $this->my_sql->select_user_validation_key_by_key($key);
+        // DEBUG
+        $output["user_validation"] = $user_validation;
+
+        $key_from_db = "";
+        if(isset($user_validation) && isset($user_validation->key)) 
+        {
+            $key_from_db = $user_validation->key;
+        } 
+        else 
+        {
+            // 1. 유저 인증 정보가 없는 경우
+            $user_validation = $this->my_sql->select_user_validation_key_by_key($key, "C");
+            if(isset($user_validation) && isset($user_validation->key)) 
+            {
+                // 1-1. 이미 인증 프로세스를 마친 경우.
+                $output["user_validation"] = $user_validation;
+                $output["is_confirmed"] = true;
+                $output["is_attack"] = false;
+                $this->respond_200($output);
+                return;
+            } 
+            else 
+            {
+                // 1-2. 인증 정보가 이전에 등록되어 있지 않은 경우. 공격을 의심. 로거에 등록.
+                $this->my_logger->add_error(
+                    // $user_id=-1
+                    -1,
+                    // $error_type=""
+                    $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
+                    // $error_msg=""
+                    "Detected not allowed access to validation check : $key"
+                );
+
+                $output["user_validation"] = $user_validation;
+                $output["is_confirmed"] = false;
+                $output["is_attack"] = true;
+                $this->respond_200($output);
+                return;
+
+            } // end if
+
+        }
+        $is_confirmed = false;
+        if(!empty($key_from_db) && $key === $key_from_db) 
+        {
+            $is_confirmed = true;
+        }
+        if($is_confirmed) 
+        {
+            // 회원 인증이 완료되었습니다.
+            // 1. 회원 인증 상태 변경 / 2. 회원 상태 변경
+            $this->my_sql->update_user_validation_confirmed($user_validation->user_id, $key);
+
+            // DEBUG
+            // 변경된 회원 인증 정보를 가져옵니다.
+            $user_validation = $this->my_sql->select_user_validation_key_by_key($key, "C");
+            $output["user_validation"] = $user_validation;
+
+            // 변경된 회원 정보를 가져옵니다.
+            $user = $this->my_sql->get_user_by_id($user_validation->user_id);
+            $output["user"] = $user;
+
+            // wonder.jung - 로그인 쿠키를 만듭니다.
+            $key_user_login = $this->my_cookie->set_user_login($user_validation->user_id);
+            $cookie_user_login = $this->my_cookie->get_user_login($key_user_login);
+            $output["cookie_user_login"] = $cookie_user_login;
+            $output["cookie_reason"] = $this->my_cookie->get_reason();
+        }
+        // DEBUG
+        $output["is_confirmed"] = $is_confirmed;
+        $output["is_attack"] = false;
+
+        $this->respond_200($output);
+    }    
+
     /*
     *   @ Desc : 등록한 유저에게 인증 메일을 발송합니다.
     */
     public function validation_post()
     {
-        // wonder.jung
-        
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -569,7 +697,7 @@ class Users extends MY_REST_Controller {
             $key_hashed
         );
         $user_validation_key = 
-        $this->my_sql->select_user_validation_key(
+        $this->my_sql->select_user_validation_key_by_user_id(
             // $user_id=-1
             $user->id
         );
@@ -578,7 +706,7 @@ class Users extends MY_REST_Controller {
         // 인증키가 포함된 링크주소 만들기.
         // 인증키를 확인할 페이지 만들기.
         $path_user_validation = $this->my_path->get_path_user_validation();
-        $path_user_validation = $path_user_validation . "/" . $user_validation_key->key;
+        $path_user_validation = $path_user_validation . "?key=" . $user_validation_key->key;
         $output["path_user_validation"] = $path_user_validation;
 
         $this->email->from('info@cafeclass.kr', '카페클래스');
@@ -604,7 +732,7 @@ class Users extends MY_REST_Controller {
         $name = $this->post('name');
         $name_escaped = $this->db->escape($name);
 
-        // TODO - 입력하는 문자열 검증 필요. wonder.jung
+        // TODO - 입력하는 문자열 검증 필요.
         if(empty($name_escaped)) {
 
             $response_body = [
@@ -713,8 +841,6 @@ class Users extends MY_REST_Controller {
 
         // OK (200) being the HTTP response code
         $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-        // wonder.jung
 
         // DB 쿼리가 잘못된 경우라면 어떻게? - simple_query
         // DB가 내려간 상태라면?

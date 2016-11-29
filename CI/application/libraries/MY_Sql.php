@@ -11,6 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . '/models/User.php';
 require APPPATH . '/models/UserValidation.php';
+require APPPATH . '/models/UserCookie.php';
 
 class MY_Sql
 {
@@ -723,6 +724,33 @@ class MY_Sql
         return $this->decorate_user($row);
     }
 
+    public function get_user_by_id($user_id=-1) 
+    {
+        if(!(0 < $user_id))
+        {
+            return null;
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_id", $user_id);
+        }
+
+        if(!$is_ok) {
+            return null;
+        }
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->where('id', $user_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user');
+
+        $row = $query->custom_row_object(0, 'User');
+
+        return $this->decorate_user($row);
+    }    
+
 	private function decorate_user($user=null)
 	{
 		if(is_null($user)) 
@@ -767,7 +795,57 @@ class MY_Sql
         $this->CI->db->insert('user_validation', $data);        
 
     }
-    public function select_user_validation_key($user_id=-1)
+    public function update_user_validation_confirmed($user_id=-1, $key="") 
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_validation_key", $key))
+        {
+            return;
+        }
+
+
+        // 1. 회원 인증 완료, 회원 인증 상태를 R(Ready) --> C(Confirmed)로 변경한다. 
+        $data = array(
+            'status' => "C"
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('key', $key);
+        $sql = $this->CI->db->set($data)->get_compiled_update('user_validation');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+        // QUERY EXECUTION
+        $this->CI->db->update('user_validation', $data);
+
+
+        // 2. 회원 인증 완료, 회원 상태를 C(Candidate) --> A(Available)로 변경한다. 
+        $data = array(
+            'status' => "A"
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('user_id', $user_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+        // QUERY EXECUTION
+        $this->CI->db->update('user', $data);
+    }
+    public function select_user_validation_key_by_user_id($user_id=-1)
     {
         if($this->is_not_ok("user_id", $user_id))
         {
@@ -784,6 +862,84 @@ class MY_Sql
 
         return $row;
     }
+    public function select_user_validation_key_by_key($key="", $status="R")
+    {
+        if($this->is_not_ok("user_validation_key", $key))
+        {
+            return;
+        }
+
+        $this->CI->db->select("user_id, key, status, date_created, date_updated");
+        $this->CI->db->where('key', $key);
+        $this->CI->db->where('status', $status);
+        $this->CI->db->order_by('date_created', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('user_validation');
+
+        $row = $query->custom_row_object(0, 'UserValidation');
+
+        return $row;
+    } 
+
+
+
+
+    public function insert_user_cookie($user_id=-1, $key="", $expire_sec="")
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_cookie_key", $key))
+        {
+            return;
+        }
+        if(!(0 < $expire_sec)) 
+        {
+            return;
+        }
+
+        $data = array(
+            'user_id' => $user_id,
+            'key' => $key
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('user_cookie');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_expire', "DATE_ADD(NOW(), INTERVAL $expire_sec second)", FALSE);
+        $this->CI->db->insert('user_cookie', $data);
+    } 
+    public function select_user_cookie_by_key($key="")
+    {
+        if($this->is_not_ok("user_cookie", $key))
+        {
+            return;
+        }
+
+        // 쿠키 해제 시간 이전의 쿠키만 가져옴.
+        $this->CI->db->select("user_id, key, date_expire");
+        $this->CI->db->where('key', $key);
+        $this->CI->db->where('date_expire >', 'NOW()', FALSE);
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('user_cookie');
+
+        $row = $query->custom_row_object(0, 'UserCookie');
+
+        // 특정 시간이 지난 쿠키는 조회시마다 삭제.
+        $this->CI->db->where('date_expire <', 'NOW()', FALSE);
+        $this->CI->db->delete('user_cookie');
+
+        return $row;
+    }          
 
 }
 
