@@ -16,14 +16,16 @@ var user_service_1 = require('../../users/service/user.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var ValidationComponent = (function () {
-    function ValidationComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, route, router) {
+    function ValidationComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, myEventWatchTowerService, route, router) {
         var _this = this;
         this.loginService = loginService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.route = route;
         this.router = router;
         this.msgTop = "";
@@ -70,8 +72,8 @@ var ValidationComponent = (function () {
                 console.log("1. 회원 정보를 등록하고 바로 이동한 경우.");
                 _this.msgTop = _this.msgGuide;
             }
-            else if (null != result && null != result.is_confirmed) {
-                if (result.is_confirmed) {
+            else if (null != result && null != result["is_confirmed"]) {
+                if (result["is_confirmed"]) {
                     console.log("2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
                     _this.msgTop = _this.msgConfirmed;
                     _this.msgBottom = _this.msgRedirect;
@@ -81,8 +83,14 @@ var ValidationComponent = (function () {
                         // 메시지를 3초 뒤에 화면에서 지웁니다.
                         _self.router.navigate(['/class-center']);
                     }, 3000);
+                    // event-watchtower에게 로그인 정보를 전달. 로그인 관련 내용을 화면에 표시합니다.
+                    var user = null;
+                    if (null != result["user"]) {
+                        user = result["user"];
+                        _this.myEventWatchTowerService.announceLogin(user);
+                    }
                 }
-                else if (result.is_attack) {
+                else if (result["is_attack"]) {
                     console.log("3. 정상적이지 않은 접근.");
                     _this.msgTop = _this.msgWarning;
                     _this.msgBottom = _this.msgRedirect;
@@ -110,7 +118,7 @@ var ValidationComponent = (function () {
             templateUrl: 'validation.component.html',
             styleUrls: ['validation.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.ActivatedRoute, router_1.Router])
     ], ValidationComponent);
     return ValidationComponent;
 }());

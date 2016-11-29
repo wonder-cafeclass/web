@@ -25,6 +25,9 @@ import { MyEventService }           from './util/service/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
 import { UploadService }            from './util/service/upload.service';
+import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
+import { UserService }              from './users/service/user.service';
+import { MyCheckerService }         from './util/service/my-checker.service';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -55,7 +58,10 @@ import './rxjs-operators';
     appRoutingProviders,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     DialogService,
-    UploadService
+    UploadService,
+    MyEventWatchTowerService,
+    UserService,
+    MyCheckerService
   ],
   bootstrap: [ AppComponent ]
 })

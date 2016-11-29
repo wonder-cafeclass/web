@@ -13,6 +13,7 @@ var http_1 = require('@angular/http');
 var url_service_1 = require("../../util/url.service");
 var UserService = (function () {
     // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
+    // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
     function UserService(us, http) {
         this.us = us;
         this.http = http;
@@ -23,6 +24,7 @@ var UserService = (function () {
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
         this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
         this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
+        this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
         this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
@@ -275,6 +277,28 @@ var UserService = (function () {
         var params = {
             key: key
         };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.getUserCookie = function (apiKey) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / getUserCookie / 시작");
+        if (isDebug)
+            console.log("user.service / getUserCookie / apiKey : ", apiKey);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.getUserCookieUrl);
+        if (isDebug)
+            console.log("user.service / getUserCookie / req_url : ", req_url);
+        var params = {};
         return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.extractData)

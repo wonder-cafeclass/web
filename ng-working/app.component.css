@@ -82,3 +82,8 @@
     box-sizing: border-box;	
 }
 
+img.my-thumbnail {
+    width: 40px;
+    margin: 5px;    
+}
+

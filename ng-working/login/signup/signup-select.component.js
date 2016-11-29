@@ -13,11 +13,13 @@ var router_1 = require('@angular/router');
 var auth_service_1 = require('../../auth/auth.service');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var SignupSelectComponent = (function () {
-    function SignupSelectComponent(authService, loginService, myLoggerService, router) {
+    function SignupSelectComponent(authService, loginService, myLoggerService, myEventWatchTowerService, router) {
         this.authService = authService;
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
         this.cafeclassAuthUrl = "http://google.co.kr";
     }
@@ -44,6 +46,8 @@ var SignupSelectComponent = (function () {
             .then(function (facebookAuthUrl) {
             _this.facebookAuthUrl = facebookAuthUrl;
         });
+        // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+        this.myEventWatchTowerService.announceToggleTopMenu(false);
     };
     SignupSelectComponent = __decorate([
         core_1.Component({
@@ -52,7 +56,7 @@ var SignupSelectComponent = (function () {
             templateUrl: 'signup-select.component.html',
             styleUrls: ['signup-select.component.css']
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], SignupSelectComponent);
     return SignupSelectComponent;
 }());

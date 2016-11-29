@@ -18,6 +18,8 @@ import { MyCheckerService }     from '../../util/service/my-checker.service';
 import { MyEventService }       from '../../util/service/my-event.service';
 import { MyEvent }              from '../../util/model/my-event';
 
+import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
+
 import { User }                 from '../../users/model/user';
 
 @Component({
@@ -42,6 +44,7 @@ export class ValidationComponent implements OnInit {
                 private myLoggerService: MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
+                private myEventWatchTowerService:MyEventWatchTowerService,
                 private route: ActivatedRoute,
                 public router: Router) {
 
@@ -79,7 +82,7 @@ export class ValidationComponent implements OnInit {
       // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
       return Promise.resolve(); 
 
-    }).subscribe((result) => {
+    }).subscribe((result:any) => {
 
       // async 데이터 결과를 여기서 처리.
       if(isDebug) console.log("validation / getUserValidation / subscribe / result : ",result);
@@ -89,9 +92,9 @@ export class ValidationComponent implements OnInit {
       if(null == result) {
         console.log("1. 회원 정보를 등록하고 바로 이동한 경우.");
         this.msgTop = this.msgGuide;
-      } else if(null != result && null != result.is_confirmed) {
+      } else if(null != result && null != result["is_confirmed"]) {
 
-        if(result.is_confirmed) {
+        if(result["is_confirmed"]) {
           console.log("2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
           this.msgTop = this.msgConfirmed;
           this.msgBottom = this.msgRedirect;
@@ -103,7 +106,14 @@ export class ValidationComponent implements OnInit {
               _self.router.navigate(['/class-center']);
           }, 3000);
 
-        } else if(result.is_attack) {
+          // event-watchtower에게 로그인 정보를 전달. 로그인 관련 내용을 화면에 표시합니다.
+          let user:User = null;
+          if(null != result["user"]) {
+            user = result["user"];
+            this.myEventWatchTowerService.announceLogin(user);
+          }
+
+        } else if(result["is_attack"]) {
           console.log("3. 정상적이지 않은 접근.");
           this.msgTop = this.msgWarning;
           this.msgBottom = this.msgRedirect;
@@ -130,5 +140,4 @@ export class ValidationComponent implements OnInit {
   } // end method
 
   ngOnInit(): void {}
-
 }

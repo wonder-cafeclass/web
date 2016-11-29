@@ -8,6 +8,8 @@ import { AuthService }          from '../../auth/auth.service';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
 
+import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
+
 @Component({
   moduleId: module.id,
   selector: 'signup-select',
@@ -24,6 +26,7 @@ export class SignupSelectComponent implements OnInit {
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
                 public myLoggerService: MyLoggerService, 
+                private myEventWatchTowerService:MyEventWatchTowerService,
                 public router: Router) {
 
   }
@@ -55,5 +58,8 @@ export class SignupSelectComponent implements OnInit {
       this.facebookAuthUrl = facebookAuthUrl;
     });
 
+    // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+    this.myEventWatchTowerService.announceToggleTopMenu(false);
+    
   }
 }

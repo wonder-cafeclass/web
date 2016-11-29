@@ -14,6 +14,7 @@ var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
 var login_routing_1 = require('./login.routing');
 var login_component_1 = require('./login.component');
+var logout_component_1 = require('./logout/logout.component');
 var facebook_callback_component_1 = require('./facebook/facebook-callback.component');
 var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
@@ -44,6 +45,7 @@ var LoginModule = (function () {
             ],
             declarations: [
                 login_component_1.LoginComponent,
+                logout_component_1.LogoutComponent,
                 facebook_callback_component_1.FacebookCallbackComponent,
                 kakao_callback_component_1.KakaoCallbackComponent,
                 naver_callback_component_1.NaverCallbackComponent,

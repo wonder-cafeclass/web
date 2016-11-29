@@ -21,12 +21,12 @@ import { ProfileImgUploadComponent }      from './profile-img-upload/profile-img
 import { GenderComponent }                from './gender/gender.component';
 import { BirthdayComponent }              from './birthday/birthday.component';
 
-import { MyLoggerService }      from '../../util/service/my-logger.service';
-import { MyCheckerService }     from '../../util/service/my-checker.service';
-import { MyEventService }       from '../../util/service/my-event.service';
-import { MyEvent }              from '../../util/model/my-event';
+import { MyLoggerService }                from '../../util/service/my-logger.service';
+import { MyCheckerService }               from '../../util/service/my-checker.service';
+import { MyEventService }                 from '../../util/service/my-event.service';
+import { MyEvent }                        from '../../util/model/my-event';
 
-import { User }                 from '../../users/model/user';
+import { User }                           from '../../users/model/user';
 
 @Component({
   moduleId: module.id,
@@ -81,13 +81,13 @@ export class SignupComponent implements OnInit {
   private profileImgUploadComponent: ProfileImgUploadComponent;  
 
 
-  constructor(  private loginService: LoginService, 
+  constructor(  private loginService:LoginService, 
                 private userService:UserService,
-                private myLoggerService: MyLoggerService,
+                private myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
-                private route: ActivatedRoute,
-                public router: Router) {
+                private route:ActivatedRoute,
+                public router:Router) {
 
     // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
     this.myCheckerService.getReady();

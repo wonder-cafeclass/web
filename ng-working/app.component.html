@@ -1,6 +1,7 @@
 <header class="main-navigation">
-	<nav class="navbar navbar-default cc-navbar">
+	<nav *ngIf="toggleTopMenu" class="navbar navbar-default cc-navbar">
 	  <div class="container-fluid">
+
 	    <!-- Brand and toggle get grouped for better mobile display / box-shadow: 0 0 2px rgba(6,8,8,0.15);-->
 	    <div class="navbar-header">
 	      <a class="navbar-brand cc-logo-anchor" href="#">
@@ -11,19 +12,46 @@
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <ul class="nav navbar-nav">
-	        <li class="active">
-	        	<a routerLink="/class-center" routerLinkActive="active">클래스</a>
-	        </li>
-	        <li *ngIf="isAdmin===true">
-	        	<a routerLink="/admin" routerLinkActive="active">운영자</a>
-	        </li>
-	      </ul>
-	      <ul class="nav navbar-nav navbar-right">
-	        <li><button type="button" class="btn btn-signin navbar-btn cc-margin-r-nav-btn">가입하기</button></li>
-	        <li><a routerLink="/login" routerLinkActive="active">로그인</a></li>
-	      </ul>
+			
+			<!-- 메뉴 탭 -->
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a routerLink="/class-center" routerLinkActive="active">클래스</a>
+				</li>
+				<li *ngIf="isAdmin===true">
+					<a routerLink="/admin" routerLinkActive="active">운영자</a>
+				</li>
+			</ul>
+
+			<!-- 버튼 / 로그인,가입하기 -->
+			<ul *ngIf="!loginUser" class="nav navbar-nav navbar-right">
+				<li>
+					<button type="button" 
+							(click)="onClickSignupBtn($event)"
+							class="btn btn-signin navbar-btn cc-margin-r-nav-btn">가입하기</button>
+				</li>
+				<li>
+					<a routerLink="/login" routerLinkActive="active">로그인</a>
+				</li>
+			</ul>
+
+			<!-- 유저 정보, 버튼 / 로그아웃  -->
+			<ul *ngIf="loginUser" class="nav navbar-nav navbar-right">
+				<li>
+					<!-- 유저 섬네일만 노출 -->
+					<img 	*ngIf="loginUser.thumbnail" 
+							src={{loginUser.thumbnail}} 
+							alt="..." 
+							class="img-circle my-thumbnail">
+				</li>
+				<li>
+					<a routerLink="/logout" routerLinkActive="active">로그아웃</a>
+				</li>
+			</ul>
+
 	    </div><!-- /.navbar-collapse -->
+
+
 	  </div><!-- /.container-fluid -->
 	</nav>
 </header>

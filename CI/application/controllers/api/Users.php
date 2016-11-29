@@ -520,24 +520,6 @@ class Users extends MY_REST_Controller {
         }
 
         $this->respond_200($output);
-    } 
-
-    public function test_get()
-    {
-        $key_user_login = $this->my_cookie->set_user_login(1);
-        $output["key_user_login"] = $key_user_login;
-        $output["cookie_reason"] = $this->my_cookie->get_reason();
-
-        $this->respond_200($output);
-    }
-
-    public function show_get()
-    {
-        $cookie_user_login = $this->my_cookie->get_user_login();
-        $output["cookie_user_login"] = $cookie_user_login;
-        $output["cookie_reason"] = $this->my_cookie->get_reason();
-
-        $this->respond_200($output);
     }
 
     /*
@@ -585,11 +567,16 @@ class Users extends MY_REST_Controller {
         } 
         else 
         {
-            // 1. 유저 인증 정보가 없는 경우
+            // 1. 검사해야할 유저 인증 정보가 없는 경우, 하지만 검사를 마친 유저 인증 정보는 있음.
             $user_validation = $this->my_sql->select_user_validation_key_by_key($key, "C");
             if(isset($user_validation) && isset($user_validation->key)) 
             {
                 // 1-1. 이미 인증 프로세스를 마친 경우.
+
+                // 변경된 회원 정보를 가져옵니다.
+                $user = $this->my_sql->get_user_by_id($user_validation->user_id);
+                $output["user"] = $user;
+
                 $output["user_validation"] = $user_validation;
                 $output["is_confirmed"] = true;
                 $output["is_attack"] = false;
@@ -637,9 +624,9 @@ class Users extends MY_REST_Controller {
             $user = $this->my_sql->get_user_by_id($user_validation->user_id);
             $output["user"] = $user;
 
-            // wonder.jung - 로그인 쿠키를 만듭니다.
+            // 로그인 쿠키를 만듭니다.
             $key_user_login = $this->my_cookie->set_user_login($user_validation->user_id);
-            $cookie_user_login = $this->my_cookie->get_user_login($key_user_login);
+            $cookie_user_login = $this->my_cookie->get_user_login();
             $output["cookie_user_login"] = $cookie_user_login;
             $output["cookie_reason"] = $this->my_cookie->get_reason();
         }
@@ -650,6 +637,37 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }    
 
+    /*
+    *   @ Desc : 유저가 로그인시 등록한 쿠키를 가져옵니다.
+    */
+    public function cookie_post()
+    {
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        }
+
+        // wonder.jung
+        $cookie_user_login = $this->my_cookie->get_user_login();
+        $output["cookie_user_login"] = $cookie_user_login;
+
+        $user_id = -1;
+        if(isset($cookie_user_login) && isset($cookie_user_login->user_id)) 
+        {
+            $user_id = intval($cookie_user_login->user_id);
+        }
+        if(0 < $user_id) 
+        {
+            $user = $this->my_sql->get_user_by_id($user_id);
+            $output["user"] = $user;
+        }
+
+        $this->respond_200($output);
+    }
     /*
     *   @ Desc : 등록한 유저에게 인증 메일을 발송합니다.
     */

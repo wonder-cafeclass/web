@@ -6,6 +6,7 @@ import { CommonModule }                   from '@angular/common';
 import { loginRouting }        		        from './login.routing';
 
 import { LoginComponent }      		        from './login.component';
+import { LogoutComponent }                from './logout/logout.component';
 import { FacebookCallbackComponent }      from './facebook/facebook-callback.component';
 import { KakaoCallbackComponent } 	      from './kakao/kakao-callback.component';
 import { NaverCallbackComponent } 	      from './naver/naver-callback.component';
@@ -35,6 +36,7 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
   ],
   declarations: [
     LoginComponent,
+    LogoutComponent,
     FacebookCallbackComponent,
     KakaoCallbackComponent,
     NaverCallbackComponent,
