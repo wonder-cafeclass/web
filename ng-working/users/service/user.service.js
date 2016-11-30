@@ -24,6 +24,7 @@ var UserService = (function () {
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
         this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
         this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
+        this.confirmUserKakaoUrl = '/CI/index.php/api/users/confirmkakao';
         this.confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
         this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
         this.logoutUrl = '/CI/index.php/api/users/logout';
@@ -278,6 +279,32 @@ var UserService = (function () {
             console.log("user.service / confirmUserValidation / req_url : ", req_url);
         var params = {
             key: key
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.confirmUserKakao = function (apiKey, kakaoId) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user.service / confirmUserKakao / 시작");
+        if (isDebug)
+            console.log("user.service / confirmUserKakao / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / confirmUserKakao / kakaoId : ", kakaoId);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.confirmUserKakaoUrl);
+        if (isDebug)
+            console.log("user.service / confirmUserKakao / req_url : ", req_url);
+        var params = {
+            kakao_id: kakaoId
         };
         return this.http.post(req_url, params, options)
             .toPromise()
