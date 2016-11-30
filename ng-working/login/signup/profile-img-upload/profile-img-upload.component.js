@@ -133,8 +133,8 @@ var ProfileImgUploadComponent = (function () {
     };
     ProfileImgUploadComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("profile-img / onChangeFile / init");
         var files = event.srcElement.files;

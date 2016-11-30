@@ -52,6 +52,11 @@ class Users extends MY_REST_Controller {
 
     public function email_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $email = $this->my_paramchecker->get('q','user_email');
 
         $output = [];
@@ -68,6 +73,11 @@ class Users extends MY_REST_Controller {
 
     public function facebook_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $facebook_id = $this->my_paramchecker->get('q','facebook_id');
 
         $output = [];
@@ -84,6 +94,11 @@ class Users extends MY_REST_Controller {
 
     public function naver_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $naver_id = $this->my_paramchecker->get('q','naver_id');
         $naver_id_num = intval($naver_id);
 
@@ -101,6 +116,11 @@ class Users extends MY_REST_Controller {
 
     public function kakao_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $kakao_id = $this->my_paramchecker->get('q','kakao_id');
         $kakao_id_num = intval($kakao_id);
 
@@ -118,6 +138,11 @@ class Users extends MY_REST_Controller {
 
     public function list_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         // TEST - PHPUnit test로 검증해야 함!
         $check_result = $this->my_paramchecker->is_ok("user_id", 0);
 
@@ -156,6 +181,11 @@ class Users extends MY_REST_Controller {
     // @ Desc : 비밀 번호를 해싱해서 돌려줍니다.
     public function hash_get()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $password = 
         $this->my_paramchecker->post(
             // $key=""
@@ -190,6 +220,11 @@ class Users extends MY_REST_Controller {
     // @ Referer : http://php.net/manual/kr/function.password-hash.php
     private function getHash($value="")
     {
+        if($this->is_not_ok())
+        {
+            return "";
+        }
+
         if(empty($value)) {
             return "";
         }
@@ -198,6 +233,11 @@ class Users extends MY_REST_Controller {
 
     public function add_post()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -348,6 +388,11 @@ class Users extends MY_REST_Controller {
 
     public function update_post()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -527,6 +572,11 @@ class Users extends MY_REST_Controller {
     */
     public function confirmvalidation_post()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -555,7 +605,6 @@ class Users extends MY_REST_Controller {
             "user_validation_key"
         );
 
-        // wonder.jung
         $user_validation = $this->my_sql->select_user_validation_key_by_key($key);
         // DEBUG
         $output["user_validation"] = $user_validation;
@@ -635,13 +684,193 @@ class Users extends MY_REST_Controller {
         $output["is_attack"] = false;
 
         $this->respond_200($output);
-    }    
+    }
+
+    /*
+    *   @ Desc : 유저가 로그인 화면에서 이메일과 비밀번호 입력뒤, '로그인'을 클릭했을 때, 호출합니다. 회원 확인이 되면, 쿠키를 만듭니다.
+    */
+    public function confirm_post() 
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        // REFACTOR ME
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+
+            // api key가 없습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
+                // $error_msg=""
+                "Detected not allowed access to confirm_post"
+            );
+
+            return;
+        }
+
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email"
+        );
+        if(empty($email)) 
+        {
+            $output["success"] = false;
+            $output["email"] = $email;
+            $output["reason"] = "email is not valid!";
+            $this->respond_200($output);
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected not valid email to confirm_post"
+            );
+
+            return;
+        }
+
+        // email로 password를 가져옵니다.
+        $password_hashed = $this->my_sql->get_user_password_by_email($email);
+        if(empty($password_hashed)) {
+            $output["success"] = false;
+            $output["email"] = $email;
+            $output["reason"] = "user is not valid!";
+            $this->respond_200($output);
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected not valid password_hashed to confirm_post"
+            );
+
+            return;
+        }
+
+        $password = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "password",
+            // $key_filter=""
+            "user_password"
+        );
+        if(empty($password)) 
+        {
+            $output["success"] = false;
+            $output["email"] = $email;
+            $output["password"] = $password;
+            $output["reason"] = "password is not valid!";
+            $this->respond_200($output);
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected not valid password to confirm_post"
+            );
+
+            return;
+        }
+
+        // 사용자가 입력한 패스워드와 해싱되어 저장된 패스워드를 비교합니다.
+        $is_valid_password = false;
+        if(!empty($password_hashed)) 
+        {
+            $is_valid_password = password_verify($password, $password_hashed);
+        }
+        if(!$is_valid_password)
+        {
+            $output["success"] = false;
+            $output["email"] = $email;
+            $output["password"] = $password;
+            $output["reason"] = "password is not valid!";
+            $this->respond_200($output);
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected password is not matching to confirm_post / $email"
+            );
+
+            return;
+        }
+
+        // 이메일과 해싱한 패스워드로 유저 정보를 조회합니다.
+        $user = $this->my_sql->get_user_by_email($email);
+        if(isset($user)) 
+        {
+            $output["success"] = true;
+
+            // 인증에 성공했습니다. 로거에 기록합니다.
+            $this->my_logger->add_action(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->my_logger->ACTION_TYPE_LOGIN_PASSED,
+                // $action_key=""
+                $this->my_logger->ACTION_KEY_LOGIN
+            );
+
+            // 로그인 쿠키를 만듭니다.
+            $this->my_cookie->set_user_login($user->id);
+        }
+        else
+        {
+            $output["success"] = false;
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected unknown fail to confirm_post / $email"
+            );
+
+        }
+        $output["email"] = $email;
+        $output["password"] = $password;
+        $output["user"] = $user;
+
+        $this->respond_200($output);
+    }
 
     /*
     *   @ Desc : 유저가 로그인시 등록한 쿠키를 가져옵니다.
     */
     public function cookie_post()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -651,7 +880,6 @@ class Users extends MY_REST_Controller {
             return;
         }
 
-        // wonder.jung
         $cookie_user_login = $this->my_cookie->get_user_login();
         $output["cookie_user_login"] = $cookie_user_login;
 
@@ -673,6 +901,11 @@ class Users extends MY_REST_Controller {
     */
     public function validation_post()
     {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
@@ -739,6 +972,37 @@ class Users extends MY_REST_Controller {
 
         $this->respond_200($output);
 
+    }
+
+    public function logout_get()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        // cookie에 등록된 유저 정보를 가져옵니다.
+        $cookie_user_login = $this->my_cookie->get_user_login();
+        $cookie_user_id = -1;
+        if(isset($cookie_user_login) && isset($cookie_user_login->user_id)) 
+        {
+            $cookie_user_id = intval($cookie_user_login->user_id);
+        }
+
+        // 브라우저 cookie에 등록된 정보를 삭제합니다.
+        $this->my_cookie->delete_user_login();
+        // DB에 등록된 유저의 모든 cookie 정보를 삭제합니다.
+        if(0 < $cookie_user_id) {
+            $this->my_sql->delete_user_cookie($cookie_user_id);
+        }
+
+        $output["success"] = true;
+        $this->respond_200($output);
+    } 
+
+    public function test_get()   
+    {
+        $this->my_sql->delete_user_cookie(1);
     }
 
 

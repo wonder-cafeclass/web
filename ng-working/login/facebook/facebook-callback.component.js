@@ -82,7 +82,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getMe = function () {
         var _this = this;
-        var isDebug = true;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getMe / init");
         this.loginService

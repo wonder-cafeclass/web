@@ -724,6 +724,79 @@ class MY_Sql
         return $this->decorate_user($row);
     }
 
+    public function get_user_password_by_email($email="") 
+    {
+        if(empty($email))
+        {
+            return "";
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_email", $email);
+        }
+
+        if(!$is_ok) {
+            return "";
+        }
+
+        $this->CI->db->select('password');
+        $this->CI->db->where('email', $email);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user');
+
+        $password_hashed = "";
+        foreach ($query->result() as $row)
+        {
+            $password_hashed = $row->password;
+            break;
+        }
+
+        return $password_hashed;
+    }    
+
+    // REMOVE ME
+    /*
+    public function get_user_by_email_n_password($email="", $password="") 
+    {
+        if(empty($email))
+        {
+            return null;
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_email", $email);
+        }
+
+        if(!$is_ok) {
+            return null;
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_password_hashed", $password);
+        }
+
+        if(!$is_ok) {
+            return null;
+        }
+
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->where('email', $email);
+        $this->CI->db->where('password', $password);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('user');
+
+        $row = $query->custom_row_object(0, 'User');
+
+        return $this->decorate_user($row);
+    } 
+    */   
+
     public function get_user_by_id($user_id=-1) 
     {
         if(!(0 < $user_id))
@@ -918,6 +991,28 @@ class MY_Sql
         $this->CI->db->set('date_expire', "DATE_ADD(NOW(), INTERVAL $expire_sec second)", FALSE);
         $this->CI->db->insert('user_cookie', $data);
     } 
+    public function delete_user_cookie($user_id=-1)
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('user_id', $user_id);
+        $sql = $this->CI->db->get_compiled_delete('user_cookie');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_DELETE,
+            // $query=""
+            $sql
+        );
+        
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->delete('user_cookie');
+    }     
     public function select_user_cookie_by_key($key="")
     {
         if($this->is_not_ok("user_cookie", $key))

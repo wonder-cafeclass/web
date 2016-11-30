@@ -16,11 +16,17 @@ class MY_Logger
     private $agent_type_list=null;
 
     public $ACTION_LOGIN="LOGIN";
+    
     public $ACTION_ADD_USER="ADD_USER";
     public $ACTION_PAGE_ENTER="PAGE_ENTER";
 
+    public $ACTION_KEY_LOGIN="LOGIN";
+    public $ACTION_TYPE_LOGIN_PASSED="LOGIN_PASSED";
+    public $ACTION_TYPE_PAGE_ENTER="PAGE_ENTER";
+
     public $ERROR_INTERNAL_SERVER_500="INTERNAL_SERVER_500";
     public $ERROR_NOT_ALLOWED_ACCESS_404="NOT_ALLOWED_ACCESS_404";
+    public $ERROR_NOT_VALID_USER_AUTH="NOT_VALID_USER_AUTH";
 
     public $QUERY_TYPE_INSERT="INSERT";
     public $QUERY_TYPE_UPDATE="UPDATE";

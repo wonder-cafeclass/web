@@ -243,8 +243,8 @@ export class MobileComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;  
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;  
 
     if(isDebug) console.log("mobile / onKeyupHead / init");  
 
@@ -757,8 +757,8 @@ export class MobileComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
     if(isDebug) console.log("mobile / onClickMobileTail / init");
 

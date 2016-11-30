@@ -251,8 +251,8 @@ export class PasswordComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("password / onBlurPassword / init");
 
     if(null == this.myCheckerService) {
@@ -278,7 +278,7 @@ export class PasswordComponent implements OnInit {
     if(this.isLogin && (null == isseuMsg || "" == isseuMsg)) {
 
       // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
-      // 부모 객체에게 Event 발송 
+      // 이슈 결과가 없다면 - (패스워드 문제없음!), 부모 객체에게 Event 발송 
       let myEventOnChange:MyEvent =
       this.myEventService.getMyEvent(
         // public eventName:string
@@ -363,8 +363,8 @@ export class PasswordComponent implements OnInit {
 
   onKeydownTabPassword(event, elementPassword) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeydownTabPassword / init");
 
     if(null == elementPassword) {

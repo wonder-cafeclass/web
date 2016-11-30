@@ -95,7 +95,8 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / ngOnInit / init");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -206,8 +207,8 @@ export class SignupComponent implements OnInit {
 
     let isAllOK:boolean = true;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickSignup / 시작");
 
     // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
@@ -350,8 +351,8 @@ export class SignupComponent implements OnInit {
 
   updateUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
     this.userService
@@ -398,8 +399,8 @@ export class SignupComponent implements OnInit {
   }
   addUser(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / addUser / 시작");
 
     this.userService
@@ -444,8 +445,8 @@ export class SignupComponent implements OnInit {
 
   sendMailUserValidation(userId:number, email:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / sendMailUserValidation / 시작");
 
     this.userService
@@ -479,8 +480,8 @@ export class SignupComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickTerms / 시작");
 
     // 이용약관 페이지로 이동.
@@ -493,8 +494,8 @@ export class SignupComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickPrivatePolicy / 시작");
 
     // 개인정보 취급방침 페이지로 이동.
@@ -505,8 +506,8 @@ export class SignupComponent implements OnInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onChangedFromChild / 시작");
 
     if(isDebug) console.log("signup / onChangedFromChild / myEvent : ",myEvent);

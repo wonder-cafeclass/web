@@ -120,7 +120,8 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
   // @ Desc : Naver REST API로 회원정보를 가져옵니다.
   private getNaverMe() :void {
 
-    let isDebug:boolean = true;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("naver-callback / getNaverMe / init");
 
     this.loginService

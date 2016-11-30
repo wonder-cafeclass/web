@@ -1,10 +1,10 @@
-import { Injectable }           from '@angular/core';
+import { Injectable }                      from '@angular/core';
 import { Headers, 
          Http, 
          Response, 
-         RequestOptions }       from '@angular/http';
-import { UrlService }           from "../../util/url.service";
-import { User }                 from "../model/user";
+         RequestOptions }                  from '@angular/http';
+import { UrlService }                      from "../../util/url.service";
+import { User }                            from "../model/user";
 
 @Injectable()
 export class UserService {
@@ -17,8 +17,10 @@ export class UserService {
 
   private sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
   private confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
+  private confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
 
   private getUserCookieUrl = '/CI/index.php/api/users/cookie';
+  private logoutUrl = '/CI/index.php/api/users/logout';
 
   private updateUserUrl = '/CI/index.php/api/users/update';
   private addUserUrl = '/CI/index.php/api/users/add';
@@ -34,8 +36,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByEmailUrl);
     req_url = `${ req_url }?q=${ email }`;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByEmail / 시작");
     if(isDebug) console.log("user.service / getUserByEmail / email : ",email);
     if(isDebug) console.log("user.service / getUserByEmail / req_url : ",req_url);
@@ -51,8 +53,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByFacebookIdUrl);
     req_url = `${ req_url }?q=${ facebookId }`;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByFacebookId / 시작");
     if(isDebug) console.log("user.service / getUserByFacebookId / facebookId : ",facebookId);
     if(isDebug) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
@@ -68,8 +70,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByNaverIdUrl);
     req_url = `${ req_url }?q=${ naverId }`;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByNaverId / 시작");
     if(isDebug) console.log("user.service / getUserByNaverId / naverId : ",naverId);
     if(isDebug) console.log("user.service / getUserByNaverId / req_url : ",req_url);
@@ -85,8 +87,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByKakaoIdUrl);
     req_url = `${ req_url }?q=${ kakaoId }`;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByKakaoId / 시작");
     if(isDebug) console.log("user.service / getUserByKakaoId / kakaoId : ",kakaoId);
     if(isDebug) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
@@ -102,8 +104,8 @@ export class UserService {
     let req_url = this.us.get(this.getUserByMobileUrl);
     req_url = `${ req_url }?q=${ mobile }`;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByMobile / 시작");
     if(isDebug) console.log("user.service / getUserByMobile / mobile : ",mobile);
     if(isDebug) console.log("user.service / getUserByMobile / req_url : ",req_url);
@@ -130,8 +132,8 @@ export class UserService {
                 mobileBody:string,
                 mobileTail:string): Promise<any> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / updateUser / 시작");
     if(isDebug) console.log("user.service / updateUser / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / updateUser / userId : ",userId);
@@ -198,8 +200,8 @@ export class UserService {
             mobileTail:string
           ): Promise<any> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / addUser / 시작");
     if(isDebug) console.log("user.service / addUser / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / addUser / email : ",email);
@@ -248,8 +250,8 @@ export class UserService {
 
   public sendMailUserValidation(apiKey:string, userId:number, email:string) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / sendMailUserValidation / 시작");
     if(isDebug) console.log("user.service / sendMailUserValidation / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / sendMailUserValidation / userId : ",userId);
@@ -282,8 +284,8 @@ export class UserService {
 
   public confirmUserValidation(apiKey:string, key:string) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / confirmUserValidation / 시작");
     if(isDebug) console.log("user.service / confirmUserValidation / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / confirmUserValidation / key : ",key);
@@ -312,8 +314,8 @@ export class UserService {
 
   getUserCookie(apiKey:string) {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserCookie / 시작");
     if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 
@@ -335,21 +337,75 @@ export class UserService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
-  }  
+  } 
+
+  deleteUserCookie() {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / deleteUserCookie / 시작");
+
+    // wonder.jung
+    let req_url = this.us.get(this.logoutUrl);
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / deleteUserCookie / 시작");
+    if(isDebug) console.log("user.service / deleteUserCookie / req_url : ",req_url);
+
+    return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }   
+
+  confirmUserEmailPassword(apiKey:string, email:string, password:string) {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / confirmUserEmailPassword / 시작");
+    if(isDebug) console.log("user.service / confirmUserEmailPassword / apiKey : ",apiKey);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.confirmUserEmailPasswordUrl);
+
+    if(isDebug) console.log("user.service / confirmUserEmailPassword / req_url : ",req_url);
+
+    let params = {
+      email:email, 
+      password:password
+    };
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }   
 
   private extractData(res: Response) {
 
-      let body = res.json();
+    let body = res.json();
 
-      console.log("user.service / extractData / body ::: ",body);
 
-      // TODO - 데이터 검증 프로세스.
-      if(null == body.data || !body.success) {
-          console.log("user.service / extractData / 데이터가 없습니다.");
-          return null;
-      }
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
-      return body.data;
+    if(isDebug) console.log("user.service / extractData / body ::: ",body);
+
+    // TODO - 데이터 검증 프로세스.
+    if(null == body.data || !body.success) {
+        console.log("user.service / extractData / 데이터가 없습니다.");
+        return null;
+    }
+
+    return body.data;
   }
 
   // New - XHR

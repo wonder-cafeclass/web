@@ -192,8 +192,8 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.onBlurPassword = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onBlurPassword / init");
         if (null == this.myCheckerService) {
@@ -214,7 +214,7 @@ var PasswordComponent = (function () {
         var isseuMsg = this.getPasswordIssue(this.password);
         if (this.isLogin && (null == isseuMsg || "" == isseuMsg)) {
             // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
-            // 부모 객체에게 Event 발송 
+            // 이슈 결과가 없다면 - (패스워드 문제없음!), 부모 객체에게 Event 발송 
             var myEventOnChange = this.myEventService.getMyEvent(
             // public eventName:string
             this.myEventService.ON_CHANGE, 
@@ -283,8 +283,8 @@ var PasswordComponent = (function () {
         this.isFocusPassword = false;
     };
     PasswordComponent.prototype.onKeydownTabPassword = function (event, elementPassword) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeydownTabPassword / init");
         if (null == elementPassword) {

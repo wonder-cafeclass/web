@@ -58,8 +58,8 @@ export class ValidationComponent implements OnInit {
 
   getUserValidation(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / getUserValidation / init");
 
     // 외부 쿼리 스트링 파라미터를 가져옵니다.

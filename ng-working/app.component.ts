@@ -75,13 +75,8 @@ export class AppComponent implements OnInit {
 				thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
 			}
 			*/			
-
-			if(null != loginUser) {
-				// 로그인한 유저 정보가 들어왔습니다.
-				this.loginUser = loginUser;
-
-			} // end if
-
+			// 로그인한 유저 정보가 들어왔습니다.
+			this.loginUser = loginUser;
 		});	
 
 		// Subscribe toggle top menu

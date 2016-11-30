@@ -24,10 +24,14 @@ var MyEventWatchTowerService = (function () {
     }
     // Service message commands
     MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
+        this.loginUser = loginUser;
         this.loginAnnouncedSource.next(loginUser);
     };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
         this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+    };
+    MyEventWatchTowerService.prototype.getLoginUser = function () {
+        return this.loginUser;
     };
     MyEventWatchTowerService = __decorate([
         core_1.Injectable(), 

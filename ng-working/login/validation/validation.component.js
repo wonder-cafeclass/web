@@ -43,8 +43,8 @@ var ValidationComponent = (function () {
     }
     ValidationComponent.prototype.getUserValidation = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("validation / getUserValidation / init");
         // 외부 쿼리 스트링 파라미터를 가져옵니다.

@@ -188,8 +188,8 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupHead = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;  
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / onKeyupHead / init");
         var inputStr = element.value;
@@ -588,8 +588,8 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onClickMobileTail = function (event, element, elementPrev) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / onClickMobileTail / init");
         if (!this.isFocusMobileTail) {

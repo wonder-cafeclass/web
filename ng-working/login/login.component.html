@@ -35,6 +35,12 @@
 								(emitter)="onChangedFromChild($event)">
 					</password>
 				</div>
+				<!-- Warning -->
+				<div 	*ngIf="warningMsgHead"
+						class="warning-container">
+					<div class="warning">{{warningMsgHead}}</div>
+					<div class="warning">{{warningMsgTail}}</div>
+				</div>
 
 				<button type="button" 
 						(click)="onClickLogin($event)"

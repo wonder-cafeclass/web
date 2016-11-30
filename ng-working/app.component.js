@@ -62,10 +62,8 @@ var AppComponent = (function () {
                 thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
             }
             */
-            if (null != loginUser) {
-                // 로그인한 유저 정보가 들어왔습니다.
-                _this.loginUser = loginUser;
-            } // end if
+            // 로그인한 유저 정보가 들어왔습니다.
+            _this.loginUser = loginUser;
         });
         // Subscribe toggle top menu
         // 최상단 메뉴를 보이거나 감춥니다.

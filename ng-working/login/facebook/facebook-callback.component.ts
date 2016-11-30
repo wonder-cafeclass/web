@@ -122,7 +122,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getMe() :void {
 
-    let isDebug:boolean = true;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getMe / init");
 
     this.loginService

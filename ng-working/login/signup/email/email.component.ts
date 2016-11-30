@@ -298,8 +298,8 @@ export class EmailComponent implements OnInit {
 
   public setEmail(email:string) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("email / setEmail / init");
     if(isDebug) console.log("email / setEmail / email : ",email);
 

@@ -87,6 +87,20 @@ class MY_Cookie
 
     } // end method
 
+    public function delete_user_login()
+    {
+        if(!$this->isOK) 
+        {
+            return null;
+        }
+
+        // 해당 브라우저의 쿠키(로그인 유저) 지우기
+        $path = '/';
+        $domain = $_SERVER['SERVER_NAME'];
+        setcookie($this->KEY_USER_LOGIN, null, -1, $path, $domain);
+
+    } // end method
+
     public function get_user_login()
     {
     	if(!$this->isOK) 

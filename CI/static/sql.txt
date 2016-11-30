@@ -56,7 +56,8 @@ CREATE TABLE `user_cookie` (
   `user_id` INT(11) NOT NULL,
   `key` char(255) COLLATE utf8_bin NOT NULL,
   `date_expire` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  KEY `key` (`key`)
+  KEY `key` (`key`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass user login cookie';
 
 CREATE TABLE `user_validation` (

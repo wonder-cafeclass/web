@@ -8,6 +8,8 @@ import { User }    				from '../../users/model/user';
 @Injectable()
 export class MyEventWatchTowerService {
 
+	private loginUser:User;
+
 	// Observable string sources
 	private loginAnnouncedSource = new Subject<User>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
@@ -18,9 +20,14 @@ export class MyEventWatchTowerService {
 
 	// Service message commands
 	announceLogin(loginUser: User) {
+		this.loginUser = loginUser;
 		this.loginAnnouncedSource.next(loginUser);
 	}
 	announceToggleTopMenu(toggleTopMenu: boolean) {
 		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
 	}	
+
+	getLoginUser() :User {
+		return this.loginUser;
+	}
 }

@@ -229,8 +229,8 @@ var EmailComponent = (function () {
         // this.lockFocus = null;
     };
     EmailComponent.prototype.setEmail = function (email) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("email / setEmail / init");
         if (isDebug)

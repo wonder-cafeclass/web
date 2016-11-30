@@ -85,7 +85,8 @@ var NaverCallbackComponent = (function () {
     // @ Desc : Naver REST API로 회원정보를 가져옵니다.
     NaverCallbackComponent.prototype.getNaverMe = function () {
         var _this = this;
-        var isDebug = true;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("naver-callback / getNaverMe / init");
         this.loginService

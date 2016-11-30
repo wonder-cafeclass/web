@@ -24,15 +24,17 @@ var UserService = (function () {
         this.getUserByMobileUrl = '/CI/index.php/api/users/mobile';
         this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
         this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
+        this.confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
         this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
+        this.logoutUrl = '/CI/index.php/api/users/logout';
         this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
     UserService.prototype.getUserByEmail = function (email) {
         var req_url = this.us.get(this.getUserByEmailUrl);
         req_url = req_url + "?q=" + email;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByEmail / 시작");
         if (isDebug)
@@ -47,8 +49,8 @@ var UserService = (function () {
     UserService.prototype.getUserByFacebookId = function (facebookId) {
         var req_url = this.us.get(this.getUserByFacebookIdUrl);
         req_url = req_url + "?q=" + facebookId;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByFacebookId / 시작");
         if (isDebug)
@@ -63,8 +65,8 @@ var UserService = (function () {
     UserService.prototype.getUserByNaverId = function (naverId) {
         var req_url = this.us.get(this.getUserByNaverIdUrl);
         req_url = req_url + "?q=" + naverId;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByNaverId / 시작");
         if (isDebug)
@@ -79,8 +81,8 @@ var UserService = (function () {
     UserService.prototype.getUserByKakaoId = function (kakaoId) {
         var req_url = this.us.get(this.getUserByKakaoIdUrl);
         req_url = req_url + "?q=" + kakaoId;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByKakaoId / 시작");
         if (isDebug)
@@ -95,8 +97,8 @@ var UserService = (function () {
     UserService.prototype.getUserByMobile = function (mobile) {
         var req_url = this.us.get(this.getUserByMobileUrl);
         req_url = req_url + "?q=" + mobile;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByMobile / 시작");
         if (isDebug)
@@ -109,8 +111,8 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.updateUser = function (apiKey, userId, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / updateUser / 시작");
         if (isDebug)
@@ -171,8 +173,8 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.addUser = function (apiKey, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / addUser / 시작");
         if (isDebug)
@@ -228,8 +230,8 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.sendMailUserValidation = function (apiKey, userId, email) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / sendMailUserValidation / 시작");
         if (isDebug)
@@ -257,8 +259,8 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.confirmUserValidation = function (apiKey, key) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / confirmUserValidation / 시작");
         if (isDebug)
@@ -283,8 +285,8 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.getUserCookie = function (apiKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserCookie / 시작");
         if (isDebug)
@@ -304,9 +306,55 @@ var UserService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
+    UserService.prototype.deleteUserCookie = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user.service / deleteUserCookie / 시작");
+        // wonder.jung
+        var req_url = this.us.get(this.logoutUrl);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user.service / deleteUserCookie / 시작");
+        if (isDebug)
+            console.log("user.service / deleteUserCookie / req_url : ", req_url);
+        return this.http.get(req_url)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.confirmUserEmailPassword = function (apiKey, email, password) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user.service / confirmUserEmailPassword / 시작");
+        if (isDebug)
+            console.log("user.service / confirmUserEmailPassword / apiKey : ", apiKey);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.confirmUserEmailPasswordUrl);
+        if (isDebug)
+            console.log("user.service / confirmUserEmailPassword / req_url : ", req_url);
+        var params = {
+            email: email,
+            password: password
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
     UserService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log("user.service / extractData / body ::: ", body);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user.service / extractData / body ::: ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             console.log("user.service / extractData / 데이터가 없습니다.");

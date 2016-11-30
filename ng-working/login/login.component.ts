@@ -8,6 +8,7 @@ import { Router,
 
 import { AuthService }          from '../auth/auth.service';
 import { LoginService }         from './service/login.service';
+import { UserService }          from '../users/service/user.service';
 
 import { EmailComponent }       from './signup/email/email.component';
 import { PasswordComponent }    from './signup/password/password.component';
@@ -42,21 +43,43 @@ export class LoginComponent implements OnInit {
   private email:string;
   private password:string;
 
+  warningMsgHead:string;
+  warningMsgTail:string;
+
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
+                private userService:UserService,
                 public myLoggerService: MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
                 private myEventWatchTowerService:MyEventWatchTowerService, 
                 public router: Router) {
 
-    // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
-    this.myCheckerService.getReady();
-
   }
 
   ngOnInit(): void {
 
+    // 로그인되어 있는 회원인지 먼저 확인. 
+    // 로그인되어 있는 상태라면 홈으로 이동시킵니다.
+
+    // 회원 로그인 쿠키를 가져옵니다.
+    // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
+    this.myCheckerService.getReady().then(() => {
+      this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+        if(null != result && null != result.user) {
+          // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+          this.router.navigate(['/class-center']);
+        } else {
+          // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+          this.init();
+        }
+      });
+    }); // end Promise
+
+  }
+
+  init() :void {
+    
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);    
 
@@ -83,8 +106,7 @@ export class LoginComponent implements OnInit {
     });
 
     // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
-    this.myEventWatchTowerService.announceToggleTopMenu(false);
-    
+    this.myEventWatchTowerService.announceToggleTopMenu(false);    
   }
 
   onChangedFromChild(myEvent:MyEvent) :void {
@@ -142,7 +164,45 @@ export class LoginComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    console.log("onClickLogin / this.email : ",this.email);
-    console.log("onClickLogin / this.password : ",this.password);
+    let warningMsgHead:string = "아이디 또는 비밀번호를 다시 확인하세요."; 
+    let warningMsgTail:string = "카페클래스에 등록되지 않은 아이디거나, 아이디 또는 비밀번호를 잘못 입력하셨습니다."; 
+    this.warningMsgHead = null;
+    this.warningMsgTail = null;
+    if(null == this.email || "" == this.email) {
+      // 이메일 주소에 문제가 있습니다.
+      this.warningMsgHead = warningMsgHead;
+      this.warningMsgTail = warningMsgTail;
+      return;
+    }
+
+    if(null == this.password || "" == this.password) {
+      // 암호에 문제가 있습니다.
+      this.warningMsgHead = warningMsgHead;
+      this.warningMsgTail = warningMsgTail;
+      return;
+    }
+
+    // DB에 이메일 주소와 암호를 조회합니다.
+    let apiKey:string = this.myCheckerService.getAPIKey();
+    if(null != apiKey && "" != apiKey) {
+      this.userService
+      .confirmUserEmailPassword(apiKey, this.email, this.password)
+      .then(result=> {
+
+        if(null == result || null == result.success || !result.success) {
+          // 회원 인증에 실패했습니다. 
+          // 메시지를 화면에 노출합니다.
+          this.warningMsgHead = warningMsgHead;
+          this.warningMsgTail = warningMsgTail;
+          return;
+        }
+
+        // 회원 인증에 성공했습니다.
+        // 홈화면으로 이동합니다.
+        this.router.navigate(['/class-center']);
+
+      });
+    } // end service
+
   }  
 }

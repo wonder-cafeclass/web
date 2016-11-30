@@ -77,4 +77,14 @@ a.signup {
 span.orange {
 	color:#e85c41;
 }
+div.warning-container {
+  padding-bottom: 10px;
+}
+div.warning {
+  text-align: left;
+  font-size: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #e85c41;
+}
 
