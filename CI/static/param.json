@@ -28,7 +28,7 @@
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
 		"user_password_hashed":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 
-		"user_validation_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
+		"user_validation_key":"is_str|||regex_match_include[/^[a-zA-Z0-9$]+$/]",
 		"user_cookie_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 

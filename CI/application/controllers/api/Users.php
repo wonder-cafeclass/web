@@ -217,6 +217,36 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }
 
+    /*
+    *   @ Desc : GET 형식의 url에 query string 파라미터로 전달해도 문제없는 hashkey를 만듭니다. 
+    *   query string의 파라미터인 경우, '.'로 끝나면 링크에 포함되지 않는 문제가 있습니다.
+    *   그러므로 영문 대소문자,숫자,$기호까지만 포함합니다.
+    *
+    *   @ Warning : 해시값의 일부분을 강제로 수정해서 사용하므로 password_verify는 불가능합니다.
+    */
+    private function getHashQueryStringSafe($value) {
+        if($this->is_not_ok())
+        {
+            return "";
+        }
+
+        if(empty($value)) 
+        {
+            return "";
+        }
+
+        $hashkey = $this->getHash($value);
+        $matches = array();
+        preg_match_all('/[a-zA-Z0-9\$]+/', $hashkey, $matches);
+
+        $hashkeySafe = "";
+        if(!empty($matches) && !empty($matches[0])) 
+        {
+            $hashkeySafe = join("",$matches[0]);
+        }
+        return $hashkeySafe;
+    }
+
     // @ Referer : http://php.net/manual/kr/function.password-hash.php
     private function getHash($value="")
     {
@@ -896,6 +926,7 @@ class Users extends MY_REST_Controller {
 
         $this->respond_200($output);
     }
+
     /*
     *   @ Desc : 등록한 유저에게 인증 메일을 발송합니다.
     */
@@ -934,10 +965,11 @@ class Users extends MY_REST_Controller {
         }
         $output["user"] = $user;
 
-        // 인증키 만들기 - DB에 저장. / 인증키는 30분간 유효합니다.
+        // 인증키 만들기 - DB에 저장.
         $password_hashed = $user->password;
         $time_now = $this->my_time->get_now_YYYYMMDDHHMMSSU();
-        $key_hashed = $this->getHash($time_now . $password_hashed);
+
+        $key_hashed = $this->getHashQueryStringSafe($password_hashed . $time_now);
 
         $output["key_hashed"] = $key_hashed;
 
@@ -999,11 +1031,6 @@ class Users extends MY_REST_Controller {
         $output["success"] = true;
         $this->respond_200($output);
     } 
-
-    public function test_get()   
-    {
-        $this->my_sql->delete_user_cookie(1);
-    }
 
 
     // Example - Legacy
