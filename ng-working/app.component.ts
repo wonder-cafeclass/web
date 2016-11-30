@@ -54,8 +54,6 @@ export class AppComponent implements OnInit {
 		this.myEventWatchTowerService.loginAnnounced$.subscribe(
 			(loginUser:User) => {
 
-			console.log("app / subscribe / loginUser : ",loginUser);
-
 			// Example
 			/*
 			{
@@ -103,6 +101,16 @@ export class AppComponent implements OnInit {
 			});
 		}); // end Promise
 	}
+
+	onErrorThumbnail(event, thumbnail) :void{
+		event.stopPropagation();
+		event.preventDefault();
+
+		// TODO - 이미지 없을 경우의 예비 이미지 로딩.
+
+		console.log("onErrorThumbnail / thumbnail : ",thumbnail);
+	}
+
 
 	onClickSignupBtn(event) :void{
 		event.stopPropagation();

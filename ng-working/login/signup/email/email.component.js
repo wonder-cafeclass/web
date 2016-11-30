@@ -16,10 +16,12 @@ var EmailComponent = (function () {
     function EmailComponent(myEventService, userService) {
         this.myEventService = myEventService;
         this.userService = userService;
+        this.width = 380;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
+        this.isCheckUnique = true;
         this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
@@ -34,7 +36,10 @@ var EmailComponent = (function () {
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
-    EmailComponent.prototype.ngOnInit = function () { };
+    EmailComponent.prototype.ngOnInit = function () {
+        console.log("email / top : ", this.top);
+        console.log("email / left : ", this.left);
+    };
     EmailComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -92,7 +97,8 @@ var EmailComponent = (function () {
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
             var isOK_1 = this.isOK(email);
-            if (isOK_1) {
+            if (isOK_1 && this.isCheckUnique) {
+                // 회원 가입시, 유일한 이메일인지 검사.
                 this.userService
                     .getUserByEmail(email)
                     .then(function (result) {
@@ -108,6 +114,10 @@ var EmailComponent = (function () {
                         _this.emailFailed(_this.tooltipMsgEmailNotUnique);
                     }
                 });
+            }
+            else if (isOK_1) {
+                // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+                this.emailSuccess(email);
             }
             else {
                 this.emailFailed(this.tooltipMsgEmailNotValid);
@@ -258,6 +268,10 @@ var EmailComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
+    ], EmailComponent.prototype, "width", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
     ], EmailComponent.prototype, "top", void 0);
     __decorate([
         core_1.Input(), 
@@ -271,6 +285,10 @@ var EmailComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], EmailComponent.prototype, "leftWarning", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], EmailComponent.prototype, "isCheckUnique", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)

@@ -20,11 +20,15 @@ import { UserService }          from '../../../users/service/user.service';
 })
 export class EmailComponent implements OnInit {
 
+  @Input() width:number=380;
+
   @Input() top:number=-1;
   @Input() left:number=-1;
 
   @Input() topWarning:number=-1;
   @Input() leftWarning:number=-1;
+
+  @Input() isCheckUnique:boolean=true;
 
   @Input() myCheckerService:MyCheckerService = null;
 
@@ -48,7 +52,11 @@ export class EmailComponent implements OnInit {
   constructor(  private myEventService:MyEventService, 
                 private userService:UserService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log("email / top : ",this.top);
+    console.log("email / left : ",this.left);
+
+  }
 
   private setMyChecker() :void {
 
@@ -119,9 +127,11 @@ export class EmailComponent implements OnInit {
       element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
 
       // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-      let isOK:boolean = this.isOK(email);
-      if(isOK) {
 
+      let isOK:boolean = this.isOK(email);
+
+      if(isOK && this.isCheckUnique) {
+        // 회원 가입시, 유일한 이메일인지 검사.
         this.userService
         .getUserByEmail(email)
         .then(result => {
@@ -138,7 +148,9 @@ export class EmailComponent implements OnInit {
             this.emailFailed(this.tooltipMsgEmailNotUnique);
           }
         });
-
+      } else if(isOK) {
+        // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+        this.emailSuccess(email);
       } else {
         this.emailFailed(this.tooltipMsgEmailNotValid);
       }

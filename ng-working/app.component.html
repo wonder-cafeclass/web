@@ -39,7 +39,9 @@
 			<ul *ngIf="loginUser" class="nav navbar-nav navbar-right">
 				<li>
 					<!-- 유저 섬네일만 노출 -->
-					<img 	*ngIf="loginUser.thumbnail" 
+					<img 	#thumbnail
+							*ngIf="loginUser.thumbnail" 
+							(error)="onErrorThumbnail($event, thumbnail)"
 							src={{loginUser.thumbnail}} 
 							alt="..." 
 							class="img-circle my-thumbnail">

@@ -18,11 +18,16 @@ import { MyEvent }              from '../../../util/model/my-event';
 })
 export class PasswordComponent implements OnInit {
 
+  @Input() width:number=380;
+
   @Input() top:number=-1;
   @Input() left:number=-1;
 
   @Input() topWarning:number=-1;
   @Input() leftWarning:number=-1;
+
+  // 비밀번호만 입력을 받을 때 사용합니다.
+  @Input() isLogin:boolean=false;
 
   @Input() myCheckerService:MyCheckerService = null;
 
@@ -269,30 +274,52 @@ export class PasswordComponent implements OnInit {
       return;
     }
 
-    // 패스워드를 검사합니다.
     let isseuMsg:string = this.getPasswordIssue(this.password);
-    if(null != isseuMsg && "" != isseuMsg) {
-      // 패스워드의 문제를 발견했습니다.
-      // 패스워드 경고 메시지 ON
-      this.tooltipHeadMsg = isseuMsg;
-      // 패스워드 경고 표시 ON
-      this.isWarningPassword = true;
-    } else {
-      // 패스워드가 정상입니다. 
-      this.isWarningPassword = false;
-      if(this.checkRepassword(elementNext)) {
-        // 패스워드 재입력 검사가 완료, 탭으로 다른 입력창으로 이동하는 경우.
+    if(this.isLogin && (null == isseuMsg || "" == isseuMsg)) {
+
+      // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
+      // 부모 객체에게 Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_PASSWORD,
+        // public value:string
+        this.password,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myChecker
+      );
+      this.emitter.emit(myEventOnChange);
+
+    } else if(!this.isLogin) {
+
+      // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
+      if(null != isseuMsg && "" != isseuMsg) {
+        // 패스워드의 문제를 발견했습니다.
+        // 패스워드 경고 메시지 ON
+        this.tooltipHeadMsg = isseuMsg;
+        // 패스워드 경고 표시 ON
+        this.isWarningPassword = true;
       } else {
-        // 입력 성공을 유저에게 알립니다.
-        this.tooltipHeadMsg = this.tooltipHeadAllowed;
-        this.isValidPassword = true;
+        // 패스워드가 정상입니다. 
         this.isWarningPassword = false;
+        if(this.checkRepassword(elementNext)) {
+          // 패스워드 재입력 검사가 완료, 탭으로 다른 입력창으로 이동하는 경우.
+        } else {
+          // 회원 가입 창일 경우, 입력 성공을 유저에게 알립니다.
+          this.tooltipHeadMsg = this.tooltipHeadAllowed;
+          this.isValidPassword = true;
+          this.isWarningPassword = false;
 
-        this.hideTooltipHead(2);
-      
+          this.hideTooltipHead(2);
+        } // end if
       } // end if
-    } // end if
 
+    } // end if
+    
   }
 
   hideTooltipHead(sec:number) :void {

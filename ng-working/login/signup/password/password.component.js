@@ -14,10 +14,13 @@ var my_event_service_1 = require('../../../util/service/my-event.service');
 var PasswordComponent = (function () {
     function PasswordComponent(myEventService) {
         this.myEventService = myEventService;
+        this.width = 380;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
+        // 비밀번호만 입력을 받을 때 사용합니다.
+        this.isLogin = false;
         this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocusPassword = false;
@@ -208,26 +211,44 @@ var PasswordComponent = (function () {
             // 패스워드가 없다면 검사를 중단합니다.
             return;
         }
-        // 패스워드를 검사합니다.
         var isseuMsg = this.getPasswordIssue(this.password);
-        if (null != isseuMsg && "" != isseuMsg) {
-            // 패스워드의 문제를 발견했습니다.
-            // 패스워드 경고 메시지 ON
-            this.tooltipHeadMsg = isseuMsg;
-            // 패스워드 경고 표시 ON
-            this.isWarningPassword = true;
+        if (this.isLogin && (null == isseuMsg || "" == isseuMsg)) {
+            // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
+            // 부모 객체에게 Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_PASSWORD, 
+            // public value:string
+            this.password, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myChecker);
+            this.emitter.emit(myEventOnChange);
         }
-        else {
-            // 패스워드가 정상입니다. 
-            this.isWarningPassword = false;
-            if (this.checkRepassword(elementNext)) {
+        else if (!this.isLogin) {
+            // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
+            if (null != isseuMsg && "" != isseuMsg) {
+                // 패스워드의 문제를 발견했습니다.
+                // 패스워드 경고 메시지 ON
+                this.tooltipHeadMsg = isseuMsg;
+                // 패스워드 경고 표시 ON
+                this.isWarningPassword = true;
             }
             else {
-                // 입력 성공을 유저에게 알립니다.
-                this.tooltipHeadMsg = this.tooltipHeadAllowed;
-                this.isValidPassword = true;
+                // 패스워드가 정상입니다. 
                 this.isWarningPassword = false;
-                this.hideTooltipHead(2);
+                if (this.checkRepassword(elementNext)) {
+                }
+                else {
+                    // 회원 가입 창일 경우, 입력 성공을 유저에게 알립니다.
+                    this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                    this.isValidPassword = true;
+                    this.isWarningPassword = false;
+                    this.hideTooltipHead(2);
+                } // end if
             } // end if
         } // end if
     };
@@ -615,6 +636,10 @@ var PasswordComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
+    ], PasswordComponent.prototype, "width", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
     ], PasswordComponent.prototype, "top", void 0);
     __decorate([
         core_1.Input(), 
@@ -628,6 +653,10 @@ var PasswordComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], PasswordComponent.prototype, "leftWarning", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], PasswordComponent.prototype, "isLogin", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)

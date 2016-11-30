@@ -1,4 +1,5 @@
-<div class="btn-box text-left info">
+<div 	class="btn-box text-left info"
+		[style.width]="(width + 10) + 'px'">
 	<label class="title">이메일</label>
 	
 	<div 	*ngIf="isShowPopover"
@@ -20,6 +21,7 @@
 			(mouseout)="onMouseOutInfo($event)"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
+		[style.width]="(width) + 'px'"
 		class="btn-box radius-border">
 
 	<input 	id="email" 

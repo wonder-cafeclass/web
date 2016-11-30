@@ -41,7 +41,6 @@ var AppComponent = (function () {
         });
         // Subscribe login user
         this.myEventWatchTowerService.loginAnnounced$.subscribe(function (loginUser) {
-            console.log("app / subscribe / loginUser : ", loginUser);
             // Example
             /*
             {
@@ -82,6 +81,12 @@ var AppComponent = (function () {
                 }
             });
         }); // end Promise
+    };
+    AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
+        event.stopPropagation();
+        event.preventDefault();
+        // TODO - 이미지 없을 경우의 예비 이미지 로딩.
+        console.log("onErrorThumbnail / thumbnail : ", thumbnail);
     };
     AppComponent.prototype.onClickSignupBtn = function (event) {
         event.stopPropagation();
