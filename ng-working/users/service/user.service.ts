@@ -36,6 +36,9 @@ export class UserService {
 
   getUserByEmail (email:string): Promise<any> {
 
+    // TODO 이메일로 사용자를 조회.
+    // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
+
     let req_url = this.us.get(this.getUserByEmailUrl);
     req_url = `${ req_url }?q=${ email }`;
 
@@ -102,21 +105,38 @@ export class UserService {
             .catch(this.handleError);
   }    
 
-  getUserByMobile (mobile:string): Promise<any> {
+  getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<any> {
 
-    let req_url = this.us.get(this.getUserByMobileUrl);
-    req_url = `${ req_url }?q=${ mobile }`;
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByMobile / 시작");
-    if(isDebug) console.log("user.service / getUserByMobile / mobile : ",mobile);
+    if(isDebug) console.log("user.service / getUserByMobile / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / getUserByMobile / mobileHead : ",mobileHead);
+    if(isDebug) console.log("user.service / getUserByMobile / mobileBody : ",mobileBody);
+    if(isDebug) console.log("user.service / getUserByMobile / mobileTail : ",mobileTail);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.getUserByMobileUrl);
+
     if(isDebug) console.log("user.service / getUserByMobile / req_url : ",req_url);
 
-    return this.http.get(req_url)
+    let params = {
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.extractData)
-            .catch(this.handleError);
+            .catch(this.handleError);            
   } 
 
 

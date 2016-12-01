@@ -21,8 +21,7 @@ export class SignupSelectComponent implements OnInit {
   kakaoAuthUrl: string;
   naverAuthUrl: string;
   facebookAuthUrl: string;
-  cafeclassAuthUrl: string="http://google.co.kr";
-
+  
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
                 public myLoggerService: MyLoggerService, 

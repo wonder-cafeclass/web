@@ -71,6 +71,54 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }
 
+    public function mobile_post()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+            return;
+        }
+
+        $mobile_head = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_head",
+            // $key_filter=""
+            "user_mobile_kor_head"
+        );
+        $mobile_body = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_body",
+            // $key_filter=""
+            "user_mobile_kor_body"
+        );
+        $mobile_tail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_tail",
+            // $key_filter=""
+            "user_mobile_kor_tail"
+        );        
+
+        $mobile = "$mobile_head-$mobile_body-$mobile_tail";
+
+        $output = [];
+        $user = $this->my_sql->get_user_by_mobile($mobile);
+
+        $output["user"] = $user;
+        $output["mobile"] = $mobile;
+        $this->respond_200($output);
+    }    
+
     public function facebook_get()
     {
         if($this->is_not_ok())

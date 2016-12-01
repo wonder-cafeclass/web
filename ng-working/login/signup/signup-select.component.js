@@ -21,7 +21,6 @@ var SignupSelectComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
-        this.cafeclassAuthUrl = "http://google.co.kr";
     }
     SignupSelectComponent.prototype.ngOnInit = function () {
         var _this = this;

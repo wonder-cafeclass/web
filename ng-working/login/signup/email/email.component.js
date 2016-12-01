@@ -36,10 +36,7 @@ var EmailComponent = (function () {
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
-    EmailComponent.prototype.ngOnInit = function () {
-        console.log("email / top : ", this.top);
-        console.log("email / left : ", this.left);
-    };
+    EmailComponent.prototype.ngOnInit = function () { };
     EmailComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;

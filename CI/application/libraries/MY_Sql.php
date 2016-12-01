@@ -724,6 +724,29 @@ class MY_Sql
         return $this->decorate_user($row);
     }
 
+    public function get_user_by_mobile($mobile="") 
+    {
+        if(empty($mobile))
+        {
+            return null;
+        }
+
+        $is_ok = true;
+        if(isset($this->CI->my_paramchecker)) {
+            $is_ok = $this->CI->my_paramchecker->is_ok("user_mobile", $mobile);
+        }
+        if(!$is_ok) {
+            return null;
+        }
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->where('mobile', $mobile);
+        $query = $this->CI->db->get('user');
+        $row = $query->custom_row_object(0, 'User');
+
+        return $this->decorate_user($row);
+    }    
+
     public function get_user_password_by_email($email="") 
     {
         if(empty($email))

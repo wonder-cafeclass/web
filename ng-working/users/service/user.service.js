@@ -34,6 +34,8 @@ var UserService = (function () {
         this.addUserUrl = '/CI/index.php/api/users/add';
     }
     UserService.prototype.getUserByEmail = function (email) {
+        // TODO 이메일로 사용자를 조회.
+        // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
         var req_url = this.us.get(this.getUserByEmailUrl);
         req_url = req_url + "?q=" + email;
         // let isDebug:boolean = true;
@@ -97,18 +99,34 @@ var UserService = (function () {
             .then(this.extractData)
             .catch(this.handleError);
     };
-    UserService.prototype.getUserByMobile = function (mobile) {
-        var req_url = this.us.get(this.getUserByMobileUrl);
-        req_url = req_url + "?q=" + mobile;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+    UserService.prototype.getUserByMobile = function (apiKey, mobileHead, mobileBody, mobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / getUserByMobile / 시작");
         if (isDebug)
-            console.log("user.service / getUserByMobile / mobile : ", mobile);
+            console.log("user.service / getUserByMobile / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / getUserByMobile / mobileHead : ", mobileHead);
+        if (isDebug)
+            console.log("user.service / getUserByMobile / mobileBody : ", mobileBody);
+        if (isDebug)
+            console.log("user.service / getUserByMobile / mobileTail : ", mobileTail);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.getUserByMobileUrl);
         if (isDebug)
             console.log("user.service / getUserByMobile / req_url : ", req_url);
-        return this.http.get(req_url)
+        var params = {
+            mobile_head: mobileHead,
+            mobile_body: mobileBody,
+            mobile_tail: mobileTail
+        };
+        return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);

@@ -137,6 +137,9 @@ export class SignupComponent implements OnInit {
         }
       }
 
+      // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
+      return Promise.resolve();
+
     }).subscribe((result) => {
 
       if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);

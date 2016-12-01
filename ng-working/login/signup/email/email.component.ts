@@ -52,11 +52,7 @@ export class EmailComponent implements OnInit {
   constructor(  private myEventService:MyEventService, 
                 private userService:UserService) {}
 
-  ngOnInit(): void {
-    console.log("email / top : ",this.top);
-    console.log("email / left : ",this.left);
-
-  }
+  ngOnInit(): void {}
 
   private setMyChecker() :void {
 
