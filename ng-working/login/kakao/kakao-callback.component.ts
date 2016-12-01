@@ -171,7 +171,6 @@ export class KakaoCallbackComponent implements OnInit, OnDestroy {
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
 
         // api key 필요!
-        // confirmUserKakao
         this.myCheckerService
         .getReady()
         .then(() => {

@@ -128,7 +128,6 @@ var KakaoCallbackComponent = (function () {
                 // 카카오 로그인 성공. 등록된 유저 정보가 문제 없음. 
                 // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
                 // api key 필요!
-                // confirmUserKakao
                 _this.myCheckerService
                     .getReady()
                     .then(function () {

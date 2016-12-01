@@ -18,6 +18,7 @@ export class UserService {
   private sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
   private confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
   private confirmUserKakaoUrl = '/CI/index.php/api/users/confirmkakao';
+  private confirmUserFacebookUrl = '/CI/index.php/api/users/confirmfacebook';
   private confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
 
   private getUserCookieUrl = '/CI/index.php/api/users/cookie';
@@ -341,7 +342,37 @@ export class UserService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);    
-  }  
+  }
+
+  public confirmUserFacebook(apiKey:string, facebookId:string) {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / confirmUserFacebook / 시작");
+    if(isDebug) console.log("user.service / confirmUserFacebook / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.confirmUserFacebookUrl);
+
+    if(isDebug) console.log("user.service / confirmUserFacebook / req_url : ",req_url);
+
+    let params = {
+      facebook_id:facebookId
+    };
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);    
+  }    
 
   getUserCookie(apiKey:string) {
     

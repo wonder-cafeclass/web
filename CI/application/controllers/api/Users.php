@@ -775,7 +775,6 @@ class Users extends MY_REST_Controller {
             return;
         } 
         
-        // wonder.jung  
         $user = $this->my_sql->get_user_kakao(intval($kakao_id)); 
         if(isset($user)) 
         {
@@ -813,7 +812,106 @@ class Users extends MY_REST_Controller {
 
         $this->respond_200($output);
 
-    }    
+    } 
+
+    /*
+    *   @ Desc : 유저가 facebook으로 로그인을 정상적으로 마친 뒤, 해당 facebook id로 등록된 유저가 있는지 확인합니다. 
+    *   등록된 유저가 있다면, 로그인 쿠키를 만듭니다.
+    */
+    public function confirmfacebook_post() 
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        // REFACTOR ME
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
+            $this->respond_200($output);
+
+            // api key가 없습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
+                // $error_msg=""
+                "Detected not allowed access to confirmkakao_post"
+            );
+
+            return;
+        }
+
+        $facebook_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "facebook_id",
+            // $key_filter=""
+            "facebook_id"
+        );
+        if(empty($facebook_id)) 
+        {
+            $output["success"] = false;
+            $output["facebook_id"] = $facebook_id;
+            $output["reason"] = "facebook_id is not valid!";
+            $this->respond_200($output);
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected not valid facebook_id to confirmkakao_post"
+            );
+
+            return;
+        } 
+        
+        // wonder.jung  
+        $user = $this->my_sql->get_user_facebook(intval($facebook_id)); 
+        if(isset($user)) 
+        {
+            $output["success"] = true;
+
+            // 인증에 성공했습니다. 로거에 기록합니다.
+            $this->my_logger->add_action(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->my_logger->ACTION_TYPE_LOGIN_PASSED,
+                // $action_key=""
+                $this->my_logger->ACTION_KEY_LOGIN_FACEBOOK
+            );
+
+            // 로그인 쿠키를 만듭니다.
+            $this->my_cookie->set_user_login($user->id);
+        }
+        else
+        {
+            $output["success"] = false;
+
+            // 인증에 실패했습니다. 로거에 기록합니다.
+            $this->my_logger->add_error(
+                // $user_id=-1
+                -1,
+                // $error_type=""
+                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
+                // $error_msg=""
+                "Detected unknown fail to confirmkakao_post / $facebook_id"
+            );
+
+        }
+        $output["facebook_id"] = $facebook_id;
+
+        $this->respond_200($output);
+
+    }        
 
     /*
     *   @ Desc : 유저가 로그인 화면에서 이메일과 비밀번호 입력뒤, '로그인'을 클릭했을 때, 호출합니다. 회원 확인이 되면, 쿠키를 만듭니다.

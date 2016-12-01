@@ -25,6 +25,7 @@ var UserService = (function () {
         this.sendMailUserValidationUrl = '/CI/index.php/api/users/validation';
         this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
         this.confirmUserKakaoUrl = '/CI/index.php/api/users/confirmkakao';
+        this.confirmUserFacebookUrl = '/CI/index.php/api/users/confirmfacebook';
         this.confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
         this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
         this.logoutUrl = '/CI/index.php/api/users/logout';
@@ -305,6 +306,32 @@ var UserService = (function () {
             console.log("user.service / confirmUserKakao / req_url : ", req_url);
         var params = {
             kakao_id: kakaoId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.confirmUserFacebook = function (apiKey, facebookId) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / confirmUserFacebook / 시작");
+        if (isDebug)
+            console.log("user.service / confirmUserFacebook / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / confirmUserFacebook / facebookId : ", facebookId);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.confirmUserFacebookUrl);
+        if (isDebug)
+            console.log("user.service / confirmUserFacebook / req_url : ", req_url);
+        var params = {
+            facebook_id: facebookId
         };
         return this.http.post(req_url, params, options)
             .toPromise()
