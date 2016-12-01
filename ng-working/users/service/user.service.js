@@ -406,11 +406,6 @@ var UserService = (function () {
             .catch(this.handleError);
     };
     UserService.prototype.deleteUserCookie = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("user.service / deleteUserCookie / 시작");
-        // wonder.jung
         var req_url = this.us.get(this.logoutUrl);
         // let isDebug:boolean = true;
         var isDebug = false;

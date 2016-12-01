@@ -92,6 +92,11 @@ var AppComponent = (function () {
         // 가입하기 페이지로 이동!
         this.router.navigate(['/login/signup/select']);
     };
+    AppComponent.prototype.onClickThumbnail = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 내정보로 이동합니다.
+    };
     AppComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

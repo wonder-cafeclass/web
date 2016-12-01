@@ -1,7 +1,6 @@
 import {  Component, 
           ViewChild,
           OnInit, 
-          OnChanges,
           SimpleChanges,
           Output, 
           EventEmitter,
@@ -29,7 +28,7 @@ import { KlassTeacher }               from './model/klass-teacher';
   templateUrl: 'klass-detail-nav-list.component.html',
   styleUrls: [ 'klass-detail-nav-list.component.css' ]
 })
-export class KlassDetailNavListComponent implements OnInit, OnChanges {
+export class KlassDetailNavListComponent implements OnInit {
 
   @ViewChild(SmartEditorComponent)
   private seComponent: SmartEditorComponent;  
@@ -252,16 +251,6 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
     );    
 
   }
-  // @ Deprecated
-  ngOnChanges(changes: SimpleChanges) :void {
-
-    if(null != changes) {
-      if(null != changes['title']) {
-        // 타이틀이 변경된 경우.
-        // Do nothing...
-      }
-    } // end outer if
-  }  
 
   private removeMyEventFromList(myEventToRemove:MyEvent, myEventList:MyEvent[]) :MyEvent[] {
 
@@ -305,8 +294,6 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       return;
     }
 
-    console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent : ",myEvent);
-
     if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
@@ -328,7 +315,6 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       } else if(this.myEventService.KLASS_SCHEDULE=== myEvent.key) {
 
         this.klassSchedule = myEvent.value;
-        console.log("ON_CHANGE / this.klassSchedule.length : ",this.klassSchedule.length);
 
       }
 
@@ -336,8 +322,6 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
       if(this.myEventService.KEY_COMMENT === myEvent.key) {
 
-        console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
-        console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ",myEvent.metaObj);
 
       }      
 
@@ -345,42 +329,29 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
       if(this.myEventService.KEY_COMMENT === myEvent.key) {
 
-        console.log("klass-detail-nav-list / onChangedFromInputRow / " + myEvent.key + " / DB UPDATE");
-        console.log("klass-detail-nav-list / onChangedFromInputRow / myEvent.metaObj : ",myEvent.metaObj);
-
       }
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
 
       // 열이 추가되었습니다.
-      console.log("열이 추가되었습니다. / myEvent : ",myEvent);
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
 
         let klassFeatureNext:string = this.getEventValues(this.myEventListForKlassFeature);
 
-        console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
-        console.log(klassFeatureNext);
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
 
         let klassFeatureTarget:string = this.getEventValues(this.myEventListForKlassTarget);
 
-        console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
-        console.log(klassFeatureTarget);
       }
 
     } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
       // 열을 지웁니다.
-      console.log("열을 지웁니다. / myEvent : ",myEvent);
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         this.klassFeature = this.klass.feature = myEvent.value;
 
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassFeature);
         this.myEventListForKlassFeature = nextEventList;
-
-        // DB UPDATE
-        console.log("klass-detail-nav-list / onChangedFromInputRow / feature / DB UPDATE");
-        console.log(this.myEventListForKlassFeature);
 
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         this.klassTarget = this.klass.target = myEvent.value;
@@ -388,15 +359,10 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassTarget);
         this.myEventListForKlassTarget = nextEventList;
 
-        // DB UPDATE
-        console.log("klass-detail-nav-list / onChangedFromInputRow / target / DB UPDATE");
-        console.log(this.myEventListForKlassTarget);
-
       } // end if
 
     } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
 
-      console.log("klass-detail-nav-list / ON_SAVE / 데이터를 저장합니다.");
       // wonder.jung
       let hasChanged:boolean = false;
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
@@ -409,11 +375,8 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
 
       if(hasChanged) {
         // 변경된 사항을 모두 저장합니다.
-        console.log("변경된 사항을 모두 저장합니다.");
         this.overwriteKlassCopies();
       }
-
-      console.log("ON_SAVE / this.klassSchedule.length : ",this.klassSchedule.length);
 
     } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
 
@@ -442,22 +405,16 @@ export class KlassDetailNavListComponent implements OnInit, OnChanges {
       } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         hasChanged = this.hasChangedSchedule();
       }
-      console.log("데이터가 변경되었는지 확인합니다. / hasChanged : ",hasChanged);
 
       if(hasChanged) {
         // 데이터를 롤백합니다.
-        console.log("데이터를 롤백합니다.");
         this.rollbackKlassCopies();
       }
 
     } else if (this.myEventService.ON_PREVIEW === myEvent.eventName) {
 
-      console.log("XXX - 01");
-
       if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         // 화면에 현재 작업중인 모습을 보여줌.
-
-        console.log("XXX - 02");
         this.isPreviewKlassSchedule=true;
       }
 

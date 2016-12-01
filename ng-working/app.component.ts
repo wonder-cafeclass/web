@@ -115,4 +115,11 @@ export class AppComponent implements OnInit {
 		this.router.navigate(['/login/signup/select']);
 	}
 
+	onClickThumbnail(event) :void {
+		event.stopPropagation();
+		event.preventDefault();
+		
+		// 내정보로 이동합니다.
+	}
+
 }

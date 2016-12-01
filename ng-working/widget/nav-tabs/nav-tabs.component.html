@@ -10,6 +10,7 @@
 						[style.border-color]="isScrollOver?colorBGFocus:colorBGBlur">
 					<li 	*ngFor="let radiobtn of radiobtnList"
 							[ngClass]="{'active':radiobtn.isFocus}"
+							[style.width]="cellWidth + 'px'"
 							class="klass-info"
 							role="presentation">
 						<a 	[style.color]="radiobtn.isFocus?colorTitleFocus:colorTitleBlur" 

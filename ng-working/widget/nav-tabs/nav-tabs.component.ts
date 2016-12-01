@@ -24,6 +24,8 @@ export class NavTabsComponent implements OnInit {
   shimWidthStr:string;
   @Input() topLeftImageUrl:string;
 
+  @Input() cellWidth:number=100;
+
   @Input() colorTitleFocus:string;
   @Input() colorTitleBlur:string;
 

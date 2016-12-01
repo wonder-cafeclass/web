@@ -16,6 +16,7 @@ var NavTabsComponent = (function () {
         this.fontSizeTitle = 12;
         this.paddingTopTitle = 10;
         this.cageWidth = -1;
+        this.cellWidth = 100;
         this.emitter = new core_1.EventEmitter();
         this.navHeight = 50;
         this.isScrollOver = false;
@@ -78,6 +79,10 @@ var NavTabsComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], NavTabsComponent.prototype, "topLeftImageUrl", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], NavTabsComponent.prototype, "cellWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)

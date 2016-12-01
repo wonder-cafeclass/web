@@ -1,12 +1,10 @@
 import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { UserListComponent }    from './user-list.component';
-import { UserDetailComponent }  from './user-detail.component';
+import { UserMyComponent }  from './user-my.component';
 
 const usersRoutes: Routes = [
-  { path: 'users',  component: UserListComponent },
-  { path: 'user/:id', component: UserDetailComponent }
+  { path: 'user/my', component: UserMyComponent }
 ];
 
 export const usersRouting: ModuleWithProviders = RouterModule.forChild(usersRoutes);

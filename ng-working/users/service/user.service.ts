@@ -454,11 +454,6 @@ export class UserService {
 
   deleteUserCookie() {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / deleteUserCookie / 시작");
-
-    // wonder.jung
     let req_url = this.us.get(this.logoutUrl);
 
     // let isDebug:boolean = true;
