@@ -308,6 +308,28 @@ var PasswordComponent = (function () {
             this.isWarningPassword = true;
         } // end if
     };
+    PasswordComponent.prototype.onKeyupEnter = function (event) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / onKeyupEnter / init");
+        event.stopPropagation();
+        event.preventDefault();
+        // wonder.jung
+        // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_KEYUP_ENTER, 
+        // public key:string
+        this.myEventService.KEY_USER_PASSWORD, 
+        // public value:string
+        this.passwordPrev, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+    };
     PasswordComponent.prototype.onKeyupPassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();

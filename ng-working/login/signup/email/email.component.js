@@ -175,6 +175,27 @@ var EmailComponent = (function () {
         this.tooltipMsg = null;
         this.isSuccessInput = false;
     };
+    EmailComponent.prototype.onKeyupEnter = function (event) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / onKeyupEnter / init");
+        event.stopPropagation();
+        event.preventDefault();
+        // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_KEYUP_ENTER, 
+        // public key:string
+        this.myEventService.KEY_USER_EMAIL, 
+        // public value:string
+        this.inputStrPrevOnKeyup, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+    };
     EmailComponent.prototype.onKeyup = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
@@ -221,9 +242,6 @@ var EmailComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        // REMOVE ME
-        // release lock
-        // this.lockFocus = null;
     };
     EmailComponent.prototype.setEmail = function (email) {
         // let isDebug:boolean = true;

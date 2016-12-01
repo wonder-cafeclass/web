@@ -230,6 +230,33 @@ export class EmailComponent implements OnInit {
 
   }
 
+  onKeyupEnter(event) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / onKeyupEnter / init");
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_KEYUP_ENTER,
+      // public key:string
+      this.myEventService.KEY_USER_EMAIL,
+      // public value:string
+      this.inputStrPrevOnKeyup,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);    
+
+  }
+
   private inputStrPrevOnKeyup:string="";
   onKeyup(event, element) :void {
 
@@ -238,7 +265,6 @@ export class EmailComponent implements OnInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-
     if(isDebug) console.log("email / onKeyup / init");
 
     let inputStr:string = element.value;
@@ -287,9 +313,6 @@ export class EmailComponent implements OnInit {
       this.isFocus = true;      
     } // end if
       
-    // REMOVE ME
-    // release lock
-    // this.lockFocus = null;
   }  
 
   public setEmail(email:string) {

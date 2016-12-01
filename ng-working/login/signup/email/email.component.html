@@ -29,6 +29,7 @@
 			(click)="onClick($event, email)"
 			(focus)="onFocus($event, email)"
 			(keyup)="onKeyup($event, email)"
+			(keyup.enter)="onKeyupEnter($event)"
 			(blur)="onBlur($event, email.value, email)"
 			autocomplete="off"
 			class="form-control input-glass" 

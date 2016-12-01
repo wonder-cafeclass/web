@@ -119,7 +119,7 @@ export class LoginComponent implements OnInit {
     if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
-      if(isDebug) console.log("login / onChangedFromChild / 중단 / null == myEven");
+      if(isDebug) console.log("login / onChangedFromChild / 중단 / null == myEvent");
       return;
     }
     if(null == myEvent.myChecker) {
@@ -154,29 +154,55 @@ export class LoginComponent implements OnInit {
 
       } // end if
 
+    } else if(this.myEventService.ON_KEYUP_ENTER === myEvent.eventName) {
+
+      if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+
+        this.email = myEvent.value;
+        if(isDebug) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_EMAIL ",this.email);
+        // 이메일 입력 칸에서 엔터키를 눌렀습니다. 
+
+        // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
+        // 2. 그렇지 않다면 안내 메시지를 유저에게 보여줍니다.
+        this.verifyEmailNPassword();
+
+      } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+
+        this.password = myEvent.value;
+        if(isDebug) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_PASSWORD ",this.password);
+        // 패스워드 입력 칸에서 엔터키를 눌렀습니다. 
+
+        // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
+        // 2. 그렇지 않다면 안내 메시지를 유저에게 보여줍니다.
+        this.verifyEmailNPassword();
+
+      }  
+
     } // end if
 
     if(isDebug) console.log("login / onChangedFromChild / done");
   }
 
-  onClickLogin(event):void {
+  verifyEmailNPassword():void {
 
-    event.stopPropagation();
-    event.preventDefault();
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("login / verifyEmailNPassword / 시작");
+
 
     let warningMsgHead:string = "아이디 또는 비밀번호를 다시 확인하세요."; 
     let warningMsgTail:string = "카페클래스에 등록되지 않은 아이디거나, 아이디 또는 비밀번호를 잘못 입력하셨습니다."; 
     this.warningMsgHead = null;
     this.warningMsgTail = null;
     if(null == this.email || "" == this.email) {
-      // 이메일 주소에 문제가 있습니다.
+      if(isDebug) console.log("login / verifyEmailNPassword / 중단 / 이메일 주소에 문제가 있습니다.", this.email);
       this.warningMsgHead = warningMsgHead;
       this.warningMsgTail = warningMsgTail;
       return;
     }
 
     if(null == this.password || "" == this.password) {
-      // 암호에 문제가 있습니다.
+      if(isDebug) console.log("login / verifyEmailNPassword / 중단 / 암호에 문제가 있습니다.", this.password);
       this.warningMsgHead = warningMsgHead;
       this.warningMsgTail = warningMsgTail;
       return;
@@ -189,20 +215,30 @@ export class LoginComponent implements OnInit {
       .confirmUserEmailPassword(apiKey, this.email, this.password)
       .then(result=> {
 
+        if(isDebug) console.log("login / confirmUserEmailPassword / result : ",result);
+
         if(null == result || null == result.success || !result.success) {
-          // 회원 인증에 실패했습니다. 
-          // 메시지를 화면에 노출합니다.
+          if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
           this.warningMsgHead = warningMsgHead;
           this.warningMsgTail = warningMsgTail;
           return;
         }
 
-        // 회원 인증에 성공했습니다.
-        // 홈화면으로 이동합니다.
+        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 홈화면으로 이동합니다.");
         this.router.navigate(['/class-center']);
 
       });
-    } // end service
+    } // end service    
 
-  }  
+  }
+
+  onClickLogin(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.verifyEmailNPassword();
+
+  }
+
 }
