@@ -26,6 +26,7 @@ var UserService = (function () {
         this.confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
         this.confirmUserKakaoUrl = '/CI/index.php/api/users/confirmkakao';
         this.confirmUserFacebookUrl = '/CI/index.php/api/users/confirmfacebook';
+        this.confirmUserNaverUrl = '/CI/index.php/api/users/confirmnaver';
         this.confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
         this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
         this.logoutUrl = '/CI/index.php/api/users/logout';
@@ -332,6 +333,32 @@ var UserService = (function () {
             console.log("user.service / confirmUserFacebook / req_url : ", req_url);
         var params = {
             facebook_id: facebookId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+    };
+    UserService.prototype.confirmUserNaver = function (apiKey, naverId) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / confirmUserNaver / 시작");
+        if (isDebug)
+            console.log("user.service / confirmUserNaver / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / confirmUserNaver / naverId : ", naverId);
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.confirmUserNaverUrl);
+        if (isDebug)
+            console.log("user.service / confirmUserNaver / req_url : ", req_url);
+        var params = {
+            naver_id: naverId
         };
         return this.http.post(req_url, params, options)
             .toPromise()

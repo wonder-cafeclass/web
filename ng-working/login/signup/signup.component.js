@@ -281,8 +281,8 @@ var SignupComponent = (function () {
     }; // end method
     SignupComponent.prototype.updateUser = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("signup / updateUser / 시작");
         this.userService

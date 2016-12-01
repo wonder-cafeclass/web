@@ -19,6 +19,7 @@ export class UserService {
   private confirmUserValidationUrl = '/CI/index.php/api/users/confirmvalidation';
   private confirmUserKakaoUrl = '/CI/index.php/api/users/confirmkakao';
   private confirmUserFacebookUrl = '/CI/index.php/api/users/confirmfacebook';
+  private confirmUserNaverUrl = '/CI/index.php/api/users/confirmnaver';
   private confirmUserEmailPasswordUrl = '/CI/index.php/api/users/confirm';
 
   private getUserCookieUrl = '/CI/index.php/api/users/cookie';
@@ -372,7 +373,37 @@ export class UserService {
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);    
-  }    
+  }
+
+  public confirmUserNaver(apiKey:string, naverId:string) {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / confirmUserNaver / 시작");
+    if(isDebug) console.log("user.service / confirmUserNaver / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / confirmUserNaver / naverId : ",naverId);
+
+    // POST
+    let headers = new Headers(
+      { 
+        'Content-Type': 'application/json',
+        'Cafeclass-REST-API-Key': apiKey
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+    let req_url = this.us.get(this.confirmUserNaverUrl);
+
+    if(isDebug) console.log("user.service / confirmUserNaver / req_url : ",req_url);
+
+    let params = {
+      naver_id:naverId
+    };
+
+    return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);    
+  }      
 
   getUserCookie(apiKey:string) {
     

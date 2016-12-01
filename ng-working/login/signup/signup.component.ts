@@ -351,8 +351,8 @@ export class SignupComponent implements OnInit {
 
   updateUser() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
     this.userService
