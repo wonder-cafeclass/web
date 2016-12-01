@@ -115,7 +115,6 @@ export class LoginComponent implements OnInit {
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("login / onChangedFromChild / 시작");
-
     if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {

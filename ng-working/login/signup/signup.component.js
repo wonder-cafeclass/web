@@ -34,6 +34,9 @@ var SignupComponent = (function () {
         this.route = route;
         this.router = router;
         this.gender = "";
+        this.hasAgreedWithTerms = false;
+        this.tooltipMsgTerms = null;
+        this.tooltipMsgTermsWarning = "약관 동의가 필요합니다.";
         // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
         this.myCheckerService.getReady();
     }
@@ -134,6 +137,12 @@ var SignupComponent = (function () {
         event.preventDefault();
         event.stopPropagation();
         var isAllOK = true;
+        // 약관 동의 확인. 
+        if (!this.hasAgreedWithTerms) {
+            isAllOK = false;
+            // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
+            this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+        }
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -400,6 +409,20 @@ var SignupComponent = (function () {
             console.log("signup / onClickTerms / 시작");
         // 이용약관 페이지로 이동.
         window.open("/#/policy");
+    };
+    SignupComponent.prototype.onChangeCheckTerms = function (event, checkboxTerms) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (null != checkboxTerms) {
+            this.hasAgreedWithTerms = checkboxTerms.checked;
+        }
+        if (this.hasAgreedWithTerms) {
+            this.tooltipMsgTerms = null;
+        }
+        else {
+            // 동의 하지 않았으므로 경고 문구를 보여줍니다.
+            this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+        }
     };
     SignupComponent.prototype.onClickPrivatePolicy = function (event) {
         event.preventDefault();

@@ -54,7 +54,12 @@ export class SignupComponent implements OnInit {
   private kakaoId:string;
   private naverId:string;
 
+  private hasAgreedWithTerms:boolean = false;
+
   private user:User;
+
+  public tooltipMsgTerms:string=null;
+  private tooltipMsgTermsWarning:string="약관 동의가 필요합니다.";
 
   @ViewChild(EmailComponent)
   private emailComponent: EmailComponent;
@@ -209,6 +214,14 @@ export class SignupComponent implements OnInit {
     event.stopPropagation();
 
     let isAllOK:boolean = true;
+
+    // 약관 동의 확인. 
+    if(!this.hasAgreedWithTerms) {
+      isAllOK = false;
+
+      // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
+      this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+    }
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -489,6 +502,23 @@ export class SignupComponent implements OnInit {
 
     // 이용약관 페이지로 이동.
     window.open("/#/policy");
+
+  }
+
+  onChangeCheckTerms(event, checkboxTerms): void {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(null != checkboxTerms) {
+      this.hasAgreedWithTerms = checkboxTerms.checked;
+    }
+    if(this.hasAgreedWithTerms) {
+      this.tooltipMsgTerms = null;
+    } else {
+      // 동의 하지 않았으므로 경고 문구를 보여줍니다.
+      this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+    }
 
   }
 

@@ -102,13 +102,38 @@
 						<tr>
 							<td class="layout border-top btn-box" colspan="2">
 
-								<a 	href="#" 
-									(click)="onClickTerms($event)"
-									class="info">이용약관</a>
+								<div class="terms-box">
+									<a 	href="#" 
+										(click)="onClickTerms($event)"
+										class="terms">이용약관</a>
+									<span class="terms">과</span>
 
-								<a 	href="#" 
-									(click)="onClickPrivatePolicy($event)"
-									class="info">개인정보 취급방침</a>
+									<a 	href="#" 
+										(click)="onClickPrivatePolicy($event)"
+										class="terms">개인정보 취급방침</a>
+									<span class="terms">을 읽고 수락합니다.</span>
+									<div class="checkbox terms-check">
+										<label>
+											<input 	#checkboxTerms
+													(change)="onChangeCheckTerms($event, checkboxTerms)" 
+													type="checkbox">
+										</label>
+									</div>
+								</div>
+
+								<!-- tooltip -->
+								<div 	class="tooltip top" 
+										*ngIf="tooltipMsgTerms"
+										[style.top]="643 + 'px'"
+										[style.left]="201 + 'px'"
+										style="opacity:1;"
+										role="tooltip"> 
+
+									<div 	class="tooltip-arrow tooltip-warning-arrow"></div> 
+									<div 	class="tooltip-inner tooltip-warning-inner">{{tooltipMsgTerms}}</div> 
+
+								</div>
+
 
 								<button 	(click)="onClickSignup($event)"
 											type="button" 
