@@ -1,0 +1,118 @@
+<div class="btn-box text-left info">
+	<label class="title">전화번호</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"	
+			(click)="onClickInfo($event)"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">전화번호가 필요한 이유는 무엇인가요?</h3> 
+		<div class="popover-content"> 
+			<p>카페클래스의 모든 수업은 카페에서 진행됩니다. 그러므로 강사님과 학생분들의 빠른 연락을 위해 전화번호를 등록, 메신저 등으로 연락을 주고 받을 수 있도록 도와드리고 있습니다.</p> 
+		</div> 
+	</div>	
+
+	<a 	href="#" 
+		(click)="onClickInfo($event)"
+		class="info">왜 전화번호가 필요한가요?</a>
+	
+	<!--
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+	-->
+</div>
+<div style="height: 52px;margin-bottom: 13px;">
+	<div 	[ngClass]="{'rb-focus':isFocusMobileHead,'rb-blur':!isFocusMobileHead}"
+			class="btn-box-phone radius-border">
+		<input 	#inputMobileHead
+				(click)="onClickMobileHead($event, inputMobileHead)"
+				(focus)="onFocusMobileHead($event, inputMobileHead)"
+				(keydown.tab)="onKeydownTabMobileHead($event, inputMobileHead)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileHead($event, inputMobileHead)"
+				(keyup)="onKeyupHead($event, inputMobileHead, inputMobileBody)"
+				(blur)="onBlurMobileHead($event, inputMobileHead, inputMobileBody)"
+				class="form-control input-glass" 
+				value={{mobileHeadPrev}}
+				placeholder={{mobileHeadPrev}}>
+
+		<!-- tooltip -->
+		<div 	class="tooltip top" 
+				*ngIf="tooltipHeadMsg"
+				[style.top]="topWarning + 'px'"
+				[style.left]="leftWarning + 'px'"
+				style="opacity:1;"
+				role="tooltip"> 
+
+			<div 	class="tooltip-arrow"
+					[ngClass]="{'tooltip-success-arrow':isSuccessHeadInput,'tooltip-warning-arrow':!isSuccessHeadInput}"
+					></div> 
+			<div 	class="tooltip-inner" 
+					[ngClass]="{'tooltip-success-inner':isSuccessHeadInput,'tooltip-warning-inner':!isSuccessHeadInput}">{{tooltipHeadMsg}}</div> 
+
+		</div>
+	</div>
+
+	<div class="phone-dash">-</div>
+
+	<div 	[ngClass]="{'rb-focus':isFocusMobileBody,'rb-blur':!isFocusMobileBody}"
+			class="btn-box-phone radius-border">
+		<input 	#inputMobileBody
+				(click)="onClickMobileBody($event, inputMobileBody)"
+				(focus)="onFocusMobileBody($event, inputMobileBody)"
+				(keydown.tab)="onKeydownTabMobileBody($event, inputMobileBody)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileBody($event, inputMobileBody)"
+				(keyup)="onKeyupBody($event, inputMobileBody, inputMobileTail)"
+				(blur)="onBlurMobileBody($event, inputMobileBody, inputMobileTail)"
+				class="form-control input-glass" 
+				placeholder="1***">
+
+		<!-- tooltip -->
+		<div 	class="tooltip top" 
+				*ngIf="tooltipBodyMsg"
+				[style.top]="topWarning + 'px'"
+				[style.left]="(leftWarning + 135) + 'px'"
+				style="opacity:1;"
+				role="tooltip"> 
+
+			<div 	class="tooltip-arrow"
+					[ngClass]="{'tooltip-success-arrow':isSuccessBodyInput,'tooltip-warning-arrow':!isSuccessBodyInput}"
+					></div> 
+			<div 	class="tooltip-inner" 
+					[ngClass]="{'tooltip-success-inner':isSuccessBodyInput,'tooltip-warning-inner':!isSuccessBodyInput}">{{tooltipBodyMsg}}</div> 
+
+		</div>				
+	</div>
+
+	<div class="phone-dash">-</div>
+
+	<div 	[ngClass]="{'rb-focus':isFocusMobileTail,'rb-blur':!isFocusMobileTail}"
+			class="btn-box-phone radius-border">
+		<input 	#inputMobileTail
+				(click)="onClickMobileTail($event, inputMobileTail, inputMobileBody)"
+				(focus)="onFocusMobileTail($event, inputMobileTail)"
+				(keydown.tab)="onKeydownTabMobileTail($event, inputMobileTail)"
+				(keydown.shift.tab)="onKeydownTabShiftMobileTail($event, inputMobileTail)"
+				(keyup)="onKeyupTail($event, inputMobileTail)"
+				(blur)="onBlurMobileTail($event, inputMobileTail)"
+				class="form-control input-glass" 
+				placeholder="2***">
+
+		<!-- tooltip -->
+		<div 	class="tooltip top" 
+				*ngIf="tooltipTailMsg"
+				[style.top]="topWarning + 'px'"
+				[style.left]="(leftWarning + 300) + 'px'"
+				style="opacity:1;"
+				role="tooltip"> 
+
+			<div 	class="tooltip-arrow"
+					[ngClass]="{'tooltip-success-arrow':isSuccessTailInput,'tooltip-warning-arrow':!isSuccessTailInput}"
+					></div> 
+			<div 	class="tooltip-inner" 
+					[ngClass]="{'tooltip-success-inner':isSuccessTailInput,'tooltip-warning-inner':!isSuccessTailInput}">{{tooltipTailMsg}}</div> 
+
+		</div>				
+	</div>
+</div>

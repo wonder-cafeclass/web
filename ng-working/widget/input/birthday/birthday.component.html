@@ -1,0 +1,60 @@
+<div class="btn-box text-left info">
+	<label class="title">생년월일</label>
+	<div 	class="popover left"
+			[style.top]="top + 'px'"
+			[style.left]="left + 'px'"
+			(click)="onClickInfo($event)"
+			[ngClass]="{'popover-show':isFocusInfo}"> 
+		<div class="arrow"></div> 
+		<h3 class="popover-title">생일은 어떻게 사용되나요?</h3> 
+		<div class="popover-content"> 
+			<p>생일쿠폰발급과 이벤트를 위한 정보로 활용됩니다.</p> 
+		</div> 
+	</div>
+
+	<a 	href="#" 
+		(click)="onClickInfo($event)"
+		class="info">생일은 어떻게 사용되나요?</a>
+	
+	<!-- 
+	<span 	class="glyphicon glyphicon-info-sign info"
+			[ngClass]="{'popover-show-info':isFocusInfo}"
+			(mouseover)="onMouseOverInfo($event)"
+			(mouseout)="onMouseOutInfo($event)"></span>
+	-->
+</div>
+<table class="table layout"> 
+	<tbody> 
+		<tr> 
+			<td class="layout select">
+<div>
+	<select class="form-control padding" (change)="onChangeBirthYear($event.target.value)">
+		<option 	*ngFor="let birthYear of birthYearArr" 
+					[selected]="birthYear == selectedYear"
+					value={{birthYear}}>{{birthYear}}년</option>
+	</select>
+	<div class="shim-select border-r"></div>
+</div>
+			</td>
+			<td class="layout select">
+<div>
+	<select class="form-control padding" (change)="onChangeBirthMonth($event.target.value)">
+		<option 	*ngFor="let birthMonth of birthMonthArr" 
+					[selected]="birthMonth == selectedMonth"
+					value={{birthMonth}}>{{birthMonth}}월</option>
+	</select>
+	<div class="shim-select border-r"></div>
+</div>
+			</td>
+			<td class="layout select">
+<div>
+	<select class="form-control padding" (change)="onChangeBirthDay($event.target.value)">
+		<option 	*ngFor="let birthDay of birthDayArr" 
+					[selected]="birthDay == selectedDay"
+					value={{birthDay}}>{{birthDay}}일</option>
+	</select>
+</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

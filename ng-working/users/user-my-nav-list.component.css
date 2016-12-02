@@ -1,9 +1,12 @@
-li.head {
+li.my-style-first {
 }
-li.body {
+li.my-style {
+	padding: 0px;
 	border-radius: 4px;
 	border: 0px;
 	border-top: 1px solid #ddd;	
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
 }
 ul.my-style {
 	margin: 0px;

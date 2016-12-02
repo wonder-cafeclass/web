@@ -14,6 +14,14 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
 var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
+var email_component_1 = require('./input/email/email.component');
+var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
+var password_component_1 = require('./input/password/password.component');
+var mobile_component_1 = require('./input/mobile/mobile.component');
+var name_component_1 = require('./input/name/name.component');
+var gender_component_1 = require('./input/gender/gender.component');
+var birthday_component_1 = require('./input/birthday/birthday.component');
+var nickname_component_1 = require('./input/nickname/nickname.component');
 // @ Desc : Shared module.
 var WidgetModule = (function () {
     function WidgetModule() {
@@ -25,10 +33,26 @@ var WidgetModule = (function () {
                 forms_1.FormsModule
             ],
             declarations: [
-                nav_tabs_component_1.NavTabsComponent
+                nav_tabs_component_1.NavTabsComponent,
+                email_component_1.EmailComponent,
+                profile_img_upload_component_1.ProfileImgUploadComponent,
+                password_component_1.PasswordComponent,
+                mobile_component_1.MobileComponent,
+                name_component_1.NameComponent,
+                gender_component_1.GenderComponent,
+                birthday_component_1.BirthdayComponent,
+                nickname_component_1.NicknameComponent
             ],
             exports: [
                 nav_tabs_component_1.NavTabsComponent,
+                email_component_1.EmailComponent,
+                profile_img_upload_component_1.ProfileImgUploadComponent,
+                password_component_1.PasswordComponent,
+                mobile_component_1.MobileComponent,
+                name_component_1.NameComponent,
+                gender_component_1.GenderComponent,
+                birthday_component_1.BirthdayComponent,
+                nickname_component_1.NicknameComponent,
                 common_1.CommonModule,
                 forms_1.FormsModule
             ]

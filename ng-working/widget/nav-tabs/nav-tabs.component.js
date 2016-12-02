@@ -17,6 +17,7 @@ var NavTabsComponent = (function () {
         this.paddingTopTitle = 10;
         this.cageWidth = -1;
         this.cellWidth = 100;
+        this.isScrollAttachEnabled = true;
         this.emitter = new core_1.EventEmitter();
         this.navHeight = 50;
         this.isScrollOver = false;
@@ -30,6 +31,15 @@ var NavTabsComponent = (function () {
         } // end if
     };
     NavTabsComponent.prototype.onScroll = function (event) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("nav-tabs / onScroll / init");
+        if (isDebug)
+            console.log("nav-tabs / onScroll / this.isScrollAttachEnabled : ", this.isScrollAttachEnabled);
+        if (!this.isScrollAttachEnabled) {
+            return;
+        }
         var offsetTopParent = this.el.nativeElement.offsetParent.offsetTop;
         var scrollTop = document.body.scrollTop;
         if (!this.isScrollOver && offsetTopParent <= (scrollTop + this.navHeight)) {
@@ -103,6 +113,10 @@ var NavTabsComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], NavTabsComponent.prototype, "colorBorder", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], NavTabsComponent.prototype, "isScrollAttachEnabled", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

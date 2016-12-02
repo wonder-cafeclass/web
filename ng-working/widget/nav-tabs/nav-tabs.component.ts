@@ -34,9 +34,13 @@ export class NavTabsComponent implements OnInit {
 
   @Input() colorBorder:string;
 
+  @Input() isScrollAttachEnabled:boolean=true;
+
   @Output() emitter = new EventEmitter<any>();
 
   navHeight:number=50;
+
+
 
 
   constructor(private el: ElementRef,private renderer: Renderer) {}
@@ -52,6 +56,15 @@ export class NavTabsComponent implements OnInit {
   isScrollOver:boolean=false;
   @HostListener('window:scroll', ['$event']) 
   onScroll(event) {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("nav-tabs / onScroll / init");
+    if(isDebug) console.log("nav-tabs / onScroll / this.isScrollAttachEnabled : ",this.isScrollAttachEnabled);
+
+    if(!this.isScrollAttachEnabled) {
+      return;
+    }
 
     let offsetTopParent:number = this.el.nativeElement.offsetParent.offsetTop;
     let scrollTop:number = document.body.scrollTop;

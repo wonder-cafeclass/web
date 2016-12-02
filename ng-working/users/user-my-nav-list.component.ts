@@ -41,7 +41,7 @@ export class UserMyNavListComponent implements OnInit {
   constructor(  private klassColorService:KlassColorService,
                 public myEventService:MyEventService, 
                 private radiobtnService:KlassRadioBtnService,
-                private myCheckerService:MyCheckerService) {}
+                public myCheckerService:MyCheckerService) {}
 
   ngOnInit(): void {
 
