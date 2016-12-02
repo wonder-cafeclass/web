@@ -71,6 +71,39 @@ var BirthdayComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
     };
+    BirthdayComponent.prototype.setBirthYear = function (year) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / setBirthYear / year : ", year);
+        if (this.isOKBirthYear(year)) {
+            if (isDebug)
+                console.log("birthday / setBirthYear / done");
+            this.selectedYear = +year;
+        }
+    };
+    BirthdayComponent.prototype.setBirthMonth = function (month) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / setBirthMonth / month : ", month);
+        if (this.isOKBirthMonth(month)) {
+            if (isDebug)
+                console.log("birthday / setBirthMonth / done");
+            this.selectedMonth = +month;
+        }
+    };
+    BirthdayComponent.prototype.setBirthDay = function (day) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / setBirthDay / day : ", day);
+        if (this.isOKBirthDay(day)) {
+            if (isDebug)
+                console.log("birthday / setBirthDay / done");
+            this.selectedDay = +day;
+        }
+    };
     // @ Desc : 생년이 제대로 입력되었는지 확인합니다.
     BirthdayComponent.prototype.hasNotDoneBirthYear = function () {
         return !this.hasDoneBirthYear();

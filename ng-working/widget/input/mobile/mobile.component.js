@@ -42,9 +42,10 @@ var MobileComponent = (function () {
         this.mobileHeadEmitted = "";
         this.mobileBodyEmitted = "";
         this.mobileTailEmitted = "";
-        this.mobileHeadPrev = "010";
+        this.mobileHeadPrev = "";
         this.mobileBodyPrev = "";
         this.mobileTailPrev = "";
+        this.mobileHeadPrev = "010";
     }
     MobileComponent.prototype.ngOnInit = function () {
         this.mobileHeadEmitted = this.mobileHeadPrev;
@@ -96,6 +97,21 @@ var MobileComponent = (function () {
             var history_3 = this.myCheckerService.getLastHistory();
         }
         return isOK;
+    };
+    MobileComponent.prototype.setMobileHead = function (mobileHead) {
+        if (this.isOKHead(mobileHead)) {
+            this.mobileHeadPrev = mobileHead;
+        }
+    };
+    MobileComponent.prototype.setMobileBody = function (mobileBody) {
+        if (this.isOKBody(mobileBody)) {
+            this.mobileBodyPrev = mobileBody;
+        }
+    };
+    MobileComponent.prototype.setMobileTail = function (mobileTail) {
+        if (this.isOKTail(mobileTail)) {
+            this.mobileTailPrev = mobileTail;
+        }
     };
     // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
     MobileComponent.prototype.hasNotDoneMobileHead = function () {

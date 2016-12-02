@@ -31,8 +31,8 @@ var NavTabsComponent = (function () {
         } // end if
     };
     NavTabsComponent.prototype.onScroll = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("nav-tabs / onScroll / init");
         if (isDebug)

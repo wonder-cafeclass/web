@@ -15,13 +15,7 @@
 	<a 	href="#" 
 		(click)="onClickInfo($event)"
 		class="info">왜 전화번호가 필요한가요?</a>
-	
-	<!--
-	<span 	class="glyphicon glyphicon-info-sign info"
-			[ngClass]="{'popover-show-info':isFocusInfo}"
-			(mouseover)="onMouseOverInfo($event)"
-			(mouseout)="onMouseOutInfo($event)"></span>
-	-->
+
 </div>
 <div style="height: 52px;margin-bottom: 13px;">
 	<div 	[ngClass]="{'rb-focus':isFocusMobileHead,'rb-blur':!isFocusMobileHead}"
@@ -66,7 +60,8 @@
 				(keyup)="onKeyupBody($event, inputMobileBody, inputMobileTail)"
 				(blur)="onBlurMobileBody($event, inputMobileBody, inputMobileTail)"
 				class="form-control input-glass" 
-				placeholder="1***">
+				value={{mobileBodyPrev}}
+				placeholder="****">
 
 		<!-- tooltip -->
 		<div 	class="tooltip top" 
@@ -97,7 +92,9 @@
 				(keyup)="onKeyupTail($event, inputMobileTail)"
 				(blur)="onBlurMobileTail($event, inputMobileTail)"
 				class="form-control input-glass" 
-				placeholder="2***">
+				value={{mobileTailPrev}}
+				placeholder="****">
+
 
 		<!-- tooltip -->
 		<div 	class="tooltip top" 

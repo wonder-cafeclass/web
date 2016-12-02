@@ -104,6 +104,39 @@ export class BirthdayComponent implements OnInit {
 
     return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
   } 
+  setBirthYear(year:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("birthday / setBirthYear / year : ",year);
+
+    if(this.isOKBirthYear(year)) {
+      if(isDebug) console.log("birthday / setBirthYear / done");
+      this.selectedYear = +year;
+    }
+  }
+  setBirthMonth(month:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("birthday / setBirthMonth / month : ",month);
+
+    if(this.isOKBirthMonth(month)) {
+      if(isDebug) console.log("birthday / setBirthMonth / done");
+      this.selectedMonth = +month;
+    }
+  }
+  setBirthDay(day:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("birthday / setBirthDay / day : ",day);
+
+    if(this.isOKBirthDay(day)) {
+      if(isDebug) console.log("birthday / setBirthDay / done");
+      this.selectedDay = +day;
+    }
+  }
 
   // @ Desc : 생년이 제대로 입력되었는지 확인합니다.
   public hasNotDoneBirthYear() :boolean {

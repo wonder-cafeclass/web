@@ -59,6 +59,10 @@ export class MobileComponent implements OnInit {
   private mobileBodyEmitted:string="";
   private mobileTailEmitted:string="";
 
+  mobileHeadPrev:string="";
+  mobileBodyPrev:string="";
+  mobileTailPrev:string="";
+
   constructor(  private userService:UserService,
                 private myLoggerService:MyLoggerService, 
                 private myEventService:MyEventService) {}
@@ -130,6 +134,22 @@ export class MobileComponent implements OnInit {
     }
 
     return isOK;
+  }
+
+  public setMobileHead(mobileHead:string) :void {
+    if(this.isOKHead(mobileHead)) {
+      this.mobileHeadPrev = mobileHead;
+    }
+  }
+  public setMobileBody(mobileBody:string) :void {
+    if(this.isOKBody(mobileBody)) {
+      this.mobileBodyPrev = mobileBody;
+    }
+  }
+  public setMobileTail(mobileTail:string) :void {
+    if(this.isOKTail(mobileTail)) {
+      this.mobileTailPrev = mobileTail;
+    }
   }
 
   // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
@@ -502,7 +522,6 @@ export class MobileComponent implements OnInit {
 
   }   
 
-  private mobileBodyPrev:string = "";
   onClickMobileBody(event, element) :void {
     event.stopPropagation();
     event.preventDefault();
@@ -756,7 +775,6 @@ export class MobileComponent implements OnInit {
 
   }  
 
-  private mobileTailPrev:string = "";
   onClickMobileTail(event, element, elementPrev) :void {
 
     event.stopPropagation();

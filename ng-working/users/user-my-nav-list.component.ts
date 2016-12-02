@@ -64,7 +64,7 @@ export class UserMyNavListComponent implements OnInit {
       // user:User
       null
       // keyFocus:string
-      , this.myEventService.KEY_USER_MY_INFO
+      , null
     );
     this.showMyInfo = true;
 

@@ -57,8 +57,8 @@ export class NavTabsComponent implements OnInit {
   @HostListener('window:scroll', ['$event']) 
   onScroll(event) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("nav-tabs / onScroll / init");
     if(isDebug) console.log("nav-tabs / onScroll / this.isScrollAttachEnabled : ",this.isScrollAttachEnabled);
 

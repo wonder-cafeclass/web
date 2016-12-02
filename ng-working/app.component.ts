@@ -92,6 +92,9 @@ export class AppComponent implements OnInit {
 			this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
 				if(null != result && null != result.user) {
 					this.loginUser = result.user;
+
+					// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+					this.myEventWatchTowerService.announceLogin(this.loginUser);
 				}
 			});
 		}); // end Promise

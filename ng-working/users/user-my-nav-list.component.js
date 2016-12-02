@@ -43,7 +43,7 @@ var UserMyNavListComponent = (function () {
         this.navTabsOptions =
             this.radiobtnService.getNavTabsUserMyInfo(
             // user:User
-            null, this.myEventService.KEY_USER_MY_INFO);
+            null, null);
         this.showMyInfo = true;
         if (isDebug)
             console.log("user-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);

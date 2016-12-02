@@ -76,6 +76,8 @@ var AppComponent = (function () {
             _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
                 if (null != result && null != result.user) {
                     _this.loginUser = result.user;
+                    // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+                    _this.myEventWatchTowerService.announceLogin(_this.loginUser);
                 }
             });
         }); // end Promise
