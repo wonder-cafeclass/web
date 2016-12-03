@@ -14,10 +14,12 @@ var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
 var login_routing_1 = require('./login.routing');
 var login_component_1 = require('./login.component');
+var logout_component_1 = require('./logout/logout.component');
 var facebook_callback_component_1 = require('./facebook/facebook-callback.component');
 var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
+var signup_select_component_1 = require('./signup/signup-select.component');
 var email_component_1 = require('./signup/email/email.component');
 var password_component_1 = require('./signup/password/password.component');
 var name_component_1 = require('./signup/name/name.component');
@@ -26,6 +28,7 @@ var profile_img_upload_component_1 = require('./signup/profile-img-upload/profil
 var nickname_component_1 = require('./signup/nickname/nickname.component');
 var gender_component_1 = require('./signup/gender/gender.component');
 var birthday_component_1 = require('./signup/birthday/birthday.component');
+var validation_component_1 = require('./validation/validation.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
@@ -42,10 +45,12 @@ var LoginModule = (function () {
             ],
             declarations: [
                 login_component_1.LoginComponent,
+                logout_component_1.LogoutComponent,
                 facebook_callback_component_1.FacebookCallbackComponent,
                 kakao_callback_component_1.KakaoCallbackComponent,
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
+                signup_select_component_1.SignupSelectComponent,
                 email_component_1.EmailComponent,
                 password_component_1.PasswordComponent,
                 name_component_1.NameComponent,
@@ -53,7 +58,8 @@ var LoginModule = (function () {
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 nickname_component_1.NicknameComponent,
                 gender_component_1.GenderComponent,
-                birthday_component_1.BirthdayComponent
+                birthday_component_1.BirthdayComponent,
+                validation_component_1.ValidationComponent
             ],
             providers: [
                 login_service_1.LoginService,

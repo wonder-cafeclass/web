@@ -1,10 +1,8 @@
 INSERT INTO `cafeclass`.`user`
 (
-`first_name`,
-`last_name`,
+`name`,
 `nickname`,
 `gender`,
-`birth_year`,
 `birthday`,
 `thumbnail`,
 `status`,
@@ -20,12 +18,10 @@ INSERT INTO `cafeclass`.`user`
 `date_updated`)
 VALUES 
 (
-"주라", 							## first_name
-"유",							## last_name
+"유주라", 						## name
 "Julia",						## nickname
 "F",							## gender
-"1991",							## birth_year
-"08-11",						## birthday
+"1991-08-11",					## birthday
 "user_julia_150x150.png",		## thumbnail
 "A",							## status
 "T",							## permission
@@ -40,12 +36,10 @@ CURRENT_TIMESTAMP, 				## date_created
 CURRENT_TIMESTAMP				## date_updated
 )
 ,(
-"지근", 							## first_name
-"유",							## last_name
+"유지근", 						## name
 "Richard",						## nickname
 "M",							## gender
-"1993",							## birth_year
-"06-10",						## birthday
+"1993-06-10",					## birthday
 "user_richard_150x150.png",		## thumbnail
 "A",							## status
 "U",							## permission
@@ -60,12 +54,10 @@ CURRENT_TIMESTAMP, 				## date_created
 CURRENT_TIMESTAMP				## date_updated
 )
 ,(
-"현경", 							## first_name
-"김",							## last_name
+"김현경", 						## name
 "Claire",						## nickname
 "F",							## gender
-"1983",							## birth_year
-"05-05",						## birthday
+"1983-05-05",					## birthday
 "user_claire_150x150.png",		## thumbnail
 "A",							## status
 "U",							## permission

@@ -4,6 +4,8 @@ import { NgModule }                  from '@angular/core';
 import { FormsModule }               from '@angular/forms';
 import { CommonModule }              from '@angular/common';
 
+import { WidgetModule }              from '../widget/widget.module';
+
 import { KlassService }              from './klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
@@ -51,19 +53,18 @@ import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-ro
 
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
-import { NavTabsComponent }          from '../widget/nav-tabs/nav-tabs.component';
 import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
 import { CommentListComponent }      from '../widget/comment/comment-list.component';
 
 // @ Deprecated
 import { DronListComponent }         from '../widget/dron-list/dron-list.component';
-
 import { InputRowComponent }         from '../widget/input-row/input-row.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    WidgetModule,
     klassCenterRouting
   ],
   declarations: [
@@ -97,7 +98,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     SingleInputViewComponent,
     RadioBtnHListComponent,
     CheckBoxHListComponent,
-    NavTabsComponent,
+    // NavTabsComponent,
     SmartEditorComponent,
     CommentListComponent,
     DronListComponent,    // @ Depreacted

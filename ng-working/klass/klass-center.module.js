@@ -12,6 +12,7 @@ require('../rxjs-extensions');
 var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
+var widget_module_1 = require('../widget/widget.module');
 var klass_service_1 = require('./klass.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
@@ -51,7 +52,6 @@ var input_btns_row_component_1 = require('../widget/input-view/input-btns-row.co
 var inputs_btns_rows_component_1 = require('../widget/input-view/inputs-btns-rows.component');
 var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
-var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
 var comment_list_component_1 = require('../widget/comment/comment-list.component');
 // @ Deprecated
@@ -65,6 +65,7 @@ var KlassCenterModule = (function () {
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
+                widget_module_1.WidgetModule,
                 klass_center_routing_1.klassCenterRouting
             ],
             declarations: [
@@ -95,7 +96,7 @@ var KlassCenterModule = (function () {
                 single_input_view_component_1.SingleInputViewComponent,
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
                 checkbox_h_list_component_1.CheckBoxHListComponent,
-                nav_tabs_component_1.NavTabsComponent,
+                // NavTabsComponent,
                 smart_editor_component_1.SmartEditorComponent,
                 comment_list_component_1.CommentListComponent,
                 dron_list_component_1.DronListComponent,

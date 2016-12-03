@@ -10,6 +10,47 @@ class MY_Error
 	public static $EVENT_JSON_DECODING_IS_FAILED="JSON Decoding is failed!";
 	public static $EVENT_UNKNOWN="Unknown error has been occured!";
 
+    function __construct()
+    {
+    	// 에러가 발생하면 DB에도 저장합니다.
+		function myErrorHandler($code, $message, $file, $line)
+		{
+			$CI =& get_instance();
+			if(is_null($CI)) 
+			{
+				return;
+			}
+
+			if(is_null($CI->my_logger))
+			{
+				return;
+			}
+			$my_logger = $CI->my_logger;
+
+			$my_logger->add_error(
+				// $user_id=-1
+				-1,
+				// $error_type=""
+				$my_logger->ERROR_INTERNAL_SERVER_500,
+				// $error_msg=""
+				"$code $message $file $line"
+			);
+		};
+		set_error_handler('myErrorHandler');
+		
+		function fatalErrorShutdownHandler()
+		{
+			$last_error = error_get_last();
+			if ($last_error['type'] === E_ERROR) 
+			{
+				// fatal error
+				myErrorHandler(E_ERROR, $last_error['message'], $last_error['file'], $last_error['line']);
+			}
+		} // end function
+		register_shutdown_function('fatalErrorShutdownHandler');
+    }
+
+
 	private $log_list;
 
 	private $class_name_prev="";
@@ -73,4 +114,55 @@ class MY_Error
 		}
 		return true;
 	}
+
+/*
+// FETAL ERROR HANDLING - INIT
+set_error_handler('myErrorHandler');
+register_shutdown_function('fatalErrorShutdownHandler');
+
+function myErrorHandler($code, $message, $file, $line) {
+
+	$param = new XogamesParamManager();
+
+	// email to webmaster.
+	
+
+	$CLIENT_IP = ValidationManager::get_client_ip();
+	$CLIENT_OS = ValidationManager::get_client_os();;
+	$CLIENT_BROWSER = ValidationManager::get_client_browser();
+
+	$query_param = new stdClass();
+	$query_param->CLIENT_OS = $CLIENT_OS;
+	$query_param->CLIENT_IP = $CLIENT_IP;
+	$query_param->CLIENT_BROWSER = $CLIENT_BROWSER;
+	$query_param->ERROR_TYPE = $param->ERROR_TYPE_FETAL_ERROR;
+
+	$error_obj = new stdClass();
+	$error_obj->code = $code;
+	$error_obj->message = $message;
+	$error_obj->file = $file;
+	$error_obj->line = $line;
+	$error_obj->time = TimeManager::get_now_micro();
+
+	$query_param->ERROR_MSG = json_encode($error_obj);
+	
+	$mysql_config = MYSQLConfig::get_config_default();
+	$mysql_manager = new MYSQLManager($mysql_config);
+	$mysql_interface = new MYSQLInterface($mysql_manager, $param);
+	$mysql_interface->insert_error_log($query_param);
+
+	$mysql_interface->close();
+
+};
+
+function fatalErrorShutdownHandler(){
+  $last_error = error_get_last();
+  if ($last_error['type'] === E_ERROR) {
+    // fatal error
+    myErrorHandler(E_ERROR, $last_error['message'], $last_error['file'], $last_error['line']);
+  }
+}
+// FETAL ERROR HANDLING - DONE
+
+*/	
 }

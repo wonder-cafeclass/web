@@ -20,8 +20,10 @@ var MyLoggerService = (function () {
         this.pageKeyLoginFacebook = "LOG_IN_FACEBOOK";
         this.pageKeyLoginKakao = "LOG_IN_KAKAO";
         this.pageKeyLoginNaver = "LOG_IN_NAVER";
+        this.pageKeyKlassList = "CLASS_LIST";
         this.pageKeyPolicy = "POLICY";
         this.pageKeySignup = "SIGNUP";
+        this.pageKeySignupSelect = "SIGNUP_SELECT";
     }
     MyLoggerService.prototype.logActionPage = function (pageKey) {
         if (null == pageKey || "" == pageKey) {

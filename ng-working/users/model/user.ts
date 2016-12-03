@@ -2,8 +2,7 @@ export class User {
 	constructor(
 		public id:number,
 		public nickname:string,
-		public first_name:string,
-		public last_name:string,
+		public name:string,
 		public gender:string,
 		public birthday:string, 
 		public thumbnail:string,
@@ -15,7 +14,6 @@ export class User {
 		public google_id:string,
 		public mobile:string,
 		public email:string,
-		public password:string,
 		public date_created:string,
 		public date_updated:string
 	) {}    

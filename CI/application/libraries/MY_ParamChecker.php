@@ -16,6 +16,8 @@ class MY_ParamChecker {
 	private $json_path_param="static/param.json";
     private $json_obj_dirty_word;
     private $json_path_dirty_word="static/dirty-word.json";
+    private $json_obj_api;
+    private $json_path_api="static/api.json";
 	private $CI=null;
 
 	public static $mysql_int_max = 2147483647;
@@ -157,6 +159,70 @@ class MY_ParamChecker {
             );
             return;            
         }
+
+
+        // Fetch CI/static/api.json
+        $json_str_api = "";
+        $target_path = FCPATH . $this->json_path_api;
+
+        if(file_exists($target_path)) 
+        {
+            $json_str_api = file_get_contents($target_path);
+        } 
+        else 
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_FILE_NOT_EXIST,
+                // $message=""
+                $target_path, 
+                // $extra=null
+                null
+            );
+            return;
+        }
+        
+
+        if(!empty($json_str_api)) 
+        {
+            $this->json_obj_api = json_decode($json_str_api);
+        } 
+        else 
+        {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_PARAM_IS_EMPTY,
+                // $message=""
+                "\$json_str_api", 
+                // $extra=null
+                null
+            );
+            return;
+        } // end if
+
+        if(is_null($this->json_obj_api) || empty($this->json_obj_api)) {
+            $this->CI->my_error->add(
+                // $class_name=""
+                static::class,
+                // $method_name=""
+                __FUNCTION__,
+                // $event=""
+                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
+                // $message=""
+                "json_obj_api", 
+                // $extra=null
+                null
+            );
+            return;            
+        }        
 
     }
 
@@ -308,6 +374,35 @@ class MY_ParamChecker {
         return null;
     }
 
+    private $api_key="Cafeclass-REST-API-Key";
+    public function get_api_key()
+    {
+        if(isset($this->json_obj_api) && isset($this->json_obj_api->{$this->api_key})) {
+            return $this->json_obj_api->{$this->api_key};
+        }
+
+        return null;
+    }
+
+    public function is_not_allowed_api_call() 
+    {
+        return !$this->is_allowed_api_call();
+    }
+    public function is_allowed_api_call() 
+    {
+        $api_key_from_request = $this->get_api_key_from_request();
+        $api_key = $this->get_api_key();
+        $is_allowed_api = false;
+        if(!empty($api_key) && $api_key === $api_key_from_request) 
+        {
+            $is_allowed_api = true;
+        }
+        return $is_allowed_api;
+    }
+    public function get_api_key_from_request()
+    {
+        return $this->CI->input->get_request_header($this->api_key, TRUE);
+    }
 
     public function get_const($key="") {
         if(empty($key)) 
@@ -970,6 +1065,26 @@ class MY_ParamChecker {
 		    		return $result;
 		        }
 			}
+            else if(strpos($filter, 'regex_match_include') !== false)
+            {
+                $pattern = "/regex_match_include\[(.+)\]$/";
+                preg_match($pattern, $filter, $match_in_filter);
+                if(empty($match_in_filter)) 
+                {
+                    $result["message"]="empty(\$match_in_filter)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+
+                $pattern = $match_in_filter[1];
+                preg_match($pattern, $value, $match_in_value);
+                if(empty($match_in_value)) 
+                {
+                    $result["message"]="empty(\$match_in_value)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+            }
     		else if(strpos($filter, 'regex_match') !== false) 
     		{
     			$pattern = "/regex_match\[(.+)\]$/";

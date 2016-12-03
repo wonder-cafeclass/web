@@ -12,9 +12,13 @@ export class MyLoggerService {
 	public pageKeyLoginFacebook:string="LOG_IN_FACEBOOK";
 	public pageKeyLoginKakao:string="LOG_IN_KAKAO";
 	public pageKeyLoginNaver:string="LOG_IN_NAVER";
+
+	public pageKeyKlassList:string="CLASS_LIST";
+
 	public pageKeyPolicy:string="POLICY";
 
 	public pageKeySignup:string="SIGNUP";
+	public pageKeySignupSelect:string="SIGNUP_SELECT";
 
 	constructor(	private us:UrlService, 
 					private http: Http) {}

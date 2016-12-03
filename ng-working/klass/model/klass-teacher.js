@@ -1,13 +1,12 @@
 "use strict";
 var KlassTeacher = (function () {
-    function KlassTeacher(id, user_id, nickname, first_name, last_name, gender, birth_year, thumbnail, thumbnail_url, status, mobile, email, resume, resume_arr, greeting, greeting_arr, memo, date_created, date_updated) {
+    function KlassTeacher(id, user_id, nickname, name, gender, birthday, thumbnail, thumbnail_url, status, mobile, email, resume, resume_arr, greeting, greeting_arr, memo, date_created, date_updated) {
         this.id = id;
         this.user_id = user_id;
         this.nickname = nickname;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.name = name;
         this.gender = gender;
-        this.birth_year = birth_year;
+        this.birthday = birthday;
         this.thumbnail = thumbnail;
         this.thumbnail_url = thumbnail_url;
         this.status = status;

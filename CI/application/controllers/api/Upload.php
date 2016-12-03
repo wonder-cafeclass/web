@@ -122,7 +122,7 @@ class Upload extends REST_Controller implements MY_Class{
             return;
         }
 
-        $config['upload_path']          = $this->my_path->get_download_path(__FILE__);
+        $config['upload_path']          = $this->my_path->get_path_download(__FILE__);
         $config['allowed_types']        = 'gif|jpg|png';
         $config['max_size']             = 100; // kb?
 
@@ -159,9 +159,13 @@ class Upload extends REST_Controller implements MY_Class{
             // 업로드가 완료되면, 섬네일로 바꾸는 작업을 진행합니다.
             $thumbnail = $this->my_thumbnail->resize_user_thumbnail($uploaded_img_uri);
 
+            // 섬네일 저장 주소를 덧붙입니다.
+            // 이 주소를 view에서 사용할 경우, 바로 이미지가 로딩될 수 있는 주소입니다.
+            $thumbnail = $this->my_path->get_path_user_thumb_loadable($thumbnail);
+
             /*
             $file_name = $this->my_thumbnail->get_file_name_from_uri($uploaded_img_uri);
-            $file_path = $this->my_path->get_user_thumb_path(__FILE__) . "/" . $file_name;
+            $file_path = $this->my_path->get_path_user_thumb(__FILE__) . "/" . $file_name;
 
             $output = 
             $this->my_thumbnail->resize(

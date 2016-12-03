@@ -86,7 +86,7 @@ class MY_Thumbnail {
         $this->my_path = $this->CI->my_path;
 
 
-        $target_path = $this->my_path->get_download_path(__FILE__);
+        $target_path = $this->my_path->get_path_download(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -104,7 +104,7 @@ class MY_Thumbnail {
             return;
         }
 
-        $target_path = $this->my_path->get_user_thumb_path(__FILE__);
+        $target_path = $this->my_path->get_path_user_thumb(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -182,7 +182,7 @@ class MY_Thumbnail {
         }
 
         // 저장할 파일 이름을 지정합니다.
-        $thumb_dir_path = $this->my_path->get_download_path(__FILE__);
+        $thumb_dir_path = $this->my_path->get_path_download(__FILE__);
         $is_success = $this->curl->download($url, $thumb_dir_path, $filename);
 
         return ($is_success)?"$thumb_dir_path/$filename":null;
@@ -373,7 +373,7 @@ class MY_Thumbnail {
             return "";
         }
 
-        $thumb_dir_path = $this->my_path->get_download_path(__FILE__);
+        $thumb_dir_path = $this->my_path->get_path_download(__FILE__);
         if(empty($thumb_dir_path)) 
         {
             return "";
@@ -398,7 +398,7 @@ class MY_Thumbnail {
 
     // REMOVE ME
     /*
-    private function get_download_path() 
+    private function get_path_download() 
     {
         $string = __FILE__;
         $pattern = '/(.+\/)CI\/.+/i';
@@ -408,7 +408,7 @@ class MY_Thumbnail {
         return $thumb_dir_path;
     }
 
-    public function get_user_thumb_path() 
+    public function get_path_user_thumb() 
     {
         if($this->is_not_ok()) 
         {
@@ -460,7 +460,7 @@ class MY_Thumbnail {
         }
 
         $file_name = $this->get_file_name_from_uri($inner_image_uri);
-        $file_path = $this->my_path->get_user_thumb_path(__FILE__) . "/" . $file_name;
+        $file_path = $this->my_path->get_path_user_thumb(__FILE__) . "/" . $file_name;
 
         $output = 
         $this->resize(
@@ -512,7 +512,7 @@ class MY_Thumbnail {
         // REMOVE ME
         /*
         $file_name = $this->get_file_name_from_uri($temp_image_uri);
-        $file_path = $this->my_path->get_user_thumb_path(__FILE__) . "/" . $file_name;
+        $file_path = $this->my_path->get_path_user_thumb(__FILE__) . "/" . $file_name;
 
         $output = 
         $this->resize(

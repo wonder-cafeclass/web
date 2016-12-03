@@ -1,10 +1,8 @@
 {
 	"checker":{
 		"user_id":"is_natural_no_zero",
-		"user_nickname":"is_str|||min_length[4]|||max_length[32]|||is_unique[user.nickname]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_exclude[/[^a-zA-Z가-힣0-9 ]+/]",
-		"user_first_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
-		"user_last_name":"is_str|||min_length[4]|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]|||regex_match_include[/^[a-zA-Z가-힣0-9]+$/]",
-		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match[/^[가-힣 ]+$/]|||regex_match_include[/[가-힣 ]+/]",
+		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match_include[/[가-힣 ]+/]",
+		"user_nickname":"is_str|||min_length[3]|||max_length[32]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",
 
@@ -15,7 +13,7 @@
 		"user_birth_month":"is_str|||regex_match_include[/^([0]{1}[1-9]{1}|[1]{1}[0-2]{1})$/]",
 		"user_birth_day":"is_str|||regex_match_include[/^([0]{1}[1-9]{1}|[12]{1}[0-9]{1}|[3]{1}[0-1]{1})$/]",
 
-		"user_thumbnail":"is_str",
+		"user_thumbnail":"is_str|||regex_match_include[/(jpg|png)$/]",
 		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
 		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
 
@@ -26,7 +24,13 @@
 
 		"user_email_insert":"valid_emails|||is_unique[user.email]",
 		"user_email":"valid_emails",
+
 		"user_password":"is_str|||min_length[6]|||max_length[16]|||regex_match_include[/[a-z]+/]|||regex_match_include[/[0-9]+/]|||regex_match_include[/[!@#\\$%\\^\\&*\\)\\(+=._-]+/]",
+		"user_password_hashed":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
+
+		"user_validation_key":"is_str|||regex_match_include[/^[a-zA-Z0-9$]+$/]",
+		"user_cookie_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
+		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 
 		"klass_id":"is_natural_no_zero",
 		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9|]+$/]",
@@ -39,17 +43,18 @@
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
+		"kakao_id":"is_str",
 		"kakao_code":"is_str",
 		"kakao_access_token":"is_str",
 		"kakao_token_type":"is_str",
 
-		"naver_id":"is_natural_no_zero",
+		"naver_id":"is_str",
 		"naver_code":"is_str",
 		"naver_login_state":"is_str",
 		"naver_access_token":"is_str",
 		"naver_token_type":"is_str",
 
-		"facebook_id":"is_natural_no_zero",
+		"facebook_id":"is_str|||regex_match_include[/^[0-9]+$/]",
 		"facebook_login_state":"is_str",
 		"facebook_code":"is_str",
 		"facebook_name":"is_str|||min_length[4]|||max_length[32]",

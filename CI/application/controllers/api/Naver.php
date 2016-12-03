@@ -152,7 +152,7 @@ class Naver extends REST_Controller implements MY_Class{
 
         // 2. redirect_uri
         $pattern = '/\{redirect_uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri_naver);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri_naver);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
@@ -722,7 +722,7 @@ class Naver extends REST_Controller implements MY_Class{
             $email, 
             // $nickname="", 
             $nickname,
-            // $first_name="", 
+            // $name="", 
             $name,
             // $thumbnail_url=""
             $thumbnail_url

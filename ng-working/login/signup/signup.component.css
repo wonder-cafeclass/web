@@ -61,3 +61,27 @@ a.info {
   padding-bottom: 0px;
   text-decoration: underline;
 }
+a.terms {
+
+}
+span.terms {
+  margin-left: -3px;
+}
+div.terms-box {
+  float: left;
+  margin-top: 22px;
+  margin-left: 20px;
+  font-size: 12px;  
+}
+div.terms-check {
+  float: right;
+  margin: 0px;
+  margin-left: 5px;
+  margin-top: -2px;
+}
+.tooltip-warning-arrow {
+  border-top-color: #e85c41 !important;
+}
+.tooltip-warning-inner {
+  background-color: #e85c41;
+}

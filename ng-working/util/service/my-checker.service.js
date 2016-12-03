@@ -54,9 +54,9 @@ var MyCheckerService = (function () {
     MyCheckerService.prototype.getReady = function () {
         var _this = this;
         if (null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
-            return;
+            return Promise.resolve();
         }
-        this.getChecker()
+        return this.getChecker()
             .then(function (data) {
             if (null != data.checker_map) {
                 _this.checkerMap = data.checker_map;
@@ -67,7 +67,14 @@ var MyCheckerService = (function () {
             if (null != data.dirty_word_list) {
                 _this.dirtyWordList = data.dirty_word_list;
             } // end if
+            if (null != data.api_key) {
+                _this.apiKey = data.api_key;
+            } // end if
+            return Promise.resolve();
         });
+    };
+    MyCheckerService.prototype.getAPIKey = function () {
+        return this.apiKey;
     };
     MyCheckerService.prototype.getLastHistory = function () {
         return this.history;

@@ -14,6 +14,7 @@ export class MyCheckerService {
     private checkerMap;
     private constMap;
     private dirtyWordList;
+    private apiKey:string;
 
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
@@ -33,14 +34,15 @@ export class MyCheckerService {
     constructor(    private us:UrlService, 
                     private http: Http) {}
 
-    getReady() :void {
+    getReady() :Promise<any> {
 
         if(null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
-            return;
+            return Promise.resolve();
         }
 
-        this.getChecker()
+        return this.getChecker()
         .then(data => {
+
             if(null != data.checker_map) {
                 this.checkerMap = data.checker_map;
             } // end if
@@ -50,8 +52,16 @@ export class MyCheckerService {
             if(null != data.dirty_word_list) {
                 this.dirtyWordList = data.dirty_word_list;
             } // end if
-            
+            if(null != data.api_key) {
+                this.apiKey = data.api_key;
+            } // end if
+
+            return Promise.resolve();
         });
+    } 
+
+    public getAPIKey() :string {
+        return this.apiKey;
     }
 
     getLastHistory() :any {

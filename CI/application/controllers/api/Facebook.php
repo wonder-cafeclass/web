@@ -17,6 +17,8 @@ require APPPATH . '/libraries/REST_Controller.php';
 require APPPATH . '/libraries/MY_Class.php';
 require APPPATH . '/models/KlassLocation.php';
 
+// @ TODO - MY_REST_Controller를 상속받아야 합니다.
+
 /*
 *   @ Author : Wonder Jung
 *   @ Desc : 페이스북 로그인 API 호출을 관리하는 클래스. \
@@ -186,7 +188,7 @@ class Facebook extends REST_Controller implements MY_Class{
 
         // 2. redirect_uri
         $pattern = '/\{redirect-uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
@@ -233,7 +235,7 @@ class Facebook extends REST_Controller implements MY_Class{
 
         // 2. redirect-uri
         $pattern = '/\{redirect-uri\}/i';
-        $replacement = $this->my_path->get_full_path($this->redirect_uri);
+        $replacement = $this->my_path->get_path_full($this->redirect_uri);
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 3. client_secret
@@ -325,21 +327,18 @@ class Facebook extends REST_Controller implements MY_Class{
         $facebook_id = $this->my_keyvalue->dig($result, ["id"]);
         if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("facebook_id is not valid!");
             return;
         }
         $name = $this->my_keyvalue->dig($result, ["name"]);
         if($this->my_paramchecker->is_not_ok("facebook_name", $name))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("name is not valid!");
             return;
         }
         $email = $this->my_keyvalue->dig($result, ["email"]);
         if($this->my_paramchecker->is_not_ok("user_email", $email))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("email is not valid!");
             return;
         }
@@ -349,7 +348,6 @@ class Facebook extends REST_Controller implements MY_Class{
         $fb_thumbnail_url = $this->my_keyvalue->dig($result, ["picture","data","url"]);
         if(empty($fb_thumbnail_url))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("fb_thumbnail_url is not valid!");
             return;
         }
@@ -365,10 +363,10 @@ class Facebook extends REST_Controller implements MY_Class{
             $thumbnail_url = $this->my_thumbnail->get_user_thumbnail($fb_thumbnail_url);
             if(empty($thumbnail_url))
             {
-                // TODO - 실패시에 반드시 기록해야 합니다.
                 $this->respond_500("thumbnail_url is not valid!");
                 return;
             }
+            $thumbnail_url = $this->my_path->get_path_user_thumb_loadable($thumbnail_url);
 
             // 회원 정보를 검사, 없다면 회원으로 추가합니다.
             // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
@@ -511,41 +509,27 @@ class Facebook extends REST_Controller implements MY_Class{
 
         if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500('facebook_id is not valid!');
             return;
         }
         if($this->my_paramchecker->is_not_ok("user_email", $email))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500('email is not valid!');
             return;
         }
         if($this->my_paramchecker->is_not_ok("facebook_name", $name))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("name is not valid!");
             return;
         }
         if(empty($thumbnail_url))
         {
-            // TODO - 실패시에 반드시 기록해야 합니다.
             $this->respond_500("thumbnail_url is not valid!");
             return;
         }
 
         // 페이스북 유저 이름은 다음과 같은 형식이다. 공백을 기준으로 2개 이상의 이름이 있다면 First Name, Last Name으로 사용한다.
         // {"name": "Wonder Jung"}
-
-        $name_arr = explode(" ", $name);
-        $first_name = "";
-        $last_name = "";
-        if(!empty($name_arr) && 1 < count($name_arr)) 
-        {
-            // 영어식 이름으로 이름/성 기준으로 구분한다.
-            $first_name = $name_arr[0];
-            $last_name = $name_arr[1];
-        }
 
         if($is_debug) echo "add_user 1-4 <br/>\n";
 
@@ -557,10 +541,8 @@ class Facebook extends REST_Controller implements MY_Class{
             $email,
             // $nickname="", 
             $name,
-            // $first_name="", 
-            $first_name,
-            // $last_name="", 
-            $last_name,
+            // $name="", 
+            $name,
             // $thumbnail_url=""
             $thumbnail_url
         );
@@ -588,7 +570,42 @@ class Facebook extends REST_Controller implements MY_Class{
                 REST_Controller::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    } 
+
+        $this->report_error(
+            // $error_type=null
+            $this->my_logger->ERROR_INTERNAL_SERVER_500,
+            // $error_msg=""
+            $msg
+        );
+    }
+
+    /*
+    *   @ Desc : 에러 상황을 기록하는 Logger method wrapper
+    */
+    public function report_error($error_type=null, $error_msg="")
+    {
+        if(is_null($error_type)) 
+        {
+            return;
+        }
+        if(empty($error_msg)) 
+        {
+            return;
+        }
+        if(is_null($this->my_logger)) 
+        {
+            return;
+        }
+
+        $this->my_logger->add_error(
+            // $user_id=-1
+            -1,
+            // $error_type=""
+            $error_type,
+            // $error_msg=""
+            $error_msg
+        );
+    }     
 
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
@@ -605,7 +622,8 @@ class Facebook extends REST_Controller implements MY_Class{
             $response_body = $this->my_response->getResBodySuccessData($data);
             $this->set_response($response_body, REST_Controller::HTTP_OK);
         }
-    } 
+    }
+
 
 
     /*

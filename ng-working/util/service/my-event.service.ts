@@ -11,6 +11,7 @@ export class MyEventService {
     ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
     ON_CHANGE:string="ON_CHANGE";
+    ON_KEYUP_ENTER:string="ON_KEYUP_ENTER";
     ON_SHUTDOWN:string="ON_SHUTDOWN";
     ON_SHUTDOWN_N_ROLLBACK:string="ON_SHUTDOWN_N_ROLLBACK";
     ON_SAVE:string="ON_SAVE";
@@ -80,6 +81,11 @@ export class MyEventService {
     KEY_USER_BIRTH_YEAR:string="KEY_USER_BIRTH_YEAR";     // 유저 - 생년
     KEY_USER_BIRTH_MONTH:string="KEY_USER_BIRTH_MONTH";   // 유저 - 생월
     KEY_USER_BIRTH_DAY:string="KEY_USER_BIRTH_DAY";       // 유저 - 생일
+
+    KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";           // 유저 - 내정보 수정.
+    KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";     // 유저 - 내 수강이력.
+    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
+    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";     // 유저 - 내 관심강의(찜).
 
     private uniqueIdx:number=0;
 

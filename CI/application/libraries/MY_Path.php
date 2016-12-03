@@ -17,8 +17,9 @@ class MY_Path {
 	private $http_host="";
 	private $req_uri="";
 
-    private $download_path="assets/images/download";
-    private $thumbnail_path_user="assets/images/user";
+    private $path_download="assets/images/download";
+    private $path_thumbnail_user="assets/images/user";
+    private $path_user_validation="login/signup/validation";
 
     public function __construct($params=null)
     {
@@ -34,7 +35,7 @@ class MY_Path {
             return;
         }
 
-        $target_path = $this->get_download_path(__FILE__);
+        $target_path = $this->get_path_download(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -52,7 +53,7 @@ class MY_Path {
             return;
         }
 
-        $target_path = $this->get_user_thumb_path(__FILE__);
+        $target_path = $this->get_path_user_thumb(__FILE__);
         if(!is_writable($target_path))
         {
             $this->CI->my_error->add(
@@ -106,7 +107,7 @@ class MY_Path {
 	}	
 
 
-	public function get_web_root_path() 
+	public function get_path_web_root() 
 	{
 		return $this->web_root_path;
 	}
@@ -136,7 +137,12 @@ class MY_Path {
 
 	}
 
-	public function get_full_path($target_path="")
+    public function get_path_user_validation()
+    {
+        return $this->get_path_full("/#/" . $this->path_user_validation);
+    }
+
+	public function get_path_full($target_path="")
 	{
 		if(empty($target_path)) 
 		{
@@ -146,7 +152,7 @@ class MY_Path {
 		return $this->current_http_referer() . $this->get($target_path);
 	}
 
-    public function get_download_path($cur_class_path="") 
+    public function get_path_download($cur_class_path="") 
     {
     	if(empty($cur_class_path))
     	{
@@ -155,13 +161,13 @@ class MY_Path {
 
         $string = $cur_class_path;
         $pattern = '/(.+\/)CI\/.+/i';
-        $replacement = '${1}' . $this->download_path;
+        $replacement = '${1}' . $this->path_download;
         $thumb_dir_path = preg_replace($pattern, $replacement, $string);
 
         return $thumb_dir_path;
     }
 
-    public function get_user_thumb_path($cur_class_path="") 
+    public function get_path_user_thumb($cur_class_path="") 
     {
     	if(empty($cur_class_path))
     	{
@@ -170,10 +176,18 @@ class MY_Path {
 
         $string = $cur_class_path;
         $pattern = '/(.+\/)CI\/.+/i';
-        $replacement = '${1}' . $this->thumbnail_path_user;
+        $replacement = '${1}' . $this->path_thumbnail_user;
         $thumb_dir_path = preg_replace($pattern, $replacement, $string);
 
         return $thumb_dir_path;
-    }	
+    }
 
+    public function get_path_user_thumb_loadable($thumbnail="") 
+    {
+        if(empty($thumbnail))
+        {
+            return "";
+        }
+        return $this->path_thumbnail_user . "/" . $thumbnail;
+    }
 }

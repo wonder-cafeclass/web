@@ -12,12 +12,17 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var user_service_1 = require('../../users/service/user.service');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, myLoggerService, activatedRoute, router) {
+    function KakaoCallbackComponent(loginService, userService, myLoggerService, myCheckerService, activatedRoute, router) {
         this.loginService = loginService;
+        this.userService = userService;
         this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
         this.activatedRoute = activatedRoute;
         this.router = router;
+        this.redirectUrl = "/class-center";
         this.kakaoSignupCodeAlreadyRegisterd = -102;
         // Do something...
     } // end function
@@ -49,7 +54,7 @@ var KakaoCallbackComponent = (function () {
             .getKakaoToken(kakaoCode)
             .then(function (result) {
             // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoToken / result : ", result);
+            console.log("kakao-callback / getKakaoToken / result : ", result);
             if (null != result &&
                 null != result.access_token &&
                 null != result.token_type) {
@@ -67,7 +72,7 @@ var KakaoCallbackComponent = (function () {
             .getKakaoSignUp(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
             // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoSignUp / result : ", result);
+            console.log("kakao-callback / getKakaoSignUp / result : ", result);
             if (null != result &&
                 null != result.code &&
                 null != result.msg) {
@@ -81,15 +86,67 @@ var KakaoCallbackComponent = (function () {
         });
     };
     KakaoCallbackComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
+        var _this = this;
         this.loginService
             .getKakaoMe(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("login.component / getKakaoMe / result : ", result);
-            if (null != result &&
-                null != result.id) {
+            if (null == result || null == result.id) {
+                // 로그인 실패. 홈으로 리다이렉트
+                _this.router.navigate(['/class-center']);
+                return;
             }
-        });
+            // 카카오 플랫폼에서의 로그인 성공!
+            // 카카오 아이디로 유저 정보를 가져옵니다.
+            _this.getUserByKakaoId(result.kakao_id);
+            // 1. 최초 등록된 유저라면 유저 정보 등록 창으로 이동.
+            // 2. 이미 등록된 유저라면 이전 페이지로 리다이렉트 합니다. 
+            // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
+            // this.router.navigate(['/login/signup/kakao', result.kakao_id]);
+        }); // end service
+    }; // end method 
+    KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
+        var _this = this;
+        this.userService
+            .getUserByKakaoId(kakaoId)
+            .then(function (result) {
+            console.log("getUserByKakaoId / result : ", result);
+            if (null == result || null == result.user) {
+                // 카카오 로그인은 성공. 하지만 유저 정보가 없음.
+                return;
+            }
+            else if (null == result.user.gender ||
+                "" === result.user.gender ||
+                null == result.user.mobile ||
+                "" === result.user.mobile) {
+                // 카카오 로그인은 성공. 카카오 프로필에서 가져온 정보로 유저 등록됨. 
+                // 하지만 추가 정보 필요. 
+                // 회원 가입창으로 이동.
+                _this.router.navigate(['/login/signup/kakao', result.kakao_id]);
+                return;
+            }
+            else {
+                // 카카오 로그인 성공. 등록된 유저 정보가 문제 없음. 
+                // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
+                // api key 필요!
+                _this.myCheckerService
+                    .getReady()
+                    .then(function () {
+                    _this.userService
+                        .confirmUserKakao(_this.myCheckerService.getAPIKey(), result.kakao_id)
+                        .then(function (result) {
+                        if (null == result || null == result.success || !result.success) {
+                            // kakaoid로 쿠키 인증 실패. 홈으로 이동.
+                            _this.router.navigate(['/class-center']);
+                            return;
+                        }
+                        // 쿠키 인증 성공!
+                        // 로그인 직전 페이지로 리다이렉트. 
+                        // 돌아갈 주소가 없다면, 홈으로 이동.
+                        _this.router.navigate(['/class-center']);
+                    }); // end userService
+                }); // end myCheckerService
+            } // end if
+        }); // end service
     };
     KakaoCallbackComponent = __decorate([
         core_1.Component({
@@ -98,7 +155,7 @@ var KakaoCallbackComponent = (function () {
             templateUrl: 'kakao-callback.component.html',
             styleUrls: ['kakao-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
     ], KakaoCallbackComponent);
     return KakaoCallbackComponent;
 }());

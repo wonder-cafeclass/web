@@ -17,6 +17,7 @@ var MyEventService = (function () {
         this.ANY = "ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
         this.ON_READY = "ON_READY";
         this.ON_CHANGE = "ON_CHANGE";
+        this.ON_KEYUP_ENTER = "ON_KEYUP_ENTER";
         this.ON_SHUTDOWN = "ON_SHUTDOWN";
         this.ON_SHUTDOWN_N_ROLLBACK = "ON_SHUTDOWN_N_ROLLBACK";
         this.ON_SAVE = "ON_SAVE";
@@ -76,6 +77,10 @@ var MyEventService = (function () {
         this.KEY_USER_BIRTH_YEAR = "KEY_USER_BIRTH_YEAR"; // 유저 - 생년
         this.KEY_USER_BIRTH_MONTH = "KEY_USER_BIRTH_MONTH"; // 유저 - 생월
         this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
+        this.KEY_USER_MY_INFO = "KEY_USER_MY_INFO"; // 유저 - 내정보 수정.
+        this.KEY_USER_MY_HISTORY = "KEY_USER_MY_HISTORY"; // 유저 - 내 수강이력.
+        this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결재정보.
+        this.KEY_USER_MY_FAVORITE = "KEY_USER_MY_FAVORITE"; // 유저 - 내 관심강의(찜).
         this.uniqueIdx = 0;
     }
     // @ Deprecated

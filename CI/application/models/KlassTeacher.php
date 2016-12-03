@@ -4,10 +4,9 @@ class KlassTeacher {
         public $user_id;
         public $user; // class User
         public $nickname;
-        public $first_name;
-        public $last_name;
+        public $name;
         public $gender;
-        public $birth_year; 
+        public $birthday; 
         public $thumbnail;
         public $thumbnail_url;
         public $status;

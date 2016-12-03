@@ -3,8 +3,7 @@
 class User {
         public $id;
         public $nickname;
-        public $first_name;
-        public $last_name;
+        public $name;
         public $gender;
         public $birthday; 
         public $thumbnail;
@@ -16,7 +15,6 @@ class User {
         public $google_id;
         public $mobile;
         public $email;
-        public $password;
         public $date_created;
         public $date_updated;
 }

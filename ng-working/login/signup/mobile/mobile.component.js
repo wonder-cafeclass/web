@@ -9,11 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var user_service_1 = require('../../../users/service/user.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var MobileComponent = (function () {
-    function MobileComponent(myLoggerService, myEventService) {
+    function MobileComponent(userService, myLoggerService, myEventService) {
+        this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myEventService = myEventService;
         this.top = -1;
@@ -29,6 +31,7 @@ var MobileComponent = (function () {
         this.tooltipBodyMsg = null;
         this.tooltipTailMsg = null;
         this.tooltipHeadNotAllowed = "전화번호에 문제가 있습니다.";
+        this.tooltipDuplicated = "이미 사용중인 전화번호입니다.";
         this.tooltipHeadAllowed = "성공! 전화번호에 문제가 없습니다.";
         this.isFocus = false;
         this.isFocusInfo = false;
@@ -36,11 +39,16 @@ var MobileComponent = (function () {
         this.isFocusMobileBody = false;
         this.isFocusMobileTail = false;
         this.isFocusMobileInfo = false;
+        this.mobileHeadEmitted = "";
+        this.mobileBodyEmitted = "";
+        this.mobileTailEmitted = "";
         this.mobileHeadPrev = "010";
         this.mobileBodyPrev = "";
         this.mobileTailPrev = "";
     }
-    MobileComponent.prototype.ngOnInit = function () { };
+    MobileComponent.prototype.ngOnInit = function () {
+        this.mobileHeadEmitted = this.mobileHeadPrev;
+    };
     MobileComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -75,12 +83,10 @@ var MobileComponent = (function () {
         var isOK = this.myCheckerService.isOK(this.myCheckerMobileBody, input);
         if (!isOK) {
             var history_2 = this.myCheckerService.getLastHistory();
-            console.log("mobile / isOKBody / history : ", history_2);
         }
         return isOK;
     };
     MobileComponent.prototype.isOKTail = function (input) {
-        console.log("mobile / isOKTail / input : ", input);
         this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
@@ -88,7 +94,6 @@ var MobileComponent = (function () {
         var isOK = this.myCheckerService.isOK(this.myCheckerMobileTail, input);
         if (!isOK) {
             var history_3 = this.myCheckerService.getLastHistory();
-            console.log("mobile / isOKTail / history : ", history_3);
         }
         return isOK;
     };
@@ -97,10 +102,8 @@ var MobileComponent = (function () {
         return !this.hasDoneMobileHead();
     };
     MobileComponent.prototype.hasDoneMobileHead = function () {
-        console.log("hasDoneMobileHead / this.mobileHeadPrev : ", this.mobileHeadPrev);
         this.setMyChecker();
         var isOKHead = this.isOKHead(this.mobileHeadPrev);
-        console.log("hasDoneMobileHead / isOKHead : ", isOKHead);
         return isOKHead;
     };
     // @ Desc : 전화번호 앞자리를 확인해 달라는 표시를 보여줍니다.
@@ -113,6 +116,9 @@ var MobileComponent = (function () {
         this.isFocusMobileHead = false;
         this.isSuccessHeadInput = true;
         this.tooltipHeadMsg = null;
+    };
+    MobileComponent.prototype.getMobileHead = function () {
+        return this.mobileHeadPrev;
     };
     // @ Desc : 전화번호 가운데 자리가 제대로 입력되었는지 확인합니다.
     MobileComponent.prototype.hasNotDoneMobileBody = function () {
@@ -134,7 +140,6 @@ var MobileComponent = (function () {
     };
     MobileComponent.prototype.hasDoneMobileTail = function () {
         this.setMyChecker();
-        console.log("XXX / hasDoneMobileTail / this.mobileTailPrev : ", this.mobileTailPrev);
         return this.isOKTail(this.mobileTailPrev);
     };
     // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
@@ -185,8 +190,8 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupHead = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;  
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / onKeyupHead / init");
         var inputStr = element.value;
@@ -289,6 +294,8 @@ var MobileComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerMobileHead);
             this.emitter.emit(myEventOnChange);
+            // 전송된 전화번호 값을 저장함. 
+            this.mobileHeadEmitted = inputStr;
         }
         this.mobileHeadPrev = element.value = inputStr;
     }; // end method
@@ -352,6 +359,8 @@ var MobileComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerMobileHead);
             this.emitter.emit(myEventOnChange);
+            // 전송된 전화번호 값을 저장함. 
+            this.mobileHeadEmitted = inputStr;
         } // end if
     };
     MobileComponent.prototype.hideTooltipHead = function (sec) {
@@ -404,7 +413,6 @@ var MobileComponent = (function () {
         this.isFocusMobileBody = true;
     };
     MobileComponent.prototype.onKeyupBody = function (event, element, elementNext) {
-        // wonder.jung
         event.stopPropagation();
         event.preventDefault();
         // let isDebug:boolean = true;
@@ -509,6 +517,8 @@ var MobileComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerMobileBody);
             this.emitter.emit(myEventOnChange);
+            // 전송된 전화번호 값을 저장함. 
+            this.mobileBodyEmitted = inputStr;
         }
         this.mobileBodyPrev = element.value = inputStr;
     };
@@ -580,13 +590,15 @@ var MobileComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerMobileBody);
             this.emitter.emit(myEventOnChange);
-        } // end if   
+            // 전송된 전화번호 값을 저장함. 
+            this.mobileBodyEmitted = inputStr;
+        } // end if 
     };
     MobileComponent.prototype.onClickMobileTail = function (event, element, elementPrev) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / onClickMobileTail / init");
         if (!this.isFocusMobileTail) {
@@ -620,7 +632,6 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupTail = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        // wonder.jung
         // let isDebug:boolean = true;
         var isDebug = false;
         var inputStr = element.value;
@@ -635,10 +646,8 @@ var MobileComponent = (function () {
                 console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
-        console.log("onKeyupTail / 1 / inputStr : ", inputStr);
         // 숫자가 아닌 글자들은 모두 삭제해준다.
         element.value = inputStr.replace(/[^0-9]/gi, "");
-        console.log("onKeyupTail / 2 / inputStr : ", inputStr);
         // 툴팁을 보여줍니다.
         if (element.value != inputStr) {
             this.tooltipTailMsg = "숫자만 가능합니다.";
@@ -708,21 +717,80 @@ var MobileComponent = (function () {
             this.isSuccessTailInput = true;
             // this.hideTooltipTail(2);
             element.blur();
-            // 부모 객체에게 Change Event 발송 
-            var myEventOnChange = this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
-            // public value:string
-            inputStr, 
-            // public metaObj:any
-            null, 
-            // public myChecker:MyChecker
-            this.myCheckerMobileTail);
-            this.emitter.emit(myEventOnChange);
+            // wonder.jung
+            // 전송될 전화번호 값을 저장함. 
+            this.mobileTailEmitted = inputStr;
+            // 전화번호 중복 확인 뒤에 부모 객체로 이벤트 발송.
+            this.emitEventChange();
         }
         this.mobileTailPrev = element.value = inputStr;
+    };
+    MobileComponent.prototype.emitEventChange = function () {
+        // 모든 전화번호를 가져와야 함.
+        // 완성이 된 전화번호만 검사합니다.
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
+        var isOK = this.isOKHead(this.mobileHeadEmitted);
+        if (!isOK) {
+            if (isDebug)
+                console.log("mobile / emitEventChange / 중단 / 전화번호 첫 3자리에 문제가 있습니다.");
+            return;
+        }
+        isOK = this.isOKBody(this.mobileBodyEmitted);
+        if (!isOK) {
+            if (isDebug)
+                console.log("mobile / emitEventChange / 중단 / 전화번호 두번째 3~4자리에 문제가 있습니다.");
+            return;
+        }
+        isOK = this.isOKTail(this.mobileTailEmitted);
+        if (!isOK) {
+            if (isDebug)
+                console.log("mobile / emitEventChange / 중단 / 전화번호 세번째 4자리에 문제가 있습니다.");
+            return;
+        }
+        this.userService
+            .getUserByMobile(this.myCheckerService.getAPIKey(), this.mobileHeadEmitted, this.mobileBodyEmitted, this.mobileTailEmitted).then(function (result) {
+            if (isDebug)
+                console.log("mobile / emitEventChange / getUserByMobile / result : ", result);
+            if (null == result || null == result.user) {
+                // 전화번호가 유일합니다. 문제 없음.
+                if (isDebug)
+                    console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
+                // 부모 객체에게 Change Event 발송 
+                var myEventOnChange = _this.myEventService.getMyEvent(
+                // public eventName:string
+                _this.myEventService.ON_CHANGE, 
+                // public key:string
+                _this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
+                // public value:string
+                _this.mobileTailEmitted, 
+                // public metaObj:any
+                null, 
+                // public myChecker:MyChecker
+                _this.myCheckerMobileTail);
+                _this.emitter.emit(myEventOnChange);
+                // 이전에 노출한 경고 메시지가 있다면 내립니다.
+                _this.tooltipBodyMsg = null;
+                // 포커싱을 모두 내립니다.
+                _this.isFocusMobileHead = false;
+                _this.isFocusMobileBody = false;
+                _this.isFocusMobileTail = false;
+                return;
+            }
+            // 전화번호가 유일하지 않습니다. 
+            if (isDebug)
+                console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일하지 않습니다. 다른 사용자의 전화번호입니다.");
+            // 사용자에게 알립니다. - 마지막 전화번호 칸에 경고 메시지.
+            _this.isSuccessBodyInput = false;
+            _this.tooltipBodyMsg = _this.tooltipDuplicated;
+            // 전화번호 입력칸을 모두 포커싱합니다.
+            _this.isFocusMobileHead = true;
+            _this.isFocusMobileBody = true;
+            _this.isFocusMobileTail = true;
+        });
     };
     MobileComponent.prototype.onBlurMobileTail = function (event, element, elementNext) {
         event.stopPropagation();
@@ -734,7 +802,6 @@ var MobileComponent = (function () {
         if (null == inputStr || "" == inputStr) {
             return;
         }
-        console.log("onBlurMobileTail / inputStr : ", inputStr);
         var isOK = this.isOKTail(inputStr);
         if (!isOK) {
             // 조건에 맞지 않습니다.
@@ -781,19 +848,11 @@ var MobileComponent = (function () {
             if (null != elementNext) {
                 elementNext.focus();
             } // end if
-            // 부모 객체에게 Change Event 발송 
-            var myEventOnChange = this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
-            // public value:string
-            inputStr, 
-            // public metaObj:any
-            null, 
-            // public myChecker:MyChecker
-            this.myCheckerMobileTail);
-            this.emitter.emit(myEventOnChange);
+            // wonder.jung
+            // 전송될 전화번호 값을 저장함. 
+            this.mobileTailEmitted = inputStr;
+            // 전화번호 중복 확인 뒤에 부모 객체로 이벤트 발송.
+            this.emitEventChange();
         } // end if 
     }; // end method
     __decorate([
@@ -827,7 +886,7 @@ var MobileComponent = (function () {
             templateUrl: 'mobile.component.html',
             styleUrls: ['mobile.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
     ], MobileComponent);
     return MobileComponent;
 }());

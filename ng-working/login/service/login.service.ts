@@ -28,7 +28,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.facebookMeUrl);
 
-      console.log("login.service / facebookMeUrl / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getFacebookMe / 시작");
+      if(isDebug) console.log("user.service / getFacebookMe / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -40,7 +43,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.facebookAccessUrl) + "?code=" + code;
 
-      console.log("login.service / getFacebookAccess / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getFacebookAccess / 시작");
+      if(isDebug) console.log("user.service / getFacebookAccess / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -52,7 +58,11 @@ export class LoginService {
 
       let req_url = this.us.get(this.facebookStateUrl) + "?state=" + state;
 
-      console.log("login.service / getFacebookState / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getFacebookState / 시작");
+      if(isDebug) console.log("user.service / getFacebookState / state : ",state);
+      if(isDebug) console.log("user.service / getFacebookState / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -64,7 +74,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.facebookAuthUrl);
 
-      console.log("login.service / getFacebookAuthUrl / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getFacebookAuthUrl / 시작");
+      if(isDebug) console.log("user.service / getFacebookAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -76,7 +89,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.naverMeUrl);
 
-      console.log("login.service / getNaverMe / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getNaverMe / 시작");
+      if(isDebug) console.log("user.service / getNaverMe / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -88,7 +104,11 @@ export class LoginService {
 
       let req_url = this.us.get(this.naverAccessUrl) + "?naver_code=" + naver_code;
 
-      console.log("login.service / getNaverAccess / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getNaverAccess / 시작");
+      if(isDebug) console.log("user.service / getNaverAccess / naver_code : ",naver_code);
+      if(isDebug) console.log("user.service / getNaverAccess / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -100,7 +120,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.naverStateUrl) + "?state=" + state;
 
-      console.log("login.service / getNaverState / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getNaverState / 시작");
+      if(isDebug) console.log("user.service / getNaverState / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -112,7 +135,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.naverAuthUrl);
 
-      console.log("login.service / getNaverAuthUrl / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getNaverAuthUrl / 시작");
+      if(isDebug) console.log("user.service / getNaverAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -124,7 +150,10 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
-      console.log("login.service / getKakaoAuthUrl / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getKakaoAuthUrl / 시작");
+      if(isDebug) console.log("user.service / getKakaoAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -135,7 +164,11 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
 
-      console.log("login.service / getKakaoToken / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getKakaoToken / 시작");
+      if(isDebug) console.log("user.service / getKakaoToken / code : ",code);
+      if(isDebug) console.log("user.service / getKakaoToken / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -146,7 +179,12 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoSignUpUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
-      console.log("login.service / getKakaoSignUp / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getKakaoSignUp / 시작");
+      if(isDebug) console.log("user.service / getKakaoSignUp / kakaoTokenType : ",kakaoTokenType);
+      if(isDebug) console.log("user.service / getKakaoSignUp / kakaoAccessToken : ",kakaoAccessToken);
+      if(isDebug) console.log("user.service / getKakaoSignUp / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -157,7 +195,12 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoMeUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
-      console.log("login.service / getKakaoMe / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getKakaoMe / 시작");
+      if(isDebug) console.log("user.service / getKakaoMe / kakaoTokenType : ",kakaoTokenType);
+      if(isDebug) console.log("user.service / getKakaoMe / kakaoAccessToken : ",kakaoAccessToken);
+      if(isDebug) console.log("user.service / getKakaoMe / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -168,7 +211,11 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
 
-      console.log("login.service / getKakaoAuth / req_url : ",req_url);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / getKakaoAuth / 시작");
+      if(isDebug) console.log("user.service / getKakaoAuth / code : ",code);
+      if(isDebug) console.log("user.service / getKakaoAuth / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
@@ -180,27 +227,36 @@ export class LoginService {
 
       let body = res.json();
 
-      console.log("login.service / extractData / body ::: ",body);
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / extractData / 시작");
+      if(isDebug) console.log("user.service / extractData / body : ",body);
 
       // TODO - 데이터 검증 프로세스.
       if(null == body.data || !body.success) {
-          console.log("login.service / extractData / 데이터가 없습니다.");
-          return null;
+        if(isDebug) console.log("user.service / extractData / 중단 / 데이터가 없습니다.");
+        return null;
       }
-
-      console.log("login.service / extractData / 3");
 
       return body.data;
   }
 
-  // New - XHR
-  // promise-based
   private handleError (error: any) {
+
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / handleError / 시작");
+
       // In a real world app, we might use a remote logging infrastructure
       // We'd also dig deeper into the error to get a better message
       let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-      console.error(errMsg); // log to console instead
+
+      if(isDebug) console.log("user.service / handleError / errMsg : ",errMsg);
+
+      // console.error(errMsg); // log to console instead
+      // TODO - 에러 내용을 저장해 두어야 합니다.
+
       return Promise.reject(errMsg);
   }
 
