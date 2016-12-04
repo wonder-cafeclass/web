@@ -1,6 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { UrlService } from "../../util/url.service";
+import { Injectable }               from '@angular/core';
+import { Headers, 
+         Http, 
+         Response, 
+         RequestOptions }           from '@angular/http';
+import { UrlService }               from "../../util/url.service";
+import { MyExtractor }              from '../../util/http/my-extractor';
 
 @Injectable()
 export class LoginService {
@@ -21,7 +25,11 @@ export class LoginService {
   private facebookAccessUrl = '/CI/index.php/api/facebook/access';
   private facebookMeUrl = '/CI/index.php/api/facebook/me';
 
-  constructor(private us:UrlService, private http: Http) {
+  private myExtractor:MyExtractor;
+
+  constructor(  private us:UrlService,
+                private http:Http  ) {
+    this.myExtractor = new MyExtractor();
   }
 
   getFacebookMe (): Promise<any> {
@@ -35,8 +43,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   } 
 
   getFacebookAccess (code:string): Promise<any> {
@@ -50,8 +58,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }    
 
   getFacebookState (state:string): Promise<any> {
@@ -66,23 +74,23 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
   getFacebookAuthUrl (): Promise<any> {
 
       let req_url = this.us.get(this.facebookAuthUrl);
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getFacebookAuthUrl / 시작");
       if(isDebug) console.log("user.service / getFacebookAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }    
 
   getNaverMe (): Promise<any> {
@@ -96,8 +104,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
   getNaverAccess (naver_code:string): Promise<any> {
@@ -112,8 +120,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
   getNaverState (state:string): Promise<any> {
@@ -127,38 +135,39 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
   getNaverAuthUrl (): Promise<any> {
 
       let req_url = this.us.get(this.naverAuthUrl);
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getNaverAuthUrl / 시작");
       if(isDebug) console.log("user.service / getNaverAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
   getKakaoAuthUrl (): Promise<any> {
 
       let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getKakaoAuthUrl / 시작");
       if(isDebug) console.log("user.service / getKakaoAuthUrl / req_url : ",req_url);
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
+
   }
   getKakaoToken (code:string): Promise<any> {
 
@@ -172,8 +181,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
   getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
 
@@ -188,8 +197,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
   getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
 
@@ -204,8 +213,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
   getKakaoAuth (code:string): Promise<any> {
 
@@ -219,17 +228,22 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
+  // REMOVE ME
+  /*
   private extractData(res: Response) {
+
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("user.service / extractData / 시작");
+      if(isDebug) console.log("user.service / extractData / res : ",res);
+
 
       let body = res.json();
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("user.service / extractData / 시작");
       if(isDebug) console.log("user.service / extractData / body : ",body);
 
       // TODO - 데이터 검증 프로세스.
@@ -259,5 +273,6 @@ export class LoginService {
 
       return Promise.reject(errMsg);
   }
+  */
 
 }

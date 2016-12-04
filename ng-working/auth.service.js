@@ -22,7 +22,12 @@ var AuthService = (function () {
     }
     AuthService.prototype.getAdminAuth = function () {
         var req_url = this.us.get(this.adminAuthUrl);
-        console.log("auth / getAdminAuth / req_url : ", req_url);
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("auth.service / getAdminAuth / 시작");
+        if (isDebug)
+            console.log("auth.service / getAdminAuth / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
@@ -30,15 +35,27 @@ var AuthService = (function () {
     };
     AuthService.prototype.getKakaoAuth = function () {
         var req_url = this.us.get(this.kakaoAuthUrl);
-        console.log("auth / getKakaoAuth / req_url : ", req_url);
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("auth.service / getKakaoAuth / 시작");
+        if (isDebug)
+            console.log("auth.service / getKakaoAuth / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
     };
     AuthService.prototype.extractData = function (res) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("auth.service / extractData / 시작");
+        if (isDebug)
+            console.log("auth.service / extractData / res : ", res);
         var body = res.json();
-        console.log("AuthService / extractData / body ::: ", body);
+        if (isDebug)
+            console.log("auth.service / extractData / body : ", body);
         // TODO - 데이터 검증 프로세스.
         if (null == body.data || !body.success) {
             return null;

@@ -117,6 +117,11 @@ var MyInfoComponent = (function () {
         if (isDebug)
             console.log("my-info / onChangedFromChild / myEvent.key : ", myEvent.key);
     };
+    MyInfoComponent.prototype.onClickSave = function (event) {
+        // TODO - 
+        // 1. this.loginUser 객체와 비교, 값이 달라졌다면 save 버튼 활성화.
+        // 2. 업데이트 뒤에는 다시 유저 객체도 업데이트.
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', my_checker_service_1.MyCheckerService)

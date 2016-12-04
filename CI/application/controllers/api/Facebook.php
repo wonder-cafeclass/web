@@ -124,6 +124,9 @@ class Facebook extends REST_Controller implements MY_Class{
         // init MyThumbnail
         $this->load->library('MY_Thumbnail');
 
+        // init MyAuth
+        $this->load->library('MY_Auth');
+
         // start session
         session_start();
 
@@ -165,7 +168,7 @@ class Facebook extends REST_Controller implements MY_Class{
     }
 
     /*
-    *   @ Desc : 네이버 로그인 창으로 이동하는 url을 만들어 돌려줍니다.
+    *   @ Desc : 페이스북 로그인 창으로 이동하는 url을 만들어 돌려줍니다.
     */
     public function authurl_get() 
     {
@@ -192,7 +195,7 @@ class Facebook extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->get_new_state();
+        $state = $this->my_auth->get_new_state();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -209,7 +212,7 @@ class Facebook extends REST_Controller implements MY_Class{
     }
 
     /*
-    *   @ Desc : 네이버에서 인증코드를 입력, Access Key를 가져옵니다.
+    *   @ Desc : 페이스북에서 인증코드를 입력, Access Key를 가져옵니다.
     */
     public function access_get()
     {
@@ -456,6 +459,8 @@ class Facebook extends REST_Controller implements MY_Class{
         return $state;
 
     */
+
+    /*
     private function generate_state() 
     {
         $mt = microtime();
@@ -473,10 +478,11 @@ class Facebook extends REST_Controller implements MY_Class{
 
         return $state;        
     }
+    */
 
 
     /*
-    *   @ Desc : 네이버 로그아웃
+    *   @ Desc : 페이스북 로그아웃
     */
     public function logout_get()
     {

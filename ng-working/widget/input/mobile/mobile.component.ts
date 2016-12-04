@@ -59,7 +59,7 @@ export class MobileComponent implements OnInit {
   private mobileBodyEmitted:string="";
   private mobileTailEmitted:string="";
 
-  mobileHeadPrev:string="";
+  mobileHeadPrev:string="010";
   mobileBodyPrev:string="";
   mobileTailPrev:string="";
 
@@ -232,7 +232,7 @@ export class MobileComponent implements OnInit {
     } // end if
   }
 
-  public mobileHeadPrev:string = "010";
+  
   onClickMobileHead(event, element) :void {
     event.stopPropagation();
     event.preventDefault();

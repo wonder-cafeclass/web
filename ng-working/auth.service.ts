@@ -17,7 +17,10 @@ export class AuthService {
 
         let req_url = this.us.get(this.adminAuthUrl);
 
-        console.log("auth / getAdminAuth / req_url : ",req_url);
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("auth.service / getAdminAuth / 시작");
+        if(isDebug) console.log("auth.service / getAdminAuth / req_url : ",req_url); 
 
         return this.http.get(req_url)
                       .toPromise()
@@ -29,7 +32,10 @@ export class AuthService {
 
         let req_url = this.us.get(this.kakaoAuthUrl);
 
-        console.log("auth / getKakaoAuth / req_url : ",req_url);
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("auth.service / getKakaoAuth / 시작");
+        if(isDebug) console.log("auth.service / getKakaoAuth / req_url : ",req_url);
 
         return this.http.get(req_url)
                       .toPromise()
@@ -39,9 +45,13 @@ export class AuthService {
 
     private extractData(res: Response) {
 
-        let body = res.json();
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("auth.service / extractData / 시작");
+        if(isDebug) console.log("auth.service / extractData / res : ",res);
 
-        console.log("AuthService / extractData / body ::: ",body);
+        let body = res.json();
+        if(isDebug) console.log("auth.service / extractData / body : ",body);
 
         // TODO - 데이터 검증 프로세스.
         if(null == body.data || !body.success) {

@@ -91,6 +91,11 @@ class Naver extends REST_Controller implements MY_Class{
         // init MyThumbnail
         $this->load->library('MY_Thumbnail');
 
+        // ----
+
+        // init MyAuth
+        $this->load->library('MY_Auth');
+
         // start session
         session_start();
 
@@ -156,7 +161,7 @@ class Naver extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->get_new_state();
+        $state = $this->my_auth->get_new_state();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -201,7 +206,7 @@ class Naver extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->get_new_state();
+        $state = $this->my_auth->get_new_state();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -546,6 +551,9 @@ class Naver extends REST_Controller implements MY_Class{
         return $state;
 
     */
+
+    // REMOVE ME
+    /*
     private function generate_state() 
     {
         $mt = microtime();
@@ -563,6 +571,7 @@ class Naver extends REST_Controller implements MY_Class{
 
         return $state;        
     }
+    */
 
 
     /*

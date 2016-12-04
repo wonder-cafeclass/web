@@ -42,10 +42,9 @@ var MobileComponent = (function () {
         this.mobileHeadEmitted = "";
         this.mobileBodyEmitted = "";
         this.mobileTailEmitted = "";
-        this.mobileHeadPrev = "";
+        this.mobileHeadPrev = "010";
         this.mobileBodyPrev = "";
         this.mobileTailPrev = "";
-        this.mobileHeadPrev = "010";
     }
     MobileComponent.prototype.ngOnInit = function () {
         this.mobileHeadEmitted = this.mobileHeadPrev;

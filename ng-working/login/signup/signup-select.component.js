@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var auth_service_1 = require('../../auth/auth.service');
+var auth_service_1 = require('../../auth.service');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
@@ -21,33 +21,102 @@ var SignupSelectComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
+        this.errorMsgArr = [];
+        this.isAdmin = false;
     }
     SignupSelectComponent.prototype.ngOnInit = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup-select / ngOnInit / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.authService
+            .getAdminAuth()
+            .then(function (result) {
+            if (null != result.is_admin) {
+                _this.isAdmin = result.is_admin;
+            }
+            _this.init();
+        }); // end service
+    }; // end ngOnInit
+    SignupSelectComponent.prototype.init = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup-select / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignupSelect);
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
-            .then(function (kakaoAuthUrl) {
-            _this.kakaoAuthUrl = kakaoAuthUrl;
+            .then(function (output) {
+            if (isDebug)
+                console.log("signup-select / getKakaoAuthUrl / 시작");
+            if (isDebug)
+                console.log("signup-select / getKakaoAuthUrl / output : ", output);
+            if (null != output &&
+                null != output["auth_url"] &&
+                "" != output["auth_url"]) {
+                _this.kakaoAuthUrl = output["auth_url"];
+                if (isDebug)
+                    console.log("signup-select / getKakaoAuthUrl / this.kakaoAuthUrl : ", _this.kakaoAuthUrl);
+            }
+            else {
+                // 에러 상황. 
+                // 에러 원인에 대한 로그를 전달해준다.
+                _this.errorMsgArr.push(output);
+            } // end if
         });
         // 2. naver
         this.loginService
             .getNaverAuthUrl()
-            .then(function (naverAuthUrl) {
-            _this.naverAuthUrl = naverAuthUrl;
+            .then(function (output) {
+            if (isDebug)
+                console.log("signup-select / getNaverAuthUrl / 시작");
+            if (isDebug)
+                console.log("signup-select / getNaverAuthUrl / output : ", output);
+            if (null != output &&
+                null != output["auth_url"] &&
+                "" != output["auth_url"]) {
+                _this.naverAuthUrl = output["auth_url"];
+                if (isDebug)
+                    console.log("signup-select / getNaverAuthUrl / this.naverAuthUrl : ", _this.naverAuthUrl);
+            }
+            else {
+                // 에러 상황. 
+                // 에러 원인에 대한 로그를 전달해준다.
+                _this.errorMsgArr.push(output);
+            } // end if
+            // this.naverAuthUrl = naverAuthUrl;
         });
         // 3. facebook
         this.loginService
             .getFacebookAuthUrl()
-            .then(function (facebookAuthUrl) {
-            _this.facebookAuthUrl = facebookAuthUrl;
+            .then(function (output) {
+            if (isDebug)
+                console.log("signup-select / getFacebookAuthUrl / 시작");
+            if (isDebug)
+                console.log("signup-select / getFacebookAuthUrl / output : ", output);
+            if (null != output &&
+                null != output["auth_url"] &&
+                "" != output["auth_url"]) {
+                _this.facebookAuthUrl = output["auth_url"];
+                if (isDebug)
+                    console.log("signup-select / getFacebookAuthUrl / this.facebookAuthUrl : ", _this.facebookAuthUrl);
+            }
+            else {
+                // 에러 상황. 
+                // 에러 원인에 대한 로그를 전달해준다.
+                _this.errorMsgArr.push(output);
+            } // end if
+            // this.facebookAuthUrl = facebookAuthUrl;
         });
         // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
         this.myEventWatchTowerService.announceToggleTopMenu(false);
-    };
+    }; // end init
     SignupSelectComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

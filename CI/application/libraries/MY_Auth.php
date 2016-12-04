@@ -49,4 +49,63 @@ class MY_Auth {
         return (isset($this->admin_json_obj))?true:false;
     }
 
+    /*
+    *   @ Desc : GET 형식의 url에 query string 파라미터로 전달해도 문제없는 hashkey를 만듭니다. 
+    *   query string의 파라미터인 경우, '.'로 끝나면 링크에 포함되지 않는 문제가 있습니다.
+    *   그러므로 영문 대소문자,숫자,$기호까지만 포함합니다.
+    *
+    *   @ Warning : 해시값의 일부분을 강제로 수정해서 사용하므로 password_verify는 불가능합니다.
+    */
+    public function getHashQueryStringSafe($value) 
+    {
+        if(empty($value)) 
+        {
+            return "";
+        }
+
+        $hashkey = $this->getHash($value);
+        $matches = array();
+        preg_match_all('/[a-zA-Z0-9\$]+/', $hashkey, $matches);
+
+        $hashkeySafe = "";
+        if(!empty($matches) && !empty($matches[0])) 
+        {
+            $hashkeySafe = join("",$matches[0]);
+        }
+        return $hashkeySafe;
+    }
+
+    // @ Referer : http://php.net/manual/kr/function.password-hash.php
+    public function getHash($value="")
+    {
+
+        if(empty($value)) {
+            return "";
+        }
+        return password_hash($value, PASSWORD_DEFAULT);
+    } 
+
+    private function generate_state() 
+    {
+        $mt = microtime();
+        $rand = mt_rand();
+        $new_state = md5($mt . $rand);
+
+        $new_state_query_str_safe = $this->getHashQueryStringSafe($new_state);
+
+        return $new_state_query_str_safe;
+    } // end function
+
+    public function get_new_state()
+    {
+        // 상태 토큰으로 사용할 랜덤 문자열을 생성
+        $state = $this->generate_state();
+
+        // 세션 또는 별도의 저장 공간에 상태 토큰을 저장
+        $_SESSION[$this->session_state_key] = $state;
+
+        return $state;        
+    }
+
+
 }

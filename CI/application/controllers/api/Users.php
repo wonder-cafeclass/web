@@ -48,6 +48,8 @@ class Users extends MY_REST_Controller {
         $this->load->library('email');
 
         $this->load->library('MY_Cookie');
+
+        $this->load->library('MY_Auth');
     }
 
     public function email_get()
@@ -257,7 +259,8 @@ class Users extends MY_REST_Controller {
         $$password_hashed = "";
         if($is_ok) {
             // INSERT
-            $password_hashed = $this->getHash($password);
+            // $password_hashed = $this->getHash($password);
+            $password_hashed = $this->my_auth->getHash($password);
         }
 
         $output["password_hashed"] = $$password_hashed;
@@ -272,6 +275,7 @@ class Users extends MY_REST_Controller {
     *
     *   @ Warning : 해시값의 일부분을 강제로 수정해서 사용하므로 password_verify는 불가능합니다.
     */
+    /*
     private function getHashQueryStringSafe($value) {
         if($this->is_not_ok())
         {
@@ -308,6 +312,7 @@ class Users extends MY_REST_Controller {
         }
         return password_hash($value, PASSWORD_DEFAULT);
     }
+    */
 
     public function add_post()
     {
@@ -431,7 +436,8 @@ class Users extends MY_REST_Controller {
             // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
             $this->my_sql->insert_user(
                 // $password_hashed=""
-                $this->getHash($password),
+                // $this->getHash($password),
+                $this->my_auth->getHash($password),
                 // $email=""
                 $email,
                 // $name=""
@@ -612,7 +618,8 @@ class Users extends MY_REST_Controller {
                 // $user_id=-1
                 $user_id,
                 // $password_hashed=""
-                $this->getHash($password),
+                // $this->getHash($password),
+                $this->my_auth->getHash($password),
                 // $email=""
                 $email,
                 // $name=""
@@ -1310,7 +1317,8 @@ class Users extends MY_REST_Controller {
         $password_hashed = $user->password;
         $time_now = $this->my_time->get_now_YYYYMMDDHHMMSSU();
 
-        $key_hashed = $this->getHashQueryStringSafe($password_hashed . $time_now);
+        // $key_hashed = $this->getHashQueryStringSafe($password_hashed . $time_now);
+        $key_hashed = $this->my_auth->getHashQueryStringSafe($password_hashed . $time_now);
 
         $output["key_hashed"] = $key_hashed;
 

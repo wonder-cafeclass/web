@@ -12,6 +12,7 @@ require('../rxjs-extensions');
 var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
+var widget_module_1 = require('../widget/widget.module');
 var login_routing_1 = require('./login.routing');
 var login_component_1 = require('./login.component');
 var logout_component_1 = require('./logout/logout.component');
@@ -20,14 +21,14 @@ var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
 var signup_select_component_1 = require('./signup/signup-select.component');
-var email_component_1 = require('./signup/email/email.component');
-var password_component_1 = require('./signup/password/password.component');
-var name_component_1 = require('./signup/name/name.component');
-var mobile_component_1 = require('./signup/mobile/mobile.component');
-var profile_img_upload_component_1 = require('./signup/profile-img-upload/profile-img-upload.component');
-var nickname_component_1 = require('./signup/nickname/nickname.component');
-var gender_component_1 = require('./signup/gender/gender.component');
-var birthday_component_1 = require('./signup/birthday/birthday.component');
+// import { EmailComponent }                 from './signup/email/email.component';
+// import { PasswordComponent }              from './signup/password/password.component';
+// import { NameComponent }                  from './signup/name/name.component';
+// import { MobileComponent }                from './signup/mobile/mobile.component';
+// import { ProfileImgUploadComponent }      from './signup/profile-img-upload/profile-img-upload.component';
+// import { NicknameComponent }              from './signup/nickname/nickname.component';
+// import { GenderComponent }                from './signup/gender/gender.component';
+// import { BirthdayComponent }              from './signup/birthday/birthday.component';
 var validation_component_1 = require('./validation/validation.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
@@ -41,6 +42,7 @@ var LoginModule = (function () {
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
+                widget_module_1.WidgetModule,
                 login_routing_1.loginRouting
             ],
             declarations: [
@@ -51,14 +53,14 @@ var LoginModule = (function () {
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
                 signup_select_component_1.SignupSelectComponent,
-                email_component_1.EmailComponent,
-                password_component_1.PasswordComponent,
-                name_component_1.NameComponent,
-                mobile_component_1.MobileComponent,
-                profile_img_upload_component_1.ProfileImgUploadComponent,
-                nickname_component_1.NicknameComponent,
-                gender_component_1.GenderComponent,
-                birthday_component_1.BirthdayComponent,
+                // EmailComponent,
+                // PasswordComponent,
+                // NameComponent,
+                // MobileComponent,
+                // ProfileImgUploadComponent,
+                // NicknameComponent,
+                // GenderComponent,
+                // BirthdayComponent,
                 validation_component_1.ValidationComponent
             ],
             providers: [

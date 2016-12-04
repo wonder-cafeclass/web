@@ -22,6 +22,7 @@ var name_component_1 = require('./input/name/name.component');
 var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
+var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
 var WidgetModule = (function () {
     function WidgetModule() {
@@ -41,9 +42,12 @@ var WidgetModule = (function () {
                 name_component_1.NameComponent,
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
-                nickname_component_1.NicknameComponent
+                nickname_component_1.NicknameComponent,
+                safe_html_pipe_1.SafeHtmlPipe
             ],
             exports: [
+                common_1.CommonModule,
+                forms_1.FormsModule,
                 nav_tabs_component_1.NavTabsComponent,
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
@@ -53,8 +57,7 @@ var WidgetModule = (function () {
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
-                common_1.CommonModule,
-                forms_1.FormsModule
+                safe_html_pipe_1.SafeHtmlPipe
             ]
         }), 
         __metadata('design:paramtypes', [])

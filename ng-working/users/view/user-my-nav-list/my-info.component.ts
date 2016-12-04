@@ -179,4 +179,10 @@ export class MyInfoComponent implements OnInit {
 
   }
 
+  onClickSave(event) :void{
+    // TODO - 
+    // 1. this.loginUser 객체와 비교, 값이 달라졌다면 save 버튼 활성화.
+    // 2. 업데이트 뒤에는 다시 유저 객체도 업데이트.
+  }
+
 }
