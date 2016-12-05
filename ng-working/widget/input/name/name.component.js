@@ -12,9 +12,11 @@ var core_1 = require('@angular/core');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var NameComponent = (function () {
-    function NameComponent(myLoggerService, myEventService) {
+    function NameComponent(myLoggerService, myEventWatchTowerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
@@ -32,9 +34,65 @@ var NameComponent = (function () {
         this.tooltipHeadRemovedEmpties = "빈칸을 2칸 이상 입력할 수 없습니다.";
         this.tooltipHeadAllowed = "성공! 멋진 이름이네요.";
         this.isShowPopover = false;
+        this.redirectUrl = "/class-center";
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         this.inputStrPrev = "";
     }
-    NameComponent.prototype.ngOnInit = function () { };
+    NameComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("name / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+    };
+    NameComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("name / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    NameComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("name / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "name / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+        });
+    };
     NameComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -167,7 +225,11 @@ var NameComponent = (function () {
                 this.hideTooltip(2);
                 element.focus();
                 // Logger - Spam 행위로 등록.
-                this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+                this.myLoggerService.logActionDirtyWord(
+                // apiKey:string
+                this.myEventWatchTowerService.getApiKey(), 
+                // dirtyWord:string
+                nameBeforeSanitize);
                 return;
             }
             else {
@@ -331,7 +393,7 @@ var NameComponent = (function () {
             templateUrl: 'name.component.html',
             styleUrls: ['name.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
     ], NameComponent);
     return NameComponent;
 }());

@@ -113,7 +113,16 @@ class Kakao extends MY_REST_Controller {
         $kakao_code = $this->my_paramchecker->get("code","kakao_code");
         if(empty($kakao_code)) 
         {
-            $this->respond_500("\$kakao_code is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_code is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -121,7 +130,16 @@ class Kakao extends MY_REST_Controller {
         $kakao_token = $this->postToken($kakao_code);
         if(is_null($output))
         {
-            $this->respond_500("\$output is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "output is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -141,13 +159,31 @@ class Kakao extends MY_REST_Controller {
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $this->respond_500("\$kakao_token_type is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $this->respond_500("\$kakao_access_token is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -155,7 +191,16 @@ class Kakao extends MY_REST_Controller {
         $singup = $this->postSignUp($kakao_token_type, $kakao_access_token);
         if(is_null($singup))
         {
-            $this->respond_500("\$singup is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "singup is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -175,13 +220,31 @@ class Kakao extends MY_REST_Controller {
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $this->respond_500("\$kakao_token_type is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $this->respond_500("\$kakao_access_token is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return;
         }
 
@@ -189,7 +252,16 @@ class Kakao extends MY_REST_Controller {
         $me = $this->postMe($kakao_token_type, $kakao_access_token);
         if(is_null($me))
         {
-            $this->respond_500("\$me is not valid!");
+            $this->respond_500_detail(
+                // $msg=""
+                "me is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -429,14 +501,44 @@ class Kakao extends MY_REST_Controller {
     {
         if(!(0 < $kakao_id)) 
         {
+            $this->respond_500_detail(
+                // $msg=""
+                "0 < \$kakao_id : $kakao_id",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return;
         }
         if(empty($nickname)) 
         {
+            $this->respond_500_detail(
+                // $msg=""
+                "nickname is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );             
             return;
         }
         if(empty($thumbnail_url)) 
         {
+            $this->respond_500_detail(
+                // $msg=""
+                "thumbnail_url is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );             
             return;
         }
 

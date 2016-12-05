@@ -39,10 +39,4 @@
 		<div class="col-md-4" style="padding:0px;"></div>
 	</div>
 
-	<div *ngIf="isAdmin" class="row">
-		<div *ngFor="let errorMsg of errorMsgArr">
-			<div [innerHTML]="errorMsg | safeHtml"></div>
-		</div>
-	</div>
-
 </div>

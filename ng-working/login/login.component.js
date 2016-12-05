@@ -30,30 +30,105 @@ var LoginComponent = (function () {
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
         this.cafeclassAuthUrl = "http://google.co.kr";
+        this.redirectUrl = "/class-center";
+        this.isAdmin = false;
+        this.errorMsgArr = [];
     }
     LoginComponent.prototype.ngOnInit = function () {
-        // 로그인되어 있는 회원인지 먼저 확인. 
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("login / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        // REMOVE ME
+        /*
+        // 로그인되어 있는 회원인지 먼저 확인.
         // 로그인되어 있는 상태라면 홈으로 이동시킵니다.
-        var _this = this;
+    
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
-                if (null != result && null != result.user) {
-                    // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
-                    _this.router.navigate(['/class-center']);
-                }
-                else {
-                    // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
-                    _this.init();
-                }
-            });
+        this.myCheckerService.getReady().then(() => {
+          this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+            if(null != result && null != result.user) {
+              // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+              this.router.navigate(['/class-center']);
+            } else {
+              // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+              this.init();
+            }
+          });
         }); // end Promise
+        */
+    };
+    LoginComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("login / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    LoginComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("login / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "login / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.checkLoginUser();
+        });
+    };
+    LoginComponent.prototype.checkLoginUser = function () {
+        var _this = this;
+        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (result) {
+            if (null != result && null != result.user) {
+                // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+                _this.router.navigate([_this.redirectUrl]);
+            }
+            else {
+                // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+                _this.init();
+            }
+        });
     };
     LoginComponent.prototype.init = function () {
         var _this = this;
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeLogin);
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         // 1. kakao
         this.loginService

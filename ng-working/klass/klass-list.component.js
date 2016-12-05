@@ -30,6 +30,8 @@ var KlassListComponent = (function () {
         // 검색상태 관련
         this.isSearchEnabled = false;
         this.searchTerms = new Subject_1.Subject();
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         // EVENT
         this.isOverMagnifier = false;
         this.prevSelectileMap = null;
@@ -38,10 +40,99 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyKlassList);
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-list / ngOnInit / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        // REMOVE ME
         // get class list
+        /*
+        this.route.params.forEach((params: Params) => {
+          this.selectedId = params['id'];
+          this.service.getKlasses().then(klasses => this.klasses = klasses);
+        });
+    
+        // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
+        this.myEventWatchTowerService.announceToggleTopMenu(true);
+    
+        // 회원 로그인 쿠키를 가져옵니다.
+        // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
+        this.myCheckerService.getReady().then(() => {
+          this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+    
+            console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
+            console.log("result : ",result);
+    
+            if(null != result && null != result.user) {
+              
+              this.loginUser = result.user;
+              // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
+              this.myEventWatchTowerService.announceLogin(this.loginUser);
+            }
+          });
+        }); // end Promise
+       */
+    };
+    KlassListComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("naver-callback / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    KlassListComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("naver-callback / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "login / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.logPageEnter();
+        });
+    };
+    KlassListComponent.prototype.logPageEnter = function () {
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeKlassList);
+        this.getKlassList();
+    };
+    KlassListComponent.prototype.getKlassList = function () {
+        var _this = this;
         this.route.params.forEach(function (params) {
             _this.selectedId = params['id'];
             _this.service.getKlasses().then(function (klasses) { return _this.klasses = klasses; });
@@ -60,33 +151,7 @@ var KlassListComponent = (function () {
                     _this.myEventWatchTowerService.announceLogin(_this.loginUser);
                 }
             });
-        }); // end Promise    
-        /*
-        let loginUser:User = this.myEventWatchTowerService.getLoginUser();
-        if(null != loginUser) {
-          // shared service에 이미 저장된 로그인 유저를 가져옴.
-          console.log("shared service에 이미 저장된 로그인 유저를 가져옴.");
-          console.log("loginUser : ",loginUser);
-          this.loginUser = loginUser;
-          this.myEventWatchTowerService.announceLogin(this.loginUser);
-        } else {
-          // shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.
-          this.myCheckerService.getReady().then(() => {
-            this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-    
-              console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-              console.log("loginUser : ",loginUser);
-    
-              if(null != result && null != result.user) {
-                
-                this.loginUser = result.user;
-                // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-                this.myEventWatchTowerService.announceLogin(this.loginUser);
-              }
-            });
-          }); // end Promise
-        } // end if
-        */
+        }); // end Promise
     };
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();

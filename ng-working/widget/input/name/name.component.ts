@@ -10,6 +10,8 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
+
 
 @Component({
   moduleId: module.id,
@@ -45,10 +47,80 @@ export class NameComponent implements OnInit {
 
   isShowPopover:boolean=false;
 
+  private redirectUrl:string="/class-center";
+  isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
+
   constructor(  private myLoggerService:MyLoggerService, 
+                private myEventWatchTowerService:MyEventWatchTowerService, 
                 private myEventService:MyEventService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("name / ngOnInit / init");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+  }
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / setIsAdmin / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("name / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / setMyCheckerReady / 시작");
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("name / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `name / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+    });    
+  }   
 
   private setMyChecker() :void {
     if(null == this.myCheckerService) {
@@ -220,7 +292,12 @@ export class NameComponent implements OnInit {
         element.focus();
 
         // Logger - Spam 행위로 등록.
-        this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+        this.myLoggerService.logActionDirtyWord(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // dirtyWord:string
+          nameBeforeSanitize
+        );
 
         return;
 

@@ -73,6 +73,34 @@ var MyCheckerService = (function () {
             return Promise.resolve();
         });
     };
+    // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
+    MyCheckerService.prototype.setReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
+        if (null == checkerMap) {
+            return;
+        }
+        if (null == constMap) {
+            return;
+        }
+        if (null == dirtyWordList) {
+            return;
+        }
+        if (null == apiKey || "" == apiKey) {
+            return;
+        }
+        this.checkerMap = checkerMap;
+        this.constMap = constMap;
+        this.dirtyWordList = dirtyWordList;
+        this.apiKey = apiKey;
+    };
+    MyCheckerService.prototype.getCheckerMap = function () {
+        return this.checkerMap;
+    };
+    MyCheckerService.prototype.getConstMap = function () {
+        return this.constMap;
+    };
+    MyCheckerService.prototype.getDirtyWordList = function () {
+        return this.dirtyWordList;
+    };
     MyCheckerService.prototype.getAPIKey = function () {
         return this.apiKey;
     };

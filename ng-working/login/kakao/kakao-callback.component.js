@@ -14,9 +14,11 @@ var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var user_service_1 = require('../../users/service/user.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, userService, myLoggerService, myCheckerService, activatedRoute, router) {
+    function KakaoCallbackComponent(loginService, myEventWatchTowerService, userService, myLoggerService, myCheckerService, activatedRoute, router) {
         this.loginService = loginService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
@@ -24,94 +26,242 @@ var KakaoCallbackComponent = (function () {
         this.router = router;
         this.redirectUrl = "/class-center";
         this.kakaoSignupCodeAlreadyRegisterd = -102;
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         // Do something...
     } // end function
     KakaoCallbackComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginKakao);
-        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
-        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
-            _this.code = param['code'];
-            if (null != _this.code && "" != _this.code) {
-                _this.getKakaoToken(_this.code);
-            }
-        }); // end subscribe
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / ngOnInit / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
     }; // end function
     KakaoCallbackComponent.prototype.ngOnDestroy = function () {
         // prevent memory leak by unsubscribing
         this.subscription.unsubscribe();
     };
+    KakaoCallbackComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("kakao-callback / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    KakaoCallbackComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("kakao-callback / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.init();
+        });
+    };
+    KakaoCallbackComponent.prototype.init = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / init / 시작");
+        // 페이지 진입을 기록으로 남깁니다.
+        this.logActionPage();
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.getQueryString();
+    }; // end init
+    KakaoCallbackComponent.prototype.logActionPage = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / logActionPage / 시작");
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeLoginKakao).then(function (result) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("kakao-callback / logActionPage / result : ", result);
+        });
+    };
+    KakaoCallbackComponent.prototype.getQueryString = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getQueryString / 시작");
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
+            if (isDebug)
+                console.log("kakao-callback / getQueryString / param : ", param);
+            _this.code = param['code'];
+            if (null != _this.code && "" != _this.code) {
+                if (isDebug)
+                    console.log("kakao-callback / getQueryString / this.code : ", _this.code);
+                _this.getKakaoToken(_this.code);
+            }
+        }); // end subscribe
+    };
     // KAKAO
     // 카카오 로그인 토큰을 가져옵니다.
     KakaoCallbackComponent.prototype.getKakaoToken = function (kakaoCode) {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getKakaoToken / 시작");
+        if (isDebug)
+            console.log("kakao-callback / getKakaoToken / kakaoCode : ", kakaoCode);
         if (null == kakaoCode || "" == kakaoCode) {
-            console.log("!Error! / login.compoenet / ");
+            if (isDebug)
+                console.log("kakao-callback / getKakaoToken / 중단 / kakaoCode is not valid!");
+            // TODO - 에러 로그 등록
             return;
         }
         this.loginService
             .getKakaoToken(kakaoCode)
             .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("kakao-callback / getKakaoToken / result : ", result);
+            if (isDebug)
+                console.log("kakao-callback / getKakaoToken / result : ", result);
             if (null != result &&
                 null != result.access_token &&
                 null != result.token_type) {
-                result.access_token;
-                result.token_type;
+                if (isDebug)
+                    console.log("kakao-callback / getKakaoToken / result.access_token : ", result.access_token);
+                if (isDebug)
+                    console.log("kakao-callback / getKakaoToken / result.access_token : ", result.token_type);
                 // 유저 앱등록을 진행합니다.
                 _this.getKakaoSignUp(result.token_type, result.access_token);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoToken / Failed! / kakaoCode : " + kakaoCode);
             }
         });
     };
     // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
     KakaoCallbackComponent.prototype.getKakaoSignUp = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getKakaoSignUp / 시작");
         this.loginService
             .getKakaoSignUp(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
-            // this.kakaoToken = kakaoToken;
-            console.log("kakao-callback / getKakaoSignUp / result : ", result);
+            if (isDebug)
+                console.log("kakao-callback / getKakaoSignUp / result : ", result);
             if (null != result &&
                 null != result.code &&
                 null != result.msg) {
                 var code = result.code;
                 var msg = result.msg;
                 if (_this.kakaoSignupCodeAlreadyRegisterd === code) {
+                    if (isDebug)
+                        console.log("kakao-callback / getKakaoSignUp / code : ", code);
+                    if (isDebug)
+                        console.log("kakao-callback / getKakaoSignUp / msg : ", msg);
                     // 유저 정보를 가져옵니다.
                     _this.getKakaoMe(kakaoTokenType, kakaoAccessToken);
                 }
             }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoSignUp / Failed! / kakaoTokenType : " + kakaoTokenType + " / kakaoAccessToken : " + kakaoAccessToken);
+            } // end if
         });
     };
     KakaoCallbackComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getKakaoMe / 시작");
         this.loginService
             .getKakaoMe(kakaoTokenType, kakaoAccessToken)
             .then(function (result) {
+            if (isDebug)
+                console.log("kakao-callback / getKakaoMe / result : ", result);
             if (null == result || null == result.id) {
-                // 로그인 실패. 홈으로 리다이렉트
+                // 로그인 실패
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoMe / Failed! / kakaoTokenType : " + kakaoTokenType + " / kakaoAccessToken : " + kakaoAccessToken);
+                // 홈으로 리다이렉트
                 _this.router.navigate(['/class-center']);
                 return;
             }
             // 카카오 플랫폼에서의 로그인 성공!
+            if (isDebug)
+                console.log("kakao-callback / getKakaoMe / result.kakao_id : ", result.kakao_id);
             // 카카오 아이디로 유저 정보를 가져옵니다.
             _this.getUserByKakaoId(result.kakao_id);
-            // 1. 최초 등록된 유저라면 유저 정보 등록 창으로 이동.
-            // 2. 이미 등록된 유저라면 이전 페이지로 리다이렉트 합니다. 
-            // 1. mobile, gender가 없다면 정상 등록된 유저가 아님. 회원 가입 창으로 이동.
-            // this.router.navigate(['/login/signup/kakao', result.kakao_id]);
         }); // end service
     }; // end method 
     KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getUserByKakaoId / 시작");
         this.userService
             .getUserByKakaoId(kakaoId)
             .then(function (result) {
-            console.log("getUserByKakaoId / result : ", result);
+            if (isDebug)
+                console.log("kakao-callback / getUserByKakaoId / result : ", result);
             if (null == result || null == result.user) {
                 // 카카오 로그인은 성공. 하지만 유저 정보가 없음.
+                // 카카오 유저 정보가 DB에 등록되지 않았음!
+                if (isDebug)
+                    console.log("kakao-callback / getUserByKakaoId / 중단 / result is not valid!");
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoMe / Failed! / kakaoId : " + kakaoId);
                 return;
             }
             else if (null == result.user.gender ||
@@ -121,30 +271,46 @@ var KakaoCallbackComponent = (function () {
                 // 카카오 로그인은 성공. 카카오 프로필에서 가져온 정보로 유저 등록됨. 
                 // 하지만 추가 정보 필요. 
                 // 회원 가입창으로 이동.
+                if (isDebug)
+                    console.log("kakao-callback / getUserByKakaoId / 중단 / 회원 가입창으로 이동.");
                 _this.router.navigate(['/login/signup/kakao', result.kakao_id]);
                 return;
             }
             else {
                 // 카카오 로그인 성공. 등록된 유저 정보가 문제 없음. 
                 // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
+                if (isDebug)
+                    console.log("kakao-callback / getUserByKakaoId / 로그인 성공!, 로그인 쿠키 만듦");
                 // api key 필요!
-                _this.myCheckerService
-                    .getReady()
-                    .then(function () {
-                    _this.userService
-                        .confirmUserKakao(_this.myCheckerService.getAPIKey(), result.kakao_id)
-                        .then(function (result) {
-                        if (null == result || null == result.success || !result.success) {
-                            // kakaoid로 쿠키 인증 실패. 홈으로 이동.
-                            _this.router.navigate(['/class-center']);
-                            return;
-                        }
-                        // 쿠키 인증 성공!
-                        // 로그인 직전 페이지로 리다이렉트. 
-                        // 돌아갈 주소가 없다면, 홈으로 이동.
+                _this.userService
+                    .confirmUserKakao(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // kakaoId:string
+                result.kakao_id).then(function (result) {
+                    if (null == result || null == result.success || !result.success) {
+                        // kakaoid로 쿠키 인증 실패. 
+                        if (isDebug)
+                            console.log("kakao-callback / getUserByKakaoId / 중단 / kakaoid로 쿠키 인증 실패. 홈으로 이동.");
+                        // 에러 로그 등록
+                        _this.myLoggerService.logError(
+                        // apiKey:string
+                        _this.myEventWatchTowerService.getApiKey(), 
+                        // errorType:string
+                        _this.myLoggerService.errorAPIFailed, 
+                        // errorMsg:string
+                        "kakao-callback / getUserByKakaoId / Failed! / kakaoId : " + kakaoId);
+                        // 홈으로 이동.
                         _this.router.navigate(['/class-center']);
-                    }); // end userService
-                }); // end myCheckerService
+                        return;
+                    }
+                    // 쿠키 인증 성공!
+                    // 로그인 직전 페이지로 리다이렉트. 
+                    // 돌아갈 주소가 없다면, 홈으로 이동.
+                    if (isDebug)
+                        console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
+                    _this.router.navigate(['/class-center']);
+                }); // end userService
             } // end if
         }); // end service
     };
@@ -155,7 +321,7 @@ var KakaoCallbackComponent = (function () {
             templateUrl: 'kakao-callback.component.html',
             styleUrls: ['kakao-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
     ], KakaoCallbackComponent);
     return KakaoCallbackComponent;
 }());

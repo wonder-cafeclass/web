@@ -39,12 +39,16 @@ export class LoginComponent implements OnInit {
   @ViewChild(PasswordComponent)
   private passwordComponent: PasswordComponent;
 
-
   private email:string;
   private password:string;
 
   warningMsgHead:string;
   warningMsgTail:string;
+
+  private redirectUrl:string="/class-center";
+  private apiKey:string;
+  isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
 
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
@@ -59,6 +63,18 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("login / ngOnInit / init");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+    // REMOVE ME
+    /*
     // 로그인되어 있는 회원인지 먼저 확인. 
     // 로그인되어 있는 상태라면 홈으로 이동시킵니다.
 
@@ -75,13 +91,86 @@ export class LoginComponent implements OnInit {
         }
       });
     }); // end Promise
+    */
 
   }
 
-  init() :void {
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("login / setIsAdmin / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("login / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("login / setMyCheckerReady / 시작");
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("login / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `login / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      this.checkLoginUser();
+
+    });    
+  }  
+
+  private checkLoginUser(): void {
+    this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+      if(null != result && null != result.user) {
+        // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+        this.router.navigate([this.redirectUrl]);
+      } else {
+        // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+        this.init();
+      }
+    });
+  }
+
+  private init() :void {
     
     // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);    
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.myEventWatchTowerService.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeLogin
+    );    
 
     // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
     // 1. kakao

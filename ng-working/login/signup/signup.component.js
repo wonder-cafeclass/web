@@ -24,38 +24,210 @@ var birthday_component_1 = require('./birthday/birthday.component');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var SignupComponent = (function () {
-    function SignupComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, route, router) {
-        this.loginService = loginService;
+    function SignupComponent(signupService, userService, myLoggerService, myCheckerService, myEventService, myEventWatchTowerService, route, router) {
+        this.signupService = signupService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.route = route;
         this.router = router;
         this.gender = "";
         this.hasAgreedWithTerms = false;
         this.tooltipMsgTerms = null;
         this.tooltipMsgTermsWarning = "약관 동의가 필요합니다.";
+        this.redirectUrl = "/class-center";
+        this.isAdmin = false;
+        this.errorMsgArr = [];
+        // REMOVE ME
         // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
-        this.myCheckerService.getReady();
+        // this.myCheckerService.getReady();
     }
     SignupComponent.prototype.ngOnInit = function () {
-        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("signup / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        // REMOVE ME
+        /*
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignup);
+        this.myLoggerService.logActionPage(this.myLoggerService.pageTypeSignup);
+    
+        // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
+        this.route.params.switchMap((params: Params) => {
+    
+          if(isDebug) console.log("signup / ngOnInit / switchMap / params : ",params);
+    
+          if(null != params['facebookId']) {
+    
+            this.facebookId = params['facebookId'];
+            if(isDebug) console.log("signup / ngOnInit / switchMap / this.facebookId : ",this.facebookId);
+    
+            if(null != this.facebookId && "" != this.facebookId) {
+              return this.userService.getUserByFacebookId(this.facebookId);
+            }
+          }
+    
+          if(null != params['kakaoId']) {
+    
+            this.kakaoId = params['kakaoId'];
+            if(isDebug) console.log("signup / ngOnInit / switchMap / this.kakaoId : ",this.kakaoId);
+    
+            if(null != this.kakaoId && "" != this.kakaoId) {
+              return this.userService.getUserByKakaoId(this.kakaoId);
+            }
+          }
+    
+          if(null != params['naverId']) {
+    
+            this.naverId = params['naverId'];
+            if(isDebug) console.log("signup / ngOnInit / switchMap / this.naverId : ",this.naverId);
+    
+            if(null != this.naverId && "" != this.naverId) {
+              return this.userService.getUserByNaverId(this.naverId);
+            }
+          }
+    
+          // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
+          return Promise.resolve();
+    
+        }).subscribe((result) => {
+    
+          if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);
+          if(null != result && null != result["user"]) {
+            this.user = result["user"];
+          }
+    
+          if(isDebug) console.log("signup / ngOnInit / subscribe / this.user : ",this.user);
+          if(null == this.user) {
+            return;
+          }
+    
+          if(null != this.user.facebook_id && "" != this.user.facebook_id) {
+    
+            // 페이스북 로그인 - 유저 정보 가져오기.
+            // email
+            this.emailComponent.setEmail(this.user.email);
+            this.email = this.user.email;
+            // name
+            this.nameComponent.setName(this.user.name);
+            this.name = this.user.name;
+            // nickname
+            this.nicknameComponent.setNickname(this.user.nickname);
+            this.nickname = this.user.nickname;
+            // thumbnail
+            this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+            this.thumbnail = this.user.thumbnail;
+    
+          } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
+    
+            // 카카오 로그인 - 유저 정보 가져오기.
+            // name
+            this.nameComponent.setName(this.user.name);
+            this.name = this.user.name;
+            // nickname
+            this.nicknameComponent.setNickname(this.user.nickname);
+            this.nickname = this.user.nickname;
+            // thumbnail
+            this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
+            this.thumbnail = this.user.thumbnail;
+    
+          } else if(null != this.user.naver_id && "" != this.user.naver_id) {
+    
+            // 네이버 로그인 - 유저 정보 가져오기.
+            // email
+            this.emailComponent.setEmail(this.user.email);
+            this.email = this.user.email;
+            // name
+            this.nameComponent.setName(this.user.name);
+            this.name = this.user.name;
+            // nickname
+            this.nicknameComponent.setNickname(this.user.nickname);
+            this.nickname = this.user.nickname;
+            // gender
+            this.genderComponent.setGender(this.user.gender);
+            this.gender = this.user.gender;
+    
+          }
+    
+        });
+        */
+    };
+    SignupComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("signup / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    SignupComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("signup / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "signup / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.logPageEnter();
+            _this.checkSignedUpUserInfo();
+        });
+    };
+    SignupComponent.prototype.logPageEnter = function () {
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeSignup);
+    };
+    SignupComponent.prototype.checkSignedUpUserInfo = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / checkSignedUpUserInfo / 시작");
         // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
         this.route.params.switchMap(function (params) {
             if (isDebug)
-                console.log("signup / ngOnInit / switchMap / params : ", params);
+                console.log("signup / checkSignedUpUserInfo / switchMap / params : ", params);
             if (null != params['facebookId']) {
                 _this.facebookId = params['facebookId'];
                 if (isDebug)
-                    console.log("signup / ngOnInit / switchMap / this.facebookId : ", _this.facebookId);
+                    console.log("signup / checkSignedUpUserInfo / switchMap / this.facebookId : ", _this.facebookId);
                 if (null != _this.facebookId && "" != _this.facebookId) {
                     return _this.userService.getUserByFacebookId(_this.facebookId);
                 }
@@ -63,7 +235,7 @@ var SignupComponent = (function () {
             if (null != params['kakaoId']) {
                 _this.kakaoId = params['kakaoId'];
                 if (isDebug)
-                    console.log("signup / ngOnInit / switchMap / this.kakaoId : ", _this.kakaoId);
+                    console.log("signup / checkSignedUpUserInfo / switchMap / this.kakaoId : ", _this.kakaoId);
                 if (null != _this.kakaoId && "" != _this.kakaoId) {
                     return _this.userService.getUserByKakaoId(_this.kakaoId);
                 }
@@ -71,7 +243,7 @@ var SignupComponent = (function () {
             if (null != params['naverId']) {
                 _this.naverId = params['naverId'];
                 if (isDebug)
-                    console.log("signup / ngOnInit / switchMap / this.naverId : ", _this.naverId);
+                    console.log("signup / checkSignedUpUserInfo / switchMap / this.naverId : ", _this.naverId);
                 if (null != _this.naverId && "" != _this.naverId) {
                     return _this.userService.getUserByNaverId(_this.naverId);
                 }
@@ -80,12 +252,12 @@ var SignupComponent = (function () {
             return Promise.resolve();
         }).subscribe(function (result) {
             if (isDebug)
-                console.log("signup / ngOnInit / subscribe / result : ", result);
+                console.log("signup / checkSignedUpUserInfo / subscribe / result : ", result);
             if (null != result && null != result["user"]) {
                 _this.user = result["user"];
             }
             if (isDebug)
-                console.log("signup / ngOnInit / subscribe / this.user : ", _this.user);
+                console.log("signup / checkSignedUpUserInfo / subscribe / this.user : ", _this.user);
             if (null == _this.user) {
                 return;
             }
@@ -130,9 +302,9 @@ var SignupComponent = (function () {
                 // gender
                 _this.genderComponent.setGender(_this.user.gender);
                 _this.gender = _this.user.gender;
-            }
-        });
-    };
+            } // end if
+        }); // end subscribe
+    }; // end checkSignedUpUserInfo
     SignupComponent.prototype.onClickSignup = function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -394,7 +566,7 @@ var SignupComponent = (function () {
                 console.log("signup / sendMailUserValidation / result : ", result);
             if (null != result && null != result.user_validation_key) {
                 // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
-                _this.router.navigate(['/login/signup/validation']);
+                _this.router.navigate(['/signup/signup/validation']);
             }
             else {
             }
@@ -582,7 +754,7 @@ var SignupComponent = (function () {
             templateUrl: 'signup.component.html',
             styleUrls: ['signup.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.ActivatedRoute, router_1.Router])
     ], SignupComponent);
     return SignupComponent;
 }());

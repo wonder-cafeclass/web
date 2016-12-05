@@ -14,9 +14,11 @@ var login_service_1 = require('../service/login.service');
 var user_service_1 = require('../../users/service/user.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var NaverCallbackComponent = (function () {
-    function NaverCallbackComponent(loginService, myLoggerService, myCheckerService, userService, activatedRoute, router) {
+    function NaverCallbackComponent(loginService, myEventWatchTowerService, myLoggerService, myCheckerService, userService, activatedRoute, router) {
         this.loginService = loginService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.userService = userService;
@@ -24,37 +26,136 @@ var NaverCallbackComponent = (function () {
         this.router = router;
         this.redirectUrl = "/class-center";
         this.isValidState = false;
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         // Do something...
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
-        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("naver-callback / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        /*
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginNaver);
+        this.myLoggerService.logActionPage(this.myLoggerService.pageTypeLoginNaver);
+    
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(
+          (param: any) => {
+    
+            if(isDebug) console.log("naver-callback / queryParams / param : ",param);
+    
+            this.code = param['code'];
+            this.state = param['state'];
+    
+            if(isDebug) console.log("naver-callback / queryParams / this.code : ",this.code);
+            if(isDebug) console.log("naver-callback / queryParams / this.state : ",this.state);
+    
+            if(  null != this.code &&
+                 "" != this.code &&
+                 null != this.state &&
+                 "" != this.state) {
+              
+              this.getNaverState(this.state, this.code);
+            } // end if
+          }
+        ); // end subscribe
+        */
+    }; // end function
+    NaverCallbackComponent.prototype.ngOnDestroy = function () {
+        // prevent memory leak by unsubscribing
+        this.subscription.unsubscribe();
+    };
+    NaverCallbackComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("naver-callback / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    NaverCallbackComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("naver-callback / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.logActionPage();
+            _this.getQueryString();
+        });
+    };
+    NaverCallbackComponent.prototype.logActionPage = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / logActionPage / 시작");
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeLoginNaver).then(function (result) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("naver-callback / logActionPage / result : ", result);
+        });
+    };
+    NaverCallbackComponent.prototype.getQueryString = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / getQueryString / 시작");
         this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
             if (isDebug)
-                console.log("naver-callback / queryParams / param : ", param);
+                console.log("naver-callback / getQueryString / param : ", param);
             _this.code = param['code'];
             _this.state = param['state'];
             if (isDebug)
-                console.log("naver-callback / queryParams / this.code : ", _this.code);
+                console.log("naver-callback / getQueryString / this.code : ", _this.code);
             if (isDebug)
-                console.log("naver-callback / queryParams / this.state : ", _this.state);
+                console.log("naver-callback / getQueryString / this.state : ", _this.state);
             if (null != _this.code &&
                 "" != _this.code &&
                 null != _this.state &&
                 "" != _this.state) {
                 _this.getNaverState(_this.state, _this.code);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "naver-callback / getQueryString / Failed! / this.code : " + _this.code + " / this.state : " + _this.state);
             } // end if
         }); // end subscribe
-    }; // end function
-    NaverCallbackComponent.prototype.ngOnDestroy = function () {
-        // prevent memory leak by unsubscribing
-        this.subscription.unsubscribe();
     };
     NaverCallbackComponent.prototype.getNaverState = function (state, code) {
         var _this = this;
@@ -81,6 +182,17 @@ var NaverCallbackComponent = (function () {
                 null != result.is_valid_state) {
                 _this.isValidState = result.is_valid_state;
             }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "naver-callback / getNaverState / Failed! / state : " + state);
+                return;
+            }
             if (isDebug)
                 console.log("naver-callback / getState / getNaverState / this.isValidState : ", _this.isValidState);
             // Session에 저장된 state와 비교합니다.
@@ -95,6 +207,14 @@ var NaverCallbackComponent = (function () {
                 // - 상황 정보를 로그로 남김. ex) '비정상 로그인 접근'
                 if (isDebug)
                     console.log("naver-callback / getNaverState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "naver-callback / getNaverState / Failed! / this.isValidState : " + _this.isValidState); // end logError
             }
         });
     };
@@ -117,6 +237,16 @@ var NaverCallbackComponent = (function () {
                 null != result.access_token &&
                 null != result.token_type) {
                 _this.getNaverMe();
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "naver-callback / getNaverAccess / Failed! / access_token : " + result.access_token + " / token_type : " + result.token_type); // end logError
             } // end if
         }); // end method
     }; // end method
@@ -133,9 +263,19 @@ var NaverCallbackComponent = (function () {
             if (isDebug)
                 console.log("naver-callback / getNaverMe / result : ", result);
             if (null == result || null == result.kakao_id) {
-                // TODO - 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
+                // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
                 if (isDebug)
                     console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "naver-callback / getNaverMe / Failed!"); // end logError
+                // 홈으로 리다이렉트
+                _this.router.navigate([_this.redirectUrl]);
                 return;
             }
             // 네이버 로그인 성공!
@@ -158,30 +298,33 @@ var NaverCallbackComponent = (function () {
                 // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
                 if (isDebug)
                     console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-                // api key 필요!
-                _this.myCheckerService
-                    .getReady()
-                    .then(function () {
-                    _this.userService
-                        .confirmUserNaver(_this.myCheckerService.getAPIKey(), result.naver_id)
-                        .then(function (result) {
+                _this.userService
+                    .confirmUserNaver(_this.myCheckerService.getAPIKey(), result.naver_id)
+                    .then(function (result) {
+                    if (isDebug)
+                        console.log("naver-callback / confirmUserNaver / result : ", result);
+                    if (null == result || null == result.success || !result.success) {
+                        // naver id로 쿠키 인증 실패. 홈으로 이동.
                         if (isDebug)
-                            console.log("naver-callback / confirmUserNaver / result : ", result);
-                        if (null == result || null == result.success || !result.success) {
-                            // facebook id로 쿠키 인증 실패. 홈으로 이동.
-                            if (isDebug)
-                                console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
-                            _this.router.navigate(['/class-center']);
-                            return;
-                        }
-                        // 쿠키 인증 성공!
-                        // 로그인 직전 페이지로 리다이렉트. 
-                        // 돌아갈 주소가 없다면, 홈으로 이동.
-                        if (isDebug)
-                            console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-                        _this.router.navigate(['/class-center']);
-                    }); // end userService
-                }); // end myCheckerService        
+                            console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
+                        _this.router.navigate([_this.redirectUrl]);
+                        // 에러 로그 등록
+                        _this.myLoggerService.logError(
+                        // apiKey:string
+                        _this.myEventWatchTowerService.getApiKey(), 
+                        // errorType:string
+                        _this.myLoggerService.errorAPIFailed, 
+                        // errorMsg:string
+                        "naver-callback / confirmUserNaver / Failed!"); // end logError              
+                        return;
+                    }
+                    // 쿠키 인증 성공!
+                    // 로그인 직전 페이지로 리다이렉트. 
+                    // 돌아갈 주소가 없다면, 홈으로 이동.
+                    if (isDebug)
+                        console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+                    _this.router.navigate([_this.redirectUrl]);
+                }); // end userService
             } // end if
         }); // end method    
     };
@@ -192,7 +335,7 @@ var NaverCallbackComponent = (function () {
             templateUrl: 'naver-callback.component.html',
             styleUrls: ['naver-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_event_watchtower_service_1.MyEventWatchTowerService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
     ], NaverCallbackComponent);
     return NaverCallbackComponent;
 }());

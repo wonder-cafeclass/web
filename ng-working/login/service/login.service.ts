@@ -232,47 +232,4 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  // REMOVE ME
-  /*
-  private extractData(res: Response) {
-
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("user.service / extractData / 시작");
-      if(isDebug) console.log("user.service / extractData / res : ",res);
-
-
-      let body = res.json();
-
-      if(isDebug) console.log("user.service / extractData / body : ",body);
-
-      // TODO - 데이터 검증 프로세스.
-      if(null == body.data || !body.success) {
-        if(isDebug) console.log("user.service / extractData / 중단 / 데이터가 없습니다.");
-        return null;
-      }
-
-      return body.data;
-  }
-
-  private handleError (error: any) {
-
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("user.service / handleError / 시작");
-
-      // In a real world app, we might use a remote logging infrastructure
-      // We'd also dig deeper into the error to get a better message
-      let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-
-      if(isDebug) console.log("user.service / handleError / errMsg : ",errMsg);
-
-      // console.error(errMsg); // log to console instead
-      // TODO - 에러 내용을 저장해 두어야 합니다.
-
-      return Promise.reject(errMsg);
-  }
-  */
-
 }

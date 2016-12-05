@@ -61,7 +61,9 @@
 
 		"agent_type":"is_str|||matches[agent_type]",
 
-		"logger_page_key":"is_str|||matches[logger_page_key]",
+		"logger_page_type":"is_str|||matches[logger_page_type]",
+		"logger_error_type":"is_str|||matches[logger_error_type]",
+		"logger_error_msg":"is_str|||regex_match_include[/^[a-zA-Z0-9\\s\\-\\_\\$\\!\\?]+$/]",
 
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
@@ -247,13 +249,20 @@
 		"agent_type":["B","M","R"],
 		"agent_type_desc":["PC Browser","Mobile","Robot"],
 
-		"logger_page_key":[
+		"logger_page_type":[
 			"LOG_IN",
 			"LOG_IN_FACEBOOK",
 			"LOG_IN_KAKAO",
 			"LOG_IN_NAVER",
 
 			"SIGNUP",
+			"EOL"
+		],
+
+		"logger_error_type":[
+			"NOT_VALID_VALUE",
+			"API_FAILED",
+			"UNKNOWN_ERROR",
 			"EOL"
 		],
 

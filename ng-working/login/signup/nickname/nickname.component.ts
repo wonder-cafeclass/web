@@ -228,7 +228,7 @@ export class NicknameComponent implements OnInit {
         this.hideTooltip(2);
 
         // Logger - Spam 행위로 등록.
-        this.myLoggerService.logActionDirtyWord(inputStrBeforeSanitize);
+        // this.myLoggerService.logActionDirtyWord(inputStrBeforeSanitize);
 
         this.isSuccessInput = false;
         return;

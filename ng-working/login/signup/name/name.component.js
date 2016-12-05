@@ -167,7 +167,7 @@ var NameComponent = (function () {
                 this.hideTooltip(2);
                 element.focus();
                 // Logger - Spam 행위로 등록.
-                this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+                // this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
                 return;
             }
             else {

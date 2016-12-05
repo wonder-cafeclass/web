@@ -2,14 +2,16 @@ import {  Component,
           Input, 
           Output,
           OnInit, 
-          OnDestroy}            from '@angular/core';
-import {  Subscription }        from 'rxjs';          
+          OnDestroy}                  from '@angular/core';
+import {  Subscription }              from 'rxjs';          
 import {  Router,
-          ActivatedRoute }      from '@angular/router';
-import { LoginService }         from '../service/login.service';
-import { UserService }          from '../../users/service/user.service';
-import { MyCheckerService }     from '../../util/service/my-checker.service';
-import { MyLoggerService }      from '../../util/service/my-logger.service';
+          ActivatedRoute }            from '@angular/router';
+import { LoginService }               from '../service/login.service';
+import { UserService }                from '../../users/service/user.service';
+import { MyCheckerService }           from '../../util/service/my-checker.service';
+import { MyLoggerService }            from '../../util/service/my-logger.service';
+
+import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
 @Component({
   moduleId: module.id,
@@ -21,14 +23,16 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
   private code:string;
   private state:string;
-
   private redirectUrl:string="/class-center";
-
   private isValidState:boolean=false;
-
   private subscription: Subscription;
 
+  private apiKey:string;
+  isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
+
   constructor(  public loginService: LoginService,
+                private myEventWatchTowerService:MyEventWatchTowerService,
                 public myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private userService:UserService,                
@@ -44,8 +48,15 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
     // let isDebug:boolean = false;
     if(isDebug) console.log("naver-callback / ngOnInit / init");
 
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+    /*
     // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginNaver);
+    this.myLoggerService.logActionPage(this.myLoggerService.pageTypeLoginNaver);
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
     this.subscription = this.activatedRoute.queryParams.subscribe(
@@ -68,6 +79,8 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
         } // end if
       }
     ); // end subscribe
+    */
+
 
   } // end function
 
@@ -75,6 +88,112 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
     // prevent memory leak by unsubscribing
     this.subscription.unsubscribe();
   }  
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("naver-callback / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("naver-callback / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        return;
+      }
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      this.logActionPage();
+      this.getQueryString();
+
+    });    
+  }
+
+  private logActionPage() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / logActionPage / 시작");
+
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.myEventWatchTowerService.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeLoginNaver
+    ).then(result => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("naver-callback / logActionPage / result : ",result);
+    })
+  }  
+
+  private getQueryString() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / getQueryString / 시작");
+
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
+
+        if(isDebug) console.log("naver-callback / getQueryString / param : ",param);
+
+        this.code = param['code'];
+        this.state = param['state'];
+
+        if(isDebug) console.log("naver-callback / getQueryString / this.code : ",this.code);
+        if(isDebug) console.log("naver-callback / getQueryString / this.state : ",this.state);
+
+        if(  null != this.code && 
+             "" != this.code && 
+             null != this.state && 
+             "" != this.state) {
+          
+          this.getNaverState(this.state, this.code);
+        } else {
+
+          // 에러 로그 등록
+          this.myLoggerService.logError(
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey(),
+            // errorType:string
+            this.myLoggerService.errorAPIFailed,
+            // errorMsg:string
+            `naver-callback / getQueryString / Failed! / this.code : ${this.code} / this.state : ${this.state}`
+          );
+
+        }// end if
+      }
+    ); // end subscribe
+
+  }
 
   private getNaverState(state:string, code:string) :void {
 
@@ -102,6 +221,17 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
           null != result.is_valid_state ) {
 
         this.isValidState = result.is_valid_state;
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `naver-callback / getNaverState / Failed! / state : ${state}`
+        );
+        return;
       }
 
       if(isDebug) console.log("naver-callback / getState / getNaverState / this.isValidState : ",this.isValidState);
@@ -118,6 +248,16 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
         // 2. state가 다를 경우, 사용자에게 메시지 노출. '비정상적인 접근입니다.'. 메시지 확인 뒤, 로그인 홈으로 이동.
         // - 상황 정보를 로그로 남김. ex) '비정상 로그인 접근'
         if(isDebug) console.log("naver-callback / getNaverState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `naver-callback / getNaverState / Failed! / this.isValidState : ${this.isValidState}`
+        ); // end logError
 
       }
     }); 
@@ -146,7 +286,19 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
         this.getNaverMe();
 
-      } // end if
+      } else {
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `naver-callback / getNaverAccess / Failed! / access_token : ${result.access_token} / token_type : ${result.token_type}`
+        ); // end logError
+
+      }// end if
     }); // end method
   } // end method
 
@@ -164,8 +316,22 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
       if(isDebug) console.log("naver-callback / getNaverMe / result : ",result);
 
       if(null == result || null == result.kakao_id) {
-        // TODO - 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
+        // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `naver-callback / getNaverMe / Failed!`
+        ); // end logError
+
+        // 홈으로 리다이렉트
+        this.router.navigate([this.redirectUrl]);
+
         return;
       }
 
@@ -192,33 +358,36 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
         if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
 
-        // api key 필요!
-        this.myCheckerService
-        .getReady()
-        .then(() => {
+        this.userService
+        .confirmUserNaver(this.myCheckerService.getAPIKey(), result.naver_id)
+        .then(result => {
 
-          this.userService
-          .confirmUserNaver(this.myCheckerService.getAPIKey(), result.naver_id)
-          .then(result => {
+          if(isDebug) console.log("naver-callback / confirmUserNaver / result : ",result);
 
-            if(isDebug) console.log("naver-callback / confirmUserNaver / result : ",result);
+          if(null == result || null == result.success || !result.success) {
+            // naver id로 쿠키 인증 실패. 홈으로 이동.
+            if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
+            this.router.navigate([this.redirectUrl]);
 
-            if(null == result || null == result.success || !result.success) {
-              // facebook id로 쿠키 인증 실패. 홈으로 이동.
-              if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
-              this.router.navigate(['/class-center']);
-              return;
-            }
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.myEventWatchTowerService.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `naver-callback / confirmUserNaver / Failed!`
+            ); // end logError              
+            return;
+          }
 
-            // 쿠키 인증 성공!
-            // 로그인 직전 페이지로 리다이렉트. 
-            // 돌아갈 주소가 없다면, 홈으로 이동.
-            if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-            this.router.navigate(['/class-center']);
-            
-          }); // end userService
+          // 쿠키 인증 성공!
+          // 로그인 직전 페이지로 리다이렉트. 
+          // 돌아갈 주소가 없다면, 홈으로 이동.
+          if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+          this.router.navigate([this.redirectUrl]);
           
-        }); // end myCheckerService        
+        }); // end userService
         
       } // end if
 

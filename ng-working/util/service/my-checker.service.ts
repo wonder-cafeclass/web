@@ -60,6 +60,36 @@ export class MyCheckerService {
         });
     } 
 
+    // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
+    setReady(checkerMap:any, constMap:any, dirtyWordList:any, apiKey:string) :void {
+
+        if(null == checkerMap) {
+            return;
+        }
+        if(null == constMap) {
+            return;
+        }
+        if(null == dirtyWordList) {
+            return;
+        }
+        if(null == apiKey || "" == apiKey) {
+            return;
+        }
+        this.checkerMap = checkerMap;
+        this.constMap = constMap;
+        this.dirtyWordList = dirtyWordList;
+        this.apiKey = apiKey;
+    }
+
+    public getCheckerMap() :any {
+        return this.checkerMap;
+    }
+    public getConstMap() :any {
+        return this.constMap;
+    }
+    public getDirtyWordList() :any {
+        return this.dirtyWordList;
+    }
     public getAPIKey() :string {
         return this.apiKey;
     }

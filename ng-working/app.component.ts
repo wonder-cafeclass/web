@@ -11,6 +11,7 @@ import { ImageService }         	from './util/image.service';
 import { UserService }         		from './users/service/user.service';
 import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
 import { MyCheckerService }     	from './util/service/my-checker.service';
+import { MyLoggerService }          from './util/service/my-logger.service';
 
 import { User } 					from './users/model/user';
 
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
 					public imageService:ImageService,
 					private myEventWatchTowerService:MyEventWatchTowerService,
 					private myCheckerService:MyCheckerService,
+					private myLoggerService:MyLoggerService,
 					private route:ActivatedRoute,
 					public router:Router) {
 
@@ -39,20 +41,31 @@ export class AppComponent implements OnInit {
 	isAdmin:boolean=false;
 	loginUser:User;
 	toggleTopMenu:boolean=true;
+
+	errorMsgArr: string[]=[];
+
 	ngOnInit(): void {
 
-		// 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-		this.authService.getAdminAuth().then(
-			result => {
-				if(null != result.is_admin) {
-					this.isAdmin = result.is_admin;
-				}
-			}
-		);
+		this.subscribeAllErrors();
+		this.subscribeLoginUser();
+		this.subscribeToggleTopMenu();
 
+		this.setIsAdmin();
+		this.setMyChecker();
+
+	}
+	private subscribeLoginUser() :void {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("app-root / subscribeLoginUser / 시작");
+
+		// 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
 		// Subscribe login user
 		this.myEventWatchTowerService.loginAnnounced$.subscribe(
 			(loginUser:User) => {
+
+			if(isDebug) console.log("app-root / subscribeLoginUser / loginUser : ",loginUser);
 
 			// Example
 			/*
@@ -77,27 +90,96 @@ export class AppComponent implements OnInit {
 			*/			
 			// 로그인한 유저 정보가 들어왔습니다.
 			this.loginUser = loginUser;
-		});	
+		});
+	}
+	private subscribeToggleTopMenu() :void {
 
-		// Subscribe toggle top menu
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / subscribeToggleTopMenu / 시작`);
+
 		// 최상단 메뉴를 보이거나 감춥니다.
 		this.myEventWatchTowerService.toggleTopMenuAnnounced$.subscribe(
 			(toggleTopMenu:boolean) => {
-			this.toggleTopMenu = toggleTopMenu;
-		});				
 
+			if(isDebug) console.log(`app-root / subscribeToggleTopMenu / toggleTopMenu : ${toggleTopMenu}`);
+
+			this.toggleTopMenu = toggleTopMenu;
+		});
+	}
+	private subscribeAllErrors() :void {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / subscribeAllErrors / 시작`);
+
+		// 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
+		this.myEventWatchTowerService.errorMsgArr$.subscribe(
+			(errorMsgArr:string[]) => {
+
+			if(isDebug) console.log(`app-root / subscribeAllErrors / errorMsgArr : `,errorMsgArr);				
+			this.errorMsgArr = errorMsgArr;
+		});
+
+	}
+	private setIsAdmin() :void {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / setIsAdmin / 시작`);
+
+		// 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+		this.authService.getAdminAuth().then(
+			result => {
+
+				if(isDebug) console.log(`app-root / setIsAdmin / result : ${result}`);
+
+				if(null != result.is_admin) {
+					this.isAdmin = result.is_admin;
+					this.myEventWatchTowerService.announceIsAdmin(this.isAdmin);
+				} else {
+			        // 에러 로그 등록
+			        this.myLoggerService.logError(
+			          // apiKey:string
+			          this.myEventWatchTowerService.getApiKey(),
+			          // errorType:string
+			          this.myLoggerService.errorAPIFailed,
+			          // errorMsg:string
+			          `app-root / setIsAdmin / Failed!`
+			        );
+				}
+			}
+		);		
+	}
+	private setMyChecker() :void {
 		// 회원 로그인 쿠키를 가져옵니다.
 		// 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
 		this.myCheckerService.getReady().then(() => {
-			this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-				if(null != result && null != result.user) {
-					this.loginUser = result.user;
 
-					// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
-					this.myEventWatchTowerService.announceLogin(this.loginUser);
-				}
-			});
+			// 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
+			this.myEventWatchTowerService.announceMyCheckerServiceReady(
+				// checkerMap: any, 
+				this.myCheckerService.getCheckerMap(),
+				// constMap: any, 
+				this.myCheckerService.getConstMap(),
+				// dirtyWordList: any, 
+				this.myCheckerService.getDirtyWordList(),
+				// apiKey: string
+				this.myCheckerService.getAPIKey()
+			);
+
+			this.getLoginUserFromCookie();
 		}); // end Promise
+	}
+	private getLoginUserFromCookie() :void {
+		this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+			if(null != result && null != result.user) {
+				this.loginUser = result.user;
+
+				// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+				this.myEventWatchTowerService.announceLogin(this.loginUser);
+			}
+		});
 	}
 
 	onErrorThumbnail(event, thumbnail) :void{

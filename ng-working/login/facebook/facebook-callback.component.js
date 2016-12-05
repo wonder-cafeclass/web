@@ -14,36 +14,139 @@ var login_service_1 = require('../service/login.service');
 var user_service_1 = require('../../users/service/user.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var FacebookCallbackComponent = (function () {
-    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, userService, activatedRoute, router) {
+    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, myEventWatchTowerService, userService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.userService = userService;
         this.activatedRoute = activatedRoute;
         this.router = router;
         this.redirectUrl = "/class-center";
         this.isValidState = false;
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         // Do something...
     } // end function
     FacebookCallbackComponent.prototype.ngOnInit = function () {
-        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("facebook-callback / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        // REMOVE ME
+        /*
+        // my-checker.service의 apikey 가져옴.
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+          (isReady:boolean) => {
+    
+          if(isDebug) console.log("policy / ngOnInit / isReady : ",isReady);
+    
+          if(!isReady) {
+            return;
+          }
+    
+          this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(),
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(),
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(),
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()
+          ); // end setReady
+    
+          // 축하합니다! API 통신을 위한 준비가 완료되었습니다.
+          // 페이지 진입을 기록합니다.
+          this.logActionPage();
+          // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
+          this.getQueryString();
+        });
+        */
+    }; // end function
+    FacebookCallbackComponent.prototype.ngOnDestroy = function () {
+        // prevent memory leak by unsubscribing
+        this.subscription.unsubscribe();
+    };
+    FacebookCallbackComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("facebook-callback / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    FacebookCallbackComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("facebook-callback / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
+            // 페이지 진입을 기록합니다.
+            _this.logActionPage();
+            // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
+            _this.getQueryString();
+        });
+    };
+    FacebookCallbackComponent.prototype.logActionPage = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / getQueryString / init");
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginFacebook);
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeLoginFacebook).then(function (result) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("facebook-callback / getQueryString / result : ", result);
+        });
+    };
+    FacebookCallbackComponent.prototype.getQueryString = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / getQueryString / init");
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
         this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
             if (isDebug)
-                console.log("facebook-callback / queryParams / param : ", param);
+                console.log("facebook-callback / getQueryString / param : ", param);
             _this.code = param['code'];
             _this.state = param['state'];
             if (isDebug)
-                console.log("facebook-callback / queryParams / this.code : ", _this.code);
+                console.log("facebook-callback / getQueryString / this.code : ", _this.code);
             if (isDebug)
-                console.log("facebook-callback / queryParams / this.state : ", _this.state);
+                console.log("facebook-callback / getQueryString / this.state : ", _this.state);
             if (null != _this.code &&
                 "" != _this.code &&
                 null != _this.state &&
@@ -51,10 +154,6 @@ var FacebookCallbackComponent = (function () {
                 _this.getState(_this.state, _this.code);
             } // end if
         }); // end subscribe
-    }; // end function
-    FacebookCallbackComponent.prototype.ngOnDestroy = function () {
-        // prevent memory leak by unsubscribing
-        this.subscription.unsubscribe();
     };
     FacebookCallbackComponent.prototype.getState = function (state, code) {
         var _this = this;
@@ -95,8 +194,16 @@ var FacebookCallbackComponent = (function () {
                 // - 상황 정보를 로그로 남김. ex) '비정상 로그인 접근'
                 if (isDebug)
                     console.log("facebook-callback / getFacebookState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
-            }
-        });
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "facebook-callback / getFacebookState / Failed! / state : " + state);
+            } // end if
+        }); // end getFacebookState
     }; // end function
     FacebookCallbackComponent.prototype.getAccessToken = function (code) {
         var _this = this;
@@ -111,6 +218,16 @@ var FacebookCallbackComponent = (function () {
                 console.log("facebook-callback / getAccessToken / result : ", result);
             if (null != result && null != result.access_token) {
                 _this.getMe();
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "facebook-callback / getAccessToken / Failed! / code : " + code);
             }
         });
     };
@@ -129,6 +246,14 @@ var FacebookCallbackComponent = (function () {
                 // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북에서 유저 정보를 가져오는데 실패했습니다.");
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "facebook-callback / getMe / Failed!");
                 return;
             }
             // 페이스북 로그인 성공!
@@ -151,30 +276,33 @@ var FacebookCallbackComponent = (function () {
                 // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-                // api key 필요!
-                _this.myCheckerService
-                    .getReady()
-                    .then(function () {
-                    _this.userService
-                        .confirmUserFacebook(_this.myCheckerService.getAPIKey(), result.facebook_id)
-                        .then(function (result) {
+                _this.userService
+                    .confirmUserFacebook(_this.myCheckerService.getAPIKey(), result.facebook_id)
+                    .then(function (result) {
+                    if (isDebug)
+                        console.log("facebook-callback / confirmUserFacebook / result : ", result);
+                    if (null == result || null == result.success || !result.success) {
+                        // facebook id로 쿠키 인증 실패. 홈으로 이동.
                         if (isDebug)
-                            console.log("facebook-callback / confirmUserFacebook / result : ", result);
-                        if (null == result || null == result.success || !result.success) {
-                            // facebook id로 쿠키 인증 실패. 홈으로 이동.
-                            if (isDebug)
-                                console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
-                            _this.router.navigate(['/class-center']);
-                            return;
-                        }
-                        // 쿠키 인증 성공!
-                        // 로그인 직전 페이지로 리다이렉트. 
-                        // 돌아갈 주소가 없다면, 홈으로 이동.
-                        if (isDebug)
-                            console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+                            console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
                         _this.router.navigate(['/class-center']);
-                    }); // end userService
-                }); // end myCheckerService
+                        // 에러 로그 등록
+                        _this.myLoggerService.logError(
+                        // apiKey:string
+                        _this.myEventWatchTowerService.getApiKey(), 
+                        // errorType:string
+                        _this.myLoggerService.errorAPIFailed, 
+                        // errorMsg:string
+                        "facebook-callback / getMe / confirmUserFacebook / Failed!");
+                        return;
+                    }
+                    // 쿠키 인증 성공!
+                    // 로그인 직전 페이지로 리다이렉트. 
+                    // 돌아갈 주소가 없다면, 홈으로 이동.
+                    if (isDebug)
+                        console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+                    _this.router.navigate(['/class-center']);
+                }); // end userService
             } // end if
         }); // end service
     };
@@ -185,7 +313,7 @@ var FacebookCallbackComponent = (function () {
             templateUrl: 'facebook-callback.component.html',
             styleUrls: ['facebook-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
     ], FacebookCallbackComponent);
     return FacebookCallbackComponent;
 }());

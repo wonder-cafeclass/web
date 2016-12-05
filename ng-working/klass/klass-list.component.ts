@@ -41,6 +41,10 @@ export class KlassListComponent implements OnInit {
 
   loginUser:User;
 
+  private apiKey:string;
+  isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
+
   constructor(
     private service: KlassService,
     private urlService: UrlService,
@@ -58,10 +62,19 @@ export class KlassListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyKlassList);
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / ngOnInit / 시작");
 
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+    // REMOVE ME
     // get class list
+    /*
     this.route.params.forEach((params: Params) => {
       this.selectedId = params['id'];
       this.service.getKlasses().then(klasses => this.klasses = klasses);
@@ -86,34 +99,103 @@ export class KlassListComponent implements OnInit {
         }
       });
     }); // end Promise    
-    /*
-    let loginUser:User = this.myEventWatchTowerService.getLoginUser();
-    if(null != loginUser) {
-      // shared service에 이미 저장된 로그인 유저를 가져옴.
-      console.log("shared service에 이미 저장된 로그인 유저를 가져옴.");
-      console.log("loginUser : ",loginUser);
-      this.loginUser = loginUser;
-      this.myEventWatchTowerService.announceLogin(this.loginUser);
-    } else {
-      // shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.
-      this.myCheckerService.getReady().then(() => {
-        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-
-          console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-          console.log("loginUser : ",loginUser);
-
-          if(null != result && null != result.user) {
-            
-            this.loginUser = result.user;
-            // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-            this.myEventWatchTowerService.announceLogin(this.loginUser);
-          }
-        });
-      }); // end Promise
-    } // end if
-    */
+   */
 
   }
+
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("naver-callback / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("naver-callback / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `login / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      this.logPageEnter();
+
+    });    
+  }
+  private logPageEnter() :void {
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.myEventWatchTowerService.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeKlassList
+    ); 
+
+    this.getKlassList();
+  }
+  private getKlassList() :void {
+    this.route.params.forEach((params: Params) => {
+      this.selectedId = params['id'];
+      this.service.getKlasses().then(klasses => this.klasses = klasses);
+    });
+
+    // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
+    this.myEventWatchTowerService.announceToggleTopMenu(true);
+
+    // 회원 로그인 쿠키를 가져옵니다.
+    // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
+    this.myCheckerService.getReady().then(() => {
+      this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+
+        console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
+        console.log("result : ",result);
+
+        if(null != result && null != result.user) {
+          
+          this.loginUser = result.user;
+          // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
+          this.myEventWatchTowerService.announceLogin(this.loginUser);
+        }
+      });
+    }); // end Promise
+  }
+
 
   onInitKlassFilterTile(searchBox) {
     searchBox.focus();

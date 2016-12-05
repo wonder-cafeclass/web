@@ -220,7 +220,7 @@ export class NameComponent implements OnInit {
         element.focus();
 
         // Logger - Spam 행위로 등록.
-        this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
+        // this.myLoggerService.logActionDirtyWord(nameBeforeSanitize);
 
         return;
 

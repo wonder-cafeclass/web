@@ -105,6 +105,38 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     // Add methods ...
 
     /*
+    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method. 
+    *   function, file, line num을 필수 인자로 받습니다.
+    *   
+    *   @ Usage : 
+    *   $this->respond_500_detail($err_msg,__FUNCTION__,__FILE__,__LINE__);
+    *   
+    */
+    public function respond_500_detail($msg="", $function="", $file="", $line="") {
+
+        if(empty($msg)) 
+        {
+            return;
+        }
+        if(empty($function)) 
+        {
+            return;
+        }
+        if(empty($file)) 
+        {
+            return;
+        }
+        if(empty($line)) 
+        {
+            return;
+        }
+
+        $msg = $msg." ".__FUNCTION__." in ".__FILE__." at ".__LINE__;
+
+        $this->respond_500($msg);
+    }
+
+    /*
     *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
     */
     public function respond_500($msg="")

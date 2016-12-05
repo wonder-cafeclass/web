@@ -1,0 +1,6 @@
+<!-- PHP Error Display For Debug -->
+<div *ngIf="isAdmin" class="row">
+	<div *ngFor="let errorMsg of errorMsgArr">
+		<div [innerHTML]="errorMsg | safeHtml"></div>
+	</div>
+</div>

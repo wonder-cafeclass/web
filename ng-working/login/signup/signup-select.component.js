@@ -10,44 +10,95 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var auth_service_1 = require('../../auth.service');
 var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var SignupSelectComponent = (function () {
-    function SignupSelectComponent(authService, loginService, myLoggerService, myEventWatchTowerService, router) {
-        this.authService = authService;
+    function SignupSelectComponent(loginService, myLoggerService, myCheckerService, myEventWatchTowerService, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
-        this.errorMsgArr = [];
         this.isAdmin = false;
+        this.errorMsgArr = [];
     }
     SignupSelectComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup-select / ngOnInit / 시작");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.authService
-            .getAdminAuth()
-            .then(function (result) {
-            if (null != result.is_admin) {
-                _this.isAdmin = result.is_admin;
-            }
-            _this.init();
-        }); // end service
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+        /*
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(
+          (isAdmin:boolean) => {
+          this.isAdmin = isAdmin;
+          this.init();
+        });
+        */
     }; // end ngOnInit
-    SignupSelectComponent.prototype.init = function () {
+    SignupSelectComponent.prototype.setIsAdmin = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
+            console.log("signup-select / setIsAdmin / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("signup-select / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    SignupSelectComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup-select / setMyCheckerReady / 시작");
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("signup-select / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "login / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.myCheckerService.setReady(
+            // checkerMap:any
+            _this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            _this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            _this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.init();
+        });
+    };
+    SignupSelectComponent.prototype.init = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
             console.log("signup-select / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignupSelect);
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeSignupSelect);
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         // 1. kakao
         this.loginService
@@ -66,8 +117,9 @@ var SignupSelectComponent = (function () {
             }
             else {
                 // 에러 상황. 
-                // 에러 원인에 대한 로그를 전달해준다.
+                // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(output);
+                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
         });
         // 2. naver
@@ -87,8 +139,9 @@ var SignupSelectComponent = (function () {
             }
             else {
                 // 에러 상황. 
-                // 에러 원인에 대한 로그를 전달해준다.
+                // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(output);
+                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
             // this.naverAuthUrl = naverAuthUrl;
         });
@@ -109,8 +162,9 @@ var SignupSelectComponent = (function () {
             }
             else {
                 // 에러 상황. 
-                // 에러 원인에 대한 로그를 전달해준다.
+                // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(output);
+                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
             // this.facebookAuthUrl = facebookAuthUrl;
         });
@@ -124,7 +178,7 @@ var SignupSelectComponent = (function () {
             templateUrl: 'signup-select.component.html',
             styleUrls: ['signup-select.component.css']
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], SignupSelectComponent);
     return SignupSelectComponent;
 }());

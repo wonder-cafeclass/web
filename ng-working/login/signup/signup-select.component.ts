@@ -4,9 +4,9 @@ import {  Component,
           OnInit }              from '@angular/core';
 import { Router,
          NavigationExtras }     from '@angular/router';
-import { AuthService }          from '../../auth.service';
 import { LoginService }         from '../service/login.service';
 import { MyLoggerService }      from '../../util/service/my-logger.service';
+import { MyCheckerService }     from '../../util/service/my-checker.service';
 
 import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
 
@@ -22,13 +22,12 @@ export class SignupSelectComponent implements OnInit {
   naverAuthUrl: string;
   facebookAuthUrl: string;
 
-  errorMsgArr: string[]=[];
-
   isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
   
-  constructor(  public authService: AuthService, 
-                public loginService: LoginService, 
+  constructor(  public loginService: LoginService, 
                 public myLoggerService: MyLoggerService, 
+                public myCheckerService:MyCheckerService,
                 private myEventWatchTowerService:MyEventWatchTowerService,
                 public router: Router) {
 
@@ -36,34 +35,97 @@ export class SignupSelectComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / ngOnInit / 시작");
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.authService
-    .getAdminAuth()
-    .then(
-      result => {
-        if(null != result.is_admin) {
-          this.isAdmin = result.is_admin;
-        }
+    this.setIsAdmin();
 
-        this.init();
-      }
-    ); // end service
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+
+    /*
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+      this.isAdmin = isAdmin;
+      this.init();
+    }); 
+    */     
     
   } // end ngOnInit
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup-select / setIsAdmin / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("signup-select / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup-select / setMyCheckerReady / 시작");
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("signup-select / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `login / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      this.init();
+
+    });    
+  }  
 
 
   init(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / init / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeySignupSelect);    
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.myEventWatchTowerService.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeSignupSelect
+    );    
 
     // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
     // 1. kakao
@@ -83,9 +145,9 @@ export class SignupSelectComponent implements OnInit {
 
       } else {
         // 에러 상황. 
-        // 에러 원인에 대한 로그를 전달해준다.
-
+        // 에러 원인에 대한 로그를 화면에 표시!
         this.errorMsgArr.push(output);
+        this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
 
       } // end if
 
@@ -108,9 +170,9 @@ export class SignupSelectComponent implements OnInit {
 
       } else {
         // 에러 상황. 
-        // 에러 원인에 대한 로그를 전달해준다.
-
+        // 에러 원인에 대한 로그를 화면에 표시!
         this.errorMsgArr.push(output);
+        this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
 
       } // end if
 
@@ -134,9 +196,9 @@ export class SignupSelectComponent implements OnInit {
 
       } else {
         // 에러 상황. 
-        // 에러 원인에 대한 로그를 전달해준다.
-
+        // 에러 원인에 대한 로그를 화면에 표시!
         this.errorMsgArr.push(output);
+        this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
         
       } // end if
 
