@@ -4,6 +4,7 @@ import { Headers,
          Response, 
          RequestOptions }                  from '@angular/http';
 import { UrlService }                      from "../../util/url.service";
+import { MyExtractor }                     from '../../util/http/my-extractor';
 import { User }                            from "../model/user";
 
 @Injectable()
@@ -31,8 +32,12 @@ export class UserService {
   // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
   // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
 
+  private myExtractor:MyExtractor;
+
   constructor(  private us:UrlService, 
-                private http: Http) {}
+                private http: Http) {
+    this.myExtractor = new MyExtractor();
+  }
 
   getUserByEmail (email:string): Promise<any> {
 
@@ -49,9 +54,9 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByEmail / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   getUserByFacebookId (facebookId:string): Promise<any> {
@@ -66,9 +71,9 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   getUserByNaverId (naverId:string): Promise<any> {
@@ -83,9 +88,9 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByNaverId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   } 
 
   getUserByKakaoId (kakaoId:string): Promise<any> {
@@ -100,9 +105,9 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }    
 
   getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<any> {
@@ -134,9 +139,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);            
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   } 
 
 
@@ -203,9 +208,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   addUser ( apiKey:string, 
@@ -266,9 +271,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public sendMailUserValidation(apiKey:string, userId:number, email:string) {
@@ -298,11 +303,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public confirmUserValidation(apiKey:string, key:string) {
@@ -330,9 +333,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public confirmUserKakao(apiKey:string, kakaoId:string) {
@@ -360,9 +363,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public confirmUserFacebook(apiKey:string, facebookId:string) {
@@ -390,9 +393,9 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public confirmUserNaver(apiKey:string, naverId:string) {
@@ -420,9 +423,9 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }      
 
   getUserCookie(apiKey:string) {
@@ -447,9 +450,9 @@ export class UserService {
     let params = {};
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   } 
 
   deleteUserCookie() {
@@ -462,9 +465,9 @@ export class UserService {
     if(isDebug) console.log("user.service / deleteUserCookie / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }   
 
   confirmUserEmailPassword(apiKey:string, email:string, password:string) {
@@ -492,11 +495,13 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }   
 
+  // REMOVE ME
+  /*
   private extractData(res: Response) {
 
     let body = res.json();
@@ -526,5 +531,6 @@ export class UserService {
       console.error(errMsg); // log to console instead
       return Promise.reject(errMsg);
   }
+  */
 
 }

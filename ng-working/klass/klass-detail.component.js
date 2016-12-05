@@ -95,9 +95,10 @@ var KlassDetailComponent = (function () {
             _this.klassTarget = _this.klass.target; // @ Deprecated
             _this.klassSchedule = _this.klass.schedule;
         });
-        this.authService.getAdminAuth().then(function (result) {
-            if (null != result.is_admin) {
-                _this.isAdmin = result.is_admin;
+        this.authService.getAdminAuth()
+            .then(function (myResponse) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("is_admin")) {
+                _this.isAdmin = myResponse.getDataProp("is_admin");
                 // 운영툴 여부 결정 
                 if (_this.isAdmin) {
                     _this.initAdmin();

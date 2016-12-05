@@ -108,27 +108,27 @@ export class KlassListComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+    if(isDebug) console.log("klass-list / setIsAdmin / 시작");
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
       (isAdmin:boolean) => {
 
-      if(isDebug) console.log("naver-callback / setIsAdmin / isAdmin : ",isAdmin);
+      if(isDebug) console.log("klass-list / setIsAdmin / isAdmin : ",isAdmin);
       this.isAdmin = isAdmin;
     });
   }  
 
   private setMyCheckerReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / setMyCheckerReady / 시작");
 
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
-      if(isDebug) console.log("naver-callback / setMyCheckerReady / isReady : ",isReady);
+      if(isDebug) console.log("klass-list / setMyCheckerReady / isReady : ",isReady);
 
       if(!isReady) {
         // 에러 로그 등록
@@ -159,41 +159,80 @@ export class KlassListComponent implements OnInit {
     });    
   }
   private logPageEnter() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / logPageEnter / 시작");
+
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
       // apiKey:string
       this.myEventWatchTowerService.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeKlassList
-    ); 
+    ).then(result => {
+
+      if(isDebug) console.log("klass-list / logPageEnter / result : ",result);
+
+      if(null == result) {
+        return;
+      }
+
+      if(null != result["success"] && !result["success"]) {
+        // 실패
+        console.log(result["message"]);
+      }
+
+    }); 
 
     this.getKlassList();
+    this.getCookieLoginUser();
   }
   private getKlassList() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / getKlassList / 시작");
+
+    // REFACTOR ME!
     this.route.params.forEach((params: Params) => {
+
+      if(isDebug) console.log("klass-list / getKlassList / params : ",params);
+
       this.selectedId = params['id'];
-      this.service.getKlasses().then(klasses => this.klasses = klasses);
+      this.service.getKlasses().then(klasses => {
+
+        if(isDebug) console.log("klass-list / getKlasses / klasses : ",klasses);
+        
+        this.klasses = klasses
+      });
     });
 
     // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
     this.myEventWatchTowerService.announceToggleTopMenu(true);
+  }
+  private getCookieLoginUser() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / getCookieLoginUser / 시작");
 
     // 회원 로그인 쿠키를 가져옵니다.
     // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-    this.myCheckerService.getReady().then(() => {
-      this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
+    this.userService.getUserCookie(
+      this.myCheckerService.getAPIKey()
+    ).then((myResponse:MyResponse) => {
 
-        console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-        console.log("result : ",result);
+      if(isDebug) console.log("klass-list / getCookieLoginUser / myResponse : ",myResponse);
 
-        if(null != result && null != result.user) {
-          
-          this.loginUser = result.user;
-          // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-          this.myEventWatchTowerService.announceLogin(this.loginUser);
-        }
-      });
-    }); // end Promise
+      if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
+        
+        this.loginUser = myResponse.getDataProp("user");
+        // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
+        this.myEventWatchTowerService.announceLogin(this.loginUser);
+      }
+
+    });
   }
 
 

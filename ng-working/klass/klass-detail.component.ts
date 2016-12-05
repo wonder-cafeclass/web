@@ -21,7 +21,9 @@ import { RadioBtnOption }          from '../widget/radiobtn/model/radiobtn-optio
 import { CheckBoxOption }          from '../widget/checkbox/model/checkbox-option';
 import { InputViewUpdown }         from '../widget/input-view/model/input-view-updown';
 
-import { KlassDetailNavListComponent } from './klass-detail-nav-list.component';
+import { KlassDetailNavListComponent }  from './klass-detail-nav-list.component';
+
+import { MyResponse }                   from '../util/model/my-response';
 
 @Component({
   moduleId: module.id,
@@ -176,10 +178,11 @@ export class KlassDetailComponent implements OnInit {
 
     });
 
-    this.authService.getAdminAuth().then(
-      result => {
-        if(null != result.is_admin) {
-          this.isAdmin = result.is_admin;
+    this.authService.getAdminAuth()
+    .then((myResponse:MyResponse) => {
+
+        if(myResponse.isSuccess() && myResponse.hasDataProp("is_admin")) {
+          this.isAdmin = myResponse.getDataProp("is_admin");
 
           // 운영툴 여부 결정 
           if(this.isAdmin){

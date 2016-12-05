@@ -46,8 +46,6 @@ var MyLoggerService = (function () {
                 console.log("my-logger.service / logActionPage / 중단 / pageType is not valid!");
             return;
         }
-        // let req_url = this.us.get(this.apiLogActionPageUrl);
-        // req_url += "?pageType=" + pageType;
         // POST
         var headers = new http_1.Headers({
             'Content-Type': 'application/json',

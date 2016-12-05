@@ -61,8 +61,8 @@ class Log extends MY_REST_Controller {
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
-        {   
-            $this->respond_500_detail(
+        {
+            $this->respond_200_Failed(
                 // $msg=""
                 "API Key is not valid!",
                 // $function=""
@@ -70,15 +70,19 @@ class Log extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "is_not_allowed_api_call"=>$is_not_allowed_api_call
+                )
             );
             return;            
         }
 
-        $error_type = $this->my_paramchecker->get('page_type','logger_page_type');
-        if(empty($error_type)) 
+        $page_type = $this->my_paramchecker->post('page_type','logger_page_type');
+        if(empty($page_type)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "page_type is not valid!",
                 // $function=""
@@ -86,7 +90,11 @@ class Log extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "page_type"=>$page_type
+                )
             );
             return;
         }
@@ -97,7 +105,7 @@ class Log extends MY_REST_Controller {
             // $action_type=""
             $this->my_logger->ACTION_PAGE_ENTER,
             // $action_key=""
-            $page_key
+            $page_type
         );
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -119,7 +127,7 @@ class Log extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "API Key is not valid!",
                 // $function=""
@@ -127,9 +135,13 @@ class Log extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "is_not_allowed_api_call"=>$is_not_allowed_api_call
+                )
             );
-            return;            
+            return;             
         }
 
         // 콜백 응답에서 facebook_code 파라미터의 값을 가져옴
@@ -146,7 +158,7 @@ class Log extends MY_REST_Controller {
         $error_type = $this->my_paramchecker->get('error_type','logger_error_type');
         if(empty($error_type)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "error_type is not valid!",
                 // $function=""
@@ -154,7 +166,11 @@ class Log extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "user_id"=>$user_id
+                )
             );
             return;
         }
@@ -162,7 +178,7 @@ class Log extends MY_REST_Controller {
         $error_msg = $this->my_paramchecker->get('error_msg','logger_error_msg');
         if(empty($error_msg))
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "error_msg is not valid!",
                 // $function=""
@@ -170,7 +186,12 @@ class Log extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "user_id"=>$user_id,
+                    "error_type"=>$error_type
+                )
             );
             return;
         }

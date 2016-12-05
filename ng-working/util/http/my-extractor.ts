@@ -1,5 +1,7 @@
 import { Response } 			from '@angular/http';
 
+import { MyResponse }			from '../model/my-response';
+
 /*
 *	@ Desc : API 통신에서 돌아온 response에 대해 처리하는 클래스
 *
@@ -8,14 +10,13 @@ import { Response } 			from '@angular/http';
 export class MyExtractor {
 	constructor() {}
 
-	public extractData(res: Response) :any{
+	public extractData(res: Response) :MyResponse{
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("my-extractor / extractData / 시작");
 		if(isDebug) console.log("my-extractor / extractData / res : ",res);
 		
-
 		function isJsonString(str:string) {
 
 			if(null == str || "" == str) {
@@ -87,21 +88,56 @@ export class MyExtractor {
 			return bodyStr;
 		}		
 
+		let myResponse:MyResponse = null;
 		if(hasJsonString(res)) {
 
 			if(isDebug) console.log("my-extractor / extractData / 1-1. body string이 json object인 경우.");
-			let json = getJson(res);
 
-			let data = null;
-			if(null != json && null != json["data"]) {
-				data = json["data"];
+			let jsonObj = getJson(res);
+
+			if(	null != jsonObj && 
+				null != jsonObj["success"] && 
+				null != jsonObj["message"] ) {
+
+				myResponse = 
+				new MyResponse(
+					// public success:boolean
+					jsonObj["success"],
+					// public message:string
+					jsonObj["message"],
+					// public query:string
+					jsonObj["query"],
+					// public error:string
+					jsonObj["error"],
+					// public data:any
+					jsonObj["data"],
+					// public extra:any
+					jsonObj["extra"]
+				);
 			}
-			return data;
-			
+
+			return myResponse;
+
 		} else if(hasErrorHtml(res)){
 
 			if(isDebug) console.log("my-extractor / extractData / 1-2. body string이 json object이 아니고, 에러 메시지 html일 경우.");
-			return getErrorHtml(res);
+
+			myResponse = 
+			new MyResponse(
+				// public success:boolean
+				false,
+				// public message:string
+				"",
+				// public query:string
+				"",
+				// public error:string
+				getErrorHtml(res),
+				// public data:any
+				null,
+				// public extra:any
+				res
+			);			
+			return myResponse;
 			
 		} else {
 
@@ -116,6 +152,52 @@ export class MyExtractor {
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
 		if(isDebug) console.log("my-extractor / handleError / 시작");
+		if(isDebug) console.log("my-extractor / handleError / error : ",error);
+
+		function isJsonString(str:string) {
+
+			if(null == str || "" == str) {
+				return false;
+			}
+
+		    try {
+		        JSON.parse(str);
+		    } catch (e) {
+		        return false;
+		    }
+		    return true;
+		}		
+
+		function hasJsonString(res: Response) :boolean{
+			let bodyStr:string = "";
+			if(null != res && null != res["_body"]) {
+				bodyStr = res["_body"];
+			}
+
+			if(isJsonString(bodyStr)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		function getJson(res: Response) :any{
+			if(null == res) {
+				return null;
+			}
+
+			return res.json();
+		}
+
+		if(hasJsonString(error)) {
+			// 에러 객체에서 에러 메시지를 뽑아냅니다.
+			let jsonError = getJson(error);
+			if(isDebug) console.log("my-extractor / handleError / jsonError : ",jsonError);
+
+			return Promise.reject(jsonError);
+		}
+
+		// 그 이외의 에러 상황. console에 노출합니다.
 
 		// In a real world app, we might use a remote logging infrastructure
 		// We'd also dig deeper into the error to get a better message
@@ -123,9 +205,6 @@ export class MyExtractor {
 		error.status ? `${error.status} - ${error.statusText}` : 'Server error';
 
 		if(isDebug) console.log("my-extractor / handleError / errMsg : ",errMsg);
-
-		// console.error(errMsg); // log to console instead
-		// TODO - 에러 내용을 저장해 두어야 합니다.
 
 		return Promise.reject(errMsg);
 	}

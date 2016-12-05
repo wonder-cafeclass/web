@@ -82,23 +82,23 @@ var KlassListComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / setIsAdmin / 시작");
+            console.log("klass-list / setIsAdmin / 시작");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
             if (isDebug)
-                console.log("naver-callback / setIsAdmin / isAdmin : ", isAdmin);
+                console.log("klass-list / setIsAdmin / isAdmin : ", isAdmin);
             _this.isAdmin = isAdmin;
         });
     };
     KlassListComponent.prototype.setMyCheckerReady = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("naver-callback / setMyCheckerReady / 시작");
+            console.log("klass-list / setMyCheckerReady / 시작");
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
-                console.log("naver-callback / setMyCheckerReady / isReady : ", isReady);
+                console.log("klass-list / setMyCheckerReady / isReady : ", isReady);
             if (!isReady) {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
@@ -123,35 +123,66 @@ var KlassListComponent = (function () {
         });
     };
     KlassListComponent.prototype.logPageEnter = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
         this.myEventWatchTowerService.getApiKey(), 
         // pageType:string
-        this.myLoggerService.pageTypeKlassList);
+        this.myLoggerService.pageTypeKlassList).then(function (result) {
+            if (isDebug)
+                console.log("klass-list / logPageEnter / result : ", result);
+            if (null == result) {
+                return;
+            }
+            if (null != result["success"] && !result["success"]) {
+                // 실패
+                console.log(result["message"]);
+            }
+        });
         this.getKlassList();
+        this.getCookieLoginUser();
     };
     KlassListComponent.prototype.getKlassList = function () {
         var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / getKlassList / 시작");
+        // REFACTOR ME!
         this.route.params.forEach(function (params) {
+            if (isDebug)
+                console.log("klass-list / getKlassList / params : ", params);
             _this.selectedId = params['id'];
-            _this.service.getKlasses().then(function (klasses) { return _this.klasses = klasses; });
+            _this.service.getKlasses().then(function (klasses) {
+                if (isDebug)
+                    console.log("klass-list / getKlasses / klasses : ", klasses);
+                _this.klasses = klasses;
+            });
         });
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
         this.myEventWatchTowerService.announceToggleTopMenu(true);
+    };
+    KlassListComponent.prototype.getCookieLoginUser = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / getCookieLoginUser / 시작");
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
-                console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-                console.log("result : ", result);
-                if (null != result && null != result.user) {
-                    _this.loginUser = result.user;
-                    // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-                    _this.myEventWatchTowerService.announceLogin(_this.loginUser);
-                }
-            });
-        }); // end Promise
+        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
+            if (isDebug)
+                console.log("klass-list / getCookieLoginUser / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("user")) {
+                _this.loginUser = myResponse.getDataProp("user");
+                // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
+                _this.myEventWatchTowerService.announceLogin(_this.loginUser);
+            }
+        });
     };
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();

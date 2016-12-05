@@ -130,8 +130,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         {
             return;
         }
-
-        $msg = $msg." ".__FUNCTION__." in ".__FILE__." at ".__LINE__;
+        $msg = "$msg / $function in $file at $line";
 
         $this->respond_500($msg);
     }
@@ -193,7 +192,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     }     
 
     /*
-    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 성공.
     */
     public function respond_200($data=null)
     {
@@ -205,6 +204,49 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         if(method_exists($this, 'set_response') && isset($this->my_response))
         {
             $response_body = $this->my_response->getResBodySuccessData($data);
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        }
+    } 
+
+    /*
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 유저 파라미터에 의한 실패.
+    */
+    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null)
+    {
+        if(is_null($msg)) 
+        {
+            return;
+        }
+        if(is_null($function)) 
+        {
+            return;
+        }
+        if(is_null($file)) 
+        {
+            return;
+        }
+        if(is_null($line)) 
+        {
+            return;
+        }
+
+        $msg = "$msg / $function in $file at $line";
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $response_body = 
+            $this->my_response->getResBodyFail(
+                // $message=""
+                $msg,
+                // $query=null
+                "",
+                // $data=null 
+                $data,
+                // $error=null
+                null,
+                // $extra=null
+                null
+            );
             $this->set_response($response_body, REST_Controller::HTTP_OK);
         }
     } 

@@ -110,8 +110,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.checkLoginUser = function () {
         var _this = this;
-        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (result) {
-            if (null != result && null != result.user) {
+        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("user")) {
                 // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
                 _this.router.navigate([_this.redirectUrl]);
             }
@@ -133,20 +133,26 @@ var LoginComponent = (function () {
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
-            .then(function (kakaoAuthUrl) {
-            _this.kakaoAuthUrl = kakaoAuthUrl;
+            .then(function (myResponse) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 2. naver
         this.loginService
             .getNaverAuthUrl()
-            .then(function (naverAuthUrl) {
-            _this.naverAuthUrl = naverAuthUrl;
+            .then(function (myResponse) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.naverAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 3. facebook
         this.loginService
             .getFacebookAuthUrl()
-            .then(function (facebookAuthUrl) {
-            _this.facebookAuthUrl = facebookAuthUrl;
+            .then(function (myResponse) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.facebookAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
         this.myEventWatchTowerService.announceToggleTopMenu(false);

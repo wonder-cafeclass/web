@@ -48,9 +48,6 @@ export class MyLoggerService {
 			return;
 		}
 
-		// let req_url = this.us.get(this.apiLogActionPageUrl);
-		// req_url += "?pageType=" + pageType;
-
 	    // POST
 	    let headers = new Headers(
 	      { 

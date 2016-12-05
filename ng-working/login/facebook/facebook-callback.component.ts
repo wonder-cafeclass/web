@@ -12,6 +12,8 @@ import { MyCheckerService }           from '../../util/service/my-checker.servic
 import { MyLoggerService }            from '../../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
+import { MyResponse }                 from '../../util/model/my-response';
+
 
 @Component({
   moduleId: module.id,
@@ -155,9 +157,9 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       this.myEventWatchTowerService.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeLoginFacebook
-    ).then(result => {
+    ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("facebook-callback / getQueryString / result : ",result);
+      if(isDebug) console.log("facebook-callback / getQueryString / myResponse : ",myResponse);
     })
   }    
 
@@ -209,14 +211,12 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getFacebookState(state)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getState / getFacebookState / result : ",result);
+      if(isDebug) console.log("facebook-callback / getState / getFacebookState / myResponse : ",myResponse);
 
-      if( null != result &&
-          null != result.is_valid_state ) {
-
-        this.isValidState = result.is_valid_state;
+      if( myResponse.isSuccess() ) {
+        this.isValidState = myResponse.getDataProp("is_valid_state");
       }
 
       if(isDebug) console.log("facebook-callback / getState / getFacebookState / this.isValidState : ",this.isValidState);
@@ -258,11 +258,11 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getFacebookAccess(code)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getAccessToken / result : ",result);
+      if(isDebug) console.log("facebook-callback / getAccessToken / myResponse : ",myResponse);
 
-      if( null != result && null != result.access_token ) {
+      if( myResponse.isSuccess() && null != myResponse.getDataProp("access_token") ) {
         this.getMe();
       } else {
         // 에러 로그 등록
@@ -288,11 +288,11 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getFacebookMe()
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getMe / result : ",result);
+      if(isDebug) console.log("facebook-callback / getMe / myResponse : ",myResponse);
 
-      if(null == result || null == result.facebook_id) {
+      if(myResponse.isFailed() || myResponse.hasNotDataProp("facebook_id")) {
         // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("facebook-callback / 페이스북에서 유저 정보를 가져오는데 실패했습니다.");
         // 에러 로그 등록
@@ -309,16 +309,18 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
       // 페이스북 로그인 성공!
       // 로그인한 유저 정보를 가져오는데 성공했습니다!
-      if( null == result.gender ||
-          "" === result.gender ||
-          null == result.mobile ||
-          "" === result.mobile ) {
+      let facebookId = myResponse.getDataProp("facebook_id");
+      let user = myResponse.getDataProp("user");
+      if( myResponse.isSuccess() && 
+          null != user && 
+          null != user["gender"] &&
+          null != user["mobile"] ) {
 
         // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
         // 하지만 추가 정보 필요. 
         // 회원 가입창으로 이동.
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-        this.router.navigate(['/login/signup/facebook', result.facebook_id]);
+        this.router.navigate(['/login/signup/facebook', facebookId]);
           
       } else {
 
@@ -329,41 +331,51 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
 
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-
-        this.userService
-        .confirmUserFacebook(this.myCheckerService.getAPIKey(), result.facebook_id)
-        .then(result => {
-
-          if(isDebug) console.log("facebook-callback / confirmUserFacebook / result : ",result);
-
-          if(null == result || null == result.success || !result.success) {
-            // facebook id로 쿠키 인증 실패. 홈으로 이동.
-            if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
-            this.router.navigate(['/class-center']);
-
-            // 에러 로그 등록
-            this.myLoggerService.logError(
-              // apiKey:string
-              this.myEventWatchTowerService.getApiKey(),
-              // errorType:string
-              this.myLoggerService.errorAPIFailed,
-              // errorMsg:string
-              `facebook-callback / getMe / confirmUserFacebook / Failed!`
-            );
-            return;
-          }
-
-          // 쿠키 인증 성공!
-          // 로그인 직전 페이지로 리다이렉트. 
-          // 돌아갈 주소가 없다면, 홈으로 이동.
-          if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-          this.router.navigate(['/class-center']);
-          
-        }); // end userService
+        this.confirmUserFacebook(facebookId);
         
       } // end if
 
     }); // end service
+
+  }
+
+  private confirmUserFacebook(facebookId:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
+    if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
+
+    this.userService
+    .confirmUserFacebook(this.myCheckerService.getAPIKey(), facebookId)
+    .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("facebook-callback / confirmUserFacebook / myResponse : ",myResponse);
+
+      if(myResponse.isFailed()) {
+        // facebook id로 쿠키 인증 실패. 홈으로 이동.
+        if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
+        this.router.navigate([this.redirectUrl]);
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `facebook-callback / getMe / confirmUserFacebook / Failed!`
+        );
+        return;
+      }
+
+      // 쿠키 인증 성공!
+      // 로그인 직전 페이지로 리다이렉트. 
+      // 돌아갈 주소가 없다면, 홈으로 이동.
+      if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+      this.router.navigate([this.redirectUrl]);
+      
+    }); // end userService    
 
   }
 

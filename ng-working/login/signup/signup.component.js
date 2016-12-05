@@ -561,10 +561,10 @@ var SignupComponent = (function () {
         // userId:number
         userId, 
         // email:string
-        email).then(function (result) {
+        email).then(function (myResponse) {
             if (isDebug)
-                console.log("signup / sendMailUserValidation / result : ", result);
-            if (null != result && null != result.user_validation_key) {
+                console.log("signup / sendMailUserValidation / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("user_validation_key")) {
                 // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
                 _this.router.navigate(['/signup/signup/validation']);
             }

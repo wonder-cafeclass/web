@@ -15,6 +15,7 @@ import { UsersModule }              from './users/users.module';
 import { KlassCenterModule }        from './klass/klass-center.module';
 import { LoginModule }              from './login/login.module';
 import { PolicyModule }             from './policy/policy.module';
+import { WidgetModule }             from './widget/widget.module';
 
 import { DialogService }            from './widget/dialog.service';
 import { AuthService }              from './auth.service';
@@ -41,6 +42,7 @@ import './rxjs-operators';
     KlassCenterModule,
     LoginModule,
     PolicyModule,
+    WidgetModule,
     HttpModule,
     JsonpModule
   ],

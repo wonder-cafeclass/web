@@ -254,8 +254,11 @@
 			"LOG_IN_FACEBOOK",
 			"LOG_IN_KAKAO",
 			"LOG_IN_NAVER",
-
+			"CLASS_LIST",
+			"POLICY",
 			"SIGNUP",
+			"SIGNUP_SELECT",
+			
 			"EOL"
 		],
 

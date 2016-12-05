@@ -89,8 +89,8 @@ var SignupSelectComponent = (function () {
     };
     SignupSelectComponent.prototype.init = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("signup-select / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -103,44 +103,40 @@ var SignupSelectComponent = (function () {
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
-            .then(function (output) {
+            .then(function (myResponse) {
             if (isDebug)
                 console.log("signup-select / getKakaoAuthUrl / 시작");
             if (isDebug)
-                console.log("signup-select / getKakaoAuthUrl / output : ", output);
-            if (null != output &&
-                null != output["auth_url"] &&
-                "" != output["auth_url"]) {
-                _this.kakaoAuthUrl = output["auth_url"];
+                console.log("signup-select / getKakaoAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
                 if (isDebug)
                     console.log("signup-select / getKakaoAuthUrl / this.kakaoAuthUrl : ", _this.kakaoAuthUrl);
             }
             else {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
-                _this.errorMsgArr.push(output);
+                _this.errorMsgArr.push(myResponse.getError());
                 _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
         });
         // 2. naver
         this.loginService
             .getNaverAuthUrl()
-            .then(function (output) {
+            .then(function (myResponse) {
             if (isDebug)
                 console.log("signup-select / getNaverAuthUrl / 시작");
             if (isDebug)
-                console.log("signup-select / getNaverAuthUrl / output : ", output);
-            if (null != output &&
-                null != output["auth_url"] &&
-                "" != output["auth_url"]) {
-                _this.naverAuthUrl = output["auth_url"];
+                console.log("signup-select / getNaverAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.naverAuthUrl = myResponse.getDataProp("auth_url");
                 if (isDebug)
                     console.log("signup-select / getNaverAuthUrl / this.naverAuthUrl : ", _this.naverAuthUrl);
             }
             else {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
-                _this.errorMsgArr.push(output);
+                _this.errorMsgArr.push(myResponse.getError());
                 _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
             // this.naverAuthUrl = naverAuthUrl;
@@ -148,22 +144,20 @@ var SignupSelectComponent = (function () {
         // 3. facebook
         this.loginService
             .getFacebookAuthUrl()
-            .then(function (output) {
+            .then(function (myResponse) {
             if (isDebug)
                 console.log("signup-select / getFacebookAuthUrl / 시작");
             if (isDebug)
-                console.log("signup-select / getFacebookAuthUrl / output : ", output);
-            if (null != output &&
-                null != output["auth_url"] &&
-                "" != output["auth_url"]) {
-                _this.facebookAuthUrl = output["auth_url"];
+                console.log("signup-select / getFacebookAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.facebookAuthUrl = myResponse.getDataProp("auth_url");
                 if (isDebug)
                     console.log("signup-select / getFacebookAuthUrl / this.facebookAuthUrl : ", _this.facebookAuthUrl);
             }
             else {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
-                _this.errorMsgArr.push(output);
+                _this.errorMsgArr.push(myResponse.getError());
                 _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
             // this.facebookAuthUrl = facebookAuthUrl;

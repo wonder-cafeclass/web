@@ -1,14 +1,17 @@
 import {  Component, 
           Input, 
           Output,
-          OnInit }              from '@angular/core';
+          OnInit }                  from '@angular/core';
 import { Router,
-         NavigationExtras }     from '@angular/router';
-import { LoginService }         from '../service/login.service';
-import { MyLoggerService }      from '../../util/service/my-logger.service';
-import { MyCheckerService }     from '../../util/service/my-checker.service';
+         NavigationExtras }         from '@angular/router';
 
+import { LoginService }             from '../service/login.service';
+
+import { MyLoggerService }          from '../../util/service/my-logger.service';
+import { MyCheckerService }         from '../../util/service/my-checker.service';
 import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
+
+import { MyResponse }               from '../../util/model/my-response';
 
 @Component({
   moduleId: module.id,
@@ -44,7 +47,6 @@ export class SignupSelectComponent implements OnInit {
 
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
-
 
     /*
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -115,8 +117,8 @@ export class SignupSelectComponent implements OnInit {
 
   init(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / init / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -131,22 +133,21 @@ export class SignupSelectComponent implements OnInit {
     // 1. kakao
     this.loginService
     .getKakaoAuthUrl()
-    .then(output => {
+    .then((myResponse:MyResponse) => {
 
       if(isDebug) console.log("signup-select / getKakaoAuthUrl / 시작");
-      if(isDebug) console.log("signup-select / getKakaoAuthUrl / output : ",output);
+      if(isDebug) console.log("signup-select / getKakaoAuthUrl / myResponse : ",myResponse);
 
-      if( null != output && 
-          null != output["auth_url"] && 
-          "" != output["auth_url"]) {
+      if(myResponse.isSuccess()) {
 
-        this.kakaoAuthUrl = output["auth_url"];
+        this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
         if(isDebug) console.log("signup-select / getKakaoAuthUrl / this.kakaoAuthUrl : ",this.kakaoAuthUrl);
 
       } else {
+
         // 에러 상황. 
         // 에러 원인에 대한 로그를 화면에 표시!
-        this.errorMsgArr.push(output);
+        this.errorMsgArr.push(myResponse.getError());
         this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
 
       } // end if
@@ -156,22 +157,20 @@ export class SignupSelectComponent implements OnInit {
     // 2. naver
     this.loginService
     .getNaverAuthUrl()
-    .then(output => {
+    .then((myResponse:MyResponse) => {
 
       if(isDebug) console.log("signup-select / getNaverAuthUrl / 시작");
-      if(isDebug) console.log("signup-select / getNaverAuthUrl / output : ",output);
+      if(isDebug) console.log("signup-select / getNaverAuthUrl / myResponse : ",myResponse);
 
-      if( null != output && 
-          null != output["auth_url"] && 
-          "" != output["auth_url"]) {
+      if(myResponse.isSuccess()) {
 
-        this.naverAuthUrl = output["auth_url"];
+        this.naverAuthUrl = myResponse.getDataProp("auth_url");
         if(isDebug) console.log("signup-select / getNaverAuthUrl / this.naverAuthUrl : ",this.naverAuthUrl);
 
       } else {
         // 에러 상황. 
         // 에러 원인에 대한 로그를 화면에 표시!
-        this.errorMsgArr.push(output);
+        this.errorMsgArr.push(myResponse.getError());
         this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
 
       } // end if
@@ -182,22 +181,20 @@ export class SignupSelectComponent implements OnInit {
     // 3. facebook
     this.loginService
     .getFacebookAuthUrl()
-    .then(output => {
+    .then((myResponse:MyResponse) => {
 
       if(isDebug) console.log("signup-select / getFacebookAuthUrl / 시작");
-      if(isDebug) console.log("signup-select / getFacebookAuthUrl / output : ",output);
+      if(isDebug) console.log("signup-select / getFacebookAuthUrl / myResponse : ",myResponse);
 
-      if( null != output && 
-          null != output["auth_url"] && 
-          "" != output["auth_url"]) {
+      if(myResponse.isSuccess()) {
 
-        this.facebookAuthUrl = output["auth_url"];
+        this.facebookAuthUrl = myResponse.getDataProp("auth_url");
         if(isDebug) console.log("signup-select / getFacebookAuthUrl / this.facebookAuthUrl : ",this.facebookAuthUrl);
 
       } else {
         // 에러 상황. 
         // 에러 원인에 대한 로그를 화면에 표시!
-        this.errorMsgArr.push(output);
+        this.errorMsgArr.push(myResponse.getError());
         this.myEventWatchTowerService.announceErrorMsgArr(this.errorMsgArr);
         
       } // end if

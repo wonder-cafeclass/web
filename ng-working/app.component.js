@@ -92,8 +92,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.subscribeAllErrors = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("app-root / subscribeAllErrors / \uC2DC\uC791");
         // 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
@@ -105,16 +105,18 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setIsAdmin = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("app-root / setIsAdmin / \uC2DC\uC791");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.authService.getAdminAuth().then(function (result) {
+        this.authService
+            .getAdminAuth()
+            .then(function (myResponse) {
             if (isDebug)
-                console.log("app-root / setIsAdmin / result : " + result);
-            if (null != result.is_admin) {
-                _this.isAdmin = result.is_admin;
+                console.log("app-root / setIsAdmin / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.isAdmin = myResponse.getDataProp("is_admin");
                 _this.myEventWatchTowerService.announceIsAdmin(_this.isAdmin);
             }
             else {
@@ -131,6 +133,10 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setMyChecker = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("app-root / setMyChecker / \uC2DC\uC791");
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
         this.myCheckerService.getReady().then(function () {
@@ -149,9 +155,17 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (result) {
-            if (null != result && null != result.user) {
-                _this.loginUser = result.user;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
+        this.userService
+            .getUserCookie(this.myCheckerService.getAPIKey())
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / getLoginUserFromCookie / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.loginUser = myResponse.getDataProp("user");
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                 _this.myEventWatchTowerService.announceLogin(_this.loginUser);
             }
@@ -161,7 +175,6 @@ var AppComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         // TODO - 이미지 없을 경우의 예비 이미지 로딩.
-        console.log("onErrorThumbnail / thumbnail : ", thumbnail);
     };
     AppComponent.prototype.onClickSignupBtn = function (event) {
         event.stopPropagation();

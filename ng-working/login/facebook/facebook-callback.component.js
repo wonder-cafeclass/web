@@ -125,10 +125,10 @@ var FacebookCallbackComponent = (function () {
         // apiKey:string
         this.myEventWatchTowerService.getApiKey(), 
         // pageType:string
-        this.myLoggerService.pageTypeLoginFacebook).then(function (result) {
+        this.myLoggerService.pageTypeLoginFacebook).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
-                console.log("facebook-callback / getQueryString / result : ", result);
+                console.log("facebook-callback / getQueryString / myResponse : ", myResponse);
         });
     };
     FacebookCallbackComponent.prototype.getQueryString = function () {
@@ -173,12 +173,11 @@ var FacebookCallbackComponent = (function () {
             console.log("facebook-callback / getState / code : ", code);
         this.loginService
             .getFacebookState(state)
-            .then(function (result) {
+            .then(function (myResponse) {
             if (isDebug)
-                console.log("facebook-callback / getState / getFacebookState / result : ", result);
-            if (null != result &&
-                null != result.is_valid_state) {
-                _this.isValidState = result.is_valid_state;
+                console.log("facebook-callback / getState / getFacebookState / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.isValidState = myResponse.getDataProp("is_valid_state");
             }
             if (isDebug)
                 console.log("facebook-callback / getState / getFacebookState / this.isValidState : ", _this.isValidState);
@@ -213,10 +212,10 @@ var FacebookCallbackComponent = (function () {
             console.log("facebook-callback / getAccessToken / init");
         this.loginService
             .getFacebookAccess(code)
-            .then(function (result) {
+            .then(function (myResponse) {
             if (isDebug)
-                console.log("facebook-callback / getAccessToken / result : ", result);
-            if (null != result && null != result.access_token) {
+                console.log("facebook-callback / getAccessToken / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && null != myResponse.getDataProp("access_token")) {
                 _this.getMe();
             }
             else {
@@ -239,10 +238,10 @@ var FacebookCallbackComponent = (function () {
             console.log("facebook-callback / getMe / init");
         this.loginService
             .getFacebookMe()
-            .then(function (result) {
+            .then(function (myResponse) {
             if (isDebug)
-                console.log("facebook-callback / getMe / result : ", result);
-            if (null == result || null == result.facebook_id) {
+                console.log("facebook-callback / getMe / myResponse : ", myResponse);
+            if (myResponse.isFailed() || myResponse.hasNotDataProp("facebook_id")) {
                 // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북에서 유저 정보를 가져오는데 실패했습니다.");
@@ -258,16 +257,18 @@ var FacebookCallbackComponent = (function () {
             }
             // 페이스북 로그인 성공!
             // 로그인한 유저 정보를 가져오는데 성공했습니다!
-            if (null == result.gender ||
-                "" === result.gender ||
-                null == result.mobile ||
-                "" === result.mobile) {
+            var facebookId = myResponse.getDataProp("facebook_id");
+            var user = myResponse.getDataProp("user");
+            if (myResponse.isSuccess() &&
+                null != user &&
+                null != user["gender"] &&
+                null != user["mobile"]) {
                 // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
                 // 하지만 추가 정보 필요. 
                 // 회원 가입창으로 이동.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-                _this.router.navigate(['/login/signup/facebook', result.facebook_id]);
+                _this.router.navigate(['/login/signup/facebook', facebookId]);
             }
             else {
                 // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
@@ -276,35 +277,45 @@ var FacebookCallbackComponent = (function () {
                 // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-                _this.userService
-                    .confirmUserFacebook(_this.myCheckerService.getAPIKey(), result.facebook_id)
-                    .then(function (result) {
-                    if (isDebug)
-                        console.log("facebook-callback / confirmUserFacebook / result : ", result);
-                    if (null == result || null == result.success || !result.success) {
-                        // facebook id로 쿠키 인증 실패. 홈으로 이동.
-                        if (isDebug)
-                            console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
-                        _this.router.navigate(['/class-center']);
-                        // 에러 로그 등록
-                        _this.myLoggerService.logError(
-                        // apiKey:string
-                        _this.myEventWatchTowerService.getApiKey(), 
-                        // errorType:string
-                        _this.myLoggerService.errorAPIFailed, 
-                        // errorMsg:string
-                        "facebook-callback / getMe / confirmUserFacebook / Failed!");
-                        return;
-                    }
-                    // 쿠키 인증 성공!
-                    // 로그인 직전 페이지로 리다이렉트. 
-                    // 돌아갈 주소가 없다면, 홈으로 이동.
-                    if (isDebug)
-                        console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-                    _this.router.navigate(['/class-center']);
-                }); // end userService
+                _this.confirmUserFacebook(facebookId);
             } // end if
         }); // end service
+    };
+    FacebookCallbackComponent.prototype.confirmUserFacebook = function (facebookId) {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / confirmUserFacebook / init");
+        if (isDebug)
+            console.log("facebook-callback / confirmUserFacebook / facebookId : " + facebookId);
+        this.userService
+            .confirmUserFacebook(this.myCheckerService.getAPIKey(), facebookId)
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("facebook-callback / confirmUserFacebook / myResponse : ", myResponse);
+            if (myResponse.isFailed()) {
+                // facebook id로 쿠키 인증 실패. 홈으로 이동.
+                if (isDebug)
+                    console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
+                _this.router.navigate([_this.redirectUrl]);
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "facebook-callback / getMe / confirmUserFacebook / Failed!");
+                return;
+            }
+            // 쿠키 인증 성공!
+            // 로그인 직전 페이지로 리다이렉트. 
+            // 돌아갈 주소가 없다면, 홈으로 이동.
+            if (isDebug)
+                console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+            _this.router.navigate([_this.redirectUrl]);
+        }); // end userService    
     };
     FacebookCallbackComponent = __decorate([
         core_1.Component({

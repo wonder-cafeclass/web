@@ -11,9 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var url_service_1 = require("../../util/url.service");
+var my_extractor_1 = require('../../util/http/my-extractor');
 var UserService = (function () {
-    // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
-    // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
     function UserService(us, http) {
         this.us = us;
         this.http = http;
@@ -32,6 +31,7 @@ var UserService = (function () {
         this.logoutUrl = '/CI/index.php/api/users/logout';
         this.updateUserUrl = '/CI/index.php/api/users/update';
         this.addUserUrl = '/CI/index.php/api/users/add';
+        this.myExtractor = new my_extractor_1.MyExtractor();
     }
     UserService.prototype.getUserByEmail = function (email) {
         // TODO 이메일로 사용자를 조회.
@@ -48,8 +48,8 @@ var UserService = (function () {
             console.log("user.service / getUserByEmail / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserByFacebookId = function (facebookId) {
         var req_url = this.us.get(this.getUserByFacebookIdUrl);
@@ -64,8 +64,8 @@ var UserService = (function () {
             console.log("user.service / getUserByFacebookId / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserByNaverId = function (naverId) {
         var req_url = this.us.get(this.getUserByNaverIdUrl);
@@ -80,8 +80,8 @@ var UserService = (function () {
             console.log("user.service / getUserByNaverId / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserByKakaoId = function (kakaoId) {
         var req_url = this.us.get(this.getUserByKakaoIdUrl);
@@ -96,8 +96,8 @@ var UserService = (function () {
             console.log("user.service / getUserByKakaoId / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserByMobile = function (apiKey, mobileHead, mobileBody, mobileTail) {
         var isDebug = true;
@@ -128,8 +128,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.updateUser = function (apiKey, userId, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
         // let isDebug:boolean = true;
@@ -190,8 +190,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.addUser = function (apiKey, email, password, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
         // let isDebug:boolean = true;
@@ -247,8 +247,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.sendMailUserValidation = function (apiKey, userId, email) {
         // let isDebug:boolean = true;
@@ -276,8 +276,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserValidation = function (apiKey, key) {
         // let isDebug:boolean = true;
@@ -302,8 +302,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserKakao = function (apiKey, kakaoId) {
         // let isDebug:boolean = true;
@@ -328,8 +328,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserFacebook = function (apiKey, facebookId) {
         var isDebug = true;
@@ -354,8 +354,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserNaver = function (apiKey, naverId) {
         var isDebug = true;
@@ -380,8 +380,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserCookie = function (apiKey) {
         // let isDebug:boolean = true;
@@ -402,8 +402,8 @@ var UserService = (function () {
         var params = {};
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.deleteUserCookie = function () {
         var req_url = this.us.get(this.logoutUrl);
@@ -415,8 +415,8 @@ var UserService = (function () {
             console.log("user.service / deleteUserCookie / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserEmailPassword = function (apiKey, email, password) {
         // let isDebug:boolean = true;
@@ -440,31 +440,8 @@ var UserService = (function () {
         };
         return this.http.post(req_url, params, options)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    UserService.prototype.extractData = function (res) {
-        var body = res.json();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("user.service / extractData / body ::: ", body);
-        // TODO - 데이터 검증 프로세스.
-        if (null == body.data || !body.success) {
-            console.log("user.service / extractData / 데이터가 없습니다.");
-            return null;
-        }
-        return body.data;
-    };
-    // New - XHR
-    // promise-based
-    UserService.prototype.handleError = function (error) {
-        // In a real world app, we might use a remote logging infrastructure
-        // We'd also dig deeper into the error to get a better message
-        var errMsg = (error.message) ? error.message :
-            error.status ? error.status + " - " + error.statusText : 'Server error';
-        console.error(errMsg); // log to console instead
-        return Promise.reject(errMsg);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     UserService = __decorate([
         core_1.Injectable(), 

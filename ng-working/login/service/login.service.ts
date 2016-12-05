@@ -5,6 +5,7 @@ import { Headers,
          RequestOptions }           from '@angular/http';
 import { UrlService }               from "../../util/url.service";
 import { MyExtractor }              from '../../util/http/my-extractor';
+import { MyResponse }               from '../../util/model/my-response';
 
 @Injectable()
 export class LoginService {
@@ -29,10 +30,11 @@ export class LoginService {
 
   constructor(  private us:UrlService,
                 private http:Http  ) {
+
     this.myExtractor = new MyExtractor();
   }
 
-  getFacebookMe (): Promise<any> {
+  getFacebookMe (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookMeUrl);
 
@@ -47,7 +49,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   } 
 
-  getFacebookAccess (code:string): Promise<any> {
+  getFacebookAccess (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookAccessUrl) + "?code=" + code;
 
@@ -62,7 +64,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }    
 
-  getFacebookState (state:string): Promise<any> {
+  getFacebookState (state:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookStateUrl) + "?state=" + state;
 
@@ -78,7 +80,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  getFacebookAuthUrl (): Promise<any> {
+  getFacebookAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookAuthUrl);
 
@@ -93,7 +95,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }    
 
-  getNaverMe (): Promise<any> {
+  getNaverMe (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverMeUrl);
 
@@ -108,7 +110,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  getNaverAccess (naver_code:string): Promise<any> {
+  getNaverAccess (naver_code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverAccessUrl) + "?naver_code=" + naver_code;
 
@@ -124,7 +126,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  getNaverState (state:string): Promise<any> {
+  getNaverState (state:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverStateUrl) + "?state=" + state;
 
@@ -139,7 +141,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  getNaverAuthUrl (): Promise<any> {
+  getNaverAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverAuthUrl);
 
@@ -154,7 +156,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
   }
 
-  getKakaoAuthUrl (): Promise<any> {
+  getKakaoAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
@@ -169,7 +171,7 @@ export class LoginService {
                     .catch(this.myExtractor.handleError);
 
   }
-  getKakaoToken (code:string): Promise<any> {
+  getKakaoToken (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
 
@@ -184,7 +186,7 @@ export class LoginService {
                     .then(this.myExtractor.extractData)
                     .catch(this.myExtractor.handleError);
   }
-  getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
+  getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoSignUpUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
@@ -200,7 +202,7 @@ export class LoginService {
                     .then(this.myExtractor.extractData)
                     .catch(this.myExtractor.handleError);
   }
-  getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
+  getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoMeUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
@@ -216,7 +218,7 @@ export class LoginService {
                     .then(this.myExtractor.extractData)
                     .catch(this.myExtractor.handleError);
   }
-  getKakaoAuth (code:string): Promise<any> {
+  getKakaoAuth (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
 

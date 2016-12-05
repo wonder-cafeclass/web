@@ -13,6 +13,8 @@ import { MyEventWatchTowerService } from './util/service/my-event-watchtower.ser
 import { MyCheckerService }     	from './util/service/my-checker.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
 
+import { MyResponse }               from './util/model/my-response';
+
 import { User } 					from './users/model/user';
 
 @Component({
@@ -109,8 +111,8 @@ export class AppComponent implements OnInit {
 	}
 	private subscribeAllErrors() :void {
 
-	    // let isDebug:boolean = true;
-	    let isDebug:boolean = false;
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / subscribeAllErrors / 시작`);
 
 		// 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
@@ -124,18 +126,19 @@ export class AppComponent implements OnInit {
 	}
 	private setIsAdmin() :void {
 
-	    // let isDebug:boolean = true;
-	    let isDebug:boolean = false;
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / setIsAdmin / 시작`);
 
 		// 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-		this.authService.getAdminAuth().then(
-			result => {
+		this.authService
+		.getAdminAuth()
+		.then((myResponse:MyResponse) => {
 
-				if(isDebug) console.log(`app-root / setIsAdmin / result : ${result}`);
+				if(isDebug) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
 
-				if(null != result.is_admin) {
-					this.isAdmin = result.is_admin;
+				if(myResponse.isSuccess()) {
+					this.isAdmin = myResponse.getDataProp("is_admin");
 					this.myEventWatchTowerService.announceIsAdmin(this.isAdmin);
 				} else {
 			        // 에러 로그 등록
@@ -152,6 +155,11 @@ export class AppComponent implements OnInit {
 		);		
 	}
 	private setMyChecker() :void {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / setMyChecker / 시작`);
+
 		// 회원 로그인 쿠키를 가져옵니다.
 		// 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
 		this.myCheckerService.getReady().then(() => {
@@ -172,9 +180,20 @@ export class AppComponent implements OnInit {
 		}); // end Promise
 	}
 	private getLoginUserFromCookie() :void {
-		this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-			if(null != result && null != result.user) {
-				this.loginUser = result.user;
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / getLoginUserFromCookie / 시작`);
+
+		this.userService
+		.getUserCookie(this.myCheckerService.getAPIKey())
+		.then((myResponse:MyResponse) => {
+
+			if(isDebug) console.log(`app-root / getLoginUserFromCookie / myResponse : `,myResponse);
+
+			if(myResponse.isSuccess()) {
+
+				this.loginUser = myResponse.getDataProp("user");
 
 				// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
 				this.myEventWatchTowerService.announceLogin(this.loginUser);
@@ -187,8 +206,6 @@ export class AppComponent implements OnInit {
 		event.preventDefault();
 
 		// TODO - 이미지 없을 경우의 예비 이미지 로딩.
-
-		console.log("onErrorThumbnail / thumbnail : ",thumbnail);
 	}
 
 

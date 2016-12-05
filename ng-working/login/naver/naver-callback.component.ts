@@ -13,6 +13,8 @@ import { MyLoggerService }            from '../../util/service/my-logger.service
 
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
+import { MyResponse }                 from '../../util/model/my-response';
+
 @Component({
   moduleId: module.id,
   selector: 'naver-callback',
@@ -148,9 +150,9 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
       this.myEventWatchTowerService.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeLoginNaver
-    ).then(result => {
+    ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("naver-callback / logActionPage / result : ",result);
+      if(isDebug) console.log("naver-callback / logActionPage / myResponse : ",myResponse);
     })
   }  
 
@@ -213,14 +215,12 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getNaverState(state)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getState / getNaverState / result : ",result);
+      if(isDebug) console.log("naver-callback / getState / getNaverState / myResponse : ",myResponse);
 
-      if( null != result &&
-          null != result.is_valid_state ) {
-
-        this.isValidState = result.is_valid_state;
+      if( myResponse.isSuccess() ) {
+        this.isValidState = myResponse.getDataProp("is_valid_state");
       } else {
         // 에러 로그 등록
         this.myLoggerService.logError(
@@ -276,13 +276,15 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getNaverAccess(code)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getNaverAccess / result : ",result);
+      if(isDebug) console.log("naver-callback / getNaverAccess / myResponse : ",myResponse);
 
-      if( null != result && 
-          null != result.access_token && 
-          null != result.token_type ) {
+      let accessToken:string = myResponse.getDataProp("access_token");
+      let tokenType:string = myResponse.getDataProp("token_type");
+      if( myResponse.isSuccess() && 
+          myResponse.hasDataProp("access_token") && 
+          myResponse.hasDataProp("token_type") ) {
 
         this.getNaverMe();
 
@@ -295,7 +297,7 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `naver-callback / getNaverAccess / Failed! / access_token : ${result.access_token} / token_type : ${result.token_type}`
+          `naver-callback / getNaverAccess / Failed! / access_token : ${accessToken} / token_type : ${tokenType}`
         ); // end logError
 
       }// end if
@@ -311,11 +313,11 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getNaverMe()
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getNaverMe / result : ",result);
+      if(isDebug) console.log("naver-callback / getNaverMe / myResponse : ",myResponse);
 
-      if(null == result || null == result.kakao_id) {
+      if(myResponse.isFailed() || null == myResponse.hasNotDataProp("naver_id")) {
         // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
 
@@ -337,16 +339,19 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
       // 네이버 로그인 성공!
       // 로그인한 유저 정보를 가져오는데 성공했습니다!
-      if( null == result.gender ||
-          "" === result.gender ||
-          null == result.mobile ||
-          "" === result.mobile ) {
+      let user = myResponse.getDataProp("user");
+      let naverId = myResponse.getDataProp("naver_id");
+      if( myResponse.isSuccess() && 
+          (null == user.gender ||
+          "" === user.gender ||
+          null == user.mobile ||
+          "" === user.mobile)) {
 
         // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
         // 하지만 추가 정보 필요. 
         // 회원 가입창으로 이동.
         if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-        this.router.navigate(['/login/signup/naver', result.naver_id]);
+        this.router.navigate(['/login/signup/naver', naverId]);
           
       } else {
 
@@ -358,43 +363,51 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
 
         if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
 
-        this.userService
-        .confirmUserNaver(this.myCheckerService.getAPIKey(), result.naver_id)
-        .then(result => {
-
-          if(isDebug) console.log("naver-callback / confirmUserNaver / result : ",result);
-
-          if(null == result || null == result.success || !result.success) {
-            // naver id로 쿠키 인증 실패. 홈으로 이동.
-            if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
-            this.router.navigate([this.redirectUrl]);
-
-            // 에러 로그 등록
-            this.myLoggerService.logError(
-              // apiKey:string
-              this.myEventWatchTowerService.getApiKey(),
-              // errorType:string
-              this.myLoggerService.errorAPIFailed,
-              // errorMsg:string
-              `naver-callback / confirmUserNaver / Failed!`
-            ); // end logError              
-            return;
-          }
-
-          // 쿠키 인증 성공!
-          // 로그인 직전 페이지로 리다이렉트. 
-          // 돌아갈 주소가 없다면, 홈으로 이동.
-          if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-          this.router.navigate([this.redirectUrl]);
-          
-        }); // end userService
+        this.confirmUserNaver(naverId);
         
       } // end if
 
-    }); // end method    
+    }); // end service
 
+  } // end method  
 
-  }
+  private confirmUserNaver(naverId:string) :void{
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / confirmUserNaver / init");
+
+    this.userService
+    .confirmUserNaver(this.myCheckerService.getAPIKey(), naverId)
+    .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("naver-callback / confirmUserNaver / myResponse : ",myResponse);
+
+      if(myResponse.isFailed()) {
+        // naver id로 쿠키 인증 실패. 홈으로 이동.
+        if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
+        this.router.navigate([this.redirectUrl]);
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `naver-callback / confirmUserNaver / Failed!`
+        ); // end logError              
+        return;
+      }
+
+      // 쿠키 인증 성공!
+      // 로그인 직전 페이지로 리다이렉트. 
+      // 돌아갈 주소가 없다면, 홈으로 이동.
+      if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+      this.router.navigate([this.redirectUrl]);
+      
+    }); // end userService    
+    
+  } // end method
 
 } // end class
