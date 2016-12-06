@@ -16,6 +16,10 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyLoggerService }            from '../../../util/service/my-logger.service';
+import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
+import { MyResponse }                 from '../../../util/model/my-response';
+
 
 
 @Component({
@@ -40,7 +44,6 @@ export class ProfileImgUploadComponent implements OnInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
-  @Input() myCheckerService:MyCheckerService;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -53,25 +56,124 @@ export class ProfileImgUploadComponent implements OnInit {
 
   private myChecker:MyChecker;
 
+  isAdmin:boolean=false;
+
   constructor(  private uploadService: UploadService,
                 private myEventService:MyEventService,
+                private myLoggerService:MyLoggerService,
+                private myEventWatchTowerService:MyEventWatchTowerService, 
+                private myCheckerService:MyCheckerService,
                 private renderer:Renderer,
                 private urlService:UrlService  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / ngOnInit / init");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerServiceReady();
+
+  }
+
+  private setIsAdmin() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("profile-img-upload / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("profile-img-upload / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerServiceReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / setMyCheckerServiceReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.setMyCheckerService();
+      this.init();
+    }
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("profile-img-upload / setMyCheckerServiceReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `profile-img-upload / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.setMyCheckerService();
+      this.init();
+    });    
+  }  
+
+  private setMyCheckerService() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / setMyCheckerService / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("profile-img-upload / setMyCheckerService / done!");
+    } // end if
+
+  } 
 
   private setMyChecker() :void {
-    if(null == this.myCheckerService) {
-      return;
-    }
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / setMyChecker / 시작");
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_thumbnail");
     }
   }
-  isOK(input:string) :boolean {
 
+  private init() :void {
     this.setMyChecker();
+  }  
+
+  isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
       return false;
@@ -131,8 +233,6 @@ export class ProfileImgUploadComponent implements OnInit {
     if(!this.isFocus) {
       this.isFocus = true;      
     } // end if
-
-    this.setMyChecker();
   } 
 
   onBlur(event) :void {
@@ -165,8 +265,6 @@ export class ProfileImgUploadComponent implements OnInit {
   onFocusFileUpload(event) :void {
     event.stopPropagation();
     event.preventDefault();
-
-    this.setMyChecker();
   }
 
   onClickFileUpload(event) :void {
@@ -176,8 +274,6 @@ export class ProfileImgUploadComponent implements OnInit {
     // from http://stackoverflow.com/a/32010791/217408
     let eventClick = new MouseEvent('click', {bubbles: true});
     this.renderer.invokeElementMethod(this.fileInput.nativeElement, 'dispatchEvent', [eventClick]);    
-
-    this.setMyChecker();
   }
   onChangeFile(event) :void {
 

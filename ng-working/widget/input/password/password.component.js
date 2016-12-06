@@ -11,9 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var PasswordComponent = (function () {
-    function PasswordComponent(myEventService) {
+    function PasswordComponent(myEventService, myLoggerService, myEventWatchTowerService, myCheckerService) {
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.myCheckerService = myCheckerService;
         this.width = 380;
         this.top = -1;
         this.left = -1;
@@ -21,7 +26,6 @@ var PasswordComponent = (function () {
         this.leftWarning = -1;
         // 비밀번호만 입력을 받을 때 사용합니다.
         this.isLogin = false;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocusPassword = false;
         this.isFocusInfo = false;
@@ -49,20 +53,99 @@ var PasswordComponent = (function () {
         // 패스워드 입력 기준 (네이버)
         // 6~16 characters with letters(a-z), numbers, and special letters.
         this.isShowPopover = false;
+        this.isAdmin = false;
         this.passwordPrev = "";
         this.repasswordPrev = "";
     }
-    PasswordComponent.prototype.ngOnInit = function () { };
-    PasswordComponent.prototype.setMyChecker = function () {
-        if (null == this.myCheckerService) {
-            return;
+    PasswordComponent.prototype.ngOnInit = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("password / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+    };
+    PasswordComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("password / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("password / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("password / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    PasswordComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("password / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.setMyChecker();
+            this.init();
         }
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("password / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "password / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.setMyChecker();
+            _this.init();
+        });
+    };
+    PasswordComponent.prototype.setMyChecker = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("password / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("password / setMyChecker / done!");
+        } // end if
+    };
+    PasswordComponent.prototype.init = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("password / init / 시작");
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_password");
-        }
+        } // end if
     };
     PasswordComponent.prototype.isOK = function (input) {
-        this.setMyChecker();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("password / isOK / 시작");
         if (null == this.myCheckerService) {
             return;
         }
@@ -111,7 +194,6 @@ var PasswordComponent = (function () {
     };
     // @ Desc : 이메일 재입력을 확인해 달라는 표시를 보여줍니다.
     PasswordComponent.prototype.showWarningRP = function () {
-        console.log(">>> showWarningRP");
         this.isFocusRepassword = true;
         this.isWarningRepassword = true;
         this.isValidRepassword = false;
@@ -129,8 +211,6 @@ var PasswordComponent = (function () {
             this.isFocusPassword = true;
         } // end if
         this.password = element.value;
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     PasswordComponent.prototype.onFocusPassword = function (event, element) {
         event.stopPropagation();
@@ -138,8 +218,6 @@ var PasswordComponent = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         this.isFocusPassword = true;
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     PasswordComponent.prototype.getPasswordIssue = function (password) {
         var msg = "";
@@ -471,8 +549,6 @@ var PasswordComponent = (function () {
         }
         // 패스워드에 문제가 없다면 패스워드 재입력의 포커싱 UI를 보여줍니다.
         this.isFocusRepassword = true;
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     // 사용자가 마지막으로 입력한 키가 문자입력인지 확인. 문자입력이 아니라면 탭이동.
     PasswordComponent.prototype.isKeyupP = function () {
@@ -680,10 +756,6 @@ var PasswordComponent = (function () {
         __metadata('design:type', Boolean)
     ], PasswordComponent.prototype, "isLogin", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], PasswordComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], PasswordComponent.prototype, "emitter", void 0);
@@ -694,7 +766,7 @@ var PasswordComponent = (function () {
             templateUrl: 'password.component.html',
             styleUrls: ['password.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService])
     ], PasswordComponent);
     return PasswordComponent;
 }());

@@ -161,8 +161,8 @@ export class KlassListComponent implements OnInit {
 
   private logPageEnter() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / logPageEnter / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.

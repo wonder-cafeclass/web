@@ -507,8 +507,8 @@ export class SignupComponent implements OnInit {
 
   updateUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
     if(isDebug) console.log("signup / updateUser / this.user.id : ",this.user.id);
@@ -674,7 +674,7 @@ export class SignupComponent implements OnInit {
       if(myResponse.isSuccess() && myResponse.hasDataProp("user_validation_key")) {
 
         // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
-        this.router.navigate(['/signup/signup/validation']);
+        this.router.navigate(['login/signup/validation']);
 
       } else {
 

@@ -196,13 +196,12 @@ class MY_Sql
     /*
     *   @ Desc : 사용자들의 중요한 클릭, 페이지 진입등의 행동에 대해 기록합니다.
     */
-    public function insert_log_action($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $key="")
+    public function insert_log_action($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $key="", $uri="")
     {
         if($this->is_not_ready())
         {
             return;
         }
-
         if(empty($agent))
         {
             return;
@@ -234,7 +233,8 @@ class MY_Sql
             'ip' => $ip,
             'type' => $type,
             'user_id' => $user_id,
-            'key' => $key
+            'key' => $key,
+            'uri' => $uri
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_action', $data);

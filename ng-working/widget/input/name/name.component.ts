@@ -27,8 +27,6 @@ export class NameComponent implements OnInit {
   @Input() topWarning:number=-1;
   @Input() leftWarning:number=-1;
 
-  @Input() myCheckerService:MyCheckerService = null;
-
   @Output() emitter = new EventEmitter<MyEvent>();
 
   isFocus:boolean=false;
@@ -52,6 +50,7 @@ export class NameComponent implements OnInit {
   errorMsgArr: string[]=[];
 
   constructor(  private myLoggerService:MyLoggerService, 
+                private myCheckerService:MyCheckerService,
                 private myEventWatchTowerService:MyEventWatchTowerService, 
                 private myEventService:MyEventService) {}
 
@@ -65,7 +64,7 @@ export class NameComponent implements OnInit {
     this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerReady();
+    this.setMyCheckerServiceReady();
 
   }
 
@@ -84,16 +83,22 @@ export class NameComponent implements OnInit {
     });
   }  
 
-  private setMyCheckerReady() :void {
+  private setMyCheckerServiceReady() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("name / setMyCheckerReady / 시작");
+    if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.setMyCheckerService();
+      this.init();
+    }
 
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
-      if(isDebug) console.log("name / setMyCheckerReady / isReady : ",isReady);
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ",isReady);
 
       if(!isReady) {
         // 에러 로그 등록
@@ -103,10 +108,23 @@ export class NameComponent implements OnInit {
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
-          `name / setMyCheckerReady / Failed! / isReady : ${isReady}`
+          `user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
         );        
         return;
       }
+
+      this.setMyCheckerService();
+      this.init();
+    });    
+  }  
+
+  private setMyCheckerService() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / setMyCheckerService / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
@@ -119,30 +137,61 @@ export class NameComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-    });    
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerService / done!");
+    } // end if
+
   }   
 
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / init / 시작");
+
+    this.setMyChecker();
+  }  
+
   private setMyChecker() :void {
-    if(null == this.myCheckerService) {
-      return;
-    }
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / setMyChecker / 시작");
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_name");
+      if(isDebug) console.log("name / setMyChecker / this.myChecker : ",this.myChecker);
     }
   }
   isOK(input:string) :boolean {
 
-    this.setMyChecker();
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / isOK / 시작");
 
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("name / isOK / 중단 / null == this.myCheckerService");
       return false;
     }
 
-    return this.myCheckerService.isOK(this.myChecker, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myChecker, input);
+    if(isDebug) console.log("name / isOK / isOK : ",isOK);
+
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("name / isOK / history : ",history);
+    }
+
+    return isOK;
   }
   setName(name:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / setName / 시작");
+    if(isDebug) console.log("name / setName / name : ",name);
+
     if(this.isOK(name)) {
+      if(isDebug) console.log("name / setName / updated!");
       this.inputStrPrev = name;
     }
   }

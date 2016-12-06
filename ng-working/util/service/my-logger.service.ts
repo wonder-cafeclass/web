@@ -14,6 +14,7 @@ export class MyLoggerService {
 	private apiLogErrorUrl:string = '/CI/index.php/api/log/error';
 
 	public pageTypeLogin:string="LOG_IN";
+	public pageTypeLogout:string="LOG_OUT";
 	public pageTypeLoginFacebook:string="LOG_IN_FACEBOOK";
 	public pageTypeLoginKakao:string="LOG_IN_KAKAO";
 	public pageTypeLoginNaver:string="LOG_IN_NAVER";
@@ -35,8 +36,8 @@ export class MyLoggerService {
 
 	logActionPage (apiKey:string, pageType:string): Promise<any> {
 
-	    // let isDebug:boolean = true;
-	    let isDebug:boolean = false;
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionPage / 시작");
 
 		if(null == apiKey || "" == apiKey) {
@@ -60,7 +61,16 @@ export class MyLoggerService {
 
 	    if(isDebug) console.log("my-logger.service / logActionPage / req_url : ",req_url);
 
-	    let params = {page_type:pageType};
+
+	    let path:string = window.location.href;
+	    if(isDebug) console.log("my-logger.service / logActionPage / path : ",path);
+
+	    let params = 
+	    {
+	    	page_type:pageType,
+	    	page_uri:path
+	    }
+	    ;
 
 	    return this.http.post(req_url, params, options)
 	            .toPromise()

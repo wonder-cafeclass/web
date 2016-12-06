@@ -408,8 +408,8 @@ var SignupComponent = (function () {
     }; // end method
     SignupComponent.prototype.updateUser = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / updateUser / 시작");
         if (isDebug)
@@ -573,7 +573,7 @@ var SignupComponent = (function () {
                 console.log("signup / sendMailUserValidation / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("user_validation_key")) {
                 // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
-                _this.router.navigate(['/signup/signup/validation']);
+                _this.router.navigate(['login/signup/validation']);
             }
             else {
                 // Error Report

@@ -65,8 +65,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("login / ngOnInit / init");
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -83,6 +83,10 @@ export class LoginComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("login / setIsAdmin / 시작");
 
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("signup / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
       (isAdmin:boolean) => {
@@ -97,6 +101,12 @@ export class LoginComponent implements OnInit {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("login / setMyCheckerReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.setMyChecker();
+      this.checkLoginUser();
+    }
 
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
@@ -116,6 +126,20 @@ export class LoginComponent implements OnInit {
         return;
       }
 
+      this.setMyChecker();
+      this.checkLoginUser();
+
+    });    
+  }  
+
+  private setMyChecker() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("login / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
       this.myCheckerService.setReady(
         // checkerMap:any
         this.myEventWatchTowerService.getCheckerMap(),
@@ -127,26 +151,38 @@ export class LoginComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.checkLoginUser();
+      if(isDebug) console.log("login / setMyChecker / done!");
+    } // end if
 
-    });    
-  }  
+  }   
 
   private checkLoginUser(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("login / checkLoginUser / 시작");
+
     this.userService.getUserCookie(
       this.myCheckerService.getAPIKey()
     ).then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("login / checkLoginUser / myResponse : ",myResponse);
+
       if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
-        // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+        if(isDebug) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.");
         this.router.navigate([this.redirectUrl]);
       } else {
-        // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+        if(isDebug) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
         this.init();
       }
     });
   }
 
   private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("login / init / 시작");
     
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -161,6 +197,9 @@ export class LoginComponent implements OnInit {
     this.loginService
     .getKakaoAuthUrl()
     .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("login / getKakaoAuthUrl / myResponse : ",myResponse);
+
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
       }
@@ -170,6 +209,9 @@ export class LoginComponent implements OnInit {
     this.loginService
     .getNaverAuthUrl()
     .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("login / getNaverAuthUrl / myResponse : ",myResponse);
+
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.naverAuthUrl = myResponse.getDataProp("auth_url");
       }
@@ -179,6 +221,9 @@ export class LoginComponent implements OnInit {
     this.loginService
     .getFacebookAuthUrl()
     .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("login / getFacebookAuthUrl / myResponse : ",myResponse);
+      
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.facebookAuthUrl = myResponse.getDataProp("auth_url");
       }
@@ -191,8 +236,8 @@ export class LoginComponent implements OnInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("login / onChangedFromChild / 시작");
     if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
@@ -263,8 +308,8 @@ export class LoginComponent implements OnInit {
 
   verifyEmailNPassword():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("login / verifyEmailNPassword / 시작");
 
 

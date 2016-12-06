@@ -15,10 +15,11 @@ var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var user_service_1 = require('../../../users/service/user.service');
 var EmailComponent = (function () {
-    function EmailComponent(myEventService, myLoggerService, myEventWatchTowerService, userService) {
+    function EmailComponent(myEventService, myLoggerService, myEventWatchTowerService, myCheckerService, userService) {
         this.myEventService = myEventService;
         this.myLoggerService = myLoggerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
+        this.myCheckerService = myCheckerService;
         this.userService = userService;
         this.width = 380;
         this.top = -1;
@@ -26,7 +27,6 @@ var EmailComponent = (function () {
         this.topWarning = -1;
         this.leftWarning = -1;
         this.isCheckUnique = true;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
@@ -403,10 +403,6 @@ var EmailComponent = (function () {
         __metadata('design:type', Boolean)
     ], EmailComponent.prototype, "isCheckUnique", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], EmailComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], EmailComponent.prototype, "emitter", void 0);
@@ -417,7 +413,7 @@ var EmailComponent = (function () {
             templateUrl: 'email.component.html',
             styleUrls: ['email.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, user_service_1.UserService])
     ], EmailComponent);
     return EmailComponent;
 }());

@@ -14,15 +14,15 @@ var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var NameComponent = (function () {
-    function NameComponent(myLoggerService, myEventWatchTowerService, myEventService) {
+    function NameComponent(myLoggerService, myCheckerService, myEventWatchTowerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
@@ -47,7 +47,7 @@ var NameComponent = (function () {
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        this.setMyCheckerServiceReady();
     };
     NameComponent.prototype.setIsAdmin = function () {
         var _this = this;
@@ -62,15 +62,20 @@ var NameComponent = (function () {
             _this.isAdmin = isAdmin;
         });
     };
-    NameComponent.prototype.setMyCheckerReady = function () {
+    NameComponent.prototype.setMyCheckerServiceReady = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("name / setMyCheckerReady / 시작");
+            console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.setMyCheckerService();
+            this.init();
+        }
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
-                console.log("name / setMyCheckerReady / isReady : ", isReady);
+                console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ", isReady);
             if (!isReady) {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
@@ -79,37 +84,80 @@ var NameComponent = (function () {
                 // errorType:string
                 _this.myLoggerService.errorTypeNotValidValue, 
                 // errorMsg:string
-                "name / setMyCheckerReady / Failed! / isReady : " + isReady);
+                "user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : " + isReady);
                 return;
             }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.setMyCheckerService();
+            _this.init();
         });
     };
+    NameComponent.prototype.setMyCheckerService = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user-my-nav-list / setMyCheckerService / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("user-my-nav-list / setMyCheckerService / done!");
+        } // end if
+    };
+    NameComponent.prototype.init = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / init / 시작");
+        this.setMyChecker();
+    };
     NameComponent.prototype.setMyChecker = function () {
-        if (null == this.myCheckerService) {
-            return;
-        }
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / setMyChecker / 시작");
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_name");
+            if (isDebug)
+                console.log("name / setMyChecker / this.myChecker : ", this.myChecker);
         }
     };
     NameComponent.prototype.isOK = function (input) {
-        this.setMyChecker();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / isOK / 시작");
         if (null == this.myCheckerService) {
+            if (isDebug)
+                console.log("name / isOK / 중단 / null == this.myCheckerService");
             return false;
         }
-        return this.myCheckerService.isOK(this.myChecker, input);
+        var isOK = this.myCheckerService.isOK(this.myChecker, input);
+        if (isDebug)
+            console.log("name / isOK / isOK : ", isOK);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            if (isDebug)
+                console.log("name / isOK / history : ", history_1);
+        }
+        return isOK;
     };
     NameComponent.prototype.setName = function (name) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / setName / 시작");
+        if (isDebug)
+            console.log("name / setName / name : ", name);
         if (this.isOK(name)) {
+            if (isDebug)
+                console.log("name / setName / updated!");
             this.inputStrPrev = name;
         }
     };
@@ -120,8 +168,8 @@ var NameComponent = (function () {
     NameComponent.prototype.hasDone = function () {
         var isOK = this.isOK(this.inputStrPrev);
         if (!isOK) {
-            var history_1 = this.myCheckerService.getLastHistory();
-            console.log("name / history : ", history_1);
+            var history_2 = this.myCheckerService.getLastHistory();
+            console.log("name / history : ", history_2);
         }
         return isOK;
     };
@@ -168,32 +216,32 @@ var NameComponent = (function () {
             var isOK = this.isOK(name);
             if (!isOK) {
                 // 원인을 찾아봅니다.
-                var history_2 = this.myCheckerService.getLastHistory();
-                console.log("password / onBlur / history : ", history_2);
-                if (null != history_2 && null != history_2.key && null != history_2.msg) {
+                var history_3 = this.myCheckerService.getLastHistory();
+                console.log("password / onBlur / history : ", history_3);
+                if (null != history_3 && null != history_3.key && null != history_3.msg) {
                     // Do something..
-                    if ("min" === history_2.key) {
+                    if ("min" === history_3.key) {
                         // 최소 문자 갯수보다 적은 경우.
-                        this.tooltipHeadMsg = history_2.msg;
+                        this.tooltipHeadMsg = history_3.msg;
                         this.isSuccessInput = false;
                         return;
                     }
-                    else if ("max" === history_2.key) {
+                    else if ("max" === history_3.key) {
                         // 최대 문자 갯수보다 많은 경우.
-                        this.tooltipHeadMsg = history_2.msg;
+                        this.tooltipHeadMsg = history_3.msg;
                         // 넘는 문자열은 지웁니다.
-                        element.value = name = name.slice(0, history_2.value);
+                        element.value = name = name.slice(0, history_3.value);
                         this.isSuccessInput = false;
                         return;
                     }
-                    else if ("regexExclude" === history_2.key) {
+                    else if ("regexExclude" === history_3.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
-                        this.tooltipHeadMsg = history_2.msg;
-                        var regExpStr = history_2.value + "";
+                        this.tooltipHeadMsg = history_3.msg;
+                        var regExpStr = history_3.value + "";
                         var regExpStrNameRange = /[^a-zA-Z가-힣0-9 ]+/g + "";
                         if (regExpStr == regExpStrNameRange) {
                             this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
-                            var matchArr = history_2.matchArr;
+                            var matchArr = history_3.matchArr;
                             if (null != matchArr && 0 < matchArr.length) {
                                 for (var i = 0; i < matchArr.length; ++i) {
                                     var keywordNotAllowed = matchArr[i];
@@ -318,18 +366,18 @@ var NameComponent = (function () {
         var isOK = this.isOK(inputStr);
         if (!isOK) {
             // 원인을 찾아봅니다.
-            var history_3 = this.myCheckerService.getLastHistory();
-            if (null != history_3 && null != history_3.key && null != history_3.msg) {
+            var history_4 = this.myCheckerService.getLastHistory();
+            if (null != history_4 && null != history_4.key && null != history_4.msg) {
                 // Do something..
-                if ("max" === history_3.key) {
+                if ("max" === history_4.key) {
                     // 최대 문자 갯수보다 많은 경우.
-                    this.tooltipHeadMsg = history_3.msg;
+                    this.tooltipHeadMsg = history_4.msg;
                     this.hideTooltip(2);
                     // 넘는 문자열은 지웁니다.
-                    inputStr = inputStr.slice(0, history_3.value);
+                    inputStr = inputStr.slice(0, history_4.value);
                     this.isSuccessInput = false;
                     if (isDebug)
-                        console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
+                        console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_4);
                 } // end if
             } // end if
         } // end if 
@@ -379,10 +427,6 @@ var NameComponent = (function () {
         __metadata('design:type', Number)
     ], NameComponent.prototype, "leftWarning", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], NameComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], NameComponent.prototype, "emitter", void 0);
@@ -393,7 +437,7 @@ var NameComponent = (function () {
             templateUrl: 'name.component.html',
             styleUrls: ['name.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
     ], NameComponent);
     return NameComponent;
 }());

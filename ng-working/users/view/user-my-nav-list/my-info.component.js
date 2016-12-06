@@ -18,25 +18,110 @@ var gender_component_1 = require('../../../widget/input/gender/gender.component'
 var birthday_component_1 = require('../../../widget/input/birthday/birthday.component');
 var nickname_component_1 = require('../../../widget/input/nickname/nickname.component');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
+var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var MyInfoComponent = (function () {
-    function MyInfoComponent(myEventService, myEventWatchTowerService) {
+    function MyInfoComponent(myEventService, myLoggerService, myCheckerService, myEventWatchTowerService) {
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.emitter = new core_1.EventEmitter();
         this.gender = "";
+        this.isAdmin = false;
     }
     MyInfoComponent.prototype.ngOnInit = function () {
+    };
+    MyInfoComponent.prototype.ngAfterViewChecked = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / ngAfterViewChecked");
+        this.setIsAdmin();
+        this.setMyCheckerReady();
+    };
+    MyInfoComponent.prototype.setIsAdmin = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("my-info / ngOnInit");
+            console.log("signup / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("signup / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("signup / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    MyInfoComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.init();
+        }
+        // 직접 주소를 입력하여 이동한 경우.
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("signup / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "signup / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.init();
+        });
+    };
+    MyInfoComponent.prototype.setMyChecker = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("my-info / setMyChecker / done!");
+        } // end if
+    };
+    MyInfoComponent.prototype.setLoginUser = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / setLoginUser / 시작");
+        // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
+        var loginUser = this.myEventWatchTowerService.getLoginUser();
+        if (null != loginUser) {
+            this.loginUser = loginUser;
+            this.fillViewUserInfo();
+        }
         // Subscribe login user
         this.myEventWatchTowerService.loginAnnounced$.subscribe(function (loginUser) {
             if (isDebug)
-                console.log("my-info / loginUser : ", loginUser);
+                console.log("my-info / setLoginUser : ", loginUser);
             // Example
             /*
             {
@@ -63,6 +148,14 @@ var MyInfoComponent = (function () {
             _this.fillViewUserInfo();
         });
     };
+    MyInfoComponent.prototype.init = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / init / 시작");
+        this.setMyChecker();
+        this.setLoginUser();
+    };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -73,39 +166,40 @@ var MyInfoComponent = (function () {
         if (null == this.loginUser) {
             return;
         }
+        // email
         this.emailComponent.setEmail(this.loginUser.email);
         this.email = this.loginUser.email;
         // name
         this.nameComponent.setName(this.loginUser.name);
         this.name = this.loginUser.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.loginUser.nickname);
-        this.nickname = this.loginUser.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.loginUser.thumbnail);
-        this.thumbnail = this.loginUser.thumbnail;
-        // mobile
-        var mobile = this.loginUser.mobile;
-        var mobileArr = mobile.split("-");
-        if (isDebug)
-            console.log("my-info / fillViewUserInfo / mobileArr : ", mobileArr);
-        if (null != mobileArr && 3 === mobileArr.length) {
-            this.mobileComponent.setMobileHead(mobileArr[0]);
-            this.mobileComponent.setMobileBody(mobileArr[1]);
-            this.mobileComponent.setMobileTail(mobileArr[2]);
-        }
-        // gender
-        this.genderComponent.setGender(this.loginUser.gender);
-        // birthday
-        var birthday = this.loginUser.birthday;
-        var birthdayArr = birthday.split("-");
-        if (isDebug)
-            console.log("my-info / fillViewUserInfo / birthdayArr : ", birthdayArr);
-        if (null != birthdayArr && 3 === birthdayArr.length) {
-            this.birthdayComponent.setBirthYear(birthdayArr[0]);
-            this.birthdayComponent.setBirthMonth(birthdayArr[1]);
-            this.birthdayComponent.setBirthDay(birthdayArr[2]);
-        }
+        /*
+    // nickname
+    this.nicknameComponent.setNickname(this.loginUser.nickname);
+    this.nickname = this.loginUser.nickname;
+    // thumbnail
+    this.profileImgUploadComponent.setProfileImg(this.loginUser.thumbnail);
+    this.thumbnail = this.loginUser.thumbnail;
+    // mobile
+    let mobile:string = this.loginUser.mobile;
+    let mobileArr:string[] = mobile.split("-");
+    if(isDebug) console.log("my-info / fillViewUserInfo / mobileArr : ",mobileArr);
+    if(null != mobileArr && 3 === mobileArr.length) {
+      this.mobileComponent.setMobileHead(mobileArr[0]);
+      this.mobileComponent.setMobileBody(mobileArr[1]);
+      this.mobileComponent.setMobileTail(mobileArr[2]);
+    }
+    // gender
+    this.genderComponent.setGender(this.loginUser.gender);
+    // birthday
+    let birthday:string = this.loginUser.birthday;
+    let birthdayArr:string[] = birthday.split("-");
+    if(isDebug) console.log("my-info / fillViewUserInfo / birthdayArr : ",birthdayArr);
+    if(null != birthdayArr && 3 === birthdayArr.length) {
+      this.birthdayComponent.setBirthYear(birthdayArr[0]);
+      this.birthdayComponent.setBirthMonth(birthdayArr[1]);
+      this.birthdayComponent.setBirthDay(birthdayArr[2]);
+    }
+    */
     };
     MyInfoComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
         var isDebug = true;
@@ -122,10 +216,6 @@ var MyInfoComponent = (function () {
         // 1. this.loginUser 객체와 비교, 값이 달라졌다면 save 버튼 활성화.
         // 2. 업데이트 뒤에는 다시 유저 객체도 업데이트.
     };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], MyInfoComponent.prototype, "myCheckerService", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -169,7 +259,7 @@ var MyInfoComponent = (function () {
             templateUrl: 'my-info.component.html',
             styleUrls: ['my-info.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService])
     ], MyInfoComponent);
     return MyInfoComponent;
 }());

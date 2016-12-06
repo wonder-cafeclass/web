@@ -16,8 +16,8 @@ var user_service_1 = require('../../users/service/user.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
-var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_response_1 = require('../../util/model/my-response');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var ValidationComponent = (function () {
     function ValidationComponent(loginService, userService, myLoggerService, myCheckerService, myEventService, myEventWatchTowerService, route, router) {
         this.loginService = loginService;
@@ -40,7 +40,7 @@ var ValidationComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / ngOnInit / init");
+            console.log("validation / ngOnInit / init");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
@@ -51,11 +51,15 @@ var ValidationComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / setIsAdmin / 시작");
+            console.log("validation / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("validation / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
             if (isDebug)
-                console.log("naver-callback / setIsAdmin / isAdmin : ", isAdmin);
+                console.log("validation / setIsAdmin / isAdmin : ", isAdmin);
             _this.isAdmin = isAdmin;
         });
     };
@@ -64,24 +68,54 @@ var ValidationComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / setMyCheckerReady / 시작");
+            console.log("validation / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.init();
+        }
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
-                console.log("naver-callback / setMyCheckerReady / isReady : ", isReady);
+                console.log("validation / setMyCheckerReady / isReady : ", isReady);
             if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "validation / setMyCheckerReady / Failed! / isReady : " + isReady);
                 return;
             }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
-            _this.getUserValidation();
+            _this.init();
         });
+    };
+    ValidationComponent.prototype.init = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("validation / init / 시작");
+        this.setMyChecker();
+        this.getUserValidation();
+    };
+    ValidationComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("validation / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("validation / setMyChecker / done!");
+        } // end if
     };
     ValidationComponent.prototype.getUserValidation = function () {
         var _this = this;
@@ -101,24 +135,45 @@ var ValidationComponent = (function () {
             if (isDebug)
                 console.log("validation / getUserValidation / switchMap / key : ", key);
             if (null != key && "" != key) {
+                // 1. 메일로 전달된 링크로 진입, 인증키로 회원 정보 확인.
                 return _this.userService.confirmUserValidation(_this.myCheckerService.getAPIKey(), key);
             }
-            // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
-            return Promise.resolve(new my_response_1.MyResponse(false, "", "", "key is not valid!", null, null));
+            else {
+                // 2. 회원 등록 직후, 메일 확인을 요청하는 메시지를 회원에게 표시
+                var myResponse = new my_response_1.MyResponse(
+                // public success:boolean
+                false, 
+                // public message:string
+                "", 
+                // public query:string
+                "", 
+                // public error:string
+                "", 
+                // public data:any
+                null, 
+                // public extra:any         
+                null);
+                // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
+                return Promise.resolve(myResponse);
+            }
         }).subscribe(function (myResponse) {
             // async 데이터 결과를 여기서 처리.
             if (isDebug)
                 console.log("validation / getUserValidation / subscribe / myResponse : ", myResponse);
             // 등록이 완료되었는지 확인.
             if (myResponse.isFailed()) {
-                console.log("1. 회원 정보를 등록하고 바로 이동한 경우.");
+                // 1. 회원 등록 직후, 메일 확인을 요청.
+                if (isDebug)
+                    console.log("validation / getUserValidation / subscribe / 1. 회원 정보를 등록하고 바로 이동한 경우");
                 _this.msgTop = _this.msgGuide;
             }
             else if (myResponse.isSuccess() && myResponse.hasDataProp("is_confirmed")) {
+                // 2. 메일로 전달된 확인 링크로 들어온 경우.
                 var is_confirmed = myResponse.hasDataProp("is_confirmed");
                 var is_attack = myResponse.hasDataProp("is_attack");
                 if (is_confirmed) {
-                    console.log("2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
+                    if (isDebug)
+                        console.log("validation / getUserValidation / subscribe / 2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
                     _this.msgTop = _this.msgConfirmed;
                     _this.msgBottom = _this.msgRedirect;
                     // 3초 뒤에 홈으로 이동.
@@ -134,7 +189,8 @@ var ValidationComponent = (function () {
                     }
                 }
                 else if (is_attack) {
-                    console.log("3. 정상적이지 않은 접근.");
+                    if (isDebug)
+                        console.log("validation / getUserValidation / subscribe / 3. 정상적이지 않은 접근.");
                     _this.msgTop = _this.msgWarning;
                     _this.msgBottom = _this.msgRedirect;
                     // 3초 뒤에 홈으로 이동.
@@ -145,12 +201,12 @@ var ValidationComponent = (function () {
                     }, 3000);
                 }
                 else {
-                    // TODO - 3. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.
-                    console.log("3. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.");
+                    if (isDebug)
+                        console.log("validation / getUserValidation / subscribe / 4. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.");
                     _this.msgTop = _this.msgGuide;
                 } // end if
             } // end if
-            return Promise.resolve(new my_response_1.MyResponse(false, "", "", "myResponse is not valid!", null, myResponse));
+            // return Promise.resolve(new MyResponse(false, "", "", "myResponse is not valid!", null, myResponse));
         }); // end subscribe
     }; // end method
     ValidationComponent = __decorate([

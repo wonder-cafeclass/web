@@ -117,8 +117,8 @@ var KlassListComponent = (function () {
         } // end if
     };
     KlassListComponent.prototype.logPageEnter = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.

@@ -99,13 +99,36 @@ class Log extends MY_REST_Controller {
             return;
         }
 
+        $page_uri = $this->my_paramchecker->post('page_uri','logger_page_uri');
+        if(empty($page_uri)) 
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "page_uri is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "page_type"=>$page_type,
+                    "page_uri"=>$page_uri
+                )
+            );
+            return;
+        }        
+
         $this->my_logger->add_action(
             // $user_id=-1
             -1,
             // $action_type=""
             $this->my_logger->ACTION_PAGE_ENTER,
             // $action_key=""
-            $page_type
+            $page_type,
+            // $page_uri=""
+            $page_uri
         );
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.

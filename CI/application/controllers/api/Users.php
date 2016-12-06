@@ -84,8 +84,18 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
 
@@ -268,52 +278,6 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }
 
-    /*
-    *   @ Desc : GET 형식의 url에 query string 파라미터로 전달해도 문제없는 hashkey를 만듭니다. 
-    *   query string의 파라미터인 경우, '.'로 끝나면 링크에 포함되지 않는 문제가 있습니다.
-    *   그러므로 영문 대소문자,숫자,$기호까지만 포함합니다.
-    *
-    *   @ Warning : 해시값의 일부분을 강제로 수정해서 사용하므로 password_verify는 불가능합니다.
-    */
-    /*
-    private function getHashQueryStringSafe($value) {
-        if($this->is_not_ok())
-        {
-            return "";
-        }
-
-        if(empty($value)) 
-        {
-            return "";
-        }
-
-        $hashkey = $this->getHash($value);
-        $matches = array();
-        preg_match_all('/[a-zA-Z0-9\$]+/', $hashkey, $matches);
-
-        $hashkeySafe = "";
-        if(!empty($matches) && !empty($matches[0])) 
-        {
-            $hashkeySafe = join("",$matches[0]);
-        }
-        return $hashkeySafe;
-    }
-
-    // @ Referer : http://php.net/manual/kr/function.password-hash.php
-    private function getHash($value="")
-    {
-        if($this->is_not_ok())
-        {
-            return "";
-        }
-
-        if(empty($value)) {
-            return "";
-        }
-        return password_hash($value, PASSWORD_DEFAULT);
-    }
-    */
-
     public function add_post()
     {
         if($this->is_not_ok())
@@ -325,9 +289,19 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;            
         }
 
         $email = 
@@ -465,9 +439,23 @@ class Users extends MY_REST_Controller {
             // 등록한 유저 정보를 가져옵니다.
             $user = $this->my_sql->get_user_by_email($email);
             $output["user"] = $user;
+            $this->respond_200($output);
         }
-
-        $this->respond_200($output);
+        else 
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "User insertion failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
     } 
 
     public function update_post()
@@ -481,9 +469,19 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
         }
 
         $user_id = 
@@ -683,19 +681,18 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            // 1-2. apikey 있지 않은 경우. 공격을 의심. 로거에 등록.
-            $api_key_from_request = $this->my_paramchecker->get_api_key_from_request();
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                // $error_msg=""
-                "Detected not allowed access to validation check : $api_key_from_request"
-            );
-
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
             return;
         } 
 
@@ -737,20 +734,23 @@ class Users extends MY_REST_Controller {
             else 
             {
                 // 1-2. 인증 정보가 이전에 등록되어 있지 않은 경우. 공격을 의심. 로거에 등록.
-                $this->my_logger->add_error(
-                    // $user_id=-1
-                    -1,
-                    // $error_type=""
-                    $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                    // $error_msg=""
-                    "Detected not allowed access to validation check : $key"
-                );
-
                 $output["user_validation"] = $user_validation;
                 $output["is_confirmed"] = false;
                 $output["is_attack"] = true;
-                $this->respond_200($output);
-                return;
+
+                $this->respond_200_Failed(
+                    // $msg=""
+                    "Detected not allowed access to validation check : $key",
+                    // $function=""
+                    __FUNCTION__,
+                    // $file="" 
+                    __FILE__,
+                    // $line=""
+                    __LINE__,
+                    // $data=null
+                    $output
+                );  
+                return;                 
 
             } // end if
 
@@ -804,20 +804,19 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-
-            // api key가 없습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                // $error_msg=""
-                "Detected not allowed access to confirmkakao_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
         }
 
         $kakao_id = 
@@ -829,21 +828,18 @@ class Users extends MY_REST_Controller {
         );
         if(empty($kakao_id)) 
         {
-            $output["success"] = false;
-            $output["kakao_id"] = $kakao_id;
-            $output["reason"] = "kakao_id is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid kakao_id to confirmkakao_post"
-            );
-
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_id is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
             return;
         } 
         
@@ -867,18 +863,19 @@ class Users extends MY_REST_Controller {
         }
         else
         {
-            $output["success"] = false;
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected unknown fail to confirmkakao_post / $kakao_id"
-            );
-
+            $this->respond_200_Failed(
+                // $msg=""
+                "User is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;
         }
         $output["kakao_id"] = $kakao_id;
 
@@ -901,21 +898,20 @@ class Users extends MY_REST_Controller {
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
-        {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-
-            // api key가 없습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                // $error_msg=""
-                "Detected not allowed access to confirmkakao_post"
-            );
-
-            return;
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         }
 
         $facebook_id = 
@@ -927,22 +923,19 @@ class Users extends MY_REST_Controller {
         );
         if(empty($facebook_id)) 
         {
-            $output["success"] = false;
-            $output["facebook_id"] = $facebook_id;
-            $output["reason"] = "facebook_id is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid facebook_id to confirmkakao_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Facebook_id is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         } 
         
         $user = $this->my_sql->get_user_facebook(intval($facebook_id)); 
@@ -965,18 +958,19 @@ class Users extends MY_REST_Controller {
         }
         else
         {
-            $output["success"] = false;
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected unknown fail to confirmkakao_post / $facebook_id"
-            );
-
+            $this->respond_200_Failed(
+                // $msg=""
+                "User is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;
         }
         $output["facebook_id"] = $facebook_id;
 
@@ -999,21 +993,20 @@ class Users extends MY_REST_Controller {
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
-        {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-
-            // api key가 없습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                // $error_msg=""
-                "Detected not allowed access to confirmkakao_post"
-            );
-
-            return;
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         }
 
         $naver_id = 
@@ -1025,22 +1018,19 @@ class Users extends MY_REST_Controller {
         );
         if(empty($naver_id)) 
         {
-            $output["success"] = false;
-            $output["naver_id"] = $naver_id;
-            $output["reason"] = "naver_id is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid naver_id to confirmkakao_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Naver_id is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         } 
         
         $user = $this->my_sql->get_user_naver(intval($naver_id)); 
@@ -1063,17 +1053,19 @@ class Users extends MY_REST_Controller {
         }
         else
         {
-            $output["success"] = false;
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected unknown fail to confirmkakao_post / $naver_id"
-            );
+            $this->respond_200_Failed(
+                // $msg=""
+                "User is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;              
         }
         $output["naver_id"] = $naver_id;
 
@@ -1096,20 +1088,19 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-
-            // api key가 없습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_ALLOWED_ACCESS_404,
-                // $error_msg=""
-                "Detected not allowed access to confirm_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         }
 
         $email = 
@@ -1121,43 +1112,37 @@ class Users extends MY_REST_Controller {
         );
         if(empty($email)) 
         {
-            $output["success"] = false;
-            $output["email"] = $email;
-            $output["reason"] = "email is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid email to confirm_post"
-            );
-
+            $this->respond_200_Failed(
+                // $msg=""
+                "Email is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
             return;
         }
 
         // email로 password를 가져옵니다.
         $password_hashed = $this->my_sql->get_user_password_by_email($email);
         if(empty($password_hashed)) {
-            $output["success"] = false;
-            $output["email"] = $email;
-            $output["reason"] = "user is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid password_hashed to confirm_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "User is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;             
         }
 
         $password = 
@@ -1169,23 +1154,19 @@ class Users extends MY_REST_Controller {
         );
         if(empty($password)) 
         {
-            $output["success"] = false;
-            $output["email"] = $email;
-            $output["password"] = $password;
-            $output["reason"] = "password is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected not valid password to confirm_post"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Password is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
         }
 
         // 사용자가 입력한 패스워드와 해싱되어 저장된 패스워드를 비교합니다.
@@ -1196,23 +1177,19 @@ class Users extends MY_REST_Controller {
         }
         if(!$is_valid_password)
         {
-            $output["success"] = false;
-            $output["email"] = $email;
-            $output["password"] = $password;
-            $output["reason"] = "password is not valid!";
-            $this->respond_200($output);
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected password is not matching to confirm_post / $email"
-            );
-
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Password verify failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
         }
 
         // 이메일과 해싱한 패스워드로 유저 정보를 조회합니다.
@@ -1236,18 +1213,19 @@ class Users extends MY_REST_Controller {
         }
         else
         {
-            $output["success"] = false;
-
-            // 인증에 실패했습니다. 로거에 기록합니다.
-            $this->my_logger->add_error(
-                // $user_id=-1
-                -1,
-                // $error_type=""
-                $this->my_logger->ERROR_NOT_VALID_USER_AUTH,
-                // $error_msg=""
-                "Detected unknown fail to confirm_post / $email"
-            );
-
+            $this->respond_200_Failed(
+                // $msg=""
+                "User is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;
         }
         $output["email"] = $email;
         $output["password"] = $password;
@@ -1270,9 +1248,19 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
         }
 
         $cookie_user_login = $this->my_cookie->get_user_login();
@@ -1306,8 +1294,18 @@ class Users extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $output["is_not_allowed_api_call"] = $is_not_allowed_api_call;
-            $this->respond_200($output);
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
 
@@ -1318,23 +1316,46 @@ class Users extends MY_REST_Controller {
             // $key_filter=""
             "user_email"
         );
+        $output["email"] = $email;
 
         $user = $this->my_sql->get_user_by_email($email);
         if(is_null($user)) 
         {
-            $output["success"] = false;
-            $output["reason"] = "email is not valid!";
-            $output["email"] = $email;
-            $this->respond_200($output);
+            $this->respond_200_Failed(
+                // $msg=""
+                "user is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
-        $output["user"] = $user;
+
+        $password_hashed = $this->my_sql->get_user_password_by_email($email);
+        if(is_null($password_hashed)) 
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "password_hashed is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
 
         // 인증키 만들기 - DB에 저장.
-        $password_hashed = $user->password;
         $time_now = $this->my_time->get_now_YYYYMMDDHHMMSSU();
-
-        // $key_hashed = $this->getHashQueryStringSafe($password_hashed . $time_now);
         $key_hashed = $this->my_auth->getHashQueryStringSafe($password_hashed . $time_now);
 
         $output["key_hashed"] = $key_hashed;
@@ -1379,7 +1400,6 @@ class Users extends MY_REST_Controller {
         );
 
         $this->respond_200($output);
-
     }
 
     public function logout_get()
@@ -1406,166 +1426,5 @@ class Users extends MY_REST_Controller {
 
         $output["success"] = true;
         $this->respond_200($output);
-    } 
-
-
-    // Example - Legacy
-    /*
-    public function insert_post() {
-
-        // TODO 지정된 파라미터만 통과, json으로 파라미터 validation 하도록 변경. 
-        $name = $this->post('name');
-        $name_escaped = $this->db->escape($name);
-
-        // TODO - 입력하는 문자열 검증 필요.
-        if(empty($name_escaped)) {
-
-            $response_body = [
-                'status' => FALSE,
-                'message' => '!empty(\$name_escaped)',
-                'data' => null
-            ];
-            
-        } else {
-
-            // TODO - 쿼리 빌더 사용해보기.
-            $this->db->query("INSERT INTO `z_test_user`(`name`) VALUES (" . $name_escaped . ")");
-
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE name=" . $name_escaped);
-            $user_inserted = $query->result();
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'data' => $user_inserted
-            ];
-
-        }
-
-        // OK (200) being the HTTP response code
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
     }
-
-    public function update_get($id=0) {
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'TEST',
-            'data' => null
-        ];
-
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }
-
-    public function update_post($id=0) {
-
-        $name = $this->post('name');
-        // 문자열인 경우는 아래 절차를 반드시 거쳐야 함.
-        $name_escaped = $this->db->escape($name);
-
-
-        if((0 < $id) && !empty($name_escaped)) {
-
-            // 유효한 이름값을 넘겨주었다면 업데이트를 진행합니다.
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE id=" . $id);
-            $user = $query->result();
-
-            $error = null;
-            if ( is_null($error) && ! $this->db->simple_query("UPDATE z_test_user SET `name`=" . $name_escaped . " WHERE `id`=" . $id))
-            {
-                $error = $this->db->error(); // Has keys 'code' and 'message'
-            }
-
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE id=" . $id);
-            $user_modified = $query->result();
-
-            // 이전 객체, 이후 객체 비교.
-            $data = [
-                "user" => $user,
-                "user_modified" => $user_modified,
-                "id" => $id,
-                "name" => $name
-            ];
-
-            if(!is_null($error)) {
-
-                $response_body = [
-                    'status' => FALSE,
-                    'message' => 'Success',
-                    'error' => $error,
-                    'data' => $data
-                ];
-
-            } else {
-
-                $response_body = [
-                    'status' => TRUE,
-                    'message' => 'Success',
-                    'data' => $data
-                ];
-
-            }
-
-        } else {
-
-            // 업데이트할 정보가 유효하지 않습니다. 실행을 중단합니다.
-            $data = [
-                "id" => $id,
-                "name" => $name
-            ];
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'param is not valid!',
-                'data' => $data
-            ];
-            
-        }
-
-        // OK (200) being the HTTP response code
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-        // DB 쿼리가 잘못된 경우라면 어떻게? - simple_query
-        // DB가 내려간 상태라면?
-        // 그밖에는?
-
-    }
-
-    public function delete_post($id=0) {
-
-        // $id = $this->post('id');
-        $id = intval($id);
-
-        if(0 < $id) {
-
-            // TODO - 쿼리 빌더 사용해보기.
-            $this->db->query("DELETE FROM `z_test_user` WHERE id=" . $id);
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'query' => $this->db->last_query(), // DEBUGGING 모드일때만 제공되는 파라미터
-                'data' => null
-            ];
-
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            
-        } else {
-
-            $response_body = [
-                'status' => FALSE,
-                'message' => '\$id is not valid!',
-                'query' => $this->db->last_query(), // DEBUGGING 모드일때만 제공되는 파라미터
-                'data' => null
-            ];
-
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-        }
-
-    }
-    */
-   
 }

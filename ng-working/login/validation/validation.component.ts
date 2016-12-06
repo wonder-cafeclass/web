@@ -7,6 +7,7 @@ import {  Component,
           ViewChild,
           OnInit }              from '@angular/core';
 import {  Router,
+          Resolve,
           ActivatedRoute,
           Params }              from '@angular/router';
 
@@ -18,9 +19,9 @@ import { MyCheckerService }     from '../../util/service/my-checker.service';
 import { MyEventService }       from '../../util/service/my-event.service';
 import { MyEvent }              from '../../util/model/my-event';
 
-import { MyEventWatchTowerService }     from '../../util/service/my-event-watchtower.service';
 import { User }                         from '../../users/model/user';
 import { MyResponse }                   from '../../util/model/my-response';
+import { MyEventWatchTowerService }     from '../../util/service/my-event-watchtower.service';
 
 @Component({
   moduleId: module.id,
@@ -54,7 +55,7 @@ export class ValidationComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("naver-callback / ngOnInit / init");
+    if(isDebug) console.log("validation / ngOnInit / init");
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.setIsAdmin();
@@ -68,13 +69,17 @@ export class ValidationComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+    if(isDebug) console.log("validation / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("validation / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
       (isAdmin:boolean) => {
 
-      if(isDebug) console.log("naver-callback / setIsAdmin / isAdmin : ",isAdmin);
+      if(isDebug) console.log("validation / setIsAdmin / isAdmin : ",isAdmin);
       this.isAdmin = isAdmin;
     });
   }  
@@ -83,16 +88,52 @@ export class ValidationComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
+    if(isDebug) console.log("validation / setMyCheckerReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
 
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
-      if(isDebug) console.log("naver-callback / setMyCheckerReady / isReady : ",isReady);
+      if(isDebug) console.log("validation / setMyCheckerReady / isReady : ",isReady);
 
       if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `validation / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );
         return;
       }
+
+      this.init();
+    });    
+  }  
+
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("validation / init / 시작");
+
+    this.setMyChecker();
+    this.getUserValidation();
+  }  
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("validation / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
@@ -105,17 +146,16 @@ export class ValidationComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.getUserValidation();
-    });    
-  }  
+      if(isDebug) console.log("validation / setMyChecker / done!");
+    } // end if
+
+  }   
 
   getUserValidation(): void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("validation / getUserValidation / init");
-
-
 
     // 외부 쿼리 스트링 파라미터를 가져옵니다.
     this.route.queryParams.switchMap((params: Params) => {
@@ -131,11 +171,32 @@ export class ValidationComponent implements OnInit {
       if(isDebug) console.log("validation / getUserValidation / switchMap / key : ",key);
 
       if(null != key && "" != key) {
-        return this.userService.confirmUserValidation(this.myCheckerService.getAPIKey(),key);
-      }
 
-      // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
-      return Promise.resolve(new MyResponse(false, "", "", "key is not valid!", null, null));
+        // 1. 메일로 전달된 링크로 진입, 인증키로 회원 정보 확인.
+        return this.userService.confirmUserValidation(this.myCheckerService.getAPIKey(),key);
+        
+      } else {
+        
+        // 2. 회원 등록 직후, 메일 확인을 요청하는 메시지를 회원에게 표시
+        let myResponse:MyResponse = 
+        new MyResponse(
+          // public success:boolean
+          false,
+          // public message:string
+          "",
+          // public query:string
+          "",
+          // public error:string
+          "",
+          // public data:any
+          null,
+          // public extra:any         
+          null
+        );
+
+        // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
+        return Promise.resolve(myResponse);
+      }
 
     }).subscribe((myResponse:MyResponse) => {
 
@@ -145,15 +206,21 @@ export class ValidationComponent implements OnInit {
       // 등록이 완료되었는지 확인.
 
       if(myResponse.isFailed()) {
-        console.log("1. 회원 정보를 등록하고 바로 이동한 경우.");
+
+        // 1. 회원 등록 직후, 메일 확인을 요청.
+        if(isDebug) console.log("validation / getUserValidation / subscribe / 1. 회원 정보를 등록하고 바로 이동한 경우");
         this.msgTop = this.msgGuide;
+
       } else if(myResponse.isSuccess() && myResponse.hasDataProp("is_confirmed")) {
+
+        // 2. 메일로 전달된 확인 링크로 들어온 경우.
 
         let is_confirmed:boolean = myResponse.hasDataProp("is_confirmed");
         let is_attack:boolean = myResponse.hasDataProp("is_attack");
 
         if(is_confirmed) {
-          console.log("2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
+          
+          if(isDebug) console.log("validation / getUserValidation / subscribe / 2. 인증 변경 완료후에는 사용자에게 완료 팝업을 노출.");
           this.msgTop = this.msgConfirmed;
           this.msgBottom = this.msgRedirect;
 
@@ -171,7 +238,8 @@ export class ValidationComponent implements OnInit {
           }
 
         } else if(is_attack) {
-          console.log("3. 정상적이지 않은 접근.");
+
+          if(isDebug) console.log("validation / getUserValidation / subscribe / 3. 정상적이지 않은 접근.");
           this.msgTop = this.msgWarning;
           this.msgBottom = this.msgRedirect;
 
@@ -183,14 +251,14 @@ export class ValidationComponent implements OnInit {
           }, 3000);
 
         } else {
-          // TODO - 3. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.
-          console.log("3. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.");
+
+          if(isDebug) console.log("validation / getUserValidation / subscribe / 4. 인증 변경 실패에는 사용자에게 실패 팝업 및 문의 할수 있는 이메일/전화번호등을 노출함.");
           this.msgTop = this.msgGuide;
           
         } // end if
       } // end if
 
-      return Promise.resolve(new MyResponse(false, "", "", "myResponse is not valid!", null, myResponse));
+      // return Promise.resolve(new MyResponse(false, "", "", "myResponse is not valid!", null, myResponse));
 
     }); // end subscribe
 

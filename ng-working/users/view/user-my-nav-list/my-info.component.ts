@@ -1,6 +1,7 @@
 import {  Component, 
           ViewChild,
           OnInit, 
+          AfterViewChecked,
           Output, 
           EventEmitter,
           Input }                     from '@angular/core';
@@ -16,6 +17,7 @@ import { NicknameComponent }          from '../../../widget/input/nickname/nickn
 
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';          
 
+import { MyLoggerService }            from '../../../util/service/my-logger.service';
 import { MyEventService }             from '../../../util/service/my-event.service';
 import { MyEvent }                    from '../../../util/model/my-event';
 
@@ -30,9 +32,7 @@ import { User }                       from '../../../users/model/user';
   templateUrl: 'my-info.component.html',
   styleUrls: [ 'my-info.component.css' ]
 })
-export class MyInfoComponent implements OnInit {
-
-  @Input() myCheckerService:MyCheckerService;
+export class MyInfoComponent implements OnInit, AfterViewChecked {
 
   @Output() emitter = new EventEmitter<any>();
 
@@ -80,20 +80,126 @@ export class MyInfoComponent implements OnInit {
   @ViewChild(ProfileImgUploadComponent)
   private profileImgUploadComponent: ProfileImgUploadComponent;  
 
+  isAdmin:boolean=false;
+
   constructor(public myEventService:MyEventService,
+              private myLoggerService:MyLoggerService,
+              public myCheckerService:MyCheckerService,
               private myEventWatchTowerService:MyEventWatchTowerService) {}
 
   ngOnInit(): void {
 
+  }
+
+  ngAfterViewChecked(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / ngOnInit");
+    if(isDebug) console.log("my-info / ngAfterViewChecked");
+
+    this.setIsAdmin();
+    this.setMyCheckerReady();
+
+  }
+
+  private setIsAdmin(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("signup / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("signup / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / setMyCheckerReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 직접 주소를 입력하여 이동한 경우.
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("signup / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+      // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `signup / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.init();
+
+    });    
+  }
+
+  private setMyChecker() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("my-info / setMyChecker / done!");
+    } // end if
+
+  }
+
+  private setLoginUser() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / setLoginUser / 시작");
+
+    // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
+    let loginUser:User = this.myEventWatchTowerService.getLoginUser();
+    if(null != loginUser) {
+      this.loginUser = loginUser;
+      this.fillViewUserInfo();
+    }
 
     // Subscribe login user
     this.myEventWatchTowerService.loginAnnounced$.subscribe(
       (loginUser:User) => {
 
-      if(isDebug) console.log("my-info / loginUser : ",loginUser);
+      if(isDebug) console.log("my-info / setLoginUser : ",loginUser);
 
       // Example
       /*
@@ -115,14 +221,24 @@ export class MyInfoComponent implements OnInit {
         status: "A"
         thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
       }
-      */      
+      */
+
       // 로그인한 유저 정보가 들어왔습니다.
       this.loginUser = loginUser;
-
       this.fillViewUserInfo();
-    });      
-
+    });  
   }
+
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / init / 시작");
+
+    this.setMyChecker();
+    this.setLoginUser();
+
+  }  
 
   fillViewUserInfo() :void {
 
@@ -135,11 +251,15 @@ export class MyInfoComponent implements OnInit {
       return;
     }
 
+    // email
     this.emailComponent.setEmail(this.loginUser.email);
     this.email = this.loginUser.email;
+
     // name
     this.nameComponent.setName(this.loginUser.name);
     this.name = this.loginUser.name;
+
+        /*
     // nickname
     this.nicknameComponent.setNickname(this.loginUser.nickname);
     this.nickname = this.loginUser.nickname;
@@ -166,6 +286,7 @@ export class MyInfoComponent implements OnInit {
       this.birthdayComponent.setBirthMonth(birthdayArr[1]);
       this.birthdayComponent.setBirthDay(birthdayArr[2]);
     }
+    */
 
   }
 

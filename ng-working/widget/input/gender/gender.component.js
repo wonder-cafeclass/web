@@ -12,16 +12,18 @@ var core_1 = require('@angular/core');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var GenderComponent = (function () {
-    function GenderComponent(myLoggerService, myEventService) {
+    function GenderComponent(myLoggerService, myEventWatchTowerService, myCheckerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.gender = "";
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.tooltipMsgGenderNotValid = "앗! 성별이 필요합니다.";
         this.isFocus = false;
@@ -31,8 +33,83 @@ var GenderComponent = (function () {
         this.keyMale = "M";
         this.keyNoGender = "U";
         this.isShowPopover = false;
+        this.isAdmin = false;
     }
-    GenderComponent.prototype.ngOnInit = function () { };
+    GenderComponent.prototype.ngOnInit = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / ngOnInit / init");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerServiceReady();
+    };
+    GenderComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("gender / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("gender / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    GenderComponent.prototype.setMyCheckerServiceReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / setMyCheckerServiceReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.setMyCheckerService();
+            this.init();
+        }
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("gender / setMyCheckerServiceReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "gender / setMyCheckerServiceReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.setMyCheckerService();
+            _this.init();
+        });
+    };
+    GenderComponent.prototype.setMyCheckerService = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / setMyCheckerService / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("gender / setMyCheckerService / done!");
+        } // end if
+    };
     GenderComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -41,8 +118,10 @@ var GenderComponent = (function () {
             this.myChecker = this.myCheckerService.getMyChecker("user_gender");
         }
     };
-    GenderComponent.prototype.isOK = function (input) {
+    GenderComponent.prototype.init = function () {
         this.setMyChecker();
+    };
+    GenderComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
@@ -71,7 +150,6 @@ var GenderComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        this.setMyChecker();
     };
     GenderComponent.prototype.onBlur = function (event) {
         event.stopPropagation();
@@ -115,7 +193,6 @@ var GenderComponent = (function () {
     GenderComponent.prototype.onClickGenderFemale = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        this.setMyChecker();
         if (this.gender === this.keyMale) {
             this.gender = this.keyMale;
         }
@@ -125,7 +202,6 @@ var GenderComponent = (function () {
     GenderComponent.prototype.onClickGenderMale = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        this.setMyChecker();
         if (this.gender === this.keyFemale) {
             this.gender = this.keyFemale;
         }
@@ -153,10 +229,6 @@ var GenderComponent = (function () {
         __metadata('design:type', String)
     ], GenderComponent.prototype, "gender", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], GenderComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], GenderComponent.prototype, "emitter", void 0);
@@ -167,7 +239,7 @@ var GenderComponent = (function () {
             templateUrl: 'gender.component.html',
             styleUrls: ['gender.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService])
     ], GenderComponent);
     return GenderComponent;
 }());

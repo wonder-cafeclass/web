@@ -19,6 +19,7 @@ var MyLoggerService = (function () {
         this.apiLogActionPageUrl = '/CI/index.php/api/log/page';
         this.apiLogErrorUrl = '/CI/index.php/api/log/error';
         this.pageTypeLogin = "LOG_IN";
+        this.pageTypeLogout = "LOG_OUT";
         this.pageTypeLoginFacebook = "LOG_IN_FACEBOOK";
         this.pageTypeLoginKakao = "LOG_IN_KAKAO";
         this.pageTypeLoginNaver = "LOG_IN_NAVER";
@@ -32,8 +33,8 @@ var MyLoggerService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
     }
     MyLoggerService.prototype.logActionPage = function (apiKey, pageType) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("my-logger.service / logActionPage / 시작");
         if (null == apiKey || "" == apiKey) {
@@ -55,7 +56,13 @@ var MyLoggerService = (function () {
         var req_url = this.us.get(this.apiLogActionPageUrl);
         if (isDebug)
             console.log("my-logger.service / logActionPage / req_url : ", req_url);
-        var params = { page_type: pageType };
+        var path = window.location.href;
+        if (isDebug)
+            console.log("my-logger.service / logActionPage / path : ", path);
+        var params = {
+            page_type: pageType,
+            page_uri: path
+        };
         return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.myExtractor.extractData)

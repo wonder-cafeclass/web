@@ -121,7 +121,7 @@ class MY_Logger
         return $log_error;
     }    
 
-    public function add_action($user_id=-1, $action_type="", $action_key="")
+    public function add_action($user_id=-1, $action_type="", $action_key="", $page_uri="")
     {
         if($this->is_not_ready())
         {
@@ -150,7 +150,9 @@ class MY_Logger
             // $user_id=-1
             $user_id,
             // $key=""
-            $action_key
+            $action_key,
+            // $url=""
+            $page_uri
         );
     }
 
@@ -233,6 +235,16 @@ class MY_Logger
         }
 
         return true;
+    }
+
+
+    /*
+    *   ex) http://devcafeclass.co.uk/cafeclass/CI/index.php/api/kakao/auth
+    *   ex) /cafeclass/CI/index.php/api/kakao/auth --> REQUEST_URI
+    */
+    private function get_request_uri()
+    {
+        return $_SERVER['REQUEST_URI'];
     }
 
     /*

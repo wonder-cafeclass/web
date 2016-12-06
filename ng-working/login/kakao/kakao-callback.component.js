@@ -114,8 +114,8 @@ var KakaoCallbackComponent = (function () {
         this.getQueryString();
     }; // end init
     KakaoCallbackComponent.prototype.logActionPage = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -131,8 +131,8 @@ var KakaoCallbackComponent = (function () {
     };
     KakaoCallbackComponent.prototype.getQueryString = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getQueryString / 시작");
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -151,8 +151,8 @@ var KakaoCallbackComponent = (function () {
     // 카카오 로그인 토큰을 가져옵니다.
     KakaoCallbackComponent.prototype.getKakaoToken = function (kakaoCode) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoToken / 시작");
         if (isDebug)
@@ -160,7 +160,13 @@ var KakaoCallbackComponent = (function () {
         if (null == kakaoCode || "" == kakaoCode) {
             if (isDebug)
                 console.log("kakao-callback / getKakaoToken / 중단 / kakaoCode is not valid!");
-            // TODO - 에러 로그 등록
+            this.myLoggerService.logError(
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey(), 
+            // errorType:string
+            this.myLoggerService.errorTypeNotValidValue, 
+            // errorMsg:string
+            "kakao-callback / getKakaoToken / kakaoCode is not valid! : " + kakaoCode);
             return;
         }
         this.loginService
@@ -197,8 +203,8 @@ var KakaoCallbackComponent = (function () {
     // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
     KakaoCallbackComponent.prototype.getKakaoSignUp = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoSignUp / 시작");
         this.loginService
@@ -261,8 +267,8 @@ var KakaoCallbackComponent = (function () {
     };
     KakaoCallbackComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoMe / 시작");
         this.loginService
@@ -294,8 +300,8 @@ var KakaoCallbackComponent = (function () {
     }; // end method 
     KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getUserByKakaoId / 시작");
         this.userService
@@ -319,11 +325,7 @@ var KakaoCallbackComponent = (function () {
                 "kakao-callback / getKakaoMe / Failed! / kakaoId : " + kakaoId);
                 return;
             }
-            else if (null != user ||
-                null == user["gender"] ||
-                "" == user["gender"] ||
-                null == user["mobile"] ||
-                "" == user["mobile"]) {
+            else if (null != user && (null == user["mobile"] || "" == user["mobile"])) {
                 // 카카오 로그인은 성공. 카카오 프로필에서 가져온 정보로 유저 등록됨. 
                 // 하지만 추가 정보 필요. 
                 // 회원 가입창으로 이동.
@@ -343,8 +345,18 @@ var KakaoCallbackComponent = (function () {
                 // apiKey:string
                 _this.myEventWatchTowerService.getApiKey(), 
                 // kakaoId:string
-                myResponse.getDataProp("kakao_id")).then(function (result) {
-                    if (null == result || null == result.success || !result.success) {
+                myResponse.getDataProp("kakao_id")).then(function (myResponse) {
+                    if (isDebug)
+                        console.log("kakao-callback / getUserByKakaoId / myResponse : ", myResponse);
+                    if (myResponse.isSuccess()) {
+                        // 쿠키 인증 성공!
+                        // 로그인 직전 페이지로 리다이렉트. 
+                        // 돌아갈 주소가 없다면, 홈으로 이동.
+                        if (isDebug)
+                            console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
+                        _this.router.navigate(['/class-center']);
+                    }
+                    else {
                         // kakaoid로 쿠키 인증 실패. 
                         if (isDebug)
                             console.log("kakao-callback / getUserByKakaoId / 중단 / kakaoid로 쿠키 인증 실패. 홈으로 이동.");
@@ -358,14 +370,7 @@ var KakaoCallbackComponent = (function () {
                         "kakao-callback / getUserByKakaoId / Failed! / kakaoId : " + kakaoId);
                         // 홈으로 이동.
                         _this.router.navigate(['/class-center']);
-                        return;
                     }
-                    // 쿠키 인증 성공!
-                    // 로그인 직전 페이지로 리다이렉트. 
-                    // 돌아갈 주소가 없다면, 홈으로 이동.
-                    if (isDebug)
-                        console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
-                    _this.router.navigate(['/class-center']);
                 }); // end userService
             } // end if
         }); // end service

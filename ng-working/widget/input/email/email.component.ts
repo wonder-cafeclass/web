@@ -35,8 +35,6 @@ export class EmailComponent implements OnInit {
 
   @Input() isCheckUnique:boolean=true;
 
-  @Input() myCheckerService:MyCheckerService = null;
-
   @Output() emitter = new EventEmitter<MyEvent>();
 
   isFocus:boolean=false;
@@ -59,6 +57,7 @@ export class EmailComponent implements OnInit {
   constructor(  private myEventService:MyEventService,
                 private myLoggerService:MyLoggerService, 
                 private myEventWatchTowerService:MyEventWatchTowerService, 
+                private myCheckerService:MyCheckerService,
                 private userService:UserService) {}
 
   ngOnInit(): void {

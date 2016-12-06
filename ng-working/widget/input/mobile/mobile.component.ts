@@ -15,6 +15,8 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { MyResponse }           from '../../../util/model/my-response';
 
+import { MyEventWatchTowerService }  from '../../../util/service/my-event-watchtower.service';
+
 @Component({
   moduleId: module.id,
   selector: 'mobile',
@@ -28,8 +30,6 @@ export class MobileComponent implements OnInit {
 
   @Input() topWarning:number=-1;
   @Input() leftWarning:number=-1;
-
-  @Input() myCheckerService:MyCheckerService = null;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -65,13 +65,108 @@ export class MobileComponent implements OnInit {
   mobileBodyPrev:string="";
   mobileTailPrev:string="";
 
+  isAdmin:boolean=false;
+
   constructor(  private userService:UserService,
-                private myLoggerService:MyLoggerService, 
+                private myLoggerService:MyLoggerService,
+                private myEventWatchTowerService:MyEventWatchTowerService,
+                private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService) {}
 
   ngOnInit(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("mobile / ngOnInit / init");
+
     this.mobileHeadEmitted = this.mobileHeadPrev;
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerServiceReady();
+
   }
+
+  // @ Desc : my-event-watchtower로부터 공유받을 파라미터들을 받습니다. ex) api key...
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("user-my-nav-list / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerServiceReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.setMyCheckerService();
+      this.init();
+    }
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.setMyCheckerService();
+      this.init();
+    });    
+  }  
+
+  private setMyCheckerService() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / setMyCheckerService / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerService / done!");
+    } // end if
+
+  }   
 
   private setMyChecker() :void {
     if(null == this.myCheckerService) {
@@ -88,9 +183,12 @@ export class MobileComponent implements OnInit {
       this.myCheckerMobileTail = this.myCheckerService.getMyChecker("user_mobile_kor_tail");
     }    
   }
-  isOKHead(input:string) :boolean {
 
+  private init() :void {
     this.setMyChecker();
+  }
+
+  isOKHead(input:string) :boolean {
 
     if(null == this.myCheckerService) {
       return false;
@@ -107,8 +205,6 @@ export class MobileComponent implements OnInit {
   }
   isOKBody(input:string) :boolean {
 
-    this.setMyChecker();
-
     if(null == this.myCheckerService) {
       return false;
     }
@@ -122,8 +218,6 @@ export class MobileComponent implements OnInit {
     return isOK;
   }
   isOKTail(input:string) :boolean {
-
-    this.setMyChecker();
 
     if(null == this.myCheckerService) {
       return false;
@@ -160,7 +254,6 @@ export class MobileComponent implements OnInit {
   }
   public hasDoneMobileHead() :boolean {
 
-    this.setMyChecker();
     let isOKHead:boolean = this.isOKHead(this.mobileHeadPrev);
 
     return isOKHead;
@@ -184,7 +277,6 @@ export class MobileComponent implements OnInit {
     return !this.hasDoneMobileBody();
   }
   public hasDoneMobileBody() :boolean {
-    this.setMyChecker();
     return this.isOKBody(this.mobileBodyPrev);
   }
   // @ Desc : 전화번호 가운데 자리를 확인해 달라는 표시를 보여줍니다.
@@ -198,7 +290,6 @@ export class MobileComponent implements OnInit {
     return !this.hasDoneMobileTail();
   }
   public hasDoneMobileTail() :boolean {
-    this.setMyChecker();
     return this.isOKTail(this.mobileTailPrev);
   }
   // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
@@ -243,15 +334,12 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileHead = true;      
     } // end if
 
-    this.setMyChecker();
-
     let inputStr:string = element.value;
     this.mobileHeadPrev = inputStr;
   }
 
   onFocusMobileHead(event, element) :void {
     this.isFocusMobileHead = true;
-    this.setMyChecker();
   }
   onKeydownTabMobileHead(event, element) :void {
     this.isFocusMobileHead = true;
@@ -532,14 +620,11 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileBody = true;      
     } // end if
 
-    this.setMyChecker();
-
     this.mobileBodyPrev = element.value;
   }
 
   onFocusMobileBody(event, element) :void {
     this.isFocusMobileBody = true;
-    this.setMyChecker();
   }
   onKeydownTabMobileBody(event, element) :void {
     this.isFocusMobileBody = true;
@@ -791,8 +876,6 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileTail = true;      
     } // end if
 
-    this.setMyChecker();
-
     this.mobileTailPrev = element.value;
 
     // 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.
@@ -814,7 +897,6 @@ export class MobileComponent implements OnInit {
 
   onFocusMobileTail(event, element) :void {
     this.isFocusMobileTail = true;
-    this.setMyChecker();
   }
   onKeydownTabMobileTail(event, element) :void {
     this.isFocusMobileTail = true;

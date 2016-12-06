@@ -13,16 +13,18 @@ var user_service_1 = require('../../../users/service/user.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var MobileComponent = (function () {
-    function MobileComponent(userService, myLoggerService, myEventService) {
+    function MobileComponent(userService, myLoggerService, myEventWatchTowerService, myCheckerService, myEventService) {
         this.userService = userService;
         this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isSuccessHeadInput = false;
         this.isSuccessBodyInput = false;
@@ -45,9 +47,84 @@ var MobileComponent = (function () {
         this.mobileHeadPrev = "010";
         this.mobileBodyPrev = "";
         this.mobileTailPrev = "";
+        this.isAdmin = false;
     }
     MobileComponent.prototype.ngOnInit = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("mobile / ngOnInit / init");
         this.mobileHeadEmitted = this.mobileHeadPrev;
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerServiceReady();
+    };
+    // @ Desc : my-event-watchtower로부터 공유받을 파라미터들을 받습니다. ex) api key...
+    MobileComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user-my-nav-list / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("user-my-nav-list / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("user-my-nav-list / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    MobileComponent.prototype.setMyCheckerServiceReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.setMyCheckerService();
+            this.init();
+        }
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.setMyCheckerService();
+            _this.init();
+        });
+    };
+    MobileComponent.prototype.setMyCheckerService = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user-my-nav-list / setMyCheckerService / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("user-my-nav-list / setMyCheckerService / done!");
+        } // end if
     };
     MobileComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
@@ -63,8 +140,10 @@ var MobileComponent = (function () {
             this.myCheckerMobileTail = this.myCheckerService.getMyChecker("user_mobile_kor_tail");
         }
     };
-    MobileComponent.prototype.isOKHead = function (input) {
+    MobileComponent.prototype.init = function () {
         this.setMyChecker();
+    };
+    MobileComponent.prototype.isOKHead = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
@@ -76,7 +155,6 @@ var MobileComponent = (function () {
         return isOK;
     };
     MobileComponent.prototype.isOKBody = function (input) {
-        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
@@ -87,7 +165,6 @@ var MobileComponent = (function () {
         return isOK;
     };
     MobileComponent.prototype.isOKTail = function (input) {
-        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
@@ -117,7 +194,6 @@ var MobileComponent = (function () {
         return !this.hasDoneMobileHead();
     };
     MobileComponent.prototype.hasDoneMobileHead = function () {
-        this.setMyChecker();
         var isOKHead = this.isOKHead(this.mobileHeadPrev);
         return isOKHead;
     };
@@ -140,7 +216,6 @@ var MobileComponent = (function () {
         return !this.hasDoneMobileBody();
     };
     MobileComponent.prototype.hasDoneMobileBody = function () {
-        this.setMyChecker();
         return this.isOKBody(this.mobileBodyPrev);
     };
     // @ Desc : 전화번호 가운데 자리를 확인해 달라는 표시를 보여줍니다.
@@ -154,7 +229,6 @@ var MobileComponent = (function () {
         return !this.hasDoneMobileTail();
     };
     MobileComponent.prototype.hasDoneMobileTail = function () {
-        this.setMyChecker();
         return this.isOKTail(this.mobileTailPrev);
     };
     // @ Desc : 전화번호 마지막 자리를 확인해 달라는 표시를 보여줍니다.
@@ -188,13 +262,11 @@ var MobileComponent = (function () {
         if (!this.isFocusMobileHead) {
             this.isFocusMobileHead = true;
         } // end if
-        this.setMyChecker();
         var inputStr = element.value;
         this.mobileHeadPrev = inputStr;
     };
     MobileComponent.prototype.onFocusMobileHead = function (event, element) {
         this.isFocusMobileHead = true;
-        this.setMyChecker();
     };
     MobileComponent.prototype.onKeydownTabMobileHead = function (event, element) {
         this.isFocusMobileHead = true;
@@ -414,12 +486,10 @@ var MobileComponent = (function () {
         if (!this.isFocusMobileBody) {
             this.isFocusMobileBody = true;
         } // end if
-        this.setMyChecker();
         this.mobileBodyPrev = element.value;
     };
     MobileComponent.prototype.onFocusMobileBody = function (event, element) {
         this.isFocusMobileBody = true;
-        this.setMyChecker();
     };
     MobileComponent.prototype.onKeydownTabMobileBody = function (event, element) {
         this.isFocusMobileBody = true;
@@ -619,7 +689,6 @@ var MobileComponent = (function () {
         if (!this.isFocusMobileTail) {
             this.isFocusMobileTail = true;
         } // end if
-        this.setMyChecker();
         this.mobileTailPrev = element.value;
         // 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.
         if (null != elementPrev && (null == elementPrev.value || "" === elementPrev.value)) {
@@ -636,7 +705,6 @@ var MobileComponent = (function () {
     };
     MobileComponent.prototype.onFocusMobileTail = function (event, element) {
         this.isFocusMobileTail = true;
-        this.setMyChecker();
     };
     MobileComponent.prototype.onKeydownTabMobileTail = function (event, element) {
         this.isFocusMobileTail = true;
@@ -947,10 +1015,6 @@ var MobileComponent = (function () {
         __metadata('design:type', Number)
     ], MobileComponent.prototype, "leftWarning", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], MobileComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], MobileComponent.prototype, "emitter", void 0);
@@ -961,7 +1025,7 @@ var MobileComponent = (function () {
             templateUrl: 'mobile.component.html',
             styleUrls: ['mobile.component.css']
         }), 
-        __metadata('design:paramtypes', [user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService])
     ], MobileComponent);
     return MobileComponent;
 }());

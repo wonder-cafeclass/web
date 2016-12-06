@@ -11,6 +11,10 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
+import { MyResponse }                 from '../../../util/model/my-response';
+
+
 @Component({
   moduleId: module.id,
   selector: 'gender',
@@ -26,8 +30,6 @@ export class GenderComponent implements OnInit {
   @Input() leftWarning:number=-1;
 
   @Input() gender:string="";
-
-  @Input() myCheckerService:MyCheckerService = null;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -47,10 +49,104 @@ export class GenderComponent implements OnInit {
 
   myChecker:MyChecker;
 
-  constructor(  private myLoggerService:MyLoggerService, 
+  isAdmin:boolean=false;
+
+  constructor(  private myLoggerService:MyLoggerService,
+                private myEventWatchTowerService:MyEventWatchTowerService,  
+                private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / ngOnInit / init");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerServiceReady();
+
+  }
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("gender / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("gender / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerServiceReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / setMyCheckerServiceReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.setMyCheckerService();
+      this.init();
+    }
+
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("gender / setMyCheckerServiceReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `gender / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.setMyCheckerService();
+      this.init();
+    });    
+  }  
+
+  private setMyCheckerService() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / setMyCheckerService / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("gender / setMyCheckerService / done!");
+    } // end if
+
+  }   
 
   private setMyChecker() :void {
     if(null == this.myCheckerService) {
@@ -61,9 +157,12 @@ export class GenderComponent implements OnInit {
       this.myChecker = this.myCheckerService.getMyChecker("user_gender");
     }
   }
-  isOK(input:string) :boolean {
 
+  private init() :void {
     this.setMyChecker();
+  }
+
+  isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
       return false;
@@ -97,8 +196,6 @@ export class GenderComponent implements OnInit {
     if(!this.isFocus) {
       this.isFocus = true;      
     } // end if
-
-    this.setMyChecker();
   } 
 
   onBlur(event) :void {
@@ -157,8 +254,6 @@ export class GenderComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    this.setMyChecker();
-
     if(this.gender === this.keyMale) {
       this.gender = this.keyMale;
     }
@@ -172,8 +267,6 @@ export class GenderComponent implements OnInit {
 
     event.stopPropagation();
     event.preventDefault();
-
-    this.setMyChecker();
 
     if(this.gender === this.keyFemale) {
       this.gender = this.keyFemale;

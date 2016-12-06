@@ -197,6 +197,7 @@ CREATE TABLE `log_action` (
   `type` varchar(32) COLLATE utf8_bin NOT NULL,
   `user_id` int(32) NOT NULL,
   `key` varchar(32) COLLATE utf8_bin NOT NULL,
+  `uri` varchar(255) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   INDEX `user_id` (`user_id`),

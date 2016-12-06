@@ -35,8 +35,8 @@ var LoginComponent = (function () {
         this.errorMsgArr = [];
     }
     LoginComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / ngOnInit / init");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -50,6 +50,10 @@ var LoginComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("signup / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
             if (isDebug)
@@ -63,6 +67,11 @@ var LoginComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.setMyChecker();
+            this.checkLoginUser();
+        }
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
                 console.log("login / setMyCheckerReady / isReady : ", isReady);
@@ -77,33 +86,56 @@ var LoginComponent = (function () {
                 "login / setMyCheckerReady / Failed! / isReady : " + isReady);
                 return;
             }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
+            _this.setMyChecker();
             _this.checkLoginUser();
         });
     };
+    LoginComponent.prototype.setMyChecker = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("login / setMyChecker / done!");
+        } // end if
+    };
     LoginComponent.prototype.checkLoginUser = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / checkLoginUser / 시작");
         this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
+            if (isDebug)
+                console.log("login / checkLoginUser / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("user")) {
-                // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
+                if (isDebug)
+                    console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.");
                 _this.router.navigate([_this.redirectUrl]);
             }
             else {
-                // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
+                if (isDebug)
+                    console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
                 _this.init();
             }
         });
     };
     LoginComponent.prototype.init = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
@@ -115,6 +147,8 @@ var LoginComponent = (function () {
         this.loginService
             .getKakaoAuthUrl()
             .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getKakaoAuthUrl / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
                 _this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
             }
@@ -123,6 +157,8 @@ var LoginComponent = (function () {
         this.loginService
             .getNaverAuthUrl()
             .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getNaverAuthUrl / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
                 _this.naverAuthUrl = myResponse.getDataProp("auth_url");
             }
@@ -131,6 +167,8 @@ var LoginComponent = (function () {
         this.loginService
             .getFacebookAuthUrl()
             .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getFacebookAuthUrl / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
                 _this.facebookAuthUrl = myResponse.getDataProp("auth_url");
             }
@@ -140,8 +178,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / onChangedFromChild / 시작");
         if (isDebug)
@@ -207,8 +245,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.verifyEmailNPassword = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / verifyEmailNPassword / 시작");
         var warningMsgHead = "아이디 또는 비밀번호를 다시 확인하세요.";

@@ -62,6 +62,7 @@
 		"agent_type":"is_str|||matches[agent_type]",
 
 		"logger_page_type":"is_str|||matches[logger_page_type]",
+		"logger_page_uri":"is_str",
 		"logger_error_type":"is_str|||matches[logger_error_type]",
 		"logger_error_msg":"is_str",
 
@@ -254,6 +255,7 @@
 			"LOG_IN_FACEBOOK",
 			"LOG_IN_KAKAO",
 			"LOG_IN_NAVER",
+			"LOG_OUT",
 			"CLASS_LIST",
 			"POLICY",
 			"SIGNUP",
