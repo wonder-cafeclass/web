@@ -32,8 +32,8 @@ var MyLoggerService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
     }
     MyLoggerService.prototype.logActionPage = function (apiKey, pageType) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logActionPage / 시작");
         if (null == apiKey || "" == apiKey) {
@@ -62,8 +62,8 @@ var MyLoggerService = (function () {
             .catch(this.myExtractor.handleError);
     };
     MyLoggerService.prototype.logActionDirtyWord = function (apiKey, dirtyWord) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logActionDirtyWord / 시작");
         if (null == apiKey || "" == apiKey) {
@@ -85,10 +85,16 @@ var MyLoggerService = (function () {
         */
     };
     MyLoggerService.prototype.logError = function (apiKey, errorType, errorMsg) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logError / 시작");
+        if (isDebug)
+            console.log("my-logger.service / logError / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("my-logger.service / logError / errorType : ", errorType);
+        if (isDebug)
+            console.log("my-logger.service / logError / errorMsg : ", errorMsg);
         if (null == apiKey || "" == apiKey) {
             if (isDebug)
                 console.log("my-logger.service / logError / 중단 / apiKey is not valid!");

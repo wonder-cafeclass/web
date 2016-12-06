@@ -1,10 +1,16 @@
-import { Injectable }                 from '@angular/core';
+import { Injectable }             from '@angular/core';
 import { Headers, 
          Http, 
          Response, 
          RequestOptions }         from '@angular/http';
+import { Observable }             from 'rxjs';
+
 import { MyChecker }              from '../model/my-checker';
+
 import { UrlService }             from "../../util/url.service";
+
+import { MyExtractor }            from '../../util/http/my-extractor';
+import { MyResponse }             from '../../util/model/my-response';
 
 
 @Injectable()
@@ -30,35 +36,13 @@ export class MyCheckerService {
 
     private history:any;
 
+    private myExtractor:MyExtractor;
 
     constructor(    private us:UrlService, 
-                    private http: Http) {}
+                    private http: Http) {
 
-    getReady() :Promise<any> {
-
-        if(null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
-            return Promise.resolve();
-        }
-
-        return this.getChecker()
-        .then(data => {
-
-            if(null != data.checker_map) {
-                this.checkerMap = data.checker_map;
-            } // end if
-            if(null != data.const_map) {
-                this.constMap = data.const_map;
-            } // end if
-            if(null != data.dirty_word_list) {
-                this.dirtyWordList = data.dirty_word_list;
-            } // end if
-            if(null != data.api_key) {
-                this.apiKey = data.api_key;
-            } // end if
-
-            return Promise.resolve();
-        });
-    } 
+        this.myExtractor = new MyExtractor();
+    }
 
     // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
     setReady(checkerMap:any, constMap:any, dirtyWordList:any, apiKey:string) :void {
@@ -784,9 +768,11 @@ export class MyCheckerService {
 
         return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
     } 
+
+    /*
     private extractData(res: Response) {
 
         let body = res.json();
@@ -811,6 +797,7 @@ export class MyCheckerService {
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
     }
+    */
 
 
 

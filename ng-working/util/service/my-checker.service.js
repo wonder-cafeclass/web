@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var my_checker_1 = require('../model/my-checker');
 var url_service_1 = require("../../util/url.service");
+var my_extractor_1 = require('../../util/http/my-extractor');
 var MyCheckerService = (function () {
     function MyCheckerService(us, http) {
         this.us = us;
@@ -50,29 +51,8 @@ var MyCheckerService = (function () {
         // lessThanEqualTo
         this.regExpLessThanEqualTo = /less_than_equal_to\[(.+)\]/i;
         this.regExpDBQueryUnique = /is_unique\[(.+)\]/i;
+        this.myExtractor = new my_extractor_1.MyExtractor();
     }
-    MyCheckerService.prototype.getReady = function () {
-        var _this = this;
-        if (null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
-            return Promise.resolve();
-        }
-        return this.getChecker()
-            .then(function (data) {
-            if (null != data.checker_map) {
-                _this.checkerMap = data.checker_map;
-            } // end if
-            if (null != data.const_map) {
-                _this.constMap = data.const_map;
-            } // end if
-            if (null != data.dirty_word_list) {
-                _this.dirtyWordList = data.dirty_word_list;
-            } // end if
-            if (null != data.api_key) {
-                _this.apiKey = data.api_key;
-            } // end if
-            return Promise.resolve();
-        });
-    };
     // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
     MyCheckerService.prototype.setReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
         if (null == checkerMap) {
@@ -625,28 +605,35 @@ var MyCheckerService = (function () {
         console.log("MyCheckerService / getChecker / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
-    MyCheckerService.prototype.extractData = function (res) {
-        var body = res.json();
-        console.log("MyCheckerService / extractData / body ::: ", body);
+    /*
+    private extractData(res: Response) {
+
+        let body = res.json();
+
+        console.log("MyCheckerService / extractData / body ::: ",body);
+
         // TODO - 데이터 검증 프로세스.
-        if (null == body.data || !body.success) {
-            console.log("MyCheckerService / extractData / 데이터가 없습니다.");
-            return null;
+        if(null == body.data || !body.success) {
+          console.log("MyCheckerService / extractData / 데이터가 없습니다.");
+          return null;
         }
+
         console.log("MyCheckerService / extractData / 3");
+
         return body.data;
-    };
-    MyCheckerService.prototype.handleError = function (error) {
+    }
+    private handleError (error: any) {
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
-        var errMsg = (error.message) ? error.message :
-            error.status ? error.status + " - " + error.statusText : 'Server error';
+        let errMsg = (error.message) ? error.message :
+        error.status ? `${error.status} - ${error.statusText}` : 'Server error';
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
-    };
+    }
+    */
     MyCheckerService.prototype.isOK = function (myChecker, input) {
         // let isDebug:boolean = true;
         var isDebug = false;

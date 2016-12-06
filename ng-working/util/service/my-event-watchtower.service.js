@@ -56,16 +56,28 @@ var MyEventWatchTowerService = (function () {
         this.errorMsgArrSource.next(errorMsgArr);
     };
     MyEventWatchTowerService.prototype.announceMyCheckerServiceReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / announceMyCheckerServiceReady / \uC2DC\uC791");
         if (null == checkerMap) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceMyCheckerServiceReady / checkerMap is not valid!");
             return;
         }
         if (null == constMap) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceMyCheckerServiceReady / constMap is not valid!");
             return;
         }
         if (null == dirtyWordList) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceMyCheckerServiceReady / dirtyWordList is not valid!");
             return;
         }
         if (null == apiKey || "" == apiKey) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceMyCheckerServiceReady / apiKey is not valid!");
             return;
         }
         this.checkerMap = checkerMap;
@@ -77,12 +89,29 @@ var MyEventWatchTowerService = (function () {
         this.apiKey = apiKey;
         this.apiKeySource.next(apiKey);
         this.myCheckerServiceReadySource.next(true);
+        if (isDebug)
+            console.log("my-event-watchtower / announceMyCheckerServiceReady / done.");
     };
     MyEventWatchTowerService.prototype.getLoginUser = function () {
         return this.loginUser;
     };
     MyEventWatchTowerService.prototype.getIsAdmin = function () {
         return this.isAdmin;
+    };
+    MyEventWatchTowerService.prototype.getIsMyCheckerReady = function () {
+        if (null == this.getCheckerMap()) {
+            return false;
+        }
+        if (null == this.getConstMap()) {
+            return false;
+        }
+        if (null == this.getDirtyWordList()) {
+            return false;
+        }
+        if (null == this.getApiKey()) {
+            return false;
+        }
+        return true;
     };
     MyEventWatchTowerService.prototype.getCheckerMap = function () {
         return this.checkerMap;

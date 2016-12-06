@@ -48,15 +48,7 @@ export class ValidationComponent implements OnInit {
                 private myEventService:MyEventService,
                 private myEventWatchTowerService:MyEventWatchTowerService,
                 private route: ActivatedRoute,
-                public router: Router) {
-
-    // // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
-    // // 데이터를 받아온 이후에 처리를 진행합니다.
-    // this.myCheckerService.getReady().then(() => {
-    //   this.getUserValidation();
-    //   return Promise.resolve();
-    // });
-  }
+                public router: Router) {}
 
   ngOnInit(): void {
 

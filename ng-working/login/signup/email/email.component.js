@@ -67,16 +67,17 @@ var EmailComponent = (function () {
         this.setMyChecker();
     };
     EmailComponent.prototype.onBlur = function (event, email, element) {
-        var _this = this;
-        event.stopPropagation();
-        event.preventDefault();
         // let isDebug:boolean = true;
         var isDebug = false;
+        if (isDebug)
+            console.log("email / onBlur / logPageEnter / 시작");
         if (null == this.myCheckerService) {
             if (isDebug)
                 console.log("email / onBlur / 중단 / null == this.myCheckerService");
             return;
         }
+        event.stopPropagation();
+        event.preventDefault();
         // 내용이 동일하다면 중단합니다.
         if (null != this.inputStrPrevOnBlur && this.inputStrPrevOnBlur === email) {
             if (isDebug)
@@ -93,26 +94,30 @@ var EmailComponent = (function () {
             var regExpLastEmptySpace = /[\s]+$/gi;
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-            var isOK_1 = this.isOK(email);
-            if (isOK_1 && this.isCheckUnique) {
+            var isOK = this.isOK(email);
+            if (isOK && this.isCheckUnique) {
                 // 회원 가입시, 유일한 이메일인지 검사.
                 this.userService
                     .getUserByEmail(email)
-                    .then(function (result) {
-                    if (null != result &&
-                        null != result.user) {
-                        // 이미 등록된 유저가 있습니다.
-                        isOK_1 = false;
+                    .then(function (myReponse) {
+                    if (isDebug)
+                        console.log("email / onBlur / logPageEnter / myReponse : ", myReponse);
+                    /*
+                    if( null != result &&
+                        null != result.user ) {
+          
+                      // 이미 등록된 유저가 있습니다.
+                      isOK = false;
                     }
-                    if (isOK_1) {
-                        _this.emailSuccess(email);
+                    if(isOK) {
+                      this.emailSuccess(email);
+                    } else {
+                      this.emailFailed(this.tooltipMsgEmailNotUnique);
                     }
-                    else {
-                        _this.emailFailed(_this.tooltipMsgEmailNotUnique);
-                    }
+                    */
                 });
             }
-            else if (isOK_1) {
+            else if (isOK) {
                 // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
                 this.emailSuccess(email);
             }

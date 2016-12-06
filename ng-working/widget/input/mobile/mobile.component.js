@@ -744,8 +744,8 @@ var MobileComponent = (function () {
         // 모든 전화번호를 가져와야 함.
         // 완성이 된 전화번호만 검사합니다.
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
         var isOK = this.isOKHead(this.mobileHeadEmitted);
@@ -767,44 +767,104 @@ var MobileComponent = (function () {
             return;
         }
         this.userService
-            .getUserByMobile(this.myCheckerService.getAPIKey(), this.mobileHeadEmitted, this.mobileBodyEmitted, this.mobileTailEmitted).then(function (result) {
+            .getUserByMobile(this.myCheckerService.getAPIKey(), this.mobileHeadEmitted, this.mobileBodyEmitted, this.mobileTailEmitted).then(function (myResponse) {
             if (isDebug)
-                console.log("mobile / emitEventChange / getUserByMobile / result : ", result);
-            if (null == result || null == result.user) {
-                // 전화번호가 유일합니다. 문제 없음.
-                if (isDebug)
-                    console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
-                // 부모 객체에게 Change Event 발송 
-                var myEventOnChange = _this.myEventService.getMyEvent(
-                // public eventName:string
-                _this.myEventService.ON_CHANGE, 
-                // public key:string
-                _this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
-                // public value:string
-                _this.mobileTailEmitted, 
-                // public metaObj:any
-                null, 
-                // public myChecker:MyChecker
-                _this.myCheckerMobileTail);
-                _this.emitter.emit(myEventOnChange);
-                // 이전에 노출한 경고 메시지가 있다면 내립니다.
-                _this.tooltipBodyMsg = null;
-                // 포커싱을 모두 내립니다.
-                _this.isFocusMobileHead = false;
-                _this.isFocusMobileBody = false;
-                _this.isFocusMobileTail = false;
-                return;
+                console.log("mobile / emitEventChange / getUserByMobile / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                var user = myResponse.getDataProp("user");
+                if (null == user) {
+                    // 전화번호가 유일합니다. 문제 없음.
+                    if (isDebug)
+                        console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
+                    // 부모 객체에게 Change Event 발송 
+                    var myEventOnChange = _this.myEventService.getMyEvent(
+                    // public eventName:string
+                    _this.myEventService.ON_CHANGE, 
+                    // public key:string
+                    _this.myEventService.KEY_USER_MOBILE_NUM_TAIL, 
+                    // public value:string
+                    _this.mobileTailEmitted, 
+                    // public metaObj:any
+                    null, 
+                    // public myChecker:MyChecker
+                    _this.myCheckerMobileTail);
+                    _this.emitter.emit(myEventOnChange);
+                    // 이전에 노출한 경고 메시지가 있다면 내립니다.
+                    _this.tooltipBodyMsg = null;
+                    // 포커싱을 모두 내립니다.
+                    _this.isFocusMobileHead = false;
+                    _this.isFocusMobileBody = false;
+                    _this.isFocusMobileTail = false;
+                }
+                else {
+                    // 전화번호가 유일하지 않습니다. 
+                    if (isDebug)
+                        console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일하지 않습니다. 다른 사용자의 전화번호입니다.");
+                    // 사용자에게 알립니다. - 마지막 전화번호 칸에 경고 메시지.
+                    _this.isSuccessBodyInput = false;
+                    _this.tooltipBodyMsg = _this.tooltipDuplicated;
+                    // 전화번호 입력칸을 모두 포커싱합니다.
+                    _this.isFocusMobileHead = true;
+                    _this.isFocusMobileBody = true;
+                    _this.isFocusMobileTail = true;
+                } // end inner if
             }
-            // 전화번호가 유일하지 않습니다. 
-            if (isDebug)
-                console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일하지 않습니다. 다른 사용자의 전화번호입니다.");
+            else {
+                // Error Report
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "mobile / emitEventChange / Failed!");
+            } // end if
+            // REMOVE ME
+            /*
+            if(null == result || null == result.user) {
+              // 전화번호가 유일합니다. 문제 없음.
+              if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
+      
+              // 부모 객체에게 Change Event 발송
+              let myEventOnChange:MyEvent =
+              this.myEventService.getMyEvent(
+                // public eventName:string
+                this.myEventService.ON_CHANGE,
+                // public key:string
+                this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
+                // public value:string
+                this.mobileTailEmitted,
+                // public metaObj:any
+                null,
+                // public myChecker:MyChecker
+                this.myCheckerMobileTail
+              );
+              this.emitter.emit(myEventOnChange);
+      
+              // 이전에 노출한 경고 메시지가 있다면 내립니다.
+              this.tooltipBodyMsg = null;
+      
+              // 포커싱을 모두 내립니다.
+              this.isFocusMobileHead = false;
+              this.isFocusMobileBody = false;
+              this.isFocusMobileTail = false;
+      
+              return;
+            }
+      
+            // 전화번호가 유일하지 않습니다.
+            if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일하지 않습니다. 다른 사용자의 전화번호입니다.");
+      
             // 사용자에게 알립니다. - 마지막 전화번호 칸에 경고 메시지.
-            _this.isSuccessBodyInput = false;
-            _this.tooltipBodyMsg = _this.tooltipDuplicated;
+            this.isSuccessBodyInput = false;
+            this.tooltipBodyMsg = this.tooltipDuplicated;
+      
             // 전화번호 입력칸을 모두 포커싱합니다.
-            _this.isFocusMobileHead = true;
-            _this.isFocusMobileBody = true;
-            _this.isFocusMobileTail = true;
+            this.isFocusMobileHead = true;
+            this.isFocusMobileBody = true;
+            this.isFocusMobileTail = true;
+            */
         });
     };
     MobileComponent.prototype.onBlurMobileTail = function (event, element, elementNext) {

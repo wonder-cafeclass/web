@@ -100,8 +100,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserByMobile = function (apiKey, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserByMobile / 시작");
         if (isDebug)
@@ -332,8 +332,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserFacebook = function (apiKey, facebookId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / confirmUserFacebook / 시작");
         if (isDebug)
@@ -358,8 +358,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.confirmUserNaver = function (apiKey, naverId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / confirmUserNaver / 시작");
         if (isDebug)

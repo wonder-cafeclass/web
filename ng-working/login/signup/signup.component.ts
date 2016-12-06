@@ -1,25 +1,25 @@
 import 'rxjs/add/operator/switchMap';
-import {  Observable }          from 'rxjs/Observable';
+import {  Observable }                    from 'rxjs/Observable';
 import {  Component, 
           Input, 
           Output,
           ViewChild,
-          OnInit }              from '@angular/core';
+          OnInit }                        from '@angular/core';
 import {  Router,
           ActivatedRoute,
-          Params }              from '@angular/router';
+          Params }                        from '@angular/router';
 
-import { LoginService }         from '../service/login.service';
-import { UserService }          from '../../users/service/user.service';
+import { LoginService }                   from '../service/login.service';
+import { UserService }                    from '../../users/service/user.service';
 
-import { EmailComponent }                 from './email/email.component';
-import { PasswordComponent }              from './password/password.component';
-import { NameComponent }                  from './name/name.component';
-import { NicknameComponent }              from './nickname/nickname.component';
-import { MobileComponent }                from './mobile/mobile.component';
-import { ProfileImgUploadComponent }      from './profile-img-upload/profile-img-upload.component';
-import { GenderComponent }                from './gender/gender.component';
-import { BirthdayComponent }              from './birthday/birthday.component';
+import { EmailComponent }                 from '../../widget/input/email/email.component';
+import { ProfileImgUploadComponent }      from '../../widget/input/profile-img-upload/profile-img-upload.component';
+import { PasswordComponent }              from '../../widget/input/password/password.component';
+import { MobileComponent }                from '../../widget/input/mobile/mobile.component';
+import { NameComponent }                  from '../../widget/input/name/name.component';
+import { GenderComponent }                from '../../widget/input/gender/gender.component';
+import { BirthdayComponent }              from '../../widget/input/birthday/birthday.component';
+import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
 
 import { MyLoggerService }                from '../../util/service/my-logger.service';
 import { MyCheckerService }               from '../../util/service/my-checker.service';
@@ -101,12 +101,7 @@ export class SignupComponent implements OnInit {
                 private myEventService:MyEventService,
                 private myEventWatchTowerService:MyEventWatchTowerService, 
                 private route:ActivatedRoute,
-                public router:Router) {
-
-    // REMOVE ME
-    // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
-    // this.myCheckerService.getReady();
-  }
+                public router:Router) {}
 
   ngOnInit(): void {
 
@@ -120,112 +115,6 @@ export class SignupComponent implements OnInit {
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
 
-
-    // REMOVE ME
-    /*
-    // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageTypeSignup);
-
-    // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
-    this.route.params.switchMap((params: Params) => {
-
-      if(isDebug) console.log("signup / ngOnInit / switchMap / params : ",params);
-
-      if(null != params['facebookId']) {
-
-        this.facebookId = params['facebookId'];
-        if(isDebug) console.log("signup / ngOnInit / switchMap / this.facebookId : ",this.facebookId);
-
-        if(null != this.facebookId && "" != this.facebookId) {
-          return this.userService.getUserByFacebookId(this.facebookId);
-        }
-      }
-
-      if(null != params['kakaoId']) {
-
-        this.kakaoId = params['kakaoId'];
-        if(isDebug) console.log("signup / ngOnInit / switchMap / this.kakaoId : ",this.kakaoId);
-
-        if(null != this.kakaoId && "" != this.kakaoId) {
-          return this.userService.getUserByKakaoId(this.kakaoId);
-        }
-      }
-
-      if(null != params['naverId']) {
-
-        this.naverId = params['naverId'];
-        if(isDebug) console.log("signup / ngOnInit / switchMap / this.naverId : ",this.naverId);
-
-        if(null != this.naverId && "" != this.naverId) {
-          return this.userService.getUserByNaverId(this.naverId);
-        }
-      }
-
-      // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
-      return Promise.resolve();
-
-    }).subscribe((result) => {
-
-      if(isDebug) console.log("signup / ngOnInit / subscribe / result : ",result);
-      if(null != result && null != result["user"]) {
-        this.user = result["user"];
-      }
-
-      if(isDebug) console.log("signup / ngOnInit / subscribe / this.user : ",this.user);
-      if(null == this.user) {
-        return;
-      }
-
-      if(null != this.user.facebook_id && "" != this.user.facebook_id) {
-
-        // 페이스북 로그인 - 유저 정보 가져오기.
-        // email
-        this.emailComponent.setEmail(this.user.email);
-        this.email = this.user.email;
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
-        this.thumbnail = this.user.thumbnail;
-
-      } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
-
-        // 카카오 로그인 - 유저 정보 가져오기.
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
-        this.thumbnail = this.user.thumbnail;
-
-      } else if(null != this.user.naver_id && "" != this.user.naver_id) {
-
-        // 네이버 로그인 - 유저 정보 가져오기.
-        // email
-        this.emailComponent.setEmail(this.user.email);
-        this.email = this.user.email;
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // gender
-        this.genderComponent.setGender(this.user.gender);
-        this.gender = this.user.gender;
-
-      }
-
-    });
-    */
-
   }
 
   private setIsAdmin() :void {
@@ -233,6 +122,10 @@ export class SignupComponent implements OnInit {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("signup / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
@@ -249,6 +142,12 @@ export class SignupComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / setMyCheckerReady / 시작");
 
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 직접 주소를 입력하여 이동한 경우.
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
@@ -267,6 +166,30 @@ export class SignupComponent implements OnInit {
         return;
       }
 
+      this.init();
+
+    });    
+  }
+
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / init / 시작");
+
+    this.setMyChecker();
+    this.logPageEnter();
+    this.checkSignedUpUserInfo();
+  }
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
       this.myCheckerService.setReady(
         // checkerMap:any
         this.myEventWatchTowerService.getCheckerMap(),
@@ -278,10 +201,12 @@ export class SignupComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.logPageEnter();
-      this.checkSignedUpUserInfo();
-    });    
-  }
+      if(isDebug) console.log("kakao-callback / setMyChecker / done!");
+    } // end if
+
+  } 
+
+
   private logPageEnter() :void {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -333,22 +258,43 @@ export class SignupComponent implements OnInit {
         }
       }
 
-      // @ Referer : http://stackoverflow.com/questions/35758209/typeerror-cannot-read-property-then-of-undefined
-      return Promise.resolve();
+      return Observable.of<any>();
 
-    }).subscribe((result) => {
+    }).subscribe((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / result : ",result);
-      if(null != result && null != result["user"]) {
-        this.user = result["user"];
+      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / myResponse : ",myResponse);
+
+      let kakaoId:number = -1;
+      let user:User = null;
+      if(myResponse.isSuccess()) {
+        kakaoId = +myResponse.getDataProp("kakao_id");
+        user = myResponse.getDataProp("user");
       }
 
-      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / this.user : ",this.user);
-      if(null == this.user) {
+      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / kakaoId : ",kakaoId);
+      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / user : ",user);
+
+      if(null != user) {
+        this.user = user;
+      } else {
+
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / Error Report");
+
+        // Error Report
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `signup / checkSignedUpUserInfo / Failed!`
+        );
         return;
       }
 
       if(null != this.user.facebook_id && "" != this.user.facebook_id) {
+
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 페이스북 로그인 - 유저 정보 가져오기.");
 
         // 페이스북 로그인 - 유저 정보 가져오기.
         // email
@@ -366,6 +312,8 @@ export class SignupComponent implements OnInit {
 
       } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
 
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 카카오 로그인 - 유저 정보 가져오기.");
+
         // 카카오 로그인 - 유저 정보 가져오기.
         // name
         this.nameComponent.setName(this.user.name);
@@ -378,6 +326,8 @@ export class SignupComponent implements OnInit {
         this.thumbnail = this.user.thumbnail;
 
       } else if(null != this.user.naver_id && "" != this.user.naver_id) {
+
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 네이버 로그인 - 유저 정보 가져오기.");
 
         // 네이버 로그인 - 유저 정보 가져오기.
         // email
@@ -394,6 +344,7 @@ export class SignupComponent implements OnInit {
         this.gender = this.user.gender;
 
       } // end if
+
     }); // end subscribe
   } // end checkSignedUpUserInfo
 
@@ -560,6 +511,20 @@ export class SignupComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
+    if(isDebug) console.log("signup / updateUser / this.user.id : ",this.user.id);
+    if(isDebug) console.log("signup / updateUser / this.email : ",this.email);
+    if(isDebug) console.log("signup / updateUser / this.password : ",this.password);
+    if(isDebug) console.log("signup / updateUser / this.name : ",this.name);
+    if(isDebug) console.log("signup / updateUser / this.nickname : ",this.nickname);
+    if(isDebug) console.log("signup / updateUser / this.gender : ",this.gender);
+    if(isDebug) console.log("signup / updateUser / this.birthYear : ",this.birthYear);
+    if(isDebug) console.log("signup / updateUser / this.birthMonth : ",this.birthMonth);
+    if(isDebug) console.log("signup / updateUser / this.birthDay : ",this.birthDay);
+    if(isDebug) console.log("signup / updateUser / this.thumbnail : ",this.thumbnail);
+    if(isDebug) console.log("signup / updateUser / this.mobileNumHead : ",this.mobileNumHead);
+    if(isDebug) console.log("signup / updateUser / this.mobileNumBody : ",this.mobileNumBody);
+    if(isDebug) console.log("signup / updateUser / this.mobileNumTail : ",this.mobileNumTail);
+
     this.userService
     .updateUser(
       // apiKey:string
@@ -590,22 +555,42 @@ export class SignupComponent implements OnInit {
       this.mobileNumBody,
       // mobileTail:string
       this.mobileNumTail
-    ).then(result => {
+    ).then((myReponse:MyResponse) => {
 
-      if(isDebug) console.log("signup / updateUser / result : ",result);
+      if(isDebug) console.log("signup / updateUser / myReponse : ",myReponse);
 
-      if(null != result.user) {
-        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
-        this.sendMailUserValidation(result.user.id, result.user.email);
+      let user:User = null;
+      if(myReponse.isSuccess()) {
+        user = myReponse.getDataProp("user");
       }
+      if(isDebug) console.log("signup / updateUser / user : ",user);
+      if(null != user && null != user.id && null != user.email) {
+
+        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+        this.sendMailUserValidation(user.id, user.email);
+
+      } else {
+
+        // Error Report
+        if(isDebug) console.log("signup / updateUser / Error Report");
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `signup / updateUser / Failed!`
+        );
+
+      } // end if
 
     }); // end service     
 
   }
   addUser(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup / addUser / 시작");
 
     this.userService
@@ -636,22 +621,42 @@ export class SignupComponent implements OnInit {
       this.mobileNumBody,
       // mobileTail:string
       this.mobileNumTail
-    ).then(result => {
+    ).then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("signup / addUser / result : ",result);
+      if(isDebug) console.log("signup / addUser / myResponse : ",myResponse);
 
-      if(null != result.user) {
-        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
-        this.sendMailUserValidation(result.user.id, result.user.email);
+      let user:User = null;
+      if(myResponse.isSuccess()) {
+        user = myResponse.getDataProp("user");
       }
+      if(isDebug) console.log("signup / addUser / user : ",user);
+      if(null != user && null != user.id && null != user.email) {
+
+        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
+        if(isDebug) console.log("signup / addUser / 메일을 발송, 인증을 시작!");
+        this.sendMailUserValidation(user.id, user.email);
+
+      } else {
+
+        if(isDebug) console.log("signup / addUser / Error Report");
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `signup / addUser / Failed!`
+        );
+        
+      } // end if
 
     }); // end service      
   }
 
   sendMailUserValidation(userId:number, email:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup / sendMailUserValidation / 시작");
 
     this.userService
@@ -673,9 +678,17 @@ export class SignupComponent implements OnInit {
 
       } else {
 
-        // TODO - 메일 전송이 실패한 경우의 에러 메시지 노출.
+        // Error Report
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `signup / sendMailUserValidation / Failed!`
+        );        
 
-      }
+      } // end if
 
     }); // end service     
 
@@ -766,10 +779,10 @@ export class SignupComponent implements OnInit {
         // DB Unique test
         this.userService
         .getUserByEmail(email)
-        .then(result => {
+        .then((myResponse:MyResponse) => {
 
-          if( null != result &&
-              null == result.user ) {
+          if( myResponse.isSuccess() && 
+              myResponse.hasDataProp("user") ) {
 
             // 해당 이메일로 등록된 유저는 없습니다. 
             // email 등록이 가능합니다.

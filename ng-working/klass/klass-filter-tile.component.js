@@ -17,8 +17,8 @@ var klass_station_1 = require('./model/klass-station');
 var klass_day_1 = require('./model/klass-day');
 var klass_time_1 = require('./model/klass-time');
 var KlassFilterTileComponent = (function () {
-    function KlassFilterTileComponent(service, location) {
-        this.service = service;
+    function KlassFilterTileComponent(klassService, location) {
+        this.klassService = klassService;
         this.location = location;
         // Observable Selectile 
         this.klassSelectileSubject = new Subject_1.Subject();
@@ -31,17 +31,23 @@ var KlassFilterTileComponent = (function () {
     }
     KlassFilterTileComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.service.getKlassSelectile().then(function (selectileInfo) {
-            if (null === selectileInfo) {
-                // TODO - 내려와야 할 데이터가 정상적으로 내려오지 않은 상황. 어떤 처리를 해주면 좋을까?
-                return;
-            }
-            _this.setLevel(selectileInfo["levels"]);
-            _this.setStation(selectileInfo["stations"]);
-            _this.setDay(selectileInfo["days"]);
-            _this.setTime(selectileInfo["times"]);
-            _this.showSelectile(null, null, -1);
-        });
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-filter-tile / ngOnInit / 시작");
+        this.klassService
+            .getKlassSelectile()
+            .then(function (myReponse) {
+            if (isDebug)
+                console.log("klass-filter-tile / ngOnInit / myReponse : ", myReponse);
+            if (myReponse.isSuccess()) {
+                _this.setLevel(myReponse.getDataProp("levels"));
+                _this.setStation(myReponse.getDataProp("stations"));
+                _this.setDay(myReponse.getDataProp("days"));
+                _this.setTime(myReponse.getDataProp("times"));
+                _this.showSelectile(null, null, -1);
+            } // end if
+        }); // end service
         this.emitOnInitKlassList.emit();
         var _self = this;
         this.klassSelectileSubject.subscribe(function (x) {

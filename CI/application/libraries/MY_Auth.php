@@ -96,15 +96,18 @@ class MY_Auth {
         return $new_state_query_str_safe;
     } // end function
 
-    public function get_new_state()
+    private function get_new_state()
     {
         // 상태 토큰으로 사용할 랜덤 문자열을 생성
         $state = $this->generate_state();
 
-        // 세션 또는 별도의 저장 공간에 상태 토큰을 저장
-        $_SESSION[$this->session_state_key] = $state;
-
         return $state;        
+    }
+
+    public function get_new_state_query_string_safe()
+    {
+        $new_state = $this->get_new_state();
+        return $this->getHashQueryStringSafe($new_state);
     }
 
 

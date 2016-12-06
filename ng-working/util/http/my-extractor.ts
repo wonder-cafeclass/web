@@ -147,7 +147,7 @@ export class MyExtractor {
 		} // end if
 	}
 
-	public handleError (error: any) {
+	public handleError (error: Response) :MyResponse{
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
@@ -189,14 +189,52 @@ export class MyExtractor {
 			return res.json();
 		}
 
+		let myResponse:MyResponse = null;
 		if(hasJsonString(error)) {
 			// 에러 객체에서 에러 메시지를 뽑아냅니다.
 			let jsonError = getJson(error);
 			if(isDebug) console.log("my-extractor / handleError / jsonError : ",jsonError);
 
-			return Promise.reject(jsonError);
+			myResponse = 
+			new MyResponse(
+				// public success:boolean
+				false,
+				// public message:string
+				error["statusText"],
+				// public query:string
+				"",
+				// public error:string
+				"",
+				// public data:any
+				null,
+				// public extra:any
+				jsonError
+			);			
+
+		}
+		else 
+		{
+			myResponse = 
+			new MyResponse(
+				// public success:boolean
+				false,
+				// public message:string
+				error["statusText"],
+				// public query:string
+				"",
+				// public error:string
+				error["_body"],
+				// public data:any
+				null,
+				// public extra:any
+				null
+			);	
 		}
 
+		return myResponse;
+
+		// Legacy
+		/*
 		// 그 이외의 에러 상황. console에 노출합니다.
 
 		// In a real world app, we might use a remote logging infrastructure
@@ -207,6 +245,7 @@ export class MyExtractor {
 		if(isDebug) console.log("my-extractor / handleError / errMsg : ",errMsg);
 
 		return Promise.reject(errMsg);
+		*/
 	}
 
 

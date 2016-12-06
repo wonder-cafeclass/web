@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var klass_venue_1 = require('./model/klass-venue');
 var url_service_1 = require('../util/url.service');
+var my_extractor_1 = require('../util/http/my-extractor');
 var KlassService = (function () {
     function KlassService(http, us) {
         this.http = http;
@@ -23,12 +24,20 @@ var KlassService = (function () {
         this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
         this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
         this.baseHref = "";
+        this.myExtractor = new my_extractor_1.MyExtractor();
     }
     KlassService.prototype.searchKlassVenue = function (q) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / searchKlassVenue / 시작");
+        if (isDebug)
+            console.log("klass.service / searchKlassVenue / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.us.get(this.klassVenueSearchLocalUrl);
         req_url = req_url + "?q=" + qEncoded;
-        console.log("klass.service.ts / searchKlassVenue / req_url : ", req_url);
+        if (isDebug)
+            console.log("klass.service / searchKlassVenue / req_url : ", req_url);
         return this.http.get(req_url).map(this.getKlassVenue);
     };
     KlassService.prototype.getKlassVenue = function (r) {
@@ -56,14 +65,21 @@ var KlassService = (function () {
         return result;
     };
     KlassService.prototype.searchKlassMap = function (q) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / searchKlassMap / 시작");
+        if (isDebug)
+            console.log("klass.service / searchKlassMap / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.us.get(this.klassVenueSearchMapUrl);
         req_url = req_url + "?q=" + qEncoded;
-        // console.log("klass.service.ts / searchKlassMap / req_url : ",req_url);
+        if (isDebug)
+            console.log("klass.service / searchKlassMap / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.getLatLon)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.getLatLon = function (r) {
         var responseJson = r.json();
@@ -107,59 +123,72 @@ var KlassService = (function () {
         return result;
     };
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / searchKlassList / 시작");
+        if (isDebug)
+            console.log("klass.service / searchKlassList / level : ", level);
+        if (isDebug)
+            console.log("klass.service / searchKlassList / station : ", station);
+        if (isDebug)
+            console.log("klass.service / searchKlassList / day : ", day);
+        if (isDebug)
+            console.log("klass.service / searchKlassList / time : ", time);
+        if (isDebug)
+            console.log("klass.service / searchKlassList / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.us.get(this.klassSearchUrl);
         req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
-        // console.log("TEST / searchKlassList / req_url : ",req_url);
+        if (isDebug)
+            console.log("klass.service / searchKlassList / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.getKlass = function (id) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / getKlass / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlass / id : ", id);
         var req_url = this.us.get(this.klassUrl);
         req_url = req_url + "?id=" + id;
-        console.log("TEST / getKlass / req_url : ", req_url);
+        if (isDebug)
+            console.log("klass.service / getKlass / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.getKlasses = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / getKlasses / 시작");
         var req_url = this.us.get(this.klassesUrl);
-        // console.log("TEST / getKlasses / req_url : ",req_url);
+        if (isDebug)
+            console.log("klass.service / getKlasses / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end getKlasses
     KlassService.prototype.getKlassSelectile = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / getKlassSelectile / 시작");
         var req_url = this.us.get(this.klassSelectileUrl);
-        // console.log("TEST / getKlassSelectile / req_url : ",req_url);
+        if (isDebug)
+            console.log("klass.service / getKlassSelectile / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-    };
-    KlassService.prototype.extractData = function (res) {
-        var body = res.json();
-        console.log("KlassService / extractData / body ::: ", body);
-        // TODO - 데이터 검증 프로세스.
-        if (null == body.data || !body.success) {
-            return null;
-        }
-        return body.data;
-    };
-    // New - XHR
-    // promise-based
-    KlassService.prototype.handleError = function (error) {
-        // In a real world app, we might use a remote logging infrastructure
-        // We'd also dig deeper into the error to get a better message
-        var errMsg = (error.message) ? error.message :
-            error.status ? error.status + " - " + error.statusText : 'Server error';
-        console.error(errMsg); // log to console instead
-        return Promise.reject(errMsg);
-    };
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end getKlassSelectile
     KlassService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, url_service_1.UrlService])

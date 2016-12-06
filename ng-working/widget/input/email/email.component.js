@@ -11,10 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var user_service_1 = require('../../../users/service/user.service');
 var EmailComponent = (function () {
-    function EmailComponent(myEventService, userService) {
+    function EmailComponent(myEventService, myLoggerService, myEventWatchTowerService, userService) {
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
+        this.myEventWatchTowerService = myEventWatchTowerService;
         this.userService = userService;
         this.width = 380;
         this.top = -1;
@@ -33,14 +37,86 @@ var EmailComponent = (function () {
         this.tooltipMsgEmailNotUnique = "이미 등록되어 있는 이메일입니다.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
         this.isShowPopover = false;
+        this.isAdmin = false;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
-    EmailComponent.prototype.ngOnInit = function () { };
-    EmailComponent.prototype.setMyChecker = function () {
-        if (null == this.myCheckerService) {
-            return;
+    EmailComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / ngOnInit / 시작");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.setIsAdmin();
+        // my-checker.service의 apikey 가져옴. 
+        this.setMyCheckerReady();
+    };
+    EmailComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("email / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("email / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            if (isDebug)
+                console.log("email / setIsAdmin / isAdmin : ", isAdmin);
+            _this.isAdmin = isAdmin;
+        });
+    };
+    EmailComponent.prototype.setMyCheckerReady = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("email / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.init();
         }
+        // 직접 주소를 입력하여 이동한 경우.
+        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+            if (isDebug)
+                console.log("signup / setMyCheckerReady / isReady : ", isReady);
+            if (!isReady) {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.myEventWatchTowerService.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorTypeNotValidValue, 
+                // errorMsg:string
+                "signup / setMyCheckerReady / Failed! / isReady : " + isReady);
+                return;
+            }
+            _this.init();
+        }); // end subscribe   
+    };
+    EmailComponent.prototype.init = function () {
+        this.setMyChecker();
+    };
+    EmailComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("kakao-callback / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("kakao-callback / setMyChecker / done!");
+        } // end if
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_email");
         }
@@ -68,10 +144,12 @@ var EmailComponent = (function () {
     };
     EmailComponent.prototype.onBlur = function (event, email, element) {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("email / onBlur / logPageEnter / 시작");
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
         if (null == this.myCheckerService) {
             if (isDebug)
                 console.log("email / onBlur / 중단 / null == this.myCheckerService");
@@ -93,32 +171,52 @@ var EmailComponent = (function () {
             var regExpLastEmptySpace = /[\s]+$/gi;
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-            var isOK_1 = this.isOK(email);
-            if (isOK_1 && this.isCheckUnique) {
+            var isOK = this.isOK(email);
+            if (isOK && this.isCheckUnique) {
                 // 회원 가입시, 유일한 이메일인지 검사.
                 this.userService
                     .getUserByEmail(email)
-                    .then(function (result) {
-                    if (null != result &&
-                        null != result.user) {
-                        // 이미 등록된 유저가 있습니다.
-                        isOK_1 = false;
-                    }
-                    if (isOK_1) {
-                        _this.emailSuccess(email);
+                    .then(function (myResponse) {
+                    if (isDebug)
+                        console.log("email / onBlur / getUserByEmail / myResponse : ", myResponse);
+                    var user = null;
+                    if (myResponse.isSuccess()) {
+                        user = myResponse.getDataProp("user");
+                        if (null != user) {
+                            // 이미 이메일이 등록되어 있습니다.
+                            _this.emailFailed(_this.tooltipMsgEmailNotUnique);
+                        }
+                        else {
+                            // 이메일이 등록되어 있지 않습니다. 회원 가입 다음단계로 진행합니다.
+                            _this.emailSuccess(email);
+                        }
                     }
                     else {
-                        _this.emailFailed(_this.tooltipMsgEmailNotUnique);
-                    }
-                });
+                        // Error Report
+                        if (isDebug)
+                            console.log("email / onBlur / getUserByEmail / Error Report");
+                        // Error Report
+                        _this.myLoggerService.logError(
+                        // apiKey:string
+                        _this.myEventWatchTowerService.getApiKey(), 
+                        // errorType:string
+                        _this.myLoggerService.errorAPIFailed, 
+                        // errorMsg:string
+                        "email / getUserByEmail / Failed!");
+                    } // end if
+                }); // end service
             }
-            else if (isOK_1) {
+            else if (isOK) {
                 // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+                if (isDebug)
+                    console.log("email / onBlur / 로그인 시에는 이메일이 유일한지 검사하지 않습니다.");
                 this.emailSuccess(email);
             }
             else {
+                if (isDebug)
+                    console.log("email / onBlur / 이메일에 문제가 있습니다.");
                 this.emailFailed(this.tooltipMsgEmailNotValid);
-            }
+            } // end if
         } // end if
     };
     EmailComponent.prototype.emailFailed = function (msgWarning) {
@@ -319,7 +417,7 @@ var EmailComponent = (function () {
             templateUrl: 'email.component.html',
             styleUrls: ['email.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, user_service_1.UserService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService])
     ], EmailComponent);
     return EmailComponent;
 }());

@@ -151,21 +151,57 @@ var MyExtractor = (function () {
             }
             return res.json();
         }
+        var myResponse = null;
         if (hasJsonString(error)) {
             // 에러 객체에서 에러 메시지를 뽑아냅니다.
             var jsonError = getJson(error);
             if (isDebug)
                 console.log("my-extractor / handleError / jsonError : ", jsonError);
-            return Promise.reject(jsonError);
+            myResponse =
+                new my_response_1.MyResponse(
+                // public success:boolean
+                false, 
+                // public message:string
+                error["statusText"], 
+                // public query:string
+                "", 
+                // public error:string
+                "", 
+                // public data:any
+                null, 
+                // public extra:any
+                jsonError);
         }
+        else {
+            myResponse =
+                new my_response_1.MyResponse(
+                // public success:boolean
+                false, 
+                // public message:string
+                error["statusText"], 
+                // public query:string
+                "", 
+                // public error:string
+                error["_body"], 
+                // public data:any
+                null, 
+                // public extra:any
+                null);
+        }
+        return myResponse;
+        // Legacy
+        /*
         // 그 이외의 에러 상황. console에 노출합니다.
+
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
-        var errMsg = (error.message) ? error.message :
-            error.status ? error.status + " - " + error.statusText : 'Server error';
-        if (isDebug)
-            console.log("my-extractor / handleError / errMsg : ", errMsg);
+        let errMsg = (error.message) ? error.message :
+        error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+
+        if(isDebug) console.log("my-extractor / handleError / errMsg : ",errMsg);
+
         return Promise.reject(errMsg);
+        */
     };
     return MyExtractor;
 }());

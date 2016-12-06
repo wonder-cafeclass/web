@@ -232,6 +232,15 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
 
         $msg = "$msg / $function in $file at $line";
 
+        // view에서 넘어오는 값이 잘못되었음. 
+        // view에 오류가 있다는 것을 알려주는 지표로 사용.
+        $this->report_error(
+            // $error_type=null
+            $this->my_logger->ERROR_BAD_REQUEST_400,
+            // $error_msg=""
+            $msg
+        );        
+
         if(method_exists($this, 'set_response') && isset($this->my_response))
         {
             $response_body = 

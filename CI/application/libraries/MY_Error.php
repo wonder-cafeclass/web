@@ -33,7 +33,7 @@ class MY_Error
 				// $error_type=""
 				$my_logger->ERROR_INTERNAL_SERVER_500,
 				// $error_msg=""
-				"$code $message $file $line"
+				"$message $file $line"
 			);
 		};
 		set_error_handler('myErrorHandler');

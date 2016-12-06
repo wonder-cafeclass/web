@@ -84,8 +84,8 @@ export class LoginService {
 
       let req_url = this.us.get(this.facebookAuthUrl);
 
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getFacebookAuthUrl / 시작");
       if(isDebug) console.log("user.service / getFacebookAuthUrl / req_url : ",req_url);
 
@@ -145,8 +145,8 @@ export class LoginService {
 
       let req_url = this.us.get(this.naverAuthUrl);
 
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getNaverAuthUrl / 시작");
       if(isDebug) console.log("user.service / getNaverAuthUrl / req_url : ",req_url);
 
@@ -160,8 +160,8 @@ export class LoginService {
 
       let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
       if(isDebug) console.log("user.service / getKakaoAuthUrl / 시작");
       if(isDebug) console.log("user.service / getKakaoAuthUrl / req_url : ",req_url);
 

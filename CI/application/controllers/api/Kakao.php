@@ -97,6 +97,21 @@ class Kakao extends MY_REST_Controller {
         $replacement = $this->my_path->get_path_full($this->redirect_uri_kakao);
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
+        if(empty($auth_url)) 
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "auth_url is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
+        }
+
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
         $output["auth_url"] = $auth_url;
@@ -113,7 +128,7 @@ class Kakao extends MY_REST_Controller {
         $kakao_code = $this->my_paramchecker->get("code","kakao_code");
         if(empty($kakao_code)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "kakao_code is not valid!",
                 // $function=""
@@ -121,31 +136,48 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_code"=>$kakao_code
+                )
             );
             return;
         }
 
         // 1. 로그인에 성공한 유저가 kakao-code로 API 통신을 위한 token을 가져옵니다.
         $kakao_token = $this->postToken($kakao_code);
-        if(is_null($output))
+        if(is_null($kakao_token))
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
-                "output is not valid!",
+                "kakao_token is not valid!",
                 // $function=""
                 __FUNCTION__,
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_code"=>$kakao_code,
+                    "kakao_token"=>$kakao_token
+                )
             );
             return;
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
-        $output["kakao_token"] = $kakao_token;
+        if($this->my_keyvalue->has($kakao_token,"access_token"))
+        {
+            $output["access_token"] = $kakao_token["access_token"];
+        }
+        if($this->my_keyvalue->has($kakao_token,"token_type"))
+        {
+            $output["token_type"] = $kakao_token["token_type"];
+        }
+        
         $this->respond_200($output);
     }
 
@@ -159,7 +191,7 @@ class Kakao extends MY_REST_Controller {
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "kakao_token_type is not valid!",
                 // $function=""
@@ -167,14 +199,18 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type
+                )
             );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "kakao_access_token is not valid!",
                 // $function=""
@@ -182,7 +218,12 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
             );
             return;
         }
@@ -191,7 +232,7 @@ class Kakao extends MY_REST_Controller {
         $singup = $this->postSignUp($kakao_token_type, $kakao_access_token);
         if(is_null($singup))
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "singup is not valid!",
                 // $function=""
@@ -199,14 +240,27 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token,
+                    "singup"=>$singup
+                )
             );
             return;
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
-        $output["singup"] = $singup;
+        if($this->my_keyvalue->has($singup,"code"))
+        {
+            $output["code"] = $this->my_keyvalue->get($singup,"code");
+        }
+        if($this->my_keyvalue->has($singup,"msg"))
+        {
+            $output["msg"] = $this->my_keyvalue->get($singup,"msg");
+        }
         $this->respond_200($output);
     } 
 
@@ -220,7 +274,7 @@ class Kakao extends MY_REST_Controller {
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "kakao_token_type is not valid!",
                 // $function=""
@@ -228,14 +282,18 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type
+                )
             );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "kakao_access_token is not valid!",
                 // $function=""
@@ -243,8 +301,13 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );                       
             return;
         }
 
@@ -252,7 +315,7 @@ class Kakao extends MY_REST_Controller {
         $me = $this->postMe($kakao_token_type, $kakao_access_token);
         if(is_null($me))
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "me is not valid!",
                 // $function=""
@@ -260,8 +323,14 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token,
+                    "me"=>$me
+                )
+            );             
             return;
         }
 
@@ -271,6 +340,7 @@ class Kakao extends MY_REST_Controller {
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
         $output["me"] = $me;
+
         $this->respond_200($output);
     } 
     /*
@@ -279,6 +349,17 @@ class Kakao extends MY_REST_Controller {
     private function checkUserRegistry($output=null) {
 
         if(is_null($output)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "output is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return;
         }
 
@@ -291,6 +372,17 @@ class Kakao extends MY_REST_Controller {
         }
         else
         {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "\$output->id is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -308,6 +400,21 @@ class Kakao extends MY_REST_Controller {
                 }
             }
 
+        }
+        else
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "properties is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
+            return;
         }
 
         $user = $this->get_user($kakao_id);
@@ -351,9 +458,31 @@ class Kakao extends MY_REST_Controller {
     private function postToken($kakao_code="") {
 
         if(empty($kakao_code)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_code is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return null;
         }
         if(empty($this->Kakao_REST_API_Key)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "Kakao_REST_API_Key is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return null;
         }
 
@@ -387,6 +516,20 @@ class Kakao extends MY_REST_Controller {
             {
                $result_arr[$key] = $value;
             }
+        }
+        if(empty($result_arr)) 
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
         }
 
         // Sample Data
@@ -422,9 +565,31 @@ class Kakao extends MY_REST_Controller {
     private function postSignUp($kakao_token_type="", $kakao_access_token="") {
 
         if(empty($kakao_token_type)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
         if(empty($kakao_access_token)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
 
@@ -442,14 +607,54 @@ class Kakao extends MY_REST_Controller {
             []
         );
 
+        if(empty($result)) {
+            $this->respond_200_Failed(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );
+        } // end if
+
         return $result;
     }    
     private function postMe($kakao_token_type="", $kakao_access_token="") {
 
         if(empty($kakao_token_type)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
         if(empty($kakao_access_token)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
 
@@ -471,6 +676,25 @@ class Kakao extends MY_REST_Controller {
                 // "code"=>$kakao_code
             ]
         );
+
+        if(empty($result)) {
+            $this->respond_200_Failed(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );
+        } // end if
+
         return $result;
     }     
 
@@ -501,7 +725,7 @@ class Kakao extends MY_REST_Controller {
     {
         if(!(0 < $kakao_id)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "0 < \$kakao_id : $kakao_id",
                 // $function=""
@@ -509,13 +733,19 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );                      
             return;
         }
         if(empty($nickname)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "nickname is not valid!",
                 // $function=""
@@ -523,13 +753,19 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );             
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );
             return;
         }
         if(empty($thumbnail_url)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "thumbnail_url is not valid!",
                 // $function=""
@@ -537,9 +773,14 @@ class Kakao extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );             
-            return;
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );
         }
 
         $this->my_sql->insert_user_kakao(

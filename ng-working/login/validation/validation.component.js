@@ -35,12 +35,6 @@ var ValidationComponent = (function () {
         this.msgConfirmed = "축하합니다! 정상적으로 회원 등록이 완료되었습니다.";
         this.msgRedirect = "잠시 뒤에 홈화면으로 이동합니다.";
         this.isAdmin = false;
-        // // 서버에서 파라미터를 검증할 check 데이터를 받아옵니다.
-        // // 데이터를 받아온 이후에 처리를 진행합니다.
-        // this.myCheckerService.getReady().then(() => {
-        //   this.getUserValidation();
-        //   return Promise.resolve();
-        // });
     }
     ValidationComponent.prototype.ngOnInit = function () {
         var isDebug = true;

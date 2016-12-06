@@ -136,12 +136,27 @@ class Facebook extends MY_REST_Controller {
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state();
+        $state = $this->my_auth->get_new_state_query_string_safe();
 
         // 3. state
         $pattern = '/\{state\}/i';
         $replacement = $state;
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
+
+        if(empty($auth_url)) 
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "auth_url is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
+        }        
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
@@ -225,11 +240,46 @@ class Facebook extends MY_REST_Controller {
         {
             $_SESSION[$this->session_access_token] = $access_token;
         }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "access_token"=>$access_token
+                )
+            );            
+        }
 
         $token_type = $this->my_keyvalue->get($result, "token_type");
         if(!empty($token_type))
         {
             $_SESSION[$this->session_token_type] = $token_type;
+        }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "access_token"=>$access_token,
+                    "token_type"=>$token_type
+                )
+            );            
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -466,6 +516,23 @@ class Facebook extends MY_REST_Controller {
         if($is_valid_state)
         {
             $output["stored_state"] = $stored_state;
+        }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "stored_state is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "output"=>$output
+                )
+            );            
         }
 
         $this->respond_200($output);

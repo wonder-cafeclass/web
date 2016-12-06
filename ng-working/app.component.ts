@@ -111,8 +111,8 @@ export class AppComponent implements OnInit {
 	}
 	private subscribeAllErrors() :void {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / subscribeAllErrors / 시작`);
 
 		// 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
@@ -126,8 +126,8 @@ export class AppComponent implements OnInit {
 	}
 	private setIsAdmin() :void {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / setIsAdmin / 시작`);
 
 		// 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -156,33 +156,38 @@ export class AppComponent implements OnInit {
 	}
 	private setMyChecker() :void {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / setMyChecker / 시작`);
 
 		// 회원 로그인 쿠키를 가져옵니다.
 		// 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-		this.myCheckerService.getReady().then(() => {
+		this.myCheckerService
+		.getChecker()
+		.then((myResponse:MyResponse) => {
+
+			if(isDebug) console.log(`app-root / setMyChecker / myResponse : `,myResponse);
 
 			// 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
 			this.myEventWatchTowerService.announceMyCheckerServiceReady(
-				// checkerMap: any, 
-				this.myCheckerService.getCheckerMap(),
-				// constMap: any, 
-				this.myCheckerService.getConstMap(),
-				// dirtyWordList: any, 
-				this.myCheckerService.getDirtyWordList(),
+				// checkerMap: any
+				myResponse.getDataProp("checker_map"),
+				// constMap: any
+				myResponse.getDataProp("const_map"),
+				// dirtyWordList: any
+				myResponse.getDataProp("dirty_word_list"),
 				// apiKey: string
-				this.myCheckerService.getAPIKey()
+				myResponse.getDataProp("api_key")
 			);
 
 			this.getLoginUserFromCookie();
-		}); // end Promise
+
+		});
 	}
 	private getLoginUserFromCookie() :void {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / getLoginUserFromCookie / 시작`);
 
 		this.userService

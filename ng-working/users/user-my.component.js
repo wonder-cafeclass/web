@@ -22,13 +22,7 @@ var UserMyComponent = (function () {
         this.myEventWatchTowerService = myEventWatchTowerService;
         this.router = router;
     }
-    UserMyComponent.prototype.ngOnInit = function () {
-        // API Key를 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            // 이제 API 통신을 할 수 있습니다.
-            // Do something.
-        }); // end Promise
-    };
+    UserMyComponent.prototype.ngOnInit = function () { };
     UserMyComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

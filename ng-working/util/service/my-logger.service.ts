@@ -35,8 +35,8 @@ export class MyLoggerService {
 
 	logActionPage (apiKey:string, pageType:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionPage / 시작");
 
 		if(null == apiKey || "" == apiKey) {
@@ -71,8 +71,8 @@ export class MyLoggerService {
 
 	logActionDirtyWord (apiKey:string, dirtyWord:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionDirtyWord / 시작");
 
 		if(null == apiKey || "" == apiKey) {
@@ -97,9 +97,12 @@ export class MyLoggerService {
 
 	logError (apiKey:string, errorType:string, errorMsg:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logError / 시작");
+	    if(isDebug) console.log("my-logger.service / logError / apiKey : ",apiKey);
+	    if(isDebug) console.log("my-logger.service / logError / errorType : ",errorType);
+	    if(isDebug) console.log("my-logger.service / logError / errorMsg : ",errorMsg);
 
 		if(null == apiKey || "" == apiKey) {
 			if(isDebug) console.log("my-logger.service / logError / 중단 / apiKey is not valid!");

@@ -10,8 +10,8 @@ import { AuthService }          from '../auth/auth.service';
 import { LoginService }         from './service/login.service';
 import { UserService }          from '../users/service/user.service';
 
-import { EmailComponent }       from './signup/email/email.component';
-import { PasswordComponent }    from './signup/password/password.component';
+import { EmailComponent }       from '../widget/input/email/email.component';
+import { PasswordComponent }    from '../widget/input/password/password.component';
 
 import { MyLoggerService }      from '../util/service/my-logger.service';
 import { MyCheckerService }     from '../util/service/my-checker.service';
@@ -74,26 +74,6 @@ export class LoginComponent implements OnInit {
 
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
-
-    // REMOVE ME
-    /*
-    // 로그인되어 있는 회원인지 먼저 확인. 
-    // 로그인되어 있는 상태라면 홈으로 이동시킵니다.
-
-    // 회원 로그인 쿠키를 가져옵니다.
-    // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-    this.myCheckerService.getReady().then(() => {
-      this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-        if(null != result && null != result.user) {
-          // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
-          this.router.navigate(['/class-center']);
-        } else {
-          // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
-          this.init();
-        }
-      });
-    }); // end Promise
-    */
 
   }
 

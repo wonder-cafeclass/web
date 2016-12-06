@@ -56,37 +56,6 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
 
-    // REMOVE ME
-    /*
-    // my-checker.service의 apikey 가져옴. 
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
-      (isReady:boolean) => {
-
-      if(isDebug) console.log("policy / ngOnInit / isReady : ",isReady);
-
-      if(!isReady) {
-        return;
-      }
-
-      this.myCheckerService.setReady(
-        // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
-        // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
-        // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
-        // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
-      ); // end setReady
-
-      // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
-      // 페이지 진입을 기록합니다.
-      this.logActionPage();
-      // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
-      this.getQueryString();
-    }); 
-    */
-
   } // end function
 
   ngOnDestroy() {
@@ -99,6 +68,10 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);    
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
@@ -115,6 +88,12 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     // let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / setMyCheckerReady / 시작");
 
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
@@ -123,6 +102,29 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       if(!isReady) {
         return;
       }
+
+      // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
+      this.init();
+    });    
+  }  
+
+  private init() :void {
+
+      this.setMyChecker();
+      // 페이지 진입을 기록합니다.
+      this.logActionPage();
+      // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
+      this.getQueryString();
+
+  }
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
@@ -135,13 +137,9 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
+      if(isDebug) console.log("signup-select / setMyChecker / done!");
+    } // end if
 
-      // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
-      // 페이지 진입을 기록합니다.
-      this.logActionPage();
-      // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
-      this.getQueryString();
-    });    
   }  
 
 

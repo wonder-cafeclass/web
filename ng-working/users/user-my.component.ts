@@ -24,19 +24,7 @@ export class UserMyComponent implements OnInit {
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
                 private myEventWatchTowerService:MyEventWatchTowerService, 
-                public router: Router) {
+                public router: Router) {}
 
-  }
-
-  ngOnInit(): void {
-
-    // API Key를 가져옵니다.
-    this.myCheckerService.getReady().then(() => {
-
-      // 이제 API 통신을 할 수 있습니다.
-      // Do something.
-
-    }); // end Promise
-
-  }
+  ngOnInit(): void {}
 }

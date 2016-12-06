@@ -92,8 +92,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.subscribeAllErrors = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / subscribeAllErrors / \uC2DC\uC791");
         // 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
@@ -105,8 +105,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setIsAdmin = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / setIsAdmin / \uC2DC\uC791");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -133,30 +133,34 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setMyChecker = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / setMyChecker / \uC2DC\uC791");
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
+        this.myCheckerService
+            .getChecker()
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / setMyChecker / myResponse : ", myResponse);
             // 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
             _this.myEventWatchTowerService.announceMyCheckerServiceReady(
-            // checkerMap: any, 
-            _this.myCheckerService.getCheckerMap(), 
-            // constMap: any, 
-            _this.myCheckerService.getConstMap(), 
-            // dirtyWordList: any, 
-            _this.myCheckerService.getDirtyWordList(), 
+            // checkerMap: any
+            myResponse.getDataProp("checker_map"), 
+            // constMap: any
+            myResponse.getDataProp("const_map"), 
+            // dirtyWordList: any
+            myResponse.getDataProp("dirty_word_list"), 
             // apiKey: string
-            _this.myCheckerService.getAPIKey());
+            myResponse.getDataProp("api_key"));
             _this.getLoginUserFromCookie();
-        }); // end Promise
+        });
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
         this.userService

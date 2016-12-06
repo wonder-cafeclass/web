@@ -16,6 +16,8 @@ import { KlassTime }            from './model/klass-time';
 import { KlassSelectile }       from './model/klass-selectile';
 import { KlassSelectileRow }    from './model/klass-selectile-row';
 
+import { MyResponse }           from '../util/model/my-response';
+
 @Component({
   moduleId: module.id,
   selector: 'klass-filter-tile',
@@ -52,27 +54,32 @@ export class KlassFilterTileComponent implements OnInit {
   stColCntPerRow:number = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
 
   constructor(
-    private service: KlassService,
+    private klassService: KlassService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
 
-    this.service.getKlassSelectile().then(selectileInfo => {
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-tile / ngOnInit / 시작");
 
-      if(null === selectileInfo) {
-        // TODO - 내려와야 할 데이터가 정상적으로 내려오지 않은 상황. 어떤 처리를 해주면 좋을까?
-        return;
-      }
+    this.klassService
+    .getKlassSelectile()
+    .then((myReponse:MyResponse) => {
 
-      this.setLevel(selectileInfo["levels"]);
-      this.setStation(selectileInfo["stations"]);
-      this.setDay(selectileInfo["days"]);
-      this.setTime(selectileInfo["times"]);
+      if(isDebug) console.log("klass-filter-tile / ngOnInit / myReponse : ",myReponse);
 
-      this.showSelectile(null, null, -1);    
+      if(myReponse.isSuccess()) {
+        this.setLevel(myReponse.getDataProp("levels"));
+        this.setStation(myReponse.getDataProp("stations"));
+        this.setDay(myReponse.getDataProp("days"));
+        this.setTime(myReponse.getDataProp("times"));
 
-    });
+        this.showSelectile(null, null, -1);
+      } // end if
+
+    }); // end service
 
     this.emitOnInitKlassList.emit();
 

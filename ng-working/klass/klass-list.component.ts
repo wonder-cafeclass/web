@@ -1,7 +1,7 @@
 import {  Component, 
           OnInit, 
           EventEmitter, 
-          Output }      from '@angular/core';
+          Output }                         from '@angular/core';
 
 import { ActivatedRoute, Router, Params }  from '@angular/router';
 
@@ -21,6 +21,8 @@ import { UserService }                     from '../users/service/user.service';
 import { MyLoggerService }                 from '../util/service/my-logger.service';
 import { MyEventWatchTowerService }        from '../util/service/my-event-watchtower.service';
 import { MyCheckerService }                from '../util/service/my-checker.service';
+
+import { MyResponse }                      from '../util/model/my-response';
 
 import { User }                            from '../users/model/user';
 
@@ -62,8 +64,8 @@ export class KlassListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / ngOnInit / 시작");
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
@@ -71,44 +73,19 @@ export class KlassListComponent implements OnInit {
 
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
-
-    // REMOVE ME
-    // get class list
-    /*
-    this.route.params.forEach((params: Params) => {
-      this.selectedId = params['id'];
-      this.service.getKlasses().then(klasses => this.klasses = klasses);
-    });
-
-    // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
-    this.myEventWatchTowerService.announceToggleTopMenu(true);
-
-    // 회원 로그인 쿠키를 가져옵니다.
-    // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-    this.myCheckerService.getReady().then(() => {
-      this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-
-        console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-        console.log("result : ",result);
-
-        if(null != result && null != result.user) {
-          
-          this.loginUser = result.user;
-          // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-          this.myEventWatchTowerService.announceLogin(this.loginUser);
-        }
-      });
-    }); // end Promise    
-   */
-
+    
   }
 
 
   private setIsAdmin() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("klass-list / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);    
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
@@ -124,6 +101,11 @@ export class KlassListComponent implements OnInit {
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / setMyCheckerReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
 
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
@@ -143,6 +125,24 @@ export class KlassListComponent implements OnInit {
         return;
       }
 
+      this.init();
+
+    });    
+  }
+
+  private init() :void {
+    this.setMyChecker();
+    this.logPageEnter();
+  }
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
       this.myCheckerService.setReady(
         // checkerMap:any
         this.myEventWatchTowerService.getCheckerMap(),
@@ -154,14 +154,15 @@ export class KlassListComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.logPageEnter();
+      if(isDebug) console.log("kakao-callback / setMyChecker / done!");
+    } // end if
 
-    });    
-  }
+  }   
+
   private logPageEnter() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / logPageEnter / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -170,18 +171,9 @@ export class KlassListComponent implements OnInit {
       this.myEventWatchTowerService.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeKlassList
-    ).then(result => {
+    ).then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("klass-list / logPageEnter / result : ",result);
-
-      if(null == result) {
-        return;
-      }
-
-      if(null != result["success"] && !result["success"]) {
-        // 실패
-        console.log(result["message"]);
-      }
+      if(isDebug) console.log("klass-list / logPageEnter / myResponse : ",myResponse);
 
     }); 
 
@@ -200,11 +192,15 @@ export class KlassListComponent implements OnInit {
       if(isDebug) console.log("klass-list / getKlassList / params : ",params);
 
       this.selectedId = params['id'];
-      this.service.getKlasses().then(klasses => {
+      this.service
+      .getKlasses()
+      .then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("klass-list / getKlasses / klasses : ",klasses);
+        if(isDebug) console.log("klass-list / getKlasses / myResponse : ",myResponse);
+
+
         
-        this.klasses = klasses
+        // this.klasses = klasses;
       });
     });
 
@@ -240,7 +236,15 @@ export class KlassListComponent implements OnInit {
     searchBox.focus();
   }
 
-  search(level:KlassLevel, station:KlassStation, day:KlassDay, time:KlassTime, searchKeyword:string): void {
+  search( level:KlassLevel, 
+          station:KlassStation, 
+          day:KlassDay, 
+          time:KlassTime, 
+          searchKeyword:string): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / search / 시작");
 
     // 항목별 filter 만들기
     var levelKey = "";
@@ -284,8 +288,10 @@ export class KlassListComponent implements OnInit {
       timeKey, 
       // q:string
       searchKeywordSafe
-    ).then(klasses => {
-       this.klasses = klasses 
+    ).then((myReponse:MyResponse) => {
+      if(isDebug) console.log("klass-list / search / myReponse : ",myReponse);
+      // wonder.jung
+      // this.klasses = klasses 
     });
 
   }

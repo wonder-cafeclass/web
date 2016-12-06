@@ -74,8 +74,8 @@ var LoginService = (function () {
     };
     LoginService.prototype.getFacebookAuthUrl = function () {
         var req_url = this.us.get(this.facebookAuthUrl);
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getFacebookAuthUrl / 시작");
         if (isDebug)
@@ -128,8 +128,8 @@ var LoginService = (function () {
     };
     LoginService.prototype.getNaverAuthUrl = function () {
         var req_url = this.us.get(this.naverAuthUrl);
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getNaverAuthUrl / 시작");
         if (isDebug)
@@ -141,8 +141,8 @@ var LoginService = (function () {
     };
     LoginService.prototype.getKakaoAuthUrl = function () {
         var req_url = this.us.get(this.kakaoAuthLinkUrl);
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getKakaoAuthUrl / 시작");
         if (isDebug)

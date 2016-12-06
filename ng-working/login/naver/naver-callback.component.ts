@@ -42,6 +42,7 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
                 public router: Router) {
 
     // Do something...
+
   } // end function
 
   ngOnInit(): void {
@@ -56,34 +57,6 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
 
-    /*
-    // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageTypeLoginNaver);
-
-    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
-    this.subscription = this.activatedRoute.queryParams.subscribe(
-      (param: any) => {
-
-        if(isDebug) console.log("naver-callback / queryParams / param : ",param);
-
-        this.code = param['code'];
-        this.state = param['state'];
-
-        if(isDebug) console.log("naver-callback / queryParams / this.code : ",this.code);
-        if(isDebug) console.log("naver-callback / queryParams / this.state : ",this.state);
-
-        if(  null != this.code && 
-             "" != this.code && 
-             null != this.state && 
-             "" != this.state) {
-          
-          this.getNaverState(this.state, this.code);
-        } // end if
-      }
-    ); // end subscribe
-    */
-
-
   } // end function
 
   ngOnDestroy() {
@@ -96,6 +69,10 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("naver-callback / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
@@ -112,6 +89,12 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
     // let isDebug:boolean = false;
     if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
 
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
@@ -120,6 +103,24 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
       if(!isReady) {
         return;
       }
+
+      this.init();
+    });    
+  }
+
+  private init() :void {
+      this.setMyChecker();
+      this.logActionPage();
+      this.getQueryString();
+  }
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("naver-callback / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
@@ -132,11 +133,10 @@ export class NaverCallbackComponent implements OnInit, OnDestroy {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.logActionPage();
-      this.getQueryString();
+      if(isDebug) console.log("naver-callback / setMyChecker / done!");
+    } // end if
 
-    });    
-  }
+  }  
 
   private logActionPage() :void {
 

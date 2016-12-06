@@ -47,23 +47,18 @@ export class SignupSelectComponent implements OnInit {
 
     // my-checker.service의 apikey 가져옴. 
     this.setMyCheckerReady();
-
-    /*
-    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
-      (isAdmin:boolean) => {
-      this.isAdmin = isAdmin;
-      this.init();
-    }); 
-    */     
     
   } // end ngOnInit
 
   private setIsAdmin() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
     this.myEventWatchTowerService.isAdmin$.subscribe(
@@ -76,10 +71,16 @@ export class SignupSelectComponent implements OnInit {
 
   private setMyCheckerReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / setMyCheckerReady / 시작");
 
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
     this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
       (isReady:boolean) => {
 
@@ -98,6 +99,18 @@ export class SignupSelectComponent implements OnInit {
         return;
       }
 
+      this.init();
+    });    
+  }
+
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup-select / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
       this.myCheckerService.setReady(
         // checkerMap:any
         this.myEventWatchTowerService.getCheckerMap(),
@@ -109,16 +122,18 @@ export class SignupSelectComponent implements OnInit {
         this.myEventWatchTowerService.getApiKey()
       ); // end setReady
 
-      this.init();
+      if(isDebug) console.log("signup-select / setMyChecker / done!");
+    } // end if
 
-    });    
-  }  
+  }
 
 
-  init(): void {
+  private init(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    this.setMyChecker();
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / init / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -175,7 +190,6 @@ export class SignupSelectComponent implements OnInit {
 
       } // end if
 
-      // this.naverAuthUrl = naverAuthUrl;
     });
 
     // 3. facebook
@@ -199,7 +213,6 @@ export class SignupSelectComponent implements OnInit {
         
       } // end if
 
-      // this.facebookAuthUrl = facebookAuthUrl;
     });
 
     // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.

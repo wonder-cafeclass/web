@@ -145,7 +145,7 @@ class Log extends MY_REST_Controller {
         }
 
         // 콜백 응답에서 facebook_code 파라미터의 값을 가져옴
-        $user_id = $this->my_paramchecker->get('user_id','user_id');
+        $user_id = $this->my_paramchecker->post('user_id','user_id');
         if(empty($user_id)) 
         {
             $user_id = -1;
@@ -155,32 +155,12 @@ class Log extends MY_REST_Controller {
             $user_id = intval($user_id);
         }
 
-        $error_type = $this->my_paramchecker->get('error_type','logger_error_type');
+        $error_type = $this->my_paramchecker->post('error_type','logger_error_type');
         if(empty($error_type)) 
         {
             $this->respond_200_Failed(
                 // $msg=""
                 "error_type is not valid!",
-                // $function=""
-                __FUNCTION__,
-                // $file=""
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                array(
-                    "user_id"=>$user_id
-                )
-            );
-            return;
-        }
-
-        $error_msg = $this->my_paramchecker->get('error_msg','logger_error_msg');
-        if(empty($error_msg))
-        {
-            $this->respond_200_Failed(
-                // $msg=""
-                "error_msg is not valid!",
                 // $function=""
                 __FUNCTION__,
                 // $file=""
@@ -196,6 +176,29 @@ class Log extends MY_REST_Controller {
             return;
         }
 
+        $error_msg = $this->my_paramchecker->post('error_msg','logger_error_msg');
+        if(empty($error_msg))
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "error_msg is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "user_id"=>$user_id,
+                    "error_type"=>$error_type,
+                    "error_msg"=>$error_msg
+                )
+            );
+            return;
+        }
+
+        $is_success = 
         $this->my_logger->add_error(
             // $user_id=-1
             $user_id,
@@ -205,9 +208,17 @@ class Log extends MY_REST_Controller {
             $error_msg
         );
 
+        $log_error = 
+        $this->my_logger->get_error(
+            // $error_type=""
+            $error_type
+        );
+
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
-        $output["success"] = true;
+        $output["success"] = $is_success;
+        $output["log_error"] = $log_error;
+
         $this->respond_200($output);
 
     }       

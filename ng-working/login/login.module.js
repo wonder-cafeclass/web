@@ -21,14 +21,6 @@ var kakao_callback_component_1 = require('./kakao/kakao-callback.component');
 var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
 var signup_select_component_1 = require('./signup/signup-select.component');
-// import { EmailComponent }                 from './signup/email/email.component';
-// import { PasswordComponent }              from './signup/password/password.component';
-// import { NameComponent }                  from './signup/name/name.component';
-// import { MobileComponent }                from './signup/mobile/mobile.component';
-// import { ProfileImgUploadComponent }      from './signup/profile-img-upload/profile-img-upload.component';
-// import { NicknameComponent }              from './signup/nickname/nickname.component';
-// import { GenderComponent }                from './signup/gender/gender.component';
-// import { BirthdayComponent }              from './signup/birthday/birthday.component';
 var validation_component_1 = require('./validation/validation.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
@@ -53,14 +45,6 @@ var LoginModule = (function () {
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
                 signup_select_component_1.SignupSelectComponent,
-                // EmailComponent,
-                // PasswordComponent,
-                // NameComponent,
-                // MobileComponent,
-                // ProfileImgUploadComponent,
-                // NicknameComponent,
-                // GenderComponent,
-                // BirthdayComponent,
                 validation_component_1.ValidationComponent
             ],
             providers: [

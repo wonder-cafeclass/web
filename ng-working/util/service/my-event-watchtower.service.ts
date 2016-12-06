@@ -63,16 +63,24 @@ export class MyEventWatchTowerService {
 	}
 	announceMyCheckerServiceReady(checkerMap: any, constMap: any, dirtyWordList: any, apiKey: string) {
 
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / 시작`);
+
         if(null == checkerMap) {
+        	if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / checkerMap is not valid!`);
             return;
         }
         if(null == constMap) {
+        	if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / constMap is not valid!`);
             return;
         }
         if(null == dirtyWordList) {
+        	if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / dirtyWordList is not valid!`);
             return;
         }
         if(null == apiKey || "" == apiKey) {
+        	if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / apiKey is not valid!`);
             return;
         }		
 
@@ -90,6 +98,8 @@ export class MyEventWatchTowerService {
 
 		this.myCheckerServiceReadySource.next(true);
 
+		if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / done.`);
+
 	}
 
 
@@ -99,7 +109,23 @@ export class MyEventWatchTowerService {
 	getIsAdmin() :boolean {
 		return this.isAdmin;
 	}
+	getIsMyCheckerReady() :boolean {
 
+		if(null == this.getCheckerMap()) {
+			return false;
+		}
+		if(null == this.getConstMap()) {
+			return false;
+		}
+		if(null == this.getDirtyWordList()) {
+			return false;
+		}
+		if(null == this.getApiKey()) {
+			return false;
+		}
+
+		return true;
+	}
 	getCheckerMap() :string {
 		return this.checkerMap;
 	}	

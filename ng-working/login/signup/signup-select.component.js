@@ -33,21 +33,17 @@ var SignupSelectComponent = (function () {
         this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
         this.setMyCheckerReady();
-        /*
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(
-          (isAdmin:boolean) => {
-          this.isAdmin = isAdmin;
-          this.init();
-        });
-        */
     }; // end ngOnInit
     SignupSelectComponent.prototype.setIsAdmin = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup-select / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
             if (isDebug)
@@ -57,10 +53,15 @@ var SignupSelectComponent = (function () {
     };
     SignupSelectComponent.prototype.setMyCheckerReady = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup-select / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.init();
+        }
+        // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
                 console.log("signup-select / setMyCheckerReady / isReady : ", isReady);
@@ -75,22 +76,33 @@ var SignupSelectComponent = (function () {
                 "login / setMyCheckerReady / Failed! / isReady : " + isReady);
                 return;
             }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
             _this.init();
         });
     };
+    SignupSelectComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("signup-select / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("signup-select / setMyChecker / done!");
+        } // end if
+    };
     SignupSelectComponent.prototype.init = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        this.setMyChecker();
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup-select / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -139,7 +151,6 @@ var SignupSelectComponent = (function () {
                 _this.errorMsgArr.push(myResponse.getError());
                 _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
-            // this.naverAuthUrl = naverAuthUrl;
         });
         // 3. facebook
         this.loginService
@@ -160,7 +171,6 @@ var SignupSelectComponent = (function () {
                 _this.errorMsgArr.push(myResponse.getError());
                 _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
-            // this.facebookAuthUrl = facebookAuthUrl;
         });
         // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
         this.myEventWatchTowerService.announceToggleTopMenu(false);

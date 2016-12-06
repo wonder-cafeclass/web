@@ -109,32 +109,27 @@ class MY_Sql
     {   
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
-
         if(empty($agent))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
-            return;
+            return false;
         }
         if(empty($ip))
         {
-            return;
+            return false;
         }
         if(empty($type))
         {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
+            return false;
         }
         if(empty($msg))
         {
-            return;
+            return false;
         }
 
         $data = array(
@@ -146,11 +141,56 @@ class MY_Sql
             'msg' => $msg
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('log_error');
+        $is_success = 
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+        if(!$is_success) 
+        {
+            return $is_success;
+        }
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_error', $data);
+
+        return $is_success;
     }
-    public function select_log_error()
+    public function select_log_error($ip="", $type="")
     {
-        
+        if(empty($ip))
+        {
+            return;
+        }
+        if(empty($type))
+        {
+            return;
+        }
+
+        $data = array(
+            'ip' => $ip,
+            'type' => $type
+        );
+
+        $this->CI->db->select("*");
+        $this->CI->db->where('ip', $ip);
+        $this->CI->db->where('type', $type);
+        $this->CI->db->order_by('date_created', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('log_error');
+
+        $log_error = null;
+        foreach ($query->result() as $row)
+        {
+            $log_error = $row;
+        } // end foreach
+
+        return $log_error;
     }
 
     /*
@@ -211,32 +251,28 @@ class MY_Sql
     {
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
 
         if(empty($agent))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
-            return;
+            return false;
         }
         if(empty($ip))
         {
-            return;
+            return false;
         }
         if(empty($type))
         {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
+            return false;
         }
         if(empty($query))
         {
-            return;
+            return false;
         }
 
         $data = array(
@@ -249,6 +285,8 @@ class MY_Sql
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_query', $data);
+
+        return true;
     }
     public function select_log_query()
     {
@@ -489,27 +527,36 @@ class MY_Sql
 
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
 
         if(empty($action_type))
         {
-            return;
+            return false;
         }
 
         if(empty($query))
         {
-            return;
+            return false;
         }
 
-        $this->CI->my_logger->add_query(
-            // $user_id=-1, 
-            $user_id,
-            // $action_type="", 
+        $is_success = 
+        $this->insert_log_query(
+            // $agent=""
+            $this->CI->my_logger->get_client_agent(),
+            // $agent_type=""
+            $this->CI->my_logger->get_agent_type(),
+            // $ip=""
+            $this->CI->my_logger->get_client_ip(),
+            // $type=""
             $action_type,
+            // $user_id=-1
+            $user_id,
             // $query=""
             $query
-        );
+        );        
+
+        return $is_success;
     }
 
     public function insert_user($password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")

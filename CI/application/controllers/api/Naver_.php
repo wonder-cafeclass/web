@@ -161,7 +161,7 @@ class Naver_ extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state();
+        $state = $this->my_auth->get_new_state_query_string_safe();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -206,7 +206,7 @@ class Naver_ extends REST_Controller implements MY_Class{
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state();
+        $state = $this->my_auth->get_new_state_query_string_safe();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -561,7 +561,7 @@ class Naver_ extends REST_Controller implements MY_Class{
         return md5($mt . $rand);
     } // end function
 
-    private function get_new_state()
+    private function get_new_state_query_string_safe()
     {
         // 상태 토큰으로 사용할 랜덤 문자열을 생성
         $state = $this->generate_state();

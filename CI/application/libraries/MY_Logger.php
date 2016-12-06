@@ -32,6 +32,7 @@ class MY_Logger
 
     public $ERROR_INTERNAL_SERVER_500="INTERNAL_SERVER_500";
     public $ERROR_NOT_ALLOWED_ACCESS_404="NOT_ALLOWED_ACCESS_404";
+    public $ERROR_BAD_REQUEST_400="BAD_REQUEST_400";
     public $ERROR_NOT_VALID_USER_AUTH="NOT_VALID_USER_AUTH";
 
     public $QUERY_TYPE_INSERT="INSERT";
@@ -70,19 +71,20 @@ class MY_Logger
     {
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
 
         if(empty($error_type))
         {
-            return;
+            return false;
         }
 
-        if(empty($action_key))
+        if(empty($error_msg))
         {
-            return;
+            return false;
         }
 
+        $is_success = 
         $this->CI->my_sql->insert_log_error(
             // $agent=""
             $this->get_client_agent(),
@@ -97,6 +99,26 @@ class MY_Logger
             // $msg=""
             $error_msg
         );
+
+        return $is_success;
+    }
+
+    public function get_error($error_type="")
+    {
+        if(empty($error_type))
+        {
+            return;
+        }
+
+        $log_error = 
+        $this->CI->my_sql->select_log_error(
+            // $ip=""
+            $this->get_client_ip(),
+            // $type=""
+            $error_type
+        );
+
+        return $log_error;
     }    
 
     public function add_action($user_id=-1, $action_type="", $action_key="")
@@ -216,7 +238,7 @@ class MY_Logger
     /*
     *   @ Referer : https://www.codeigniter.com/user_guide/libraries/input.html#CI_Input::ip_address
     */
-    private function get_client_ip()
+    public function get_client_ip()
     {
         if($this->is_not_ready())
         {
@@ -229,7 +251,7 @@ class MY_Logger
     /*
     *   @ Referer : https://codeigniter.com/userguide3/libraries/user_agent.html
     */
-    private function get_client_agent()
+    public function get_client_agent()
     {
         if($this->is_not_ready())
         {
@@ -239,7 +261,7 @@ class MY_Logger
         return $this->CI->agent->agent_string();
     } 
 
-    private function get_agent_type()
+    public function get_agent_type()
     {
         if($this->is_not_ready())
         {

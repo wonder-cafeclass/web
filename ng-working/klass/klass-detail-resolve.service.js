@@ -17,16 +17,23 @@ var KlassDetailResolve = (function () {
         this.router = router;
     }
     KlassDetailResolve.prototype.resolve = function (route) {
-        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail-resolve / resolve / 시작");
         var id = +route.params['id'];
-        return this.ks.getKlass(id).then(function (klass) {
+        return this.ks.getKlass(id).then(function (myReponse) {
+            if (isDebug)
+                console.log("klass-detail-resolve / resolve / myReponse : ", myReponse);
+            /*
             if (klass) {
-                return klass;
+              return klass;
+            } else { // id not found. return to "class center"
+              this.router.navigate(['/class-center']);
+              return false;
             }
-            else {
-                _this.router.navigate(['/class-center']);
-                return false;
-            }
+            */
+            return Promise.resolve(null);
         });
     };
     KlassDetailResolve = __decorate([

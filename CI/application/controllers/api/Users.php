@@ -646,10 +646,27 @@ class Users extends MY_REST_Controller {
 
             // 등록한 유저 정보를 가져옵니다.
             $user = $this->my_sql->get_user_by_email($email);
+            $output["success"] = true;
             $output["user"] = $user;
-        }
+            $this->respond_200($output);
 
-        $this->respond_200($output);
+        } 
+        else 
+        {
+            // 실패!
+            $this->respond_200_Failed(
+                // $msg=""
+                "User update failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
     }
 
     /*

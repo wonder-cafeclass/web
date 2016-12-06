@@ -5,6 +5,7 @@ import { Headers,
          RequestOptions }                  from '@angular/http';
 import { UrlService }                      from "../../util/url.service";
 import { MyExtractor }                     from '../../util/http/my-extractor';
+import { MyResponse }                      from '../../util/model/my-response';
 import { User }                            from "../model/user";
 
 @Injectable()
@@ -39,7 +40,7 @@ export class UserService {
     this.myExtractor = new MyExtractor();
   }
 
-  getUserByEmail (email:string): Promise<any> {
+  getUserByEmail (email:string): Promise<MyResponse> {
 
     // TODO 이메일로 사용자를 조회.
     // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
@@ -59,7 +60,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  getUserByFacebookId (facebookId:string): Promise<any> {
+  getUserByFacebookId (facebookId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByFacebookIdUrl);
     req_url = `${ req_url }?q=${ facebookId }`;
@@ -76,7 +77,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  getUserByNaverId (naverId:string): Promise<any> {
+  getUserByNaverId (naverId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByNaverIdUrl);
     req_url = `${ req_url }?q=${ naverId }`;
@@ -93,7 +94,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   } 
 
-  getUserByKakaoId (kakaoId:string): Promise<any> {
+  getUserByKakaoId (kakaoId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByKakaoIdUrl);
     req_url = `${ req_url }?q=${ kakaoId }`;
@@ -110,10 +111,10 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }    
 
-  getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<any> {
+  getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByMobile / 시작");
     if(isDebug) console.log("user.service / getUserByMobile / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / getUserByMobile / mobileHead : ",mobileHead);
@@ -158,7 +159,7 @@ export class UserService {
                 thumbnail:string,
                 mobileHead:string,
                 mobileBody:string,
-                mobileTail:string): Promise<any> {
+                mobileTail:string): Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -226,7 +227,7 @@ export class UserService {
             mobileHead:string,
             mobileBody:string,
             mobileTail:string
-          ): Promise<any> {
+          ): Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -308,7 +309,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserValidation(apiKey:string, key:string) {
+  public confirmUserValidation(apiKey:string, key:string):Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -338,7 +339,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserKakao(apiKey:string, kakaoId:string) {
+  public confirmUserKakao(apiKey:string, kakaoId:string):Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -368,10 +369,10 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserFacebook(apiKey:string, facebookId:string) {
+  public confirmUserFacebook(apiKey:string, facebookId:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / confirmUserFacebook / 시작");
     if(isDebug) console.log("user.service / confirmUserFacebook / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
@@ -398,10 +399,10 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserNaver(apiKey:string, naverId:string) {
+  public confirmUserNaver(apiKey:string, naverId:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / confirmUserNaver / 시작");
     if(isDebug) console.log("user.service / confirmUserNaver / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / confirmUserNaver / naverId : ",naverId);
@@ -428,7 +429,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }      
 
-  getUserCookie(apiKey:string) {
+  public getUserCookie(apiKey:string):Promise<MyResponse> {
     
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -455,7 +456,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   } 
 
-  deleteUserCookie() {
+  public deleteUserCookie():Promise<MyResponse> {
     
     let req_url = this.us.get(this.logoutUrl);
 
@@ -470,7 +471,7 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
   }   
 
-  confirmUserEmailPassword(apiKey:string, email:string, password:string) {
+  public confirmUserEmailPassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
     
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -498,39 +499,6 @@ export class UserService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
-  }   
-
-  // REMOVE ME
-  /*
-  private extractData(res: Response) {
-
-    let body = res.json();
-
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-
-    if(isDebug) console.log("user.service / extractData / body ::: ",body);
-
-    // TODO - 데이터 검증 프로세스.
-    if(null == body.data || !body.success) {
-        console.log("user.service / extractData / 데이터가 없습니다.");
-        return null;
-    }
-
-    return body.data;
   }
-
-  // New - XHR
-  // promise-based
-  private handleError (error: any) {
-      // In a real world app, we might use a remote logging infrastructure
-      // We'd also dig deeper into the error to get a better message
-      let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-      console.error(errMsg); // log to console instead
-      return Promise.reject(errMsg);
-  }
-  */
-
+  
 }

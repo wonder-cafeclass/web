@@ -12,6 +12,8 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { UserService }          from '../../../users/service/user.service';
 
+import { MyResponse }           from '../../../util/model/my-response';
+
 @Component({
   moduleId: module.id,
   selector: 'email',
@@ -93,16 +95,17 @@ export class EmailComponent implements OnInit {
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
 
-    event.stopPropagation();
-    event.preventDefault();
-
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
+    if(isDebug) console.log("email / onBlur / logPageEnter / 시작");
 
     if(null == this.myCheckerService) {
       if(isDebug) console.log("email / onBlur / 중단 / null == this.myCheckerService");
       return;
     }
+
+    event.stopPropagation();
+    event.preventDefault();
 
     // 내용이 동일하다면 중단합니다.
     if(null != this.inputStrPrevOnBlur && this.inputStrPrevOnBlur === email) {
@@ -130,8 +133,11 @@ export class EmailComponent implements OnInit {
         // 회원 가입시, 유일한 이메일인지 검사.
         this.userService
         .getUserByEmail(email)
-        .then(result => {
+        .then((myReponse:MyResponse) => {
 
+          if(isDebug) console.log("email / onBlur / logPageEnter / myReponse : ",myReponse);
+
+          /*
           if( null != result &&
               null != result.user ) {
 
@@ -143,6 +149,7 @@ export class EmailComponent implements OnInit {
           } else {
             this.emailFailed(this.tooltipMsgEmailNotUnique);
           }
+          */
         });
       } else if(isOK) {
         // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.

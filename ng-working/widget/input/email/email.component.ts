@@ -9,8 +9,13 @@ import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
+import { MyLoggerService }      from '../../../util/service/my-logger.service';
+import { MyEventWatchTowerService }  from '../../../util/service/my-event-watchtower.service';
 
 import { UserService }          from '../../../users/service/user.service';
+import { User }                 from '../../../users/model/user';
+
+import { MyResponse }           from '../../../util/model/my-response';
 
 @Component({
   moduleId: module.id,
@@ -49,22 +54,113 @@ export class EmailComponent implements OnInit {
 
   isShowPopover:boolean=false;
 
-  constructor(  private myEventService:MyEventService, 
+  isAdmin:boolean=false;
+
+  constructor(  private myEventService:MyEventService,
+                private myLoggerService:MyLoggerService, 
+                private myEventWatchTowerService:MyEventWatchTowerService, 
                 private userService:UserService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / ngOnInit / 시작");
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.setIsAdmin();
+
+    // my-checker.service의 apikey 가져옴. 
+    this.setMyCheckerReady();
+
+  }
+
+  private setIsAdmin() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("email / setIsAdmin / 시작");
+
+    // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    if(isDebug) console.log("email / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+
+    // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+    this.myEventWatchTowerService.isAdmin$.subscribe(
+      (isAdmin:boolean) => {
+
+      if(isDebug) console.log("email / setIsAdmin / isAdmin : ",isAdmin);
+      this.isAdmin = isAdmin;
+    });
+  }  
+
+  private setMyCheckerReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("email / setMyCheckerReady / 시작");
+
+    // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+      this.init();
+    }
+
+    // 직접 주소를 입력하여 이동한 경우.
+    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+      (isReady:boolean) => {
+
+      if(isDebug) console.log("signup / setMyCheckerReady / isReady : ",isReady);
+
+      if(!isReady) {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.myEventWatchTowerService.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorTypeNotValidValue,
+          // errorMsg:string
+          `signup / setMyCheckerReady / Failed! / isReady : ${isReady}`
+        );        
+        return;
+      }
+
+      this.init();
+
+    }); // end subscribe   
+  } 
+
+  private init() :void {
+    this.setMyChecker();
+  } 
 
   private setMyChecker() :void {
 
-    if(null == this.myCheckerService) {
-      return;
-    }
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
+
+    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.myEventWatchTowerService.getCheckerMap(),
+        // constMap:any
+        this.myEventWatchTowerService.getConstMap(),
+        // dirtyWordList:any
+        this.myEventWatchTowerService.getDirtyWordList(),
+        // apiKey:string
+        this.myEventWatchTowerService.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("kakao-callback / setMyChecker / done!");
+    } // end if
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_email");
     }
-    
-  }
+
+  }  
+
 
   // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
   public hasNotDone() :boolean {
@@ -93,11 +189,12 @@ export class EmailComponent implements OnInit {
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("email / onBlur / logPageEnter / 시작");
+
     event.stopPropagation();
     event.preventDefault();
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
 
     if(null == this.myCheckerService) {
       if(isDebug) console.log("email / onBlur / 중단 / null == this.myCheckerService");
@@ -130,26 +227,46 @@ export class EmailComponent implements OnInit {
         // 회원 가입시, 유일한 이메일인지 검사.
         this.userService
         .getUserByEmail(email)
-        .then(result => {
+        .then((myResponse:MyResponse) => {
 
-          if( null != result &&
-              null != result.user ) {
+          if(isDebug) console.log("email / onBlur / getUserByEmail / myResponse : ",myResponse);
 
-            // 이미 등록된 유저가 있습니다.
-            isOK = false;
-          }
-          if(isOK) {
-            this.emailSuccess(email);
+          let user:User = null;
+          if(myResponse.isSuccess()) {
+            user = myResponse.getDataProp("user");
+            if(null != user) {
+              // 이미 이메일이 등록되어 있습니다.
+              this.emailFailed(this.tooltipMsgEmailNotUnique);
+            } else {
+              // 이메일이 등록되어 있지 않습니다. 회원 가입 다음단계로 진행합니다.
+              this.emailSuccess(email);
+            }
           } else {
-            this.emailFailed(this.tooltipMsgEmailNotUnique);
-          }
-        });
+            // Error Report
+
+            if(isDebug) console.log("email / onBlur / getUserByEmail / Error Report");
+
+            // Error Report
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.myEventWatchTowerService.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `email / getUserByEmail / Failed!`
+            );
+          } // end if
+
+        }); // end service
+
       } else if(isOK) {
         // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+        if(isDebug) console.log("email / onBlur / 로그인 시에는 이메일이 유일한지 검사하지 않습니다.");
         this.emailSuccess(email);
       } else {
+        if(isDebug) console.log("email / onBlur / 이메일에 문제가 있습니다.");
         this.emailFailed(this.tooltipMsgEmailNotValid);
-      }
+      } // end if
 
     } // end if
 

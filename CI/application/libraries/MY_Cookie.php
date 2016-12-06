@@ -108,7 +108,11 @@ class MY_Cookie
     		return null;
     	}
 
-    	$cookie = $_COOKIE[$this->KEY_USER_LOGIN];
+        $cookie = "";
+        if(isset($_COOKIE[$this->KEY_USER_LOGIN])) 
+        {
+            $cookie = $_COOKIE[$this->KEY_USER_LOGIN];
+        }
     	if(empty($cookie)) 
     	{
     		return null;

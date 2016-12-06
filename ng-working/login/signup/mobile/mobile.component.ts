@@ -13,6 +13,8 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyResponse }           from '../../../util/model/my-response';
+
 @Component({
   moduleId: module.id,
   selector: 'mobile',
@@ -972,10 +974,11 @@ export class MobileComponent implements OnInit {
       this.mobileHeadEmitted,
       this.mobileBodyEmitted,
       this.mobileTailEmitted
-    ).then(result => {
+    ).then((myReponse:MyResponse) => {
 
-      if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / result : ",result);  
+      if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / myReponse : ",myReponse);
 
+      /*
       if(null == result || null == result.user) {
         // 전화번호가 유일합니다. 문제 없음.
         if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
@@ -1018,6 +1021,7 @@ export class MobileComponent implements OnInit {
       this.isFocusMobileHead = true;
       this.isFocusMobileBody = true;
       this.isFocusMobileTail = true;
+      */
 
     });
   }
@@ -1096,14 +1100,13 @@ export class MobileComponent implements OnInit {
         elementNext.focus();
       } // end if
 
-      // wonder.jung
-
       // 전송될 전화번호 값을 저장함. 
       this.mobileTailEmitted = inputStr;
 
       // 전화번호 중복 확인 뒤에 부모 객체로 이벤트 발송.
       this.emitEventChange();
 
+      // REMOVE ME
       /*
       // 부모 객체에게 Change Event 발송 
       let myEventOnChange:MyEvent =

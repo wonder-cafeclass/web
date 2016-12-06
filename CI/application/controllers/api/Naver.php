@@ -104,7 +104,7 @@ class Naver extends MY_REST_Controller {
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state();
+        $state = $this->my_auth->get_new_state_query_string_safe();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -158,7 +158,7 @@ class Naver extends MY_REST_Controller {
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state();
+        $state = $this->my_auth->get_new_state_query_string_safe();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -186,11 +186,37 @@ class Naver extends MY_REST_Controller {
         {
             $_SESSION[$this->session_access_token] = $access_token;
         }
+        else
+        {
+            $this->respond_500_detail(
+                // $msg=""
+                "access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
+        }
 
         $token_type = $this->my_keyvalue->get($result, "token_type");
         if(!empty($token_type))
         {
             $_SESSION[$this->session_token_type] = $token_type;
+        }
+        else
+        {
+            $this->respond_500_detail(
+                // $msg=""
+                "token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -432,6 +458,21 @@ class Naver extends MY_REST_Controller {
             }
         }
 
+        if(empty($location_list))
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "location_list is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
+        }
+
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
         $output["result"] = $location_list;
@@ -483,6 +524,21 @@ class Naver extends MY_REST_Controller {
                 "point"
             ]
         );
+
+        if(empty($result))
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
+        }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
@@ -539,6 +595,20 @@ class Naver extends MY_REST_Controller {
         if($is_valid_state)
         {
             $output["stored_state"] = $stored_state;
+        }
+        else
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "state is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
         }
 
         $this->respond_200($output);

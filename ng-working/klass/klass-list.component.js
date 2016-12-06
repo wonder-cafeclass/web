@@ -40,49 +40,25 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / ngOnInit / 시작");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
         this.setMyCheckerReady();
-        // REMOVE ME
-        // get class list
-        /*
-        this.route.params.forEach((params: Params) => {
-          this.selectedId = params['id'];
-          this.service.getKlasses().then(klasses => this.klasses = klasses);
-        });
-    
-        // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
-        this.myEventWatchTowerService.announceToggleTopMenu(true);
-    
-        // 회원 로그인 쿠키를 가져옵니다.
-        // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(() => {
-          this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-    
-            console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-            console.log("result : ",result);
-    
-            if(null != result && null != result.user) {
-              
-              this.loginUser = result.user;
-              // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-              this.myEventWatchTowerService.announceLogin(this.loginUser);
-            }
-          });
-        }); // end Promise
-       */
     };
     KlassListComponent.prototype.setIsAdmin = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / setIsAdmin / 시작");
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+        if (isDebug)
+            console.log("klass-list / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
             if (isDebug)
@@ -96,6 +72,10 @@ var KlassListComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("klass-list / setMyCheckerReady / 시작");
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.init();
+        }
         this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
             if (isDebug)
                 console.log("klass-list / setMyCheckerReady / isReady : ", isReady);
@@ -110,21 +90,35 @@ var KlassListComponent = (function () {
                 "login / setMyCheckerReady / Failed! / isReady : " + isReady);
                 return;
             }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
-            _this.logPageEnter();
+            _this.init();
         });
     };
+    KlassListComponent.prototype.init = function () {
+        this.setMyChecker();
+        this.logPageEnter();
+    };
+    KlassListComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("kakao-callback / setMyChecker / 시작");
+        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            this.myCheckerService.setReady(
+            // checkerMap:any
+            this.myEventWatchTowerService.getCheckerMap(), 
+            // constMap:any
+            this.myEventWatchTowerService.getConstMap(), 
+            // dirtyWordList:any
+            this.myEventWatchTowerService.getDirtyWordList(), 
+            // apiKey:string
+            this.myEventWatchTowerService.getApiKey()); // end setReady
+            if (isDebug)
+                console.log("kakao-callback / setMyChecker / done!");
+        } // end if
+    };
     KlassListComponent.prototype.logPageEnter = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -132,16 +126,9 @@ var KlassListComponent = (function () {
         // apiKey:string
         this.myEventWatchTowerService.getApiKey(), 
         // pageType:string
-        this.myLoggerService.pageTypeKlassList).then(function (result) {
+        this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
             if (isDebug)
-                console.log("klass-list / logPageEnter / result : ", result);
-            if (null == result) {
-                return;
-            }
-            if (null != result["success"] && !result["success"]) {
-                // 실패
-                console.log(result["message"]);
-            }
+                console.log("klass-list / logPageEnter / myResponse : ", myResponse);
         });
         this.getKlassList();
         this.getCookieLoginUser();
@@ -157,10 +144,12 @@ var KlassListComponent = (function () {
             if (isDebug)
                 console.log("klass-list / getKlassList / params : ", params);
             _this.selectedId = params['id'];
-            _this.service.getKlasses().then(function (klasses) {
+            _this.service
+                .getKlasses()
+                .then(function (myResponse) {
                 if (isDebug)
-                    console.log("klass-list / getKlasses / klasses : ", klasses);
-                _this.klasses = klasses;
+                    console.log("klass-list / getKlasses / myResponse : ", myResponse);
+                // this.klasses = klasses;
             });
         });
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
@@ -188,7 +177,10 @@ var KlassListComponent = (function () {
         searchBox.focus();
     };
     KlassListComponent.prototype.search = function (level, station, day, time, searchKeyword) {
-        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / search / 시작");
         // 항목별 filter 만들기
         var levelKey = "";
         if (null != level && null != level.key) {
@@ -226,8 +218,11 @@ var KlassListComponent = (function () {
         // time:string,
         timeKey, 
         // q:string
-        searchKeywordSafe).then(function (klasses) {
-            _this.klasses = klasses;
+        searchKeywordSafe).then(function (myReponse) {
+            if (isDebug)
+                console.log("klass-list / search / myReponse : ", myReponse);
+            // wonder.jung
+            // this.klasses = klasses 
         });
     };
     KlassListComponent.prototype.onMouseenterMagnifier = function () {

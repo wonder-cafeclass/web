@@ -168,25 +168,37 @@ var KlassVenueSearchListComponent = (function () {
         }
     };
     KlassVenueSearchListComponent.prototype.onClickKlassVenue = function (klassVenue) {
-        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-venue-search-list / onClickKlassVenue / 시작");
         this.klassVenuesNaverMap = klassVenue;
         this.klassService.searchKlassMap(
         // q:string
-        klassVenue.address).then(function (klassVenue) {
-            _this.klassVenuesNaverMap.latitude = klassVenue.latitude;
-            _this.klassVenuesNaverMap.longitude = klassVenue.longitude;
+        klassVenue.address).then(function (myReponse) {
+            if (isDebug)
+                console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ", myReponse);
+            /*
+            this.klassVenuesNaverMap.latitude = klassVenue.latitude;
+            this.klassVenuesNaverMap.longitude = klassVenue.longitude;
+      
             // iframe에 위치 업데이트
-            if (null != _this.childContentWindow.init) {
-                _this.childContentWindow.init(_this.klassVenuesNaverMap);
-                // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
-                // this.klassVenues = null;
-                // 선택한 업체 이름을 화면에 표시합니다.
-                _this.searchBoxText = _this.removeHTMLTags(_this.klassVenuesNaverMap.title);
-                // 결과 라스트는 화면에서 가립니다.
-                _this.isHideKlassVenue = true;
-                // DB UPDATE!
-                console.log("DB UPDATE!");
+            if(null != this.childContentWindow.init) {
+              this.childContentWindow.init(this.klassVenuesNaverMap);
+      
+              // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
+              // this.klassVenues = null;
+      
+              // 선택한 업체 이름을 화면에 표시합니다.
+              this.searchBoxText = this.removeHTMLTags(this.klassVenuesNaverMap.title);
+      
+              // 결과 라스트는 화면에서 가립니다.
+              this.isHideKlassVenue = true;
+      
+              // DB UPDATE!
+              console.log("DB UPDATE!");
             }
+            */
         });
     };
     KlassVenueSearchListComponent.prototype.removeHTMLTags = function (targetStr) {
