@@ -160,13 +160,8 @@ class Naver extends MY_REST_Controller {
         $replacement = $this->X_Naver_Client_Secret;
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
-        // 상태 토큰 가져오기.
-        // $state = $this->my_auth->get_new_state_query_string_safe();
-
         // 세션에 저장된 state 값 가져오기.
-        // $state = $_
-
-        // wonder.jung
+        $state = $this->get_session_naver_state();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -348,7 +343,7 @@ class Naver extends MY_REST_Controller {
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
-        $output["user"] = $user;
+        $output["me"] = $user;
         $this->respond_200($output);
     }
 
@@ -752,8 +747,6 @@ class Naver extends MY_REST_Controller {
                 $gender = $user_gender_list[count($user_gender_list) - 1];
             }
         }
-
-        if($is_debug) echo "add_user 1-3 <br/>\n";
 
         $naver_id = $this->my_keyvalue->get($naver_user, "id");
         if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))

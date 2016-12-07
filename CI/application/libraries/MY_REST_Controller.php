@@ -264,7 +264,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     /*
     *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
     */
-    private function get_const($key="") 
+    public function get_const($key="") 
     {
         if(empty($key)) 
         {

@@ -254,15 +254,26 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
       if(isDebug) console.log("naver-callback / getNaverAccess / myResponse : ",myResponse);
 
-      let accessToken:string = myResponse.getDataProp("access_token");
-      let tokenType:string = myResponse.getDataProp("token_type");
+      let accessToken:string = myResponse.digDataProp(["result","access_token"]);
+      let tokenType:string = myResponse.digDataProp(["result","token_type"]);
+
+      if(isDebug) console.log("naver-callback / getNaverAccess / accessToken : ",accessToken);
+      if(isDebug) console.log("naver-callback / getNaverAccess / tokenType : ",tokenType);
+
       if( myResponse.isSuccess() && 
-          myResponse.hasDataProp("access_token") && 
-          myResponse.hasDataProp("token_type") ) {
+          null != accessToken && 
+          null != tokenType ) {
 
         this.getNaverMe();
 
       } else {
+
+        if(isDebug) console.log("naver-callback / getNaverAccess / 에러 로그 등록");
+
+        if(null != myResponse.error && "" != myResponse.error) {
+          // 에러 내용은 화면에 표시한다.
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
 
         // 에러 로그 등록
         this.myLoggerService.logError(
@@ -295,6 +306,11 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
 
+        if(null != myResponse.error && "" != myResponse.error) {
+          // 에러 내용은 화면에 표시한다.
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }        
+
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
@@ -313,8 +329,12 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
       // 네이버 로그인 성공!
       // 로그인한 유저 정보를 가져오는데 성공했습니다!
-      let user = myResponse.getDataProp("user");
-      let naverId = myResponse.getDataProp("naver_id");
+      let user = myResponse.digDataProp(["me"]);
+      let naverId = myResponse.digDataProp(["me","naver_id"]);
+
+      if(isDebug) console.log("naver-callback / getNaverMe / user : ",user);
+      if(isDebug) console.log("naver-callback / getNaverMe / naverId : ",naverId);
+
       if( myResponse.isSuccess() && 
           (null == user.gender ||
           "" === user.gender ||
