@@ -232,7 +232,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
       if(isDebug) console.log("facebook-callback / getAccessToken / myResponse : ",myResponse);
 
-      if( myResponse.isSuccess() && null != myResponse.getDataProp("access_token") ) {
+      if( myResponse.isSuccess() && null != myResponse.digDataProp(["result","access_token"]) ) {
         this.getMe();
       } else {
         // 에러 로그 등록
@@ -244,8 +244,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
           // errorMsg:string
           `facebook-callback / getAccessToken / Failed! / code : ${code}`
         );
-      }
-
+      } // end if
     });     
 
   }
@@ -262,7 +261,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
       if(isDebug) console.log("facebook-callback / getMe / myResponse : ",myResponse);
 
-      if(myResponse.isFailed() || myResponse.hasNotDataProp("facebook_id")) {
+      if(myResponse.isFailed() || null == myResponse.digDataProp(["me","facebook_id"])) {
         // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("facebook-callback / 페이스북에서 유저 정보를 가져오는데 실패했습니다.");
         // 에러 로그 등록
@@ -279,29 +278,30 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
       // 페이스북 로그인 성공!
       // 로그인한 유저 정보를 가져오는데 성공했습니다!
-      let facebookId = myResponse.getDataProp("facebook_id");
-      let user = myResponse.getDataProp("user");
+      let facebookId = myResponse.digDataProp(["me","facebook_id"]);
+      let user = myResponse.digDataProp(["me"]);
+
+      if(isDebug) console.log("facebook-callback / getMe / facebookId : ",facebookId);
+      if(isDebug) console.log("facebook-callback / getMe / user : ",user);
+
       if( myResponse.isSuccess() && 
           null != user && 
-          null != user["gender"] &&
-          null != user["mobile"] ) {
-
-        // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
-        // 하지만 추가 정보 필요. 
-        // 회원 가입창으로 이동.
-        if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-        this.router.navigate(['/login/signup/facebook', facebookId]);
-          
-      } else {
-
-        // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
-        // this.router.navigate([this.redirectUrl]);
+          null != user["mobile"] &&
+          "" != user["mobile"] ) {
 
         // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
 
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
         this.confirmUserFacebook(facebookId);
+          
+      } else {
+
+        // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
+        // 하지만 추가 정보 필요. 
+        // 회원 가입창으로 이동.
+        if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
+        this.router.navigate(['/login/signup/facebook', facebookId]);
         
       } // end if
 

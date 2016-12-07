@@ -65,7 +65,7 @@ class MY_Auth {
 
         $hashkey = $this->getHash($value);
         $matches = array();
-        preg_match_all('/[a-zA-Z0-9\$]+/', $hashkey, $matches);
+        preg_match_all('/[a-zA-Z0-9]+/', $hashkey, $matches);
 
         $hashkeySafe = "";
         if(!empty($matches) && !empty($matches[0])) 

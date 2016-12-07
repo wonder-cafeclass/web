@@ -108,6 +108,21 @@ class Facebook extends MY_REST_Controller {
 
     }
 
+    private function set_session_facebook_state($new_state = "")
+    {
+        $_SESSION[$this->session_state_key] = $new_state;
+    }
+    private function get_session_facebook_state()
+    {
+        $stored_state = "";
+        if(array_key_exists($this->session_state_key, $_SESSION)) 
+        {
+            $stored_state = $_SESSION[$this->session_state_key];
+        }
+
+        return $stored_state;
+    }    
+
     /*
     *   @ Desc : 페이스북 로그인 창으로 이동하는 url을 만들어 돌려줍니다.
     */
@@ -136,7 +151,8 @@ class Facebook extends MY_REST_Controller {
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state_query_string_safe();
+        $this->set_session_facebook_state($this->my_auth->get_new_state_query_string_safe());
+        $state = $this->get_session_facebook_state();
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -495,10 +511,7 @@ class Facebook extends MY_REST_Controller {
         }
 
         // 세션 또는 별도의 저장 공간에서 상태 토큰을 가져옴
-        if(array_key_exists($this->session_state_key, $_SESSION)) 
-        {
-            $stored_state = $_SESSION[$this->session_state_key];
-        }
+        $stored_state = $this->get_session_facebook_state();
 
         $is_valid_state = false;
         if( !empty($stored_state) && $state == $stored_state ) 
@@ -512,12 +525,8 @@ class Facebook extends MY_REST_Controller {
 
         $output["is_valid_state"] = $is_valid_state;
         $output["param_state"] = $state;
-        $output["stored_state"] = "";
-        if($is_valid_state)
-        {
-            $output["stored_state"] = $stored_state;
-        }
-        else
+        $output["stored_state"] = $stored_state;
+        if(!$is_valid_state)
         {
             $this->respond_200_Failed(
                 // $msg=""

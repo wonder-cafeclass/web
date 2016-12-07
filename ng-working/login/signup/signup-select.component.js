@@ -73,8 +73,8 @@ var SignupSelectComponent = (function () {
         var _this = this;
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("signup-select / init / 시작");
         // 페이지 진입을 기록으로 남깁니다.

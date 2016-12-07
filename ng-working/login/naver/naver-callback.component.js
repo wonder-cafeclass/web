@@ -34,14 +34,14 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / ngOnInit / init");
+            console.log("\nnaver-callback / ngOnInit / init");
     }; // end function
     NaverCallbackComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / ngAfterViewInit");
+            console.log("\nnaver-callback / ngAfterViewInit");
         this.asyncViewPack();
     };
     NaverCallbackComponent.prototype.ngOnDestroy = function () {
@@ -53,7 +53,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / asyncViewPack / 시작");
+            console.log("\nnaver-callback / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
             if (isDebug)
@@ -88,7 +88,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / logActionPage / 시작");
+            console.log("\nnaver-callback / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
@@ -105,7 +105,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / getQueryString / 시작");
+            console.log("\nnaver-callback / getQueryString / 시작");
         this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
             if (isDebug)
                 console.log("naver-callback / getQueryString / param : ", param);
@@ -138,7 +138,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / getNaverState / init");
+            console.log("\nnaver-callback / getNaverState / init");
         if (null == state || "" == state) {
             return;
         }
@@ -199,7 +199,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / getNaverAccess / init");
+            console.log("\nnaver-callback / getNaverAccess / init");
         if (null == code || "" == code) {
             return;
         }
@@ -233,7 +233,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / getNaverMe / init");
+            console.log("\nnaver-callback / getNaverMe / init");
         this.loginService
             .getNaverMe()
             .then(function (myResponse) {
@@ -287,7 +287,7 @@ var NaverCallbackComponent = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / confirmUserNaver / init");
+            console.log("\nnaver-callback / confirmUserNaver / init");
         this.userService
             .confirmUserNaver(this.myCheckerService.getAPIKey(), naverId)
             .then(function (myResponse) {

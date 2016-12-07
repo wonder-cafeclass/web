@@ -103,10 +103,11 @@ class Naver extends MY_REST_Controller {
         $replacement = $this->my_path->get_path_full($this->redirect_uri_naver);
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
-        // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state_query_string_safe();
+        // 3. 네이버 전용 세션 키 저장 / wonder.jung
+        $this->set_session_naver_state($this->my_auth->get_new_state_query_string_safe());
+        $state = $this->get_session_naver_state();
 
-        // 3. state
+        // 4. state
         $pattern = '/\{state\}/i';
         $replacement = $state;
         $auth_url = preg_replace($pattern, $replacement, $auth_url);
@@ -114,6 +115,8 @@ class Naver extends MY_REST_Controller {
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
         $output = [];
         $output["auth_url"] = $auth_url;
+        $output["state"] = $state;
+
         $this->respond_200($output);
 
     }
@@ -158,7 +161,12 @@ class Naver extends MY_REST_Controller {
         $req_url = preg_replace($pattern, $replacement, $req_url);
 
         // 상태 토큰 가져오기.
-        $state = $this->my_auth->get_new_state_query_string_safe();
+        // $state = $this->my_auth->get_new_state_query_string_safe();
+
+        // 세션에 저장된 state 값 가져오기.
+        // $state = $_
+
+        // wonder.jung
 
         // 3. state
         $pattern = '/\{state\}/i';
@@ -267,7 +275,6 @@ class Naver extends MY_REST_Controller {
             return;
         }
 
-        // wonder.jung
         $result =
         $this->my_curl->get_json(
             // $url=""
@@ -547,11 +554,38 @@ class Naver extends MY_REST_Controller {
 
     }
 
+    private function set_session_naver_state($new_state = "")
+    {
+        $_SESSION[$this->session_state_key] = $new_state;
+    }
+    private function get_session_naver_state()
+    {
+        $stored_state = "";
+        if(array_key_exists($this->session_state_key, $_SESSION)) 
+        {
+            $stored_state = $_SESSION[$this->session_state_key];
+        }
 
+        return $stored_state;
+    }
 
 
     /*
-    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/searchlocal?q=스타벅스%20잠실
+    *   @ Desc : 검사용으로 사용. 서비스에는 나가면 안됨!
+    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/test
+    */
+    public function test_get() 
+    {
+
+        $stored_state = $this->get_session_naver_state();
+        $output = [];
+        $output["stored_state"] = $stored_state;
+        $this->respond_200($output);
+
+    }
+
+    /*
+    *   @ Usage : http://${base_domain}/CI/index.php/api/naver/state?q=스타벅스%20잠실
     */
     public function state_get() 
     {
@@ -575,11 +609,9 @@ class Naver extends MY_REST_Controller {
             return;
         }
 
+        // wonder.jung
         // 세션 또는 별도의 저장 공간에서 상태 토큰을 가져옴
-        if(array_key_exists($this->session_state_key, $_SESSION)) 
-        {
-            $stored_state = $_SESSION[$this->session_state_key];
-        }
+        $stored_state = $this->get_session_naver_state();
 
         $is_valid_state = false;
         if( !empty($stored_state) && $state == $stored_state ) 
@@ -591,15 +623,12 @@ class Naver extends MY_REST_Controller {
         $output = [];
         $output["is_valid_state"] = $is_valid_state;
         $output["param_state"] = $state;
-        $output["stored_state"] = "";
-        if($is_valid_state)
-        {
-            $output["stored_state"] = $stored_state;
-        }
-        else
+        $output["stored_state"] = $stored_state;
+
+        if(!$is_valid_state)
         {
             // Error Report
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "state is not valid!",
                 // $function=""
@@ -607,8 +636,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                       
         }
 
         $this->respond_200($output);
