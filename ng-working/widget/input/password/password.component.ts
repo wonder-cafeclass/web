@@ -3,15 +3,15 @@ import {  Component,
           Output,
           EventEmitter,
           OnInit,
-          AfterViewInit }       from '@angular/core';
-import { Router }               from '@angular/router';
+          AfterViewInit }             from '@angular/core';
+import { Router }                     from '@angular/router';
 
-import { MyCheckerService }     from '../../../util/service/my-checker.service';
-import { MyChecker }            from '../../../util/model/my-checker';
-import { MyEventService }       from '../../../util/service/my-event.service';
-import { MyEvent }              from '../../../util/model/my-event';
+import { MyCheckerService }           from '../../../util/service/my-checker.service';
+import { MyChecker }                  from '../../../util/model/my-checker';
+import { MyEventService }             from '../../../util/service/my-event.service';
+import { MyEvent }                    from '../../../util/model/my-event';
 
-import { MyLoggerService }      from '../../../util/service/my-logger.service';
+import { MyLoggerService }            from '../../../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../../../util/model/my-response';
 
@@ -34,6 +34,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   // 비밀번호만 입력을 받을 때 사용합니다.
   @Input() isLogin:boolean=false;
+  // 현재 비밀번호 입력을 받을 때 사용합니다.
+  @Input() isCheckCurPW:boolean=false;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -45,6 +47,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   password:string="";
   repassword:string="";
 
+  titleHead:string="비밀번호";
+  placeholderHead:string="비밀번호를 입력해주세요";
   isValidPassword:boolean = false;
   isWarningPassword:boolean = false;
   tooltipHeadMsg:string=null;
@@ -86,7 +90,13 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("password / ngOnInit / init");
+
+    if(this.isCheckCurPW) {
+      this.setTitleHead("비밀번호 바꾸기");
+      this.setPlaceHolderHead("현재의 비밀번호를 입력해주세요");
+    }
   }
+
 
   ngAfterViewInit(): void {
 
@@ -243,6 +253,47 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.password = element.value;
   } 
 
+  onClickPasswordConfirm(event, element) :void {
+
+    // 현재 패스워드 입력시에만 작동한다. 
+    if(!this.isCheckCurPW) {
+      return;
+    }
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / onClickPasswordConfirm / 시작");
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(!this.isFocusPassword) {
+      this.isFocusPassword = true;      
+    } // end if
+
+    this.passwordPrev = this.password = element.value;
+
+    if(isDebug) console.log("password / onClickPasswordConfirm / this.password : ",this.password);
+
+    // wonder.jung
+
+    // 입력된 패스워드를 검사한다. - onBlur와 동일한 처리.
+    let issueMsg:string = this.getPasswordIssue(this.password);
+    if(isDebug) console.log("password / onClickPasswordConfirm / issueMsg : ",issueMsg);
+
+    if(null == issueMsg || "" == issueMsg) {
+
+      if(isDebug) console.log("password / onClickPasswordConfirm / 패스워드가 정상입니다.");
+      this.emitEventOnSubmitPW(this.myEventService.KEY_USER_CUR_PASSWORD);
+
+    } else {
+
+      if(isDebug) console.log("password / onClickPasswordConfirm / 패스워드에 문제가 있습니다.");
+      this.showTooltipHeadFailWarning(issueMsg, false);
+
+    }
+  }   
+
   onFocusPassword(event, element) :void {
 
     event.stopPropagation();
@@ -258,7 +309,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
     let msg:string = "";
     if(null == password || "" === password) {
-      return msg;
+      return this.tooltipHeadPasswordNeeds;
     }
 
     let isOK:boolean = this.isOK(this.password);
@@ -314,8 +365,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;    
     if(isDebug) console.log("password / onBlurPassword / init");
 
     if(null == this.myCheckerService) {
@@ -337,8 +388,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let isseuMsg:string = this.getPasswordIssue(this.password);
-    if(this.isLogin && (null == isseuMsg || "" == isseuMsg)) {
+    let issueMsg:string = this.getPasswordIssue(this.password);
+    if(this.isLogin && (null == issueMsg || "" == issueMsg)) {
 
       // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
       // 이슈 결과가 없다면 - (패스워드 문제없음!), 부모 객체에게 Event 발송 
@@ -360,12 +411,16 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     } else if(!this.isLogin) {
 
       // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
-      if(null != isseuMsg && "" != isseuMsg) {
+      if(null != issueMsg && "" != issueMsg) {
         // 패스워드의 문제를 발견했습니다.
+        this.showTooltipHeadFailWarning(issueMsg, true);
+
+        // REMOVE ME
         // 패스워드 경고 메시지 ON
-        this.tooltipHeadMsg = isseuMsg;
+        // this.tooltipHeadMsg = issueMsg;
         // 패스워드 경고 표시 ON
-        this.isWarningPassword = true;
+        // this.isWarningPassword = true;
+
       } else {
         // 패스워드가 정상입니다. 
         this.isWarningPassword = false;
@@ -373,17 +428,14 @@ export class PasswordComponent implements OnInit, AfterViewInit {
           // 패스워드 재입력 검사가 완료, 탭으로 다른 입력창으로 이동하는 경우.
         } else {
           // 회원 가입 창일 경우, 입력 성공을 유저에게 알립니다.
-          this.tooltipHeadMsg = this.tooltipHeadAllowed;
-          this.isValidPassword = true;
-          this.isWarningPassword = false;
+          this.showTooltipHeadSuccess(this.tooltipHeadAllowed);
 
-          this.hideTooltipHead(2);
+          // this.hideTooltipHead(2);
         } // end if
       } // end if
-
     } // end if
-    
-  }
+
+  } // end method
 
   hideTooltipHead(sec:number) :void {
     if(null == sec || !(0 < sec)) {
@@ -457,22 +509,48 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   onKeyupEnter(event) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("email / onKeyupEnter / init");
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / onKeyupEnter / init");
 
     event.stopPropagation();
     event.preventDefault();
 
-    // wonder.jung
+    // 패스워드가 유효한 경우에만 이벤트를 발송합니다.
+    let issueMsg:string = this.getPasswordIssue(this.passwordPrev);
+    if(isDebug) console.log("password / onKeyupEnter / issueMsg : ",issueMsg);
+    if(null != issueMsg && "" != issueMsg) {
+      if(isDebug) console.log("password / onKeyupEnter / 중단 / 패스워드에 문제가 있습니다.");
+
+      if(this.isCheckCurPW) {
+        if(isDebug) console.log("password / onKeyupEnter / 경고 메시지 노출 / issueMsg : ",issueMsg);
+
+        this.showTooltipHeadFailWarning(issueMsg, false);
+      }
+      return;
+    }  
+
+    // 패스워드가 유효합니다.
+    let eventKey:string = this.myEventService.KEY_USER_PASSWORD;
+    if(this.isCheckCurPW) {
+      eventKey = this.myEventService.KEY_USER_CUR_PASSWORD
+    }
+    this.emitEventOnSubmitPW(eventKey);
+  } 
+
+  private emitEventOnSubmitPW(eventKey:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / emitEventOnSubmitPW / init");
 
     // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
-    let myEventOnChange:MyEvent =
+    let myEventOnChange:MyEvent = 
     this.myEventService.getMyEvent(
       // public eventName:string
-      this.myEventService.ON_KEYUP_ENTER,
+      this.myEventService.ON_SUBMIT,
       // public key:string
-      this.myEventService.KEY_USER_PASSWORD,
+      eventKey,
       // public value:string
       this.passwordPrev,
       // public metaObj:any
@@ -480,17 +558,41 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       // public myChecker:MyChecker
       this.myChecker
     );
-    this.emitter.emit(myEventOnChange);    
+    this.emitter.emit(myEventOnChange);
 
-  }  
+  }
+
+  private emitEventOnChangePW(eventKey:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / emitEventOnChangePW / init");
+
+    // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
+    let myEventOnChange:MyEvent = 
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      eventKey,
+      // public value:string
+      "",
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+  }   
 
   onKeyupPassword(event, element) :void {
 
     event.stopPropagation();
     event.preventDefault();
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeyupPassword / init");
 
     // shift, tab
@@ -537,16 +639,20 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       }
 
       // 1-1-2. 삭제 안내 메시지를 노출합니다.
-      this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
-      this.isValidPassword = false;
-      this.isWarningPassword = true;
-      this.hideTooltipHead(2);
+
+      // REMOVE ME
+      // this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
+      // this.isValidPassword = false;
+      // this.isWarningPassword = true;
+      // this.hideTooltipHead(2);
+
+      this.showTooltipHeadFailWarning("한글 및 공백을 사용할 수 없어요.", true);
 
       if(isDebug) console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
 
     } else {
 
-      // 1. 사용자가 입력한 이메일 주소를 검사합니다.
+      // 1. 사용자가 입력한 패스워드를 검사합니다.
       let isOK:boolean = this.isOK(this.password);
 
       if(!isOK) {
@@ -570,9 +676,41 @@ export class PasswordComponent implements OnInit, AfterViewInit {
         
         this.isFocusPassword = true;
         element.focus();
+
+      } else {
+
+        // 패스워드에 문제가 없습니다.
+        // 경고 메시지 등을 내립니다.
+        // wonder.jung
+        this.hideTooltipHeadFailWarning();
+
       } // end inner if
     } // end if
   }  // end method
+
+  // @ Desc : 실패 툴팁을 가립니다.
+  hideTooltipHeadFailWarning() :void {
+    this.isFocusPassword = false;
+    this.isValidPassword = true;
+    this.tooltipHeadMsg = null;
+  }
+  // @ Desc : 실패 툴팁을 보여줍니다.
+  showTooltipHeadFailWarning(warningMsg:string, isTimeout:boolean) :void {
+    this.isFocusPassword = true;
+    this.isValidPassword = false;
+    this.tooltipHeadMsg = warningMsg;
+
+    if(null != isTimeout && isTimeout) {
+      this.hideTooltipHead(2);
+    }
+  }
+  // @ Desc : 성공 툴팁을 보여줍니다.
+  public showTooltipHeadSuccess(msg:string) :void {
+    this.isFocusPassword = false;
+    this.isValidPassword = true;
+    this.tooltipHeadMsg = msg;
+    this.hideTooltipHead(2);
+  }  
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();
@@ -686,18 +824,22 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   private repasswordPrev:string="";
   onKeyupRepassword(event, element) :void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;  
+
+    if(isDebug) console.log("password / onKeyupRepassword / init");
+
     event.stopPropagation();
     event.preventDefault();
 
     // shift, tab
     if(event.key == "Tab" || event.key == "Shift") {
+      if(isDebug) console.log("password / 중단 / 문자 입력이 아닌 탭,시프트이동.");
       return;
     }
 
     this.lastKeyupTypeRP = this.KeyupTypeChar;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;    
 
     if(null == this.myCheckerService) {
       return;
@@ -769,7 +911,19 @@ export class PasswordComponent implements OnInit, AfterViewInit {
         
         this.isFocusRepassword = true;
         element.focus();
+
+      } else {
+
+        // 정상적인 패스워드입니다.
+        // 부모에게 이벤트를 발송합니다.
+
+        // wonder.jung
+        this.emitEventOnChangePW(this.myEventService.KEY_USER_RE_PASSWORD);
+
       } // end inner if
+
+
+
     } // end if
   }  // end method  
 
@@ -869,4 +1023,83 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
     return false;
   }
+
+  // @ Desc : 지금의 자신의 패스워드를 확인하는 모드로 바꿉니다.
+  public openCheckCurPWMode() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / openCheckCurPWMode / init");
+
+    this.initPassword();
+    this.initRepassword();
+    this.hideTooltipHeadFailWarning();
+    this.isCheckCurPW = true;
+
+  }
+  // @ Desc : 지금의 자신의 패스워드를 확인하는 모드를 해제합니다.
+  private closeCheckCurPWMode() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / releaseUpdateMode / init");
+
+    this.isCheckCurPW = false;
+  }
+  ngModelPW:string;
+  private initPassword() :void {
+    this.ngModelPW="";
+    this.passwordPrev="";
+    this.password="";
+  }
+  public getPassword() :string {
+    return this.ngModelPW;
+  }
+  ngModelRePW:string;
+  private initRepassword() :void {
+    this.ngModelRePW="";
+    this.repasswordPrev="";
+    this.repassword="";
+  }
+  public getRepassword() :string {
+    return this.ngModelRePW;
+  }
+  // @ Desc : 새로운 패스워드를 입력하는 버튼을 노출합니다.
+  isNewPW:boolean=false;
+  public showBtnConfirmNewPW() :void {
+    this.isNewPW = true;
+  }
+  onClickNewPasswordConfirm(event) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / onClickNewPasswordConfirm / init");
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.emitEventOnSubmitPW(this.myEventService.KEY_USER_NEW_PASSWORD);
+
+  }
+  public openNewPasswordMode() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password / openNewPasswordMode / init");
+
+    this.closeCheckCurPWMode();
+    this.initPassword();
+    this.setTitleHead("새로운 비밀번호");
+    this.setPlaceHolderHead("새로운 비밀번호를 입력해주세요");
+
+    if(isDebug) console.log("password / openNewPasswordMode / this.ngModelPW : ",this.ngModelPW);
+  }
+
+  public setTitleHead(title:string) :void {
+    this.titleHead = title;
+  }  
+  public setPlaceHolderHead(placeholderHead:string) :void {
+    this.placeholderHead = placeholderHead;
+  }  
+
 }

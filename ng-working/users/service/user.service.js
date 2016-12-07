@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var url_service_1 = require("../../util/url.service");
 var my_extractor_1 = require('../../util/http/my-extractor');
+var my_request_1 = require('../../util/http/my-request');
 var UserService = (function () {
     function UserService(us, http) {
         this.us = us;
@@ -30,8 +31,10 @@ var UserService = (function () {
         this.getUserCookieUrl = '/CI/index.php/api/users/cookie';
         this.logoutUrl = '/CI/index.php/api/users/logout';
         this.updateUserUrl = '/CI/index.php/api/users/update';
+        this.updatePasswordUrl = '/CI/index.php/api/users/updatepw';
         this.addUserUrl = '/CI/index.php/api/users/add';
         this.myExtractor = new my_extractor_1.MyExtractor();
+        this.myRequest = new my_request_1.MyRequest();
     }
     UserService.prototype.getUserByEmail = function (email) {
         // TODO 이메일로 사용자를 조회.
@@ -434,6 +437,31 @@ var UserService = (function () {
         var req_url = this.us.get(this.confirmUserEmailPasswordUrl);
         if (isDebug)
             console.log("user.service / confirmUserEmailPassword / req_url : ", req_url);
+        var params = {
+            email: email,
+            password: password
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    UserService.prototype.updatePassword = function (apiKey, email, password) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user.service / updatePassword / 시작");
+        if (isDebug)
+            console.log("user.service / updatePassword / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("user.service / updatePassword / email : ", email);
+        if (isDebug)
+            console.log("user.service / updatePassword / password : ", password);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.updatePasswordUrl);
+        if (isDebug)
+            console.log("user.service / updatePassword / req_url : ", req_url);
         var params = {
             email: email,
             password: password

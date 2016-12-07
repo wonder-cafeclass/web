@@ -11,6 +11,7 @@ export class MyEventService {
     ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
     ON_CHANGE:string="ON_CHANGE";
+    ON_SUBMIT:string="ON_SUBMIT";
     ON_KEYUP_ENTER:string="ON_KEYUP_ENTER";
     ON_SHUTDOWN:string="ON_SHUTDOWN";
     ON_SHUTDOWN_N_ROLLBACK:string="ON_SHUTDOWN_N_ROLLBACK";
@@ -69,6 +70,9 @@ export class MyEventService {
     KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
     KEY_USER_CUR_PASSWORD:string="KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
     KEY_USER_PASSWORD:string="KEY_USER_PASSWORD";         // 유저 - 비밀번호
+    KEY_USER_RE_PASSWORD:string="KEY_USER_RE_PASSWORD";   // 유저 - 확인을 위해 다시 입력한 비밀번호
+    KEY_USER_NEW_PASSWORD:string="KEY_USER_NEW_PASSWORD"; // 유저 - 새로운 비밀번호
+    
     KEY_USER_NAME:string="KEY_USER_NAME";                 // 유저 - 이름
     KEY_USER_NICKNAME:string="KEY_USER_NICKNAME";         // 유저 - 닉네임
     KEY_USER_THUMBNAIL:string="KEY_USER_THUMBNAIL";       // 유저 - 150x150 섬네일

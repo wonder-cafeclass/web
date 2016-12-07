@@ -716,6 +716,132 @@ class Users extends MY_REST_Controller {
     }
 
     /*
+    *   @ Desc : 비밀번호를 업데이트합니다.
+    *
+    */
+    public function updatepw_post()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
+        }
+
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email"
+        );
+        $password = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "password",
+            // $key_filter=""
+            "user_password"
+        );
+
+        $params = array(
+            "email"=>$email,
+            "password"=>$password
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if( isset($check_list) && 
+            isset($check_list->fail) && 
+            (0 < count($check_list->fail))) 
+        {
+            $is_ok = false;
+        }
+
+        if($is_ok) {
+
+            // 유저 비밀번호를 변경합니다.
+            // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
+            $password_hashed = $this->my_auth->getHash($password);
+            $this->my_sql->update_user_pw(
+                // $email=""
+                $email,
+                // $password_hashed=""
+                $password_hashed
+            ); // end insert
+
+            // 새로 등록한 비밀번호를 검증합니다.
+            // 사용자가 입력한 패스워드와 해싱되어 저장된 패스워드를 비교합니다.
+            $password_hashed_from_db = $this->my_sql->get_user_password_by_email($email);
+            $is_valid_password = false;
+            if(!empty($password_hashed)) 
+            {
+                $is_valid_password = password_verify($password, $password_hashed_from_db);
+            } // end if
+
+            if($is_valid_password) {
+
+                $user = $this->my_sql->get_user_by_email($email);
+                $output["is_valid_password"] = $is_valid_password;
+                $output["user"] = $user;
+
+                // 비밀번호 변경에 성공했습니다. 로거에 기록합니다.
+                $this->my_logger->add_action(
+                    // $user_id=-1
+                    intval($user->id),
+                    // $action_type=""
+                    $this->my_logger->ACTION_TYPE_MY_SETTING,
+                    // $action_key=""
+                    $this->my_logger->ACTION_KEY_UPDATE_PASSWORD
+                );
+
+                $this->respond_200($output);
+                return;
+
+            } else {
+                $is_ok = false;
+            } // end inner if
+        } // end outer if
+
+        if(!$is_ok)
+        {
+            // 실패!
+            $this->respond_200_Failed(
+                // $msg=""
+                "User password update failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
+    }    
+
+    /*
     *   @ Desc : 유저가 회원인증링크를 클릭했을 때, 호출합니다. 회원 인증을 완료합니다.
     */
     public function confirmvalidation_post()

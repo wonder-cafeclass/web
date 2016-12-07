@@ -5,6 +5,7 @@ import { Headers,
          RequestOptions }                  from '@angular/http';
 import { UrlService }                      from "../../util/url.service";
 import { MyExtractor }                     from '../../util/http/my-extractor';
+import { MyRequest }                       from '../../util/http/my-request';
 import { MyResponse }                      from '../../util/model/my-response';
 import { User }                            from "../model/user";
 
@@ -28,16 +29,19 @@ export class UserService {
   private logoutUrl = '/CI/index.php/api/users/logout';
 
   private updateUserUrl = '/CI/index.php/api/users/update';
+  private updatePasswordUrl = '/CI/index.php/api/users/updatepw';
   private addUserUrl = '/CI/index.php/api/users/add';
 
   // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
   // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
 
   private myExtractor:MyExtractor;
+  private myRequest:MyRequest;
 
   constructor(  private us:UrlService, 
                 private http: Http) {
     this.myExtractor = new MyExtractor();
+    this.myRequest = new MyRequest();
   }
 
   getUserByEmail (email:string): Promise<MyResponse> {
@@ -499,6 +503,33 @@ export class UserService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
+  }
+
+  public updatePassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / updatePassword / 시작");
+    if(isDebug) console.log("user.service / updatePassword / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / updatePassword / email : ",email);
+    if(isDebug) console.log("user.service / updatePassword / password : ",password);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updatePasswordUrl);
+
+    if(isDebug) console.log("user.service / updatePassword / req_url : ",req_url);
+
+    let params = {
+      email:email, 
+      password:password
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
   }
   
 }

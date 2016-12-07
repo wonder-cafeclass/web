@@ -741,7 +741,46 @@ class MY_Sql
         // QUERY EXECUTION
         $this->CI->db->where('id', $user_id);
         $this->CI->db->update('user', $data);
-    }        
+    }
+
+    public function update_user_pw($email="", $password_hashed="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_password_hashed", $password_hashed))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'password' => $password_hashed
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->CI->db->where('email', $email);
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('email', $email);
+        $this->CI->db->update('user', $data);
+    }            
 
 	public function get_user_kakao($kakao_id=-1) 
 	{
