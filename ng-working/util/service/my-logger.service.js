@@ -33,19 +33,19 @@ var MyLoggerService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
     }
     MyLoggerService.prototype.logActionPage = function (apiKey, pageType) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logActionPage / 시작");
         if (null == apiKey || "" == apiKey) {
             if (isDebug)
                 console.log("my-logger.service / logActionPage / 중단 / apiKey is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         if (null == pageType || "" == pageType) {
             if (isDebug)
                 console.log("my-logger.service / logActionPage / 중단 / pageType is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         // POST
         var headers = new http_1.Headers({
@@ -69,19 +69,19 @@ var MyLoggerService = (function () {
             .catch(this.myExtractor.handleError);
     };
     MyLoggerService.prototype.logActionDirtyWord = function (apiKey, dirtyWord) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("my-logger.service / logActionDirtyWord / 시작");
         if (null == apiKey || "" == apiKey) {
             if (isDebug)
                 console.log("my-logger.service / logActionDirtyWord / 중단 / apiKey is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         if (null == dirtyWord || "" == dirtyWord) {
             if (isDebug)
                 console.log("my-logger.service / logActionDirtyWord / 중단 / dirtyWord is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         // Need to implement!
         /*
@@ -105,17 +105,17 @@ var MyLoggerService = (function () {
         if (null == apiKey || "" == apiKey) {
             if (isDebug)
                 console.log("my-logger.service / logError / 중단 / apiKey is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         if (null == errorType || "" == errorType) {
             if (isDebug)
                 console.log("my-logger.service / logError / 중단 / errorType is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         if (null == errorMsg || "" == errorMsg) {
             if (isDebug)
                 console.log("my-logger.service / logError / 중단 / errorMsg is not valid!");
-            return;
+            return Promise.resolve(null);
         }
         // POST
         var headers = new http_1.Headers({

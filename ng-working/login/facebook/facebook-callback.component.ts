@@ -2,6 +2,7 @@ import {  Component,
           Input, 
           Output,
           OnInit, 
+          AfterViewInit,
           OnDestroy}                  from '@angular/core';
 import {  Subscription }              from 'rxjs';          
 import {  Router,
@@ -36,7 +37,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
-                private myEventWatchTowerService:MyEventWatchTowerService,
+                private watchTower:MyEventWatchTowerService,
                 private userService:UserService,
                 private activatedRoute: ActivatedRoute,
                 public router: Router) {
@@ -50,19 +51,67 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     // let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / ngOnInit / init");
 
+    // REMOVE ME
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.setIsAdmin();
+    // this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerReady();
+    // this.setMyCheckerReady();
 
   } // end function
+
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  }  
 
   ngOnDestroy() {
     // prevent memory leak by unsubscribing
     this.subscription.unsubscribe();
   }
 
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      
+      this.init();
+    }); // end subscribe    
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }  
+
+  /*
   private setIsAdmin() :void {
 
     let isDebug:boolean = true;
@@ -70,11 +119,11 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     if(isDebug) console.log("facebook-callback / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdmin();
     if(isDebug) console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);    
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
       if(isDebug) console.log("facebook-callback / setIsAdmin / isAdmin : ",isAdmin);
@@ -89,12 +138,12 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     if(isDebug) console.log("facebook-callback / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.init();
     }
 
     // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("facebook-callback / setMyCheckerReady / isReady : ",isReady);
@@ -106,41 +155,47 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
       this.init();
     });    
-  }  
-
-  private init() :void {
-
-      this.setMyChecker();
-      // 페이지 진입을 기록합니다.
-      this.logActionPage();
-      // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
-      this.getQueryString();
-
   }
-
   private setMyChecker() :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / setMyChecker / 시작");
 
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
+        this.watchTower.getCheckerMap(),
         // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
+        this.watchTower.getConstMap(),
         // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
+        this.watchTower.getDirtyWordList(),
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
+        this.watchTower.getApiKey()
       ); // end setReady
 
       if(isDebug) console.log("signup-select / setMyChecker / done!");
     } // end if
 
-  }  
+  }   
+  */  
+
+  private init() :void {
+
+    // REMOVE ME
+    // this.setMyChecker();
+
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    // 페이지 진입을 기록합니다.
+    this.logActionPage();
+    // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
+    this.getQueryString();
+
+  }
+
+ 
 
 
   private logActionPage() :void {
@@ -152,7 +207,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
       // apiKey:string
-      this.myEventWatchTowerService.getApiKey(),
+      this.watchTower.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeLoginFacebook
     ).then((myResponse:MyResponse) => {
@@ -236,7 +291,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -266,7 +321,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -296,7 +351,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -358,7 +413,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string

@@ -16,10 +16,10 @@ var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var NaverCallbackComponent = (function () {
-    function NaverCallbackComponent(loginService, myEventWatchTowerService, myLoggerService, myCheckerService, userService, activatedRoute, router) {
+    function NaverCallbackComponent(loginService, watchTower, myLoggerService, myCheckerService, userService, activatedRoute, router) {
         // Do something...
         this.loginService = loginService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.userService = userService;
@@ -35,75 +35,131 @@ var NaverCallbackComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("naver-callback / ngOnInit / init");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        // this.setMyCheckerReady();
     }; // end function
+    NaverCallbackComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("naver-callback / ngAfterViewInit");
+        this.asyncViewPack();
+    };
     NaverCallbackComponent.prototype.ngOnDestroy = function () {
         // prevent memory leak by unsubscribing
         this.subscription.unsubscribe();
     };
-    NaverCallbackComponent.prototype.setIsAdmin = function () {
+    NaverCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("naver-callback / setIsAdmin / 시작");
-        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-        if (isDebug)
-            console.log("naver-callback / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            console.log("naver-callback / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
             if (isDebug)
-                console.log("naver-callback / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
-        });
-    };
-    NaverCallbackComponent.prototype.setMyCheckerReady = function () {
-        var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("naver-callback / setMyCheckerReady / 시작");
-        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+                console.log("naver-callback / asyncViewPack / isViewPackReady : ", true);
             this.init();
-        }
-        // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
-            if (isDebug)
-                console.log("naver-callback / setMyCheckerReady / isReady : ", isReady);
-            if (!isReady) {
-                return;
-            }
-            _this.init();
-        });
-    };
-    NaverCallbackComponent.prototype.init = function () {
-        this.setMyChecker();
-        this.logActionPage();
-        this.getQueryString();
-    };
-    NaverCallbackComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("naver-callback / setMyChecker / 시작");
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.myCheckerService.setReady(
-            // checkerMap:any
-            this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            this.myEventWatchTowerService.getApiKey()); // end setReady
-            if (isDebug)
-                console.log("naver-callback / setMyChecker / done!");
         } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("naver-callback / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
+    };
+    NaverCallbackComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    /*
+      private setIsAdmin() :void {
+    
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("naver-callback / setIsAdmin / 시작");
+    
+        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+        this.isAdmin = this.watchTower.getIsAdmin();
+        if(isDebug) console.log("naver-callback / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+    
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.watchTower.isViewPackReady$.subscribe(
+          (isAdmin:boolean) => {
+    
+          if(isDebug) console.log("naver-callback / setIsAdmin / isAdmin : ",isAdmin);
+          this.isAdmin = isAdmin;
+        });
+      }
+    
+      private setMyCheckerReady() :void {
+    
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("naver-callback / setMyCheckerReady / 시작");
+    
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if(this.watchTower.getIsMyCheckerReady()) {
+          this.init();
+        }
+    
+        // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
+        this.watchTower.myCheckerServicePackReady$.subscribe(
+          (isReady:boolean) => {
+    
+          if(isDebug) console.log("naver-callback / setMyCheckerReady / isReady : ",isReady);
+    
+          if(!isReady) {
+            return;
+          }
+    
+          this.init();
+        });
+      }
+      private setMyChecker() :void {
+    
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("naver-callback / setMyChecker / 시작");
+    
+        if(this.watchTower.getIsMyCheckerReady()) {
+    
+          this.myCheckerService.setReady(
+            // checkerMap:any
+            this.watchTower.getCheckerMap(),
+            // constMap:any
+            this.watchTower.getConstMap(),
+            // dirtyWordList:any
+            this.watchTower.getDirtyWordList(),
+            // apiKey:string
+            this.watchTower.getApiKey()
+          ); // end setReady
+    
+          if(isDebug) console.log("naver-callback / setMyChecker / done!");
+        } // end if
+    
+      }
+    */
+    NaverCallbackComponent.prototype.init = function () {
+        // REMOVE ME
+        // this.setMyChecker();
+        // 로그인한 유저 정보를 가져옵니다.
+        // this.setLoginUser();
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        this.getQueryString();
     };
     NaverCallbackComponent.prototype.logActionPage = function () {
         var isDebug = true;
@@ -113,7 +169,7 @@ var NaverCallbackComponent = (function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey(), 
+        this.watchTower.getApiKey(), 
         // pageType:string
         this.myLoggerService.pageTypeLoginNaver).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
@@ -146,7 +202,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -182,7 +238,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -206,7 +262,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -240,7 +296,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -267,7 +323,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -322,7 +378,7 @@ var NaverCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string

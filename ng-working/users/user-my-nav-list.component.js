@@ -16,12 +16,12 @@ var klass_color_service_1 = require('../klass/service/klass-color.service');
 var klass_radiobtn_service_1 = require('../klass/service/klass-radiobtn.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var UserMyNavListComponent = (function () {
-    function UserMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, myEventWatchTowerService, myCheckerService) {
+    function UserMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, watchTower, myCheckerService) {
         this.klassColorService = klassColorService;
         this.myEventService = myEventService;
         this.myLoggerService = myLoggerService;
         this.radiobtnService = radiobtnService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
         this.showMyInfo = false;
         this.showMyHistory = false;
@@ -35,77 +35,133 @@ var UserMyNavListComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("user-my-nav-list / ngOnInit / init");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerServiceReady();
+        // this.setMyCheckerServiceReady();
     };
-    UserMyNavListComponent.prototype.setIsAdmin = function () {
+    UserMyNavListComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("user-my-nav-list / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    UserMyNavListComponent.prototype.asyncViewPack = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("user-my-nav-list / setIsAdmin / 시작");
-        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-        if (isDebug)
-            console.log("user-my-nav-list / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            console.log("user-my-nav-list / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
             if (isDebug)
-                console.log("user-my-nav-list / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
-        });
-    };
-    UserMyNavListComponent.prototype.setMyCheckerServiceReady = function () {
-        var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
-        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.setMyCheckerService();
+                console.log("user-my-nav-list / asyncViewPack / isViewPackReady : ", true);
             this.init();
-        }
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
-            if (isDebug)
-                console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ", isReady);
-            if (!isReady) {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorTypeNotValidValue, 
-                // errorMsg:string
-                "user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : " + isReady);
-                return;
-            }
-            _this.setMyCheckerService();
-            _this.init();
-        });
-    };
-    UserMyNavListComponent.prototype.setMyCheckerService = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("user-my-nav-list / setMyCheckerService / 시작");
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.myCheckerService.setReady(
-            // checkerMap:any
-            this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            this.myEventWatchTowerService.getApiKey()); // end setReady
-            if (isDebug)
-                console.log("user-my-nav-list / setMyCheckerService / done!");
         } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("user-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
     };
+    UserMyNavListComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    /*
+    private setIsAdmin() :void {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작");
+  
+      // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+      this.isAdmin = this.watchTower.getIsAdmin();
+      if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+  
+      // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+      this.watchTower.isViewPackReady$.subscribe(
+        (isAdmin:boolean) => {
+  
+        if(isDebug) console.log("user-my-nav-list / setIsAdmin / isAdmin : ",isAdmin);
+        this.isAdmin = isAdmin;
+      });
+    }
+  
+    private setMyCheckerServiceReady() :void {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
+  
+      // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+      if(this.watchTower.getIsMyCheckerReady()) {
+        this.setMyCheckerService();
+        this.init();
+      }
+  
+      this.watchTower.myCheckerServicePackReady$.subscribe(
+        (isReady:boolean) => {
+  
+        if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ",isReady);
+  
+        if(!isReady) {
+          // 에러 로그 등록
+          this.myLoggerService.logError(
+            // apiKey:string
+            this.watchTower.getApiKey(),
+            // errorType:string
+            this.myLoggerService.errorTypeNotValidValue,
+            // errorMsg:string
+            `user-my-nav-list / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
+          );
+          return;
+        }
+  
+        this.setMyCheckerService();
+        this.init();
+      });
+    }
+  
+    private setMyCheckerService() :void {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("user-my-nav-list / setMyCheckerService / 시작");
+  
+      if(this.watchTower.getIsMyCheckerReady()) {
+  
+        this.myCheckerService.setReady(
+          // checkerMap:any
+          this.watchTower.getCheckerMap(),
+          // constMap:any
+          this.watchTower.getConstMap(),
+          // dirtyWordList:any
+          this.watchTower.getDirtyWordList(),
+          // apiKey:string
+          this.watchTower.getApiKey()
+        ); // end setReady
+  
+        if(isDebug) console.log("user-my-nav-list / setMyCheckerService / done!");
+      } // end if
+  
+    }
+    */
     UserMyNavListComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)

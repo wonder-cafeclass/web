@@ -16,9 +16,9 @@ var my_checker_service_1 = require('../../util/service/my-checker.service');
 var user_service_1 = require('../../users/service/user.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, myEventWatchTowerService, userService, myLoggerService, myCheckerService, activatedRoute, router) {
+    function KakaoCallbackComponent(loginService, watchTower, userService, myLoggerService, myCheckerService, activatedRoute, router) {
         this.loginService = loginService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
@@ -35,79 +35,136 @@ var KakaoCallbackComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / ngOnInit / 시작");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        // this.setMyCheckerReady();
     }; // end function
+    KakaoCallbackComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / ngAfterViewInit");
+        this.asyncViewPack();
+    };
     KakaoCallbackComponent.prototype.ngOnDestroy = function () {
         // prevent memory leak by unsubscribing
         this.subscription.unsubscribe();
     };
-    KakaoCallbackComponent.prototype.setIsAdmin = function () {
+    KakaoCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
-            console.log("kakao-callback / setIsAdmin / 시작");
-        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-        if (isDebug)
-            console.log("kakao-callback / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            console.log("kakao-callback / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다.
+        if (this.watchTower.getIsViewPackReady()) {
             if (isDebug)
-                console.log("kakao-callback / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
-        });
-    };
-    KakaoCallbackComponent.prototype.setMyCheckerReady = function () {
-        var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("kakao-callback / setMyCheckerReady / 시작");
-        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.setMyChecker();
+                console.log("kakao-callback / asyncViewPack / isViewPackReady : ", true);
             this.init();
-        }
-        // 직접 주소를 입력하여 이동한 경우.
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
-            if (isDebug)
-                console.log("kakao-callback / setMyCheckerReady / isReady : ", isReady);
-            if (!isReady) {
-                return;
-            }
-            _this.setMyChecker();
-            _this.init();
-        });
-    };
-    KakaoCallbackComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("kakao-callback / setMyChecker / 시작");
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.myCheckerService.setReady(
-            // checkerMap:any
-            this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            this.myEventWatchTowerService.getApiKey()); // end setReady
-            if (isDebug)
-                console.log("kakao-callback / setMyChecker / done!");
         } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("kakao-callback / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
     };
+    KakaoCallbackComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    // REMOVE ME
+    /*
+    private setIsAdmin() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("kakao-callback / setIsAdmin / 시작");
+  
+      // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+      this.isAdmin = this.watchTower.getIsAdmin();
+      if(isDebug) console.log("kakao-callback / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+  
+      // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+      this.watchTower.isViewPackReady$.subscribe(
+        (isAdmin:boolean) => {
+  
+        if(isDebug) console.log("kakao-callback / setIsAdmin / isAdmin : ",isAdmin);
+        this.isAdmin = isAdmin;
+      });
+    }
+  
+    private setMyCheckerReady() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("kakao-callback / setMyCheckerReady / 시작");
+  
+      // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+      if(this.watchTower.getIsMyCheckerReady()) {
+        this.setMyChecker();
+        this.init();
+      }
+  
+      // 직접 주소를 입력하여 이동한 경우.
+      this.watchTower.myCheckerServicePackReady$.subscribe(
+        (isReady:boolean) => {
+  
+        if(isDebug) console.log("kakao-callback / setMyCheckerReady / isReady : ",isReady);
+  
+        if(!isReady) {
+          return;
+        }
+  
+        this.setMyChecker();
+        this.init();
+      });
+    }
+  
+    private setMyChecker() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
+  
+      if(this.watchTower.getIsMyCheckerReady()) {
+  
+        this.myCheckerService.setReady(
+          // checkerMap:any
+          this.watchTower.getCheckerMap(),
+          // constMap:any
+          this.watchTower.getConstMap(),
+          // dirtyWordList:any
+          this.watchTower.getDirtyWordList(),
+          // apiKey:string
+          this.watchTower.getApiKey()
+        ); // end setReady
+  
+        if(isDebug) console.log("kakao-callback / setMyChecker / done!");
+      } // end if
+  
+    }
+    */
     KakaoCallbackComponent.prototype.init = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / init / 시작");
-        this.setMyChecker();
+        // REMOVE ME
+        // this.setMyChecker();
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -121,7 +178,7 @@ var KakaoCallbackComponent = (function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey(), 
+        this.watchTower.getApiKey(), 
         // pageType:string
         this.myLoggerService.pageTypeLoginKakao).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
@@ -162,7 +219,7 @@ var KakaoCallbackComponent = (function () {
                 console.log("kakao-callback / getKakaoToken / 중단 / kakaoCode is not valid!");
             this.myLoggerService.logError(
             // apiKey:string
-            this.myEventWatchTowerService.getApiKey(), 
+            this.watchTower.getApiKey(), 
             // errorType:string
             this.myLoggerService.errorTypeNotValidValue, 
             // errorMsg:string
@@ -192,7 +249,7 @@ var KakaoCallbackComponent = (function () {
                     console.log("kakao-callback / getKakaoToken / \uC5D0\uB7EC \uB85C\uADF8 \uB4F1\uB85D");
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -237,7 +294,7 @@ var KakaoCallbackComponent = (function () {
                 errMsg);
                 if (null != myResponse.error && "" != myResponse.error) {
                     // 에러 내용은 화면에 표시한다.
-                    _this.myEventWatchTowerService.announceErrorMsgArr([myResponse.error]);
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 }
             } // end if
         });
@@ -256,7 +313,7 @@ var KakaoCallbackComponent = (function () {
         // 에러 로그 등록
         this.myLoggerService.logError(
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey(), 
+        this.watchTower.getApiKey(), 
         // errorType:string
         errorType, 
         // errorMsg:string
@@ -282,7 +339,7 @@ var KakaoCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -318,7 +375,7 @@ var KakaoCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -343,7 +400,7 @@ var KakaoCallbackComponent = (function () {
                 _this.userService
                     .confirmUserKakao(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // kakaoId:string
                 myResponse.getDataProp("kakao_id")).then(function (myResponse) {
                     if (isDebug)
@@ -363,7 +420,7 @@ var KakaoCallbackComponent = (function () {
                         // 에러 로그 등록
                         _this.myLoggerService.logError(
                         // apiKey:string
-                        _this.myEventWatchTowerService.getApiKey(), 
+                        _this.watchTower.getApiKey(), 
                         // errorType:string
                         _this.myLoggerService.errorAPIFailed, 
                         // errorMsg:string

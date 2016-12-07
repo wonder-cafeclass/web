@@ -89,6 +89,10 @@ var MyCheckerService = (function () {
     };
     // @ Desc : 서버에서 받아온 checker json 파일에 있는 filterKey를 넘겨 받으면 이를 기반으로 MyChecker 객체를 만들어 돌려줍니다.
     MyCheckerService.prototype.getMyChecker = function (filterKey) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-checker.service / getMyChecker / 시작");
         if (null == this.checkerMap) {
             console.log("!Error! / my-checker.service / null == this.checkerMap");
             return null;
@@ -597,12 +601,16 @@ var MyCheckerService = (function () {
             return null;
         }
         var matchArr = filter.match(this.regExpRegExIncludeMatch);
-        console.log("TEST / matchArr : ", matchArr);
         return "";
     };
     MyCheckerService.prototype.getChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-checker.service / getChecker / 시작");
         var req_url = this.us.get(this.apiGetChecker);
-        console.log("MyCheckerService / getChecker / req_url : ", req_url);
+        if (isDebug)
+            console.log("my-checker.service / getChecker / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
             .then(this.myExtractor.extractData)

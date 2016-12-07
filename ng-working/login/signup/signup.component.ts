@@ -4,7 +4,8 @@ import {  Component,
           Input, 
           Output,
           ViewChild,
-          OnInit }                        from '@angular/core';
+          OnInit,
+          AfterViewInit }                 from '@angular/core';
 import {  Router,
           ActivatedRoute,
           Params }                        from '@angular/router';
@@ -38,7 +39,7 @@ import { MyResponse }                     from '../../util/model/my-response';
   templateUrl: 'signup.component.html',
   styleUrls: [ 'signup.component.css' ]
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewInit {
 
   private email:string;
   private password:string;
@@ -99,7 +100,7 @@ export class SignupComponent implements OnInit {
                 private myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
-                private myEventWatchTowerService:MyEventWatchTowerService, 
+                private watchTower:MyEventWatchTowerService, 
                 private route:ActivatedRoute,
                 public router:Router) {}
 
@@ -109,14 +110,62 @@ export class SignupComponent implements OnInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("signup / ngOnInit / init");
 
+    // REMOVE
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.setIsAdmin();
+    // this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerReady();
+    // this.setMyCheckerReady();
 
   }
 
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  }  
+
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("signup / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("signup / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe    
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }  
+
+// REMOVE ME
+/*
   private setIsAdmin() :void {
 
     let isDebug:boolean = true;
@@ -124,11 +173,11 @@ export class SignupComponent implements OnInit {
     if(isDebug) console.log("signup / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdmin();
     if(isDebug) console.log("signup / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
       if(isDebug) console.log("signup / setIsAdmin / isAdmin : ",isAdmin);
@@ -143,12 +192,12 @@ export class SignupComponent implements OnInit {
     if(isDebug) console.log("signup / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.init();
     }
 
     // 직접 주소를 입력하여 이동한 경우.
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("signup / setMyCheckerReady / isReady : ",isReady);
@@ -157,7 +206,7 @@ export class SignupComponent implements OnInit {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
@@ -170,6 +219,7 @@ export class SignupComponent implements OnInit {
 
     });    
   }
+*/
 
   private init() :void {
 
@@ -177,7 +227,12 @@ export class SignupComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("signup / init / 시작");
 
-    this.setMyChecker();
+    // REMOVE ME
+    // this.setMyChecker();
+
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    
     this.logPageEnter();
     this.checkSignedUpUserInfo();
   }
@@ -188,17 +243,17 @@ export class SignupComponent implements OnInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
 
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
+        this.watchTower.getCheckerMap(),
         // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
+        this.watchTower.getConstMap(),
         // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
+        this.watchTower.getDirtyWordList(),
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
+        this.watchTower.getApiKey()
       ); // end setReady
 
       if(isDebug) console.log("kakao-callback / setMyChecker / done!");
@@ -211,7 +266,7 @@ export class SignupComponent implements OnInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
       // apiKey:string
-      this.myEventWatchTowerService.getApiKey(),
+      this.watchTower.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeSignup
     );    
@@ -283,7 +338,7 @@ export class SignupComponent implements OnInit {
         // Error Report
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -575,7 +630,7 @@ export class SignupComponent implements OnInit {
         if(isDebug) console.log("signup / updateUser / Error Report");
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -641,7 +696,7 @@ export class SignupComponent implements OnInit {
         if(isDebug) console.log("signup / addUser / Error Report");
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
@@ -681,7 +736,7 @@ export class SignupComponent implements OnInit {
         // Error Report
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string

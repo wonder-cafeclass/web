@@ -15,45 +15,45 @@ var Subject_1 = require('rxjs/Subject');
 */
 var MyEventWatchTowerService = (function () {
     function MyEventWatchTowerService() {
-        this.isAdmin = false;
+        // @ Required for view
+        this.isAdmin = null;
         this.apiKey = "";
-        // Observable string sources
+        this.isViewPackReady = false;
+        // Observable sources
+        // @ Required for view
+        this.isAdminSource = new Subject_1.Subject();
+        // REMOVE ME
+        // private checkerMapSource = new Subject<any>();
+        // private constMapSource = new Subject<any>();
+        // private dirtyWordListSource = new Subject<any>();
+        // private apiKeySource = new Subject<string>();
+        this.myCheckerServicePackReadySource = new Subject_1.Subject();
+        this.isViewPackReadySource = new Subject_1.Subject();
+        // @ Optional for view
         this.loginAnnouncedSource = new Subject_1.Subject();
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
-        this.isAdminSource = new Subject_1.Subject();
-        this.checkerMapSource = new Subject_1.Subject();
-        this.constMapSource = new Subject_1.Subject();
-        this.dirtyWordListSource = new Subject_1.Subject();
-        this.apiKeySource = new Subject_1.Subject();
-        this.myCheckerServiceReadySource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
-        // Observable string streams
+        // Observable streams
+        // @ Required for view
+        this.isAdmin$ = this.isAdminSource.asObservable();
+        // REMOVE ME
+        // checkerMap$ = this.checkerMapSource.asObservable();
+        // constMap$ = this.constMapSource.asObservable();
+        // dirtyWordList$ = this.dirtyWordListSource.asObservable();
+        // apiKey$ = this.apiKeySource.asObservable();
+        this.myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
+        this.isViewPackReady$ = this.isViewPackReadySource.asObservable();
+        // @ Optional for view
         this.loginAnnounced$ = this.loginAnnouncedSource.asObservable();
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
-        this.isAdmin$ = this.isAdminSource.asObservable();
-        this.checkerMap$ = this.checkerMapSource.asObservable();
-        this.constMap$ = this.constMapSource.asObservable();
-        this.dirtyWordList$ = this.dirtyWordListSource.asObservable();
-        this.apiKey$ = this.apiKeySource.asObservable();
-        this.myCheckerServiceReady$ = this.myCheckerServiceReadySource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
     }
     // Service message commands
-    MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
-        this.loginUser = loginUser;
-        this.loginAnnouncedSource.next(loginUser);
-    };
-    MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
-        this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
-    };
+    // @ Required for view
     MyEventWatchTowerService.prototype.announceIsAdmin = function (isAdmin) {
         this.isAdmin = isAdmin;
         this.isAdminSource.next(isAdmin);
-    };
-    // @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
-    MyEventWatchTowerService.prototype.announceErrorMsgArr = function (errorMsgArr) {
-        this.errorMsgArr = errorMsgArr;
-        this.errorMsgArrSource.next(errorMsgArr);
+        this.announceIsViewPackReady();
     };
     MyEventWatchTowerService.prototype.announceMyCheckerServiceReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
         // let isDebug:boolean = true;
@@ -81,16 +81,42 @@ var MyEventWatchTowerService = (function () {
             return;
         }
         this.checkerMap = checkerMap;
-        this.checkerMapSource.next(checkerMap);
         this.constMap = constMap;
-        this.constMapSource.next(constMap);
         this.dirtyWordList = dirtyWordList;
-        this.dirtyWordListSource.next(dirtyWordList);
         this.apiKey = apiKey;
-        this.apiKeySource.next(apiKey);
-        this.myCheckerServiceReadySource.next(true);
+        this.myCheckerServicePackReadySource.next(true);
         if (isDebug)
             console.log("my-event-watchtower / announceMyCheckerServiceReady / done.");
+        if (isDebug)
+            console.log("my-event-watchtower / announceMyCheckerServiceReady / apiKey : " + apiKey);
+        this.announceIsViewPackReady();
+    };
+    // @ Desc : 뷰에 필요한 정보들이 모두 도착했는지 검사해서 알려줍니다.
+    MyEventWatchTowerService.prototype.announceIsViewPackReady = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-event-watchtower / announceIsViewPackReady / \uC2DC\uC791");
+        if (null == this.isAdmin || !this.getIsMyCheckerReady()) {
+            return;
+        }
+        if (isDebug)
+            console.log("my-event-watchtower / announceIsViewPackReady / \uC900\uBE44\uC644\uB8CC!");
+        this.isViewPackReady = true;
+        this.isViewPackReadySource.next(true);
+    };
+    // @ Optional for view
+    MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
+        this.loginUser = loginUser;
+        this.loginAnnouncedSource.next(loginUser);
+    };
+    MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
+        this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+    };
+    // @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
+    MyEventWatchTowerService.prototype.announceErrorMsgArr = function (errorMsgArr) {
+        this.errorMsgArr = errorMsgArr;
+        this.errorMsgArrSource.next(errorMsgArr);
     };
     MyEventWatchTowerService.prototype.getLoginUser = function () {
         return this.loginUser;
@@ -112,6 +138,9 @@ var MyEventWatchTowerService = (function () {
             return false;
         }
         return true;
+    };
+    MyEventWatchTowerService.prototype.getIsViewPackReady = function () {
+        return this.isViewPackReady;
     };
     MyEventWatchTowerService.prototype.getCheckerMap = function () {
         return this.checkerMap;

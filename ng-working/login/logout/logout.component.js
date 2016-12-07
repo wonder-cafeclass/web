@@ -37,7 +37,7 @@ var LogoutComponent = (function () {
             this.init();
         }
         // 직접 주소를 입력하여 이동한 경우.
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+        this.myEventWatchTowerService.myCheckerServicePackReady$.subscribe(function (isReady) {
             if (isDebug)
                 console.log("logout / setMyCheckerReady / isReady : ", isReady);
             if (!isReady) {

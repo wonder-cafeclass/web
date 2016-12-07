@@ -8,58 +8,59 @@ import { User }    				from '../../users/model/user';
 @Injectable()
 export class MyEventWatchTowerService {
 
-	private loginUser:User;
-	private isAdmin:boolean = false;
-
+	// @ Required for view
+	private isAdmin:boolean = null;
     private checkerMap;
     private constMap;
     private dirtyWordList;
 	private apiKey:string = "";
-
+	private isViewPackReady:boolean = false;
+	// @ Optional for view
+	private loginUser:User;
 	private errorMsgArr:string[];
 
-	// Observable string sources
+
+	// Observable sources
+	// @ Required for view
+	private isAdminSource = new Subject<boolean>();
+	// REMOVE ME
+	// private checkerMapSource = new Subject<any>();
+	// private constMapSource = new Subject<any>();
+	// private dirtyWordListSource = new Subject<any>();
+	// private apiKeySource = new Subject<string>();
+	private myCheckerServicePackReadySource = new Subject<boolean>();
+	private isViewPackReadySource = new Subject<boolean>();
+	// @ Optional for view
 	private loginAnnouncedSource = new Subject<User>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
-	private isAdminSource = new Subject<boolean>();
-
-	private checkerMapSource = new Subject<any>();
-	private constMapSource = new Subject<any>();
-	private dirtyWordListSource = new Subject<any>();
-	private apiKeySource = new Subject<string>();
-	private myCheckerServiceReadySource = new Subject<boolean>();
-
 	private errorMsgArrSource = new Subject<string[]>();
 
-	// Observable string streams
+
+
+	// Observable streams
+	// @ Required for view
+	isAdmin$ = this.isAdminSource.asObservable();
+	// REMOVE ME
+	// checkerMap$ = this.checkerMapSource.asObservable();
+	// constMap$ = this.constMapSource.asObservable();
+	// dirtyWordList$ = this.dirtyWordListSource.asObservable();
+	// apiKey$ = this.apiKeySource.asObservable();
+	myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
+	isViewPackReady$ = this.isViewPackReadySource.asObservable();
+	// @ Optional for view
 	loginAnnounced$ = this.loginAnnouncedSource.asObservable();
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
-	isAdmin$ = this.isAdminSource.asObservable();
-
-	checkerMap$ = this.checkerMapSource.asObservable();
-	constMap$ = this.constMapSource.asObservable();
-	dirtyWordList$ = this.dirtyWordListSource.asObservable();
-	apiKey$ = this.apiKeySource.asObservable();
-	myCheckerServiceReady$ = this.myCheckerServiceReadySource.asObservable();
-
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 
+
+
 	// Service message commands
-	announceLogin(loginUser: User) {
-		this.loginUser = loginUser;
-		this.loginAnnouncedSource.next(loginUser);
-	}
-	announceToggleTopMenu(toggleTopMenu: boolean) {
-		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
-	}
+	// @ Required for view
 	announceIsAdmin(isAdmin: boolean) {
 		this.isAdmin = isAdmin;
 		this.isAdminSource.next(isAdmin);
-	}
-	// @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
-	announceErrorMsgArr(errorMsgArr: string[]) {
-		this.errorMsgArr = errorMsgArr;
-		this.errorMsgArrSource.next(errorMsgArr);
+
+		this.announceIsViewPackReady();
 	}
 	announceMyCheckerServiceReady(checkerMap: any, constMap: any, dirtyWordList: any, apiKey: string) {
 
@@ -85,22 +86,49 @@ export class MyEventWatchTowerService {
         }		
 
 		this.checkerMap = checkerMap;
-		this.checkerMapSource.next(checkerMap);
-
 		this.constMap = constMap;
-		this.constMapSource.next(constMap);
-
 		this.dirtyWordList = dirtyWordList;
-		this.dirtyWordListSource.next(dirtyWordList);
-
 		this.apiKey = apiKey;
-		this.apiKeySource.next(apiKey);
 
-		this.myCheckerServiceReadySource.next(true);
+		this.myCheckerServicePackReadySource.next(true);
 
 		if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / done.`);
 
+		if(isDebug) console.log(`my-event-watchtower / announceMyCheckerServiceReady / apiKey : ${apiKey}`);
+
+		this.announceIsViewPackReady();
+
 	}
+	// @ Desc : 뷰에 필요한 정보들이 모두 도착했는지 검사해서 알려줍니다.
+	announceIsViewPackReady() {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log(`my-event-watchtower / announceIsViewPackReady / 시작`);
+
+		if(null == this.isAdmin || !this.getIsMyCheckerReady()) {
+			return;
+		}
+
+		if(isDebug) console.log(`my-event-watchtower / announceIsViewPackReady / 준비완료!`);
+
+		this.isViewPackReady = true;
+		this.isViewPackReadySource.next(true);
+	}
+	// @ Optional for view
+	announceLogin(loginUser: User) {
+		this.loginUser = loginUser;
+		this.loginAnnouncedSource.next(loginUser);
+	}
+	announceToggleTopMenu(toggleTopMenu: boolean) {
+		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+	}
+	// @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
+	announceErrorMsgArr(errorMsgArr: string[]) {
+		this.errorMsgArr = errorMsgArr;
+		this.errorMsgArrSource.next(errorMsgArr);
+	}
+
 
 
 	getLoginUser() :User {
@@ -126,6 +154,9 @@ export class MyEventWatchTowerService {
 
 		return true;
 	}
+	getIsViewPackReady() :boolean {
+		return this.isViewPackReady;
+	}
 	getCheckerMap() :string {
 		return this.checkerMap;
 	}	
@@ -137,5 +168,5 @@ export class MyEventWatchTowerService {
 	}	
 	getApiKey() :string {
 		return this.apiKey;
-	}	
+	}
 }

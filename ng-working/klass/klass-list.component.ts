@@ -52,7 +52,7 @@ export class KlassListComponent implements OnInit {
     private urlService: UrlService,
     private userService:UserService,
     private myLoggerService: MyLoggerService,
-    private myEventWatchTowerService:MyEventWatchTowerService,
+    private watchTower:MyEventWatchTowerService,
     private myCheckerService:MyCheckerService,
     private route: ActivatedRoute,
     private router: Router
@@ -68,15 +68,52 @@ export class KlassListComponent implements OnInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / ngOnInit / 시작");
 
+    this.asyncViewPack();
+
+    // REMOVE ME
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.setIsAdmin();
+    // this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerReady();
+    // this.setMyCheckerReady();
     
   }
 
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / asyncViewPack / 시작");
 
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("klass-list / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe    
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }
+
+/*
   private setIsAdmin() :void {
 
     // let isDebug:boolean = true;
@@ -84,11 +121,11 @@ export class KlassListComponent implements OnInit {
     if(isDebug) console.log("klass-list / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdmin();
     if(isDebug) console.log("klass-list / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);    
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
       if(isDebug) console.log("klass-list / setIsAdmin / isAdmin : ",isAdmin);
@@ -103,11 +140,11 @@ export class KlassListComponent implements OnInit {
     if(isDebug) console.log("klass-list / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.init();
     }
 
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("klass-list / setMyCheckerReady / isReady : ",isReady);
@@ -116,7 +153,7 @@ export class KlassListComponent implements OnInit {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
@@ -127,37 +164,45 @@ export class KlassListComponent implements OnInit {
 
       this.init();
 
-    });    
+    });
   }
-
-  private init() :void {
-    this.setMyChecker();
-    this.logPageEnter();
-  }
-
   private setMyChecker() :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / setMyChecker / 시작");
 
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
+        this.watchTower.getCheckerMap(),
         // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
+        this.watchTower.getConstMap(),
         // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
+        this.watchTower.getDirtyWordList(),
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
+        this.watchTower.getApiKey()
       ); // end setReady
 
       if(isDebug) console.log("kakao-callback / setMyChecker / done!");
     } // end if
 
   }   
+*/
+
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-list / init / 시작");
+
+    // REMOVE ME
+    // this.setMyChecker();
+
+    this.setViewPack();
+    this.logPageEnter();
+  }
 
   private logPageEnter() :void {
 
@@ -168,7 +213,7 @@ export class KlassListComponent implements OnInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
       // apiKey:string
-      this.myEventWatchTowerService.getApiKey(),
+      this.watchTower.getApiKey(),
       // pageType:string
       this.myLoggerService.pageTypeKlassList
     ).then((myResponse:MyResponse) => {
@@ -205,7 +250,7 @@ export class KlassListComponent implements OnInit {
     });
 
     // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
-    this.myEventWatchTowerService.announceToggleTopMenu(true);
+    this.watchTower.announceToggleTopMenu(true);
   }
   private getCookieLoginUser() :void {
 
@@ -225,7 +270,7 @@ export class KlassListComponent implements OnInit {
         
         this.loginUser = myResponse.getDataProp("user");
         // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-        this.myEventWatchTowerService.announceLogin(this.loginUser);
+        this.watchTower.announceLogin(this.loginUser);
       }
 
     });

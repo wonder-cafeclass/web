@@ -25,7 +25,7 @@ var PolicyComponent = (function () {
         if (isDebug)
             console.log("policy / ngOnInit / 시작");
         // my-checker.service의 apikey 가져옴. 
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+        this.myEventWatchTowerService.myCheckerServicePackReady$.subscribe(function (isReady) {
             if (isDebug)
                 console.log("policy / ngOnInit / isReady : ", isReady);
             if (!isReady) {

@@ -16,11 +16,11 @@ var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var FacebookCallbackComponent = (function () {
-    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, myEventWatchTowerService, userService, activatedRoute, router) {
+    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, watchTower, userService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.userService = userService;
         this.activatedRoute = activatedRoute;
         this.router = router;
@@ -35,78 +35,133 @@ var FacebookCallbackComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("facebook-callback / ngOnInit / init");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        // this.setMyCheckerReady();
     }; // end function
+    FacebookCallbackComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("facebook-callback / ngAfterViewInit");
+        this.asyncViewPack();
+    };
     FacebookCallbackComponent.prototype.ngOnDestroy = function () {
         // prevent memory leak by unsubscribing
         this.subscription.unsubscribe();
     };
-    FacebookCallbackComponent.prototype.setIsAdmin = function () {
+    FacebookCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("facebook-callback / setIsAdmin / 시작");
-        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-        if (isDebug)
-            console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
+            console.log("my-info / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
             if (isDebug)
-                console.log("facebook-callback / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
-        });
-    };
-    FacebookCallbackComponent.prototype.setMyCheckerReady = function () {
-        var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("facebook-callback / setMyCheckerReady / 시작");
-        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+                console.log("my-info / asyncViewPack / isViewPackReady : ", true);
             this.init();
-        }
-        // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
             if (isDebug)
-                console.log("facebook-callback / setMyCheckerReady / isReady : ", isReady);
-            if (!isReady) {
-                return;
-            }
-            // 축하합니다! API 통신을 위한 준비가 완료되었습니다. 
+                console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
-        });
+        }); // end subscribe    
     };
+    FacebookCallbackComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    /*
+    private setIsAdmin() :void {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("facebook-callback / setIsAdmin / 시작");
+  
+      // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+      this.isAdmin = this.watchTower.getIsAdmin();
+      if(isDebug) console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+  
+      // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+      this.watchTower.isViewPackReady$.subscribe(
+        (isAdmin:boolean) => {
+  
+        if(isDebug) console.log("facebook-callback / setIsAdmin / isAdmin : ",isAdmin);
+        this.isAdmin = isAdmin;
+      });
+    }
+  
+    private setMyCheckerReady() :void {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("facebook-callback / setMyCheckerReady / 시작");
+  
+      // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+      if(this.watchTower.getIsMyCheckerReady()) {
+        this.init();
+      }
+  
+      // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
+      this.watchTower.myCheckerServicePackReady$.subscribe(
+        (isReady:boolean) => {
+  
+        if(isDebug) console.log("facebook-callback / setMyCheckerReady / isReady : ",isReady);
+  
+        if(!isReady) {
+          return;
+        }
+  
+        // 축하합니다! API 통신을 위한 준비가 완료되었습니다.
+        this.init();
+      });
+    }
+    private setMyChecker() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("facebook-callback / setMyChecker / 시작");
+  
+      if(this.watchTower.getIsMyCheckerReady()) {
+  
+        this.myCheckerService.setReady(
+          // checkerMap:any
+          this.watchTower.getCheckerMap(),
+          // constMap:any
+          this.watchTower.getConstMap(),
+          // dirtyWordList:any
+          this.watchTower.getDirtyWordList(),
+          // apiKey:string
+          this.watchTower.getApiKey()
+        ); // end setReady
+  
+        if(isDebug) console.log("signup-select / setMyChecker / done!");
+      } // end if
+  
+    }
+    */
     FacebookCallbackComponent.prototype.init = function () {
-        this.setMyChecker();
+        // REMOVE ME
+        // this.setMyChecker();
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         // 페이지 진입을 기록합니다.
         this.logActionPage();
         // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
         this.getQueryString();
-    };
-    FacebookCallbackComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("facebook-callback / setMyChecker / 시작");
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.myCheckerService.setReady(
-            // checkerMap:any
-            this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            this.myEventWatchTowerService.getApiKey()); // end setReady
-            if (isDebug)
-                console.log("signup-select / setMyChecker / done!");
-        } // end if
     };
     FacebookCallbackComponent.prototype.logActionPage = function () {
         var isDebug = true;
@@ -116,7 +171,7 @@ var FacebookCallbackComponent = (function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey(), 
+        this.watchTower.getApiKey(), 
         // pageType:string
         this.myLoggerService.pageTypeLoginFacebook).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
@@ -189,7 +244,7 @@ var FacebookCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -215,7 +270,7 @@ var FacebookCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -241,7 +296,7 @@ var FacebookCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -295,7 +350,7 @@ var FacebookCallbackComponent = (function () {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string

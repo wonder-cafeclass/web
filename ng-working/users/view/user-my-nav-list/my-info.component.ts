@@ -1,7 +1,7 @@
 import {  Component, 
           ViewChild,
           OnInit, 
-          AfterViewChecked,
+          AfterViewInit,
           Output, 
           EventEmitter,
           Input }                     from '@angular/core';
@@ -32,7 +32,7 @@ import { User }                       from '../../../users/model/user';
   templateUrl: 'my-info.component.html',
   styleUrls: [ 'my-info.component.css' ]
 })
-export class MyInfoComponent implements OnInit, AfterViewChecked {
+export class MyInfoComponent implements OnInit, AfterViewInit {
 
   @Output() emitter = new EventEmitter<any>();
 
@@ -85,40 +85,74 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
   constructor(public myEventService:MyEventService,
               private myLoggerService:MyLoggerService,
               public myCheckerService:MyCheckerService,
-              private myEventWatchTowerService:MyEventWatchTowerService) {}
+              private watchTower:MyEventWatchTowerService) {}
 
   ngOnInit(): void {
 
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / ngAfterViewChecked");
+    if(isDebug) console.log("my-info / ngAfterViewInit");
 
-    this.setIsAdmin();
-    this.setMyCheckerReady();
+    this.asyncViewPack();
 
   }
 
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }
+
+// REMOVE ME
+/*
   private setIsAdmin(): void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("signup / setIsAdmin / 시작");
+    if(isDebug) console.log("my-info / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-    if(isDebug) console.log("signup / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+    this.isAdmin = this.watchTower.getIsAdmin();
+    if(isDebug) console.log("my-info / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
-      if(isDebug) console.log("signup / setIsAdmin / isAdmin : ",isAdmin);
+      if(isDebug) console.log("my-info / setIsAdmin / isAdmin : ",isAdmin);
       this.isAdmin = isAdmin;
     });
   }  
@@ -127,28 +161,28 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("signup / setMyCheckerReady / 시작");
+    if(isDebug) console.log("my-info / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.init();
     }
 
     // 직접 주소를 입력하여 이동한 경우.
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
-      if(isDebug) console.log("signup / setMyCheckerReady / isReady : ",isReady);
+      if(isDebug) console.log("my-info / setMyCheckerReady / isReady : ",isReady);
 
       if(!isReady) {
       // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
-          `signup / setMyCheckerReady / Failed! / isReady : ${isReady}`
+          `my-info / setMyCheckerReady / Failed! / isReady : ${isReady}`
         );        
         return;
       }
@@ -164,23 +198,24 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
     // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / setMyChecker / 시작");
 
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
+        this.watchTower.getCheckerMap(),
         // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
+        this.watchTower.getConstMap(),
         // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
+        this.watchTower.getDirtyWordList(),
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
+        this.watchTower.getApiKey()
       ); // end setReady
 
       if(isDebug) console.log("my-info / setMyChecker / done!");
     } // end if
 
   }
+*/
 
   private setLoginUser() :void {
 
@@ -189,39 +224,17 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
     if(isDebug) console.log("my-info / setLoginUser / 시작");
 
     // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
-    let loginUser:User = this.myEventWatchTowerService.getLoginUser();
+    let loginUser:User = this.watchTower.getLoginUser();
     if(null != loginUser) {
       this.loginUser = loginUser;
       this.fillViewUserInfo();
     }
 
     // Subscribe login user
-    this.myEventWatchTowerService.loginAnnounced$.subscribe(
+    this.watchTower.loginAnnounced$.subscribe(
       (loginUser:User) => {
 
       if(isDebug) console.log("my-info / setLoginUser : ",loginUser);
-
-      // Example
-      /*
-      {
-        birthday: "1981-07-17"
-        date_created: "2016-11-29 23:11:53"
-        date_updated: "2016-11-29 23:12:53"
-        email: "wonder13662@gmail.com"
-        facebook_id: ""
-        gender: "M"
-        google_id: null
-        id: "1"
-        kakao_id: "311947172"
-        mobile: "010-1234-5678"
-        name: "정원덕"
-        naver_id: ""
-        nickname: "정원덕"
-        permission: "U"
-        status: "A"
-        thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
-      }
-      */
 
       // 로그인한 유저 정보가 들어왔습니다.
       this.loginUser = loginUser;
@@ -235,7 +248,9 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
     // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / init / 시작");
 
-    this.setMyChecker();
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    // 로그인한 유저 정보를 가져옵니다.
     this.setLoginUser();
 
   }  
@@ -258,14 +273,15 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
     // name
     this.nameComponent.setName(this.loginUser.name);
     this.name = this.loginUser.name;
-
-        /*
+  
     // nickname
     this.nicknameComponent.setNickname(this.loginUser.nickname);
     this.nickname = this.loginUser.nickname;
+
     // thumbnail
     this.profileImgUploadComponent.setProfileImg(this.loginUser.thumbnail);
     this.thumbnail = this.loginUser.thumbnail;
+
     // mobile
     let mobile:string = this.loginUser.mobile;
     let mobileArr:string[] = mobile.split("-");
@@ -275,8 +291,10 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
       this.mobileComponent.setMobileBody(mobileArr[1]);
       this.mobileComponent.setMobileTail(mobileArr[2]);
     }
+
     // gender
     this.genderComponent.setGender(this.loginUser.gender);
+
     // birthday
     let birthday:string = this.loginUser.birthday;
     let birthdayArr:string[] = birthday.split("-");
@@ -286,7 +304,6 @@ export class MyInfoComponent implements OnInit, AfterViewChecked {
       this.birthdayComponent.setBirthMonth(birthdayArr[1]);
       this.birthdayComponent.setBirthDay(birthdayArr[2]);
     }
-    */
 
   }
 

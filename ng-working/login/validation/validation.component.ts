@@ -5,7 +5,8 @@ import {  Component,
           Input, 
           Output,
           ViewChild,
-          OnInit }              from '@angular/core';
+          OnInit,
+          AfterViewInit }       from '@angular/core';
 import {  Router,
           Resolve,
           ActivatedRoute,
@@ -29,7 +30,7 @@ import { MyEventWatchTowerService }     from '../../util/service/my-event-watcht
   templateUrl: 'validation.component.html',
   styleUrls: [ 'validation.component.css' ]
 })
-export class ValidationComponent implements OnInit {
+export class ValidationComponent implements OnInit, AfterViewInit {
 
   private key:string;
 
@@ -47,7 +48,7 @@ export class ValidationComponent implements OnInit {
                 private myLoggerService: MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
-                private myEventWatchTowerService:MyEventWatchTowerService,
+                private watchTower:MyEventWatchTowerService,
                 private route: ActivatedRoute,
                 public router: Router) {}
 
@@ -57,14 +58,60 @@ export class ValidationComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("validation / ngOnInit / init");
 
+    // REMOVE ME
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.setIsAdmin();
+    // this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerReady();
+    // this.setMyCheckerReady();
 
-  }  
+  }
 
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  }
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }    
+
+  /*
   private setIsAdmin() :void {
 
     let isDebug:boolean = true;
@@ -72,11 +119,11 @@ export class ValidationComponent implements OnInit {
     if(isDebug) console.log("validation / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdmin();
     if(isDebug) console.log("validation / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
       if(isDebug) console.log("validation / setIsAdmin / isAdmin : ",isAdmin);
@@ -91,11 +138,11 @@ export class ValidationComponent implements OnInit {
     if(isDebug) console.log("validation / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.init();
     }
 
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("validation / setMyCheckerReady / isReady : ",isReady);
@@ -104,7 +151,7 @@ export class ValidationComponent implements OnInit {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
@@ -115,7 +162,31 @@ export class ValidationComponent implements OnInit {
 
       this.init();
     });    
+  }
+  private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("validation / setMyChecker / 시작");
+
+    if(this.watchTower.getIsMyCheckerReady()) {
+
+      this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(),
+        // constMap:any
+        this.watchTower.getConstMap(),
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(),
+        // apiKey:string
+        this.watchTower.getApiKey()
+      ); // end setReady
+
+      if(isDebug) console.log("validation / setMyChecker / done!");
+    } // end if
+
   }  
+  */  
 
   private init() :void {
 
@@ -123,33 +194,15 @@ export class ValidationComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("validation / init / 시작");
 
-    this.setMyChecker();
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
     this.getUserValidation();
+    
+    // REMOVE ME
+    // this.setMyChecker();
   }  
 
-  private setMyChecker() :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("validation / setMyChecker / 시작");
-
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
-
-      this.myCheckerService.setReady(
-        // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
-        // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
-        // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
-        // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
-      ); // end setReady
-
-      if(isDebug) console.log("validation / setMyChecker / done!");
-    } // end if
-
-  }   
+   
 
   getUserValidation(): void {
 
@@ -234,7 +287,7 @@ export class ValidationComponent implements OnInit {
           // event-watchtower에게 로그인 정보를 전달. 로그인 관련 내용을 화면에 표시합니다.
           let user:User = myResponse.getDataProp("user")
           if(null != user) {
-            this.myEventWatchTowerService.announceLogin(user);
+            this.watchTower.announceLogin(user);
           }
 
         } else if(is_attack) {

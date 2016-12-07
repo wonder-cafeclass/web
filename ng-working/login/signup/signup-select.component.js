@@ -15,11 +15,11 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var SignupSelectComponent = (function () {
-    function SignupSelectComponent(loginService, myLoggerService, myCheckerService, myEventWatchTowerService, router) {
+    function SignupSelectComponent(loginService, myLoggerService, myCheckerService, watchTower, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.router = router;
         this.isAdmin = false;
         this.errorMsgArr = [];
@@ -29,78 +29,135 @@ var SignupSelectComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("signup-select / ngOnInit / 시작");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        // this.setMyCheckerReady();
     }; // end ngOnInit
-    SignupSelectComponent.prototype.setIsAdmin = function () {
-        var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+    SignupSelectComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
-            console.log("signup-select / setIsAdmin / 시작");
-        // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-        this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
-        if (isDebug)
-            console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ", this.isAdmin);
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
-            if (isDebug)
-                console.log("signup-select / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
-        });
+            console.log("signup-select / ngAfterViewInit");
+        this.asyncViewPack();
     };
-    SignupSelectComponent.prototype.setMyCheckerReady = function () {
+    SignupSelectComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
-            console.log("signup-select / setMyCheckerReady / 시작");
-        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
+            console.log("signup-select / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("signup-select / asyncViewPack / isViewPackReady : ", true);
             this.init();
-        }
-        // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
-            if (isDebug)
-                console.log("signup-select / setMyCheckerReady / isReady : ", isReady);
-            if (!isReady) {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorTypeNotValidValue, 
-                // errorMsg:string
-                "login / setMyCheckerReady / Failed! / isReady : " + isReady);
-                return;
-            }
-            _this.init();
-        });
-    };
-    SignupSelectComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("signup-select / setMyChecker / 시작");
-        if (this.myEventWatchTowerService.getIsMyCheckerReady()) {
-            this.myCheckerService.setReady(
-            // checkerMap:any
-            this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            this.myEventWatchTowerService.getApiKey()); // end setReady
-            if (isDebug)
-                console.log("signup-select / setMyChecker / done!");
         } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("signup-select / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
     };
+    SignupSelectComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    /*
+    private setIsAdmin() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("signup-select / setIsAdmin / 시작");
+  
+      // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
+      this.isAdmin = this.watchTower.getIsAdmin();
+      if(isDebug) console.log("signup-select / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
+  
+      // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+      this.watchTower.isViewPackReady$.subscribe(
+        (isAdmin:boolean) => {
+  
+        if(isDebug) console.log("signup-select / setIsAdmin / isAdmin : ",isAdmin);
+        this.isAdmin = isAdmin;
+      });
+    }
+  
+    private setMyCheckerReady() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("signup-select / setMyCheckerReady / 시작");
+  
+      // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+      if(this.watchTower.getIsMyCheckerReady()) {
+        this.init();
+      }
+  
+      // 주소 입력으로 바로 도착한 경우, app-component에서 checker의 값을 가져온다.
+      this.watchTower.myCheckerServicePackReady$.subscribe(
+        (isReady:boolean) => {
+  
+        if(isDebug) console.log("signup-select / setMyCheckerReady / isReady : ",isReady);
+  
+        if(!isReady) {
+          // 에러 로그 등록
+          this.myLoggerService.logError(
+            // apiKey:string
+            this.watchTower.getApiKey(),
+            // errorType:string
+            this.myLoggerService.errorTypeNotValidValue,
+            // errorMsg:string
+            `login / setMyCheckerReady / Failed! / isReady : ${isReady}`
+          );
+          return;
+        }
+  
+        this.init();
+      });
+    }
+  
+    private setMyChecker() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("signup-select / setMyChecker / 시작");
+  
+      if(this.watchTower.getIsMyCheckerReady()) {
+  
+        this.myCheckerService.setReady(
+          // checkerMap:any
+          this.watchTower.getCheckerMap(),
+          // constMap:any
+          this.watchTower.getConstMap(),
+          // dirtyWordList:any
+          this.watchTower.getDirtyWordList(),
+          // apiKey:string
+          this.watchTower.getApiKey()
+        ); // end setReady
+  
+        if(isDebug) console.log("signup-select / setMyChecker / done!");
+      } // end if
+  
+    }
+    */
     SignupSelectComponent.prototype.init = function () {
+        // REMOVE ME
+        // this.setMyChecker();
         var _this = this;
-        this.setMyChecker();
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -108,7 +165,7 @@ var SignupSelectComponent = (function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey(), 
+        this.watchTower.getApiKey(), 
         // pageType:string
         this.myLoggerService.pageTypeSignupSelect);
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
@@ -129,7 +186,7 @@ var SignupSelectComponent = (function () {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(myResponse.getError());
-                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
+                _this.watchTower.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
         });
         // 2. naver
@@ -149,7 +206,7 @@ var SignupSelectComponent = (function () {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(myResponse.getError());
-                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
+                _this.watchTower.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
         });
         // 3. facebook
@@ -169,11 +226,11 @@ var SignupSelectComponent = (function () {
                 // 에러 상황. 
                 // 에러 원인에 대한 로그를 화면에 표시!
                 _this.errorMsgArr.push(myResponse.getError());
-                _this.myEventWatchTowerService.announceErrorMsgArr(_this.errorMsgArr);
+                _this.watchTower.announceErrorMsgArr(_this.errorMsgArr);
             } // end if
         });
         // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
-        this.myEventWatchTowerService.announceToggleTopMenu(false);
+        this.watchTower.announceToggleTopMenu(false);
     }; // end init
     SignupSelectComponent = __decorate([
         core_1.Component({

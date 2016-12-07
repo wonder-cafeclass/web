@@ -36,17 +36,17 @@ export class MyLoggerService {
 
 	logActionPage (apiKey:string, pageType:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionPage / 시작");
 
 		if(null == apiKey || "" == apiKey) {
 			if(isDebug) console.log("my-logger.service / logActionPage / 중단 / apiKey is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 		if(null == pageType || "" == pageType) {
 			if(isDebug) console.log("my-logger.service / logActionPage / 중단 / pageType is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 
 	    // POST
@@ -81,17 +81,17 @@ export class MyLoggerService {
 
 	logActionDirtyWord (apiKey:string, dirtyWord:string): Promise<any> {
 
-	    // let isDebug:boolean = true;
-	    let isDebug:boolean = false;
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionDirtyWord / 시작");
 
 		if(null == apiKey || "" == apiKey) {
 			if(isDebug) console.log("my-logger.service / logActionDirtyWord / 중단 / apiKey is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 		if(null == dirtyWord || "" == dirtyWord) {
 			if(isDebug) console.log("my-logger.service / logActionDirtyWord / 중단 / dirtyWord is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 
 		// Need to implement!
@@ -116,15 +116,15 @@ export class MyLoggerService {
 
 		if(null == apiKey || "" == apiKey) {
 			if(isDebug) console.log("my-logger.service / logError / 중단 / apiKey is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 		if(null == errorType || "" == errorType) {
 			if(isDebug) console.log("my-logger.service / logError / 중단 / errorType is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 		if(null == errorMsg || "" == errorMsg) {
 			if(isDebug) console.log("my-logger.service / logError / 중단 / errorMsg is not valid!");
-			return;
+			return Promise.resolve(null);
 		}
 
 	    // POST

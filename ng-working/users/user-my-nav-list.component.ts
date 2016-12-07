@@ -1,6 +1,7 @@
 import {  Component, 
           ViewChild,
           OnInit, 
+          AfterViewInit,
           SimpleChanges,
           Output, 
           EventEmitter,
@@ -29,7 +30,7 @@ import { MyResponse }                 from '../util/model/my-response';
   templateUrl: 'user-my-nav-list.component.html',
   styleUrls: [ 'user-my-nav-list.component.css' ]
 })
-export class UserMyNavListComponent implements OnInit {
+export class UserMyNavListComponent implements OnInit, AfterViewInit {
 
   navTabsOptions:RadioBtnOption[];
 
@@ -50,7 +51,7 @@ export class UserMyNavListComponent implements OnInit {
                 public myEventService:MyEventService, 
                 public myLoggerService:MyLoggerService,
                 private radiobtnService:KlassRadioBtnService,
-                private myEventWatchTowerService:MyEventWatchTowerService, 
+                private watchTower:MyEventWatchTowerService, 
                 private myCheckerService:MyCheckerService) {}
 
   ngOnInit(): void {
@@ -59,14 +60,61 @@ export class UserMyNavListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("user-my-nav-list / ngOnInit / init");
 
+    // REMOVE ME
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.setIsAdmin();
+    // this.setIsAdmin();
 
     // my-checker.service의 apikey 가져옴. 
-    this.setMyCheckerServiceReady();
+    // this.setMyCheckerServiceReady();
 
   }
 
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  } 
+  
+  private asyncViewPack(): void {
+    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user-my-nav-list / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("user-my-nav-list / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("user-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }   
+
+  /*
   private setIsAdmin() :void {
 
     let isDebug:boolean = true;
@@ -74,11 +122,11 @@ export class UserMyNavListComponent implements OnInit {
     if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작");
 
     // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-    this.isAdmin = this.myEventWatchTowerService.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdmin();
     if(isDebug) console.log("user-my-nav-list / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
 
     // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-    this.myEventWatchTowerService.isAdmin$.subscribe(
+    this.watchTower.isViewPackReady$.subscribe(
       (isAdmin:boolean) => {
 
       if(isDebug) console.log("user-my-nav-list / setIsAdmin / isAdmin : ",isAdmin);
@@ -93,12 +141,12 @@ export class UserMyNavListComponent implements OnInit {
     if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
       this.setMyCheckerService();
       this.init();
     }
 
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("user-my-nav-list / setMyCheckerServiceReady / isReady : ",isReady);
@@ -107,7 +155,7 @@ export class UserMyNavListComponent implements OnInit {
         // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
-          this.myEventWatchTowerService.getApiKey(),
+          this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorTypeNotValidValue,
           // errorMsg:string
@@ -127,30 +175,33 @@ export class UserMyNavListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("user-my-nav-list / setMyCheckerService / 시작");
 
-    if(this.myEventWatchTowerService.getIsMyCheckerReady()) {
+    if(this.watchTower.getIsMyCheckerReady()) {
 
       this.myCheckerService.setReady(
         // checkerMap:any
-        this.myEventWatchTowerService.getCheckerMap(),
+        this.watchTower.getCheckerMap(),
         // constMap:any
-        this.myEventWatchTowerService.getConstMap(),
+        this.watchTower.getConstMap(),
         // dirtyWordList:any
-        this.myEventWatchTowerService.getDirtyWordList(),
+        this.watchTower.getDirtyWordList(),
         // apiKey:string
-        this.myEventWatchTowerService.getApiKey()
+        this.watchTower.getApiKey()
       ); // end setReady
 
       if(isDebug) console.log("user-my-nav-list / setMyCheckerService / done!");
     } // end if
 
-  }   
+  } 
+  */  
 
   private init() :void {
+
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("user-my-nav-list / init");
-
 
     // COLOR
     this.colorWhite = this.klassColorService.white;

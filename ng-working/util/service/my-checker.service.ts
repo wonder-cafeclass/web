@@ -85,6 +85,10 @@ export class MyCheckerService {
     // @ Desc : 서버에서 받아온 checker json 파일에 있는 filterKey를 넘겨 받으면 이를 기반으로 MyChecker 객체를 만들어 돌려줍니다.
     getMyChecker (filterKey:string) :MyChecker {
 
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-checker.service / getMyChecker / 시작");
+
         if(null == this.checkerMap) {
             console.log("!Error! / my-checker.service / null == this.checkerMap");
             return null;
@@ -754,7 +758,6 @@ export class MyCheckerService {
         }
 
         let matchArr:RegExpMatchArray = filter.match(this.regExpRegExIncludeMatch);
-        console.log("TEST / matchArr : ",matchArr);
 
         return "";
     }    
@@ -762,9 +765,12 @@ export class MyCheckerService {
 
     getChecker (): Promise<any> {
 
-        let req_url = this.us.get(this.apiGetChecker);
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-checker.service / getChecker / 시작");
 
-        console.log("MyCheckerService / getChecker / req_url : ",req_url);
+        let req_url = this.us.get(this.apiGetChecker);
+        if(isDebug) console.log("my-checker.service / getChecker / req_url : ",req_url);
 
         return this.http.get(req_url)
                     .toPromise()

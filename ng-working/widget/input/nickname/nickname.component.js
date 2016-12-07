@@ -14,15 +14,15 @@ var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var NicknameComponent = (function () {
-    function NicknameComponent(myLoggerService, myEventWatchTowerService, myEventService) {
+    function NicknameComponent(myLoggerService, myCheckerService, watchTower, myEventService) {
         this.myLoggerService = myLoggerService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.myCheckerService = myCheckerService;
+        this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isWarning = false;
         this.isSuccessInput = false;
@@ -44,55 +44,128 @@ var NicknameComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("nickname / ngOnInit / init");
+        // REMOVE ME
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.setIsAdmin();
+        // this.setIsAdmin();
         // my-checker.service의 apikey 가져옴. 
-        this.setMyCheckerReady();
+        // this.setMyCheckerServiceReady();
     };
-    NicknameComponent.prototype.setIsAdmin = function () {
+    NicknameComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    NicknameComponent.prototype.asyncViewPack = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("nickname / setIsAdmin / 시작");
+            console.log("my-info / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("my-info / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    NicknameComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    // REMOVE ME
+    /*
+      private setIsAdmin() :void {
+    
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("nickname / setIsAdmin / 시작");
+    
+        // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
+        if(this.watchTower.getIsMyCheckerReady()) {
+          this.setMyCheckerService();
+          this.init();
+        }
+    
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.myEventWatchTowerService.isAdmin$.subscribe(function (isAdmin) {
-            if (isDebug)
-                console.log("nickname / setIsAdmin / isAdmin : ", isAdmin);
-            _this.isAdmin = isAdmin;
+        this.watchTower.isViewPackReady$.subscribe(
+          (isAdmin:boolean) => {
+    
+          if(isDebug) console.log("nickname / setIsAdmin / isAdmin : ",isAdmin);
+          this.isAdmin = isAdmin;
         });
-    };
-    NicknameComponent.prototype.setMyCheckerReady = function () {
-        var _this = this;
-        var isDebug = true;
+      }
+    
+      private setMyCheckerServiceReady() :void {
+    
+        let isDebug:boolean = true;
         // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("nickname / setMyCheckerReady / 시작");
-        this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(function (isReady) {
-            if (isDebug)
-                console.log("nickname / setMyCheckerReady / isReady : ", isReady);
-            if (!isReady) {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorTypeNotValidValue, 
-                // errorMsg:string
-                "nickname / setMyCheckerReady / Failed! / isReady : " + isReady);
-                return;
-            }
-            _this.myCheckerService.setReady(
-            // checkerMap:any
-            _this.myEventWatchTowerService.getCheckerMap(), 
-            // constMap:any
-            _this.myEventWatchTowerService.getConstMap(), 
-            // dirtyWordList:any
-            _this.myEventWatchTowerService.getDirtyWordList(), 
-            // apiKey:string
-            _this.myEventWatchTowerService.getApiKey()); // end setReady
+        if(isDebug) console.log("nickname / setMyCheckerServiceReady / 시작");
+    
+        this.watchTower.myCheckerServicePackReady$.subscribe(
+          (isReady:boolean) => {
+    
+          if(isDebug) console.log("nickname / setMyCheckerServiceReady / isReady : ",isReady);
+    
+          if(!isReady) {
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorTypeNotValidValue,
+              // errorMsg:string
+              `nickname / setMyCheckerServiceReady / Failed! / isReady : ${isReady}`
+            );
+            return;
+          }
+    
+          this.setMyCheckerService();
+          this.init();
+    
         });
-    };
+      }
+    
+      private setMyCheckerService() :void {
+    
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("nickname / setMyCheckerService / 시작");
+    
+        if(this.watchTower.getIsMyCheckerReady()) {
+    
+          this.myCheckerService.setReady(
+            // checkerMap:any
+            this.watchTower.getCheckerMap(),
+            // constMap:any
+            this.watchTower.getConstMap(),
+            // dirtyWordList:any
+            this.watchTower.getDirtyWordList(),
+            // apiKey:string
+            this.watchTower.getApiKey()
+          ); // end setReady
+    
+          if(isDebug) console.log("nickname / setMyCheckerService / done!");
+        } // end if
+    
+      }
+    */
     NicknameComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -101,21 +174,37 @@ var NicknameComponent = (function () {
             this.myChecker = this.myCheckerService.getMyChecker("user_nickname");
         }
     };
+    NicknameComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        this.setMyChecker();
+    };
     NicknameComponent.prototype.isOK = function (input) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / isOK / 시작");
+        if (isDebug)
+            console.log("nickname / isOK / input : ", input);
         if (null == this.myCheckerService) {
             return false;
         }
-        this.setMyChecker();
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     NicknameComponent.prototype.setNickname = function (nickname) {
-        console.log("TEST / nickname : ", nickname);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / setNickname / 시작");
+        if (isDebug)
+            console.log("nickname / setNickname / nickname : ", nickname);
         if (this.isOK(nickname)) {
             this.inputStrPrev = nickname;
         }
         else {
             var history_1 = this.myCheckerService.getLastHistory();
-            console.log("nickname / setNickname / history : ", history_1);
+            if (isDebug)
+                console.log("nickname / setNickname / history : ", history_1);
         }
     };
     // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
@@ -138,8 +227,6 @@ var NicknameComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     NicknameComponent.prototype.onFocus = function (event, element) {
         event.stopPropagation();
@@ -147,8 +234,6 @@ var NicknameComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     NicknameComponent.prototype.onKeydownTab = function (event) {
         // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
@@ -161,6 +246,10 @@ var NicknameComponent = (function () {
         this.isFocus = false;
     };
     NicknameComponent.prototype.onBlur = function (event, element) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / onBlur / 시작");
         event.stopPropagation();
         event.preventDefault();
         if (this.isFocus) {
@@ -175,7 +264,8 @@ var NicknameComponent = (function () {
             if (!isOK) {
                 // 원인을 찾아봅니다.
                 var history_2 = this.myCheckerService.getLastHistory();
-                console.log("nickname / onBlur / history : ", history_2);
+                if (isDebug)
+                    console.log("nickname / onBlur / history : ", history_2);
                 if (null != history_2 && null != history_2.key && null != history_2.msg) {
                     // Do something..
                     if ("min" === history_2.key) {
@@ -231,7 +321,7 @@ var NicknameComponent = (function () {
                 // Logger - Spam 행위로 등록.
                 this.myLoggerService.logActionDirtyWord(
                 // apiKey:string
-                this.myEventWatchTowerService.getApiKey(), 
+                this.watchTower.getApiKey(), 
                 // dirtyWord:string
                 inputStrBeforeSanitize);
                 this.isSuccessInput = false;
@@ -379,10 +469,6 @@ var NicknameComponent = (function () {
         __metadata('design:type', Number)
     ], NicknameComponent.prototype, "leftWarning", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], NicknameComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], NicknameComponent.prototype, "emitter", void 0);
@@ -393,7 +479,7 @@ var NicknameComponent = (function () {
             templateUrl: 'nickname.component.html',
             styleUrls: ['nickname.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
     ], NicknameComponent);
     return NicknameComponent;
 }());

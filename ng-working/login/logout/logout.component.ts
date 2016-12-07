@@ -44,7 +44,7 @@ export class LogoutComponent implements OnInit {
     }
 
     // 직접 주소를 입력하여 이동한 경우.
-    this.myEventWatchTowerService.myCheckerServiceReady$.subscribe(
+    this.myEventWatchTowerService.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
       if(isDebug) console.log("logout / setMyCheckerReady / isReady : ",isReady);
