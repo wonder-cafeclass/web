@@ -22,11 +22,6 @@ var MyEventWatchTowerService = (function () {
         // Observable sources
         // @ Required for view
         this.isAdminSource = new Subject_1.Subject();
-        // REMOVE ME
-        // private checkerMapSource = new Subject<any>();
-        // private constMapSource = new Subject<any>();
-        // private dirtyWordListSource = new Subject<any>();
-        // private apiKeySource = new Subject<string>();
         this.myCheckerServicePackReadySource = new Subject_1.Subject();
         this.isViewPackReadySource = new Subject_1.Subject();
         // @ Optional for view
@@ -36,11 +31,6 @@ var MyEventWatchTowerService = (function () {
         // Observable streams
         // @ Required for view
         this.isAdmin$ = this.isAdminSource.asObservable();
-        // REMOVE ME
-        // checkerMap$ = this.checkerMapSource.asObservable();
-        // constMap$ = this.constMapSource.asObservable();
-        // dirtyWordList$ = this.dirtyWordListSource.asObservable();
-        // apiKey$ = this.apiKeySource.asObservable();
         this.myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
         this.isViewPackReady$ = this.isViewPackReadySource.asObservable();
         // @ Optional for view

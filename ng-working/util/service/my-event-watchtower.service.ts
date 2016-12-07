@@ -23,11 +23,6 @@ export class MyEventWatchTowerService {
 	// Observable sources
 	// @ Required for view
 	private isAdminSource = new Subject<boolean>();
-	// REMOVE ME
-	// private checkerMapSource = new Subject<any>();
-	// private constMapSource = new Subject<any>();
-	// private dirtyWordListSource = new Subject<any>();
-	// private apiKeySource = new Subject<string>();
 	private myCheckerServicePackReadySource = new Subject<boolean>();
 	private isViewPackReadySource = new Subject<boolean>();
 	// @ Optional for view
@@ -40,11 +35,6 @@ export class MyEventWatchTowerService {
 	// Observable streams
 	// @ Required for view
 	isAdmin$ = this.isAdminSource.asObservable();
-	// REMOVE ME
-	// checkerMap$ = this.checkerMapSource.asObservable();
-	// constMap$ = this.constMapSource.asObservable();
-	// dirtyWordList$ = this.dirtyWordListSource.asObservable();
-	// apiKey$ = this.apiKeySource.asObservable();
 	myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
 	isViewPackReady$ = this.isViewPackReadySource.asObservable();
 	// @ Optional for view

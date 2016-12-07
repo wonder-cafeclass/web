@@ -140,9 +140,6 @@ export class MyCheckerService {
         let matches:string[] = [];
 
         // Type : Number
-        // REMOVE ME
-        // let minNumber:number = -1;
-        // let maxNumber:number = -1;
         let greaterThan:number = -1;
         let greaterThanEqualTo:number = -1;
         let lessThan:number = -1;

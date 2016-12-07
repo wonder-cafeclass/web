@@ -46,11 +46,6 @@ var EmailComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("email / ngOnInit / 시작");
-        // REMOVE ME
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        // this.setIsAdmin();
-        // my-checker.service의 apikey 가져옴. 
-        // this.setMyCheckerReady();
     };
     EmailComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -91,88 +86,6 @@ var EmailComponent = (function () {
         // apiKey:string
         this.watchTower.getApiKey()); // end setReady
     };
-    // REMOVE ME
-    /*
-    private setIsAdmin() :void {
-  
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("email / setIsAdmin / 시작");
-  
-      // 사전에 등록된 값을 가져옴. 페이지 이동시에는 직접 값을 가져와야 함.
-      this.isAdmin = this.watchTower.getIsAdmin();
-      if(isDebug) console.log("email / setIsAdmin / 시작 / this.isAdmin : ",this.isAdmin);
-  
-      // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-      this.watchTower.isViewPackReady$.subscribe(
-        (isAdmin:boolean) => {
-  
-        if(isDebug) console.log("email / setIsAdmin / isAdmin : ",isAdmin);
-        this.isAdmin = isAdmin;
-      });
-    }
-    private setMyCheckerReady() :void {
-  
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("email / setMyCheckerReady / 시작");
-  
-      // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
-      if(this.watchTower.getIsMyCheckerReady()) {
-        this.init();
-      }
-  
-      // 직접 주소를 입력하여 이동한 경우.
-      this.watchTower.myCheckerServicePackReady$.subscribe(
-        (isReady:boolean) => {
-  
-        if(isDebug) console.log("signup / setMyCheckerReady / isReady : ",isReady);
-  
-        if(!isReady) {
-          // 에러 로그 등록
-          this.myLoggerService.logError(
-            // apiKey:string
-            this.watchTower.getApiKey(),
-            // errorType:string
-            this.myLoggerService.errorTypeNotValidValue,
-            // errorMsg:string
-            `signup / setMyCheckerReady / Failed! / isReady : ${isReady}`
-          );
-          return;
-        }
-  
-        this.init();
-  
-      }); // end subscribe
-    }
-    private setMyChecker() :void {
-  
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("email / setMyChecker / 시작");
-  
-      if(this.watchTower.getIsMyCheckerReady()) {
-  
-        this.myCheckerService.setReady(
-          // checkerMap:any
-          this.watchTower.getCheckerMap(),
-          // constMap:any
-          this.watchTower.getConstMap(),
-          // dirtyWordList:any
-          this.watchTower.getDirtyWordList(),
-          // apiKey:string
-          this.watchTower.getApiKey()
-        ); // end setReady
-  
-        if(isDebug) console.log("email / setMyChecker / done!");
-      } // end if
-  
-      if(null == this.myChecker) {
-        this.myChecker = this.myCheckerService.getMyChecker("user_email");
-      }
-  
-    }
-    */
     EmailComponent.prototype.setMyChecker = function () {
         // let isDebug:boolean = true;
         var isDebug = false;

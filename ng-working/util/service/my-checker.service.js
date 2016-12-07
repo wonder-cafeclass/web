@@ -134,9 +134,6 @@ var MyCheckerService = (function () {
         var uniqueColumn = "";
         var matches = [];
         // Type : Number
-        // REMOVE ME
-        // let minNumber:number = -1;
-        // let maxNumber:number = -1;
         var greaterThan = -1;
         var greaterThanEqualTo = -1;
         var lessThan = -1;
