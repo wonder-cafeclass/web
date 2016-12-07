@@ -47,16 +47,16 @@ var NameComponent = (function () {
     };
     NameComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / ngAfterViewInit");
         this.asyncViewPack();
     };
     NameComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -85,8 +85,8 @@ var NameComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     NameComponent.prototype.setMyChecker = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / setMyChecker / 시작");
         if (null == this.myChecker) {
@@ -96,8 +96,8 @@ var NameComponent = (function () {
         }
     };
     NameComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / init / 시작");
         // 뷰에 필요한 공통 정보를 설정합니다.
@@ -106,8 +106,8 @@ var NameComponent = (function () {
         this.setMyChecker();
     };
     NameComponent.prototype.isOK = function (input) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / isOK / 시작");
         if (null == this.myCheckerService) {
@@ -126,8 +126,8 @@ var NameComponent = (function () {
         return isOK;
     };
     NameComponent.prototype.setName = function (name) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / setName / 시작");
         if (isDebug)

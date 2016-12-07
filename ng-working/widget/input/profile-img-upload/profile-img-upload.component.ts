@@ -78,8 +78,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -87,8 +87,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   } 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -121,8 +121,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
   private setMyChecker() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("profile-img-upload / setMyChecker / 시작");
 
     if(null == this.myChecker) {

@@ -115,8 +115,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -125,8 +125,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -159,8 +159,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -207,8 +207,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
   private checkSignedUpUserInfo() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / checkSignedUpUserInfo / 시작");
 
     // 다른 플랫폼으로 로그인 뒤에 회원 가입으로 진입했다면, 해당 파라미터로 미리 등록된 유저 정보를 가져옵니다.
@@ -341,20 +341,23 @@ export class SignupComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / onClickSignup / 시작");    
+
     let isAllOK:boolean = true;
 
     // 약관 동의 확인. 
     if(!this.hasAgreedWithTerms) {
+      if(isDebug) console.log("signup / onClickSignup / this.hasAgreedWithTerms : ",this.hasAgreedWithTerms);
       isAllOK = false;
 
       // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
       this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
     }
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("signup / onClickSignup / 시작");
-
+    // @ Required
+    // Email
     // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
     // 문제가 있다면 해당 필드에 경고를 보여줍니다.
     let hasNotDoneEmail:boolean = this.emailComponent.hasNotDone();
@@ -363,7 +366,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneEmail : ",hasNotDoneEmail);
       isAllOK = false;
     }
-
+    // @ Required
+    // Password
     let hasNotDonePassword:boolean = this.passwordComponent.hasNotDoneP();
     let hasNotDoneRepassword:boolean = false;
     if(hasNotDonePassword) {
@@ -380,21 +384,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneRepassword : ",hasNotDoneRepassword);
       isAllOK = false;
     }
-
-    let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
-    if(hasNotDoneName) {
-      this.nameComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneName : ",hasNotDoneName);
-      isAllOK = false;
-    }
-
-    let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
-    if(hasNotDoneNickname) {
-      this.nicknameComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneNickname : ",hasNotDoneNickname);
-      isAllOK = false;
-    }
-
+    // @ Required
+    // 전화번호
     let hasNotDoneMobileHead:boolean = this.mobileComponent.hasNotDoneMobileHead();
     let hasNotDoneMobileBody:boolean = false;
     let hasNotDoneMobileTail:boolean = false;
@@ -424,57 +415,77 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.mobileComponent.showWarningMobileTail();
       isAllOK = false;
     } 
-
+    // @ Required
+    // gender
     let hasNotDoneGender:boolean = this.genderComponent.hasNotDone();   
     if(hasNotDoneGender) {
       this.genderComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneGender : ",hasNotDoneGender);
       isAllOK = false;
     }
+    // @ Required
+    // name
+    let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
+    if(hasNotDoneNickname) {
+      this.nicknameComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneNickname : ",hasNotDoneNickname);
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
+    }    
 
+
+
+    // @ Optional
+    let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
+    if(hasNotDoneName) {
+      this.nameComponent.showWarning();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneName : ",hasNotDoneName);
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
+    }
+    // @ Optional
     // 생년월일 검사
     let hasNotDoneBirthYear:boolean = this.birthdayComponent.hasNotDoneBirthYear();
     if(hasNotDoneBirthYear) {
       this.birthdayComponent.showWarningBirthYear();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthYear : ",hasNotDoneBirthYear);
-      isAllOK = false;
-    }
-    if(null == this.birthYear || "" === this.birthYear) {
-      this.birthYear = this.birthdayComponent.getBirthYear();
-    }
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
 
+    }
     let hasNotDoneBirthMonth:boolean = this.birthdayComponent.hasNotDoneBirthMonth();
     if(hasNotDoneBirthMonth) {
       this.birthdayComponent.showWarningBirthMonth();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthMonth : ",hasNotDoneBirthMonth);
-      isAllOK = false;
-    }
-    if(null == this.birthMonth || "" === this.birthMonth) {
-      this.birthMonth = this.birthdayComponent.getBirthMonth();
-    }
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
 
+    }
     let hasNotDoneBirthDay:boolean = this.birthdayComponent.hasNotDoneBirthDay();
     if(hasNotDoneBirthDay) {
       this.birthdayComponent.showWarningBirthDay();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthDay : ",hasNotDoneBirthDay);
-      isAllOK = false;
-    }
-    if(null == this.birthDay || "" === this.birthDay) {
-      this.birthDay = this.birthdayComponent.getBirthDay();
-    }
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
 
+    }
+    // @ Optional
     // 프로필 이미지 검사
     let hasNotDoneProfileImg:boolean = this.profileImgUploadComponent.hasNotDone();
     if(hasNotDoneProfileImg) {
       this.profileImgUploadComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneProfileImg : ",hasNotDoneProfileImg);
-      isAllOK = false;
-    }
-    if(null == this.thumbnail || "" === this.thumbnail) {
-      this.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+      // 유효한 값이 아닙니다!
+      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
+
+    } else {
+      if(null == this.thumbnail || "" === this.thumbnail) {
+        this.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+      }
     }
 
-    // 전화번호 검사
+
+    
     if(isDebug) console.log("signup / onClickSignup / isAllOK : ",isAllOK);
 
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
@@ -485,9 +496,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
         // 1-1. 플랫폼을 통해 가입 - facebook
         // 1-2. 플랫폼을 통해 가입 - kakao
         // 1-3. 플랫폼을 통해 가입 - naver
+        if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통해 가입");
         this.updateUser();
       } else if(null == this.user) {
         // 2. 플랫폼을 통하지 않고 직접 가입.
+        if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
         this.addUser();
       } // end inner if
     } // end outer if
@@ -495,8 +508,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   updateUser() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
     if(isDebug) console.log("signup / updateUser / this.user.id : ",this.user.id);
@@ -643,8 +656,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   sendMailUserValidation(userId:number, email:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / sendMailUserValidation / 시작");
 
     this.userService

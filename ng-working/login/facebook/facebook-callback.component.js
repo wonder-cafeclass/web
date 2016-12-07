@@ -31,15 +31,15 @@ var FacebookCallbackComponent = (function () {
         // Do something...
     } // end function
     FacebookCallbackComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / ngOnInit / init");
     }; // end function
     FacebookCallbackComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / ngAfterViewInit");
         this.asyncViewPack();
@@ -50,8 +50,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -88,8 +88,8 @@ var FacebookCallbackComponent = (function () {
         this.getQueryString();
     };
     FacebookCallbackComponent.prototype.logActionPage = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getQueryString / init");
         // 페이지 진입을 기록으로 남깁니다.
@@ -105,8 +105,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getQueryString = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getQueryString / init");
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -129,8 +129,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getState = function (state, code) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getState / init");
         if (null == state || "" == state) {
@@ -178,8 +178,8 @@ var FacebookCallbackComponent = (function () {
     }; // end function
     FacebookCallbackComponent.prototype.getAccessToken = function (code) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getAccessToken / init");
         this.loginService
@@ -204,8 +204,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getMe = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getMe / init");
         this.loginService
@@ -257,8 +257,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.confirmUserFacebook = function (facebookId) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / confirmUserFacebook / init");
         if (isDebug)

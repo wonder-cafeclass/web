@@ -92,8 +92,8 @@ export class MyEventWatchTowerService {
 	// @ Desc : 뷰에 필요한 정보들이 모두 도착했는지 검사해서 알려줍니다.
 	announceIsViewPackReady() {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`my-event-watchtower / announceIsViewPackReady / 시작`);
 
 		if(null == this.isAdmin || !this.getIsMyCheckerReady()) {

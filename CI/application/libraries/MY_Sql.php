@@ -579,7 +579,7 @@ class MY_Sql
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
-            return;
+            $nickname = "";
         }
         if($this->is_not_ok("user_gender", $gender))
         {
@@ -587,19 +587,19 @@ class MY_Sql
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            return;
+            $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            return;
+            $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            return;
+            $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            return;
+            $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
@@ -614,11 +614,14 @@ class MY_Sql
             return;
         }
 
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
         $data = array(
             'nickname' => $nickname,
             'name' => $name,
             'gender' => $gender,
-            'birthday' => "$birth_year-$birth_month-$birth_day",
+            'birthday' => $birthday,
             'thumbnail' => $thumbnail,
             'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
             'email' => $email,
@@ -639,6 +642,17 @@ class MY_Sql
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
     } 
+
+    private function getBirthday($birth_year="", $birth_month="", $birth_day="") 
+    {
+        $birthday = "$birth_year-$birth_month-$birth_day";
+        if(empty($birth_year) || empty($birth_month) || empty($birth_day)) 
+        {
+            $birthday = "";
+        }
+
+        return $birthday;
+    }
 
     public function update_user($user_id=-1, $password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
     {
@@ -664,7 +678,7 @@ class MY_Sql
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
-            return;
+            $nickname = "";
         }
         if($this->is_not_ok("user_gender", $gender))
         {
@@ -672,19 +686,19 @@ class MY_Sql
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            return;
+            $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            return;
+            $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            return;
+            $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            return;
+            $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
@@ -699,11 +713,14 @@ class MY_Sql
             return;
         }
 
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
         $data = array(
             'nickname' => $nickname,
             'name' => $name,
             'gender' => $gender,
-            'birthday' => "$birth_year-$birth_month-$birth_day",
+            'birthday' => $birthday,
             'thumbnail' => $thumbnail,
             'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
             'email' => $email,

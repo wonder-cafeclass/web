@@ -49,8 +49,8 @@ export class SignupSelectComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -59,8 +59,8 @@ export class SignupSelectComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -96,8 +96,8 @@ export class SignupSelectComponent implements OnInit, AfterViewInit {
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup-select / init / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.

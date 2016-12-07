@@ -76,8 +76,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / ngOnInit / init");
 
     this.mobileHeadEmitted = this.mobileHeadPrev;
@@ -86,8 +86,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -95,8 +95,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -995,8 +995,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
     // 모든 전화번호를 가져와야 함.
     // 완성이 된 전화번호만 검사합니다.
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
 
     let isOK:boolean = this.isOKHead(this.mobileHeadEmitted);

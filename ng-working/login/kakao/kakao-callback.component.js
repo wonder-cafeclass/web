@@ -38,8 +38,8 @@ var KakaoCallbackComponent = (function () {
     }; // end function
     KakaoCallbackComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / ngAfterViewInit");
         this.asyncViewPack();
@@ -50,8 +50,8 @@ var KakaoCallbackComponent = (function () {
     };
     KakaoCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다.
@@ -92,8 +92,8 @@ var KakaoCallbackComponent = (function () {
         this.getQueryString();
     }; // end init
     KakaoCallbackComponent.prototype.logActionPage = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -109,8 +109,8 @@ var KakaoCallbackComponent = (function () {
     };
     KakaoCallbackComponent.prototype.getQueryString = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getQueryString / 시작");
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -129,8 +129,8 @@ var KakaoCallbackComponent = (function () {
     // 카카오 로그인 토큰을 가져옵니다.
     KakaoCallbackComponent.prototype.getKakaoToken = function (kakaoCode) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoToken / 시작");
         if (isDebug)
@@ -181,8 +181,8 @@ var KakaoCallbackComponent = (function () {
     // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
     KakaoCallbackComponent.prototype.getKakaoSignUp = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoSignUp / 시작");
         this.loginService
@@ -245,8 +245,8 @@ var KakaoCallbackComponent = (function () {
     };
     KakaoCallbackComponent.prototype.getKakaoMe = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getKakaoMe / 시작");
         this.loginService
@@ -278,8 +278,8 @@ var KakaoCallbackComponent = (function () {
     }; // end method 
     KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getUserByKakaoId / 시작");
         this.userService

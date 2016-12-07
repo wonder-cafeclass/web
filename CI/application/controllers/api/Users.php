@@ -304,6 +304,8 @@ class Users extends MY_REST_Controller {
             return;            
         }
 
+        // @ Required
+        // Email
         $email = 
         $this->my_paramchecker->post(
             // $key=""
@@ -311,6 +313,8 @@ class Users extends MY_REST_Controller {
             // $key_filter=""
             "user_email_insert"
         );
+        // @ Required
+        // Password
         $password = 
         $this->my_paramchecker->post(
             // $key=""
@@ -318,55 +322,8 @@ class Users extends MY_REST_Controller {
             // $key_filter=""
             "user_password"
         );
-        $name = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "name",
-            // $key_filter=""
-            "user_name"
-        );
-        $nickname = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "nickname",
-            // $key_filter=""
-            "user_nickname"
-        );
-        $gender = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "gender",
-            // $key_filter=""
-            "user_gender"
-        );
-        $birth_year = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "birth_year",
-            // $key_filter=""
-            "user_birth_year"
-        );
-        $birth_month = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "birth_month",
-            // $key_filter=""
-            "user_birth_month"
-        );
-        $birth_day = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "birth_day",
-            // $key_filter=""
-            "user_birth_day"
-        );
-        $thumbnail = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "thumbnail",
-            // $key_filter=""
-            "user_thumbnail"
-        );
+        // @ Required
+        // 전화번호        
         $mobile_head = 
         $this->my_paramchecker->post(
             // $key=""
@@ -388,7 +345,98 @@ class Users extends MY_REST_Controller {
             // $key_filter=""
             "user_mobile_kor_tail"
         );
+        // @ Required
+        // gender        
+        $gender = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "gender",
+            // $key_filter=""
+            "user_gender"
+        );
+        // @ Required
+        // name
+        $name = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "name",
+            // $key_filter=""
+            "user_name"
+        );
 
+
+        // @ Optional
+        // nickname
+        $nickname = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "nickname",
+            // $key_filter=""
+            "user_nickname",
+            // $is_no_record=false
+            true
+        );
+        if(is_null($nickname)) 
+        {
+            $nickname = "";
+        }
+        // @ Optional
+        // birthday
+        $birth_year = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_year",
+            // $key_filter=""
+            "user_birth_year",
+            // $is_no_record=false
+            true
+        );
+        if(is_null($birth_year)) 
+        {
+            $birth_year = "";
+        }
+        $birth_month = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_month",
+            // $key_filter=""
+            "user_birth_month",
+            // $is_no_record=false
+            true
+        );
+        if(is_null($birth_month)) 
+        {
+            $birth_month = "";
+        }
+        $birth_day = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_day",
+            // $key_filter=""
+            "user_birth_day",
+            // $is_no_record=false
+            true            
+        );
+        if(is_null($birth_day)) 
+        {
+            $birth_day = "";
+        }
+        // @ Optional - 지정한 섬네일이 없다면, 기본 섬네일로 설정됨.
+        // thumbnail
+        $thumbnail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "thumbnail",
+            // $key_filter=""
+            "user_thumbnail",
+            // $is_no_record=false
+            true            
+        );
+        if(is_null($thumbnail)) 
+        {
+            $thumbnail = "";
+        }
+        
         // CHECK LIST
         $is_ok = true;
         $check_list = 

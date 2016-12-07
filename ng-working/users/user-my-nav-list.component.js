@@ -31,23 +31,23 @@ var UserMyNavListComponent = (function () {
         this.isAdmin = false;
     }
     UserMyNavListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / ngOnInit / init");
     };
     UserMyNavListComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / ngAfterViewInit");
         this.asyncViewPack();
     };
     UserMyNavListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -78,8 +78,8 @@ var UserMyNavListComponent = (function () {
     UserMyNavListComponent.prototype.init = function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / init");
         // COLOR
@@ -101,8 +101,8 @@ var UserMyNavListComponent = (function () {
             console.log("user-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);
     };
     UserMyNavListComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / onChangedFromChild / init");
         if (isDebug)

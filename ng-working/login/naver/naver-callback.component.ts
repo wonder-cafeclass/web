@@ -48,8 +48,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / ngOnInit / init");
 
   } // end function
@@ -57,8 +57,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -72,8 +72,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -114,8 +114,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logActionPage() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -132,8 +132,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getQueryString() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / getQueryString / 시작");
 
     this.subscription = this.activatedRoute.queryParams.subscribe(
@@ -173,8 +173,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getNaverState(state:string, code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / getNaverState / init");
 
     if(null == state || "" == state) {
@@ -240,8 +240,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
   private getNaverAccess(code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / getNaverAccess / init");
 
     if(null == code || "" == code) {
@@ -292,8 +292,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // @ Desc : Naver REST API로 회원정보를 가져옵니다.
   private getNaverMe() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / getNaverMe / init");
 
     this.loginService
@@ -367,8 +367,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private confirmUserNaver(naverId:string) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("\nnaver-callback / confirmUserNaver / init");
 
     this.userService

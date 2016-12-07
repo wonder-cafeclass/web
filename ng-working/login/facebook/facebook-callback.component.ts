@@ -47,8 +47,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / ngOnInit / init");
 
   } // end function
@@ -56,8 +56,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -71,8 +71,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -117,8 +117,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   
   private logActionPage() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getQueryString / init");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -135,8 +135,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getQueryString() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getQueryString / init");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -165,8 +165,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getState(state:string, code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getState / init");
 
     if(null == state || "" == state) {
@@ -222,8 +222,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getAccessToken(code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getAccessToken / init");
 
     this.loginService
@@ -251,8 +251,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getMe() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getMe / init");
 
     this.loginService
@@ -311,8 +311,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private confirmUserFacebook(facebookId:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
     if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
 

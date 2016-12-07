@@ -72,8 +72,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("email / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -81,8 +81,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("email / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -153,8 +153,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("email / onBlur / logPageEnter / 시작");
 
     event.stopPropagation();
@@ -414,8 +414,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
 
   public isOK(email:string) :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("email / isOK / 시작");
 
     let isOK:boolean = false;

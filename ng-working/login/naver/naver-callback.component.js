@@ -31,15 +31,15 @@ var NaverCallbackComponent = (function () {
         this.errorMsgArr = [];
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / ngOnInit / init");
     }; // end function
     NaverCallbackComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / ngAfterViewInit");
         this.asyncViewPack();
@@ -50,8 +50,8 @@ var NaverCallbackComponent = (function () {
     };
     NaverCallbackComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -85,8 +85,8 @@ var NaverCallbackComponent = (function () {
         this.getQueryString();
     };
     NaverCallbackComponent.prototype.logActionPage = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -102,8 +102,8 @@ var NaverCallbackComponent = (function () {
     };
     NaverCallbackComponent.prototype.getQueryString = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / getQueryString / 시작");
         this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
@@ -135,8 +135,8 @@ var NaverCallbackComponent = (function () {
     };
     NaverCallbackComponent.prototype.getNaverState = function (state, code) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / getNaverState / init");
         if (null == state || "" == state) {
@@ -196,8 +196,8 @@ var NaverCallbackComponent = (function () {
     // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
     NaverCallbackComponent.prototype.getNaverAccess = function (code) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / getNaverAccess / init");
         if (null == code || "" == code) {
@@ -240,8 +240,8 @@ var NaverCallbackComponent = (function () {
     // @ Desc : Naver REST API로 회원정보를 가져옵니다.
     NaverCallbackComponent.prototype.getNaverMe = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / getNaverMe / init");
         this.loginService
@@ -302,8 +302,8 @@ var NaverCallbackComponent = (function () {
     }; // end method  
     NaverCallbackComponent.prototype.confirmUserNaver = function (naverId) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("\nnaver-callback / confirmUserNaver / init");
         this.userService

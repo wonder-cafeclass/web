@@ -8,19 +8,19 @@ import { Injectable }             from '@angular/core';
 @Injectable()
 export class MyBirthdayService {
 
-	private dayCntPerMonths:number[] = [
-		31, // January
-		29, // February
-		31,	// March
-		30, // April
-		31, // May
-		30, // June
-		31, // July
-		31, // August
-		30, // September
-		31, // October
-		30, // November
-		31  // December		
+	private dayCntPerMonths:string[] = [
+		"31", // January
+		"29", // February
+		"31", // March
+		"30", // April
+		"31", // May
+		"30", // June
+		"31", // July
+		"31", // August
+		"30", // September
+		"31", // October
+		"30", // November
+		"31"  // December		
 	];
 
 	constructor() {}
@@ -30,7 +30,7 @@ export class MyBirthdayService {
 	}
 
 	// @ Desc : 1950년부터 (현재연도 - 20년) 까지의 연도 배열을 가져옵니다.
-	getYear (): number[] {
+	getYear (): string[] {
 		// 현재 연도 가져오기.
 		let d:Date = new Date();
 		let n:number = d.getFullYear();
@@ -38,36 +38,36 @@ export class MyBirthdayService {
 		let yearMin:number = 1950;
 		let yearMax:number = n - 20;
 
-		let yearArr:number[] = [];
+		let yearArr:string[] = [];
 		for (var i = yearMin; i <= yearMax; ++i) {
-			yearArr.push(i);
+			yearArr.push("" + i);
 		}
 
 		return yearArr;
 	}
 
 	// @ Desc : 1월 ~ 12월
-	getMonth (): number[] {
-		let monthArr:number[] = [];
+	getMonth (): string[] {
+		let monthArr:string[] = [];
 		for (var i = 1; i <= 12; ++i) {
-			monthArr.push(i);
+			monthArr.push("" + i);
 		}
 
 		return monthArr;
 
 	}
 
-	getDay (month:number): number[] {
+	getDay (month:number): string[] {
 
 		if(month < 1 || 12 < month) {
-			return null;
+			return [];
 		}
 
-		let dayCnt:number = this.dayCntPerMonths[(month - 1)];
+		let dayCnt:number = +this.dayCntPerMonths[(month - 1)];
 
-		let dayArr:number[] = [];
+		let dayArr:string[] = [];
 		for (var i = 1; i <= dayCnt; ++i) {
-			dayArr.push(i);
+			dayArr.push("" + i);
 		}
 
 		return dayArr;

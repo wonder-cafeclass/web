@@ -48,8 +48,8 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -78,16 +78,16 @@ var KlassListComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     KlassListComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / init / 시작");
         this.setViewPack();
         this.logPageEnter();
     };
     KlassListComponent.prototype.logPageEnter = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.

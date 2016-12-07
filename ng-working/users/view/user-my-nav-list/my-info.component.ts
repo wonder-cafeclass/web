@@ -94,8 +94,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -104,8 +104,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -139,8 +139,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private setLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / setLoginUser / 시작");
 
     // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
@@ -164,8 +164,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -177,8 +177,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   fillViewUserInfo() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / fillViewUserInfo");
     if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser : ",this.loginUser);
 
@@ -222,7 +222,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(null != birthdayArr && 3 === birthdayArr.length) {
       this.birthdayComponent.setBirthYear(birthdayArr[0]);
       this.birthdayComponent.setBirthMonth(birthdayArr[1]);
-      this.birthdayComponent.setBirthDay(birthdayArr[2]);
+      this.birthdayComponent.setBirthDay(birthdayArr[1], birthdayArr[2]);
     }
 
   }

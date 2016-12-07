@@ -49,16 +49,16 @@ var EmailComponent = (function () {
     };
     EmailComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("email / ngAfterViewInit");
         this.asyncViewPack();
     };
     EmailComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("email / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -121,8 +121,8 @@ var EmailComponent = (function () {
     };
     EmailComponent.prototype.onBlur = function (event, email, element) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("email / onBlur / logPageEnter / 시작");
         event.stopPropagation();
@@ -337,8 +337,8 @@ var EmailComponent = (function () {
         }
     };
     EmailComponent.prototype.isOK = function (email) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("email / isOK / 시작");
         var isOK = false;

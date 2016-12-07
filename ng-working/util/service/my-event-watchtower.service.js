@@ -83,8 +83,8 @@ var MyEventWatchTowerService = (function () {
     };
     // @ Desc : 뷰에 필요한 정보들이 모두 도착했는지 검사해서 알려줍니다.
     MyEventWatchTowerService.prototype.announceIsViewPackReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-event-watchtower / announceIsViewPackReady / \uC2DC\uC791");
         if (null == this.isAdmin || !this.getIsMyCheckerReady()) {

@@ -300,7 +300,7 @@ class MY_ParamChecker {
         $value = $this->CI->get($key);
         return $this->check($key_filter, $value);
     }
-    public function post($key="", $key_filter="")
+    public function post($key="", $key_filter="", $is_no_record=false)
     {
         if(empty($key)) {
             return null;
@@ -310,10 +310,46 @@ class MY_ParamChecker {
         }
 
         $value = $this->CI->post($key);
-        return $this->check($key_filter, $value);
-    }
-    private function check($key="", $value="") {
 
+        if($is_no_record) 
+        {
+            $value = $this->check_no_record($key_filter, $value);
+        }
+        else 
+        {
+            $value = $this->check($key_filter, $value);
+        }
+
+        return $value;
+    }
+    private function check_no_record($key="", $value="") 
+    {
+        if(empty($key)) {
+            return null;
+        }
+        if($value === "NULL") {
+            // CI에서 null에 대해 문자열을 대신 넣음. 이를 방지.
+            $value = null;
+        }
+
+        $check_result = $this->is_ok($key, $value);
+
+        if(isset($check_result["success"])) 
+        {
+            if($check_result["success"] === true) 
+            {
+                return $value;
+            } 
+            else 
+            {
+                return null;
+            }
+        }
+
+        return null;
+    }
+    private function check($key="", $value="") 
+    {
         if(empty($key)) {
             return null;
         }
