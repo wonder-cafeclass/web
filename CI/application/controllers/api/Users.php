@@ -504,6 +504,189 @@ class Users extends MY_REST_Controller {
                 $output
             );            
         } // end if
+    }
+
+    public function updatemutables_post()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
+        }
+
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email"
+        );
+        $name = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "name",
+            // $key_filter=""
+            "user_name"
+        );
+        $nickname = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "nickname",
+            // $key_filter=""
+            "user_nickname"
+        );
+        $gender = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "gender",
+            // $key_filter=""
+            "user_gender"
+        );
+        $birth_year = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_year",
+            // $key_filter=""
+            "user_birth_year"
+        );
+        $birth_month = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_month",
+            // $key_filter=""
+            "user_birth_month"
+        );
+        $birth_day = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "birth_day",
+            // $key_filter=""
+            "user_birth_day"
+        );
+        $thumbnail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "thumbnail",
+            // $key_filter=""
+            "user_thumbnail"
+        );
+        $mobile_head = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_head",
+            // $key_filter=""
+            "user_mobile_kor_head"
+        );
+        $mobile_body = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_body",
+            // $key_filter=""
+            "user_mobile_kor_body"
+        );
+        $mobile_tail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_tail",
+            // $key_filter=""
+            "user_mobile_kor_tail"
+        );
+
+        $params = array(
+            "email"=>$email,
+            "name"=>$name,
+            "nickname"=>$nickname,
+            "gender"=>$gender,
+            "birth_year"=>$birth_year,
+            "birth_month"=>$birth_month,
+            "birth_day"=>$birth_day,
+            "thumbnail"=>$thumbnail,
+            "mobile_head"=>$mobile_head,
+            "mobile_body"=>$mobile_body,
+            "mobile_tail"=>$mobile_tail
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if( isset($check_list) && 
+            isset($check_list->fail) && 
+            (0 < count($check_list->fail))) 
+        {
+            $is_ok = false;
+        }
+        if($is_ok) {
+
+            // 1. 내정보 페이지에서 유저 정보를 바꿀경우.
+            $this->my_sql->update_user_mutables_by_email(
+                // $email=""
+                $email,
+                // $name=""
+                $name,
+                // $nickname=""
+                $nickname,
+                // $gender=""
+                $gender,
+                // $birth_year=""
+                $birth_year,
+                // $birth_month=""
+                $birth_month,
+                // $birth_day=""
+                $birth_day,
+                // $thumbnail=""
+                $thumbnail,
+                // $mobile_head=""
+                $mobile_head,
+                // $mobile_body=""
+                $mobile_body,
+                // $mobile_tail,=""
+                $mobile_tail
+            ); // end insert
+
+            // 등록한 유저 정보를 가져옵니다.
+            $user = $this->my_sql->get_user_by_email($email);
+            $output["user"] = $user;
+            $this->respond_200($output);
+
+        } 
+        else 
+        {
+            // 실패!
+            $this->respond_200_Failed(
+                // $msg=""
+                "User update failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
+        
     } 
 
     public function update_post()

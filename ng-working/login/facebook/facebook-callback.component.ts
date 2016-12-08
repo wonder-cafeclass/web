@@ -15,6 +15,8 @@ import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtow
 
 import { MyResponse }                 from '../../util/model/my-response';
 
+import { User }                       from '../../users/model/user';
+
 
 @Component({
   moduleId: module.id,
@@ -251,8 +253,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getMe() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getMe / init");
 
     this.loginService
@@ -290,7 +292,15 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
           "" != user["mobile"] ) {
 
         // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
-        // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
+        // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.        
+        // 가져온 유저 정보를 전파.
+        if(null != user) {
+          let loginUser:User = this.userService.getUserFromJSON(user);
+          if(isDebug) console.log(`facebook-callback / getMe / loginUser : `,loginUser);
+
+          // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+          this.watchTower.announceLogin(loginUser);
+        } // end if
 
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
         this.confirmUserFacebook(facebookId);
@@ -311,8 +321,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private confirmUserFacebook(facebookId:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
     if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
 

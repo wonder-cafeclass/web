@@ -100,7 +100,6 @@ var KlassListComponent = (function () {
                 console.log("klass-list / logPageEnter / myResponse : ", myResponse);
         });
         this.getKlassList();
-        this.getCookieLoginUser();
     };
     KlassListComponent.prototype.getKlassList = function () {
         var _this = this;
@@ -123,24 +122,6 @@ var KlassListComponent = (function () {
         });
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
         this.watchTower.announceToggleTopMenu(true);
-    };
-    KlassListComponent.prototype.getCookieLoginUser = function () {
-        var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass-list / getCookieLoginUser / 시작");
-        // 회원 로그인 쿠키를 가져옵니다.
-        // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
-            if (isDebug)
-                console.log("klass-list / getCookieLoginUser / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("user")) {
-                _this.loginUser = myResponse.getDataProp("user");
-                // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-                _this.watchTower.announceLogin(_this.loginUser);
-            }
-        });
     };
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();

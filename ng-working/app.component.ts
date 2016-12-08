@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 					private urlService:UrlService,
 					private userService:UserService,
 					public imageService:ImageService,
-					private myEventWatchTowerService:MyEventWatchTowerService,
+					private watchTower:MyEventWatchTowerService,
 					private myCheckerService:MyCheckerService,
 					private myLoggerService:MyLoggerService,
 					private route:ActivatedRoute,
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
 
 		// 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
 		// Subscribe login user
-		this.myEventWatchTowerService.loginAnnounced$.subscribe(
+		this.watchTower.loginAnnounced$.subscribe(
 			(loginUser:User) => {
 
 			if(isDebug) console.log("app-root / subscribeLoginUser / loginUser : ",loginUser);
@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
 	    if(isDebug) console.log(`app-root / subscribeToggleTopMenu / 시작`);
 
 		// 최상단 메뉴를 보이거나 감춥니다.
-		this.myEventWatchTowerService.toggleTopMenuAnnounced$.subscribe(
+		this.watchTower.toggleTopMenuAnnounced$.subscribe(
 			(toggleTopMenu:boolean) => {
 
 			if(isDebug) console.log(`app-root / subscribeToggleTopMenu / toggleTopMenu : ${toggleTopMenu}`);
@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
 	    if(isDebug) console.log(`app-root / subscribeAllErrors / 시작`);
 
 		// 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
-		this.myEventWatchTowerService.errorMsgArr$.subscribe(
+		this.watchTower.errorMsgArr$.subscribe(
 			(errorMsgArr:string[]) => {
 
 			if(isDebug) console.log(`app-root / subscribeAllErrors / errorMsgArr : `,errorMsgArr);				
@@ -139,12 +139,12 @@ export class AppComponent implements OnInit {
 
 				if(myResponse.isSuccess()) {
 					this.isAdmin = myResponse.getDataProp("is_admin");
-					this.myEventWatchTowerService.announceIsAdmin(this.isAdmin);
+					this.watchTower.announceIsAdmin(this.isAdmin);
 				} else {
 			        // 에러 로그 등록
 			        this.myLoggerService.logError(
 			          // apiKey:string
-			          this.myEventWatchTowerService.getApiKey(),
+			          this.watchTower.getApiKey(),
 			          // errorType:string
 			          this.myLoggerService.errorAPIFailed,
 			          // errorMsg:string
@@ -169,7 +169,7 @@ export class AppComponent implements OnInit {
 			if(isDebug) console.log(`app-root / setMyChecker / myResponse : `,myResponse);
 
 			// 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
-			this.myEventWatchTowerService.announceMyCheckerServiceReady(
+			this.watchTower.announceMyCheckerServiceReady(
 				// checkerMap: any
 				myResponse.getDataProp("checker_map"),
 				// constMap: any
@@ -186,22 +186,25 @@ export class AppComponent implements OnInit {
 	}
 	private getLoginUserFromCookie() :void {
 
-	    // let isDebug:boolean = true;
-	    let isDebug:boolean = false;
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
 	    if(isDebug) console.log(`app-root / getLoginUserFromCookie / 시작`);
 
 		this.userService
-		.getUserCookie(this.myCheckerService.getAPIKey())
+		.getUserCookie(this.watchTower.getApiKey())
 		.then((myResponse:MyResponse) => {
 
 			if(isDebug) console.log(`app-root / getLoginUserFromCookie / myResponse : `,myResponse);
 
-			if(myResponse.isSuccess()) {
+			let userFromDB = myResponse.getDataProp("user");
+			if(myResponse.isSuccess() && null != userFromDB) {
 
-				this.loginUser = myResponse.getDataProp("user");
+				let user:User = this.userService.getUserFromJSON(userFromDB);
+				if(isDebug) console.log(`app-root / getLoginUserFromCookie / user : `,user);
+				this.loginUser = user;
 
 				// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
-				this.myEventWatchTowerService.announceLogin(this.loginUser);
+				this.watchTower.announceLogin(this.loginUser);
 			}
 		});
 	}

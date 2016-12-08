@@ -79,9 +79,17 @@
 
 			<tr> 
 				<td class="layout border-top" colspan="2">
-					<button 	(click)="onClickSave($event)"
+
+					<button 	*ngIf="hasChanged"
+								(click)="onClickSave($event)"
 								type="button" 
 								class="btn btn-orange save">저장하기</button>
+
+					<button 	*ngIf="!hasChanged"
+								type="button-disabled" 
+								disabled="disabled"
+								class="btn btn-orange save">저장하기</button>
+
 				</td> 
 			</tr>
 

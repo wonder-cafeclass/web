@@ -654,8 +654,98 @@ class MY_Sql
         return $birthday;
     }
 
+    public function update_user_mutables_by_email($email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            $birth_year = "";
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            $birth_month = "";
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            $birth_day = "";
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            $thumbnail = "";
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'nickname' => $nickname,
+            'name' => $name,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail"
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('email', $email);
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('email', $email);
+        $this->CI->db->update('user', $data);
+    }    
+
     public function update_user($user_id=-1, $password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
     {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
         if($this->is_not_ready())
         {
             return;

@@ -135,7 +135,6 @@ export class KlassListComponent implements OnInit {
     }); 
 
     this.getKlassList();
-    this.getCookieLoginUser();
   }
   private getKlassList() :void {
 
@@ -163,29 +162,6 @@ export class KlassListComponent implements OnInit {
 
     // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
     this.watchTower.announceToggleTopMenu(true);
-  }
-  private getCookieLoginUser() :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / getCookieLoginUser / 시작");
-
-    // 회원 로그인 쿠키를 가져옵니다.
-    // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-    this.userService.getUserCookie(
-      this.myCheckerService.getAPIKey()
-    ).then((myResponse:MyResponse) => {
-
-      if(isDebug) console.log("klass-list / getCookieLoginUser / myResponse : ",myResponse);
-
-      if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
-        
-        this.loginUser = myResponse.getDataProp("user");
-        // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-        this.watchTower.announceLogin(this.loginUser);
-      }
-
-    });
   }
 
 

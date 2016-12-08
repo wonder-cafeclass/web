@@ -41,8 +41,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   @Output() emitter = new EventEmitter<any>();
 
   loginUser:User;
+  loginUserCopy:User;
 
+  // @ immutable - key
   private email:string;
+  private facebookId:string;
+  private kakaoId:string;
+  private naverId:string;
+  // @ mutables - init
   private password:string;
   private name:string;
   private nickname:string;
@@ -51,14 +57,10 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private mobileNumBody:string;
   private mobileNumTail:string;
   gender:string="";
-
   private birthYear:string;
   private birthMonth:string;
   private birthDay:string;
-
-  private facebookId:string;
-  private kakaoId:string;
-  private naverId:string;  
+  // @ mutables - done
 
   @ViewChild(EmailComponent)
   private emailComponent: EmailComponent;
@@ -85,6 +87,9 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private profileImgUploadComponent: ProfileImgUploadComponent;  
 
   isAdmin:boolean=false;
+
+  // @ Desc : 사용자가 자신의 유저 정보를 변경했는지 확인하는 플래그
+  hasChanged:boolean=false;
 
   constructor(public myEventService:MyEventService,
               private myLoggerService:MyLoggerService,
@@ -144,14 +149,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private setLoginUser() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / setLoginUser / 시작");
 
     // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
     let loginUser:User = this.watchTower.getLoginUser();
     if(null != loginUser) {
       this.loginUser = loginUser;
+      this.copyUser();
       this.fillViewUserInfo();
     }
 
@@ -163,8 +169,31 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
       // 로그인한 유저 정보가 들어왔습니다.
       this.loginUser = loginUser;
+      this.copyUser();
       this.fillViewUserInfo();
     });  
+  }
+
+  private copyUser() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / copyUser / 시작");
+
+    if(null == this.loginUser) {
+      // 유저가 없는 경우는 복사를 중단합니다.
+      if(isDebug) console.log("my-info / copyUser / 중단 / 유저가 없는 경우는 복사를 중단합니다.");
+      return;
+    }
+
+    // 사용자 정보를 변경할 경우, 변경된 값을 저장할 User 객체의 복사본을 만듭니다.
+    this.loginUserCopy = this.userService.copyUser(this.loginUser);
+    if(isDebug) console.log("my-info / copyUser / this.loginUserCopy : ",this.loginUserCopy);
+
+    // TEST
+    let isSame:boolean = this.userService.isSameUser(this.loginUser, this.loginUserCopy);
+    if(isDebug) console.log("my-info / copyUser / isSame : ",isSame);
+
   }
 
   private init() :void {
@@ -241,7 +270,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
 
     if(this.myEventService.ON_SUBMIT === myEvent.eventName) {
-      
+
       if(this.myEventService.KEY_USER_CUR_PASSWORD === myEvent.key) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
@@ -329,6 +358,41 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         // 1. 재입력한 패스워드가 유효하다면, '확인' 버튼을 노출합니다.
         this.passwordComponent.showBtnConfirmNewPW();
 
+      } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
+
+        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NAME");
+
+        let newName:string= myEvent.value;
+        if(isDebug) console.log("my-info / onChangedFromChild / newName : ",newName);
+
+        let isOKName:boolean = this.myCheckerService.isOK(myEvent.myChecker, newName);
+        if(!isOKName) {
+          if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
+          return;
+        }
+
+        // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
+        let nameFromDB:string = this.loginUser.name;
+        if(nameFromDB !== newName) {
+          // 1-1. 변경된 이름이라면 this.name에 업데이트.
+          this.name = newName;
+          // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
+          if(null != this.loginUserCopy) {
+            this.loginUserCopy.name = this.name;
+            if(isDebug) console.log("my-info / onChangedFromChild / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
+            if(isDebug) console.log("my-info / onChangedFromChild / this.loginUserCopy : ",this.loginUserCopy);
+          }
+          // 저장 버튼을 노출합니다.
+          this.hasChanged=true;
+        } else {
+          // 변경되지 않았습니다.
+          if(this.checkUserInfoChanged()) {
+            // 모든 다른 항목중에 변경된 것이 없다면, 
+            // 저장 버튼을 비활성화 합니다.
+            this.hasChanged=false;
+          }
+        } // end if
+
       }
 
     } // end if
@@ -337,9 +401,150 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   } // end method
 
   onClickSave(event) :void{
-    // TODO - 
-    // 1. this.loginUser 객체와 비교, 값이 달라졌다면 save 버튼 활성화.
-    // 2. 업데이트 뒤에는 다시 유저 객체도 업데이트.
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / onClickSave / init");
+
+    let hasChanged:boolean = this.checkUserInfoChanged();
+    if(isDebug) console.log("my-info / onClickSave / hasChanged : ",hasChanged);
+    if(hasChanged) {
+      // 변경되었다면 저장합니다.
+      this.userService.updateUserByUser(
+        this.watchTower.getApiKey(),
+        this.loginUserCopy
+      ).then((myResponse:MyResponse) => {
+
+        if(isDebug) console.log("my-info / onClickSave / myResponse : ",myResponse);
+
+        let userUpdated = myResponse.digDataProp(["user"]);
+        if(myResponse.isSuccess && null != userUpdated) {
+          // 저장된 유저 정보를 다시 받아옵니다.
+          // 받아온 유저 정보로 업데이트 합니다.
+          this.loginUser.updateWithJSON(userUpdated);
+          this.loginUserCopy.updateWithJSON(userUpdated);
+
+          if(isDebug) console.log("my-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
+          if(isDebug) console.log("my-info / onClickSave / this.loginUser : ",this.loginUser);
+          if(isDebug) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
+
+        } else {
+          // Error Report
+          
+        } // end if
+      }); // end service
+
+    }
+    // 저장 버튼 비활성화.
+    this.hasChanged=false;
+
+  }
+
+  private checkUserInfoChanged() :boolean {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / checkUserInfoChanged / init");
+    if(isDebug) console.log("my-info / checkUserInfoChanged / this.loginUser : ",this.loginUser);
+
+    let mobileArr:string[] = this.loginUser.getMobileArr();
+    let mobileHead:string = mobileArr[0];
+    let mobileBody:string = mobileArr[1];
+    let mobileTail:string = mobileArr[2];
+
+    // REMOVE ME
+    /*
+    let mobileArr:string[] = this.loginUser.mobile.split("-");
+    if(isDebug) console.log("my-info / checkUserInfoChanged / mobileArr : ",mobileArr);
+    if(null == mobileArr || 3 != mobileArr.length) {
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 중단 / 전화번호에 이상이 있는 경우.");
+      // Error Report
+      return;
+    }
+    let mobileHead:string = mobileArr[0];
+    let mobileBody:string = mobileArr[1];
+    let mobileTail:string = mobileArr[2];
+    */
+
+
+    // 생일은 선택 입력이므로 없을 수도 있습니다.
+    let birthdayArr:string[] = this.loginUser.getBirthdayArr();
+    let birthYear:string = birthdayArr[0];
+    let birthMonth:string = birthdayArr[1];
+    let birthDay:string = birthdayArr[2];    
+
+    // REMOVE ME
+    /*
+    let birthdayArr:string[] = this.loginUser.birthday.split("-");
+    let birthYear:string = "";
+    let birthMonth:string = "";
+    let birthDay:string = "";
+    if(isDebug) console.log("my-info / checkUserInfoChanged / birthdayArr : ",birthdayArr);
+    if(null != birthdayArr && 3 == birthdayArr.length) {
+      birthYear = birthdayArr[0];
+      birthMonth = birthdayArr[1];
+      birthDay = birthdayArr[2];
+    }
+    */
+
+
+
+    // 검사 시작!
+    let hasChanged:boolean = false;
+
+    if( this.nameComponent.isOK(this.name) && 
+        this.name !== this.loginUser.name) {
+      // 1. name
+    if(isDebug) console.log("my-info / checkUserInfoChanged / 이름이 변경됨");
+      hasChanged = true;
+    } else if(  this.nicknameComponent.isOK(this.nickname) && 
+                this.nickname !== this.loginUser.nickname) {
+      // 2. nickname
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 닉네임이 변경됨");
+      hasChanged = true;
+    } else if(  this.profileImgUploadComponent.isOK(this.thumbnail) && 
+                this.thumbnail !== this.loginUser.thumbnail) {
+      // 3. profile-img
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 섬네일이 변경됨");
+      hasChanged = true;
+    } else if( this.mobileComponent.isOKHead(this.mobileNumHead) && 
+        mobileHead !== this.mobileNumHead) {
+      // 4-1. mobile head
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 휴대전화 첫 3자리 변경됨");
+      hasChanged = true;
+    } else if( this.mobileComponent.isOKBody(this.mobileNumBody) && 
+        mobileBody !== this.mobileNumBody) {
+      // 4-2. mobile body
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 휴대전화 두번째 4자리 변경됨");
+      hasChanged = true;
+    } else if( this.mobileComponent.isOKTail(this.mobileNumTail) && 
+        mobileTail !== this.mobileNumTail) {
+      // 4-3. mobile tail
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 휴대전화 세번째 4자리 변경됨");
+      hasChanged = true;
+    } else if(  this.genderComponent.isOK(this.gender) && 
+                this.gender !== this.loginUser.gender) {
+      // 5. gender
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 성별 변경됨");
+      hasChanged = true;
+    } else if( this.birthdayComponent.isOKBirthYear(this.birthYear) && 
+        birthYear !== this.birthYear) {
+      // 6-1. birthYear
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 생일 - 연도 변경됨");
+      hasChanged = true;
+    } else if( this.birthdayComponent.isOKBirthMonth(this.birthMonth) && 
+        birthMonth !== this.birthMonth) {
+      // 6-2. birthMonth
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 생일 - 월 변경됨");
+      hasChanged = true;
+    } else if( this.birthdayComponent.isOKBirthDay(this.birthDay) && 
+        birthDay !== this.birthDay) {
+      // 6-3. birthDay
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 생일 - 일 변경됨");
+      hasChanged = true;
+    } // end if
+
+    return hasChanged;
   }
 
 }

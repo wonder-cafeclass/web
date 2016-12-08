@@ -281,33 +281,56 @@ var NameComponent = (function () {
                 // this.isSuccessInput = true;
                 // this.hideTooltip(2);
                 elementInput.value = name;
-                // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+                // 부모 객체에게 정상적인 이름을 전달합니다.
                 // 부모 객체에게 Ready Event 발송 
-                var myEventOnChange = this.myEventService.getMyEvent(
-                // public eventName:string
-                this.myEventService.ON_CHANGE, 
-                // public key:string
+                this.emitEventOnChange(
+                // eventKey:string
                 this.myEventService.KEY_USER_NAME, 
-                // public value:string
-                name, 
-                // public metaObj:any
-                null, 
-                // public myChecker:MyChecker
-                this.myChecker);
-                this.emitter.emit(myEventOnChange);
+                // value:string
+                name);
             } // end if - dirty word
             // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
             var regExpLastEmptySpace = /[\s]+$/gi;
             elementInput.value = name = name.replace(regExpLastEmptySpace, "");
         } // end if - check Name
     }; // end method
+    NameComponent.prototype.emitEventOnChange = function (eventKey, value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / emitEventOnChange / 시작");
+        if (null == eventKey) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
+            return;
+        }
+        if (null == value) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("name / emitEventOnChange / Done!");
+    };
     // REFACTOR ME - wonder.jung
     // 1. 너비 계산의 문제가 있음. 문자열이 배정된 이후에 change event를 받아서 중간 위치를 계산해야 함.
     NameComponent.prototype.showWarningTooltip = function (inputElement, tooltipElement, msg, isTimeout) {
         // 너비 계산을 위해서 문자열을 먼저 설정합니다.
         this.tooltipHeadMsg = msg;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("name / showWarningTooltip / 시작");
         if (isDebug)
@@ -456,6 +479,12 @@ var NameComponent = (function () {
             if (isDebug)
                 console.log("name / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
             this.hideWarningTooptip();
+            // 부모 객체에게 안전한 이름 문자열을 전달합니다.
+            this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_NAME, 
+            // value:string
+            inputStr);
         } // end if 
         elementInput.value = this.inputStrPrev = inputStr;
     };

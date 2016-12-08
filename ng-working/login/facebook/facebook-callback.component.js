@@ -204,8 +204,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getMe = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("facebook-callback / getMe / init");
         this.loginService
@@ -240,7 +240,15 @@ var FacebookCallbackComponent = (function () {
                 null != user["mobile"] &&
                 "" != user["mobile"]) {
                 // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
-                // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
+                // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.        
+                // 가져온 유저 정보를 전파.
+                if (null != user) {
+                    var loginUser = _this.userService.getUserFromJSON(user);
+                    if (isDebug)
+                        console.log("facebook-callback / getMe / loginUser : ", loginUser);
+                    // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+                    _this.watchTower.announceLogin(loginUser);
+                } // end if
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
                 _this.confirmUserFacebook(facebookId);
@@ -257,8 +265,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.confirmUserFacebook = function (facebookId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("facebook-callback / confirmUserFacebook / init");
         if (isDebug)

@@ -134,7 +134,7 @@ export class NameComponent implements OnInit, AfterViewInit {
   }  
 
 
-  isOK(input:string) :boolean {
+  public isOK(input:string) :boolean {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -358,8 +358,17 @@ export class NameComponent implements OnInit, AfterViewInit {
         elementInput.value = name;
 
 
-        // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
+        // 부모 객체에게 정상적인 이름을 전달합니다.
         // 부모 객체에게 Ready Event 발송 
+        this.emitEventOnChange(
+          // eventKey:string
+          this.myEventService.KEY_USER_NAME,
+          // value:string
+          name
+        );
+
+        // REMOVE ME
+        /*
         let myEventOnChange:MyEvent =
         this.myEventService.getMyEvent(
           // public eventName:string
@@ -374,6 +383,7 @@ export class NameComponent implements OnInit, AfterViewInit {
           this.myChecker
         );
         this.emitter.emit(myEventOnChange);
+        */
 
 
       } // end if - dirty word
@@ -385,6 +395,40 @@ export class NameComponent implements OnInit, AfterViewInit {
     } // end if - check Name
   } // end method
 
+  private emitEventOnChange(eventKey:string, value:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / emitEventOnChange / 시작");
+
+    if(null == eventKey) {
+      if(isDebug) console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
+      return;
+    }
+    if(null == value) {
+      if(isDebug) console.log("name / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("name / emitEventOnChange / Done!");
+
+  }
+
 
   // REFACTOR ME - wonder.jung
   // 1. 너비 계산의 문제가 있음. 문자열이 배정된 이후에 change event를 받아서 중간 위치를 계산해야 함.
@@ -393,8 +437,8 @@ export class NameComponent implements OnInit, AfterViewInit {
     // 너비 계산을 위해서 문자열을 먼저 설정합니다.
     this.tooltipHeadMsg = msg;
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("name / showWarningTooltip / 시작");
     if(isDebug) console.log("name / showWarningTooltip / inputElement : ",inputElement);
     if(isDebug) console.log("name / showWarningTooltip / inputElement : ",inputElement);
@@ -561,6 +605,15 @@ export class NameComponent implements OnInit, AfterViewInit {
       // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
       if(isDebug) console.log("name / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
       this.hideWarningTooptip();
+
+      // 부모 객체에게 안전한 이름 문자열을 전달합니다.
+      this.emitEventOnChange(
+        // eventKey:string
+        this.myEventService.KEY_USER_NAME,
+        // value:string
+        inputStr
+      );
+
     } // end if 
 
     elementInput.value = this.inputStrPrev = inputStr;

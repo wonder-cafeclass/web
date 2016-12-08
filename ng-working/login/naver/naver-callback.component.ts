@@ -16,6 +16,8 @@ import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtow
 
 import { MyResponse }                 from '../../util/model/my-response';
 
+import { User }                       from '../../users/model/user';
+
 @Component({
   moduleId: module.id,
   selector: 'naver-callback',
@@ -341,7 +343,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
           null == user.mobile ||
           "" === user.mobile)) {
 
-        // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
+        // 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨. 
         // 하지만 추가 정보 필요. 
         // 회원 가입창으로 이동.
         if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
@@ -352,8 +354,16 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
         // this.router.navigate([this.redirectUrl]);
 
-        // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
+        // 네이버 로그인 성공. 등록된 유저 정보가 문제 없음. 
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
+
+        if(null != user) {
+          let loginUser:User = this.userService.getUserFromJSON(user);
+          if(isDebug) console.log(`naver-callback / getNaverMe / loginUser : `,loginUser);
+
+          // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+          this.watchTower.announceLogin(loginUser);
+        } // end if        
 
         if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
 

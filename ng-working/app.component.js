@@ -19,13 +19,13 @@ var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, imageService, myEventWatchTowerService, myCheckerService, myLoggerService, route, router) {
+    function AppComponent(authService, urlService, userService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
         // Do something...
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
         this.imageService = imageService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
         this.myLoggerService = myLoggerService;
         this.route = route;
@@ -49,7 +49,7 @@ var AppComponent = (function () {
             console.log("app-root / subscribeLoginUser / 시작");
         // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
         // Subscribe login user
-        this.myEventWatchTowerService.loginAnnounced$.subscribe(function (loginUser) {
+        this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
             if (isDebug)
                 console.log("app-root / subscribeLoginUser / loginUser : ", loginUser);
             // Example
@@ -84,7 +84,7 @@ var AppComponent = (function () {
         if (isDebug)
             console.log("app-root / subscribeToggleTopMenu / \uC2DC\uC791");
         // 최상단 메뉴를 보이거나 감춥니다.
-        this.myEventWatchTowerService.toggleTopMenuAnnounced$.subscribe(function (toggleTopMenu) {
+        this.watchTower.toggleTopMenuAnnounced$.subscribe(function (toggleTopMenu) {
             if (isDebug)
                 console.log("app-root / subscribeToggleTopMenu / toggleTopMenu : " + toggleTopMenu);
             _this.toggleTopMenu = toggleTopMenu;
@@ -97,7 +97,7 @@ var AppComponent = (function () {
         if (isDebug)
             console.log("app-root / subscribeAllErrors / \uC2DC\uC791");
         // 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
-        this.myEventWatchTowerService.errorMsgArr$.subscribe(function (errorMsgArr) {
+        this.watchTower.errorMsgArr$.subscribe(function (errorMsgArr) {
             if (isDebug)
                 console.log("app-root / subscribeAllErrors / errorMsgArr : ", errorMsgArr);
             _this.errorMsgArr = errorMsgArr;
@@ -117,13 +117,13 @@ var AppComponent = (function () {
                 console.log("app-root / setIsAdmin / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
                 _this.isAdmin = myResponse.getDataProp("is_admin");
-                _this.myEventWatchTowerService.announceIsAdmin(_this.isAdmin);
+                _this.watchTower.announceIsAdmin(_this.isAdmin);
             }
             else {
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
-                _this.myEventWatchTowerService.getApiKey(), 
+                _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
@@ -145,7 +145,7 @@ var AppComponent = (function () {
             if (isDebug)
                 console.log("app-root / setMyChecker / myResponse : ", myResponse);
             // 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
-            _this.myEventWatchTowerService.announceMyCheckerServiceReady(
+            _this.watchTower.announceMyCheckerServiceReady(
             // checkerMap: any
             myResponse.getDataProp("checker_map"), 
             // constMap: any
@@ -159,19 +159,23 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
         this.userService
-            .getUserCookie(this.myCheckerService.getAPIKey())
+            .getUserCookie(this.watchTower.getApiKey())
             .then(function (myResponse) {
             if (isDebug)
                 console.log("app-root / getLoginUserFromCookie / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
-                _this.loginUser = myResponse.getDataProp("user");
+            var userFromDB = myResponse.getDataProp("user");
+            if (myResponse.isSuccess() && null != userFromDB) {
+                var user = _this.userService.getUserFromJSON(userFromDB);
+                if (isDebug)
+                    console.log("app-root / getLoginUserFromCookie / user : ", user);
+                _this.loginUser = user;
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
-                _this.myEventWatchTowerService.announceLogin(_this.loginUser);
+                _this.watchTower.announceLogin(_this.loginUser);
             }
         });
     };

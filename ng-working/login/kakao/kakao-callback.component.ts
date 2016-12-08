@@ -17,6 +17,8 @@ import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtow
 
 import { MyResponse }                 from '../../util/model/my-response';
 
+import { User }                       from '../../users/model/user';
+
 @Component({
   moduleId: module.id,
   selector: 'kakao-callback',
@@ -47,8 +49,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / ngOnInit / 시작");
 
   } // end function
@@ -56,8 +58,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -71,8 +73,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다.
@@ -106,8 +108,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private init(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -123,8 +125,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logActionPage() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -141,8 +143,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getQueryString() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getQueryString / 시작");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -164,8 +166,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // 카카오 로그인 토큰을 가져옵니다.
   private getKakaoToken(kakaoCode:string) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoToken / 시작");
     if(isDebug) console.log("kakao-callback / getKakaoToken / kakaoCode : ",kakaoCode);
 
@@ -220,8 +222,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
   private getKakaoSignUp(kakaoTokenType:string, kakaoAccessToken:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoSignUp / 시작");
 
     this.loginService
@@ -269,8 +271,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logError(errorType:string, errMsg:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / logError / 시작");
 
     if(null == errorType) {
@@ -298,8 +300,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getKakaoMe(kakaoTokenType:string, kakaoAccessToken:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoMe / 시작");
 
     this.loginService
@@ -340,8 +342,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getUserByKakaoId(kakaoId:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getUserByKakaoId / 시작");
 
     this.userService
@@ -376,11 +378,21 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         this.router.navigate(['/login/signup/kakao', myResponse.getDataProp("kakao_id")]);
         return;
 
-      } else {
+      } else if(myResponse.isSuccess()) {
         // 카카오 로그인 성공. 등록된 유저 정보가 문제 없음. 
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
 
         if(isDebug) console.log("kakao-callback / getUserByKakaoId / 로그인 성공!, 로그인 쿠키 만듦");
+
+        // 가져온 유저 정보를 전파.
+        let userFromDB = myResponse.getDataProp("user");
+        if(null != userFromDB) {
+          let user:User = this.userService.getUserFromJSON(userFromDB);
+          if(isDebug) console.log(`kakao-callback / getUserByKakaoId / user : `,user);
+  
+          // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+          this.watchTower.announceLogin(user);
+        }
 
         // api key 필요!
         this.userService
@@ -398,9 +410,13 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
           if(myResponse.isSuccess()) {
 
             // 쿠키 인증 성공!
+            if(isDebug) console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
+
+            // 쿠키 정보로 가져온 유저 정보를 등록, 전파합니다.
+            
+
             // 로그인 직전 페이지로 리다이렉트. 
             // 돌아갈 주소가 없다면, 홈으로 이동.
-            if(isDebug) console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
             this.router.navigate(['/class-center']);
 
           } else {
