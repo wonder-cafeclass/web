@@ -241,7 +241,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
       } // end if
 
-    } else if(this.myEventService.ON_KEYUP_ENTER === myEvent.eventName) {
+    } else if(  this.myEventService.ON_KEYUP_ENTER === myEvent.eventName || 
+                this.myEventService.ON_SUBMIT === myEvent.eventName  ) {
 
       if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
 
@@ -263,7 +264,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         // 2. 그렇지 않다면 안내 메시지를 유저에게 보여줍니다.
         this.verifyEmailNPassword();
 
-      }  
+      }  // end if
 
     } // end if
 

@@ -35,23 +35,23 @@ var BirthdayComponent = (function () {
         this.isAdmin = false;
     }
     BirthdayComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / ngOnInit / init");
     };
     BirthdayComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / ngAfterViewInit");
         this.asyncViewPack();
     };
     BirthdayComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -80,8 +80,8 @@ var BirthdayComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     BirthdayComponent.prototype.setBirthdayDefault = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / setBirthdayDefault / 시작");
         this.birthYearArr = this.myBirthdayService.getYear();
@@ -163,8 +163,8 @@ var BirthdayComponent = (function () {
         return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
     };
     BirthdayComponent.prototype.setBirthYear = function (year) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / setBirthYear / year : ", year);
         if (this.isOKBirthYear(year)) {
@@ -175,8 +175,8 @@ var BirthdayComponent = (function () {
         }
     };
     BirthdayComponent.prototype.setBirthMonth = function (month) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / setBirthMonth / month : ", month);
         if (this.isOKBirthMonth(month)) {
@@ -187,8 +187,8 @@ var BirthdayComponent = (function () {
         }
     };
     BirthdayComponent.prototype.setBirthDay = function (month, day) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birthday / setBirthDay / day : ", day);
         if (this.isOKBirthDay(day)) {

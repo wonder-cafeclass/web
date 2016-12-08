@@ -35,6 +35,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
   @Input() leftWarning:number=-1;
 
   @Input() isCheckUnique:boolean=true;
+  @Input() isDisabled:boolean=false;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 

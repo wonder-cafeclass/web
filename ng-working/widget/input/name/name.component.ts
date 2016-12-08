@@ -22,11 +22,12 @@ import { MyEventWatchTowerService } from '../../../util/service/my-event-watchto
 })
 export class NameComponent implements OnInit, AfterViewInit {
 
-  @Input() top:number=-1;
-  @Input() left:number=-1;
+  // REMOVE ME
+  // @Input() top:number=-1;
+  // @Input() left:number=-1;
 
-  @Input() topWarning:number=-1;
-  @Input() leftWarning:number=-1;
+  topWarning:number=0;
+  leftWarning:number=0;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -38,7 +39,7 @@ export class NameComponent implements OnInit, AfterViewInit {
   isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
   tooltipHeadNotAllowed:string="이름에 문제가 있습니다.";
-  tooltipHeadRemoved:string="한글 2~5자까지 입력 가능합니다.";
+  tooltipHeadRemoved:string="한글만 입력 가능해요.";
   tooltipHeadRemovedEmpties:string="빈칸을 2칸 이상 입력할 수 없습니다.";
   tooltipHeadAllowed:string="성공! 멋진 이름이네요.";
 
@@ -214,7 +215,7 @@ export class NameComponent implements OnInit, AfterViewInit {
     this.isFocus = false;
   }  
 
-  onBlur(event, element) :void {
+  onBlur(event, elementInput, elementTooltip) :void {
 
     event.stopPropagation();
     event.preventDefault();
@@ -227,7 +228,7 @@ export class NameComponent implements OnInit, AfterViewInit {
       this.isFocus = false;
     } // end if
 
-    let name:string = element.value;
+    let name:string = elementInput.value;
 
     // 입력한 이름을 검사합니다.
     // 패스워드를 검사합니다.
@@ -246,17 +247,23 @@ export class NameComponent implements OnInit, AfterViewInit {
           if("min" === history.key) {
 
             // 최소 문자 갯수보다 적은 경우.
-            this.tooltipHeadMsg = history.msg;
-            this.isSuccessInput = false;
+            this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
+  
+            // REMOVE ME            
+            // this.tooltipHeadMsg = history.msg;
+            // this.isSuccessInput = false;
             return;
 
           } else if("max" === history.key) {
 
             // 최대 문자 갯수보다 많은 경우.
-            this.tooltipHeadMsg = history.msg;
+            this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
+
+            // REMOVE ME
+            // this.tooltipHeadMsg = history.msg;
 
             // 넘는 문자열은 지웁니다.
-            element.value = name = name.slice(0, history.value);
+            elementInput.value = name = name.slice(0, history.value);
 
             this.isSuccessInput = false;
             return;
@@ -264,20 +271,27 @@ export class NameComponent implements OnInit, AfterViewInit {
           } else if("regexExclude" === history.key) {
 
             // 정규표현식에 포함되지 않는 문자열인 경우.
-            this.tooltipHeadMsg = history.msg;
+            this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
+
+            // REMOVE ME
+            // this.tooltipHeadMsg = history.msg;
 
             let regExpStr:string = history.value + "";
             let regExpStrNameRange:string =  /[^a-zA-Z가-힣0-9 ]+/g + "";
 
             if(regExpStr == regExpStrNameRange) {
-              this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
+
+              this.showWarningTooltip(elementInput, elementTooltip, "이름에 사용할 수 없는 문자가 있어요.", false);
+
+              // REMOVE ME
+              // this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
 
               let matchArr:string[] = history.matchArr;
               if(null != matchArr && 0 < matchArr.length) {
                 for (var i = 0; i < matchArr.length; ++i) {
                   let keywordNotAllowed:string = matchArr[i];
                   // 사용할 수 없는 문자들을 지웁니다.
-                  element.value = name = name.replace(keywordNotAllowed, "");
+                  elementInput.value = name = name.replace(keywordNotAllowed, "");
                 } // end for
               } // end if
 
@@ -288,7 +302,10 @@ export class NameComponent implements OnInit, AfterViewInit {
 
           } else {
             // 이에 해당되지 않는 예외 실패.
-            this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
+            this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadNotAllowed, false);
+
+            // REMOVE ME
+            // this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
 
             this.isSuccessInput = false;
             return;
@@ -304,12 +321,15 @@ export class NameComponent implements OnInit, AfterViewInit {
       if(nameBeforeSanitize != name) {
         // 비속어, 욕설이 제거되었습니다. 
         // 사용자에게 금칙어임을 알립니다.
-        this.tooltipHeadMsg = "금칙어는 제외됩니다.";
-        this.isSuccessInput = false;
-        element.value = name;
+        this.showWarningTooltip(elementInput, elementTooltip, "금칙어는 제외됩니다.", true);
 
-        this.hideTooltip(2);
-        element.focus();
+        // REMOVE ME
+        // this.tooltipHeadMsg = "금칙어는 제외됩니다.";
+        // this.isSuccessInput = false;
+        // this.hideTooltip(2);
+
+        elementInput.value = name;
+        elementInput.focus();
 
         // Logger - Spam 행위로 등록.
         this.myLoggerService.logActionDirtyWord(
@@ -323,16 +343,20 @@ export class NameComponent implements OnInit, AfterViewInit {
 
       } else {
 
-        // 이전에 노출한 툴팁을 내립니다.
-        this.hideTooltipNow();
-
         // 성공! 비속어가 포함되지 않았습니다.
-        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-        this.isWarning = false;
-        this.isSuccessInput = true;
-        element.value = name;
+        // 이전에 노출한 툴팁을 내립니다.
 
-        this.hideTooltip(2);
+        this.hideWarningTooptip();
+
+        // REMOVE ME
+        // this.hideTooltipNow();
+        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        // this.isWarning = false;
+        // this.isSuccessInput = true;
+        // this.hideTooltip(2);
+
+        elementInput.value = name;
+
 
         // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
         // 부모 객체에게 Ready Event 발송 
@@ -356,23 +380,91 @@ export class NameComponent implements OnInit, AfterViewInit {
 
       // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
       let regExpLastEmptySpace:RegExp = /[\s]+$/gi;
-      element.value = name = name.replace(regExpLastEmptySpace, "");
+      elementInput.value = name = name.replace(regExpLastEmptySpace, "");
 
     } // end if - check Name
   } // end method
 
+
+  // REFACTOR ME - wonder.jung
+  // 1. 너비 계산의 문제가 있음. 문자열이 배정된 이후에 change event를 받아서 중간 위치를 계산해야 함.
+  private showWarningTooltip(inputElement, tooltipElement, msg:string, isTimeout:Boolean) :void {
+
+    // 너비 계산을 위해서 문자열을 먼저 설정합니다.
+    this.tooltipHeadMsg = msg;
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / showWarningTooltip / 시작");
+    if(isDebug) console.log("name / showWarningTooltip / inputElement : ",inputElement);
+    if(isDebug) console.log("name / showWarningTooltip / inputElement : ",inputElement);
+    if(isDebug) console.log("name / showWarningTooltip / msg : ",msg);
+    if(isDebug) console.log("name / showWarningTooltip / isTimeout : ",isTimeout);
+
+    // 툴팁의 위치를 계산해서 툴팁을 이동시킵니다.
+    let offsetBoxInput = inputElement.getBoundingClientRect();
+    let topInput:number = offsetBoxInput.top;
+    let leftInput:number = offsetBoxInput.left;
+    let widthInput:number = offsetBoxInput.width;
+    let heightInput:number = offsetBoxInput.height;
+
+    if(isDebug) console.log("name / showWarningTooltip / offsetBoxInput : ",offsetBoxInput);
+    if(isDebug) console.log("name / showWarningTooltip / topInput : ",topInput);
+    if(isDebug) console.log("name / showWarningTooltip / leftInput : ",leftInput);
+    if(isDebug) console.log("name / showWarningTooltip / widthInput : ",widthInput);
+    if(isDebug) console.log("name / showWarningTooltip / heightInput : ",heightInput);
+
+
+    let offsetBoxTooptip = tooltipElement.getBoundingClientRect();
+    let topTooptip:number = offsetBoxTooptip.top;
+    let leftTooptip:number = offsetBoxTooptip.left;
+    let widthTooptip:number = offsetBoxTooptip.width;
+    let heightTooptip:number = offsetBoxTooptip.height;
+
+    if(isDebug) console.log("name / showWarningTooltip / offsetBoxTooptip : ",offsetBoxTooptip);
+    if(isDebug) console.log("name / showWarningTooltip / topTooptip : ",topTooptip);
+    if(isDebug) console.log("name / showWarningTooltip / leftTooptip : ",leftTooptip);
+    if(isDebug) console.log("name / showWarningTooltip / widthTooptip : ",widthTooptip);
+    if(isDebug) console.log("name / showWarningTooltip / heightTooptip : ",heightTooptip);
+
+    let topBuffer:number = 5;
+    this.topWarning = topInput - (topTooptip + heightInput + heightTooptip + topBuffer);
+    this.leftWarning = leftInput - leftTooptip + Math.round((widthInput - widthTooptip) / 2);
+
+    if(isDebug) console.log("name / showWarningTooltip / this.topWarning : ",this.topWarning);
+    if(isDebug) console.log("name / showWarningTooltip / this.leftWarning : ",this.leftWarning);
+
+    // 툴팁의 뷰 설정.
+    this.isSuccessInput = false;
+    this.isFocus = true;
+    this.isWarning = true;
+
+    if(isTimeout) {
+      this.hideTooltip(2);
+    }
+  }
+
+  private hideWarningTooptip() :void {
+
+    this.tooltipHeadMsg = null;
+
+    this.topWarning = 0;
+    this.leftWarning = 0;
+    this.isWarning = false;
+
+  }
+
   private inputStrPrev:string="";
-  onKeyup(event, element) :void {
+  onKeyup(event, elementInput, elementTooltip) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("name / onKeyup / init");
 
     event.stopPropagation();
     event.preventDefault();    
 
-    let inputStr:string = element.value;
+    let inputStr:string = elementInput.value;
 
     // 비어있는 문자열이라면 검사하지 않습니다.
     if(null == inputStr || "" == inputStr) {
@@ -400,10 +492,16 @@ export class NameComponent implements OnInit, AfterViewInit {
         inputStr = inputStr.replace(match, "");
       }
 
-      // 예외 문자를 삭제했음을 사용자에게 알려줍니다.
       // wonder.jung
-      this.tooltipHeadMsg = this.tooltipHeadRemoved;
-      this.hideTooltip(2);
+      // 예외 문자를 삭제했음을 사용자에게 알려줍니다.
+      if(isDebug) console.log("name / onKeyup / 예외 문자를 삭제했음을 사용자에게 알려줍니다.");
+      this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadRemoved, false);
+      elementInput.value = this.inputStrPrev = inputStr;
+      return;
+
+      // REMOVE ME
+      // this.tooltipHeadMsg = this.tooltipHeadRemoved;
+      // this.hideTooltip(2);
 
     }
 
@@ -421,10 +519,17 @@ export class NameComponent implements OnInit, AfterViewInit {
         inputStr = inputStr.replace(match, " ");
       }      
 
-      // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
       // wonder.jung
-      this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
-      this.hideTooltip(2);
+      // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
+      if(isDebug) console.log("name / onKeyup / 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.");
+      this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadRemovedEmpties, false);
+      elementInput.value = this.inputStrPrev = inputStr;
+      return;
+
+      // REMOVE ME
+      // this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
+      // this.hideTooltip(2);
+
     }
 
     // 최대 길이 제한 검사
@@ -438,8 +543,11 @@ export class NameComponent implements OnInit, AfterViewInit {
         if("max" === history.key) {
 
           // 최대 문자 갯수보다 많은 경우.
-          this.tooltipHeadMsg = history.msg;
-          this.hideTooltip(2);
+          if(isDebug) console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우.");
+          this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
+
+          // this.tooltipHeadMsg = history.msg;
+          // this.hideTooltip(2);
 
           // 넘는 문자열은 지웁니다.
           inputStr = inputStr.slice(0, history.value);
@@ -448,12 +556,17 @@ export class NameComponent implements OnInit, AfterViewInit {
           if(isDebug) console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ",history);
         } // end if
       } // end if
+
+    } else {
+      // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
+      if(isDebug) console.log("name / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
+      this.hideWarningTooptip();
     } // end if 
 
-    element.value = this.inputStrPrev = inputStr;
+    elementInput.value = this.inputStrPrev = inputStr;
   }
 
-  hideTooltip(sec:number) :void {
+  private hideTooltip(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -463,13 +576,16 @@ export class NameComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipHeadMsg = null;
+      _self.isWarning = false;
     }, 1000 * sec);        
 
   }
 
-  hideTooltipNow() :void {
-    this.tooltipHeadMsg = null;
-  }    
+  // REMOVE ME
+
+  // hideTooltipNow() :void {
+  //   this.tooltipHeadMsg = null;
+  // }    
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();

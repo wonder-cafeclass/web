@@ -192,7 +192,8 @@ var LoginComponent = (function () {
                     console.log("login / onChangedFromChild / this.password : ", this.password);
             } // end if
         }
-        else if (this.myEventService.ON_KEYUP_ENTER === myEvent.eventName) {
+        else if (this.myEventService.ON_KEYUP_ENTER === myEvent.eventName ||
+            this.myEventService.ON_SUBMIT === myEvent.eventName) {
             if (this.myEventService.KEY_USER_EMAIL === myEvent.key) {
                 this.email = myEvent.value;
                 if (isDebug)
@@ -210,7 +211,7 @@ var LoginComponent = (function () {
                 // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
                 // 2. 그렇지 않다면 안내 메시지를 유저에게 보여줍니다.
                 this.verifyEmailNPassword();
-            }
+            } // end if
         } // end if
         if (isDebug)
             console.log("login / onChangedFromChild / done");

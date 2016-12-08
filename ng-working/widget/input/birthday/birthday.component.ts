@@ -56,8 +56,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / ngOnInit / init");
 
   }
@@ -65,8 +65,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -75,8 +75,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -109,8 +109,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   private setBirthdayDefault() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / setBirthdayDefault / 시작");
 
 
@@ -202,8 +202,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   } 
   setBirthYear(year:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / setBirthYear / year : ",year);
 
     if(this.isOKBirthYear(year)) {
@@ -214,8 +214,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   }
   setBirthMonth(month:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / setBirthMonth / month : ",month);
 
     if(this.isOKBirthMonth(month)) {
@@ -226,8 +226,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   }
   setBirthDay(month:string, day:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birthday / setBirthDay / day : ",day);
 
     if(this.isOKBirthDay(day)) {

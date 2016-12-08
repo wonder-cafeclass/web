@@ -241,6 +241,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
 
     if(this.myEventService.ON_SUBMIT === myEvent.eventName) {
+      
       if(this.myEventService.KEY_USER_CUR_PASSWORD === myEvent.key) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");

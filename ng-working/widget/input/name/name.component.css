@@ -71,3 +71,11 @@ span.warning {
   font-size: 10px;
   padding-top: 5px;
 }
+.my-hide {
+  display: :none;
+  opacity: 0;
+}
+.my-show {
+  display: :block;
+  opacity: 1;  
+}

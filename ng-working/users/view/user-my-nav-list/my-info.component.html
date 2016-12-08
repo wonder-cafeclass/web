@@ -8,6 +8,7 @@
 
 					<!-- Email -->
 					<email	
+					[isDisabled]="true"
 					[top]="133"
 					[left]="91"
 					[topWarning]="5"
@@ -26,13 +27,7 @@
 					</password>
 
 					<!-- 이름 -->
-					<name 	
-					[top]="408" 
-					[left]="91"
-					[topWarning]="290"
-					[leftWarning]="117"
-					(emitter)="onChangedFromChild($event)">
-					</name>
+					<name (emitter)="onChangedFromChild($event)"></name>
 
 					<!-- 닉네임 -->
 					<nickname 	[top]="503" 

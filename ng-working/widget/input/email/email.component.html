@@ -24,7 +24,8 @@
 		[style.width]="(width) + 'px'"
 		class="btn-box radius-border">
 
-	<input 	id="email" 
+	<input 	*ngIf="!isDisabled"
+			id="email" 
 			#email
 			(click)="onClick($event, email)"
 			(focus)="onFocus($event, email)"
@@ -35,6 +36,15 @@
 			class="form-control input-glass" 
 			value={{inputStrPrevOnKeyup}}
 			placeholder="이메일이 필요해요.">
+
+	<input 	*ngIf="isDisabled"
+			disabled="disabled"
+			id="email-disabled" 
+			class="form-control input-glass" 
+			value={{inputStrPrevOnKeyup}}>
+
+
+			<!-- disabled="disabled"  -->
 
 	<span 	*ngIf="isWarning"
 			class="glyphicon glyphicon-exclamation-sign warning"

@@ -27,6 +27,7 @@ var EmailComponent = (function () {
         this.topWarning = -1;
         this.leftWarning = -1;
         this.isCheckUnique = true;
+        this.isDisabled = false;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
@@ -388,6 +389,10 @@ var EmailComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Boolean)
     ], EmailComponent.prototype, "isCheckUnique", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], EmailComponent.prototype, "isDisabled", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
