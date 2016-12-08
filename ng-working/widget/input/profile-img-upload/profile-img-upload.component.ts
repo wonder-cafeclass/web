@@ -186,6 +186,13 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
     } // end if
     if(null != profileUrlNext && "" != profileUrlNext) {
       this.userProfileUrl = profileUrlNext;
+      // 부모 객체에게 Change Event 발송 
+      this.emitEventOnChange(
+        // eventKey:string
+        this.myEventService.KEY_USER_THUMBNAIL,
+        // value:string
+        this.userProfileUrl
+      );
     } // end if
 
   }
@@ -274,6 +281,15 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
         if(isOK) {
           // 부모 객체에게 Change Event 발송 
+          this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_THUMBNAIL,
+            // value:string
+            this.userProfileUrl
+          );
+
+          // REMOVE ME
+          /*
           let myEventOnChange:MyEvent =
           this.myEventService.getMyEvent(
             // public eventName:string
@@ -288,11 +304,46 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
             this.myChecker
           );
           this.emitter.emit(myEventOnChange);
+          */
         }
 
       }
     });
 
-  }  
+  } // end method
+
+  private emitEventOnChange(eventKey:string, value:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img / emitEventOnChange / 시작");
+
+    if(null == eventKey) {
+      if(isDebug) console.log("profile-img / emitEventOnChange / 중단 / eventKey is not valid!");
+      return;
+    }
+    if(null == value) {
+      if(isDebug) console.log("profile-img / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("profile-img / emitEventOnChange / Done!");
+
+  } // end method
 
 }

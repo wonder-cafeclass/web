@@ -140,6 +140,12 @@ var ProfileImgUploadComponent = (function () {
         } // end if
         if (null != profileUrlNext && "" != profileUrlNext) {
             this.userProfileUrl = profileUrlNext;
+            // 부모 객체에게 Change Event 발송 
+            this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_THUMBNAIL, 
+            // value:string
+            this.userProfileUrl);
         } // end if
     };
     ProfileImgUploadComponent.prototype.onClick = function (event) {
@@ -212,22 +218,45 @@ var ProfileImgUploadComponent = (function () {
                     console.log("profile-img / onChangeFile / this.myChecker : ", _this.myChecker);
                 if (isOK) {
                     // 부모 객체에게 Change Event 발송 
-                    var myEventOnChange = _this.myEventService.getMyEvent(
-                    // public eventName:string
-                    _this.myEventService.ON_CHANGE, 
-                    // public key:string
+                    _this.emitEventOnChange(
+                    // eventKey:string
                     _this.myEventService.KEY_USER_THUMBNAIL, 
-                    // public value:string
-                    _this.userProfileUrl, 
-                    // public metaObj:any
-                    null, 
-                    // public myChecker:MyChecker
-                    _this.myChecker);
-                    _this.emitter.emit(myEventOnChange);
+                    // value:string
+                    _this.userProfileUrl);
                 }
             }
         });
-    };
+    }; // end method
+    ProfileImgUploadComponent.prototype.emitEventOnChange = function (eventKey, value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("profile-img / emitEventOnChange / 시작");
+        if (null == eventKey) {
+            if (isDebug)
+                console.log("profile-img / emitEventOnChange / 중단 / eventKey is not valid!");
+            return;
+        }
+        if (null == value) {
+            if (isDebug)
+                console.log("profile-img / emitEventOnChange / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("profile-img / emitEventOnChange / Done!");
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

@@ -362,41 +362,89 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NAME");
 
-        let newName:string= myEvent.value;
-        if(isDebug) console.log("my-info / onChangedFromChild / newName : ",newName);
-
-        let isOKName:boolean = this.myCheckerService.isOK(myEvent.myChecker, newName);
-        if(!isOKName) {
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
           if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
           return;
         }
 
         // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
-        let nameFromDB:string = this.loginUser.name;
-        if(nameFromDB !== newName) {
-          // 1-1. 변경된 이름이라면 this.name에 업데이트.
-          this.name = newName;
-          // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
-          if(null != this.loginUserCopy) {
-            this.loginUserCopy.name = this.name;
-            if(isDebug) console.log("my-info / onChangedFromChild / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
-            if(isDebug) console.log("my-info / onChangedFromChild / this.loginUserCopy : ",this.loginUserCopy);
-          }
-          // 저장 버튼을 노출합니다.
-          this.hasChanged=true;
-        } else {
-          // 변경되지 않았습니다.
-          if(this.checkUserInfoChanged()) {
-            // 모든 다른 항목중에 변경된 것이 없다면, 
-            // 저장 버튼을 비활성화 합니다.
-            this.hasChanged=false;
-          }
-        } // end if
+        this.updateNewProp("name", myEvent.value);
+        // end if - ON CHANGE - KEY_USER_NAME
 
-      }
+      } else if(this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+
+        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
+
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
+          if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
+          return;
+        }
+
+        // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
+        this.updateNewProp("nickname", myEvent.value);
+        // end if - ON CHANGE - KEY_USER_NICKNAME
+
+      } else if(this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+
+        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
+
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
+          if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
+          return;
+        }
+
+        // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
+        this.updateNewProp("thumbnail", myEvent.value);
+        // end if - ON CHANGE - KEY_USER_THUMBNAIL
+        
+      } // end if - ON CHANGE
 
     } // end if
 
+
+  } // end method
+
+  private updateNewProp(key:string, newValue:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / updateNewProp / init");
+
+    if(null == key || "" == key) {
+      if(isDebug) console.log("my-info / updateNewProp / 중단 / key is not valid!");
+      return;
+    }
+    if(null == this.loginUserCopy) {
+      if(isDebug) console.log("my-info / updateNewProp / 중단 / this.loginUserCopy is not valid!");
+      return;
+    }
+
+    let valueFromDB:string = this.loginUser.thumbnail;
+    if(valueFromDB !== newValue) {
+      // 1-1. 변경된 이름이라면 this.thumbnail에 업데이트.
+      if(null != this[key]) {
+        this[key] = newValue;
+      }
+      // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
+      if(null != this.loginUserCopy && null != this.loginUserCopy[key]) {
+        this.loginUserCopy[key] = newValue;
+        if(isDebug) console.log("my-info / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
+        if(isDebug) console.log("my-info / updateNewProp / this.loginUserCopy : ",this.loginUserCopy);
+      }
+      // 저장 버튼을 노출합니다.
+      this.hasChanged=true;
+    } else {
+      // 변경되지 않았습니다.
+      if(this.checkUserInfoChanged()) {
+        // 모든 다른 항목중에 변경된 것이 없다면, 
+        // 저장 버튼을 비활성화 합니다.
+        this.hasChanged=false;
+      } // end if
+
+    } // end if
 
   } // end method
 

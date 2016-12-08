@@ -274,12 +274,6 @@ var NameComponent = (function () {
                 // 성공! 비속어가 포함되지 않았습니다.
                 // 이전에 노출한 툴팁을 내립니다.
                 this.hideWarningTooptip();
-                // REMOVE ME
-                // this.hideTooltipNow();
-                // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-                // this.isWarning = false;
-                // this.isSuccessInput = true;
-                // this.hideTooltip(2);
                 elementInput.value = name;
                 // 부모 객체에게 정상적인 이름을 전달합니다.
                 // 부모 객체에게 Ready Event 발송 

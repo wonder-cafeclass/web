@@ -311,15 +311,25 @@ export class NicknameComponent implements OnInit, AfterViewInit {
 
       } else {
 
-        this.hideTooltipNow();
+        this.hideWarningTooptip();
 
-        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-        this.isWarning = false;
-        this.isSuccessInput = true;
-
-        this.hideTooltip(2);
+        // REMOVE ME
+        // this.hideTooltipNow();
+        // // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+        // this.isWarning = false;
+        // this.isSuccessInput = true;
+        // this.hideTooltip(2);
 
         // 부모 객체에게 Change Event 발송 
+        this.emitEventOnChange(
+          // eventKey:string
+          this.myEventService.KEY_USER_NICKNAME,
+          // value:string
+          name
+        );
+
+        // REMOVE ME
+        /*
         let myEventOnChange:MyEvent =
         this.myEventService.getMyEvent(
           // public eventName:string
@@ -334,6 +344,7 @@ export class NicknameComponent implements OnInit, AfterViewInit {
           this.myChecker
         );
         this.emitter.emit(myEventOnChange);
+        */
 
         return;
 
@@ -428,7 +439,21 @@ export class NicknameComponent implements OnInit, AfterViewInit {
           if(isDebug) console.log("nickname / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ",history);
         } // end if
       } // end if
-    } // end if
+    } else {
+
+      // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
+      if(isDebug) console.log("nickname / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
+      this.hideWarningTooptip();
+
+      // 부모 객체에게 안전한 이름 문자열을 전달합니다.
+      this.emitEventOnChange(
+        // eventKey:string
+        this.myEventService.KEY_USER_NICKNAME,
+        // value:string
+        inputStr
+      );
+
+    }// end if
 
     element.value = this.inputStrPrev = inputStr;
   }   
@@ -470,4 +495,43 @@ export class NicknameComponent implements OnInit, AfterViewInit {
     } // end if
   }
 
+  private emitEventOnChange(eventKey:string, value:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("name / emitEventOnChange / 시작");
+
+    if(null == eventKey) {
+      if(isDebug) console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
+      return;
+    }
+    if(null == value) {
+      if(isDebug) console.log("name / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("name / emitEventOnChange / Done!");
+
+  }  
+  private hideWarningTooptip() :void {
+
+    this.tooltipHeadMsg = null;
+    this.isWarning = false;
+
+  }
 }

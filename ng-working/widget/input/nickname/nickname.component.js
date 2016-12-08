@@ -246,24 +246,36 @@ var NicknameComponent = (function () {
                 return;
             }
             else {
-                this.hideTooltipNow();
-                // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-                this.isWarning = false;
-                this.isSuccessInput = true;
-                this.hideTooltip(2);
+                this.hideWarningTooptip();
+                // REMOVE ME
+                // this.hideTooltipNow();
+                // // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                // this.isWarning = false;
+                // this.isSuccessInput = true;
+                // this.hideTooltip(2);
                 // 부모 객체에게 Change Event 발송 
-                var myEventOnChange = this.myEventService.getMyEvent(
-                // public eventName:string
-                this.myEventService.ON_CHANGE, 
-                // public key:string
+                this.emitEventOnChange(
+                // eventKey:string
                 this.myEventService.KEY_USER_NICKNAME, 
-                // public value:string
-                inputStr, 
-                // public metaObj:any
-                null, 
-                // public myChecker:MyChecker
-                this.myChecker);
+                // value:string
+                name);
+                // REMOVE ME
+                /*
+                let myEventOnChange:MyEvent =
+                this.myEventService.getMyEvent(
+                  // public eventName:string
+                  this.myEventService.ON_CHANGE,
+                  // public key:string
+                  this.myEventService.KEY_USER_NICKNAME,
+                  // public value:string
+                  inputStr,
+                  // public metaObj:any
+                  null,
+                  // public myChecker:MyChecker
+                  this.myChecker
+                );
                 this.emitter.emit(myEventOnChange);
+                */
                 return;
             } // end if - dirty word
         } // end if - check inputStr    
@@ -340,6 +352,18 @@ var NicknameComponent = (function () {
                         console.log("nickname / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
                 } // end if
             } // end if
+        }
+        else {
+            // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
+            if (isDebug)
+                console.log("nickname / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
+            this.hideWarningTooptip();
+            // 부모 객체에게 안전한 이름 문자열을 전달합니다.
+            this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_NICKNAME, 
+            // value:string
+            inputStr);
         } // end if
         element.value = this.inputStrPrev = inputStr;
     };
@@ -369,6 +393,40 @@ var NicknameComponent = (function () {
         if (this.isFocusInfo) {
             this.isFocusInfo = false;
         } // end if
+    };
+    NicknameComponent.prototype.emitEventOnChange = function (eventKey, value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / emitEventOnChange / 시작");
+        if (null == eventKey) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
+            return;
+        }
+        if (null == value) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("name / emitEventOnChange / Done!");
+    };
+    NicknameComponent.prototype.hideWarningTooptip = function () {
+        this.tooltipHeadMsg = null;
+        this.isWarning = false;
     };
     __decorate([
         core_1.Input(), 

@@ -49,8 +49,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / ngOnInit / 시작");
 
   } // end function
@@ -58,8 +58,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -73,8 +73,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다.
@@ -108,8 +108,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private init(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -125,8 +125,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logActionPage() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -143,8 +143,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getQueryString() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getQueryString / 시작");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -166,8 +166,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // 카카오 로그인 토큰을 가져옵니다.
   private getKakaoToken(kakaoCode:string) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoToken / 시작");
     if(isDebug) console.log("kakao-callback / getKakaoToken / kakaoCode : ",kakaoCode);
 
@@ -222,8 +222,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
   private getKakaoSignUp(kakaoTokenType:string, kakaoAccessToken:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoSignUp / 시작");
 
     this.loginService
@@ -271,8 +271,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logError(errorType:string, errMsg:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / logError / 시작");
 
     if(null == errorType) {
@@ -300,8 +300,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getKakaoMe(kakaoTokenType:string, kakaoAccessToken:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getKakaoMe / 시작");
 
     this.loginService
@@ -342,8 +342,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getUserByKakaoId(kakaoId:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getUserByKakaoId / 시작");
 
     this.userService

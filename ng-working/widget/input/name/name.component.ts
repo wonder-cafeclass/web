@@ -347,16 +347,7 @@ export class NameComponent implements OnInit, AfterViewInit {
         // 이전에 노출한 툴팁을 내립니다.
 
         this.hideWarningTooptip();
-
-        // REMOVE ME
-        // this.hideTooltipNow();
-        // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-        // this.isWarning = false;
-        // this.isSuccessInput = true;
-        // this.hideTooltip(2);
-
         elementInput.value = name;
-
 
         // 부모 객체에게 정상적인 이름을 전달합니다.
         // 부모 객체에게 Ready Event 발송 
@@ -366,25 +357,6 @@ export class NameComponent implements OnInit, AfterViewInit {
           // value:string
           name
         );
-
-        // REMOVE ME
-        /*
-        let myEventOnChange:MyEvent =
-        this.myEventService.getMyEvent(
-          // public eventName:string
-          this.myEventService.ON_CHANGE,
-          // public key:string
-          this.myEventService.KEY_USER_NAME,
-          // public value:string
-          name,
-          // public metaObj:any
-          null,
-          // public myChecker:MyChecker
-          this.myChecker
-        );
-        this.emitter.emit(myEventOnChange);
-        */
-
 
       } // end if - dirty word
 
