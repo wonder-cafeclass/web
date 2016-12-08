@@ -5,7 +5,8 @@ import {  Component,
           Input, 
           Output,
           EventEmitter,
-          OnInit }              from '@angular/core';
+          OnInit,
+          AfterViewInit }       from '@angular/core';
 import { Router }               from '@angular/router';
 
 import { UploadService }        from '../../../util/service/upload.service';
@@ -16,6 +17,10 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyLoggerService }            from '../../../util/service/my-logger.service';
+import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
+import { MyResponse }                 from '../../../util/model/my-response';
+
 
 
 @Component({
@@ -24,7 +29,7 @@ import { MyEvent }              from '../../../util/model/my-event';
   templateUrl: 'profile-img-upload.component.html',
   styleUrls: [ 'profile-img-upload.component.css' ]
 })
-export class ProfileImgUploadComponent implements OnInit {
+export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
   private uploadUserProfileUrl:string = '/CI/index.php/api/upload/userprofile';
   public userProfilePath:string = "/assets/images/user/";
@@ -40,7 +45,6 @@ export class ProfileImgUploadComponent implements OnInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
-  @Input() myCheckerService:MyCheckerService;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -53,25 +57,87 @@ export class ProfileImgUploadComponent implements OnInit {
 
   private myChecker:MyChecker;
 
+  isAdmin:boolean=false;
+
   constructor(  private uploadService: UploadService,
                 private myEventService:MyEventService,
+                private myLoggerService:MyLoggerService,
+                private watchTower:MyEventWatchTowerService, 
+                private myCheckerService:MyCheckerService,
                 private renderer:Renderer,
                 private urlService:UrlService  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / ngOnInit / init");
+
+  }
+
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  } 
+  private asyncViewPack(): void {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }   
 
   private setMyChecker() :void {
-    if(null == this.myCheckerService) {
-      return;
-    }
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img-upload / setMyChecker / 시작");
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_thumbnail");
     }
   }
-  isOK(input:string) :boolean {
 
+  private init() :void {
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    
     this.setMyChecker();
+  }  
+
+  isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
       return false;
@@ -120,6 +186,13 @@ export class ProfileImgUploadComponent implements OnInit {
     } // end if
     if(null != profileUrlNext && "" != profileUrlNext) {
       this.userProfileUrl = profileUrlNext;
+      // 부모 객체에게 Change Event 발송 
+      this.emitEventOnChange(
+        // eventKey:string
+        this.myEventService.KEY_USER_THUMBNAIL,
+        // value:string
+        this.userProfileUrl
+      );
     } // end if
 
   }
@@ -131,8 +204,6 @@ export class ProfileImgUploadComponent implements OnInit {
     if(!this.isFocus) {
       this.isFocus = true;      
     } // end if
-
-    this.setMyChecker();
   } 
 
   onBlur(event) :void {
@@ -165,8 +236,6 @@ export class ProfileImgUploadComponent implements OnInit {
   onFocusFileUpload(event) :void {
     event.stopPropagation();
     event.preventDefault();
-
-    this.setMyChecker();
   }
 
   onClickFileUpload(event) :void {
@@ -176,8 +245,6 @@ export class ProfileImgUploadComponent implements OnInit {
     // from http://stackoverflow.com/a/32010791/217408
     let eventClick = new MouseEvent('click', {bubbles: true});
     this.renderer.invokeElementMethod(this.fileInput.nativeElement, 'dispatchEvent', [eventClick]);    
-
-    this.setMyChecker();
   }
   onChangeFile(event) :void {
 
@@ -214,6 +281,15 @@ export class ProfileImgUploadComponent implements OnInit {
 
         if(isOK) {
           // 부모 객체에게 Change Event 발송 
+          this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_THUMBNAIL,
+            // value:string
+            this.userProfileUrl
+          );
+
+          // REMOVE ME
+          /*
           let myEventOnChange:MyEvent =
           this.myEventService.getMyEvent(
             // public eventName:string
@@ -228,11 +304,46 @@ export class ProfileImgUploadComponent implements OnInit {
             this.myChecker
           );
           this.emitter.emit(myEventOnChange);
+          */
         }
 
       }
     });
 
-  }  
+  } // end method
+
+  private emitEventOnChange(eventKey:string, value:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("profile-img / emitEventOnChange / 시작");
+
+    if(null == eventKey) {
+      if(isDebug) console.log("profile-img / emitEventOnChange / 중단 / eventKey is not valid!");
+      return;
+    }
+    if(null == value) {
+      if(isDebug) console.log("profile-img / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("profile-img / emitEventOnChange / Done!");
+
+  } // end method
 
 }

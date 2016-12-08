@@ -2,7 +2,8 @@ import {  Component,
           Input, 
           Output,
           EventEmitter,
-          OnInit }              from '@angular/core';
+          OnInit,
+          AfterViewInit }       from '@angular/core';
 import { Router }               from '@angular/router';
 
 import { MyLoggerService }      from '../../../util/service/my-logger.service';
@@ -11,13 +12,17 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
+import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
+import { MyResponse }                 from '../../../util/model/my-response';
+
+
 @Component({
   moduleId: module.id,
   selector: 'gender',
   templateUrl: 'gender.component.html',
   styleUrls: [ 'gender.component.css' ]
 })
-export class GenderComponent implements OnInit {
+export class GenderComponent implements OnInit, AfterViewInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
@@ -26,8 +31,6 @@ export class GenderComponent implements OnInit {
   @Input() leftWarning:number=-1;
 
   @Input() gender:string="";
-
-  @Input() myCheckerService:MyCheckerService = null;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -47,12 +50,71 @@ export class GenderComponent implements OnInit {
 
   myChecker:MyChecker;
 
-  constructor(  private myLoggerService:MyLoggerService, 
+  isAdmin:boolean=false;
+
+  constructor(  private myLoggerService:MyLoggerService,
+                private watchTower:MyEventWatchTowerService,  
+                private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("gender / ngOnInit / init");
+
+  }
+
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("gender / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  } 
+  private asyncViewPack(): void {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("gender / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("gender / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("gender / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }
 
   private setMyChecker() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("gender / setMyChecker / 시작");
+
     if(null == this.myCheckerService) {
       return;
     }
@@ -61,9 +123,18 @@ export class GenderComponent implements OnInit {
       this.myChecker = this.myCheckerService.getMyChecker("user_gender");
     }
   }
-  isOK(input:string) :boolean {
 
+  private init() :void {
+
+    // 성별 검사에 필요한 checker를 가져옵니다.
     this.setMyChecker();
+
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+
+  }
+
+  isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
       return false;
@@ -97,8 +168,6 @@ export class GenderComponent implements OnInit {
     if(!this.isFocus) {
       this.isFocus = true;      
     } // end if
-
-    this.setMyChecker();
   } 
 
   onBlur(event) :void {
@@ -157,8 +226,6 @@ export class GenderComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    this.setMyChecker();
-
     if(this.gender === this.keyMale) {
       this.gender = this.keyMale;
     }
@@ -172,8 +239,6 @@ export class GenderComponent implements OnInit {
 
     event.stopPropagation();
     event.preventDefault();
-
-    this.setMyChecker();
 
     if(this.gender === this.keyFemale) {
       this.gender = this.keyFemale;

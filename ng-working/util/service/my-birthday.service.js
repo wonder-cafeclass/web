@@ -15,18 +15,18 @@ var core_1 = require('@angular/core');
 var MyBirthdayService = (function () {
     function MyBirthdayService() {
         this.dayCntPerMonths = [
-            31,
-            29,
-            31,
-            30,
-            31,
-            30,
-            31,
-            31,
-            30,
-            31,
-            30,
-            31 // December		
+            "31",
+            "29",
+            "31",
+            "30",
+            "31",
+            "30",
+            "31",
+            "31",
+            "30",
+            "31",
+            "30",
+            "31" // December		
         ];
     }
     MyBirthdayService.prototype.do = function () {
@@ -41,7 +41,7 @@ var MyBirthdayService = (function () {
         var yearMax = n - 20;
         var yearArr = [];
         for (var i = yearMin; i <= yearMax; ++i) {
-            yearArr.push(i);
+            yearArr.push("" + i);
         }
         return yearArr;
     };
@@ -49,18 +49,18 @@ var MyBirthdayService = (function () {
     MyBirthdayService.prototype.getMonth = function () {
         var monthArr = [];
         for (var i = 1; i <= 12; ++i) {
-            monthArr.push(i);
+            monthArr.push("" + i);
         }
         return monthArr;
     };
     MyBirthdayService.prototype.getDay = function (month) {
         if (month < 1 || 12 < month) {
-            return null;
+            return [];
         }
-        var dayCnt = this.dayCntPerMonths[(month - 1)];
+        var dayCnt = +this.dayCntPerMonths[(month - 1)];
         var dayArr = [];
         for (var i = 1; i <= dayCnt; ++i) {
-            dayArr.push(i);
+            dayArr.push("" + i);
         }
         return dayArr;
     };

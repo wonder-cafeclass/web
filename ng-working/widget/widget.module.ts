@@ -16,6 +16,8 @@ import { GenderComponent }         		from './input/gender/gender.component';
 import { BirthdayComponent }         	from './input/birthday/birthday.component';
 import { NicknameComponent }         	from './input/nickname/nickname.component';
 
+import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
+
 // @ Desc : Shared module.
 @NgModule({
 	imports: [
@@ -31,9 +33,12 @@ import { NicknameComponent }         	from './input/nickname/nickname.component'
 		NameComponent,
 		GenderComponent,
 		BirthdayComponent,
-		NicknameComponent
+		NicknameComponent,
+		SafeHtmlPipe
 	],
 	exports: [ 
+		CommonModule, 
+		FormsModule,
 		NavTabsComponent,
 		EmailComponent,
 		ProfileImgUploadComponent,
@@ -43,8 +48,7 @@ import { NicknameComponent }         	from './input/nickname/nickname.component'
 		GenderComponent,
 		BirthdayComponent,
 		NicknameComponent,
-		CommonModule, 
-		FormsModule 
+		SafeHtmlPipe
 	]
 })
 export class WidgetModule {}

@@ -70,3 +70,10 @@
 </section>
 
 <footer aria-label="Footer: Copyright, Privacy and Terms" class="copyright" role="contentinfo">FOOTER</footer>
+
+<!-- PHP Error Display For Debug -->
+<div *ngIf="isAdmin" class="row">
+	<div *ngFor="let errorMsg of errorMsgArr">
+		<div [innerHTML]="errorMsg | safeHtml"></div>
+	</div>
+</div>

@@ -22,7 +22,6 @@ var my_ruler_service_1 = require('../util/service/my-ruler.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var image_service_1 = require('../util/image.service');
 var comment_service_1 = require('../widget/comment/service/comment.service');
-var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
 var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
@@ -100,8 +99,7 @@ var KlassCenterModule = (function () {
                 smart_editor_component_1.SmartEditorComponent,
                 comment_list_component_1.CommentListComponent,
                 dron_list_component_1.DronListComponent,
-                input_row_component_1.InputRowComponent,
-                safe_html_pipe_1.SafeHtmlPipe
+                input_row_component_1.InputRowComponent
             ],
             providers: [
                 klass_service_1.KlassService,

@@ -16,6 +16,8 @@ import { MyEvent }                     from '../../util/model/my-event';
 import { KlassVenue }                  from '../model/klass-venue';
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 
+import { MyResponse }                  from '../../util/model/my-response';
+
 @Component({
   moduleId: module.id,
   selector: 'klass-venue-search-list',
@@ -235,12 +237,20 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
   onClickKlassVenue(klassVenue:KlassVenue) :void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
+
     this.klassVenuesNaverMap = klassVenue;
 
     this.klassService.searchKlassMap(
       // q:string
       klassVenue.address
-    ).then(klassVenue => {
+    ).then((myReponse:MyResponse) => {
+
+      if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ",myReponse);
+
+      /*
       this.klassVenuesNaverMap.latitude = klassVenue.latitude;
       this.klassVenuesNaverMap.longitude = klassVenue.longitude;
 
@@ -260,7 +270,8 @@ export class KlassVenueSearchListComponent implements OnInit {
         // DB UPDATE!
         console.log("DB UPDATE!");
       }
-    });    
+      */
+    });
   }
   removeHTMLTags(targetStr:string) :string {
     return targetStr.replace(/\<[a-zA-Z\/]+\>/gi,"");

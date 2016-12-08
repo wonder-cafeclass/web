@@ -11,31 +11,77 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var url_service_1 = require("../../util/url.service");
+var my_extractor_1 = require('../../util/http/my-extractor');
 var MyLoggerService = (function () {
     function MyLoggerService(us, http) {
         this.us = us;
         this.http = http;
         this.apiLogActionPageUrl = '/CI/index.php/api/log/page';
-        this.pageKeyLogin = "LOG_IN";
-        this.pageKeyLoginFacebook = "LOG_IN_FACEBOOK";
-        this.pageKeyLoginKakao = "LOG_IN_KAKAO";
-        this.pageKeyLoginNaver = "LOG_IN_NAVER";
-        this.pageKeyKlassList = "CLASS_LIST";
-        this.pageKeyPolicy = "POLICY";
-        this.pageKeySignup = "SIGNUP";
-        this.pageKeySignupSelect = "SIGNUP_SELECT";
+        this.apiLogErrorUrl = '/CI/index.php/api/log/error';
+        this.pageTypeLogin = "LOG_IN";
+        this.pageTypeLogout = "LOG_OUT";
+        this.pageTypeLoginFacebook = "LOG_IN_FACEBOOK";
+        this.pageTypeLoginKakao = "LOG_IN_KAKAO";
+        this.pageTypeLoginNaver = "LOG_IN_NAVER";
+        this.pageTypeKlassList = "CLASS_LIST";
+        this.pageTypePolicy = "POLICY";
+        this.pageTypeSignup = "SIGNUP";
+        this.pageTypeSignupSelect = "SIGNUP_SELECT";
+        this.errorTypeNotValidValue = "NOT_VALID_VALUE";
+        this.errorTypeUnknownError = "UNKNOWN_ERROR";
+        this.errorAPIFailed = "API_FAILED";
+        this.myExtractor = new my_extractor_1.MyExtractor();
     }
-    MyLoggerService.prototype.logActionPage = function (pageKey) {
-        if (null == pageKey || "" == pageKey) {
-            return;
+    MyLoggerService.prototype.logActionPage = function (apiKey, pageType) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-logger.service / logActionPage / 시작");
+        if (null == apiKey || "" == apiKey) {
+            if (isDebug)
+                console.log("my-logger.service / logActionPage / 중단 / apiKey is not valid!");
+            return Promise.resolve(null);
         }
+        if (null == pageType || "" == pageType) {
+            if (isDebug)
+                console.log("my-logger.service / logActionPage / 중단 / pageType is not valid!");
+            return Promise.resolve(null);
+        }
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
         var req_url = this.us.get(this.apiLogActionPageUrl);
-        req_url += "?pageKey=" + pageKey;
-        this.http.get(req_url).toPromise().then().catch();
+        if (isDebug)
+            console.log("my-logger.service / logActionPage / req_url : ", req_url);
+        var path = window.location.href;
+        if (isDebug)
+            console.log("my-logger.service / logActionPage / path : ", path);
+        var params = {
+            page_type: pageType,
+            page_uri: path
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
-    MyLoggerService.prototype.logActionDirtyWord = function (dirtyWord) {
+    MyLoggerService.prototype.logActionDirtyWord = function (apiKey, dirtyWord) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-logger.service / logActionDirtyWord / 시작");
+        if (null == apiKey || "" == apiKey) {
+            if (isDebug)
+                console.log("my-logger.service / logActionDirtyWord / 중단 / apiKey is not valid!");
+            return Promise.resolve(null);
+        }
         if (null == dirtyWord || "" == dirtyWord) {
-            return;
+            if (isDebug)
+                console.log("my-logger.service / logActionDirtyWord / 중단 / dirtyWord is not valid!");
+            return Promise.resolve(null);
         }
         // Need to implement!
         /*
@@ -45,8 +91,50 @@ var MyLoggerService = (function () {
         this.http.get(req_url).toPromise().then().catch();
         */
     };
-    MyLoggerService.prototype.logError = function (pageKey) {
-        // Do something...
+    MyLoggerService.prototype.logError = function (apiKey, errorType, errorMsg) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-logger.service / logError / 시작");
+        if (isDebug)
+            console.log("my-logger.service / logError / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("my-logger.service / logError / errorType : ", errorType);
+        if (isDebug)
+            console.log("my-logger.service / logError / errorMsg : ", errorMsg);
+        if (null == apiKey || "" == apiKey) {
+            if (isDebug)
+                console.log("my-logger.service / logError / 중단 / apiKey is not valid!");
+            return Promise.resolve(null);
+        }
+        if (null == errorType || "" == errorType) {
+            if (isDebug)
+                console.log("my-logger.service / logError / 중단 / errorType is not valid!");
+            return Promise.resolve(null);
+        }
+        if (null == errorMsg || "" == errorMsg) {
+            if (isDebug)
+                console.log("my-logger.service / logError / 중단 / errorMsg is not valid!");
+            return Promise.resolve(null);
+        }
+        // POST
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Cafeclass-REST-API-Key': apiKey
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        var req_url = this.us.get(this.apiLogErrorUrl);
+        if (isDebug)
+            console.log("my-logger.service / logError / req_url : ", req_url);
+        var params = {
+            api_key: apiKey,
+            error_type: errorType,
+            error_msg: errorMsg
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     MyLoggerService = __decorate([
         core_1.Injectable(), 

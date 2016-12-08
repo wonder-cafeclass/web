@@ -1,10 +1,16 @@
-import { Injectable }                 from '@angular/core';
+import { Injectable }             from '@angular/core';
 import { Headers, 
          Http, 
          Response, 
          RequestOptions }         from '@angular/http';
+import { Observable }             from 'rxjs';
+
 import { MyChecker }              from '../model/my-checker';
+
 import { UrlService }             from "../../util/url.service";
+
+import { MyExtractor }            from '../../util/http/my-extractor';
+import { MyResponse }             from '../../util/model/my-response';
 
 
 @Injectable()
@@ -30,36 +36,44 @@ export class MyCheckerService {
 
     private history:any;
 
+    private myExtractor:MyExtractor;
 
     constructor(    private us:UrlService, 
-                    private http: Http) {}
+                    private http: Http) {
 
-    getReady() :Promise<any> {
+        this.myExtractor = new MyExtractor();
+    }
 
-        if(null != this.checkerMap && null != this.constMap && null != this.dirtyWordList) {
-            return Promise.resolve();
+    // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
+    setReady(checkerMap:any, constMap:any, dirtyWordList:any, apiKey:string) :void {
+
+        if(null == checkerMap) {
+            return;
         }
+        if(null == constMap) {
+            return;
+        }
+        if(null == dirtyWordList) {
+            return;
+        }
+        if(null == apiKey || "" == apiKey) {
+            return;
+        }
+        this.checkerMap = checkerMap;
+        this.constMap = constMap;
+        this.dirtyWordList = dirtyWordList;
+        this.apiKey = apiKey;
+    }
 
-        return this.getChecker()
-        .then(data => {
-
-            if(null != data.checker_map) {
-                this.checkerMap = data.checker_map;
-            } // end if
-            if(null != data.const_map) {
-                this.constMap = data.const_map;
-            } // end if
-            if(null != data.dirty_word_list) {
-                this.dirtyWordList = data.dirty_word_list;
-            } // end if
-            if(null != data.api_key) {
-                this.apiKey = data.api_key;
-            } // end if
-
-            return Promise.resolve();
-        });
-    } 
-
+    public getCheckerMap() :any {
+        return this.checkerMap;
+    }
+    public getConstMap() :any {
+        return this.constMap;
+    }
+    public getDirtyWordList() :any {
+        return this.dirtyWordList;
+    }
     public getAPIKey() :string {
         return this.apiKey;
     }
@@ -70,6 +84,10 @@ export class MyCheckerService {
 
     // @ Desc : 서버에서 받아온 checker json 파일에 있는 filterKey를 넘겨 받으면 이를 기반으로 MyChecker 객체를 만들어 돌려줍니다.
     getMyChecker (filterKey:string) :MyChecker {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-checker.service / getMyChecker / 시작");
 
         if(null == this.checkerMap) {
             console.log("!Error! / my-checker.service / null == this.checkerMap");
@@ -122,9 +140,6 @@ export class MyCheckerService {
         let matches:string[] = [];
 
         // Type : Number
-        // REMOVE ME
-        // let minNumber:number = -1;
-        // let maxNumber:number = -1;
         let greaterThan:number = -1;
         let greaterThanEqualTo:number = -1;
         let lessThan:number = -1;
@@ -740,7 +755,6 @@ export class MyCheckerService {
         }
 
         let matchArr:RegExpMatchArray = filter.match(this.regExpRegExIncludeMatch);
-        console.log("TEST / matchArr : ",matchArr);
 
         return "";
     }    
@@ -748,15 +762,20 @@ export class MyCheckerService {
 
     getChecker (): Promise<any> {
 
-        let req_url = this.us.get(this.apiGetChecker);
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-checker.service / getChecker / 시작");
 
-        console.log("MyCheckerService / getChecker / req_url : ",req_url);
+        let req_url = this.us.get(this.apiGetChecker);
+        if(isDebug) console.log("my-checker.service / getChecker / req_url : ",req_url);
 
         return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
     } 
+
+    /*
     private extractData(res: Response) {
 
         let body = res.json();
@@ -781,6 +800,7 @@ export class MyCheckerService {
         console.error(errMsg); // log to console instead
         return Promise.reject(errMsg);
     }
+    */
 
 
 

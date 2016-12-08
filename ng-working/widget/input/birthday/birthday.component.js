@@ -13,59 +13,150 @@ var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_birthday_service_1 = require("../../../util/service/my-birthday.service");
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var BirthdayComponent = (function () {
-    function BirthdayComponent(myLoggerService, myEventService, myBirthdayService) {
+    function BirthdayComponent(myLoggerService, myEventService, watchTower, myCheckerService, myBirthdayService) {
         this.myLoggerService = myLoggerService;
         this.myEventService = myEventService;
+        this.watchTower = watchTower;
+        this.myCheckerService = myCheckerService;
         this.myBirthdayService = myBirthdayService;
         this.top = -1;
         this.left = -1;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
+        this.birthYearArr = [];
         this.selectedYear = -1;
+        this.birthMonthArr = [];
         this.selectedMonth = -1;
+        this.birthDayArr = [];
         this.selectedDay = -1;
+        this.isAdmin = false;
     }
     BirthdayComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / ngOnInit / init");
+    };
+    BirthdayComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    BirthdayComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("birthday / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("birthday / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    BirthdayComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    BirthdayComponent.prototype.setBirthdayDefault = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / setBirthdayDefault / 시작");
         this.birthYearArr = this.myBirthdayService.getYear();
-        this.selectedYear = this.birthYearArr[Math.round(this.birthYearArr.length * 2 / 3)];
+        if (isDebug)
+            console.log("birthday / setBirthdayDefault / this.birthYearArr : ", this.birthYearArr);
+        if (!(0 < this.selectedYear)) {
+            // 지정된 '연도'가 없다면, 초기 값은 '선택안됨'
+            if (isDebug)
+                console.log("birthday / setBirthdayDefault / birthYearArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+            this.birthYearArr.unshift("-");
+        } // end if
         this.birthMonthArr = this.myBirthdayService.getMonth();
-        this.selectedMonth = this.birthMonthArr[Math.round(this.birthMonthArr.length / 2)];
+        if (isDebug)
+            console.log("birthday / setBirthdayDefault / this.birthMonthArr : ", this.birthMonthArr);
+        if (!(0 < this.selectedMonth)) {
+            // 지정된 '월'이 없다면, 초기 값은 '선택안됨'
+            if (isDebug)
+                console.log("birthday / setBirthdayDefault / birthMonthArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+            this.birthMonthArr.unshift("-");
+        } // end if
         this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
-        this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length / 2)];
+        if (isDebug)
+            console.log("birthday / setBirthdayDefault / this.birthDayArr : ", this.birthDayArr);
+        if (!(0 < this.selectedMonth)) {
+            // 지정된 '월'이 없다면, 초기 값은 '선택안됨'
+            if (isDebug)
+                console.log("birthday / setBirthdayDefault / birthDayArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+            this.birthDayArr.unshift("-");
+        } // end if
     };
     BirthdayComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("birthday / setMyChecker / 시작");
         if (null == this.myCheckerService) {
+            if (isDebug)
+                console.log("birthday / setMyChecker / 중단 / this.myCheckerService is not valid!");
             return;
         }
         if (null == this.myCheckerBirthYear) {
+            if (isDebug)
+                console.log("birthday / setMyChecker / update checker / this.myCheckerBirthYear");
             this.myCheckerBirthYear = this.myCheckerService.getMyChecker("user_birth_year");
         }
         if (null == this.myCheckerBirthMonth) {
+            if (isDebug)
+                console.log("birthday / setMyChecker / update checker / this.myCheckerBirthMonth");
             this.myCheckerBirthMonth = this.myCheckerService.getMyChecker("user_birth_month");
         }
         if (null == this.myCheckerBirthDay) {
+            if (isDebug)
+                console.log("birthday / setMyChecker / update checker / this.myCheckerBirthDay");
             this.myCheckerBirthDay = this.myCheckerService.getMyChecker("user_birth_day");
         }
     };
-    BirthdayComponent.prototype.isOKBirthYear = function (input) {
+    BirthdayComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        this.setBirthdayDefault();
         this.setMyChecker();
+    };
+    BirthdayComponent.prototype.isOKBirthYear = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthYear, input);
     };
     BirthdayComponent.prototype.isOKBirthMonth = function (input) {
-        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
     };
     BirthdayComponent.prototype.isOKBirthDay = function (input) {
-        this.setMyChecker();
         if (null == this.myCheckerService) {
             return false;
         }
@@ -79,6 +170,7 @@ var BirthdayComponent = (function () {
         if (this.isOKBirthYear(year)) {
             if (isDebug)
                 console.log("birthday / setBirthYear / done");
+            this.birthYearArr = this.myBirthdayService.getYear();
             this.selectedYear = +year;
         }
     };
@@ -90,10 +182,11 @@ var BirthdayComponent = (function () {
         if (this.isOKBirthMonth(month)) {
             if (isDebug)
                 console.log("birthday / setBirthMonth / done");
+            this.birthMonthArr = this.myBirthdayService.getMonth();
             this.selectedMonth = +month;
         }
     };
-    BirthdayComponent.prototype.setBirthDay = function (day) {
+    BirthdayComponent.prototype.setBirthDay = function (month, day) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -101,6 +194,8 @@ var BirthdayComponent = (function () {
         if (this.isOKBirthDay(day)) {
             if (isDebug)
                 console.log("birthday / setBirthDay / done");
+            // 날짜가 설정되어 있지 않다면, 세팅해줍니다.
+            this.birthDayArr = this.myBirthdayService.getDay(+month);
             this.selectedDay = +day;
         }
     };
@@ -131,7 +226,6 @@ var BirthdayComponent = (function () {
         var isOK = this.isOKBirthMonth(monthCalFormat);
         if (!isOK) {
             var history_2 = this.myCheckerService.getLastHistory();
-            console.log("birthday / hasDoneBirthMonth / history : ", history_2);
         }
         return isOK;
     };
@@ -149,11 +243,8 @@ var BirthdayComponent = (function () {
     BirthdayComponent.prototype.hasDoneBirthDay = function () {
         var dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
         var isOK = this.isOKBirthDay(dayCalFormat);
-        console.log("TEST / hasDoneBirthDay / dayCalFormat : ", dayCalFormat);
-        console.log("TEST / hasDoneBirthDay / isOK : ", isOK);
         if (!isOK) {
             var history_3 = this.myCheckerService.getLastHistory();
-            console.log("birthday / hasDoneBirthDay / history : ", history_3);
         }
         return isOK;
     };
@@ -199,7 +290,6 @@ var BirthdayComponent = (function () {
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthYear = function (selectBirthYear) {
-        this.setMyChecker();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -232,7 +322,6 @@ var BirthdayComponent = (function () {
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthMonth = function (selectBirthMonth) {
-        this.setMyChecker();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -240,7 +329,7 @@ var BirthdayComponent = (function () {
         this.selectedMonth = selectBirthMonth;
         // 월이 바뀌었습니다. 월별 날짜도 연동되어 바꿉니다.
         this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
-        this.selectedDay = this.birthDayArr[Math.round(this.birthDayArr.length / 2)];
+        this.selectedDay = +this.birthDayArr[Math.round(this.birthDayArr.length / 2)];
         if (isDebug)
             console.log("birtday / onChangeBirthMonth / this.selectedMonth : ", this.selectedMonth);
         var monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
@@ -269,7 +358,6 @@ var BirthdayComponent = (function () {
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthDay = function (selectBirthDay) {
-        this.setMyChecker();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -324,10 +412,6 @@ var BirthdayComponent = (function () {
         __metadata('design:type', Number)
     ], BirthdayComponent.prototype, "left", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], BirthdayComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], BirthdayComponent.prototype, "emitter", void 0);
@@ -338,7 +422,7 @@ var BirthdayComponent = (function () {
             templateUrl: 'birthday.component.html',
             styleUrls: ['birthday.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_birthday_service_1.MyBirthdayService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_birthday_service_1.MyBirthdayService])
     ], BirthdayComponent);
     return BirthdayComponent;
 }());

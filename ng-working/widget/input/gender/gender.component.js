@@ -12,16 +12,18 @@ var core_1 = require('@angular/core');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var GenderComponent = (function () {
-    function GenderComponent(myLoggerService, myEventService) {
+    function GenderComponent(myLoggerService, watchTower, myCheckerService, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.watchTower = watchTower;
+        this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
         this.gender = "";
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.tooltipMsgGenderNotValid = "앗! 성별이 필요합니다.";
         this.isFocus = false;
@@ -31,9 +33,58 @@ var GenderComponent = (function () {
         this.keyMale = "M";
         this.keyNoGender = "U";
         this.isShowPopover = false;
+        this.isAdmin = false;
     }
-    GenderComponent.prototype.ngOnInit = function () { };
+    GenderComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("gender / ngOnInit / init");
+    };
+    GenderComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("gender / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    GenderComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("gender / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("gender / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("gender / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    GenderComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
     GenderComponent.prototype.setMyChecker = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("gender / setMyChecker / 시작");
         if (null == this.myCheckerService) {
             return;
         }
@@ -41,8 +92,13 @@ var GenderComponent = (function () {
             this.myChecker = this.myCheckerService.getMyChecker("user_gender");
         }
     };
-    GenderComponent.prototype.isOK = function (input) {
+    GenderComponent.prototype.init = function () {
+        // 성별 검사에 필요한 checker를 가져옵니다.
         this.setMyChecker();
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+    };
+    GenderComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
@@ -71,7 +127,6 @@ var GenderComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        this.setMyChecker();
     };
     GenderComponent.prototype.onBlur = function (event) {
         event.stopPropagation();
@@ -115,7 +170,6 @@ var GenderComponent = (function () {
     GenderComponent.prototype.onClickGenderFemale = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        this.setMyChecker();
         if (this.gender === this.keyMale) {
             this.gender = this.keyMale;
         }
@@ -125,7 +179,6 @@ var GenderComponent = (function () {
     GenderComponent.prototype.onClickGenderMale = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        this.setMyChecker();
         if (this.gender === this.keyFemale) {
             this.gender = this.keyFemale;
         }
@@ -153,10 +206,6 @@ var GenderComponent = (function () {
         __metadata('design:type', String)
     ], GenderComponent.prototype, "gender", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], GenderComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], GenderComponent.prototype, "emitter", void 0);
@@ -167,7 +216,7 @@ var GenderComponent = (function () {
             templateUrl: 'gender.component.html',
             styleUrls: ['gender.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService])
     ], GenderComponent);
     return GenderComponent;
 }());

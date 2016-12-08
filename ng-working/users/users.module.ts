@@ -4,8 +4,6 @@ import { FormsModule }    from '@angular/forms';
 
 import { WidgetModule }              from '../widget/widget.module';
 
-import { KlassRadioBtnService }      from '../klass/service/klass-radiobtn.service';
-
 import { UserMyComponent }           from './user-my.component';
 import { UserMyNavListComponent }    from './user-my-nav-list.component';
 import { MyInfoComponent }           from './view/user-my-nav-list/my-info.component';

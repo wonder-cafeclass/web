@@ -11,10 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var user_service_1 = require('../../../users/service/user.service');
 var EmailComponent = (function () {
-    function EmailComponent(myEventService, userService) {
+    function EmailComponent(myEventService, myLoggerService, watchTower, myCheckerService, userService) {
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
+        this.watchTower = watchTower;
+        this.myCheckerService = myCheckerService;
         this.userService = userService;
         this.width = 380;
         this.top = -1;
@@ -22,7 +27,7 @@ var EmailComponent = (function () {
         this.topWarning = -1;
         this.leftWarning = -1;
         this.isCheckUnique = true;
-        this.myCheckerService = null;
+        this.isDisabled = false;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
@@ -33,24 +38,75 @@ var EmailComponent = (function () {
         this.tooltipMsgEmailNotUnique = "이미 등록되어 있는 이메일입니다.";
         this.tooltipMsgEmailValid = "성공! 이메일 주소가 완벽해요.";
         this.isShowPopover = false;
+        this.isAdmin = false;
         this.inputStrPrevOnBlur = "";
         this.inputStrPrevOnKeyup = "";
     }
-    EmailComponent.prototype.ngOnInit = function () { };
+    EmailComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / ngOnInit / 시작");
+    };
+    EmailComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    EmailComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("email / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("email / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    EmailComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
     EmailComponent.prototype.setMyChecker = function () {
-        if (null == this.myCheckerService) {
-            return;
-        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / setMyChecker / 시작");
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_email");
         }
+    };
+    EmailComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        // 이메일 검사에 필요한 checker를 가져옵니다.
+        this.setMyChecker();
     };
     // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
     EmailComponent.prototype.hasNotDone = function () {
         return !this.hasDone();
     };
     EmailComponent.prototype.hasDone = function () {
-        this.setMyChecker();
         return this.isOK(this.inputStrPrevOnKeyup);
     };
     // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
@@ -63,15 +119,15 @@ var EmailComponent = (function () {
     EmailComponent.prototype.onClick = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     EmailComponent.prototype.onBlur = function (event, email, element) {
         var _this = this;
-        event.stopPropagation();
-        event.preventDefault();
         // let isDebug:boolean = true;
         var isDebug = false;
+        if (isDebug)
+            console.log("email / onBlur / logPageEnter / 시작");
+        event.stopPropagation();
+        event.preventDefault();
         if (null == this.myCheckerService) {
             if (isDebug)
                 console.log("email / onBlur / 중단 / null == this.myCheckerService");
@@ -93,32 +149,56 @@ var EmailComponent = (function () {
             var regExpLastEmptySpace = /[\s]+$/gi;
             element.value = this.inputStrPrevOnBlur = email = email.replace(regExpLastEmptySpace, "");
             // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-            var isOK_1 = this.isOK(email);
-            if (isOK_1 && this.isCheckUnique) {
+            var isOK = this.isOK(email);
+            if (isDebug)
+                console.log("email / onBlur / getUserByEmail / isOK : ", isOK);
+            if (isDebug)
+                console.log("email / onBlur / getUserByEmail / this.isCheckUnique : ", this.isCheckUnique);
+            if (isOK && this.isCheckUnique) {
                 // 회원 가입시, 유일한 이메일인지 검사.
                 this.userService
                     .getUserByEmail(email)
-                    .then(function (result) {
-                    if (null != result &&
-                        null != result.user) {
-                        // 이미 등록된 유저가 있습니다.
-                        isOK_1 = false;
-                    }
-                    if (isOK_1) {
-                        _this.emailSuccess(email);
+                    .then(function (myResponse) {
+                    if (isDebug)
+                        console.log("email / onBlur / getUserByEmail / myResponse : ", myResponse);
+                    var user = null;
+                    if (myResponse.isSuccess()) {
+                        user = myResponse.getDataProp("user");
+                        if (null != user) {
+                            // 이미 이메일이 등록되어 있습니다.
+                            _this.emailFailed(_this.tooltipMsgEmailNotUnique);
+                        }
+                        else {
+                            // 이메일이 등록되어 있지 않습니다. 회원 가입 다음단계로 진행합니다.
+                            _this.emailSuccess(email);
+                        }
                     }
                     else {
-                        _this.emailFailed(_this.tooltipMsgEmailNotUnique);
-                    }
-                });
+                        // Error Report
+                        if (isDebug)
+                            console.log("email / onBlur / getUserByEmail / Error Report");
+                        // Error Report
+                        _this.myLoggerService.logError(
+                        // apiKey:string
+                        _this.watchTower.getApiKey(), 
+                        // errorType:string
+                        _this.myLoggerService.errorAPIFailed, 
+                        // errorMsg:string
+                        "email / getUserByEmail / Failed!");
+                    } // end if
+                }); // end service
             }
-            else if (isOK_1) {
+            else if (isOK) {
                 // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+                if (isDebug)
+                    console.log("email / onBlur / 로그인 시에는 이메일이 유일한지 검사하지 않습니다.");
                 this.emailSuccess(email);
             }
             else {
+                if (isDebug)
+                    console.log("email / onBlur / 이메일에 문제가 있습니다.");
                 this.emailFailed(this.tooltipMsgEmailNotValid);
-            }
+            } // end if
         } // end if
     };
     EmailComponent.prototype.emailFailed = function (msgWarning) {
@@ -258,9 +338,14 @@ var EmailComponent = (function () {
         }
     };
     EmailComponent.prototype.isOK = function (email) {
-        this.setMyChecker();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("email / isOK / 시작");
         var isOK = false;
         if (null == this.myCheckerService) {
+            if (isDebug)
+                console.log("email / isOK / 중단 / this.myCheckerService is not valid!");
             return isOK;
         }
         // 1. myChecker로 검사.
@@ -306,8 +391,8 @@ var EmailComponent = (function () {
     ], EmailComponent.prototype, "isCheckUnique", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], EmailComponent.prototype, "myCheckerService", void 0);
+        __metadata('design:type', Boolean)
+    ], EmailComponent.prototype, "isDisabled", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -319,7 +404,7 @@ var EmailComponent = (function () {
             templateUrl: 'email.component.html',
             styleUrls: ['email.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, user_service_1.UserService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, user_service_1.UserService])
     ], EmailComponent);
     return EmailComponent;
 }());

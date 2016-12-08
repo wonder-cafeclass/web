@@ -12,18 +12,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     // 위의 경우처럼 2번 동일한 클래스를 호출하게 되면 $this->${your-class-path} 의 경우, null을 돌려주게 됩니다.
 
-*/ 
-require APPPATH . '/libraries/REST_Controller.php';
-require APPPATH . '/libraries/MY_Class.php';
+*/
+require APPPATH . '/libraries/MY_REST_Controller.php';
 
 /*
 *   @ Author : Wonder Jung
 *   @ Desc : Kakao REST API 호출을 관리하는 클래스. 로그인 및 회원 정보 조회 API를 사용합니다.
 */
-class Kakao extends REST_Controller implements MY_Class{
 
-    // private $api_search_local="https://openapi.naver.com/v1/search/local.xml?query=";
-    // private $api_search_map="https://openapi.naver.com/v1/map/geocode?query=";
+class Kakao extends MY_REST_Controller {
 
     private $api_get_code="https://kauth.kakao.com/oauth/authorize?client_id={app_key}&redirect_uri={redirect_uri}&response_type=code";
 
@@ -46,84 +43,34 @@ class Kakao extends REST_Controller implements MY_Class{
         // Construct the parent class
         parent::__construct();
 
-        // Configure limits on our controller methods
-        // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
-        // $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
-
-        // Set time zone as Seoul
+        // Library Loaded from parent - MY_REST_Controller
+        /*
         date_default_timezone_set('Asia/Seoul');
-
-        // init database
         $this->load->database();
-
-        // init error logger
         $this->load->library('MY_Error');
-
-        // init path util
         $this->load->library('MY_Path');
-
-        // init param checker
+        $this->load->library('MY_KeyValue');
         $this->load->library('MY_ParamChecker');
-
-        // init MyReponse
         $this->load->library('MY_Response');
-
-        // init MyTime
         $this->load->library('MY_Time');
-
-        // init MyCurl
         $this->load->library('MY_Curl');
-
-        // init MyAPIKey
         $this->load->library('MY_ApiKey');
-
-        // init MySql
         $this->load->library('MY_Sql');
-
-        // init UserAgent
         $this->load->library('user_agent');
-
-        // init MyLogger
         $this->load->library('MY_Logger');
+        */
 
-        // init MyThumbnail
+        // Please add library you need here!
         $this->load->library('MY_Thumbnail');
+        $this->load->library('email');
+        $this->load->library('MY_Cookie');
+        $this->load->library('MY_Auth');
 
         // set API Key
         $this->Kakao_Native_App_Key = $this->my_apikey->get($this->my_apikey->Kakao_Native_App_Key);
         $this->Kakao_REST_API_Key = $this->my_apikey->get($this->my_apikey->Kakao_REST_API_Key);
         $this->Kakao_Javascript_Key = $this->my_apikey->get($this->my_apikey->Kakao_Javascript_Key);
         $this->Kakao_Admin_Key = $this->my_apikey->get($this->my_apikey->Kakao_Admin_Key);
-    }
-
-    // @ Required : MyClass interface
-    public function is_not_ok() {
-        return !$this->is_ok();
-    }
-
-    // @ Required : MyClass interface
-    public function is_ok() {
-
-        $is_ok = true;
-        if($this->my_error->hasError()) {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                MY_Response::$EVENT_UNKNOWN_ERROR_OCCURED, 
-                // $query="" 
-                "", 
-                // $data=null 
-                null, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
-            $is_ok = false;
-        }
-
-        return $is_ok;
     }
 
     /*
@@ -141,27 +88,34 @@ class Kakao extends REST_Controller implements MY_Class{
         // API 호출에 제한이 있음.
         // 어떤 유저(ip, os, broswer)가 이 메서드를 호출했는지 기록필요. - 로그 작업.
 
-        $req_url = $this->api_get_code;
+        $auth_url = $this->api_get_code;
         $pattern = '/\{app_key\}/i';
         $replacement = $this->Kakao_REST_API_Key;
-        $req_url = preg_replace($pattern, $replacement, $req_url);
+        $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
         $pattern = '/\{redirect_uri\}/i';
         $replacement = $this->my_path->get_path_full($this->redirect_uri_kakao);
-        $req_url = preg_replace($pattern, $replacement, $req_url);
+        $auth_url = preg_replace($pattern, $replacement, $auth_url);
 
-        $output = $req_url;
+        if(empty($auth_url)) 
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "auth_url is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
+        }
 
-        $response_body = array();
-        if ($is_ok)
-        {
-            $response_body = $this->my_response->getResBodySuccessData($output);
-        }
-        else
-        {
-            $response_body = $this->my_response->getResBodyFailMsg('Kakao API is not valid!');
-        }
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        // @ Required - 응답객체는 반드시 json 형태여야 합니다.
+        $output = [];
+        $output["auth_url"] = $auth_url;
+        $this->respond_200($output);
     }
 
     public function token_get()
@@ -174,25 +128,57 @@ class Kakao extends REST_Controller implements MY_Class{
         $kakao_code = $this->my_paramchecker->get("code","kakao_code");
         if(empty($kakao_code)) 
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$kakao_code is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_code is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_code"=>$kakao_code
+                )
+            );
             return;
         }
 
         // 1. 로그인에 성공한 유저가 kakao-code로 API 통신을 위한 token을 가져옵니다.
-        $output = $this->postToken($kakao_code);
-        if(is_null($output))
+        $kakao_token = $this->postToken($kakao_code);
+        if(is_null($kakao_token))
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$output is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_code"=>$kakao_code,
+                    "kakao_token"=>$kakao_token
+                )
+            );
             return;
         }
 
-        // print_r($output);
-        // echo "TEST - 001<br/>\n";
-
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        // @ Required - 응답객체는 반드시 json 형태여야 합니다.
+        $output = [];
+        if($this->my_keyvalue->has($kakao_token,"access_token"))
+        {
+            $output["access_token"] = $kakao_token["access_token"];
+        }
+        if($this->my_keyvalue->has($kakao_token,"token_type"))
+        {
+            $output["token_type"] = $kakao_token["token_type"];
+        }
+        
+        $this->respond_200($output);
     }
 
     public function signup_get()
@@ -205,32 +191,77 @@ class Kakao extends REST_Controller implements MY_Class{
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$kakao_token_type is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type
+                )
+            );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$kakao_access_token is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );
             return;
         }
 
         // 1. 로그인에 성공한 유저가 kakao-code로 API 통신을 위한 token을 가져옵니다.
-        $output = $this->postSignUp($kakao_token_type, $kakao_access_token);
-        if(is_null($output))
+        $singup = $this->postSignUp($kakao_token_type, $kakao_access_token);
+        if(is_null($singup))
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$output is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "singup is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token,
+                    "singup"=>$singup
+                )
+            );
             return;
         }
 
-        // print_r($output);
-        // echo "TEST - 001<br/>\n";
-
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        // @ Required - 응답객체는 반드시 json 형태여야 합니다.
+        $output = [];
+        if($this->my_keyvalue->has($singup,"code"))
+        {
+            $output["code"] = $this->my_keyvalue->get($singup,"code");
+        }
+        if($this->my_keyvalue->has($singup,"msg"))
+        {
+            $output["msg"] = $this->my_keyvalue->get($singup,"msg");
+        }
+        $this->respond_200($output);
     } 
 
     public function me_get()
@@ -243,32 +274,74 @@ class Kakao extends REST_Controller implements MY_Class{
         $kakao_token_type = $this->my_paramchecker->get("token_type","kakao_token_type");
         if(empty($kakao_token_type)) 
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$kakao_token_type is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type
+                )
+            );
             return;
         }
         $kakao_access_token = $this->my_paramchecker->get("access_token","kakao_access_token");
         if(empty($kakao_access_token)) 
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$kakao_access_token is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );                       
             return;
         }
 
         // 1. 로그인에 성공한 유저가 자신의 kakao 계정 공개 정보를 가져옵니다.
-        $output = $this->postMe($kakao_token_type, $kakao_access_token);
-        if(is_null($output))
+        $me = $this->postMe($kakao_token_type, $kakao_access_token);
+        if(is_null($me))
         {
-            $response_body = $this->my_response->getResBodyFailMsg('$output is not valid!');
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+            $this->respond_200_Failed(
+                // $msg=""
+                "me is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token,
+                    "me"=>$me
+                )
+            );             
             return;
         }
 
         // 2. 이미 등록되어 있는 유저인지 확인.
-        $output = $this->checkUserRegistry($output);
+        $me = $this->checkUserRegistry($me);
 
-        $response_body = $this->my_response->getResBodySuccessData($output);
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+        // @ Required - 응답객체는 반드시 json 형태여야 합니다.
+        $output = [];
+        $output["me"] = $me;
+
+        $this->respond_200($output);
     } 
     /*
     *   @ Desc : 카카오 유저 정보가 정상적으로 들어왔다면 해당 유저의 등록 여부를 확인, 없다면 추가 등록한다.
@@ -276,6 +349,17 @@ class Kakao extends REST_Controller implements MY_Class{
     private function checkUserRegistry($output=null) {
 
         if(is_null($output)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "output is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return;
         }
 
@@ -288,6 +372,17 @@ class Kakao extends REST_Controller implements MY_Class{
         }
         else
         {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "\$output->id is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return;
         }
 
@@ -305,6 +400,21 @@ class Kakao extends REST_Controller implements MY_Class{
                 }
             }
 
+        }
+        else
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "properties is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
+            return;
         }
 
         $user = $this->get_user($kakao_id);
@@ -330,18 +440,16 @@ class Kakao extends REST_Controller implements MY_Class{
                 );
             }
             // 4-1-1-4. 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
-            $output = $user = $this->get_user($kakao_id);
+            $user = $this->get_user($kakao_id);
         }
         else 
         {
             // 4-1-2-1. 등록되어 있다면 등록하지 않는다.
             // 4-1-2-2. 뷰에 정상적으로 로그인된 것을 알려줌.
             // 4-1-2-3. (Redirect)유저 등록이 이미 완료된 상태라면, 로그인을 호출한 위치로 돌아간다.
-            $output = $user;
         } 
 
-        return $output;       
-
+        return $user;
     }       
 
     /*
@@ -350,9 +458,31 @@ class Kakao extends REST_Controller implements MY_Class{
     private function postToken($kakao_code="") {
 
         if(empty($kakao_code)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_code is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return null;
         }
         if(empty($this->Kakao_REST_API_Key)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "Kakao_REST_API_Key is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );            
             return null;
         }
 
@@ -386,6 +516,20 @@ class Kakao extends REST_Controller implements MY_Class{
             {
                $result_arr[$key] = $value;
             }
+        }
+        if(empty($result_arr)) 
+        {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
         }
 
         // Sample Data
@@ -421,9 +565,31 @@ class Kakao extends REST_Controller implements MY_Class{
     private function postSignUp($kakao_token_type="", $kakao_access_token="") {
 
         if(empty($kakao_token_type)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
         if(empty($kakao_access_token)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
 
@@ -441,14 +607,54 @@ class Kakao extends REST_Controller implements MY_Class{
             []
         );
 
+        if(empty($result)) {
+            $this->respond_200_Failed(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );
+        } // end if
+
         return $result;
     }    
     private function postMe($kakao_token_type="", $kakao_access_token="") {
 
         if(empty($kakao_token_type)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_token_type is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
         if(empty($kakao_access_token)) {
+            // Error Report
+            $this->respond_500_detail(
+                // $msg=""
+                "kakao_access_token is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__
+            );
             return "";
         }
 
@@ -470,6 +676,25 @@ class Kakao extends REST_Controller implements MY_Class{
                 // "code"=>$kakao_code
             ]
         );
+
+        if(empty($result)) {
+            $this->respond_200_Failed(
+                // $msg=""
+                "result is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_token_type"=>$kakao_token_type,
+                    "kakao_access_token"=>$kakao_access_token
+                )
+            );
+        } // end if
+
         return $result;
     }     
 
@@ -500,15 +725,62 @@ class Kakao extends REST_Controller implements MY_Class{
     {
         if(!(0 < $kakao_id)) 
         {
+            $this->respond_200_Failed(
+                // $msg=""
+                "0 < \$kakao_id : $kakao_id",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );                      
             return;
         }
         if(empty($nickname)) 
         {
+            $this->respond_200_Failed(
+                // $msg=""
+                "nickname is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );
             return;
         }
         if(empty($thumbnail_url)) 
         {
-            return;
+            $this->respond_200_Failed(
+                // $msg=""
+                "thumbnail_url is not valid!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                array(
+                    "kakao_id"=>$kakao_id,
+                    "nickname"=>$nickname,
+                    "thumbnail_url"=>$thumbnail_url
+                )
+            );
         }
 
         $this->my_sql->insert_user_kakao(
@@ -520,6 +792,5 @@ class Kakao extends REST_Controller implements MY_Class{
             $thumbnail_url
         );
     }
-
-
+   
 }

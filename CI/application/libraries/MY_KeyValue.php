@@ -46,6 +46,27 @@ class MY_KeyValue
         return intval($value);
     }
 
+    public function has($_target=null, $_key=null) 
+    {
+        if(empty($_key))
+        {
+            return false;
+        }
+
+        foreach ($_target as $key => $value) {
+            if(is_numeric($key))
+            {
+                continue;
+            }
+            if( $_key === $key )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function get($_target=null, $_key=null) 
     {
         if(empty($_key))

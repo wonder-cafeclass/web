@@ -1,6 +1,7 @@
 <div class="btn-box text-left info">
 	<label class="title">이름</label>
 
+	<!-- REMOVE ME
 	<div 	*ngIf="isShowPopover"
 			class="popover left"
 			[style.top]="top + 'px'"
@@ -13,18 +14,20 @@
 		</div> 
 	</div>	
 	<span 	*ngIf="isShowPopover"
-			class="glyphicon glyphicon-info-sign info"
+			class="glyphicon glyphicon-inmfo-sign info"
 			[ngClass]="{'popover-show-info':isFocusInfo}"
 			(mouseover)="onMouseOverInfo($event)"
 			(mouseout)="onMouseOutInfo($event)"></span>
+	-->
+
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
 	<input 	#input
 			(click)="onClick($event, input)"
 			(focus)="onFocus($event, password)"
-			(blur)="onBlur($event, input)"
-			(keyup)="onKeyup($event, input)"
+			(blur)="onBlur($event, input, tooltip)"
+			(keyup)="onKeyup($event, input, tooltip)"
 			(keydown.tab)="onKeydownTab($event)"
 			(keydown.shift.tab)="onKeydownTab($event)"
 			value={{inputStrPrev}}
@@ -37,11 +40,11 @@
 			aria-hidden="true"></span>
 			
 	<!-- tooltip -->
-	<div 	class="tooltip top" 
-			*ngIf="tooltipHeadMsg"
+	<div 	[ngClass]="{'my-show':isWarning,'my-hide':!isWarning}"
+			#tooltip
+			class="tooltip top" 
 			[style.top]="topWarning + 'px'"
 			[style.left]="leftWarning + 'px'"
-			style="opacity:1;"
 			role="tooltip"> 
 
 		<div 	class="tooltip-arrow"

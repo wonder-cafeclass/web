@@ -13,10 +13,15 @@ var upload_service_1 = require('../../../util/service/upload.service');
 var url_service_1 = require("../../../util/url.service");
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_logger_service_1 = require('../../../util/service/my-logger.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var ProfileImgUploadComponent = (function () {
-    function ProfileImgUploadComponent(uploadService, myEventService, renderer, urlService) {
+    function ProfileImgUploadComponent(uploadService, myEventService, myLoggerService, watchTower, myCheckerService, renderer, urlService) {
         this.uploadService = uploadService;
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
+        this.watchTower = watchTower;
+        this.myCheckerService = myCheckerService;
         this.renderer = renderer;
         this.urlService = urlService;
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
@@ -35,18 +40,68 @@ var ProfileImgUploadComponent = (function () {
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isShowPopover = false;
+        this.isAdmin = false;
     }
-    ProfileImgUploadComponent.prototype.ngOnInit = function () { };
+    ProfileImgUploadComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("profile-img-upload / ngOnInit / init");
+    };
+    ProfileImgUploadComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-info / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    ProfileImgUploadComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-info / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("my-info / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    ProfileImgUploadComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
     ProfileImgUploadComponent.prototype.setMyChecker = function () {
-        if (null == this.myCheckerService) {
-            return;
-        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("profile-img-upload / setMyChecker / 시작");
         if (null == this.myChecker) {
             this.myChecker = this.myCheckerService.getMyChecker("user_thumbnail");
         }
     };
-    ProfileImgUploadComponent.prototype.isOK = function (input) {
+    ProfileImgUploadComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         this.setMyChecker();
+    };
+    ProfileImgUploadComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
@@ -85,6 +140,12 @@ var ProfileImgUploadComponent = (function () {
         } // end if
         if (null != profileUrlNext && "" != profileUrlNext) {
             this.userProfileUrl = profileUrlNext;
+            // 부모 객체에게 Change Event 발송 
+            this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_THUMBNAIL, 
+            // value:string
+            this.userProfileUrl);
         } // end if
     };
     ProfileImgUploadComponent.prototype.onClick = function (event) {
@@ -93,7 +154,6 @@ var ProfileImgUploadComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        this.setMyChecker();
     };
     ProfileImgUploadComponent.prototype.onBlur = function (event) {
         event.stopPropagation();
@@ -119,7 +179,6 @@ var ProfileImgUploadComponent = (function () {
     ProfileImgUploadComponent.prototype.onFocusFileUpload = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        this.setMyChecker();
     };
     ProfileImgUploadComponent.prototype.onClickFileUpload = function (event) {
         event.stopPropagation();
@@ -127,7 +186,6 @@ var ProfileImgUploadComponent = (function () {
         // from http://stackoverflow.com/a/32010791/217408
         var eventClick = new MouseEvent('click', { bubbles: true });
         this.renderer.invokeElementMethod(this.fileInput.nativeElement, 'dispatchEvent', [eventClick]);
-        this.setMyChecker();
     };
     ProfileImgUploadComponent.prototype.onChangeFile = function (event) {
         var _this = this;
@@ -160,22 +218,45 @@ var ProfileImgUploadComponent = (function () {
                     console.log("profile-img / onChangeFile / this.myChecker : ", _this.myChecker);
                 if (isOK) {
                     // 부모 객체에게 Change Event 발송 
-                    var myEventOnChange = _this.myEventService.getMyEvent(
-                    // public eventName:string
-                    _this.myEventService.ON_CHANGE, 
-                    // public key:string
+                    _this.emitEventOnChange(
+                    // eventKey:string
                     _this.myEventService.KEY_USER_THUMBNAIL, 
-                    // public value:string
-                    _this.userProfileUrl, 
-                    // public metaObj:any
-                    null, 
-                    // public myChecker:MyChecker
-                    _this.myChecker);
-                    _this.emitter.emit(myEventOnChange);
+                    // value:string
+                    _this.userProfileUrl);
                 }
             }
         });
-    };
+    }; // end method
+    ProfileImgUploadComponent.prototype.emitEventOnChange = function (eventKey, value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("profile-img / emitEventOnChange / 시작");
+        if (null == eventKey) {
+            if (isDebug)
+                console.log("profile-img / emitEventOnChange / 중단 / eventKey is not valid!");
+            return;
+        }
+        if (null == value) {
+            if (isDebug)
+                console.log("profile-img / emitEventOnChange / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("profile-img / emitEventOnChange / Done!");
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
@@ -184,10 +265,6 @@ var ProfileImgUploadComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], ProfileImgUploadComponent.prototype, "left", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], ProfileImgUploadComponent.prototype, "myCheckerService", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -203,7 +280,7 @@ var ProfileImgUploadComponent = (function () {
             templateUrl: 'profile-img-upload.component.html',
             styleUrls: ['profile-img-upload.component.css']
         }), 
-        __metadata('design:paramtypes', [upload_service_1.UploadService, my_event_service_1.MyEventService, core_1.Renderer, url_service_1.UrlService])
+        __metadata('design:paramtypes', [upload_service_1.UploadService, my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, core_1.Renderer, url_service_1.UrlService])
     ], ProfileImgUploadComponent);
     return ProfileImgUploadComponent;
 }());

@@ -18,18 +18,20 @@ var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var KlassListComponent = (function () {
-    function KlassListComponent(service, urlService, userService, myLoggerService, myEventWatchTowerService, myCheckerService, route, router) {
+    function KlassListComponent(service, urlService, userService, myLoggerService, watchTower, myCheckerService, route, router) {
         this.service = service;
         this.urlService = urlService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
         this.route = route;
         this.router = router;
         // 검색상태 관련
         this.isSearchEnabled = false;
         this.searchTerms = new Subject_1.Subject();
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         // EVENT
         this.isOverMagnifier = false;
         this.prevSelectileMap = null;
@@ -38,61 +40,97 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / ngOnInit / 시작");
+        this.asyncViewPack();
+    };
+    KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("klass-list / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
+    };
+    KlassListComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    KlassListComponent.prototype.init = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / init / 시작");
+        this.setViewPack();
+        this.logPageEnter();
+    };
+    KlassListComponent.prototype.logPageEnter = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyKlassList);
-        // get class list
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.watchTower.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
+            if (isDebug)
+                console.log("klass-list / logPageEnter / myResponse : ", myResponse);
+        });
+        this.getKlassList();
+    };
+    KlassListComponent.prototype.getKlassList = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / getKlassList / 시작");
+        // REFACTOR ME!
         this.route.params.forEach(function (params) {
+            if (isDebug)
+                console.log("klass-list / getKlassList / params : ", params);
             _this.selectedId = params['id'];
-            _this.service.getKlasses().then(function (klasses) { return _this.klasses = klasses; });
+            _this.service
+                .getKlasses()
+                .then(function (myResponse) {
+                if (isDebug)
+                    console.log("klass-list / getKlasses / myResponse : ", myResponse);
+                // this.klasses = klasses;
+            });
         });
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
-        this.myEventWatchTowerService.announceToggleTopMenu(true);
-        // 회원 로그인 쿠키를 가져옵니다.
-        // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
-                console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-                console.log("result : ", result);
-                if (null != result && null != result.user) {
-                    _this.loginUser = result.user;
-                    // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-                    _this.myEventWatchTowerService.announceLogin(_this.loginUser);
-                }
-            });
-        }); // end Promise    
-        /*
-        let loginUser:User = this.myEventWatchTowerService.getLoginUser();
-        if(null != loginUser) {
-          // shared service에 이미 저장된 로그인 유저를 가져옴.
-          console.log("shared service에 이미 저장된 로그인 유저를 가져옴.");
-          console.log("loginUser : ",loginUser);
-          this.loginUser = loginUser;
-          this.myEventWatchTowerService.announceLogin(this.loginUser);
-        } else {
-          // shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.
-          this.myCheckerService.getReady().then(() => {
-            this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(result => {
-    
-              console.log("shared service에 이미 저장된 로그인 유저가 없음. 새로 가져옴.");
-              console.log("loginUser : ",loginUser);
-    
-              if(null != result && null != result.user) {
-                
-                this.loginUser = result.user;
-                // 가져온 유저 정보를 shared service 객체를 통해 전달합니다.
-                this.myEventWatchTowerService.announceLogin(this.loginUser);
-              }
-            });
-          }); // end Promise
-        } // end if
-        */
+        this.watchTower.announceToggleTopMenu(true);
     };
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();
     };
     KlassListComponent.prototype.search = function (level, station, day, time, searchKeyword) {
-        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / search / 시작");
         // 항목별 filter 만들기
         var levelKey = "";
         if (null != level && null != level.key) {
@@ -130,8 +168,11 @@ var KlassListComponent = (function () {
         // time:string,
         timeKey, 
         // q:string
-        searchKeywordSafe).then(function (klasses) {
-            _this.klasses = klasses;
+        searchKeywordSafe).then(function (myReponse) {
+            if (isDebug)
+                console.log("klass-list / search / myReponse : ", myReponse);
+            // wonder.jung
+            // this.klasses = klasses 
         });
     };
     KlassListComponent.prototype.onMouseenterMagnifier = function () {

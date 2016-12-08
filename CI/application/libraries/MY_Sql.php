@@ -109,32 +109,27 @@ class MY_Sql
     {   
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
-
         if(empty($agent))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
-            return;
+            return false;
         }
         if(empty($ip))
         {
-            return;
+            return false;
         }
         if(empty($type))
         {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
+            return false;
         }
         if(empty($msg))
         {
-            return;
+            return false;
         }
 
         $data = array(
@@ -146,23 +141,67 @@ class MY_Sql
             'msg' => $msg
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('log_error');
+        $is_success = 
+        $this->log_query(
+            // $user_id=-1
+            -1,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+        if(!$is_success) 
+        {
+            return $is_success;
+        }
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_error', $data);
+
+        return $is_success;
     }
-    public function select_log_error()
+    public function select_log_error($ip="", $type="")
     {
-        
+        if(empty($ip))
+        {
+            return;
+        }
+        if(empty($type))
+        {
+            return;
+        }
+
+        $data = array(
+            'ip' => $ip,
+            'type' => $type
+        );
+
+        $this->CI->db->select("*");
+        $this->CI->db->where('ip', $ip);
+        $this->CI->db->where('type', $type);
+        $this->CI->db->order_by('date_created', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('log_error');
+
+        $log_error = null;
+        foreach ($query->result() as $row)
+        {
+            $log_error = $row;
+        } // end foreach
+
+        return $log_error;
     }
 
     /*
     *   @ Desc : 사용자들의 중요한 클릭, 페이지 진입등의 행동에 대해 기록합니다.
     */
-    public function insert_log_action($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $key="")
+    public function insert_log_action($agent="", $agent_type="", $ip="", $type="", $user_id=-1, $key="", $uri="")
     {
         if($this->is_not_ready())
         {
             return;
         }
-
         if(empty($agent))
         {
             return;
@@ -194,7 +233,8 @@ class MY_Sql
             'ip' => $ip,
             'type' => $type,
             'user_id' => $user_id,
-            'key' => $key
+            'key' => $key,
+            'uri' => $uri
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_action', $data);
@@ -211,32 +251,28 @@ class MY_Sql
     {
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
 
         if(empty($agent))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
-            return;
+            return false;
         }
         if(empty($ip))
         {
-            return;
+            return false;
         }
         if(empty($type))
         {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
+            return false;
         }
         if(empty($query))
         {
-            return;
+            return false;
         }
 
         $data = array(
@@ -249,6 +285,8 @@ class MY_Sql
         );
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('log_query', $data);
+
+        return true;
     }
     public function select_log_query()
     {
@@ -489,27 +527,36 @@ class MY_Sql
 
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
 
         if(empty($action_type))
         {
-            return;
+            return false;
         }
 
         if(empty($query))
         {
-            return;
+            return false;
         }
 
-        $this->CI->my_logger->add_query(
-            // $user_id=-1, 
-            $user_id,
-            // $action_type="", 
+        $is_success = 
+        $this->insert_log_query(
+            // $agent=""
+            $this->CI->my_logger->get_client_agent(),
+            // $agent_type=""
+            $this->CI->my_logger->get_agent_type(),
+            // $ip=""
+            $this->CI->my_logger->get_client_ip(),
+            // $type=""
             $action_type,
+            // $user_id=-1
+            $user_id,
             // $query=""
             $query
-        );
+        );        
+
+        return $is_success;
     }
 
     public function insert_user($password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
@@ -532,7 +579,7 @@ class MY_Sql
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
-            return;
+            $nickname = "";
         }
         if($this->is_not_ok("user_gender", $gender))
         {
@@ -540,19 +587,19 @@ class MY_Sql
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            return;
+            $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            return;
+            $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            return;
+            $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            return;
+            $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
@@ -567,11 +614,14 @@ class MY_Sql
             return;
         }
 
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
         $data = array(
             'nickname' => $nickname,
             'name' => $name,
             'gender' => $gender,
-            'birthday' => "$birth_year-$birth_month-$birth_day",
+            'birthday' => $birthday,
             'thumbnail' => $thumbnail,
             'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
             'email' => $email,
@@ -593,8 +643,109 @@ class MY_Sql
         $this->CI->db->insert('user', $data);
     } 
 
+    private function getBirthday($birth_year="", $birth_month="", $birth_day="") 
+    {
+        $birthday = "$birth_year-$birth_month-$birth_day";
+        if(empty($birth_year) || empty($birth_month) || empty($birth_day)) 
+        {
+            $birthday = "";
+        }
+
+        return $birthday;
+    }
+
+    public function update_user_mutables_by_email($email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            $birth_year = "";
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            $birth_month = "";
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            $birth_day = "";
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            $thumbnail = "";
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'nickname' => $nickname,
+            'name' => $name,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail"
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('email', $email);
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('email', $email);
+        $this->CI->db->update('user', $data);
+    }    
+
     public function update_user($user_id=-1, $password_hashed="", $email="", $name="", $nickname="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
     {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
         if($this->is_not_ready())
         {
             return;
@@ -617,7 +768,7 @@ class MY_Sql
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
-            return;
+            $nickname = "";
         }
         if($this->is_not_ok("user_gender", $gender))
         {
@@ -625,19 +776,19 @@ class MY_Sql
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            return;
+            $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            return;
+            $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            return;
+            $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            return;
+            $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
@@ -652,11 +803,14 @@ class MY_Sql
             return;
         }
 
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
         $data = array(
             'nickname' => $nickname,
             'name' => $name,
             'gender' => $gender,
-            'birthday' => "$birth_year-$birth_month-$birth_day",
+            'birthday' => $birthday,
             'thumbnail' => $thumbnail,
             'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
             'email' => $email,
@@ -677,7 +831,46 @@ class MY_Sql
         // QUERY EXECUTION
         $this->CI->db->where('id', $user_id);
         $this->CI->db->update('user', $data);
-    }        
+    }
+
+    public function update_user_pw($email="", $password_hashed="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_password_hashed", $password_hashed))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'password' => $password_hashed
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->CI->db->where('email', $email);
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('email', $email);
+        $this->CI->db->update('user', $data);
+    }            
 
 	public function get_user_kakao($kakao_id=-1) 
 	{

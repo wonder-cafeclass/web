@@ -12,15 +12,17 @@ var core_1 = require('@angular/core');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var NicknameComponent = (function () {
-    function NicknameComponent(myLoggerService, myEventService) {
+    function NicknameComponent(myLoggerService, myCheckerService, watchTower, myEventService) {
         this.myLoggerService = myLoggerService;
+        this.myCheckerService = myCheckerService;
+        this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.top = -1;
         this.left = -1;
         this.topWarning = -1;
         this.leftWarning = -1;
-        this.myCheckerService = null;
         this.emitter = new core_1.EventEmitter();
         this.isWarning = false;
         this.isSuccessInput = false;
@@ -32,9 +34,56 @@ var NicknameComponent = (function () {
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isShowPopover = false;
+        this.redirectUrl = "/class-center";
+        this.isAdmin = false;
+        this.errorMsgArr = [];
         this.inputStrPrev = "";
     }
-    NicknameComponent.prototype.ngOnInit = function () { };
+    NicknameComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / ngOnInit / init");
+    };
+    NicknameComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    NicknameComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("nickname / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("nickname / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    NicknameComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
     NicknameComponent.prototype.setMyChecker = function () {
         if (null == this.myCheckerService) {
             return;
@@ -43,21 +92,37 @@ var NicknameComponent = (function () {
             this.myChecker = this.myCheckerService.getMyChecker("user_nickname");
         }
     };
+    NicknameComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        this.setMyChecker();
+    };
     NicknameComponent.prototype.isOK = function (input) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / isOK / 시작");
+        if (isDebug)
+            console.log("nickname / isOK / input : ", input);
         if (null == this.myCheckerService) {
             return false;
         }
-        this.setMyChecker();
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     NicknameComponent.prototype.setNickname = function (nickname) {
-        console.log("TEST / nickname : ", nickname);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / setNickname / 시작");
+        if (isDebug)
+            console.log("nickname / setNickname / nickname : ", nickname);
         if (this.isOK(nickname)) {
             this.inputStrPrev = nickname;
         }
         else {
             var history_1 = this.myCheckerService.getLastHistory();
-            console.log("nickname / setNickname / history : ", history_1);
+            if (isDebug)
+                console.log("nickname / setNickname / history : ", history_1);
         }
     };
     // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
@@ -80,8 +145,6 @@ var NicknameComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     NicknameComponent.prototype.onFocus = function (event, element) {
         event.stopPropagation();
@@ -89,8 +152,6 @@ var NicknameComponent = (function () {
         if (!this.isFocus) {
             this.isFocus = true;
         } // end if
-        // Checker가 없다면, Checker를 가져옵니다.
-        this.setMyChecker();
     };
     NicknameComponent.prototype.onKeydownTab = function (event) {
         // 탭 이동으로 다른 input 혹은 버튼으로 이동합니다. 
@@ -103,6 +164,10 @@ var NicknameComponent = (function () {
         this.isFocus = false;
     };
     NicknameComponent.prototype.onBlur = function (event, element) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("nickname / onBlur / 시작");
         event.stopPropagation();
         event.preventDefault();
         if (this.isFocus) {
@@ -117,7 +182,8 @@ var NicknameComponent = (function () {
             if (!isOK) {
                 // 원인을 찾아봅니다.
                 var history_2 = this.myCheckerService.getLastHistory();
-                console.log("nickname / onBlur / history : ", history_2);
+                if (isDebug)
+                    console.log("nickname / onBlur / history : ", history_2);
                 if (null != history_2 && null != history_2.key && null != history_2.msg) {
                     // Do something..
                     if ("min" === history_2.key) {
@@ -171,29 +237,45 @@ var NicknameComponent = (function () {
                 element.value = inputStr;
                 this.hideTooltip(2);
                 // Logger - Spam 행위로 등록.
-                this.myLoggerService.logActionDirtyWord(inputStrBeforeSanitize);
+                this.myLoggerService.logActionDirtyWord(
+                // apiKey:string
+                this.watchTower.getApiKey(), 
+                // dirtyWord:string
+                inputStrBeforeSanitize);
                 this.isSuccessInput = false;
                 return;
             }
             else {
-                this.hideTooltipNow();
-                // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-                this.isWarning = false;
-                this.isSuccessInput = true;
-                this.hideTooltip(2);
+                this.hideWarningTooptip();
+                // REMOVE ME
+                // this.hideTooltipNow();
+                // // this.tooltipHeadMsg = this.tooltipHeadAllowed;
+                // this.isWarning = false;
+                // this.isSuccessInput = true;
+                // this.hideTooltip(2);
                 // 부모 객체에게 Change Event 발송 
-                var myEventOnChange = this.myEventService.getMyEvent(
-                // public eventName:string
-                this.myEventService.ON_CHANGE, 
-                // public key:string
+                this.emitEventOnChange(
+                // eventKey:string
                 this.myEventService.KEY_USER_NICKNAME, 
-                // public value:string
-                inputStr, 
-                // public metaObj:any
-                null, 
-                // public myChecker:MyChecker
-                this.myChecker);
+                // value:string
+                name);
+                // REMOVE ME
+                /*
+                let myEventOnChange:MyEvent =
+                this.myEventService.getMyEvent(
+                  // public eventName:string
+                  this.myEventService.ON_CHANGE,
+                  // public key:string
+                  this.myEventService.KEY_USER_NICKNAME,
+                  // public value:string
+                  inputStr,
+                  // public metaObj:any
+                  null,
+                  // public myChecker:MyChecker
+                  this.myChecker
+                );
                 this.emitter.emit(myEventOnChange);
+                */
                 return;
             } // end if - dirty word
         } // end if - check inputStr    
@@ -270,6 +352,18 @@ var NicknameComponent = (function () {
                         console.log("nickname / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
                 } // end if
             } // end if
+        }
+        else {
+            // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
+            if (isDebug)
+                console.log("nickname / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
+            this.hideWarningTooptip();
+            // 부모 객체에게 안전한 이름 문자열을 전달합니다.
+            this.emitEventOnChange(
+            // eventKey:string
+            this.myEventService.KEY_USER_NICKNAME, 
+            // value:string
+            inputStr);
         } // end if
         element.value = this.inputStrPrev = inputStr;
     };
@@ -300,6 +394,40 @@ var NicknameComponent = (function () {
             this.isFocusInfo = false;
         } // end if
     };
+    NicknameComponent.prototype.emitEventOnChange = function (eventKey, value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("name / emitEventOnChange / 시작");
+        if (null == eventKey) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
+            return;
+        }
+        if (null == value) {
+            if (isDebug)
+                console.log("name / emitEventOnChange / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("name / emitEventOnChange / Done!");
+    };
+    NicknameComponent.prototype.hideWarningTooptip = function () {
+        this.tooltipHeadMsg = null;
+        this.isWarning = false;
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
@@ -317,10 +445,6 @@ var NicknameComponent = (function () {
         __metadata('design:type', Number)
     ], NicknameComponent.prototype, "leftWarning", void 0);
     __decorate([
-        core_1.Input(), 
-        __metadata('design:type', my_checker_service_1.MyCheckerService)
-    ], NicknameComponent.prototype, "myCheckerService", void 0);
-    __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], NicknameComponent.prototype, "emitter", void 0);
@@ -331,7 +455,7 @@ var NicknameComponent = (function () {
             templateUrl: 'nickname.component.html',
             styleUrls: ['nickname.component.css']
         }), 
-        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService])
+        __metadata('design:paramtypes', [my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService])
     ], NicknameComponent);
     return NicknameComponent;
 }());

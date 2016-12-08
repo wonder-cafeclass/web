@@ -12,11 +12,13 @@
       [colorBGBlur]="colorWhite"
       [colorBorder]="colorWhite"></nav-tabs>
       
+      
       <ul class="list-group my-style">
             <li class="list-group-item my-style my-style-first">
+
                   <div  #myinfo
                         [ngClass]="{'i-show':showMyInfo,'i-hide':!showMyInfo}">
-                        <my-info [myCheckerService]="myCheckerService"></my-info>
+                        <my-info></my-info>
                   </div>
                   <div  #myhistory
                         [ngClass]="{'i-show':showMyHistory,'i-hide':!showMyHistory}">
@@ -31,5 +33,6 @@
                   </div>
             </li>
       </ul>
+      
 </div>
 

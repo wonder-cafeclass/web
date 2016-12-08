@@ -1,6 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { UrlService } from "../../util/url.service";
+import { Injectable }               from '@angular/core';
+import { Headers, 
+         Http, 
+         Response, 
+         RequestOptions }           from '@angular/http';
+import { UrlService }               from "../../util/url.service";
+import { MyExtractor }              from '../../util/http/my-extractor';
+import { MyResponse }               from '../../util/model/my-response';
 
 @Injectable()
 export class LoginService {
@@ -21,10 +26,15 @@ export class LoginService {
   private facebookAccessUrl = '/CI/index.php/api/facebook/access';
   private facebookMeUrl = '/CI/index.php/api/facebook/me';
 
-  constructor(private us:UrlService, private http: Http) {
+  private myExtractor:MyExtractor;
+
+  constructor(  private us:UrlService,
+                private http:Http  ) {
+
+    this.myExtractor = new MyExtractor();
   }
 
-  getFacebookMe (): Promise<any> {
+  getFacebookMe (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookMeUrl);
 
@@ -35,11 +45,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   } 
 
-  getFacebookAccess (code:string): Promise<any> {
+  getFacebookAccess (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookAccessUrl) + "?code=" + code;
 
@@ -50,11 +60,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }    
 
-  getFacebookState (state:string): Promise<any> {
+  getFacebookState (state:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookStateUrl) + "?state=" + state;
 
@@ -66,11 +76,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
-  getFacebookAuthUrl (): Promise<any> {
+  getFacebookAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.facebookAuthUrl);
 
@@ -81,11 +91,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }    
 
-  getNaverMe (): Promise<any> {
+  getNaverMe (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverMeUrl);
 
@@ -96,11 +106,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
-  getNaverAccess (naver_code:string): Promise<any> {
+  getNaverAccess (naver_code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverAccessUrl) + "?naver_code=" + naver_code;
 
@@ -112,11 +122,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
-  getNaverState (state:string): Promise<any> {
+  getNaverState (state:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverStateUrl) + "?state=" + state;
 
@@ -127,11 +137,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
-  getNaverAuthUrl (): Promise<any> {
+  getNaverAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.naverAuthUrl);
 
@@ -142,11 +152,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
-  getKakaoAuthUrl (): Promise<any> {
+  getKakaoAuthUrl (): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoAuthLinkUrl);
 
@@ -157,10 +167,11 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
+
   }
-  getKakaoToken (code:string): Promise<any> {
+  getKakaoToken (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoTokenUrl) + "?code=" + code;
 
@@ -172,10 +183,10 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
-  getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
+  getKakaoSignUp (kakaoTokenType:string, kakaoAccessToken:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoSignUpUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
@@ -188,10 +199,10 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
-  getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<any> {
+  getKakaoMe (kakaoTokenType:string, kakaoAccessToken:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoMeUrl) + "?token_type=" + kakaoTokenType + "&access_token=" + kakaoAccessToken;
 
@@ -204,10 +215,10 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
-  getKakaoAuth (code:string): Promise<any> {
+  getKakaoAuth (code:string): Promise<MyResponse> {
 
       let req_url = this.us.get(this.kakaoAuthUrl) + "?code=" + code;
 
@@ -219,45 +230,8 @@ export class LoginService {
 
       return this.http.get(req_url)
                     .toPromise()
-                    .then(this.extractData)
-                    .catch(this.handleError);
-  }
-
-  private extractData(res: Response) {
-
-      let body = res.json();
-
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("user.service / extractData / 시작");
-      if(isDebug) console.log("user.service / extractData / body : ",body);
-
-      // TODO - 데이터 검증 프로세스.
-      if(null == body.data || !body.success) {
-        if(isDebug) console.log("user.service / extractData / 중단 / 데이터가 없습니다.");
-        return null;
-      }
-
-      return body.data;
-  }
-
-  private handleError (error: any) {
-
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("user.service / handleError / 시작");
-
-      // In a real world app, we might use a remote logging infrastructure
-      // We'd also dig deeper into the error to get a better message
-      let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-
-      if(isDebug) console.log("user.service / handleError / errMsg : ",errMsg);
-
-      // console.error(errMsg); // log to console instead
-      // TODO - 에러 내용을 저장해 두어야 합니다.
-
-      return Promise.reject(errMsg);
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
   }
 
 }

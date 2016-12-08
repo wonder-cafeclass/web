@@ -105,6 +105,37 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     // Add methods ...
 
     /*
+    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method. 
+    *   function, file, line num을 필수 인자로 받습니다.
+    *   
+    *   @ Usage : 
+    *   $this->respond_500_detail($err_msg,__FUNCTION__,__FILE__,__LINE__);
+    *   
+    */
+    public function respond_500_detail($msg="", $function="", $file="", $line="") {
+
+        if(empty($msg)) 
+        {
+            return;
+        }
+        if(empty($function)) 
+        {
+            return;
+        }
+        if(empty($file)) 
+        {
+            return;
+        }
+        if(empty($line)) 
+        {
+            return;
+        }
+        $msg = "$msg / $function in $file at $line";
+
+        $this->respond_500($msg);
+    }
+
+    /*
     *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
     */
     public function respond_500($msg="")
@@ -161,7 +192,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     }     
 
     /*
-    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 성공.
     */
     public function respond_200($data=null)
     {
@@ -177,11 +208,63 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         }
     } 
 
+    /*
+    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 유저 파라미터에 의한 실패.
+    */
+    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null)
+    {
+        if(is_null($msg)) 
+        {
+            return;
+        }
+        if(is_null($function)) 
+        {
+            return;
+        }
+        if(is_null($file)) 
+        {
+            return;
+        }
+        if(is_null($line)) 
+        {
+            return;
+        }
+
+        $msg = "$msg / $function in $file at $line";
+
+        // view에서 넘어오는 값이 잘못되었음. 
+        // view에 오류가 있다는 것을 알려주는 지표로 사용.
+        $this->report_error(
+            // $error_type=null
+            $this->my_logger->ERROR_BAD_REQUEST_400,
+            // $error_msg=""
+            $msg
+        );        
+
+        if(method_exists($this, 'set_response') && isset($this->my_response))
+        {
+            $response_body = 
+            $this->my_response->getResBodyFail(
+                // $message=""
+                $msg,
+                // $query=null
+                "",
+                // $data=null 
+                $data,
+                // $error=null
+                null,
+                // $extra=null
+                null
+            );
+            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        }
+    } 
+
 
     /*
     *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
     */
-    private function get_const($key="") 
+    public function get_const($key="") 
     {
         if(empty($key)) 
         {

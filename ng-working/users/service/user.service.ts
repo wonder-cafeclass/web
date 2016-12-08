@@ -4,6 +4,9 @@ import { Headers,
          Response, 
          RequestOptions }                  from '@angular/http';
 import { UrlService }                      from "../../util/url.service";
+import { MyExtractor }                     from '../../util/http/my-extractor';
+import { MyRequest }                       from '../../util/http/my-request';
+import { MyResponse }                      from '../../util/model/my-response';
 import { User }                            from "../model/user";
 
 @Injectable()
@@ -26,15 +29,23 @@ export class UserService {
   private logoutUrl = '/CI/index.php/api/users/logout';
 
   private updateUserUrl = '/CI/index.php/api/users/update';
+  private updateUserMutablesUrl = '/CI/index.php/api/users/updatemutables';
+  private updatePasswordUrl = '/CI/index.php/api/users/updatepw';
   private addUserUrl = '/CI/index.php/api/users/add';
 
   // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
   // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
 
-  constructor(  private us:UrlService, 
-                private http: Http) {}
+  private myExtractor:MyExtractor;
+  private myRequest:MyRequest;
 
-  getUserByEmail (email:string): Promise<any> {
+  constructor(  private us:UrlService, 
+                private http: Http) {
+    this.myExtractor = new MyExtractor();
+    this.myRequest = new MyRequest();
+  }
+
+  getUserByEmail (email:string): Promise<MyResponse> {
 
     // TODO 이메일로 사용자를 조회.
     // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
@@ -49,12 +60,12 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByEmail / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  getUserByFacebookId (facebookId:string): Promise<any> {
+  getUserByFacebookId (facebookId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByFacebookIdUrl);
     req_url = `${ req_url }?q=${ facebookId }`;
@@ -66,12 +77,12 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  getUserByNaverId (naverId:string): Promise<any> {
+  getUserByNaverId (naverId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByNaverIdUrl);
     req_url = `${ req_url }?q=${ naverId }`;
@@ -83,12 +94,12 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByNaverId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   } 
 
-  getUserByKakaoId (kakaoId:string): Promise<any> {
+  getUserByKakaoId (kakaoId:string): Promise<MyResponse> {
 
     let req_url = this.us.get(this.getUserByKakaoIdUrl);
     req_url = `${ req_url }?q=${ kakaoId }`;
@@ -100,15 +111,15 @@ export class UserService {
     if(isDebug) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }    
 
-  getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<any> {
+  getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserByMobile / 시작");
     if(isDebug) console.log("user.service / getUserByMobile / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / getUserByMobile / mobileHead : ",mobileHead);
@@ -134,10 +145,99 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);            
-  } 
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }
+
+  updateUserByUser(apiKey:string, user:User): Promise<MyResponse> {
+
+    let mobileArr:string[] = user.getMobileArr();
+    let birthdayArr:string[] = user.getBirthdayArr();
+
+    return this.updateUserMutableProps(
+      // apiKey:string, 
+      apiKey,
+      // email:string, 
+      user.email,
+      // name:string, 
+      user.name,
+      // nickname:string, 
+      user.nickname,
+      // gender:string,
+      user.gender,
+      // birthYear:string,
+      birthdayArr[0],
+      // birthMonth:string,
+      birthdayArr[1],
+      // birthDay:string,
+      birthdayArr[2],
+      // thumbnail:string,
+      user.thumbnail,
+      // mobileHead:string,
+      mobileArr[0],
+      // mobileBody:string,
+      mobileArr[1],
+      // mobileTail:string
+      mobileArr[2]
+    );
+  }
+
+  updateUserMutableProps (  
+    apiKey:string, 
+    email:string, 
+    name:string, 
+    nickname:string, 
+    gender:string,
+    birthYear:string,
+    birthMonth:string,
+    birthDay:string,
+    thumbnail:string,
+    mobileHead:string,
+    mobileBody:string,
+    mobileTail:string): Promise<MyResponse> {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / updateUserMutableProps / 시작");
+    if(isDebug) console.log("user.service / updateUserMutableProps / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / updateUserMutableProps / email : ",email);
+    if(isDebug) console.log("user.service / updateUserMutableProps / name : ",name);
+    if(isDebug) console.log("user.service / updateUserMutableProps / nickname : ",nickname);
+    if(isDebug) console.log("user.service / updateUserMutableProps / gender : ",gender);
+    if(isDebug) console.log("user.service / updateUserMutableProps / birthYear : ",birthYear);
+    if(isDebug) console.log("user.service / updateUserMutableProps / birthMonth : ",birthMonth);
+    if(isDebug) console.log("user.service / updateUserMutableProps / birthDay : ",birthDay);
+    if(isDebug) console.log("user.service / updateUserMutableProps / thumbnail : ",thumbnail);
+    if(isDebug) console.log("user.service / updateUserMutableProps / mobileHead : ",mobileHead);
+    if(isDebug) console.log("user.service / updateUserMutableProps / mobileBody : ",mobileBody);
+    if(isDebug) console.log("user.service / updateUserMutableProps / mobileTail : ",mobileTail);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updateUserMutablesUrl);
+
+    if(isDebug) console.log("user.service / updateUser / req_url : ",req_url);
+
+    let params = {
+      email:email,
+      name:name,
+      nickname:nickname,
+      gender:gender,
+      birth_year:birthYear,
+      birth_month:birthMonth,
+      birth_day:birthDay,
+      thumbnail:thumbnail,
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
 
 
   updateUser (  apiKey:string, 
@@ -153,7 +253,7 @@ export class UserService {
                 thumbnail:string,
                 mobileHead:string,
                 mobileBody:string,
-                mobileTail:string): Promise<any> {
+                mobileTail:string): Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -203,9 +303,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   addUser ( apiKey:string, 
@@ -221,7 +321,7 @@ export class UserService {
             mobileHead:string,
             mobileBody:string,
             mobileTail:string
-          ): Promise<any> {
+          ): Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -266,9 +366,9 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
   public sendMailUserValidation(apiKey:string, userId:number, email:string) {
@@ -298,14 +398,12 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserValidation(apiKey:string, key:string) {
+  public confirmUserValidation(apiKey:string, key:string):Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -330,12 +428,12 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserKakao(apiKey:string, kakaoId:string) {
+  public confirmUserKakao(apiKey:string, kakaoId:string):Promise<MyResponse> {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -360,15 +458,15 @@ export class UserService {
     }
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserFacebook(apiKey:string, facebookId:string) {
+  public confirmUserFacebook(apiKey:string, facebookId:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / confirmUserFacebook / 시작");
     if(isDebug) console.log("user.service / confirmUserFacebook / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
@@ -390,15 +488,15 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }
 
-  public confirmUserNaver(apiKey:string, naverId:string) {
+  public confirmUserNaver(apiKey:string, naverId:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / confirmUserNaver / 시작");
     if(isDebug) console.log("user.service / confirmUserNaver / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / confirmUserNaver / naverId : ",naverId);
@@ -420,15 +518,15 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);    
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }      
 
-  getUserCookie(apiKey:string) {
+  public getUserCookie(apiKey:string):Promise<MyResponse> {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserCookie / 시작");
     if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 
@@ -447,12 +545,12 @@ export class UserService {
     let params = {};
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   } 
 
-  deleteUserCookie() {
+  public deleteUserCookie():Promise<MyResponse> {
     
     let req_url = this.us.get(this.logoutUrl);
 
@@ -462,12 +560,12 @@ export class UserService {
     if(isDebug) console.log("user.service / deleteUserCookie / req_url : ",req_url);
 
     return this.http.get(req_url)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
   }   
 
-  confirmUserEmailPassword(apiKey:string, email:string, password:string) {
+  public confirmUserEmailPassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
     
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -492,39 +590,171 @@ export class UserService {
     };
 
     return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }   
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }
 
-  private extractData(res: Response) {
+  public updatePassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
 
-    let body = res.json();
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / updatePassword / 시작");
+    if(isDebug) console.log("user.service / updatePassword / apiKey : ",apiKey);
+    if(isDebug) console.log("user.service / updatePassword / email : ",email);
+    if(isDebug) console.log("user.service / updatePassword / password : ",password);
 
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updatePasswordUrl);
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    if(isDebug) console.log("user.service / updatePassword / req_url : ",req_url);
 
-    if(isDebug) console.log("user.service / extractData / body ::: ",body);
+    let params = {
+      email:email, 
+      password:password
+    };
 
-    // TODO - 데이터 검증 프로세스.
-    if(null == body.data || !body.success) {
-        console.log("user.service / extractData / 데이터가 없습니다.");
-        return null;
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
+
+  public getUserFromJSON(userJSON):User {
+
+    if(null == userJSON) {
+      return null;
     }
 
-    return body.data;
+    let user:User = 
+    new User(
+      // public id:number,
+      +userJSON["id"],
+      // public nickname:string,
+      userJSON["nickname"],
+      // public name:string,
+      userJSON["name"],
+      // public gender:string,
+      userJSON["gender"],
+      // public birthday:string, 
+      userJSON["birthday"],
+      // public thumbnail:string,
+      userJSON["thumbnail"],
+      // public status:string,
+      userJSON["status"],
+      // public permission:string,
+      userJSON["permission"],
+      // public kakao_id:string,
+      userJSON["kakao_id"],
+      // public naver_id:string,
+      userJSON["naver_id"],
+      // public facebook_id:string,
+      userJSON["facebook_id"],
+      // public google_id:string,
+      userJSON["google_id"],
+      // public mobile:string,
+      userJSON["mobile"],
+      // public email:string,
+      userJSON["email"],
+      // public date_created:string,
+      userJSON["date_created"],
+      // public date_updated:string          
+      userJSON["date_updated"]
+    ); 
+    
+    return user;   
   }
 
-  // New - XHR
-  // promise-based
-  private handleError (error: any) {
-      // In a real world app, we might use a remote logging infrastructure
-      // We'd also dig deeper into the error to get a better message
-      let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-      console.error(errMsg); // log to console instead
-      return Promise.reject(errMsg);
+  public copyUser(user:User):User {
+
+    if(null == user) {
+      return;
+    }
+
+    let copy:User = new User(
+      // public id:number
+      user.id,
+      // public nickname:string
+      user.nickname,
+      // public name:string
+      user.name,
+      // public gender:string
+      user.gender,
+      // public birthday:string 
+      user.birthday,
+      // public thumbnail:string
+      user.thumbnail,
+      // public status:string
+      user.status,
+      // public permission:string
+      user.permission,
+      // public kakao_id:string
+      user.kakao_id,
+      // public naver_id:string
+      user.naver_id,
+      // public facebook_id:string
+      user.facebook_id,
+      // public google_id:string
+      user.google_id,
+      // public mobile:string
+      user.mobile,
+      // public email:string
+      user.email,
+      // public date_created:string
+      user.date_created,
+      // public date_updated:string      
+      user.date_updated
+    );
+
+    return copy;
+
   }
 
+  public isSameUser(userHead:User, userTail:User) :boolean {
+
+    if(null == userHead || null == userTail) {
+      return false;
+    }
+
+    if(userHead.id !== userTail.id) {
+      return false;
+    } else if(userHead.nickname !== userTail.nickname) {
+      return false;
+    } else if(userHead.name !== userTail.name) {
+      return false;
+    } else if(userHead.gender !== userTail.gender) {
+      return false;
+    } else if(userHead.birthday !== userTail.birthday) {
+      return false;
+    } else if(userHead.thumbnail !== userTail.thumbnail) {
+      return false;
+    } else if(userHead.status !== userTail.status) {
+      return false;
+    } else if(userHead.permission !== userTail.permission) {
+      return false;
+    } else if(userHead.kakao_id !== userTail.kakao_id) {
+      return false;
+    } else if(userHead.naver_id !== userTail.naver_id) {
+      return false;
+    } else if(userHead.facebook_id !== userTail.facebook_id) {
+      return false;
+    } else if(userHead.google_id !== userTail.google_id) {
+      return false;
+    } else if(userHead.mobile !== userTail.mobile) {
+      return false;
+    } else if(userHead.email !== userTail.email) {
+      return false;
+    } else if(userHead.date_created !== userTail.date_created) {
+      return false;
+    } else if(userHead.date_updated !== userTail.date_updated) {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  
 }

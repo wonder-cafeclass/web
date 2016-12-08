@@ -11,35 +11,87 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var my_logger_service_1 = require('../util/service/my-logger.service');
 var klass_color_service_1 = require('../klass/service/klass-color.service');
 var klass_radiobtn_service_1 = require('../klass/service/klass-radiobtn.service');
+var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var UserMyNavListComponent = (function () {
-    function UserMyNavListComponent(klassColorService, myEventService, radiobtnService, myCheckerService) {
+    function UserMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, watchTower, myCheckerService) {
         this.klassColorService = klassColorService;
         this.myEventService = myEventService;
+        this.myLoggerService = myLoggerService;
         this.radiobtnService = radiobtnService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
         this.showMyInfo = false;
         this.showMyHistory = false;
         this.showMyPayment = false;
         this.showMyFavorite = false;
         this.emitter = new core_1.EventEmitter();
+        this.isAdmin = false;
     }
     UserMyNavListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("user-my-nav-list / ngOnInit");
+            console.log("user-my-nav-list / ngOnInit / init");
+    };
+    UserMyNavListComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user-my-nav-list / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    UserMyNavListComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user-my-nav-list / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("user-my-nav-list / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("user-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    };
+    UserMyNavListComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    UserMyNavListComponent.prototype.init = function () {
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("user-my-nav-list / init");
         // COLOR
         this.colorWhite = this.klassColorService.white;
         this.colorOrange = this.klassColorService.orange;
         this.colorGray = this.klassColorService.gray;
         if (isDebug)
-            console.log("user-my-nav-list / this.colorWhite : ", this.colorWhite);
+            console.log("user-my-nav-list / init / this.colorWhite : ", this.colorWhite);
         if (isDebug)
-            console.log("user-my-nav-list / this.colorOrange : ", this.colorOrange);
+            console.log("user-my-nav-list / init / this.colorOrange : ", this.colorOrange);
         if (isDebug)
-            console.log("user-my-nav-list / this.colorGray : ", this.colorGray);
+            console.log("user-my-nav-list / init / this.colorGray : ", this.colorGray);
         this.navTabsOptions =
             this.radiobtnService.getNavTabsUserMyInfo(
             // user:User
@@ -49,8 +101,8 @@ var UserMyNavListComponent = (function () {
             console.log("user-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);
     };
     UserMyNavListComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user-my-nav-list / onChangedFromChild / init");
         if (isDebug)
@@ -86,7 +138,7 @@ var UserMyNavListComponent = (function () {
             templateUrl: 'user-my-nav-list.component.html',
             styleUrls: ['user-my-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, klass_radiobtn_service_1.KlassRadioBtnService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, klass_radiobtn_service_1.KlassRadioBtnService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService])
     ], UserMyNavListComponent);
     return UserMyNavListComponent;
 }());

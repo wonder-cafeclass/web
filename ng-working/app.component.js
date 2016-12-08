@@ -16,31 +16,42 @@ var image_service_1 = require('./util/image.service');
 var user_service_1 = require('./users/service/user.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
+var my_logger_service_1 = require('./util/service/my-logger.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, imageService, myEventWatchTowerService, myCheckerService, route, router) {
+    function AppComponent(authService, urlService, userService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
         // Do something...
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
         this.imageService = imageService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
+        this.myLoggerService = myLoggerService;
         this.route = route;
         this.router = router;
         this.isAdmin = false;
         this.toggleTopMenu = true;
+        this.errorMsgArr = [];
     }
     AppComponent.prototype.ngOnInit = function () {
+        this.subscribeAllErrors();
+        this.subscribeLoginUser();
+        this.subscribeToggleTopMenu();
+        this.setIsAdmin();
+        this.setMyChecker();
+    };
+    AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
-        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
-        this.authService.getAdminAuth().then(function (result) {
-            if (null != result.is_admin) {
-                _this.isAdmin = result.is_admin;
-            }
-        });
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / subscribeLoginUser / 시작");
+        // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
         // Subscribe login user
-        this.myEventWatchTowerService.loginAnnounced$.subscribe(function (loginUser) {
+        this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
+            if (isDebug)
+                console.log("app-root / subscribeLoginUser / loginUser : ", loginUser);
             // Example
             /*
             {
@@ -65,28 +76,113 @@ var AppComponent = (function () {
             // 로그인한 유저 정보가 들어왔습니다.
             _this.loginUser = loginUser;
         });
-        // Subscribe toggle top menu
+    };
+    AppComponent.prototype.subscribeToggleTopMenu = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / subscribeToggleTopMenu / \uC2DC\uC791");
         // 최상단 메뉴를 보이거나 감춥니다.
-        this.myEventWatchTowerService.toggleTopMenuAnnounced$.subscribe(function (toggleTopMenu) {
+        this.watchTower.toggleTopMenuAnnounced$.subscribe(function (toggleTopMenu) {
+            if (isDebug)
+                console.log("app-root / subscribeToggleTopMenu / toggleTopMenu : " + toggleTopMenu);
             _this.toggleTopMenu = toggleTopMenu;
         });
+    };
+    AppComponent.prototype.subscribeAllErrors = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / subscribeAllErrors / \uC2DC\uC791");
+        // 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
+        this.watchTower.errorMsgArr$.subscribe(function (errorMsgArr) {
+            if (isDebug)
+                console.log("app-root / subscribeAllErrors / errorMsgArr : ", errorMsgArr);
+            _this.errorMsgArr = errorMsgArr;
+        });
+    };
+    AppComponent.prototype.setIsAdmin = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / setIsAdmin / \uC2DC\uC791");
+        // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
+        this.authService
+            .getAdminAuth()
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / setIsAdmin / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                _this.isAdmin = myResponse.getDataProp("is_admin");
+                _this.watchTower.announceIsAdmin(_this.isAdmin);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "app-root / setIsAdmin / Failed!");
+            }
+        });
+    };
+    AppComponent.prototype.setMyChecker = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / setMyChecker / \uC2DC\uC791");
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
-                if (null != result && null != result.user) {
-                    _this.loginUser = result.user;
-                    // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
-                    _this.myEventWatchTowerService.announceLogin(_this.loginUser);
-                }
-            });
-        }); // end Promise
+        this.myCheckerService
+            .getChecker()
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / setMyChecker / myResponse : ", myResponse);
+            // 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
+            _this.watchTower.announceMyCheckerServiceReady(
+            // checkerMap: any
+            myResponse.getDataProp("checker_map"), 
+            // constMap: any
+            myResponse.getDataProp("const_map"), 
+            // dirtyWordList: any
+            myResponse.getDataProp("dirty_word_list"), 
+            // apiKey: string
+            myResponse.getDataProp("api_key"));
+            _this.getLoginUserFromCookie();
+        });
+    };
+    AppComponent.prototype.getLoginUserFromCookie = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
+        this.userService
+            .getUserCookie(this.watchTower.getApiKey())
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / getLoginUserFromCookie / myResponse : ", myResponse);
+            var userFromDB = myResponse.getDataProp("user");
+            if (myResponse.isSuccess() && null != userFromDB) {
+                var user = _this.userService.getUserFromJSON(userFromDB);
+                if (isDebug)
+                    console.log("app-root / getLoginUserFromCookie / user : ", user);
+                _this.loginUser = user;
+                // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+                _this.watchTower.announceLogin(_this.loginUser);
+            }
+        });
     };
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
         event.stopPropagation();
         event.preventDefault();
         // TODO - 이미지 없을 경우의 예비 이미지 로딩.
-        console.log("onErrorThumbnail / thumbnail : ", thumbnail);
     };
     AppComponent.prototype.onClickSignupBtn = function (event) {
         event.stopPropagation();
@@ -106,7 +202,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());

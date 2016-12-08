@@ -2,15 +2,21 @@ import {  Component,
           Input, 
           Output,
           EventEmitter,
-          OnInit }              from '@angular/core';
+          OnInit,
+          AfterViewInit }       from '@angular/core';
 import { Router }               from '@angular/router';
 
 import { MyCheckerService }     from '../../../util/service/my-checker.service';
 import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
+import { MyLoggerService }      from '../../../util/service/my-logger.service';
+import { MyEventWatchTowerService }  from '../../../util/service/my-event-watchtower.service';
 
 import { UserService }          from '../../../users/service/user.service';
+import { User }                 from '../../../users/model/user';
+
+import { MyResponse }           from '../../../util/model/my-response';
 
 @Component({
   moduleId: module.id,
@@ -18,7 +24,7 @@ import { UserService }          from '../../../users/service/user.service';
   templateUrl: 'email.component.html',
   styleUrls: [ 'email.component.css' ]
 })
-export class EmailComponent implements OnInit {
+export class EmailComponent implements OnInit, AfterViewInit {
 
   @Input() width:number=380;
 
@@ -29,8 +35,7 @@ export class EmailComponent implements OnInit {
   @Input() leftWarning:number=-1;
 
   @Input() isCheckUnique:boolean=true;
-
-  @Input() myCheckerService:MyCheckerService = null;
+  @Input() isDisabled:boolean=false;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -49,21 +54,81 @@ export class EmailComponent implements OnInit {
 
   isShowPopover:boolean=false;
 
-  constructor(  private myEventService:MyEventService, 
+  isAdmin:boolean=false;
+
+  constructor(  private myEventService:MyEventService,
+                private myLoggerService:MyLoggerService, 
+                private watchTower:MyEventWatchTowerService, 
+                private myCheckerService:MyCheckerService,
                 private userService:UserService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / ngOnInit / 시작");
+
+  }
+
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  }
+  private asyncViewPack(): void {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("email / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("email / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      this.init();
+    }); // end subscribe
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }  
 
   private setMyChecker() :void {
-
-    if(null == this.myCheckerService) {
-      return;
-    }
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / setMyChecker / 시작");
 
     if(null == this.myChecker) {
       this.myChecker = this.myCheckerService.getMyChecker("user_email");
     }
-    
+  }  
+
+  private init() :void {
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    // 이메일 검사에 필요한 checker를 가져옵니다.
+    this.setMyChecker();
   }
 
   // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
@@ -71,7 +136,6 @@ export class EmailComponent implements OnInit {
     return !this.hasDone();
   }
   public hasDone() :boolean {
-    this.setMyChecker();
     return this.isOK(this.inputStrPrevOnKeyup);
   }
   // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
@@ -85,19 +149,17 @@ export class EmailComponent implements OnInit {
   onClick(event) :void {
     event.stopPropagation();
     event.preventDefault();
-
-    // Checker가 없다면, Checker를 가져옵니다.
-    this.setMyChecker();
   }
 
   private inputStrPrevOnBlur:string="";
   onBlur(event, email, element) :void {
 
-    event.stopPropagation();
-    event.preventDefault();
-
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
+    if(isDebug) console.log("email / onBlur / logPageEnter / 시작");
+
+    event.stopPropagation();
+    event.preventDefault();
 
     if(null == this.myCheckerService) {
       if(isDebug) console.log("email / onBlur / 중단 / null == this.myCheckerService");
@@ -125,31 +187,53 @@ export class EmailComponent implements OnInit {
       // 1. 사용자가 입력한 이메일 주소를 검사합니다.
 
       let isOK:boolean = this.isOK(email);
+      if(isDebug) console.log("email / onBlur / getUserByEmail / isOK : ",isOK);
+      if(isDebug) console.log("email / onBlur / getUserByEmail / this.isCheckUnique : ",this.isCheckUnique);
 
       if(isOK && this.isCheckUnique) {
         // 회원 가입시, 유일한 이메일인지 검사.
         this.userService
         .getUserByEmail(email)
-        .then(result => {
+        .then((myResponse:MyResponse) => {
 
-          if( null != result &&
-              null != result.user ) {
+          if(isDebug) console.log("email / onBlur / getUserByEmail / myResponse : ",myResponse);
 
-            // 이미 등록된 유저가 있습니다.
-            isOK = false;
-          }
-          if(isOK) {
-            this.emailSuccess(email);
+          let user:User = null;
+          if(myResponse.isSuccess()) {
+            user = myResponse.getDataProp("user");
+            if(null != user) {
+              // 이미 이메일이 등록되어 있습니다.
+              this.emailFailed(this.tooltipMsgEmailNotUnique);
+            } else {
+              // 이메일이 등록되어 있지 않습니다. 회원 가입 다음단계로 진행합니다.
+              this.emailSuccess(email);
+            }
           } else {
-            this.emailFailed(this.tooltipMsgEmailNotUnique);
-          }
-        });
+            // Error Report
+
+            if(isDebug) console.log("email / onBlur / getUserByEmail / Error Report");
+
+            // Error Report
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `email / getUserByEmail / Failed!`
+            );
+          } // end if
+
+        }); // end service
+
       } else if(isOK) {
         // 로그인 시에는 이메일이 유일한지 검사하지 않습니다.
+        if(isDebug) console.log("email / onBlur / 로그인 시에는 이메일이 유일한지 검사하지 않습니다.");
         this.emailSuccess(email);
       } else {
+        if(isDebug) console.log("email / onBlur / 이메일에 문제가 있습니다.");
         this.emailFailed(this.tooltipMsgEmailNotValid);
-      }
+      } // end if
 
     } // end if
 
@@ -331,11 +415,14 @@ export class EmailComponent implements OnInit {
 
   public isOK(email:string) :boolean {
 
-    this.setMyChecker();
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("email / isOK / 시작");
 
     let isOK:boolean = false;
 
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("email / isOK / 중단 / this.myCheckerService is not valid!");
       return isOK;
     }
 

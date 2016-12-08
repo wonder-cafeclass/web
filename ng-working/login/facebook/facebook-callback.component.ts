@@ -2,14 +2,20 @@ import {  Component,
           Input, 
           Output,
           OnInit, 
-          OnDestroy}            from '@angular/core';
-import {  Subscription }        from 'rxjs';          
+          AfterViewInit,
+          OnDestroy}                  from '@angular/core';
+import {  Subscription }              from 'rxjs';          
 import {  Router,
-          ActivatedRoute }      from '@angular/router';
-import { LoginService }         from '../service/login.service';
-import { UserService }          from '../../users/service/user.service';
-import { MyCheckerService }     from '../../util/service/my-checker.service';
-import { MyLoggerService }      from '../../util/service/my-logger.service';
+          ActivatedRoute }            from '@angular/router';
+import { LoginService }               from '../service/login.service';
+import { UserService }                from '../../users/service/user.service';
+import { MyCheckerService }           from '../../util/service/my-checker.service';
+import { MyLoggerService }            from '../../util/service/my-logger.service';
+import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
+
+import { MyResponse }                 from '../../util/model/my-response';
+
+import { User }                       from '../../users/model/user';
 
 
 @Component({
@@ -22,16 +28,18 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private code:string;
   private state:string;
-
   private redirectUrl:string="/class-center";
-
   private isValidState:boolean=false;
-
   private subscription: Subscription;
+
+  private apiKey:string;
+  isAdmin:boolean=false;
+  errorMsgArr: string[]=[];
 
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
+                private watchTower:MyEventWatchTowerService,
                 private userService:UserService,
                 private activatedRoute: ActivatedRoute,
                 public router: Router) {
@@ -41,24 +49,109 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / ngOnInit / init");
 
+  } // end function
+
+  ngAfterViewInit(): void {
+
+    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / ngAfterViewInit");
+
+    this.asyncViewPack();
+
+  }  
+
+  ngOnDestroy() {
+    // prevent memory leak by unsubscribing
+    this.subscription.unsubscribe();
+  }
+
+  private asyncViewPack(): void {
+    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+
+    // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+    if(this.watchTower.getIsViewPackReady()) {
+      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      this.init();
+    } // end if
+
+    // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      
+      this.init();
+    }); // end subscribe    
+
+  }
+  private setViewPack() :void {
+    this.isAdmin = this.watchTower.getIsAdmin();
+    this.myCheckerService.setReady(
+      // checkerMap:any
+      this.watchTower.getCheckerMap(),
+      // constMap:any
+      this.watchTower.getConstMap(),
+      // dirtyWordList:any
+      this.watchTower.getDirtyWordList(),
+      // apiKey:string
+      this.watchTower.getApiKey()
+    ); // end setReady
+  }  
+
+  private init() :void {
+
+    // 뷰에 필요한 공통 정보를 설정합니다.
+    this.setViewPack();
+    // 페이지 진입을 기록합니다.
+    this.logActionPage();
+    // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
+    this.getQueryString();
+
+  }
+  
+  private logActionPage() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / getQueryString / init");
+
     // 페이지 진입을 기록으로 남깁니다.
-    this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLoginFacebook);
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.watchTower.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeLoginFacebook
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("facebook-callback / getQueryString / myResponse : ",myResponse);
+    })
+  }    
+
+  private getQueryString() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / getQueryString / init");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
 
-        if(isDebug) console.log("facebook-callback / queryParams / param : ",param);
+        if(isDebug) console.log("facebook-callback / getQueryString / param : ",param);
 
         this.code = param['code'];
         this.state = param['state'];
 
-        if(isDebug) console.log("facebook-callback / queryParams / this.code : ",this.code);
-        if(isDebug) console.log("facebook-callback / queryParams / this.state : ",this.state);
+        if(isDebug) console.log("facebook-callback / getQueryString / this.code : ",this.code);
+        if(isDebug) console.log("facebook-callback / getQueryString / this.state : ",this.state);
 
         if(  null != this.code && 
              "" != this.code && 
@@ -70,20 +163,12 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         } // end if
       }
     ); // end subscribe
-
-
-  } // end function
-
-  ngOnDestroy() {
-    // prevent memory leak by unsubscribing
-    this.subscription.unsubscribe();
-  }  
-
+  }
 
   private getState(state:string, code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getState / init");
 
     if(null == state || "" == state) {
@@ -98,14 +183,12 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getFacebookState(state)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getState / getFacebookState / result : ",result);
+      if(isDebug) console.log("facebook-callback / getState / getFacebookState / myResponse : ",myResponse);
 
-      if( null != result &&
-          null != result.is_valid_state ) {
-
-        this.isValidState = result.is_valid_state;
+      if( myResponse.isSuccess() ) {
+        this.isValidState = myResponse.getDataProp("is_valid_state");
       }
 
       if(isDebug) console.log("facebook-callback / getState / getFacebookState / this.isValidState : ",this.isValidState);
@@ -123,27 +206,47 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
         // 2. state가 다를 경우, 사용자에게 메시지 노출. '비정상적인 접근입니다.'. 메시지 확인 뒤, 로그인 홈으로 이동.
         // - 상황 정보를 로그로 남김. ex) '비정상 로그인 접근'
         if(isDebug) console.log("facebook-callback / getFacebookState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
-      }
-    }); 
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `facebook-callback / getFacebookState / Failed! / state : ${state}`
+        );
+
+      } // end if
+    }); // end getFacebookState
 
   } // end function
 
   private getAccessToken(code:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getAccessToken / init");
 
     this.loginService
     .getFacebookAccess(code)
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getAccessToken / result : ",result);
+      if(isDebug) console.log("facebook-callback / getAccessToken / myResponse : ",myResponse);
 
-      if( null != result && null != result.access_token ) {
+      if( myResponse.isSuccess() && null != myResponse.digDataProp(["result","access_token"]) ) {
         this.getMe();
-      }
-
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `facebook-callback / getAccessToken / Failed! / code : ${code}`
+        );
+      } // end if
     });     
 
   }
@@ -156,71 +259,103 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
     this.loginService
     .getFacebookMe()
-    .then(result => {
+    .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("facebook-callback / getMe / result : ",result);
+      if(isDebug) console.log("facebook-callback / getMe / myResponse : ",myResponse);
 
-      if(null == result || null == result.facebook_id) {
+      if(myResponse.isFailed() || null == myResponse.digDataProp(["me","facebook_id"])) {
         // TODO - 페이스북에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
         if(isDebug) console.log("facebook-callback / 페이스북에서 유저 정보를 가져오는데 실패했습니다.");
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `facebook-callback / getMe / Failed!`
+        );        
         return;
       }
 
       // 페이스북 로그인 성공!
       // 로그인한 유저 정보를 가져오는데 성공했습니다!
-      if( null == result.gender ||
-          "" === result.gender ||
-          null == result.mobile ||
-          "" === result.mobile ) {
+      let facebookId = myResponse.digDataProp(["me","facebook_id"]);
+      let user = myResponse.digDataProp(["me"]);
+
+      if(isDebug) console.log("facebook-callback / getMe / facebookId : ",facebookId);
+      if(isDebug) console.log("facebook-callback / getMe / user : ",user);
+
+      if( myResponse.isSuccess() && 
+          null != user && 
+          null != user["mobile"] &&
+          "" != user["mobile"] ) {
+
+        // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
+        // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.        
+        // 가져온 유저 정보를 전파.
+        if(null != user) {
+          let loginUser:User = this.userService.getUserFromJSON(user);
+          if(isDebug) console.log(`facebook-callback / getMe / loginUser : `,loginUser);
+
+          // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+          this.watchTower.announceLogin(loginUser);
+        } // end if
+
+        if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
+        this.confirmUserFacebook(facebookId);
+          
+      } else {
 
         // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
         // 하지만 추가 정보 필요. 
         // 회원 가입창으로 이동.
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-        this.router.navigate(['/login/signup/facebook', result.facebook_id]);
-          
-      } else {
-
-        // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
-        // this.router.navigate([this.redirectUrl]);
-
-        // 페이스북 로그인 성공. 등록된 유저 정보가 문제 없음. 
-        // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
-
-        if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-
-        // api key 필요!
-        this.myCheckerService
-        .getReady()
-        .then(() => {
-
-          this.userService
-          .confirmUserFacebook(this.myCheckerService.getAPIKey(), result.facebook_id)
-          .then(result => {
-
-            if(isDebug) console.log("facebook-callback / confirmUserFacebook / result : ",result);
-
-            if(null == result || null == result.success || !result.success) {
-              // facebook id로 쿠키 인증 실패. 홈으로 이동.
-              if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
-              this.router.navigate(['/class-center']);
-              return;
-            }
-
-            // 쿠키 인증 성공!
-            // 로그인 직전 페이지로 리다이렉트. 
-            // 돌아갈 주소가 없다면, 홈으로 이동.
-            if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-            this.router.navigate(['/class-center']);
-            
-          }); // end userService
-          
-        }); // end myCheckerService
-
+        this.router.navigate(['/login/signup/facebook', facebookId]);
         
       } // end if
 
     }); // end service
+
+  }
+
+  private confirmUserFacebook(facebookId:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
+    if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
+
+    this.userService
+    .confirmUserFacebook(this.myCheckerService.getAPIKey(), facebookId)
+    .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("facebook-callback / confirmUserFacebook / myResponse : ",myResponse);
+
+      if(myResponse.isFailed()) {
+        // facebook id로 쿠키 인증 실패. 홈으로 이동.
+        if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 실패. 홈으로 이동.");
+        this.router.navigate([this.redirectUrl]);
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `facebook-callback / getMe / confirmUserFacebook / Failed!`
+        );
+        return;
+      }
+
+      // 쿠키 인증 성공!
+      // 로그인 직전 페이지로 리다이렉트. 
+      // 돌아갈 주소가 없다면, 홈으로 이동.
+      if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
+      this.router.navigate([this.redirectUrl]);
+      
+    }); // end userService    
 
   }
 

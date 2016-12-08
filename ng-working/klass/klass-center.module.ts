@@ -16,8 +16,6 @@ import { MyCheckerService }          from '../util/service/my-checker.service';
 import { ImageService }              from '../util/image.service';
 import { CommentService }            from '../widget/comment/service/comment.service';
 
-import { SafeHtmlPipe }              from '../util/pipe/safe-html-pipe';
-
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
 import { KlassCenterComponent }      from './klass-center.component';
@@ -102,8 +100,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     SmartEditorComponent,
     CommentListComponent,
     DronListComponent,    // @ Depreacted
-    InputRowComponent,
-    SafeHtmlPipe
+    InputRowComponent
   ],
   providers: [
     KlassService,

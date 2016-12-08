@@ -5,42 +5,39 @@
 
 			<tr> 
 				<td class="layout border-right">
-					<!-- 270 - 100 / -170 -->
+
 					<!-- Email -->
 					<email	
+					[isDisabled]="true"
 					[top]="133"
 					[left]="91"
 					[topWarning]="5"
 					[leftWarning]="117"
-					[myCheckerService]="myCheckerService"
 					(emitter)="onChangedFromChild($event)">
 					</email>
+
 					<!-- Password -->
-					<password 	
+					<password 
+					[isCheckCurPW]="true"
 					[top]="228"
 					[left]="91"
 					[topWarning]="100"
 					[leftWarning]="117"
-					[myCheckerService]="myCheckerService"
 					(emitter)="onChangedFromChild($event)">
 					</password>
+
 					<!-- 이름 -->
-					<name 	
-					[top]="408" 
-					[left]="91"
-					[topWarning]="290"
-					[leftWarning]="117"
-					[myCheckerService]="myCheckerService"
-					(emitter)="onChangedFromChild($event)">
-					</name>
+					<name (emitter)="onChangedFromChild($event)"></name>
+
 					<!-- 닉네임 -->
 					<nickname 	[top]="503" 
 								[left]="91"
 								[topWarning]="385"
 								[leftWarning]="117"
-								[myCheckerService]="myCheckerService"
 								(emitter)="onChangedFromChild($event)">
 					</nickname>
+
+					<!-- EOL -->
 
 				</td>
 				<td class="layout">
@@ -49,42 +46,50 @@
 					<profile-img-upload 
 					[top]="143"
 					[left]="490"
-					[myCheckerService]="myCheckerService"
 					(emitter)="onChangedFromChild($event)">
 					</profile-img-upload>
+
 					<!-- 전화번호 -->
 					<mobile 	
 					[top]="90" 
 					[left]="390"
 					[topWarning]="151"
 					[leftWarning]="382"
-					[myCheckerService]="myCheckerService"
 					(emitter)="onChangedFromChild($event)">
 					</mobile>
+
 					<!-- 성별 -->
 					<gender 	[top]="390" 
 								[left]="586"
 								[gender]="gender"
 								[topWarning]="251"
 								[leftWarning]="382"
-								[myCheckerService]="myCheckerService"
 								(emitter)="onChangedFromChild($event)">
 					</gender>
 					<!-- 연령 / 월 / 일 -->
 					<birthday 	[top]="310" 
 								[left]="390"
-								[myCheckerService]="myCheckerService"
 								(emitter)="onChangedFromChild($event)">
 					</birthday>
+
+					<!-- EOL -->
 
 				</td>
 			</tr>
 
 			<tr> 
 				<td class="layout border-top" colspan="2">
-					<button 	(click)="onClickSave($event)"
+
+					<button 	*ngIf="hasChanged"
+								(click)="onClickSave($event)"
 								type="button" 
 								class="btn btn-orange save">저장하기</button>
+
+					<button 	*ngIf="!hasChanged"
+								type="button-disabled" 
+								disabled="disabled"
+								class="btn btn-orange save">저장하기</button>
+
 				</td> 
 			</tr>
 

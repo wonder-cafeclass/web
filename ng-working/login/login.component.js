@@ -13,73 +13,145 @@ var router_1 = require('@angular/router');
 var auth_service_1 = require('../auth/auth.service');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
-var email_component_1 = require('./signup/email/email.component');
-var password_component_1 = require('./signup/password/password.component');
+var email_component_1 = require('../widget/input/email/email.component');
+var password_component_1 = require('../widget/input/password/password.component');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var LoginComponent = (function () {
-    function LoginComponent(authService, loginService, userService, myLoggerService, myCheckerService, myEventService, myEventWatchTowerService, router) {
+    function LoginComponent(authService, loginService, userService, myLoggerService, myCheckerService, myEventService, watchTower, router) {
         this.authService = authService;
         this.loginService = loginService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
-        this.myEventWatchTowerService = myEventWatchTowerService;
+        this.watchTower = watchTower;
         this.router = router;
         this.cafeclassAuthUrl = "http://google.co.kr";
+        this.redirectUrl = "/class-center";
+        this.isAdmin = false;
+        this.errorMsgArr = [];
     }
     LoginComponent.prototype.ngOnInit = function () {
-        // 로그인되어 있는 회원인지 먼저 확인. 
-        // 로그인되어 있는 상태라면 홈으로 이동시킵니다.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / ngOnInit / init");
+    };
+    LoginComponent.prototype.ngAfterViewInit = function () {
+        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / ngAfterViewInit");
+        this.asyncViewPack();
+    };
+    LoginComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // 회원 로그인 쿠키를 가져옵니다.
-        // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
-        this.myCheckerService.getReady().then(function () {
-            _this.userService.getUserCookie(_this.myCheckerService.getAPIKey()).then(function (result) {
-                if (null != result && null != result.user) {
-                    // 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.
-                    _this.router.navigate(['/class-center']);
-                }
-                else {
-                    // 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.
-                    _this.init();
-                }
-            });
-        }); // end Promise
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("login / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("login / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
+    };
+    LoginComponent.prototype.setViewPack = function () {
+        this.isAdmin = this.watchTower.getIsAdmin();
+        this.myCheckerService.setReady(
+        // checkerMap:any
+        this.watchTower.getCheckerMap(), 
+        // constMap:any
+        this.watchTower.getConstMap(), 
+        // dirtyWordList:any
+        this.watchTower.getDirtyWordList(), 
+        // apiKey:string
+        this.watchTower.getApiKey()); // end setReady
+    };
+    LoginComponent.prototype.checkLoginUser = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / checkLoginUser / 시작");
+        this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
+            if (isDebug)
+                console.log("login / checkLoginUser / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("user")) {
+                if (isDebug)
+                    console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.");
+                _this.router.navigate([_this.redirectUrl]);
+            }
+            else {
+                if (isDebug)
+                    console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+                _this.init();
+            }
+        });
     };
     LoginComponent.prototype.init = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("login / init / 시작");
+        // 뷰에 필요한 공통 정보를 설정합니다.
+        this.setViewPack();
         // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(this.myLoggerService.pageKeyLogin);
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.watchTower.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeLogin);
         // 각 플랫폼 별로 로그인 할 수 있는 주소들을 가져옵니다.
         // 1. kakao
         this.loginService
             .getKakaoAuthUrl()
-            .then(function (kakaoAuthUrl) {
-            _this.kakaoAuthUrl = kakaoAuthUrl;
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getKakaoAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 2. naver
         this.loginService
             .getNaverAuthUrl()
-            .then(function (naverAuthUrl) {
-            _this.naverAuthUrl = naverAuthUrl;
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getNaverAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.naverAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 3. facebook
         this.loginService
             .getFacebookAuthUrl()
-            .then(function (facebookAuthUrl) {
-            _this.facebookAuthUrl = facebookAuthUrl;
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("login / getFacebookAuthUrl / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
+                _this.facebookAuthUrl = myResponse.getDataProp("auth_url");
+            }
         });
         // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
-        this.myEventWatchTowerService.announceToggleTopMenu(false);
+        this.watchTower.announceToggleTopMenu(false);
     };
     LoginComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / onChangedFromChild / 시작");
         if (isDebug)
@@ -120,7 +192,8 @@ var LoginComponent = (function () {
                     console.log("login / onChangedFromChild / this.password : ", this.password);
             } // end if
         }
-        else if (this.myEventService.ON_KEYUP_ENTER === myEvent.eventName) {
+        else if (this.myEventService.ON_KEYUP_ENTER === myEvent.eventName ||
+            this.myEventService.ON_SUBMIT === myEvent.eventName) {
             if (this.myEventService.KEY_USER_EMAIL === myEvent.key) {
                 this.email = myEvent.value;
                 if (isDebug)
@@ -138,15 +211,15 @@ var LoginComponent = (function () {
                 // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
                 // 2. 그렇지 않다면 안내 메시지를 유저에게 보여줍니다.
                 this.verifyEmailNPassword();
-            }
+            } // end if
         } // end if
         if (isDebug)
             console.log("login / onChangedFromChild / done");
     };
     LoginComponent.prototype.verifyEmailNPassword = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("login / verifyEmailNPassword / 시작");
         var warningMsgHead = "아이디 또는 비밀번호를 다시 확인하세요.";
