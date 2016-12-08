@@ -22,11 +22,7 @@ import { MyEventWatchTowerService } from '../../../util/service/my-event-watchto
 })
 export class NameComponent implements OnInit, AfterViewInit {
 
-  // REMOVE ME
-  // @Input() top:number=-1;
-  // @Input() left:number=-1;
-
-  topWarning:number=0;
+  topWarning:number=-1000;
   leftWarning:number=0;
 
   @Output() emitter = new EventEmitter<MyEvent>();
@@ -35,6 +31,8 @@ export class NameComponent implements OnInit, AfterViewInit {
   isFocusInfo:boolean=false;
 
   isWarning:boolean=false;
+
+  @Input() isDisabled:boolean=false;
 
   isSuccessInput:boolean=false;
   tooltipHeadMsg:string=null;
@@ -248,19 +246,12 @@ export class NameComponent implements OnInit, AfterViewInit {
 
             // 최소 문자 갯수보다 적은 경우.
             this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
-  
-            // REMOVE ME            
-            // this.tooltipHeadMsg = history.msg;
-            // this.isSuccessInput = false;
-            return;
+              return;
 
           } else if("max" === history.key) {
 
             // 최대 문자 갯수보다 많은 경우.
             this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
-
-            // REMOVE ME
-            // this.tooltipHeadMsg = history.msg;
 
             // 넘는 문자열은 지웁니다.
             elementInput.value = name = name.slice(0, history.value);
@@ -273,19 +264,12 @@ export class NameComponent implements OnInit, AfterViewInit {
             // 정규표현식에 포함되지 않는 문자열인 경우.
             this.showWarningTooltip(elementInput, elementTooltip, history.msg, false);
 
-            // REMOVE ME
-            // this.tooltipHeadMsg = history.msg;
-
             let regExpStr:string = history.value + "";
             let regExpStrNameRange:string =  /[^a-zA-Z가-힣0-9 ]+/g + "";
 
             if(regExpStr == regExpStrNameRange) {
 
               this.showWarningTooltip(elementInput, elementTooltip, "이름에 사용할 수 없는 문자가 있어요.", false);
-
-              // REMOVE ME
-              // this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
-
               let matchArr:string[] = history.matchArr;
               if(null != matchArr && 0 < matchArr.length) {
                 for (var i = 0; i < matchArr.length; ++i) {
@@ -304,9 +288,6 @@ export class NameComponent implements OnInit, AfterViewInit {
             // 이에 해당되지 않는 예외 실패.
             this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadNotAllowed, false);
 
-            // REMOVE ME
-            // this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
-
             this.isSuccessInput = false;
             return;
 
@@ -322,11 +303,6 @@ export class NameComponent implements OnInit, AfterViewInit {
         // 비속어, 욕설이 제거되었습니다. 
         // 사용자에게 금칙어임을 알립니다.
         this.showWarningTooltip(elementInput, elementTooltip, "금칙어는 제외됩니다.", true);
-
-        // REMOVE ME
-        // this.tooltipHeadMsg = "금칙어는 제외됩니다.";
-        // this.isSuccessInput = false;
-        // this.hideTooltip(2);
 
         elementInput.value = name;
         elementInput.focus();
@@ -468,6 +444,8 @@ export class NameComponent implements OnInit, AfterViewInit {
     this.leftWarning = 0;
     this.isWarning = false;
 
+    this.topWarning = -1000;
+
   }
 
   private inputStrPrev:string="";
@@ -515,10 +493,6 @@ export class NameComponent implements OnInit, AfterViewInit {
       elementInput.value = this.inputStrPrev = inputStr;
       return;
 
-      // REMOVE ME
-      // this.tooltipHeadMsg = this.tooltipHeadRemoved;
-      // this.hideTooltip(2);
-
     }
 
     // 2칸 이상 공백에 대해 1칸으로 줄임.
@@ -541,10 +515,6 @@ export class NameComponent implements OnInit, AfterViewInit {
       this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadRemovedEmpties, false);
       elementInput.value = this.inputStrPrev = inputStr;
       return;
-
-      // REMOVE ME
-      // this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
-      // this.hideTooltip(2);
 
     }
 
@@ -605,12 +575,6 @@ export class NameComponent implements OnInit, AfterViewInit {
     }, 1000 * sec);        
 
   }
-
-  // REMOVE ME
-
-  // hideTooltipNow() :void {
-  //   this.tooltipHeadMsg = null;
-  // }    
 
   onMouseOverInfo(event) :void {
     event.stopPropagation();

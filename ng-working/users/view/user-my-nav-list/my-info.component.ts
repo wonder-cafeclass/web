@@ -49,7 +49,9 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private kakaoId:string;
   private naverId:string;
   // @ mutables - init
-  private password:string;
+  private passwordCur:string;
+  private passwordNew:string;
+  private passwordRe:string;
   private name:string;
   private nickname:string;
   private thumbnail:string;
@@ -61,6 +63,11 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private birthMonth:string;
   private birthDay:string;
   // @ mutables - done
+
+  // password event keys
+  eventKeyPWHead:string;
+  eventKeyPWBody:string;
+  eventKeyPWTail:string;
 
   @ViewChild(EmailComponent)
   private emailComponent: EmailComponent;
@@ -95,11 +102,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
               private myLoggerService:MyLoggerService,
               public myCheckerService:MyCheckerService,
               private userService:UserService,
-              private watchTower:MyEventWatchTowerService) {}
+              private watchTower:MyEventWatchTowerService) {
 
-  ngOnInit(): void {
+    this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
+    this.eventKeyPWBody = this.myEventService.KEY_USER_PASSWORD;
+    this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
 
   }
+
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
 
@@ -269,7 +280,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent : ",myEvent);
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
 
-    if(this.myEventService.ON_SUBMIT === myEvent.eventName) {
+    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
       if(this.myEventService.KEY_USER_CUR_PASSWORD === myEvent.key) {
 
@@ -294,11 +305,17 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
           } // end if
           if(null != user) {
             if(isDebug) console.log("my-info / onChangedFromChild / 패스워드가 확인되었습니다.");
-            if(isDebug) console.log("my-info / onChangedFromChild / 새로운 패스워드를 입력받는 레이아웃으로 바꿉니다.");
             if(isDebug) console.log("my-info / onChangedFromChild / user : ",user);
 
-            this.passwordComponent.openNewPasswordMode();
-          } // end if
+            // wonder.jung
+            // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
+            this.passwordCur=myEvent.value;
+
+          } else {
+
+            // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
+
+          }// end if
         }); 
 
       } else if(this.myEventService.KEY_USER_NEW_PASSWORD === myEvent.key) {
@@ -311,41 +328,13 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         if(isDebug) console.log("my-info / onChangedFromChild / password : ",password);
         if(isDebug) console.log("my-info / onChangedFromChild / repassword : ",repassword);
 
-        // 두 패스워드가 모두 유효하먼서 동일하면 업데이트!
-        let isOKPW:boolean = this.myCheckerService.isOK(myEvent.myChecker, password);
-        let isOKRePW:boolean = this.myCheckerService.isOK(myEvent.myChecker, repassword);
-        let areSame:boolean = (password === repassword)?true:false;
+        // 유효한 새로운 패스워드를 받았습니다. 
+        // 변수에 저장합니다.
+        this.passwordNew = myEvent.value;
 
-        if(isDebug) console.log("my-info / onChangedFromChild / isOKPW : ",isOKPW);
-        if(isDebug) console.log("my-info / onChangedFromChild / isOKRePW : ",isOKRePW);
-        if(isDebug) console.log("my-info / onChangedFromChild / areSame : ",areSame);
 
-        if(isOKPW && isOKRePW && areSame) {
-          if(isDebug) console.log("my-info / onChangedFromChild / 두 패스워드가 모두 유효하먼서 동일하면 업데이트!");
 
-          // 1. 패스워드 레이아웃은 처음 모습으로 바꿈.
-          this.passwordComponent.openCheckCurPWMode();
-          // 2. 업데이트가 완료된 것을 사용자에게 알림.
-          this.passwordComponent.showTooltipHeadSuccess("새로운 비밀번호로 바뀌었습니다.");
-          // 3. DB Update!
-          this.userService.updatePassword(
-            // apiKey:string
-            this.watchTower.getApiKey(),
-            // email:string 
-            this.email,
-            // password:string
-            password
-          ).then((myResponse:MyResponse) => {
-
-            if(isDebug) console.log("my-info / onChangedFromChild / myResponse : ",myResponse);
-
-          });
-        }
-      } // end if
-
-    } else if(this.myEventService.ON_CHANGE === myEvent.eventName) {
-
-      if(this.myEventService.KEY_USER_RE_PASSWORD === myEvent.key) {
+      } else if(this.myEventService.KEY_USER_RE_PASSWORD === myEvent.key) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
 
@@ -355,8 +344,9 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         if(isDebug) console.log("my-info / onChangedFromChild / password : ",password);
         if(isDebug) console.log("my-info / onChangedFromChild / repassword : ",repassword);
 
-        // 1. 재입력한 패스워드가 유효하다면, '확인' 버튼을 노출합니다.
-        this.passwordComponent.showBtnConfirmNewPW();
+        // 유효한 새로운 패스워드 재입력을 받았습니다. 
+        // 변수에 저장합니다.
+        this.passwordRe = myEvent.value;
 
       } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
 
@@ -399,7 +389,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("thumbnail", myEvent.value);
         // end if - ON CHANGE - KEY_USER_THUMBNAIL
-        
+
       } // end if - ON CHANGE
 
     } // end if
@@ -483,6 +473,26 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       }); // end service
 
     }
+    // wonder.jung
+
+    // 비밀번호 변경 여부 확인
+    // 변경되었다면 업데이트!
+    /*
+    // 3. DB Update!
+    this.userService.updatePassword(
+      // apiKey:string
+      this.watchTower.getApiKey(),
+      // email:string 
+      this.email,
+      // password:string
+      password
+    ).then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("my-info / onChangedFromChild / myResponse : ",myResponse);
+
+    });
+    */    
+
     // 저장 버튼 비활성화.
     this.hasChanged=false;
 
@@ -500,42 +510,11 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     let mobileBody:string = mobileArr[1];
     let mobileTail:string = mobileArr[2];
 
-    // REMOVE ME
-    /*
-    let mobileArr:string[] = this.loginUser.mobile.split("-");
-    if(isDebug) console.log("my-info / checkUserInfoChanged / mobileArr : ",mobileArr);
-    if(null == mobileArr || 3 != mobileArr.length) {
-      if(isDebug) console.log("my-info / checkUserInfoChanged / 중단 / 전화번호에 이상이 있는 경우.");
-      // Error Report
-      return;
-    }
-    let mobileHead:string = mobileArr[0];
-    let mobileBody:string = mobileArr[1];
-    let mobileTail:string = mobileArr[2];
-    */
-
-
     // 생일은 선택 입력이므로 없을 수도 있습니다.
     let birthdayArr:string[] = this.loginUser.getBirthdayArr();
     let birthYear:string = birthdayArr[0];
     let birthMonth:string = birthdayArr[1];
-    let birthDay:string = birthdayArr[2];    
-
-    // REMOVE ME
-    /*
-    let birthdayArr:string[] = this.loginUser.birthday.split("-");
-    let birthYear:string = "";
-    let birthMonth:string = "";
-    let birthDay:string = "";
-    if(isDebug) console.log("my-info / checkUserInfoChanged / birthdayArr : ",birthdayArr);
-    if(null != birthdayArr && 3 == birthdayArr.length) {
-      birthYear = birthdayArr[0];
-      birthMonth = birthdayArr[1];
-      birthDay = birthdayArr[2];
-    }
-    */
-
-
+    let birthDay:string = birthdayArr[2];
 
     // 검사 시작!
     let hasChanged:boolean = false;

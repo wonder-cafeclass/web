@@ -103,7 +103,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / ngAfterViewInit");
+    if(isDebug) console.log("password / ngAfterViewInit");
 
     this.asyncViewPack();
 
@@ -112,18 +112,18 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+    if(isDebug) console.log("password / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      if(isDebug) console.log("password / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(isDebug) console.log("password / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
