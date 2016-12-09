@@ -12,6 +12,12 @@ nav.cage {
 }
 .cc-navbar.bottom {
 	padding-top:10px;
+	padding-bottom:30px;
+}
+.collapse.navbar-collapse.center{
+    text-align: center;
+    padding: 5px;
+    color: #e85c41;	
 }
 table.layout {
 	border:0px;
