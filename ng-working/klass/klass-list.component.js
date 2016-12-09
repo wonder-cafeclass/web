@@ -18,8 +18,8 @@ var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var KlassListComponent = (function () {
-    function KlassListComponent(service, urlService, userService, myLoggerService, watchTower, myCheckerService, route, router) {
-        this.service = service;
+    function KlassListComponent(klassService, urlService, userService, myLoggerService, watchTower, myCheckerService, route, router) {
+        this.klassService = klassService;
         this.urlService = urlService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
@@ -40,16 +40,16 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-list / ngOnInit / 시작");
         this.asyncViewPack();
     };
     KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -86,8 +86,9 @@ var KlassListComponent = (function () {
         this.logPageEnter();
     };
     KlassListComponent.prototype.logPageEnter = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -98,13 +99,21 @@ var KlassListComponent = (function () {
         this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
             if (isDebug)
                 console.log("klass-list / logPageEnter / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+            }
+            else {
+                if (null != myResponse.error && "" != myResponse.error) {
+                    // 에러 내용은 화면에 표시한다.
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+            } // end if
         });
         this.getKlassList();
     };
     KlassListComponent.prototype.getKlassList = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-list / getKlassList / 시작");
         // REFACTOR ME!
@@ -112,12 +121,21 @@ var KlassListComponent = (function () {
             if (isDebug)
                 console.log("klass-list / getKlassList / params : ", params);
             _this.selectedId = params['id'];
-            _this.service
+            _this.klassService
                 .getKlasses()
                 .then(function (myResponse) {
                 if (isDebug)
                     console.log("klass-list / getKlasses / myResponse : ", myResponse);
-                // this.klasses = klasses;
+                if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
+                    // 성공!
+                    _this.klasses = myResponse.getDataProp("klass_list");
+                }
+                else {
+                    if (null != myResponse.error && "" != myResponse.error) {
+                        // 에러 내용은 화면에 표시한다.
+                        _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                    }
+                } // end if
             });
         });
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
@@ -127,6 +145,7 @@ var KlassListComponent = (function () {
         searchBox.focus();
     };
     KlassListComponent.prototype.search = function (level, station, day, time, searchKeyword) {
+        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -158,7 +177,7 @@ var KlassListComponent = (function () {
             }
             searchKeywordSafe += keywordSafe + "|";
         }
-        this.service.searchKlassList(
+        this.klassService.searchKlassList(
         // level:string, 
         levelKey, 
         // station:string, 
@@ -168,9 +187,17 @@ var KlassListComponent = (function () {
         // time:string,
         timeKey, 
         // q:string
-        searchKeywordSafe).then(function (myReponse) {
+        searchKeywordSafe).then(function (myResponse) {
             if (isDebug)
-                console.log("klass-list / search / myReponse : ", myReponse);
+                console.log("klass-list / search / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+            }
+            else {
+                if (null != myResponse.error && "" != myResponse.error) {
+                    // 에러 내용은 화면에 표시한다.
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+            } // end if      
             // wonder.jung
             // this.klasses = klasses 
         });

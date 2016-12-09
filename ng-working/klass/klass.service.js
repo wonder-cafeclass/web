@@ -81,9 +81,8 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.getLatLon = function (r) {
-        var responseJson = r.json();
-        var result = new klass_venue_1.KlassVenue(
+    KlassService.prototype.getKlassVenueEmpty = function () {
+        var klassVenue = new klass_venue_1.KlassVenue(
         // public title:string
         "", 
         // public telephone:string
@@ -96,8 +95,13 @@ var KlassService = (function () {
         0, 
         // public longitude:number
         0);
+        return klassVenue;
+    };
+    KlassService.prototype.getLatLon = function (r) {
+        var responseJson = r.json();
+        var klassVenue = this.getKlassVenueEmpty();
         if (!responseJson.success) {
-            return result;
+            return klassVenue;
         }
         // 위도 / latitude / point.y
         // * 위도 값의 범위 : +90.00000(North)북위 90도 ~ -90.000000(South)남위 90도
@@ -115,12 +119,12 @@ var KlassService = (function () {
             latitude = parseFloat(responseJson.data.result[0].y);
         }
         if (null != longitude) {
-            result.longitude = longitude;
+            klassVenue.longitude = longitude;
         }
         if (null != latitude) {
-            result.latitude = latitude;
+            klassVenue.latitude = latitude;
         }
-        return result;
+        return klassVenue;
     };
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
         // let isDebug:boolean = true;

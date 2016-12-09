@@ -48,14 +48,14 @@ export class KlassListComponent implements OnInit {
   errorMsgArr: string[]=[];
 
   constructor(
-    private service: KlassService,
-    private urlService: UrlService,
+    private klassService:KlassService,
+    private urlService:UrlService,
     private userService:UserService,
-    private myLoggerService: MyLoggerService,
+    private myLoggerService:MyLoggerService,
     private watchTower:MyEventWatchTowerService,
     private myCheckerService:MyCheckerService,
-    private route: ActivatedRoute,
-    private router: Router
+    private route:ActivatedRoute,
+    private router:Router
   ) { }
 
   isSelected(klass: Klass): boolean {
@@ -64,8 +64,8 @@ export class KlassListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / ngOnInit / 시작");
 
     this.asyncViewPack();
@@ -74,8 +74,8 @@ export class KlassListComponent implements OnInit {
 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -118,8 +118,8 @@ export class KlassListComponent implements OnInit {
 
   private logPageEnter() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / logPageEnter / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -132,14 +132,25 @@ export class KlassListComponent implements OnInit {
 
       if(isDebug) console.log("klass-list / logPageEnter / myResponse : ",myResponse);
 
+      if(myResponse.isSuccess()) {
+
+        // 성공!
+
+      } else {
+        if(null != myResponse.error && "" != myResponse.error) {
+          // 에러 내용은 화면에 표시한다.
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+      } // end if
+
     }); 
 
     this.getKlassList();
   }
   private getKlassList() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / getKlassList / 시작");
 
     // REFACTOR ME!
@@ -148,15 +159,25 @@ export class KlassListComponent implements OnInit {
       if(isDebug) console.log("klass-list / getKlassList / params : ",params);
 
       this.selectedId = params['id'];
-      this.service
+      this.klassService
       .getKlasses()
       .then((myResponse:MyResponse) => {
 
         if(isDebug) console.log("klass-list / getKlasses / myResponse : ",myResponse);
 
+        if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
 
+          // 성공!
+          this.klasses = myResponse.getDataProp("klass_list");
+
+        } else {
+          if(null != myResponse.error && "" != myResponse.error) {
+            // 에러 내용은 화면에 표시한다.
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+          }
+        } // end if
         
-        // this.klasses = klasses;
+        
       });
     });
 
@@ -210,7 +231,7 @@ export class KlassListComponent implements OnInit {
       searchKeywordSafe += `${keywordSafe}|`;
     }
 
-    this.service.searchKlassList(
+    this.klassService.searchKlassList(
       // level:string, 
       levelKey,
       // station:string, 
@@ -221,8 +242,19 @@ export class KlassListComponent implements OnInit {
       timeKey, 
       // q:string
       searchKeywordSafe
-    ).then((myReponse:MyResponse) => {
-      if(isDebug) console.log("klass-list / search / myReponse : ",myReponse);
+    ).then((myResponse:MyResponse) => {
+      if(isDebug) console.log("klass-list / search / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+        // 성공!
+
+      } else {
+        if(null != myResponse.error && "" != myResponse.error) {
+          // 에러 내용은 화면에 표시한다.
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+      } // end if      
       // wonder.jung
       // this.klasses = klasses 
     });

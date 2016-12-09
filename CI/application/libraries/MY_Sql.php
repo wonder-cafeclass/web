@@ -13,6 +13,19 @@ require APPPATH . '/models/User.php';
 require APPPATH . '/models/UserValidation.php';
 require APPPATH . '/models/UserCookie.php';
 
+/*
+require APPPATH . '/models/SelectTile.php';
+require APPPATH . '/models/KlassCourse.php';
+require APPPATH . '/models/KlassKeyword.php';
+require APPPATH . '/models/KlassLevel.php';
+require APPPATH . '/models/KlassStation.php';
+require APPPATH . '/models/KlassDay.php';
+require APPPATH . '/models/KlassTime.php';
+require APPPATH . '/models/KlassCalendar.php';
+require APPPATH . '/models/KlassReview.php';
+require APPPATH . '/models/KlassQuestion.php';
+*/
+
 class MY_Sql
 {
 	private $CI=null;
@@ -1250,7 +1263,456 @@ class MY_Sql
         $this->CI->db->delete('user_cookie');
 
         return $row;
-    }          
+    } 
+
+
+    public function search_klass($q="", $level="", $station="", $day="", $time="")
+    {
+        // 유효한 파라미터들만 검색에 사용한다.
+        $where_conditions = array();
+        if($this->is_ok("klass_level", $level))
+        {
+            $this->CI->db->where('level', $level);
+        }
+        if($this->is_ok("klass_station", $station))
+        {
+            $this->CI->db->where('venue_subway_station', $station);
+        }
+        if($this->is_ok("klass_day", $day))
+        {
+            $this->CI->db->where('days', $day);
+        }
+        if($this->is_ok("klass_query", $q))
+        {
+            $keyword_list = explode("|",$q);
+            $extra['keyword_list'] = $keyword_list;
+
+            $like_cnt = 0;
+            for ($i=0; $i < count($keyword_list); $i++) 
+            { 
+                $keyword = $keyword_list[$i];
+
+                if(empty($keyword)) 
+                {
+                    continue;
+                }
+
+                if(0 === $like_cnt) 
+                {
+                    // escaped automatically in 'like' or 'or_like'
+                    $this->CI->db->like('title', $keyword);
+                    $this->CI->db->or_like('desc', $keyword);
+                }
+                else
+                {
+                    $this->CI->db->or_like('title', $keyword);
+                    $this->CI->db->or_like('desc', $keyword);
+                }
+
+                $like_cnt++;
+            }
+        }
+        // Set time range
+        // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra['time_begin'] = 
+        $time_begin = 
+        $this->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list'
+        );
+        $extra['time_end'] = 
+        $time_end = 
+        $this->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list', 
+            1
+        );
+        $time_begin_HHmm = "";
+        $time_end_HHmm = "";
+        if(is_numeric($time_begin) && is_numeric($time_end))
+        {
+            $time_begin_HHmm = $this->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->my_time->digit_to_HHmm($time_end, true);
+        }
+        if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
+            $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
+        {
+            $this->CI->db->where('time_begin >=', $time_begin_HHmm);
+            $this->CI->db->where('time_end <=', $time_end_HHmm);
+
+        }
+        $this->CI->db->order_by('id', 'DESC');
+
+        // DB WORKS
+        $limit = 30;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+
+        // RESULT
+        $klass_list = $query->result();
+
+        return $klass_list;
+    }
+
+    public function select_klass_list($offset=-1, $limit=-1)
+    {
+        if(!(0 < $offset)) 
+        {
+            return;
+        }
+        if(!(0 < $limit)) 
+        {
+            return;
+        }
+
+        $this->CI->db->order_by('id', 'DESC');
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $klass_list = $this->add_klass_extra_info($query);
+
+        return $klass_list;
+    }
+
+    public function select_klass_question_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $klass_question_list = $this->select_klass_parent_question_list($klass_id);
+        if(!empty($klass_question_list))
+        {
+            $klass_question_list = 
+            $this->select_klass_child_question_comment_list($klass_question_list);
+        }
+
+        return $klass_question_list;
+    }
+    private function select_klass_parent_question_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 문의를 가져옵니다.
+        $question_list = null;
+        // 1. 부모 문의를 먼저 가져옵니다.(최신순)
+        if(0 < $klass->id)
+        {
+            $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->CI->db->from('question');
+            $this->CI->db->join('user', 'question.user_id = user.id');
+            $this->CI->db->where('question.klass_id', $klass->id);
+            $this->CI->db->where('question.parent_id=', 0);
+            $this->CI->db->order_by('question.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $question_list = $this->add_klass_question_extra_info($query);
+        }
+
+        return $question_list;
+    }
+    private function select_klass_child_question_comment_list($question_list=null)
+    {
+        if(empty($question_list))
+        {
+            return;
+        }
+
+        for ($i=0; $i < count($question_list); $i++) 
+        {
+
+            $question = $question_list[$i];
+            $question_id = intval($question->id);
+
+            if(!(0 < $question_id)) 
+            {
+                continue;
+            }
+
+            $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->CI->db->from('question');
+            $this->CI->db->join('user', 'question.user_id = user.id');
+            $this->CI->db->where('question.parent_id', $question_id);
+            $this->CI->db->order_by('question.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $question->child_question_list = $this->add_klass_question_extra_info($query);
+        } // end for
+
+        return $question_list;
+    }
+    private function add_klass_question_extra_info($query=null)
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassQuestion');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->CI->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->CI->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }    
+
+
+    public function select_klass_review_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = $this->select_klass_parent_review_list($klass_id);
+
+        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
+        $review_list = $this->select_klass_children_review_comment_list($review_list);
+
+        return $review_list;
+    }
+    private function select_klass_parent_review_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.klass_id', $klass_id);
+        $this->CI->db->where('review.parent_id=', 0);
+        $this->CI->db->order_by('review.id', 'DESC');
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        return $review_list;
+    }
+    private function select_klass_children_review_comment_list($review_list)
+    {
+        if(empty($review_list)) 
+        {
+            return [];
+        }
+
+        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
+        for ($i=0; $i < count($review_list); $i++) 
+        {
+
+            $review = $review_list[$i];
+            $review_id = intval($review->id);
+
+            if(!(0 < $review_id)) 
+            {
+                continue;
+            }
+
+            $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->CI->db->from('review');
+            $this->CI->db->join('user', 'review.user_id = user.id');
+            $this->CI->db->where('review.parent_id', $review_id);
+            $this->CI->db->order_by('review.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $review->child_review_list = $this->add_klass_review_extra_info($query);
+        } 
+        
+        return $review_list;
+    }
+    private function add_klass_review_extra_info($query=null)
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassReview');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }    
+
+    public function select_teacher($teacher_id=-1)
+    {
+        if($this->is_not_ok("user_id", $teacher_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('id', $teacher_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $teacher = $this->add_klass_teacher_extra_info($query);
+        return $teacher;
+    }
+    private function add_klass_teacher_extra_info($query=null)
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassTeacher');
+        $teacher = null;
+        if(!empty($rows))
+        {
+            $teacher = $rows[0];   
+        }
+        if(isset($teacher) && !empty($teacher->resume))
+        {
+            $teacher->resume_arr = explode("|",$teacher->resume);
+        }
+        if(isset($teacher) && !empty($teacher->greeting))
+        {
+            $teacher->greeting_arr = explode("|",$teacher->greeting);
+        }
+        if(isset($teacher) && !empty($teacher->thumbnail))
+        {
+            $teacher->thumbnail_url = $this->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
+        }
+        if(isset($teacher) && empty($teacher->nickname))
+        {
+            $teacher->nickname = $teacher->name;
+        }
+
+        return $teacher;
+    }    
+
+    public function select_klass($klass_id=-1) 
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('id', $id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $klass_list = $this->add_klass_extra_info($query);
+        $klass = null;
+        if(!empty($klass_list)) 
+        {
+            $klass = $klass_list[0];
+            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
+        }
+
+        return $klass;
+    }
+    private function add_klass_extra_info($query=null) 
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $const_map = $this->CI->my_paramchecker->get_const_map();
+        if(is_null($const_map)) {
+            return;
+        }
+        $rows = $query->custom_result_object('KlassCourse');
+        $output = array();
+        foreach ($rows as $row)
+        {
+            // 추가할 정보들을 넣는다.
+            $row->time_begin_img_url($const_map, $this->CI->my_path);
+            $row->level_img_url($const_map, $this->CI->my_path);
+            $row->set_days_list($const_map);
+            $row->days_img_url($const_map, $this->CI->my_path);
+            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
+            $row->venue_cafe_logo_img_url($const_map, $this->CI->my_path);
+            $row->price_with_format();
+            $row->set_klass_price_list();
+            $row->weeks_to_months();
+
+            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
+            $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
+            $row->class_img_url = $this->CI->my_path->get("/assets/images/class/test.jpg");
+
+            // 주당 수업 가격에 대해 계산한다.
+            // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
+            // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
+            $price = $row->price = intval($row->price);
+            $week_max = $row->week_max = intval($row->week_max);
+            $week_min = $row->week_min = intval($row->week_min);
+            $week_unit_cnt = ($week_max / $week_min);
+
+            // 주당 가격 산정은 다음과 같다. 
+            // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
+            $fee_per_a_week = $price/$week_min;
+
+            $row->week_list = array();
+            $row->price_list = array();
+            $row->weekly_price_list = array();
+            for ($i=1; $i <= $week_unit_cnt; $i++) { 
+                $next_weeks = $week_min * $i;
+                array_push($row->week_list, $next_weeks);
+                $next_price = $fee_per_a_week * $week_min * $i;
+                array_push($row->price_list, $next_price);
+
+                $weeky_price = [
+                    'weeks'=>$next_weeks,
+                    'price'=>$next_price
+                ];
+                array_push($row->weekly_price_list, $weeky_price);
+            }
+            
+            array_push($output, $row);
+        }
+
+        return $output;
+    }     
 
 }
 

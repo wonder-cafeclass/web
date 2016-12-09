@@ -99,10 +99,8 @@ export class KlassService {
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
     }
-    private getLatLon(r:Response)  :KlassVenue {
-
-      let responseJson = r.json();
-      let result:KlassVenue = 
+    public getKlassVenueEmpty() :KlassVenue {
+      let klassVenue:KlassVenue = 
       new KlassVenue(
         // public title:string
         "",
@@ -118,8 +116,15 @@ export class KlassService {
         0
       );
 
+      return klassVenue;     
+    }
+    private getLatLon(r:Response)  :KlassVenue {
+
+      let responseJson = r.json();
+      let klassVenue:KlassVenue = this.getKlassVenueEmpty();
+
       if(!responseJson.success) {
-        return result;
+        return klassVenue;
       }
 
       // 위도 / latitude / point.y
@@ -140,13 +145,13 @@ export class KlassService {
       }
 
       if(null != longitude) {
-        result.longitude = longitude;
+        klassVenue.longitude = longitude;
       }
       if(null != latitude) {
-        result.latitude = latitude;
+        klassVenue.latitude = latitude;
       }
 
-      return result;
+      return klassVenue;
     }
 
     searchKlassList ( level:string, 
