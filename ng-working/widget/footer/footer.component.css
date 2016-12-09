@@ -104,6 +104,7 @@ ul.my-style {
 }
 li.my-style {
 	border-radius: 0px;
+	border:0px;
 	border-top: 1px solid #ddd;
 	padding:0px;
 }
@@ -111,10 +112,12 @@ li.my-style.first {
 	border-top: 0px;
 	background-color: #e85c41;
 }
-h5.my-style {
-	margin: 0px;
-	padding: 10px;	
-	color:#fff;
+span.my-style {
+	margin: 6px;
+    color: rgb(232, 92, 65);
+    font-size: 15px;
+    background-color: #fff;
+    font-weight: normal;
 }
 li.my-style.last {
 	border-bottom: 0px;
