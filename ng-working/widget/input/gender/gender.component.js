@@ -105,7 +105,15 @@ var GenderComponent = (function () {
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     GenderComponent.prototype.setGender = function (gender) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / gender / init");
+        if (isDebug)
+            console.log("gender / gender / gender : ", gender);
         if (this.isOK(gender)) {
+            if (isDebug)
+                console.log("gender / gender / 성별이 변경됩니다.");
             this.gender = gender;
         }
     };
@@ -168,20 +176,24 @@ var GenderComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     GenderComponent.prototype.onClickGenderFemale = function (event) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / onClickGenderFemale / init");
         event.stopPropagation();
         event.preventDefault();
-        if (this.gender === this.keyMale) {
-            this.gender = this.keyMale;
-        }
+        this.setGender(this.keyFemale);
         this.emitGenderSelected(this.keyFemale);
         this.tooltipMsg = null;
     };
     GenderComponent.prototype.onClickGenderMale = function (event) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("gender / onClickGenderMale / init");
         event.stopPropagation();
         event.preventDefault();
-        if (this.gender === this.keyFemale) {
-            this.gender = this.keyFemale;
-        }
+        this.setGender(this.keyMale);
         this.emitGenderSelected(this.keyMale);
         this.tooltipMsg = null;
     };

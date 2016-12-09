@@ -392,6 +392,17 @@ var MyInfoComponent = (function () {
                     return;
                 }
                 this.updateNewBirthDay(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_GENDER === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
+                    return;
+                }
+                this.updateNewProp("gender", myEvent.value);
             } // end if - ON CHANGE
         } // end if
     }; // end method

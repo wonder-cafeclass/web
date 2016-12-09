@@ -517,6 +517,19 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewBirthDay(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_DAY
 
+      } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
+
+        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
+
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
+          if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
+          return;
+        }   
+
+        this.updateNewProp("gender", myEvent.value);
+        // end if - ON CHANGE - KEY_USER_GENDER
+
       } // end if - ON CHANGE
 
     } // end if
