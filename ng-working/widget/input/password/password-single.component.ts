@@ -157,6 +157,9 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
   onClickPassword(event, element) :void {
 
+    // 락 해제
+    // this.lockAfterOnBlur=null;
+
     event.stopPropagation();
     event.preventDefault();
 
@@ -278,13 +281,20 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     let issueMsg:string = this.getPasswordIssue(this.password);
     if(null == issueMsg || "" == issueMsg) {
 
+      // 이전에 노출했던 모든 경고창을 내립니다.
+      this.hideTooltipWarning();
+
       // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
       // 이슈 결과가 없다면 - (패스워드 문제없음!), 부모 객체에게 Event 발송 
       this.emitOnChange(
         // eventKey:string
-        this.eventKey
+        this.eventKey,
+        // value:string
+        element.value
       );
-      this.hideTooltipWarning();
+      // REMOVE ME
+      // this.lockAfterOnBlur={};
+      // 
 
     } else {
 
@@ -302,9 +312,12 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
       } // end if
     } // end if
 
+    
+
   } // end method
 
   hideTooltipHead(sec:number) :void {
+
     if(null == sec || !(0 < sec)) {
       sec = 3;
     }
@@ -313,6 +326,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipMsg = null;
+      _self.isShowTooltip = false;
     }, 1000 * sec);        
 
   }
@@ -411,7 +425,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
   }
 
-  private emitOnChange(eventKey:string) :void {
+  private emitOnChange(eventKey:string, value:string) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -430,7 +444,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
       // public key:string
       eventKey,
       // public value:string
-      "",
+      value,
       // public metaObj:any
       null,
       // public myChecker:MyChecker
@@ -528,15 +542,27 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
         // 패스워드에 문제가 없습니다.
         // 경고 메시지 등을 내립니다.
-        // wonder.jung
         this.hideTooltipWarning();
 
       } // end inner if
     } // end if
   }  // end method
 
+  // 블러 이후에는 이벤트 적용을 하지 않습니다.
+  // lockAfterOnBlur=null;
+
   // @ Desc : 실패 툴팁을 가립니다.
   hideTooltipWarning() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("password-single / hideTooltipWarning / init");
+    // if(isDebug) console.log("password-single / hideTooltipWarning / init / this.lockAfterOnBlur : ",this.lockAfterOnBlur);
+
+    // if(this.lockAfterOnBlur) {
+    //   if(isDebug) console.log("password-single / hideTooltipWarning / 중단 / this.lockAfterOnBlur");
+    //   return;
+    // }
 
     this.isShowTooltip = false;
     this.isWarning = false;
@@ -544,19 +570,24 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     this.isValid = true;
     this.tooltipMsg = null;
 
+    if(isDebug) console.log("password-single / hideTooltipWarning / Done!");
+
   }
   // @ Desc : 실패 툴팁을 보여줍니다.
   showTooltipFailWarning(warningMsg:string, isTimeout:boolean) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;    
     if(isDebug) console.log("password-single / showTooltipFailWarning / init");
+    if(isDebug) console.log("password-single / showTooltipFailWarning / warningMsg : ",warningMsg);
 
     this.isShowTooltip = true;
     this.isWarning = true;
     this.isFocus = true;
     this.isValid = false;
     this.tooltipMsg = warningMsg;
+
+    if(isDebug) console.log("password-single / showTooltipFailWarning / this.isShowTooltip : ",this.isShowTooltip);
 
     if(null != isTimeout && isTimeout) {
       if(isDebug) console.log("password-single / showTooltipFailWarning / this.hideTooltipHead(2)");
@@ -566,6 +597,11 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   }
   // @ Desc : 성공 툴팁을 보여줍니다.
   public showTooltipSuccess(msg:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;    
+    if(isDebug) console.log("password-single / showTooltipSuccess / init");
+    if(isDebug) console.log("password-single / showTooltipSuccess / msg : ",msg);
 
     this.isShowTooltip = true;
     this.isWarning = false;
@@ -587,7 +623,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   }
 
   ngModelPW:string;
-  private initPassword() :void {
+  public initPassword() :void {
     this.ngModelPW="";
     this.passwordPrev="";
     this.password="";

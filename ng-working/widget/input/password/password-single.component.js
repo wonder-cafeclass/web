@@ -120,6 +120,8 @@ var PasswordSingleComponent = (function () {
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     PasswordSingleComponent.prototype.onClickPassword = function (event, element) {
+        // 락 해제
+        // this.lockAfterOnBlur=null;
         event.stopPropagation();
         event.preventDefault();
         if (!this.isFocus) {
@@ -219,12 +221,15 @@ var PasswordSingleComponent = (function () {
         }
         var issueMsg = this.getPasswordIssue(this.password);
         if (null == issueMsg || "" == issueMsg) {
+            // 이전에 노출했던 모든 경고창을 내립니다.
+            this.hideTooltipWarning();
             // 로그인 창은 패스워드 검사 결과를 사용자에게 보여주지 않습니다.
             // 이슈 결과가 없다면 - (패스워드 문제없음!), 부모 객체에게 Event 발송 
             this.emitOnChange(
             // eventKey:string
-            this.eventKey);
-            this.hideTooltipWarning();
+            this.eventKey, 
+            // value:string
+            element.value);
         }
         else {
             // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
@@ -248,6 +253,7 @@ var PasswordSingleComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipMsg = null;
+            _self.isShowTooltip = false;
         }, 1000 * sec);
     };
     PasswordSingleComponent.prototype.onKeydownTabShiftPassword = function (event, elementPassword) {
@@ -329,7 +335,7 @@ var PasswordSingleComponent = (function () {
         this.myChecker);
         this.emitter.emit(myEventOnChange);
     };
-    PasswordSingleComponent.prototype.emitOnChange = function (eventKey) {
+    PasswordSingleComponent.prototype.emitOnChange = function (eventKey, value) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -346,7 +352,7 @@ var PasswordSingleComponent = (function () {
         // public key:string
         eventKey, 
         // public value:string
-        "", 
+        value, 
         // public metaObj:any
         null, 
         // public myChecker:MyChecker
@@ -430,30 +436,46 @@ var PasswordSingleComponent = (function () {
             else {
                 // 패스워드에 문제가 없습니다.
                 // 경고 메시지 등을 내립니다.
-                // wonder.jung
                 this.hideTooltipWarning();
             } // end inner if
         } // end if
     }; // end method
+    // 블러 이후에는 이벤트 적용을 하지 않습니다.
+    // lockAfterOnBlur=null;
     // @ Desc : 실패 툴팁을 가립니다.
     PasswordSingleComponent.prototype.hideTooltipWarning = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("password-single / hideTooltipWarning / init");
+        // if(isDebug) console.log("password-single / hideTooltipWarning / init / this.lockAfterOnBlur : ",this.lockAfterOnBlur);
+        // if(this.lockAfterOnBlur) {
+        //   if(isDebug) console.log("password-single / hideTooltipWarning / 중단 / this.lockAfterOnBlur");
+        //   return;
+        // }
         this.isShowTooltip = false;
         this.isWarning = false;
         this.isFocus = false;
         this.isValid = true;
         this.tooltipMsg = null;
+        if (isDebug)
+            console.log("password-single / hideTooltipWarning / Done!");
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     PasswordSingleComponent.prototype.showTooltipFailWarning = function (warningMsg, isTimeout) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;    
         if (isDebug)
             console.log("password-single / showTooltipFailWarning / init");
+        if (isDebug)
+            console.log("password-single / showTooltipFailWarning / warningMsg : ", warningMsg);
         this.isShowTooltip = true;
         this.isWarning = true;
         this.isFocus = true;
         this.isValid = false;
         this.tooltipMsg = warningMsg;
+        if (isDebug)
+            console.log("password-single / showTooltipFailWarning / this.isShowTooltip : ", this.isShowTooltip);
         if (null != isTimeout && isTimeout) {
             if (isDebug)
                 console.log("password-single / showTooltipFailWarning / this.hideTooltipHead(2)");
@@ -462,6 +484,12 @@ var PasswordSingleComponent = (function () {
     };
     // @ Desc : 성공 툴팁을 보여줍니다.
     PasswordSingleComponent.prototype.showTooltipSuccess = function (msg) {
+        var isDebug = true;
+        // let isDebug:boolean = false;    
+        if (isDebug)
+            console.log("password-single / showTooltipSuccess / init");
+        if (isDebug)
+            console.log("password-single / showTooltipSuccess / msg : ", msg);
         this.isShowTooltip = true;
         this.isWarning = false;
         this.isFocus = false;

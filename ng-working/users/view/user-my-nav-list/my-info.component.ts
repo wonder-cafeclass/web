@@ -9,6 +9,7 @@ import {  Component,
 import { EmailComponent }             from '../../../widget/input/email/email.component';
 import { ProfileImgUploadComponent }  from '../../../widget/input/profile-img-upload/profile-img-upload.component';
 import { PasswordComponent }          from '../../../widget/input/password/password.component';
+import { PasswordsTripletComponent }          from '../../../widget/input/password/passwords-triplet.component';
 import { MobileComponent }            from '../../../widget/input/mobile/mobile.component';
 import { NameComponent }              from '../../../widget/input/name/name.component';
 import { GenderComponent }            from '../../../widget/input/gender/gender.component';
@@ -72,8 +73,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   @ViewChild(EmailComponent)
   private emailComponent: EmailComponent;
 
-  @ViewChild(PasswordComponent)
-  private passwordComponent: PasswordComponent;
+  @ViewChild(PasswordsTripletComponent)
+  private passwordsComponent: PasswordsTripletComponent;
 
   @ViewChild(NameComponent)
   private nameComponent: NameComponent;
@@ -105,7 +106,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
               private watchTower:MyEventWatchTowerService) {
 
     this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
-    this.eventKeyPWBody = this.myEventService.KEY_USER_PASSWORD;
+    this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
     this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
 
   }
@@ -310,10 +311,24 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
             // wonder.jung
             // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
             this.passwordCur=myEvent.value;
+            // 사용자에게 성공 메시지 노출
+            this.passwordsComponent.showTooltipSuccess(
+              // eventKey:string
+              this.passwordsComponent.eventKeyHead,
+              // msg:string
+              "성공! 현재 비밀번호가 확인되었습니다."
+            );
 
           } else {
 
             // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
+            if(isDebug) console.log("my-info / onChangedFromChild / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
+            this.passwordsComponent.showTooltipWarning(
+              // eventKey:string
+              this.passwordsComponent.eventKeyHead,
+              // msg:string
+              "비밀번호를 다시 확인해주세요."
+            );
 
           }// end if
         }); 
@@ -322,31 +337,58 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
 
-        let password:string = this.passwordComponent.getPassword();
-        let repassword:string = this.passwordComponent.getRepassword();
+        // 유효한 새로운 패스워드를 받았습니다.
 
-        if(isDebug) console.log("my-info / onChangedFromChild / password : ",password);
-        if(isDebug) console.log("my-info / onChangedFromChild / repassword : ",repassword);
-
-        // 유효한 새로운 패스워드를 받았습니다. 
-        // 변수에 저장합니다.
-        this.passwordNew = myEvent.value;
-
-
+        // 1. 새로운 패스워드는 이전의 패스워드와 달라야 합니다.
+        if(this.passwordCur === myEvent.value) {
+          if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
+          this.passwordsComponent.showTooltipWarning(
+            // eventKey:string
+            this.passwordsComponent.eventKeyBody,
+            // msg:string
+            "새로운 비밀번호가 이전과 같습니다!"
+          );
+        } else {
+          if(isDebug) console.log("my-info / onChangedFromChild / 유효한 새로운 패스워드를 받았습니다.");
+          // 변수에 저장합니다.
+          this.passwordNew = myEvent.value;
+          // 사용자에게 성공 메시지 노출
+          this.passwordsComponent.showTooltipSuccess(
+            // eventKey:string
+            this.passwordsComponent.eventKeyBody,
+            // msg:string
+            "성공! 새로운 비밀번호가 완벽합니다."
+          );
+        } // end if
+        // end KEY_USER_NEW_PASSWORD
 
       } else if(this.myEventService.KEY_USER_RE_PASSWORD === myEvent.key) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
 
-        let password:string = this.passwordComponent.getPassword();
-        let repassword:string = this.passwordComponent.getRepassword();
-
-        if(isDebug) console.log("my-info / onChangedFromChild / password : ",password);
-        if(isDebug) console.log("my-info / onChangedFromChild / repassword : ",repassword);
-
-        // 유효한 새로운 패스워드 재입력을 받았습니다. 
-        // 변수에 저장합니다.
-        this.passwordRe = myEvent.value;
+        if(this.passwordNew !== myEvent.value) {
+          // 새로운 비밀번호 재확인이 새로운 비밀번호와 다릅니다. 
+          // 경고 메시지 노출 
+          this.passwordsComponent.showTooltipWarning(
+            // eventKey:string
+            this.passwordsComponent.eventKeyTail,
+            // msg:string
+            "새로운 비밀번호와 다릅니다!"
+          );
+        } else {
+          // 변수에 저장합니다.
+          this.passwordRe = myEvent.value;
+          // 사용자에게 성공 메시지 노출
+          this.passwordsComponent.showTooltipSuccess(
+            // eventKey:string
+            this.passwordsComponent.eventKeyTail,
+            // msg:string
+            "성공! 새로운 비밀번호가 완벽합니다."
+          );
+          // 저장 버튼 활성화.
+          this.hasChanged=true;
+        } // end if
+        // end KEY_USER_RE_PASSWORD
 
       } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
 
@@ -453,7 +495,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.loginUserCopy
       ).then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("my-info / onClickSave / myResponse : ",myResponse);
+        if(isDebug) console.log("my-info / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
 
         let userUpdated = myResponse.digDataProp(["user"]);
         if(myResponse.isSuccess && null != userUpdated) {
@@ -476,22 +518,35 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     // wonder.jung
 
     // 비밀번호 변경 여부 확인
-    // 변경되었다면 업데이트!
-    /*
-    // 3. DB Update!
-    this.userService.updatePassword(
-      // apiKey:string
-      this.watchTower.getApiKey(),
-      // email:string 
-      this.email,
-      // password:string
-      password
-    ).then((myResponse:MyResponse) => {
+    let hasChangedPassword:boolean = this.checkUserPasswordChanged();
+    if(isDebug) console.log("my-info / onClickSave / hasChangedPassword : ",hasChangedPassword);
 
-      if(isDebug) console.log("my-info / onChangedFromChild / myResponse : ",myResponse);
+    if(hasChangedPassword) {
+      // 변경되었다면 업데이트!
+      
+      // 3. DB Update!
+      this.userService.updatePassword(
+        // apiKey:string
+        this.watchTower.getApiKey(),
+        // email:string 
+        this.email,
+        // password:string
+        this.passwordNew
+      ).then((myResponse:MyResponse) => {
 
-    });
-    */    
+        if(isDebug) console.log("my-info / onClickSave / 비밀번호 업데이트 / myResponse : ",myResponse);
+        let is_valid_password:boolean = myResponse.getDataProp("is_valid_password");
+        if(myResponse.isSuccess && is_valid_password) {
+          // 비밀번호 업데이트 성공!
+          if(isDebug) console.log("my-info / onClickSave / 비밀번호 업데이트 성공!");
+        }
+
+        // 입력한 모든 비밀번호를 초기화합니다.
+        this.passwordsComponent.cleanPasswords();
+
+      });
+    }
+
 
     // 저장 버튼 비활성화.
     this.hasChanged=false;
@@ -569,9 +624,39 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       // 6-3. birthDay
       if(isDebug) console.log("my-info / checkUserInfoChanged / 생일 - 일 변경됨");
       hasChanged = true;
+
+    } else if( this.passwordsComponent.isOK(this.passwordNew) && 
+        this.passwordCur !== this.passwordNew && 
+        this.passwordNew === this.passwordRe) {
+
+      // 7. password
+      if(isDebug) console.log("my-info / checkUserInfoChanged / 생일 - 일 변경됨");
+      hasChanged = true;
+
     } // end if
 
     return hasChanged;
+  }
+
+  private checkUserPasswordChanged() :boolean {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / checkUserPasswordChanged / init");
+
+    let hasChanged:boolean = false;
+
+    if( this.passwordsComponent.isOK(this.passwordNew) && 
+        this.passwordCur !== this.passwordNew && 
+        this.passwordNew === this.passwordRe) {
+
+      // 7. password
+      if(isDebug) console.log("my-info / checkUserPasswordChanged / 비밀번호 변경됨.");
+      hasChanged = true;
+
+    } // end if
+
+    return hasChanged;    
   }
 
 }

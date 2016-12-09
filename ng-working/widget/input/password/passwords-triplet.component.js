@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var password_single_component_1 = require('./password-single.component');
 var PasswordsTripletComponent = (function () {
     function PasswordsTripletComponent(myEventService) {
         this.myEventService = myEventService;
@@ -36,6 +37,80 @@ var PasswordsTripletComponent = (function () {
             console.log("passwords-triplet / emitEvent / init");
         this.emitter.emit(myEvnet);
     };
+    PasswordsTripletComponent.prototype.showTooltipWarning = function (eventKey, msg) {
+        // childrenPW
+        // http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("passwords-triplet / showTooltipWarning / init");
+        var childPW = this.getChild(eventKey);
+        if (isDebug)
+            console.log("passwords-triplet / showTooltipWarning / childPW : ", childPW);
+        if (null == childPW) {
+            if (isDebug)
+                console.log("passwords-triplet / showTooltipWarning / 중단 / childPW is not valid!");
+            return;
+        }
+        childPW.showTooltipFailWarning(
+        // warningMsg:string
+        msg, 
+        // isTimeout:boolean
+        false);
+    };
+    PasswordsTripletComponent.prototype.showTooltipSuccess = function (eventKey, msg) {
+        // childrenPW
+        // http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("passwords-triplet / showTooltipSuccess / init");
+        var childPW = this.getChild(eventKey);
+        if (isDebug)
+            console.log("passwords-triplet / showTooltipSuccess / childPW : ", childPW);
+        if (null == childPW) {
+            if (isDebug)
+                console.log("passwords-triplet / showTooltipSuccess / 중단 / childPW is not valid!");
+            return;
+        }
+        childPW.showTooltipSuccess(msg);
+    };
+    PasswordsTripletComponent.prototype.getChild = function (eventKey) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("passwords-triplet / getChild / init");
+        var target = null;
+        this.childrenPW.forEach(function (childPW) {
+            if (isDebug)
+                console.log("passwords-triplet / getChild / eventKey : ", eventKey);
+            if (isDebug)
+                console.log("passwords-triplet / getChild / childPW.eventKey : ", childPW.eventKey);
+            if (eventKey === childPW.eventKey) {
+                if (isDebug)
+                    console.log("passwords-triplet / getChild / childPW : ", childPW);
+                target = childPW;
+                return;
+            }
+        }); // end for-each
+        return target;
+    };
+    PasswordsTripletComponent.prototype.isOK = function (password) {
+        var childPW = this.getChild(this.eventKeyHead);
+        return childPW.isOK(password);
+    };
+    PasswordsTripletComponent.prototype.cleanPasswords = function () {
+        // 모든 비밀번호 란을 초기화합니다.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("passwords-triplet / cleanPasswords / init");
+        this.childrenPW.forEach(function (childPW) {
+            if (isDebug)
+                console.log("passwords-triplet / cleanPasswords / childPW.eventKey : ", childPW.eventKey);
+            childPW.initPassword();
+        }); // end for-each		
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -52,6 +127,10 @@ var PasswordsTripletComponent = (function () {
         core_1.Output(), 
         __metadata('design:type', Object)
     ], PasswordsTripletComponent.prototype, "emitter", void 0);
+    __decorate([
+        core_1.ViewChildren(password_single_component_1.PasswordSingleComponent), 
+        __metadata('design:type', core_1.QueryList)
+    ], PasswordsTripletComponent.prototype, "childrenPW", void 0);
     PasswordsTripletComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
