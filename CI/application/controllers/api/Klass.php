@@ -268,7 +268,7 @@ class Klass extends MY_REST_Controller {
         );
 
         $klass_list = 
-        $this->search_klass(
+        $this->my_sql->search_klass(
             // $q=""
             $q,
             // $level=""

@@ -75,6 +75,11 @@ class MY_Sql
         return true;
     }    
 
+    private function is_ok($key=null, $value=null) 
+    {   
+        return !$this->is_not_ok($key, $value);
+    }
+
     private function is_not_ok($key=null, $value=null) 
     {
         if(is_null($key)) 
@@ -1316,14 +1321,14 @@ class MY_Sql
         // 시간 관련 검색은 범위를 가져와야 한다.
         $extra['time_begin'] = 
         $time_begin = 
-        $this->my_paramchecker->get_const_from_list(
+        $this->CI->my_paramchecker->get_const_from_list(
             $time, 
             'class_times_list', 
             'class_times_range_list'
         );
         $extra['time_end'] = 
         $time_end = 
-        $this->my_paramchecker->get_const_from_list(
+        $this->CI->my_paramchecker->get_const_from_list(
             $time, 
             'class_times_list', 
             'class_times_range_list', 
@@ -1333,15 +1338,14 @@ class MY_Sql
         $time_end_HHmm = "";
         if(is_numeric($time_begin) && is_numeric($time_end))
         {
-            $time_begin_HHmm = $this->my_time->digit_to_HHmm($time_begin);
-            $time_end_HHmm = $this->my_time->digit_to_HHmm($time_end, true);
+            $time_begin_HHmm = $this->CI->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->CI->my_time->digit_to_HHmm($time_end, true);
         }
         if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
             $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
         {
             $this->CI->db->where('time_begin >=', $time_begin_HHmm);
             $this->CI->db->where('time_end <=', $time_end_HHmm);
-
         }
         $this->CI->db->order_by('id', 'DESC');
 
@@ -1571,11 +1575,11 @@ class MY_Sql
                     $row->thumbnail = "user_anonymous_150x150.png";
                 }
 
-                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
+                $row->thumbnail_url = $this->CI->my_path->get("/assets/images/user/" . $row->thumbnail);
 
                 // 읽기 쉬운 시간 표기로 바꿉니다.
                 $row->date_updated_human_readable = 
-                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+                $this->CI->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
 
             }
         }
@@ -1620,7 +1624,7 @@ class MY_Sql
         }
         if(isset($teacher) && !empty($teacher->thumbnail))
         {
-            $teacher->thumbnail_url = $this->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
+            $teacher->thumbnail_url = $this->CI->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
         }
         if(isset($teacher) && empty($teacher->nickname))
         {
@@ -1646,7 +1650,7 @@ class MY_Sql
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
-            // $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
+            // $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
         }
 
         return $klass;
