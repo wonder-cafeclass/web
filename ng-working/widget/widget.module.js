@@ -24,6 +24,7 @@ var name_component_1 = require('./input/name/name.component');
 var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
+var footer_component_1 = require('./footer/footer.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
 var WidgetModule = (function () {
@@ -47,6 +48,7 @@ var WidgetModule = (function () {
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ],
             exports: [
@@ -63,6 +65,7 @@ var WidgetModule = (function () {
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ]
         }), 

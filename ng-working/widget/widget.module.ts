@@ -17,6 +17,7 @@ import { NameComponent }         		from './input/name/name.component';
 import { GenderComponent }         		from './input/gender/gender.component';
 import { BirthdayComponent }         	from './input/birthday/birthday.component';
 import { NicknameComponent }         	from './input/nickname/nickname.component';
+import { FooterComponent }         		from './footer/footer.component';
 
 import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 
@@ -38,6 +39,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		GenderComponent,
 		BirthdayComponent,
 		NicknameComponent,
+		FooterComponent,
 		SafeHtmlPipe
 	],
 	exports: [ 
@@ -54,6 +56,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		GenderComponent,
 		BirthdayComponent,
 		NicknameComponent,
+		FooterComponent,
 		SafeHtmlPipe
 	]
 })
