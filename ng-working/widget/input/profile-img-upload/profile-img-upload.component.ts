@@ -19,8 +19,7 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { MyLoggerService }            from '../../../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
-import { MyResponse }                 from '../../../util/model/my-myResponse';
-
+import { MyResponse }                 from '../../../util/model/my-response';
 
 
 @Component({

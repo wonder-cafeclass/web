@@ -320,9 +320,255 @@ var MyInfoComponent = (function () {
                 }
                 // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("thumbnail", myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 첫번째 3자리가 유효하지 않습니다.");
+                    return;
+                }
+                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 새로운 전화번호라면 변수에 저장합니다.
+                this.updateNewMobileHead(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 두번째 4자리가 유효하지 않습니다.");
+                    return;
+                }
+                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 새로운 전화번호라면 변수에 저장합니다.
+                this.updateNewMobileBody(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 마지막 4자리가 유효하지 않습니다.");
+                    return;
+                }
+                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 새로운 전화번호라면 변수에 저장합니다.
+                this.updateNewMobileTail(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 생일-연도가 유효하지 않습니다.");
+                    return;
+                }
+                this.updateNewBirthYear(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 생일-월이 유효하지 않습니다.");
+                    return;
+                }
+                this.updateNewBirthMonth(myEvent.value);
+            }
+            else if (this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("my-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
+                    return;
+                }
+                this.updateNewBirthDay(myEvent.value);
             } // end if - ON CHANGE
         } // end if
     }; // end method
+    MyInfoComponent.prototype.isOKBirthday = function (birthYear, birthMonth, birthDay) {
+        if (!this.birthdayComponent.isOKBirthYear(birthYear)) {
+            return false;
+        }
+        if (!this.birthdayComponent.isOKBirthMonth(birthMonth)) {
+            return false;
+        }
+        if (!this.birthdayComponent.isOKBirthDay(birthDay)) {
+            return false;
+        }
+        return true;
+    };
+    MyInfoComponent.prototype.updateNewMobileHead = function (newMobileHead) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewMobileHead / init");
+        if (!this.mobileComponent.isOKHead(newMobileHead)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameMobileHead(newMobileHead)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
+            return;
+        }
+        // let mobileHead:string = this.mobileNumHead = this.loginUserCopy.getMobileHead();
+        var mobileHead = this.mobileNumHead = newMobileHead;
+        var mobileBody = this.mobileNumBody = this.loginUserCopy.getMobileBody();
+        var mobileTail = this.mobileNumTail = this.loginUserCopy.getMobileTail();
+        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
+        if (isDebug)
+            console.log("my-info / updateNewMobileHead / newMobile : ", newMobile);
+        this.loginUserCopy.mobile = newMobile;
+        // 저장 버튼 노출
+        this.hasChanged = true;
+    };
+    MyInfoComponent.prototype.updateNewMobileBody = function (newMobileBody) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewMobileBody / init");
+        if (!this.mobileComponent.isOKBody(newMobileBody)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameMobileBody(newMobileBody)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
+            return;
+        }
+        var mobileHead = this.mobileNumHead = this.loginUserCopy.getMobileHead();
+        // let mobileBody:string = this.mobileNumBody = this.loginUserCopy.getMobileBody();
+        var mobileBody = this.mobileNumBody = newMobileBody;
+        var mobileTail = this.mobileNumTail = this.loginUserCopy.getMobileTail();
+        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
+        if (isDebug)
+            console.log("my-info / updateNewMobileBody / newMobile : ", newMobile);
+        this.loginUserCopy.mobile = newMobile;
+        // 저장 버튼 노출
+        this.hasChanged = true;
+    };
+    MyInfoComponent.prototype.updateNewMobileTail = function (newMobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewMobileTail / init");
+        if (!this.mobileComponent.isOKTail(newMobileTail)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameMobileTail(newMobileTail)) {
+            if (isDebug)
+                console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
+            return;
+        }
+        var mobileHead = this.mobileNumHead = this.loginUserCopy.getMobileHead();
+        var mobileBody = this.mobileNumBody = this.loginUserCopy.getMobileBody();
+        // let mobileTail:string = this.mobileNumTail = this.loginUserCopy.getMobileTail();
+        var mobileTail = this.mobileNumTail = newMobileTail;
+        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
+        if (isDebug)
+            console.log("my-info / updateNewMobileTail / newMobile : ", newMobile);
+        this.loginUserCopy.mobile = newMobile;
+        // 저장 버튼 노출
+        this.hasChanged = true;
+    };
+    MyInfoComponent.prototype.updateNewBirthYear = function (newBirthYear) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewBirthYear / init");
+        if (!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameBirthYear(newBirthYear)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
+            return;
+        }
+        // let birthYear:string = this.mobileNumHead = this.loginUserCopy.getBirthYear();
+        var birthYear = this.birthYear = newBirthYear;
+        var birthMonth = this.birthMonth = this.loginUserCopy.getBirthMonth();
+        var birthDay = this.birthDay = this.loginUserCopy.getBirthDay();
+        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
+        if (isDebug)
+            console.log("my-info / updateNewBirthYear / newBirthday : ", newBirthday);
+        this.loginUserCopy.birthday = newBirthday;
+        // 저장 버튼 노출
+        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+            this.hasChanged = true;
+        }
+    };
+    MyInfoComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewBirthMonth / init");
+        if (!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameBirthMonth(newBirthMonth)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
+            return;
+        }
+        var birthYear = this.mobileNumHead = this.loginUserCopy.getBirthYear();
+        // let birthMonth:string = this.birthMonth = this.loginUserCopy.getBirthMonth();
+        var birthMonth = this.birthMonth = newBirthMonth;
+        var birthDay = this.birthDay = this.loginUserCopy.getBirthDay();
+        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
+        if (isDebug)
+            console.log("my-info / updateNewBirthMonth / newBirthday : ", newBirthday);
+        this.loginUserCopy.birthday = newBirthday;
+        // 저장 버튼 노출
+        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+            this.hasChanged = true;
+        }
+    };
+    MyInfoComponent.prototype.updateNewBirthDay = function (newBirthDay) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / updateNewBirthDay / init");
+        if (!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not valid!");
+            return;
+        }
+        if (this.loginUserCopy.isSameBirthDay(newBirthDay)) {
+            if (isDebug)
+                console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
+            return;
+        }
+        var birthYear = this.mobileNumHead = this.loginUserCopy.getBirthYear();
+        var birthMonth = this.birthMonth = this.loginUserCopy.getBirthMonth();
+        // let birthDay:string = this.birthDay = this.loginUserCopy.getBirthDay();
+        var birthDay = this.birthDay = newBirthDay;
+        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
+        if (isDebug)
+            console.log("my-info / updateNewBirthDay / newBirthday : ", newBirthday);
+        this.loginUserCopy.birthday = newBirthday;
+        // 저장 버튼 노출
+        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+            this.hasChanged = true;
+        }
+    };
     MyInfoComponent.prototype.updateNewProp = function (key, newValue) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -340,7 +586,7 @@ var MyInfoComponent = (function () {
         }
         var valueFromDB = this.loginUser.thumbnail;
         if (valueFromDB !== newValue) {
-            // 1-1. 변경된 이름이라면 this.thumbnail에 업데이트.
+            // 1-1. 변경된 값이라면 업데이트.
             if (null != this[key]) {
                 this[key] = newValue;
             }
@@ -395,7 +641,6 @@ var MyInfoComponent = (function () {
                 } // end if
             }); // end service
         }
-        // wonder.jung
         // 비밀번호 변경 여부 확인
         var hasChangedPassword = this.checkUserPasswordChanged();
         if (isDebug)
@@ -432,15 +677,13 @@ var MyInfoComponent = (function () {
             console.log("my-info / checkUserInfoChanged / init");
         if (isDebug)
             console.log("my-info / checkUserInfoChanged / this.loginUser : ", this.loginUser);
-        var mobileArr = this.loginUser.getMobileArr();
-        var mobileHead = mobileArr[0];
-        var mobileBody = mobileArr[1];
-        var mobileTail = mobileArr[2];
+        var mobileHead = this.loginUser.getMobileHead();
+        var mobileBody = this.loginUser.getMobileBody();
+        var mobileTail = this.loginUser.getMobileTail();
         // 생일은 선택 입력이므로 없을 수도 있습니다.
-        var birthdayArr = this.loginUser.getBirthdayArr();
-        var birthYear = birthdayArr[0];
-        var birthMonth = birthdayArr[1];
-        var birthDay = birthdayArr[2];
+        var birthYear = this.loginUser.getBirthYear();
+        var birthMonth = this.loginUser.getBirthMonth();
+        var birthDay = this.loginUser.getBirthDay();
         // 검사 시작!
         var hasChanged = false;
         if (this.nameComponent.isOK(this.name) &&

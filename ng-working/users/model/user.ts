@@ -39,6 +39,44 @@ export class User {
 
 	}   
 
+	getMobileHead() :string {
+		let mobileArr:string[] = this.getMobileArr();
+		return mobileArr[0];
+	}
+	isSameMobileHead(target:string) :boolean {
+		let mobileHead:string = this.getMobileHead();
+		if(null == mobileHead || "" === mobileHead) {
+			return false;
+		}
+		return (mobileHead === target)?true:false;
+	}
+
+	getMobileBody() :string {
+		let mobileArr:string[] = this.getMobileArr();
+		return mobileArr[1];
+	}
+	isSameMobileBody(target:string) :boolean {
+		let mobileBody:string = this.getMobileBody();
+		if(null == mobileBody || "" === mobileBody) {
+			return false;
+		}
+		return (mobileBody === target)?true:false;
+	}
+
+	getMobileTail() :string {
+		let mobileArr:string[] = this.getMobileArr();
+		return mobileArr[2];
+	}
+	isSameMobileTail(target:string) :boolean {
+		let mobileTail:string = this.getMobileTail();
+		if(null == mobileTail || "" === mobileTail) {
+			return false;
+		}
+		return (mobileTail === target)?true:false;
+	}
+
+
+
 	getBirthdayArr() :string[] {
 
 		let isDebug:boolean = true;
@@ -59,6 +97,43 @@ export class User {
 		return [birthYear, birthMonth, birthDay];
 
 	}
+
+	getBirthYear() :string {
+		let birthdayArr:string[] = this.getBirthdayArr();
+		return birthdayArr[0];
+	}
+	isSameBirthYear(target:string) :boolean {
+		let birthdayHead:string = this.getBirthYear();
+		if(null == birthdayHead || "" === birthdayHead) {
+			return false;
+		}
+		return (birthdayHead === target)?true:false;
+	}
+
+	getBirthMonth() :string {
+		let birthdayArr:string[] = this.getBirthdayArr();
+		return birthdayArr[1];
+	}
+	isSameBirthMonth(target:string) :boolean {
+		let birthdayBody:string = this.getBirthMonth();
+		if(null == birthdayBody || "" === birthdayBody) {
+			return false;
+		}
+		return (birthdayBody === target)?true:false;
+	}
+
+	getBirthDay() :string {
+		let birthdayArr:string[] = this.getBirthdayArr();
+		return birthdayArr[2];
+	}
+	isSameBirthDay(target:string) :boolean {
+		let birthdayTail:string = this.getBirthDay();
+		if(null == birthdayTail || "" === birthdayTail) {
+			return false;
+		}
+		return (birthdayTail === target)?true:false;
+	}
+
 
 	updateWithJSON(userJSON) :void {
 
