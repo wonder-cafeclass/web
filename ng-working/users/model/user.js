@@ -36,6 +36,39 @@ var User = (function () {
         }
         return [mobileHead, mobileBody, mobileTail];
     };
+    User.prototype.getMobileHead = function () {
+        var mobileArr = this.getMobileArr();
+        return mobileArr[0];
+    };
+    User.prototype.isSameMobileHead = function (target) {
+        var mobileHead = this.getMobileHead();
+        if (null == mobileHead || "" === mobileHead) {
+            return false;
+        }
+        return (mobileHead === target) ? true : false;
+    };
+    User.prototype.getMobileBody = function () {
+        var mobileArr = this.getMobileArr();
+        return mobileArr[1];
+    };
+    User.prototype.isSameMobileBody = function (target) {
+        var mobileBody = this.getMobileBody();
+        if (null == mobileBody || "" === mobileBody) {
+            return false;
+        }
+        return (mobileBody === target) ? true : false;
+    };
+    User.prototype.getMobileTail = function () {
+        var mobileArr = this.getMobileArr();
+        return mobileArr[2];
+    };
+    User.prototype.isSameMobileTail = function (target) {
+        var mobileTail = this.getMobileTail();
+        if (null == mobileTail || "" === mobileTail) {
+            return false;
+        }
+        return (mobileTail === target) ? true : false;
+    };
     User.prototype.getBirthdayArr = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -53,6 +86,39 @@ var User = (function () {
             birthDay = birthdayArr[2];
         }
         return [birthYear, birthMonth, birthDay];
+    };
+    User.prototype.getBirthYear = function () {
+        var birthdayArr = this.getBirthdayArr();
+        return birthdayArr[0];
+    };
+    User.prototype.isSameBirthYear = function (target) {
+        var birthdayHead = this.getBirthYear();
+        if (null == birthdayHead || "" === birthdayHead) {
+            return false;
+        }
+        return (birthdayHead === target) ? true : false;
+    };
+    User.prototype.getBirthMonth = function () {
+        var birthdayArr = this.getBirthdayArr();
+        return birthdayArr[1];
+    };
+    User.prototype.isSameBirthMonth = function (target) {
+        var birthdayBody = this.getBirthMonth();
+        if (null == birthdayBody || "" === birthdayBody) {
+            return false;
+        }
+        return (birthdayBody === target) ? true : false;
+    };
+    User.prototype.getBirthDay = function () {
+        var birthdayArr = this.getBirthdayArr();
+        return birthdayArr[2];
+    };
+    User.prototype.isSameBirthDay = function (target) {
+        var birthdayTail = this.getBirthDay();
+        if (null == birthdayTail || "" === birthdayTail) {
+            return false;
+        }
+        return (birthdayTail === target) ? true : false;
     };
     User.prototype.updateWithJSON = function (userJSON) {
         var isDebug = true;

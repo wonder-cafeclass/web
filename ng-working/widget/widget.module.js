@@ -17,11 +17,14 @@ var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
 var password_component_1 = require('./input/password/password.component');
+var password_single_component_1 = require('./input/password/password-single.component');
+var passwords_triplet_component_1 = require('./input/password/passwords-triplet.component');
 var mobile_component_1 = require('./input/mobile/mobile.component');
 var name_component_1 = require('./input/name/name.component');
 var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
+var footer_component_1 = require('./footer/footer.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
 var WidgetModule = (function () {
@@ -38,11 +41,14 @@ var WidgetModule = (function () {
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 password_component_1.PasswordComponent,
+                password_single_component_1.PasswordSingleComponent,
+                passwords_triplet_component_1.PasswordsTripletComponent,
                 mobile_component_1.MobileComponent,
                 name_component_1.NameComponent,
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ],
             exports: [
@@ -52,11 +58,14 @@ var WidgetModule = (function () {
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 password_component_1.PasswordComponent,
+                password_single_component_1.PasswordSingleComponent,
+                passwords_triplet_component_1.PasswordsTripletComponent,
                 mobile_component_1.MobileComponent,
                 name_component_1.NameComponent,
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ]
         }), 

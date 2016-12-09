@@ -36,6 +36,7 @@
 .cc-navbar {
     background-image: linear-gradient(to bottom,#fff 0,#fff 100%) !important;
     box-shadow: 0 0 2px rgba(6,8,8,0.15);
+    border-radius: 0px;
 }
 
 .hide_overflow-x {

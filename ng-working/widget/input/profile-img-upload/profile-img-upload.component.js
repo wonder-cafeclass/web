@@ -189,8 +189,8 @@ var ProfileImgUploadComponent = (function () {
     };
     ProfileImgUploadComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("profile-img / onChangeFile / init");
         var files = event.srcElement.files;
@@ -198,17 +198,40 @@ var ProfileImgUploadComponent = (function () {
             // 1개의 파일만 업로드할 수 있습니다.
             return;
         }
-        console.log(files);
+        if (isDebug)
+            console.log("profile-img / onChangeFile / files : ", files);
+        var file = files[0];
+        var isValidFileType = false;
+        if (file.type === "image/jpeg" ||
+            file.type === "image/jpg" ||
+            file.type === "image/png" ||
+            file.type === "image/gif") {
+            isValidFileType = true;
+        }
+        if (!isValidFileType) {
+            if (isDebug)
+                console.log("profile-img / onChangeFile / 중단 / 파일 타입을 지원하지 않습니다.");
+            // TODO - 업로드 불가한 이유 사용자에게 알림.
+            return;
+        }
+        var fileSizeMax = 100000; // 100kb
+        if (fileSizeMax < file.size) {
+            if (isDebug)
+                console.log("profile-img / onChangeFile / 중단 / 파일 크기가 너무 큽니다.");
+            // TODO - 업로드 불가한 이유 사용자에게 알림.
+            return;
+        }
+        // max size / 100kb
         var req_url = this.urlService.get(this.uploadUserProfileUrl);
-        this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (response) {
+        this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (myResponse) {
             // 섬네일 주소를 받아와서 화면에 표시해야 한다.
             if (isDebug)
-                console.log("profile-img / onChangeFile / response : ", response);
-            if (null != response &&
-                null != response.data &&
-                null != response.data.thumbnail) {
-                // this.userProfileUrl = this.userProfilePath + response.data.thumbnail;
-                _this.userProfileUrl = response.data.thumbnail;
+                console.log("profile-img / onChangeFile / myResponse : ", myResponse);
+            if (null != myResponse &&
+                null != myResponse.data &&
+                null != myResponse.data.thumbnail) {
+                // this.userProfileUrl = this.userProfilePath + myResponse.data.thumbnail;
+                _this.userProfileUrl = myResponse.data.thumbnail;
                 if (isDebug)
                     console.log("profile-img / onChangeFile / this.userProfileUrl : ", _this.userProfileUrl);
                 var isOK = _this.isOK(_this.userProfileUrl);

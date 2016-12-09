@@ -19,15 +19,13 @@ var NameComponent = (function () {
         this.myCheckerService = myCheckerService;
         this.watchTower = watchTower;
         this.myEventService = myEventService;
-        // REMOVE ME
-        // @Input() top:number=-1;
-        // @Input() left:number=-1;
-        this.topWarning = 0;
+        this.topWarning = -1000;
         this.leftWarning = 0;
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isFocusInfo = false;
         this.isWarning = false;
+        this.isDisabled = false;
         this.isSuccessInput = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadNotAllowed = "이름에 문제가 있습니다.";
@@ -201,16 +199,11 @@ var NameComponent = (function () {
                     if ("min" === history_3.key) {
                         // 최소 문자 갯수보다 적은 경우.
                         this.showWarningTooltip(elementInput, elementTooltip, history_3.msg, false);
-                        // REMOVE ME            
-                        // this.tooltipHeadMsg = history.msg;
-                        // this.isSuccessInput = false;
                         return;
                     }
                     else if ("max" === history_3.key) {
                         // 최대 문자 갯수보다 많은 경우.
                         this.showWarningTooltip(elementInput, elementTooltip, history_3.msg, false);
-                        // REMOVE ME
-                        // this.tooltipHeadMsg = history.msg;
                         // 넘는 문자열은 지웁니다.
                         elementInput.value = name = name.slice(0, history_3.value);
                         this.isSuccessInput = false;
@@ -219,14 +212,10 @@ var NameComponent = (function () {
                     else if ("regexExclude" === history_3.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
                         this.showWarningTooltip(elementInput, elementTooltip, history_3.msg, false);
-                        // REMOVE ME
-                        // this.tooltipHeadMsg = history.msg;
                         var regExpStr = history_3.value + "";
                         var regExpStrNameRange = /[^a-zA-Z가-힣0-9 ]+/g + "";
                         if (regExpStr == regExpStrNameRange) {
                             this.showWarningTooltip(elementInput, elementTooltip, "이름에 사용할 수 없는 문자가 있어요.", false);
-                            // REMOVE ME
-                            // this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
                             var matchArr = history_3.matchArr;
                             if (null != matchArr && 0 < matchArr.length) {
                                 for (var i = 0; i < matchArr.length; ++i) {
@@ -242,8 +231,6 @@ var NameComponent = (function () {
                     else {
                         // 이에 해당되지 않는 예외 실패.
                         this.showWarningTooltip(elementInput, elementTooltip, this.tooltipHeadNotAllowed, false);
-                        // REMOVE ME
-                        // this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
                         this.isSuccessInput = false;
                         return;
                     } // end if
@@ -256,10 +243,6 @@ var NameComponent = (function () {
                 // 비속어, 욕설이 제거되었습니다. 
                 // 사용자에게 금칙어임을 알립니다.
                 this.showWarningTooltip(elementInput, elementTooltip, "금칙어는 제외됩니다.", true);
-                // REMOVE ME
-                // this.tooltipHeadMsg = "금칙어는 제외됩니다.";
-                // this.isSuccessInput = false;
-                // this.hideTooltip(2);
                 elementInput.value = name;
                 elementInput.focus();
                 // Logger - Spam 행위로 등록.
@@ -386,6 +369,7 @@ var NameComponent = (function () {
         this.topWarning = 0;
         this.leftWarning = 0;
         this.isWarning = false;
+        this.topWarning = -1000;
     };
     NameComponent.prototype.onKeyup = function (event, elementInput, elementTooltip) {
         var isDebug = true;
@@ -493,10 +477,6 @@ var NameComponent = (function () {
             _self.isWarning = false;
         }, 1000 * sec);
     };
-    // REMOVE ME
-    // hideTooltipNow() :void {
-    //   this.tooltipHeadMsg = null;
-    // }    
     NameComponent.prototype.onMouseOverInfo = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -515,6 +495,10 @@ var NameComponent = (function () {
         core_1.Output(), 
         __metadata('design:type', Object)
     ], NameComponent.prototype, "emitter", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], NameComponent.prototype, "isDisabled", void 0);
     NameComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -16,25 +16,38 @@
 					(emitter)="onChangedFromChild($event)">
 					</email>
 
+					<!-- Passwords Triplet -->
+					<passwords-triplet 
+					[eventKeyHead]="eventKeyPWHead"
+					[eventKeyBody]="eventKeyPWBody"
+					[eventKeyTail]="eventKeyPWTail"
+					(emitter)="onChangedFromChild($event)">
+					</passwords-triplet>
+
 					<!-- Password -->
-					<password 
-					[isCheckCurPW]="true"
+					<!--
+					<password
 					[top]="228"
 					[left]="91"
 					[topWarning]="100"
 					[leftWarning]="117"
 					(emitter)="onChangedFromChild($event)">
 					</password>
+					-->
 
 					<!-- 이름 -->
-					<name (emitter)="onChangedFromChild($event)"></name>
+					<name 
+					[isDisabled]="true"
+					(emitter)="onChangedFromChild($event)">
+					</name>
 
 					<!-- 닉네임 -->
-					<nickname 	[top]="503" 
-								[left]="91"
-								[topWarning]="385"
-								[leftWarning]="117"
-								(emitter)="onChangedFromChild($event)">
+					<nickname 	
+					[top]="503" 
+					[left]="91"
+					[topWarning]="385"
+					[leftWarning]="117"
+					(emitter)="onChangedFromChild($event)">
 					</nickname>
 
 					<!-- EOL -->

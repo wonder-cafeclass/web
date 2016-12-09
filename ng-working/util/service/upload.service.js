@@ -11,8 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var Observable_1 = require('rxjs/Observable');
 var core_1 = require('@angular/core');
 var UploadService = (function () {
-    // progress:Observable<T>;
-    // progressObserver:Observable<T>;
     function UploadService() {
         // this.progress = Observable.create(observer => {
         //     this.progressObserver = observer

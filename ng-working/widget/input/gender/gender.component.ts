@@ -143,7 +143,14 @@ export class GenderComponent implements OnInit, AfterViewInit {
     return this.myCheckerService.isOK(this.myChecker, input);
   } 
   setGender(gender:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / gender / init");
+    if(isDebug) console.log("gender / gender / gender : ",gender);
+
     if(this.isOK(gender)) {
+      if(isDebug) console.log("gender / gender / 성별이 변경됩니다.");
       this.gender = gender;
     }
   }
@@ -222,13 +229,15 @@ export class GenderComponent implements OnInit, AfterViewInit {
   }
 
   onClickGenderFemale(event) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / onClickGenderFemale / init");
     
     event.stopPropagation();
     event.preventDefault();
 
-    if(this.gender === this.keyMale) {
-      this.gender = this.keyMale;
-    }
+    this.setGender(this.keyFemale);
 
     this.emitGenderSelected(this.keyFemale);
 
@@ -237,12 +246,14 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderMale(event) :void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("gender / onClickGenderMale / init");
+
     event.stopPropagation();
     event.preventDefault();
 
-    if(this.gender === this.keyFemale) {
-      this.gender = this.keyFemale;
-    }
+    this.setGender(this.keyMale);
 
     this.emitGenderSelected(this.keyMale);
 
