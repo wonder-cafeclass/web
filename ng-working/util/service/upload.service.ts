@@ -2,11 +2,18 @@ import { NgModule }       from '@angular/core';
 import { Observable }     from 'rxjs/Observable';
 import { Injectable }     from '@angular/core';
 
+import { MyExtractor }    from '../http/my-extractor';
+import { MyRequest }      from '../http/my-request';
+import { MyResponse }     from '../model/my-response';
+
 @Injectable()
 export class UploadService {
 
     // progress:Observable<T>;
     // progressObserver:Observable<T>;
+
+    private myExtractor:MyExtractor;
+    private myRequest:MyRequest;
 
     constructor () {
         

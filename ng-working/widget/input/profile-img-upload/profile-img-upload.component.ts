@@ -19,7 +19,7 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { MyLoggerService }            from '../../../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
-import { MyResponse }                 from '../../../util/model/my-response';
+import { MyResponse }                 from '../../../util/model/my-myResponse';
 
 
 
@@ -248,8 +248,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   }
   onChangeFile(event) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("profile-img / onChangeFile / init");
     
     var files = event.srcElement.files;
@@ -257,20 +257,47 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
       // 1개의 파일만 업로드할 수 있습니다.
       return;
     }
-    console.log(files);
+    if(isDebug) console.log("profile-img / onChangeFile / files : ",files);
+
+    let file = files[0];
+    let isValidFileType:boolean = false;
+    if( file.type === "image/jpeg" || 
+        file.type === "image/jpg" || 
+        file.type === "image/png" || 
+        file.type === "image/gif") {
+
+      isValidFileType = true;
+    }
+    if(!isValidFileType) {
+      if(isDebug) console.log("profile-img / onChangeFile / 중단 / 파일 타입을 지원하지 않습니다.");
+
+      // TODO - 업로드 불가한 이유 사용자에게 알림.
+      return;
+    }
+
+    let fileSizeMax:number = 100000; // 100kb
+    if(fileSizeMax < file.size) {
+      if(isDebug) console.log("profile-img / onChangeFile / 중단 / 파일 크기가 너무 큽니다.");
+
+      // TODO - 업로드 불가한 이유 사용자에게 알림.
+      return;
+    }
+
+    // max size / 100kb
+
 
     let req_url = this.urlService.get(this.uploadUserProfileUrl);
 
-    this.uploadService.makeFileRequest(req_url, [], files).subscribe((response:any) => {
+    this.uploadService.makeFileRequest(req_url, [], files).subscribe((myResponse:MyResponse) => {
       // 섬네일 주소를 받아와서 화면에 표시해야 한다.
-      if(isDebug) console.log("profile-img / onChangeFile / response : ",response);
+      if(isDebug) console.log("profile-img / onChangeFile / myResponse : ",myResponse);
 
-      if( null != response && 
-          null != response.data && 
-          null != response.data.thumbnail) {
+      if( null != myResponse && 
+          null != myResponse.data && 
+          null != myResponse.data.thumbnail) {
 
-        // this.userProfileUrl = this.userProfilePath + response.data.thumbnail;
-        this.userProfileUrl = response.data.thumbnail;
+        // this.userProfileUrl = this.userProfilePath + myResponse.data.thumbnail;
+        this.userProfileUrl = myResponse.data.thumbnail;
 
         if(isDebug) console.log("profile-img / onChangeFile / this.userProfileUrl : ",this.userProfileUrl);
 
