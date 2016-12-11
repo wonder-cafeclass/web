@@ -1,4 +1,5 @@
-import { Component, 
+import { Component,
+		 AfterViewChecked,
 		 OnInit }					from '@angular/core';
 
 import { Router,
@@ -23,7 +24,7 @@ import { User } 					from './users/model/user';
 	styleUrls: ['app.component.css'],
 	templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
 
 	// admin server 여부를 판별합니다.
 	constructor(	private authService:AuthService,
@@ -56,6 +57,17 @@ export class AppComponent implements OnInit {
 		this.setMyChecker();
 
 	}
+
+	ngAfterViewChecked() {
+
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
+		if(isDebug) console.log("app-root / ngAfterViewChecked / 시작");
+
+		this.watchTower.announceContentHeight();
+	}
+
+
 	private subscribeLoginUser() :void {
 
 	    // let isDebug:boolean = true;

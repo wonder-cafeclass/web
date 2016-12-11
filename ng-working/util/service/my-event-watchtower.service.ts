@@ -18,6 +18,7 @@ export class MyEventWatchTowerService {
 	// @ Optional for view
 	private loginUser:User;
 	private errorMsgArr:string[];
+	private contentHeight:number;
 
 
 	// Observable sources
@@ -29,6 +30,7 @@ export class MyEventWatchTowerService {
 	private loginAnnouncedSource = new Subject<User>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
+	private contentHeightSource = new Subject<number>();
 
 
 
@@ -41,7 +43,7 @@ export class MyEventWatchTowerService {
 	loginAnnounced$ = this.loginAnnouncedSource.asObservable();
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
-
+	contentHeight$ = this.contentHeightSource.asObservable();
 
 
 	// Service message commands
@@ -112,6 +114,40 @@ export class MyEventWatchTowerService {
 	}
 	announceToggleTopMenu(toggleTopMenu: boolean) {
 		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+	}
+	// @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
+	announceContentHeight() {
+
+		let body = document.body;
+		let clientHeight:number = body.clientHeight;
+
+		if(this.contentHeight === clientHeight) {
+			// 같은 높이라면 업데이트하지 않습니다
+			return;
+		}
+
+		// @ Alternatives
+		// let offsetHeight:number = body.offsetHeight;
+		// let html = document.documentElement;
+		// let scrollHeight:number = body.scrollHeight;
+
+		this.contentHeight = clientHeight;
+		this.contentHeightSource.next(clientHeight);
+
+		/*
+	    // 실제 보여지는 브라우저 내의 화면 높이를 의미합니다.
+	    let contentHeight:number = window.innerHeight;
+	    if(isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
+
+	    // 위와 같습니다.
+	    let clientHeight:number = document.documentElement.clientHeight;
+	    if(isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
+
+	    // 물리적인 디스플레이의 높이를 의미합니다.
+	    let screenHeight:number = screen.height;
+	    if(isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
+	    */
+		
 	}
 	// @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
 	announceErrorMsgArr(errorMsgArr: string[]) {

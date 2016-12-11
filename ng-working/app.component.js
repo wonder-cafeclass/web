@@ -41,6 +41,13 @@ var AppComponent = (function () {
         this.setIsAdmin();
         this.setMyChecker();
     };
+    AppComponent.prototype.ngAfterViewChecked = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / ngAfterViewChecked / 시작");
+        this.watchTower.announceContentHeight();
+    };
     AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
         // let isDebug:boolean = true;

@@ -28,6 +28,7 @@ var MyEventWatchTowerService = (function () {
         this.loginAnnouncedSource = new Subject_1.Subject();
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
+        this.contentHeightSource = new Subject_1.Subject();
         // Observable streams
         // @ Required for view
         this.isAdmin$ = this.isAdminSource.asObservable();
@@ -37,6 +38,7 @@ var MyEventWatchTowerService = (function () {
         this.loginAnnounced$ = this.loginAnnouncedSource.asObservable();
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
+        this.contentHeight$ = this.contentHeightSource.asObservable();
     }
     // Service message commands
     // @ Required for view
@@ -102,6 +104,34 @@ var MyEventWatchTowerService = (function () {
     };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
         this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+    };
+    // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
+    MyEventWatchTowerService.prototype.announceContentHeight = function () {
+        var body = document.body;
+        var clientHeight = body.clientHeight;
+        if (this.contentHeight === clientHeight) {
+            // 같은 높이라면 업데이트하지 않습니다
+            return;
+        }
+        // @ Alternatives
+        // let offsetHeight:number = body.offsetHeight;
+        // let html = document.documentElement;
+        // let scrollHeight:number = body.scrollHeight;
+        this.contentHeight = clientHeight;
+        this.contentHeightSource.next(clientHeight);
+        /*
+        // 실제 보여지는 브라우저 내의 화면 높이를 의미합니다.
+        let contentHeight:number = window.innerHeight;
+        if(isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
+
+        // 위와 같습니다.
+        let clientHeight:number = document.documentElement.clientHeight;
+        if(isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
+
+        // 물리적인 디스플레이의 높이를 의미합니다.
+        let screenHeight:number = screen.height;
+        if(isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
+        */
     };
     // @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
     MyEventWatchTowerService.prototype.announceErrorMsgArr = function (errorMsgArr) {
