@@ -14,6 +14,7 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
 var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
+var default_component_1 = require('./input/default/default.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
 var password_component_1 = require('./input/password/password.component');
@@ -38,6 +39,7 @@ var WidgetModule = (function () {
             ],
             declarations: [
                 nav_tabs_component_1.NavTabsComponent,
+                default_component_1.DefaultComponent,
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 password_component_1.PasswordComponent,
@@ -55,6 +57,7 @@ var WidgetModule = (function () {
                 common_1.CommonModule,
                 forms_1.FormsModule,
                 nav_tabs_component_1.NavTabsComponent,
+                default_component_1.DefaultComponent,
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 password_component_1.PasswordComponent,

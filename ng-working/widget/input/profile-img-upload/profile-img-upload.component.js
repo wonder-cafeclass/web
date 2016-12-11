@@ -246,7 +246,7 @@ var ProfileImgUploadComponent = (function () {
                     _this.myEventService.KEY_USER_THUMBNAIL, 
                     // value:string
                     _this.userProfileUrl);
-                }
+                } // end if
             }
         });
     }; // end method

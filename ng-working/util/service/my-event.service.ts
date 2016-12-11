@@ -11,6 +11,7 @@ export class MyEventService {
     ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
     ON_CHANGE:string="ON_CHANGE";
+    ON_CHANGE_NOT_VALID:string="ON_CHANGE_NOT_VALID";
     ON_SUBMIT:string="ON_SUBMIT";
     ON_KEYUP_ENTER:string="ON_KEYUP_ENTER";
     ON_SHUTDOWN:string="ON_SHUTDOWN";

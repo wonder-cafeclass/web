@@ -516,11 +516,6 @@ var PasswordComponent = (function () {
                 element.value = this.passwordPrev = this.password = this.password.replace(match, "");
             }
             // 1-1-2. 삭제 안내 메시지를 노출합니다.
-            // REMOVE ME
-            // this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
-            // this.isValidPassword = false;
-            // this.isWarningPassword = true;
-            // this.hideTooltipHead(2);
             this.showTooltipHeadFailWarning("한글 및 공백을 사용할 수 없어요.", true);
             if (isDebug)
                 console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);

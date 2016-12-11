@@ -313,25 +313,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
             // value:string
             this.userProfileUrl
           );
-
-          // REMOVE ME
-          /*
-          let myEventOnChange:MyEvent =
-          this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE,
-            // public key:string
-            this.myEventService.KEY_USER_THUMBNAIL,
-            // public value:string
-            this.userProfileUrl,
-            // public metaObj:any
-            null,
-            // public myChecker:MyChecker
-            this.myChecker
-          );
-          this.emitter.emit(myEventOnChange);
-          */
-        }
+        } // end if
 
       }
     });

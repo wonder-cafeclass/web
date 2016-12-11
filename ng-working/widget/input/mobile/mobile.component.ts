@@ -7,6 +7,7 @@ import {  Component,
 import { Router }               from '@angular/router';
 
 import { UserService }          from '../../../users/service/user.service';
+import { User }                 from '../../../users/model/user';
 
 import { MyLoggerService }      from '../../../util/service/my-logger.service';
 import { MyCheckerService }     from '../../../util/service/my-checker.service';

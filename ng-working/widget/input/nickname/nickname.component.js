@@ -19,24 +19,16 @@ var NicknameComponent = (function () {
         this.myCheckerService = myCheckerService;
         this.watchTower = watchTower;
         this.myEventService = myEventService;
-        this.top = -1;
-        this.left = -1;
-        this.topWarning = -1;
-        this.leftWarning = -1;
         this.emitter = new core_1.EventEmitter();
-        this.isWarning = false;
-        this.isSuccessInput = false;
-        this.tooltipHeadMsg = null;
-        this.tooltipHeadNotAllowed = "닉네임에 문제가 있습니다.";
-        this.tooltipHeadAllowed = "성공! 근사한 닉네임이네요.";
-        this.tooltipHeadRemoved = "영문, 숫자, 한글이어야 합니다.";
-        this.tooltipHeadRemovedEmpties = "빈칸을 2칸 이상 입력할 수 없습니다.";
+        this.isShowTooltip = false;
         this.isFocus = false;
-        this.isFocusInfo = false;
-        this.isShowPopover = false;
+        this.isValid = false;
+        this.tooltipMsg = null;
+        this.tooltipMsgNotAllowed = "닉네임에 문제가 있습니다.";
+        this.tooltipMsgAllowed = "성공! 근사한 닉네임이네요.";
+        this.tooltipMsgRemoved = "영문, 숫자, 한글이어야 합니다.";
+        this.tooltipMsgRemovedEmpties = "빈칸을 2칸 이상 입력할 수 없습니다.";
         this.redirectUrl = "/class-center";
-        this.isAdmin = false;
-        this.errorMsgArr = [];
         this.inputStrPrev = "";
     }
     NicknameComponent.prototype.ngOnInit = function () {
@@ -73,7 +65,6 @@ var NicknameComponent = (function () {
         }); // end subscribe
     };
     NicknameComponent.prototype.setViewPack = function () {
-        this.isAdmin = this.watchTower.getIsAdmin();
         this.myCheckerService.setReady(
         // checkerMap:any
         this.watchTower.getCheckerMap(), 
@@ -132,13 +123,6 @@ var NicknameComponent = (function () {
     NicknameComponent.prototype.hasDone = function () {
         return this.isOK(this.inputStrPrev);
     };
-    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
-    NicknameComponent.prototype.showWarning = function () {
-        this.isFocus = true;
-        this.isWarning = true;
-        this.isSuccessInput = false;
-        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
-    };
     NicknameComponent.prototype.onClick = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
@@ -188,25 +172,49 @@ var NicknameComponent = (function () {
                     // Do something..
                     if ("min" === history_2.key) {
                         // 최소 문자 갯수보다 적은 경우.
-                        this.tooltipHeadMsg = history_2.msg;
-                        this.isSuccessInput = false;
+                        this.showTooltipFailWarning(
+                        // warningMsg:string
+                        history_2.msg, 
+                        // isTimeout:boolean
+                        true);
+                        // REMOVE ME
+                        // this.tooltipMsg = history.msg;
+                        // this.isValid = false;
+                        // 최소 문자 갯수보다 적으므로 부모 객체에게 유효하지 않음을 알립니다.
+                        // 부모객체는 공백 문자로 업데이트합니다.
+                        this.emitEventOnChange("");
                         return;
                     }
                     else if ("max" === history_2.key) {
                         // 최대 문자 갯수보다 많은 경우.
-                        this.tooltipHeadMsg = history_2.msg;
+                        this.showTooltipFailWarning(
+                        // warningMsg:string
+                        history_2.msg, 
+                        // isTimeout:boolean
+                        true);
+                        // REMOVE ME
+                        // this.tooltipMsg = history.msg;
+                        // this.isValid = false;
                         // 넘는 문자열은 지웁니다.
                         element.value = inputStr = inputStr.slice(0, history_2.value);
-                        this.isSuccessInput = false;
+                        // 부모객체는 유효한 문자로 업데이트합니다.
+                        this.emitEventOnChange(inputStr);
                         return;
                     }
                     else if ("regexExclude" === history_2.key) {
                         // 정규표현식에 포함되지 않는 문자열인 경우.
-                        this.tooltipHeadMsg = history_2.msg;
+                        this.tooltipMsg = history_2.msg;
                         var regExpStr = history_2.value + "";
                         var regExpStrInputStrRange = /[^a-zA-Z가-힣0-9 ]+/g + "";
                         if (regExpStr == regExpStrInputStrRange) {
-                            this.tooltipHeadMsg = "이름에 사용할 수 없는 문자가 있어요.";
+                            this.showTooltipFailWarning(
+                            // warningMsg:string
+                            "이름에 사용할 수 없는 문자가 있어요.", 
+                            // isTimeout:boolean
+                            true);
+                            // REMOVE ME
+                            // this.tooltipMsg = "이름에 사용할 수 없는 문자가 있어요.";
+                            // this.isValid = false;
                             var matchArr = history_2.matchArr;
                             if (null != matchArr && 0 < matchArr.length) {
                                 for (var i = 0; i < matchArr.length; ++i) {
@@ -214,77 +222,74 @@ var NicknameComponent = (function () {
                                     // 사용할 수 없는 문자들을 지웁니다.
                                     element.value = inputStr = inputStr.replace(keywordNotAllowed, "");
                                 } // end for
-                                this.isSuccessInput = false;
-                                return;
                             } // end if
+                            // 부모객체는 유효한 문자로 업데이트합니다.
+                            this.emitEventOnChange(inputStr);
+                            return;
                         } // end if
                     }
                     else {
                         // 이에 해당되지 않는 예외 실패.
-                        this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
-                        this.isSuccessInput = false;
+                        this.showTooltipFailWarning(
+                        // warningMsg:string
+                        this.tooltipMsgNotAllowed, 
+                        // isTimeout:boolean
+                        true);
+                        // REMOVE ME
+                        // this.tooltipMsg = this.tooltipMsgNotAllowed;
+                        // this.isValid = false;
+                        // 부모객체는 공백 문자로 업데이트합니다.
+                        this.emitEventOnChange("");
                         return;
                     } // end if
                 } // end if
             } // end if - isOK
             // 비속어, 욕설 검사.
-            var inputStrBeforeSanitize = inputStr;
-            inputStr = this.myCheckerService.sanitizeDirtyWord(inputStr);
-            if (inputStrBeforeSanitize != inputStr) {
+            var inputStrAfterSanitize = this.sanitizeDirtyWord(inputStr);
+            if (null != inputStrAfterSanitize) {
                 // 비속어, 욕설이 제거되었습니다. 
                 // 사용자에게 금칙어임을 알립니다.
-                this.tooltipHeadMsg = "금칙어는 제외됩니다.";
-                element.value = inputStr;
-                this.hideTooltip(2);
+                this.showTooltipFailWarning(
+                // warningMsg:string
+                "금칙어는 제외됩니다.", 
+                // isTimeout:boolean
+                true);
+                element.value = inputStr = inputStrAfterSanitize;
+                // REMOVE ME
+                // this.tooltipMsg = "금칙어는 제외됩니다.";
+                // element.value = inputStr;
+                // this.hideTooltip(2);
+                // this.isValid = false;
                 // Logger - Spam 행위로 등록.
                 this.myLoggerService.logActionDirtyWord(
                 // apiKey:string
                 this.watchTower.getApiKey(), 
                 // dirtyWord:string
-                inputStrBeforeSanitize);
-                this.isSuccessInput = false;
+                inputStr);
                 return;
             }
-            else {
-                this.hideWarningTooptip();
-                // REMOVE ME
-                // this.hideTooltipNow();
-                // // this.tooltipHeadMsg = this.tooltipHeadAllowed;
-                // this.isWarning = false;
-                // this.isSuccessInput = true;
-                // this.hideTooltip(2);
-                // 부모 객체에게 Change Event 발송 
-                this.emitEventOnChange(
-                // eventKey:string
-                this.myEventService.KEY_USER_NICKNAME, 
-                // value:string
-                name);
-                // REMOVE ME
-                /*
-                let myEventOnChange:MyEvent =
-                this.myEventService.getMyEvent(
-                  // public eventName:string
-                  this.myEventService.ON_CHANGE,
-                  // public key:string
-                  this.myEventService.KEY_USER_NICKNAME,
-                  // public value:string
-                  inputStr,
-                  // public metaObj:any
-                  null,
-                  // public myChecker:MyChecker
-                  this.myChecker
-                );
-                this.emitter.emit(myEventOnChange);
-                */
-                return;
-            } // end if - dirty word
+            // 입력한 문자열에 문제가 없습니다.
+            // 경고창을 가립니다.
+            this.hideWarningTooptip();
+            // 부모 객체에게 Change Event 발송 
+            this.emitEventOnChange(inputStr);
         } // end if - check inputStr    
+    };
+    NicknameComponent.prototype.sanitizeDirtyWord = function (inputStrBeforeSanitize) {
+        if (null == inputStrBeforeSanitize || "" === inputStrBeforeSanitize) {
+            return null;
+        }
+        var inputStrAfterSanitize = this.myCheckerService.sanitizeDirtyWord(inputStrBeforeSanitize);
+        if (inputStrBeforeSanitize != inputStrAfterSanitize) {
+            return inputStrAfterSanitize;
+        } // end if - dirty word
+        return null;
     };
     NicknameComponent.prototype.onKeyup = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("nickname / onKeyup / init");
         var inputStr = element.value;
@@ -312,11 +317,17 @@ var NicknameComponent = (function () {
                 inputStr = inputStr.replace(match, "");
             } // end for
             // 사용자에게 영문, 숫자, 한글이 아닌 글자에 대해 삭제한 것을 메시지로 노출합니다.
-            // wonder.jung
-            this.tooltipHeadMsg = this.tooltipHeadRemoved;
-            this.hideTooltip(2);
+            this.showTooltipFailWarning(
+            // warningMsg:string
+            this.tooltipMsgRemoved, 
+            // isTimeout:boolean
+            true);
             if (isDebug)
                 console.log("nickname / onKeyup / 한글이 아닌 문자에 대해서 삭제 처리 / matchArr : ", matchArr);
+            element.value = this.inputStrPrev = inputStr;
+            // 부모 객체에게 Change Event 발송 
+            this.emitEventOnChange(inputStr);
+            return;
         } // end if
         // 2칸 이상 공백에 대해 1칸으로 줄임.
         var regExpEmptySpaces = /[\s]{2,10}/gi;
@@ -330,9 +341,15 @@ var NicknameComponent = (function () {
                 inputStr = inputStr.replace(match, " ");
             }
             // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
-            // wonder.jung
-            this.tooltipHeadMsg = this.tooltipHeadRemovedEmpties;
-            this.hideTooltip(2);
+            this.showTooltipFailWarning(
+            // warningMsg:string
+            this.tooltipMsgRemovedEmpties, 
+            // isTimeout:boolean
+            true);
+            element.value = this.inputStrPrev = inputStr;
+            // 부모 객체에게 Change Event 발송 
+            this.emitEventOnChange(inputStr);
+            return;
         }
         // 최대 길이 제한 검사
         var isOK = this.isOK(inputStr);
@@ -342,14 +359,19 @@ var NicknameComponent = (function () {
             if (null != history_3 && null != history_3.key && null != history_3.msg) {
                 // Do something..
                 if ("max" === history_3.key) {
-                    // 최대 문자 갯수보다 많은 경우.
-                    this.tooltipHeadMsg = history_3.msg;
-                    this.hideTooltip(2);
-                    // 넘는 문자열은 지웁니다.
-                    element.value = inputStr = inputStr.slice(0, history_3.value);
-                    this.isSuccessInput = false;
                     if (isDebug)
                         console.log("nickname / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
+                    // 최대 문자 갯수보다 많은 경우, 사용자에게 알림.
+                    this.showTooltipFailWarning(
+                    // warningMsg:string
+                    history_3.msg, 
+                    // isTimeout:boolean
+                    true);
+                    // 넘는 문자열은 지웁니다.
+                    element.value = inputStr = inputStr.slice(0, history_3.value);
+                    // 부모 객체에게 Change Event 발송 
+                    this.emitEventOnChange(inputStr);
+                    return;
                 } // end if
             } // end if
         }
@@ -358,62 +380,28 @@ var NicknameComponent = (function () {
             if (isDebug)
                 console.log("nickname / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
             this.hideWarningTooptip();
+            // 변경된 문자열을 업데이트합니다.
+            element.value = this.inputStrPrev = inputStr;
             // 부모 객체에게 안전한 이름 문자열을 전달합니다.
-            this.emitEventOnChange(
-            // eventKey:string
-            this.myEventService.KEY_USER_NICKNAME, 
-            // value:string
-            inputStr);
+            this.emitEventOnChange(inputStr);
+            return;
         } // end if
-        element.value = this.inputStrPrev = inputStr;
-    };
-    NicknameComponent.prototype.hideTooltip = function (sec) {
-        if (null == sec || !(0 < sec)) {
-            sec = 3;
-        }
-        var _self = this;
-        setTimeout(function () {
-            // 메시지를 3초 뒤에 화면에서 지웁니다.
-            _self.tooltipHeadMsg = null;
-        }, 1000 * sec);
-    };
-    NicknameComponent.prototype.hideTooltipNow = function () {
-        this.tooltipHeadMsg = null;
-    };
-    NicknameComponent.prototype.onMouseOverInfo = function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (!this.isFocusInfo) {
-            this.isFocusInfo = true;
-        } // end if
-    };
-    NicknameComponent.prototype.onMouseOutInfo = function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (this.isFocusInfo) {
-            this.isFocusInfo = false;
-        } // end if
-    };
-    NicknameComponent.prototype.emitEventOnChange = function (eventKey, value) {
+    }; // end method - onKeyup
+    NicknameComponent.prototype.emitEventOnChange = function (value) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("name / emitEventOnChange / 시작");
-        if (null == eventKey) {
-            if (isDebug)
-                console.log("name / emitEventOnChange / 중단 / eventKey is not valid!");
-            return;
-        }
-        if (null == value) {
-            if (isDebug)
-                console.log("name / emitEventOnChange / 중단 / value is not valid!");
-            return;
+        if ("" != value && !this.isOK(value)) {
+            // 공백 문자는 허용됩니다.
+            // 공백이 아닌 나머지 문자열에 대해서 유효하지 않으면 공백 문자열로 바꿉니다.
+            value = "";
         }
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_CHANGE, 
         // public key:string
-        eventKey, 
+        this.myEventService.KEY_USER_NICKNAME, 
         // public value:string
         value, 
         // public metaObj:any
@@ -424,26 +412,40 @@ var NicknameComponent = (function () {
         if (isDebug)
             console.log("name / emitEventOnChange / Done!");
     };
-    NicknameComponent.prototype.hideWarningTooptip = function () {
-        this.tooltipHeadMsg = null;
-        this.isWarning = false;
+    // @ Desc : 실패 툴팁을 보여줍니다.
+    NicknameComponent.prototype.showTooltipFailWarning = function (warningMsg, isTimeout) {
+        var isDebug = true;
+        // let isDebug:boolean = false;    
+        if (isDebug)
+            console.log("nickname / showTooltipFailWarning / init");
+        if (isDebug)
+            console.log("nickname / showTooltipFailWarning / warningMsg : ", warningMsg);
+        this.isShowTooltip = true;
+        this.isFocus = true;
+        this.isValid = false;
+        this.tooltipMsg = warningMsg;
+        if (isDebug)
+            console.log("nickname / showTooltipFailWarning / this.isShowTooltip : ", this.isShowTooltip);
+        if (null != isTimeout && isTimeout) {
+            if (isDebug)
+                console.log("nickname / showTooltipFailWarning / this.hideTooltipHead(2)");
+            this.hideTooltip(2);
+        } // end if
     };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], NicknameComponent.prototype, "top", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], NicknameComponent.prototype, "left", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], NicknameComponent.prototype, "topWarning", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Number)
-    ], NicknameComponent.prototype, "leftWarning", void 0);
+    NicknameComponent.prototype.hideWarningTooptip = function () {
+        this.tooltipMsg = null;
+        this.isShowTooltip = false;
+    };
+    NicknameComponent.prototype.hideTooltip = function (sec) {
+        if (null == sec || !(0 < sec)) {
+            sec = 3;
+        }
+        var _self = this;
+        setTimeout(function () {
+            // 메시지를 지정된 시간 뒤에 화면에서 지웁니다.
+            _self.hideWarningTooptip();
+        }, 1000 * sec);
+    };
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

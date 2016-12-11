@@ -362,7 +362,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // 문제가 있다면 해당 필드에 경고를 보여줍니다.
     let hasNotDoneEmail:boolean = this.emailComponent.hasNotDone();
     if(hasNotDoneEmail) {
-      this.emailComponent.showWarning();
+      // wonder.jung
+      // this.emailComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneEmail : ",hasNotDoneEmail);
       isAllOK = false;
     }
@@ -419,7 +420,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // gender
     let hasNotDoneGender:boolean = this.genderComponent.hasNotDone();   
     if(hasNotDoneGender) {
-      this.genderComponent.showWarning();
+      // wonder.jung
+      // this.genderComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneGender : ",hasNotDoneGender);
       isAllOK = false;
     }
@@ -427,7 +429,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // name
     let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
     if(hasNotDoneNickname) {
-      this.nicknameComponent.showWarning();
+      // wonder.jung
+      // this.nicknameComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneNickname : ",hasNotDoneNickname);
       // 유효한 값이 아닙니다!
       // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
@@ -438,7 +441,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // @ Optional
     let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
     if(hasNotDoneName) {
-      this.nameComponent.showWarning();
+      // wonder.jung
+      // this.nameComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneName : ",hasNotDoneName);
       // 유효한 값이 아닙니다!
       // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
@@ -473,7 +477,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // 프로필 이미지 검사
     let hasNotDoneProfileImg:boolean = this.profileImgUploadComponent.hasNotDone();
     if(hasNotDoneProfileImg) {
-      this.profileImgUploadComponent.showWarning();
+      // wonder.jung
+      // this.profileImgUploadComponent.showWarning();
       if(isDebug) console.log("signup / onClickSignup / hasNotDoneProfileImg : ",hasNotDoneProfileImg);
       // 유효한 값이 아닙니다!
       // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung

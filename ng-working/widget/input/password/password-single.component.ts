@@ -30,8 +30,8 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   @Input() width:number=380;
   @Input() eventKey:string="";
   @Input() isShowGuide:boolean=false;
-  @Input() titleHead:string="비밀번호";
-  @Input() placeholderHead:string="비밀번호를 입력해주세요";
+  @Input() title:string="비밀번호";
+  @Input() placeholder:string="비밀번호를 입력해주세요";
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -155,7 +155,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     return this.myCheckerService.isOK(this.myChecker, input);
   }
 
-  onClickPassword(event, element) :void {
+  onClick(event, element) :void {
 
     // 락 해제
     // this.lockAfterOnBlur=null;
@@ -170,11 +170,11 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     this.password = element.value;
   } 
 
-  onFocusPassword(event, element) :void {
+  onFocus(event, element) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("password-single / onFocusPassword / 시작");
+    if(isDebug) console.log("password-single / onFocus / 시작");
 
     event.stopPropagation();
     event.preventDefault();
@@ -250,17 +250,17 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   }
 
   private passwordPrev:string="";
-  onBlurPassword(event, element, elementNext) :void {
+  onBlur(event, element) :void {
 
     event.stopPropagation();
     event.preventDefault();
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;    
-    if(isDebug) console.log("password / onBlurPassword / init");
+    if(isDebug) console.log("password / onBlur / init");
 
     if(null == this.myCheckerService) {
-      if(isDebug) console.log("password / onBlurPassword / 중단 / null == this.myCheckerService");
+      if(isDebug) console.log("password / onBlur / 중단 / null == this.myCheckerService");
       return;
     }
 
@@ -274,7 +274,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     this.isFocus = false;
 
     if(null == this.password || "" == this.password) {
-      if(isDebug) console.log("password / onBlurPassword / 중단 / 패스워드가 없다면 검사를 중단합니다.");
+      if(isDebug) console.log("password / onBlur / 중단 / 패스워드가 없다면 검사를 중단합니다.");
       return;
     }
 
@@ -292,21 +292,18 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
         // value:string
         element.value
       );
-      // REMOVE ME
-      // this.lockAfterOnBlur={};
-      // 
 
     } else {
 
       // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
       if(null != issueMsg && "" != issueMsg) {
 
-        if(isDebug) console.log("password / onBlurPassword / 중단 / 패스워드의 문제를 발견했습니다.");
+        if(isDebug) console.log("password / onBlur / 중단 / 패스워드의 문제를 발견했습니다.");
         this.showTooltipFailWarning(issueMsg, false);
 
       } else {
 
-        if(isDebug) console.log("password / onBlurPassword / 중단 / 패스워드가 정상입니다.");
+        if(isDebug) console.log("password / onBlur / 중단 / 패스워드가 정상입니다.");
         this.showTooltipSuccess(this.tooltipAllowed);
 
       } // end if
@@ -316,7 +313,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
   } // end method
 
-  hideTooltipHead(sec:number) :void {
+  hideTooltip(sec:number) :void {
 
     if(null == sec || !(0 < sec)) {
       sec = 3;
@@ -331,34 +328,36 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
   }
 
-  onKeydownTabShiftPassword(event, elementPassword) :void {
+  onKeydownTabShift(event, elementPassword) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("password-single / onKeydownTabShiftPassword / init");
+    if(isDebug) console.log("password-single / onKeydownTabShift / init");
 
-    if(isDebug) console.log("password-single / onKeydownTabShiftPassword / event : ",event);
+    if(isDebug) console.log("password-single / onKeydownTabShift / event : ",event);
 
     // 위쪽 탭 이동, 포커싱을 잃습니다.
     this.isFocus = false;
 
   }
 
-  onKeydownTabPassword(event, elementPassword) :void {
+  onKeydownTab(event, elementPassword) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("password-single / onKeydownTabPassword / init");
+    if(isDebug) console.log("password-single / onKeydownTab / init");
 
+    // REMOVE ME
+    /*
     if(null == elementPassword) {
-      if(isDebug) console.log("password-single / onKeydownTabPassword / 중단 / null == elementPassword");
+      if(isDebug) console.log("password-single / onKeydownTab / 중단 / null == elementPassword");
       return;
     }
 
     // 아래쪽 탭 이동. 패스워드 재입력 창으로 이동합니다.
     this.lastKeyupTypeP = this.KeyupTypeTab;
 
-    if(isDebug) console.log("password-single / onKeydownTabPassword / 아래로 탭 이동.");
+    if(isDebug) console.log("password-single / onKeydownTab / 아래로 탭 이동.");
     if(null == elementPassword.value || "" == elementPassword.value) {
       // 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.
       event.stopPropagation();
@@ -366,13 +365,14 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
       console.log("패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
 
-      if(isDebug) console.log("password-single / onKeydownTabPassword / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
+      if(isDebug) console.log("password-single / onKeydownTab / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
 
       // 메시지 노출.
       this.tooltipMsg = this.tooltipPasswordNeeds;
       this.isWarning = true;
 
     } // end if
+    */
   }
 
   onKeyupEnter(event) :void {
@@ -454,18 +454,18 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
   }   
 
-  onKeyupPassword(event, element) :void {
+  onKeyup(event, element) :void {
 
     event.stopPropagation();
     event.preventDefault();
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("password-single / onKeyupPassword / init");
+    if(isDebug) console.log("password-single / onKeyup / init");
 
     // shift, tab
     if(event.key == "Tab" || event.key == "Shift") {
-      if(isDebug) console.log("password-single / onKeyupPassword / 중단 / 탭 이동");
+      if(isDebug) console.log("password-single / onKeyup / 중단 / 탭 이동");
       return;
     }
     this.lastKeyupTypeP = this.KeyupTypeChar;
@@ -480,19 +480,19 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
 
     // 비어있는 문자열이라면 검사하지 않습니다.
     if(null == this.password || "" == this.password) {
-      if(isDebug) console.log("password-single / onKeyupPassword / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+      if(isDebug) console.log("password-single / onKeyup / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
       return;
     }
 
     // 바뀌지 않았다면 검사하지 않습니다.
     if(this.passwordPrev === this.password) {
-      if(isDebug) console.log("password-single / onKeyupPassword / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+      if(isDebug) console.log("password-single / onKeyup / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
       return;
     }  
     this.passwordPrev = this.password;  
 
     // 패스워드를 검사합니다.
-    if(isDebug) console.log("password / onKeyupPassword / this.password : ",this.password);
+    if(isDebug) console.log("password / onKeyup / this.password : ",this.password);
     let regExpNotAllowed:RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
     let matchArr:RegExpMatchArray = this.password.match(regExpNotAllowed);
     if(null != matchArr && 0 < matchArr.length) {
@@ -509,7 +509,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
       // 1-1-2. 삭제 안내 메시지를 노출합니다.
       this.showTooltipFailWarning("한글 및 공백을 사용할 수 없어요.", true);
 
-      if(isDebug) console.log("password-single / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
+      if(isDebug) console.log("password-single / onKeyup / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
 
     } else {
 
@@ -554,8 +554,8 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 가립니다.
   hideTooltipWarning() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password-single / hideTooltipWarning / init");
     // if(isDebug) console.log("password-single / hideTooltipWarning / init / this.lockAfterOnBlur : ",this.lockAfterOnBlur);
 
@@ -565,7 +565,6 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     // }
 
     this.isShowTooltip = false;
-    this.isWarning = false;
     this.isFocus = false;
     this.isValid = true;
     this.tooltipMsg = null;
@@ -576,13 +575,12 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   showTooltipFailWarning(warningMsg:string, isTimeout:boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("password-single / showTooltipFailWarning / init");
     if(isDebug) console.log("password-single / showTooltipFailWarning / warningMsg : ",warningMsg);
 
     this.isShowTooltip = true;
-    this.isWarning = true;
     this.isFocus = true;
     this.isValid = false;
     this.tooltipMsg = warningMsg;
@@ -590,25 +588,24 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("password-single / showTooltipFailWarning / this.isShowTooltip : ",this.isShowTooltip);
 
     if(null != isTimeout && isTimeout) {
-      if(isDebug) console.log("password-single / showTooltipFailWarning / this.hideTooltipHead(2)");
-      this.hideTooltipHead(2);
+      if(isDebug) console.log("password-single / showTooltipFailWarning / this.hideTooltip(2)");
+      this.hideTooltip(2);
     }
 
   }
   // @ Desc : 성공 툴팁을 보여줍니다.
   public showTooltipSuccess(msg:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password-single / showTooltipSuccess / init");
     if(isDebug) console.log("password-single / showTooltipSuccess / msg : ",msg);
 
     this.isShowTooltip = true;
-    this.isWarning = false;
     this.isFocus = false;
     this.isValid = true;
     this.tooltipMsg = msg;
-    this.hideTooltipHead(2);
+    this.hideTooltip(2);
 
   }
 
@@ -648,11 +645,11 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
     this.emitOnSubmit(this.eventKey);
 
   }
-  public setTitleHead(title:string) :void {
-    this.titleHead = title;
+  public settitle(title:string) :void {
+    this.title = title;
   }  
-  public setPlaceHolderHead(placeholderHead:string) :void {
-    this.placeholderHead = placeholderHead;
+  public setplaceholder(placeholder:string) :void {
+    this.placeholder = placeholder;
   }  
 
 }

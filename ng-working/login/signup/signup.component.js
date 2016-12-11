@@ -262,7 +262,8 @@ var SignupComponent = (function () {
         // 문제가 있다면 해당 필드에 경고를 보여줍니다.
         var hasNotDoneEmail = this.emailComponent.hasNotDone();
         if (hasNotDoneEmail) {
-            this.emailComponent.showWarning();
+            // wonder.jung
+            // this.emailComponent.showWarning();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneEmail : ", hasNotDoneEmail);
             isAllOK = false;
@@ -327,7 +328,8 @@ var SignupComponent = (function () {
         // gender
         var hasNotDoneGender = this.genderComponent.hasNotDone();
         if (hasNotDoneGender) {
-            this.genderComponent.showWarning();
+            // wonder.jung
+            // this.genderComponent.showWarning();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneGender : ", hasNotDoneGender);
             isAllOK = false;
@@ -336,14 +338,16 @@ var SignupComponent = (function () {
         // name
         var hasNotDoneNickname = this.nicknameComponent.hasNotDone();
         if (hasNotDoneNickname) {
-            this.nicknameComponent.showWarning();
+            // wonder.jung
+            // this.nicknameComponent.showWarning();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneNickname : ", hasNotDoneNickname);
         }
         // @ Optional
         var hasNotDoneName = this.nameComponent.hasNotDone();
         if (hasNotDoneName) {
-            this.nameComponent.showWarning();
+            // wonder.jung
+            // this.nameComponent.showWarning();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneName : ", hasNotDoneName);
         }
@@ -371,7 +375,8 @@ var SignupComponent = (function () {
         // 프로필 이미지 검사
         var hasNotDoneProfileImg = this.profileImgUploadComponent.hasNotDone();
         if (hasNotDoneProfileImg) {
-            this.profileImgUploadComponent.showWarning();
+            // wonder.jung
+            // this.profileImgUploadComponent.showWarning();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneProfileImg : ", hasNotDoneProfileImg);
         }

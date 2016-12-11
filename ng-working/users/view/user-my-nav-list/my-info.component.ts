@@ -65,6 +65,12 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private birthDay:string;
   // @ mutables - done
 
+  // 
+  private titleArr:string[] = [];
+  private placeholderArr:string[] = [];
+  private eventKeyArr:string[] = [];
+  private checkerKeyArr:string[] = [];
+
   // password event keys
   eventKeyPWHead:string;
   eventKeyPWBody:string;
@@ -108,6 +114,19 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
     this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
     this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
+
+    this.titleArr = [
+      "이름 - TEST"
+    ];
+    this.placeholderArr = [
+      "이름입력 - TEST"
+    ];
+    this.eventKeyArr = [
+      this.myEventService.KEY_USER_NAME
+    ];
+    this.checkerKeyArr = [
+      "user_name"
+    ];
 
   }
 
@@ -531,6 +550,44 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         // end if - ON CHANGE - KEY_USER_GENDER
 
       } // end if - ON CHANGE
+    
+    } else if(this.myEventService.ON_CHANGE_NOT_VALID === myEvent.eventName) {
+      
+      // 입력 내용이 변했습니다. 
+      // 하지만 문제가 있는 경우의 처리입니다.
+
+      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID");
+
+      if(myEvent.isNotValid()) {
+        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+        // TODO - Error Logger
+        return;
+      }
+
+      if(myEvent.hasNotMetaObj()) {
+        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
+        // TODO - Error Logger
+        return;
+      }
+
+      let history = myEvent.digMetaProp(["history"]);
+      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ",history);
+      if(null == history) {
+        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
+        // TODO - Error Logger
+        return;
+      }
+
+      let key:string = myEvent.digMetaProp(["history","key"]);
+      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ",key);
+      if(null == key || "" == key) {
+        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
+        // TODO - Error Logger
+        return;
+      }
+
+      // history 객체로 분석, 처리합니다.
+
 
     } // end if
 
@@ -844,7 +901,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
       });
     }
-
 
     // 저장 버튼 비활성화.
     this.hasChanged=false;

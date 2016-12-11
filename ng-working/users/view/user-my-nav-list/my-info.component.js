@@ -31,12 +31,30 @@ var MyInfoComponent = (function () {
         this.watchTower = watchTower;
         this.emitter = new core_1.EventEmitter();
         this.gender = "";
+        // @ mutables - done
+        // 
+        this.titleArr = [];
+        this.placeholderArr = [];
+        this.eventKeyArr = [];
+        this.checkerKeyArr = [];
         this.isAdmin = false;
         // @ Desc : 사용자가 자신의 유저 정보를 변경했는지 확인하는 플래그
         this.hasChanged = false;
         this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
         this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
         this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
+        this.titleArr = [
+            "이름 - TEST"
+        ];
+        this.placeholderArr = [
+            "이름입력 - TEST"
+        ];
+        this.eventKeyArr = [
+            this.myEventService.KEY_USER_NAME
+        ];
+        this.checkerKeyArr = [
+            "user_name"
+        ];
     }
     MyInfoComponent.prototype.ngOnInit = function () { };
     MyInfoComponent.prototype.ngAfterViewInit = function () {
@@ -404,6 +422,42 @@ var MyInfoComponent = (function () {
                 }
                 this.updateNewProp("gender", myEvent.value);
             } // end if - ON CHANGE
+        }
+        else if (this.myEventService.ON_CHANGE_NOT_VALID === myEvent.eventName) {
+            // 입력 내용이 변했습니다. 
+            // 하지만 문제가 있는 경우의 처리입니다.
+            if (isDebug)
+                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID");
+            if (myEvent.isNotValid()) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+                // TODO - Error Logger
+                return;
+            }
+            if (myEvent.hasNotMetaObj()) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
+                // TODO - Error Logger
+                return;
+            }
+            var history_1 = myEvent.digMetaProp(["history"]);
+            if (isDebug)
+                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ", history_1);
+            if (null == history_1) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
+                // TODO - Error Logger
+                return;
+            }
+            var key = myEvent.digMetaProp(["history", "key"]);
+            if (isDebug)
+                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ", key);
+            if (null == key || "" == key) {
+                if (isDebug)
+                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
+                // TODO - Error Logger
+                return;
+            }
         } // end if
     }; // end method
     MyInfoComponent.prototype.isOKBirthday = function (birthYear, birthMonth, birthDay) {

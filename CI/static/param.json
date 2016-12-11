@@ -1,7 +1,7 @@
 {
 	"checker":{
 		"user_id":"is_natural_no_zero",
-		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match_include[/[가-힣 ]+/]",
+		"user_name":"is_str|||min_length[2]|||max_length[5]|||regex_match_include[/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/]|||regex_match_exclude[/[ ]{2,10}/]",
 		"user_nickname":"is_str|||min_length[3]|||max_length[32]|||regex_match_include[/[a-zA-Z가-힣0-9 ]+/]",
 		"user_gender":"is_str|||exact_length[1]|||matches[user_gender_list]",
 		"user_locale":"is_str|||min_length[2]|||max_length[16]|||matches[user_locale_list]",

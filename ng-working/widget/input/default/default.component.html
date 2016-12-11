@@ -1,9 +1,13 @@
 <div class="btn-box text-left info">
-	<label class="title">닉네임</label>
+	<label class="title">{{title}}</label>
+
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
-	<input 	#input
+
+	<!-- input -->
+	<input 	*ngIf="!isDisabled"
+			#input
 			(click)="onClick($event, input)"
 			(focus)="onFocus($event, input)"
 			(blur)="onBlur($event, input)"
@@ -13,8 +17,15 @@
 			[(ngModel)]="ngModelInput"
 			value={{inputStrPrev}}
 			class="form-control input-glass" 
-			placeholder="닉네임">
+			placeholder={{placeholder}}>
 
+	<!-- input-disabled -->
+	<input 	*ngIf="isDisabled"
+			disabled="disabled" 
+			value={{inputStrPrev}}
+			class="form-control input-glass" 
+			placeholder={{placeholder}}>
+	
 	<!-- icon - warning -->
 	<span 	*ngIf="!isValid"
 			class="glyphicon glyphicon-exclamation-sign warning"
@@ -22,8 +33,8 @@
 			
 	<!-- tooltip -->
 	<div 	[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
-			class="tooltip top"
-			role="tooltip">
+			class="tooltip top" 
+			role="tooltip"> 
 
 		<div 	class="tooltip-arrow"
 				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
@@ -31,5 +42,6 @@
 		<div 	class="tooltip-inner" 
 				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
 
-	</div>			
+	</div>
+
 </div>

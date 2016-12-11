@@ -22,8 +22,8 @@ var PasswordSingleComponent = (function () {
         this.width = 380;
         this.eventKey = "";
         this.isShowGuide = false;
-        this.titleHead = "비밀번호";
-        this.placeholderHead = "비밀번호를 입력해주세요";
+        this.title = "비밀번호";
+        this.placeholder = "비밀번호를 입력해주세요";
         this.emitter = new core_1.EventEmitter();
         this.isFocus = false;
         this.isShowTooltip = false;
@@ -119,7 +119,7 @@ var PasswordSingleComponent = (function () {
         }
         return this.myCheckerService.isOK(this.myChecker, input);
     };
-    PasswordSingleComponent.prototype.onClickPassword = function (event, element) {
+    PasswordSingleComponent.prototype.onClick = function (event, element) {
         // 락 해제
         // this.lockAfterOnBlur=null;
         event.stopPropagation();
@@ -129,11 +129,11 @@ var PasswordSingleComponent = (function () {
         } // end if
         this.password = element.value;
     };
-    PasswordSingleComponent.prototype.onFocusPassword = function (event, element) {
+    PasswordSingleComponent.prototype.onFocus = function (event, element) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("password-single / onFocusPassword / 시작");
+            console.log("password-single / onFocus / 시작");
         event.stopPropagation();
         event.preventDefault();
         this.isFocus = true;
@@ -196,16 +196,16 @@ var PasswordSingleComponent = (function () {
         }
         return msg;
     };
-    PasswordSingleComponent.prototype.onBlurPassword = function (event, element, elementNext) {
+    PasswordSingleComponent.prototype.onBlur = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("password / onBlurPassword / init");
+            console.log("password / onBlur / init");
         if (null == this.myCheckerService) {
             if (isDebug)
-                console.log("password / onBlurPassword / 중단 / null == this.myCheckerService");
+                console.log("password / onBlur / 중단 / null == this.myCheckerService");
             return;
         }
         this.password = element.value;
@@ -216,7 +216,7 @@ var PasswordSingleComponent = (function () {
         this.isFocus = false;
         if (null == this.password || "" == this.password) {
             if (isDebug)
-                console.log("password / onBlurPassword / 중단 / 패스워드가 없다면 검사를 중단합니다.");
+                console.log("password / onBlur / 중단 / 패스워드가 없다면 검사를 중단합니다.");
             return;
         }
         var issueMsg = this.getPasswordIssue(this.password);
@@ -235,17 +235,17 @@ var PasswordSingleComponent = (function () {
             // 회원 가입 창일경우, 패스워드 검사 결과를 사용자에게 보여줍니다.
             if (null != issueMsg && "" != issueMsg) {
                 if (isDebug)
-                    console.log("password / onBlurPassword / 중단 / 패스워드의 문제를 발견했습니다.");
+                    console.log("password / onBlur / 중단 / 패스워드의 문제를 발견했습니다.");
                 this.showTooltipFailWarning(issueMsg, false);
             }
             else {
                 if (isDebug)
-                    console.log("password / onBlurPassword / 중단 / 패스워드가 정상입니다.");
+                    console.log("password / onBlur / 중단 / 패스워드가 정상입니다.");
                 this.showTooltipSuccess(this.tooltipAllowed);
             } // end if
         } // end if
     }; // end method
-    PasswordSingleComponent.prototype.hideTooltipHead = function (sec) {
+    PasswordSingleComponent.prototype.hideTooltip = function (sec) {
         if (null == sec || !(0 < sec)) {
             sec = 3;
         }
@@ -256,41 +256,47 @@ var PasswordSingleComponent = (function () {
             _self.isShowTooltip = false;
         }, 1000 * sec);
     };
-    PasswordSingleComponent.prototype.onKeydownTabShiftPassword = function (event, elementPassword) {
+    PasswordSingleComponent.prototype.onKeydownTabShift = function (event, elementPassword) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("password-single / onKeydownTabShiftPassword / init");
+            console.log("password-single / onKeydownTabShift / init");
         if (isDebug)
-            console.log("password-single / onKeydownTabShiftPassword / event : ", event);
+            console.log("password-single / onKeydownTabShift / event : ", event);
         // 위쪽 탭 이동, 포커싱을 잃습니다.
         this.isFocus = false;
     };
-    PasswordSingleComponent.prototype.onKeydownTabPassword = function (event, elementPassword) {
+    PasswordSingleComponent.prototype.onKeydownTab = function (event, elementPassword) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("password-single / onKeydownTabPassword / init");
-        if (null == elementPassword) {
-            if (isDebug)
-                console.log("password-single / onKeydownTabPassword / 중단 / null == elementPassword");
-            return;
+            console.log("password-single / onKeydownTab / init");
+        // REMOVE ME
+        /*
+        if(null == elementPassword) {
+          if(isDebug) console.log("password-single / onKeydownTab / 중단 / null == elementPassword");
+          return;
         }
+    
         // 아래쪽 탭 이동. 패스워드 재입력 창으로 이동합니다.
         this.lastKeyupTypeP = this.KeyupTypeTab;
-        if (isDebug)
-            console.log("password-single / onKeydownTabPassword / 아래로 탭 이동.");
-        if (null == elementPassword.value || "" == elementPassword.value) {
-            // 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.
-            event.stopPropagation();
-            event.preventDefault();
-            console.log("패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
-            if (isDebug)
-                console.log("password-single / onKeydownTabPassword / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
-            // 메시지 노출.
-            this.tooltipMsg = this.tooltipPasswordNeeds;
-            this.isWarning = true;
+    
+        if(isDebug) console.log("password-single / onKeydownTab / 아래로 탭 이동.");
+        if(null == elementPassword.value || "" == elementPassword.value) {
+          // 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.
+          event.stopPropagation();
+          event.preventDefault();
+    
+          console.log("패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
+    
+          if(isDebug) console.log("password-single / onKeydownTab / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
+    
+          // 메시지 노출.
+          this.tooltipMsg = this.tooltipPasswordNeeds;
+          this.isWarning = true;
+    
         } // end if
+        */
     };
     PasswordSingleComponent.prototype.onKeyupEnter = function (event) {
         // let isDebug:boolean = true;
@@ -359,17 +365,17 @@ var PasswordSingleComponent = (function () {
         this.myChecker);
         this.emitter.emit(myEventOnChange);
     };
-    PasswordSingleComponent.prototype.onKeyupPassword = function (event, element) {
+    PasswordSingleComponent.prototype.onKeyup = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("password-single / onKeyupPassword / init");
+            console.log("password-single / onKeyup / init");
         // shift, tab
         if (event.key == "Tab" || event.key == "Shift") {
             if (isDebug)
-                console.log("password-single / onKeyupPassword / 중단 / 탭 이동");
+                console.log("password-single / onKeyup / 중단 / 탭 이동");
             return;
         }
         this.lastKeyupTypeP = this.KeyupTypeChar;
@@ -382,19 +388,19 @@ var PasswordSingleComponent = (function () {
         // 비어있는 문자열이라면 검사하지 않습니다.
         if (null == this.password || "" == this.password) {
             if (isDebug)
-                console.log("password-single / onKeyupPassword / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+                console.log("password-single / onKeyup / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
             return;
         }
         // 바뀌지 않았다면 검사하지 않습니다.
         if (this.passwordPrev === this.password) {
             if (isDebug)
-                console.log("password-single / onKeyupPassword / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
+                console.log("password-single / onKeyup / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
         this.passwordPrev = this.password;
         // 패스워드를 검사합니다.
         if (isDebug)
-            console.log("password / onKeyupPassword / this.password : ", this.password);
+            console.log("password / onKeyup / this.password : ", this.password);
         var regExpNotAllowed = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
         var matchArr = this.password.match(regExpNotAllowed);
         if (null != matchArr && 0 < matchArr.length) {
@@ -409,7 +415,7 @@ var PasswordSingleComponent = (function () {
             // 1-1-2. 삭제 안내 메시지를 노출합니다.
             this.showTooltipFailWarning("한글 및 공백을 사용할 수 없어요.", true);
             if (isDebug)
-                console.log("password-single / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
+                console.log("password-single / onKeyup / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
         }
         else {
             // 1. 사용자가 입력한 패스워드를 검사합니다.
@@ -444,8 +450,8 @@ var PasswordSingleComponent = (function () {
     // lockAfterOnBlur=null;
     // @ Desc : 실패 툴팁을 가립니다.
     PasswordSingleComponent.prototype.hideTooltipWarning = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password-single / hideTooltipWarning / init");
         // if(isDebug) console.log("password-single / hideTooltipWarning / init / this.lockAfterOnBlur : ",this.lockAfterOnBlur);
@@ -454,7 +460,6 @@ var PasswordSingleComponent = (function () {
         //   return;
         // }
         this.isShowTooltip = false;
-        this.isWarning = false;
         this.isFocus = false;
         this.isValid = true;
         this.tooltipMsg = null;
@@ -463,14 +468,13 @@ var PasswordSingleComponent = (function () {
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     PasswordSingleComponent.prototype.showTooltipFailWarning = function (warningMsg, isTimeout) {
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password-single / showTooltipFailWarning / init");
         if (isDebug)
             console.log("password-single / showTooltipFailWarning / warningMsg : ", warningMsg);
         this.isShowTooltip = true;
-        this.isWarning = true;
         this.isFocus = true;
         this.isValid = false;
         this.tooltipMsg = warningMsg;
@@ -478,24 +482,23 @@ var PasswordSingleComponent = (function () {
             console.log("password-single / showTooltipFailWarning / this.isShowTooltip : ", this.isShowTooltip);
         if (null != isTimeout && isTimeout) {
             if (isDebug)
-                console.log("password-single / showTooltipFailWarning / this.hideTooltipHead(2)");
-            this.hideTooltipHead(2);
+                console.log("password-single / showTooltipFailWarning / this.hideTooltip(2)");
+            this.hideTooltip(2);
         }
     };
     // @ Desc : 성공 툴팁을 보여줍니다.
     PasswordSingleComponent.prototype.showTooltipSuccess = function (msg) {
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password-single / showTooltipSuccess / init");
         if (isDebug)
             console.log("password-single / showTooltipSuccess / msg : ", msg);
         this.isShowTooltip = true;
-        this.isWarning = false;
         this.isFocus = false;
         this.isValid = true;
         this.tooltipMsg = msg;
-        this.hideTooltipHead(2);
+        this.hideTooltip(2);
     };
     // 사용자가 마지막으로 입력한 키가 문자입력인지 확인. 문자입력이 아니라면 탭이동.
     PasswordSingleComponent.prototype.isKeyupP = function () {
@@ -525,11 +528,11 @@ var PasswordSingleComponent = (function () {
         event.preventDefault();
         this.emitOnSubmit(this.eventKey);
     };
-    PasswordSingleComponent.prototype.setTitleHead = function (title) {
-        this.titleHead = title;
+    PasswordSingleComponent.prototype.settitle = function (title) {
+        this.title = title;
     };
-    PasswordSingleComponent.prototype.setPlaceHolderHead = function (placeholderHead) {
-        this.placeholderHead = placeholderHead;
+    PasswordSingleComponent.prototype.setplaceholder = function (placeholder) {
+        this.placeholder = placeholder;
     };
     __decorate([
         core_1.Input(), 
@@ -546,11 +549,11 @@ var PasswordSingleComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], PasswordSingleComponent.prototype, "titleHead", void 0);
+    ], PasswordSingleComponent.prototype, "title", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], PasswordSingleComponent.prototype, "placeholderHead", void 0);
+    ], PasswordSingleComponent.prototype, "placeholder", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

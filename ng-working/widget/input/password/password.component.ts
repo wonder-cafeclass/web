@@ -415,12 +415,6 @@ export class PasswordComponent implements OnInit, AfterViewInit {
         // 패스워드의 문제를 발견했습니다.
         this.showTooltipHeadFailWarning(issueMsg, true);
 
-        // REMOVE ME
-        // 패스워드 경고 메시지 ON
-        // this.tooltipHeadMsg = issueMsg;
-        // 패스워드 경고 표시 ON
-        // this.isWarningPassword = true;
-
       } else {
         // 패스워드가 정상입니다. 
         this.isWarningPassword = false;
@@ -639,13 +633,6 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       }
 
       // 1-1-2. 삭제 안내 메시지를 노출합니다.
-
-      // REMOVE ME
-      // this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
-      // this.isValidPassword = false;
-      // this.isWarningPassword = true;
-      // this.hideTooltipHead(2);
-
       this.showTooltipHeadFailWarning("한글 및 공백을 사용할 수 없어요.", true);
 
       if(isDebug) console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
