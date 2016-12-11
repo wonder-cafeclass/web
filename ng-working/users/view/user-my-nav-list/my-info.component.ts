@@ -1,20 +1,24 @@
 import {  Component, 
           ViewChild,
+          ViewChildren,
+          QueryList,
           OnInit, 
           AfterViewInit,
           Output, 
           EventEmitter,
           Input }                     from '@angular/core';
 
-import { EmailComponent }             from '../../../widget/input/email/email.component';
+import {  Router }                    from '@angular/router';
+
 import { ProfileImgUploadComponent }  from '../../../widget/input/profile-img-upload/profile-img-upload.component';
 import { PasswordComponent }          from '../../../widget/input/password/password.component';
-import { PasswordsTripletComponent }          from '../../../widget/input/password/passwords-triplet.component';
+import { PasswordsTripletComponent }  from '../../../widget/input/password/passwords-triplet.component';
 import { MobileComponent }            from '../../../widget/input/mobile/mobile.component';
-import { NameComponent }              from '../../../widget/input/name/name.component';
 import { GenderComponent }            from '../../../widget/input/gender/gender.component';
 import { BirthdayComponent }          from '../../../widget/input/birthday/birthday.component';
-import { NicknameComponent }          from '../../../widget/input/nickname/nickname.component';
+
+import { DefaultComponent }           from '../../../widget/input/default/default.component';
+import { DefaultMeta }                from '../../../widget/input/default/model/default-meta';
 
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';          
 
@@ -76,17 +80,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   eventKeyPWBody:string;
   eventKeyPWTail:string;
 
-  @ViewChild(EmailComponent)
-  private emailComponent: EmailComponent;
+  @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
+  defaultMetaList:DefaultMeta[];
+
+  private emailComponent: DefaultComponent;
+  private nameComponent: DefaultComponent;
+  private nicknameComponent: DefaultComponent;
 
   @ViewChild(PasswordsTripletComponent)
   private passwordsComponent: PasswordsTripletComponent;
-
-  @ViewChild(NameComponent)
-  private nameComponent: NameComponent;
-
-  @ViewChild(NicknameComponent)
-  private nicknameComponent: NicknameComponent;
 
   @ViewChild(MobileComponent)
   private mobileComponent: MobileComponent;  
@@ -109,24 +111,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
               private myLoggerService:MyLoggerService,
               public myCheckerService:MyCheckerService,
               private userService:UserService,
-              private watchTower:MyEventWatchTowerService) {
+              private watchTower:MyEventWatchTowerService,
+              public router:Router) {
 
     this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
     this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
     this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
 
-    this.titleArr = [
-      "이름 - TEST"
-    ];
-    this.placeholderArr = [
-      "이름입력 - TEST"
-    ];
-    this.eventKeyArr = [
-      this.myEventService.KEY_USER_NAME
-    ];
-    this.checkerKeyArr = [
-      "user_name"
-    ];
+    this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
 
   }
 
@@ -135,14 +127,25 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
+    this.setDefaultComponents();
+
     this.asyncViewPack();
-
   }
+  private setDefaultComponents() :void {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / setDefaultComponents / 시작");
+
+    // DefaultComponent들을 세팅
+    this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+    this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+    this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
+  }
   private asyncViewPack(): void {
     
     // let isDebug:boolean = true;
@@ -176,34 +179,50 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       this.watchTower.getApiKey()
     ); // end setReady
   }
-
-
   private setLoginUser() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / setLoginUser / 시작");
 
-    // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
+    // 로그인 데이터를 가져옵니다.
     let loginUser:User = this.watchTower.getLoginUser();
     if(null != loginUser) {
       this.loginUser = loginUser;
       this.copyUser();
       this.fillViewUserInfo();
-    }
+    } else {
+      // 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.
+      // TODO - 페이지 리다이렉트 데이터를 전달해야 합니다.
+      this.router.navigate(['/login']);
+    } // end if
 
-    // Subscribe login user
-    this.watchTower.loginAnnounced$.subscribe(
-      (loginUser:User) => {
-
-      if(isDebug) console.log("my-info / setLoginUser : ",loginUser);
-
-      // 로그인한 유저 정보가 들어왔습니다.
-      this.loginUser = loginUser;
-      this.copyUser();
-      this.fillViewUserInfo();
-    });  
   }
+
+  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+  private getInput(eventKey:string) :any {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / getInput / init");
+
+    let target:DefaultComponent = null;
+
+    this.inputComponentList.forEach(function(inputComponent) {
+
+      if(isDebug) console.log("my-info / getInput / eventKey : ",eventKey);
+      if(isDebug) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
+
+      if(inputComponent.hasEventKey(eventKey)) {
+        if(isDebug) console.log("my-info / getInput / inputComponent : ",inputComponent);
+        target = inputComponent;
+        return;
+      }
+
+    }); // end for-each
+
+    return target;
+  }  
 
   private copyUser() :void {
 
@@ -242,25 +261,35 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   fillViewUserInfo() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / fillViewUserInfo");
     if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser : ",this.loginUser);
 
     if(null == this.loginUser) {
+      if(isDebug) console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
       return;
     }
 
     // email
-    this.emailComponent.setEmail(this.loginUser.email);
+    if(null != this.emailComponent) {
+      if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.email : ",this.loginUser.email);
+      this.emailComponent.setInput(this.loginUser.email);
+    }
     this.email = this.loginUser.email;
 
     // name
-    this.nameComponent.setName(this.loginUser.name);
+    if(null != this.nameComponent) {
+      if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+      this.nameComponent.setInput(this.loginUser.name);
+    }
     this.name = this.loginUser.name;
   
     // nickname
-    this.nicknameComponent.setNickname(this.loginUser.nickname);
+    if(null != this.nicknameComponent) {
+      if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+      this.nicknameComponent.setInput(this.loginUser.nickname);
+    }
     this.nickname = this.loginUser.nickname;
 
     // thumbnail
@@ -300,9 +329,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent : ",myEvent);
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
 
-    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    if(myEvent.isNotValid()) {
+      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+      // TODO - Error Logger
+      return;
+    }
 
-      if(this.myEventService.KEY_USER_CUR_PASSWORD === myEvent.key) {
+    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
         if(isDebug) console.log("my-info / onChangedFromChild / myEvent.value : ",myEvent.value);
@@ -352,7 +387,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
           }// end if
         }); 
 
-      } else if(this.myEventService.KEY_USER_NEW_PASSWORD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
 
@@ -381,7 +416,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         } // end if
         // end KEY_USER_NEW_PASSWORD
 
-      } else if(this.myEventService.KEY_USER_RE_PASSWORD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_RE_PASSWORD)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
 
@@ -409,7 +444,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         } // end if
         // end KEY_USER_RE_PASSWORD
 
-      } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NAME");
 
@@ -423,7 +458,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewProp("name", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NAME
 
-      } else if(this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
 
@@ -437,7 +472,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewProp("nickname", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NICKNAME
 
-      } else if(this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
 
@@ -451,7 +486,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewProp("thumbnail", myEvent.value);
         // end if - ON CHANGE - KEY_USER_THUMBNAIL
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
 
@@ -466,7 +501,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewMobileHead(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_HEAD
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
 
@@ -481,7 +516,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewMobileBody(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_BODY
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
 
@@ -491,13 +526,12 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
           return;
         }
 
-        // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+        // 1. loginUser객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
         // 새로운 전화번호라면 변수에 저장합니다.
         this.updateNewMobileTail(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_TAIL
 
-
-      } else if(this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
 
@@ -510,7 +544,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewBirthYear(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_YEAR
 
-      } else if(this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
 
@@ -523,7 +557,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewBirthMonth(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_MONTH
 
-      } else if(this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
 
@@ -536,7 +570,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.updateNewBirthDay(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_DAY
 
-      } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
 
         if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
 
@@ -551,43 +585,9 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
       } // end if - ON CHANGE
     
-    } else if(this.myEventService.ON_CHANGE_NOT_VALID === myEvent.eventName) {
-      
-      // 입력 내용이 변했습니다. 
-      // 하지만 문제가 있는 경우의 처리입니다.
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
 
-      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID");
-
-      if(myEvent.isNotValid()) {
-        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
-        // TODO - Error Logger
-        return;
-      }
-
-      if(myEvent.hasNotMetaObj()) {
-        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
-        // TODO - Error Logger
-        return;
-      }
-
-      let history = myEvent.digMetaProp(["history"]);
-      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ",history);
-      if(null == history) {
-        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
-        // TODO - Error Logger
-        return;
-      }
-
-      let key:string = myEvent.digMetaProp(["history","key"]);
-      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ",key);
-      if(null == key || "" == key) {
-        if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
-        // TODO - Error Logger
-        return;
-      }
-
-      // history 객체로 분석, 처리합니다.
-
+      this.myEventService.onChangeNotValid(myEvent);
 
     } // end if
 
@@ -798,8 +798,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewProp(key:string, newValue:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewProp / init");
 
     if(null == key || "" == key) {
@@ -811,7 +811,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let valueFromDB:string = this.loginUser.thumbnail;
+    let valueFromDB:string = this.loginUser[key];
     if(valueFromDB !== newValue) {
       // 1-1. 변경된 값이라면 업데이트.
       if(null != this[key]) {
@@ -845,6 +845,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
     let hasChanged:boolean = this.checkUserInfoChanged();
     if(isDebug) console.log("my-info / onClickSave / hasChanged : ",hasChanged);
+    if(isDebug) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
     if(hasChanged) {
       // 변경되었다면 저장합니다.
       this.userService.updateUserByUser(

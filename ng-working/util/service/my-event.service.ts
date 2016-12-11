@@ -2,6 +2,9 @@ import { Injectable }             from '@angular/core';
 import { MyEvent }                from '../model/my-event';
 import { MyChecker }              from '../model/my-checker';
 
+import { DefaultComponent }       from '../../widget/input/default/default.component';
+import { DefaultMeta }            from '../../widget/input/default/model/default-meta';
+
 @Injectable()
 export class MyEventService {
 
@@ -238,6 +241,192 @@ export class MyEventService {
         new MyEvent(uniqueId,eventName,key,value,metaObj,myChecker);
 
         return myEvent;
+    }
+
+    // 변경된 내용이 문제가 있을 경우의 처리의 모음. 
+    // 여러 컴포넌트에서 공통적으로 사용.
+    public onChangeNotValid(myEvent:MyEvent) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("my-info / onChangedFromChild / init");
+
+
+        // 입력 내용이 변했습니다. 
+        // 하지만 문제가 있는 경우의 처리입니다.
+
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID");
+
+        if(myEvent.hasNotMetaObj()) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
+            // TODO - Error Logger
+            return;
+        }
+
+        let history = myEvent.searchMetaProp(["history"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ",history);
+        if(null == history) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let key:string = myEvent.searchMetaProp(["history","key"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ",key);
+        if(null == key || "" == key) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let value:string = myEvent.searchMetaProp(["history","value"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / value : ",value);
+        if(null == key || "" == key) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / value is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let view:DefaultComponent = myEvent.searchMetaProp(["view"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / view : ",view);
+        if(null == view) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / view is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        // history 객체로 분석, 처리합니다.
+        if(myEvent.hasKey(this.KEY_USER_NAME)) {
+
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME");
+
+            if("regexInclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexInclude");
+
+                if(myEvent.isSameRegExp(/^[ㄱ-ㅎㅏ-ㅣ가-힣 ]+$/g, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "한글만 입력 가능합니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
+              
+            } else if("regexExclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexExclude");
+
+                if(myEvent.isSameRegExp(/^ /g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /^ /g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "첫글자로 빈칸을 입력하실 수 없습니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } else if(myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "빈칸을 연속으로 입력하실 수 없습니다.",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } // end if          
+
+            } // end if
+
+        } else if(myEvent.hasKey(this.KEY_USER_NICKNAME)) {
+
+            if("regexInclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexInclude");
+
+                if(myEvent.isSameRegExp(/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9 ]+$/g, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "한글,영문,숫자만 입력 가능합니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
+              
+            } else if("regexExclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexExclude");
+
+                if(myEvent.isSameRegExp(/^ /g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /^ /g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "첫글자로 빈칸을 입력하실 수 없습니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } else if(myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "빈칸을 연속으로 입력하실 수 없습니다.",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } // end if          
+
+            } // end if
+
+        } // end if        
+
+    } // end method
+
+    public getDefaultMetaListMyInfo() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+          new DefaultMeta(
+            // public title:string
+            "이메일",
+            // public placeholder:string
+            "이메일을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_EMAIL,
+            // public checkerKey:string
+            "user_email"
+          ),
+          new DefaultMeta(
+            // public title:string
+            "이름",
+            // public placeholder:string
+            "이름을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NAME,
+            // public checkerKey:string
+            "user_name"
+          ),
+          new DefaultMeta(
+            // public title:string
+            "닉네임",
+            // public placeholder:string
+            "닉네임을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NICKNAME,
+            // public checkerKey:string
+            "user_nickname"
+          )
+        ];        
+
+        return defaultMetaList;
     }
 
 

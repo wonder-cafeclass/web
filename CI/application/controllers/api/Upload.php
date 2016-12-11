@@ -73,8 +73,11 @@ class Upload extends MY_REST_Controller {
         $config['allowed_types']        = 'gif|jpg|png|jpeg';
         $config['max_size']             = 100; // kb?
 
-        $config['min_width']            = 150; // 최소 150px 이상이어야 합니다.
-        $config['min_height']           = 150;  
+        // $config['min_width']            = 150; // 최소 150px 이상이어야 합니다.
+        // $config['min_height']           = 150;  
+
+        $config['min_width']            = 50; // 최소 50px 이상이어야 합니다.
+        $config['min_height']           = 50;
 
         $config['max_width']            = 1024;
         $config['max_height']           = 768;

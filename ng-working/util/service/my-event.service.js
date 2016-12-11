@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_event_1 = require('../model/my-event');
+var default_meta_1 = require('../../widget/input/default/model/default-meta');
 var MyEventService = (function () {
     function MyEventService() {
         // 부모 자식간의 컴포넌트 통신시 어떤 이벤트가 발생했는지 정의하는 서비스 객체.
@@ -198,6 +199,169 @@ var MyEventService = (function () {
         var uniqueId = this.getUniqueIdx();
         var myEvent = new my_event_1.MyEvent(uniqueId, eventName, key, value, metaObj, myChecker);
         return myEvent;
+    };
+    // 변경된 내용이 문제가 있을 경우의 처리의 모음. 
+    // 여러 컴포넌트에서 공통적으로 사용.
+    MyEventService.prototype.onChangeNotValid = function (myEvent) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / onChangedFromChild / init");
+        // 입력 내용이 변했습니다. 
+        // 하지만 문제가 있는 경우의 처리입니다.
+        if (isDebug)
+            console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID");
+        if (myEvent.hasNotMetaObj()) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
+            // TODO - Error Logger
+            return;
+        }
+        var history = myEvent.searchMetaProp(["history"]);
+        if (isDebug)
+            console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ", history);
+        if (null == history) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+        var key = myEvent.searchMetaProp(["history", "key"]);
+        if (isDebug)
+            console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ", key);
+        if (null == key || "" == key) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+        var value = myEvent.searchMetaProp(["history", "value"]);
+        if (isDebug)
+            console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / value : ", value);
+        if (null == key || "" == key) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / value is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+        var view = myEvent.searchMetaProp(["view"]);
+        if (isDebug)
+            console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / view : ", view);
+        if (null == view) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / view is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+        // history 객체로 분석, 처리합니다.
+        if (myEvent.hasKey(this.KEY_USER_NAME)) {
+            if (isDebug)
+                console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME");
+            if ("regexInclude" === key) {
+                if (isDebug)
+                    console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexInclude");
+                if (myEvent.isSameRegExp(/^[ㄱ-ㅎㅏ-ㅣ가-힣 ]+$/g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "한글만 입력 가능합니다", 
+                    // isTimeout:Boolean
+                    false); // end if
+                } // end if
+            }
+            else if ("regexExclude" === key) {
+                if (isDebug)
+                    console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexExclude");
+                if (myEvent.isSameRegExp(/^ /g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /^ /g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "첫글자로 빈칸을 입력하실 수 없습니다", 
+                    // isTimeout:Boolean
+                    false); // end if
+                }
+                else if (myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "빈칸을 연속으로 입력하실 수 없습니다.", 
+                    // isTimeout:Boolean
+                    false); // end if
+                } // end if          
+            } // end if
+        }
+        else if (myEvent.hasKey(this.KEY_USER_NICKNAME)) {
+            if ("regexInclude" === key) {
+                if (isDebug)
+                    console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexInclude");
+                if (myEvent.isSameRegExp(/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9 ]+$/g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "한글,영문,숫자만 입력 가능합니다", 
+                    // isTimeout:Boolean
+                    false); // end if
+                } // end if
+            }
+            else if ("regexExclude" === key) {
+                if (isDebug)
+                    console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexExclude");
+                if (myEvent.isSameRegExp(/^ /g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /^ /g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "첫글자로 빈칸을 입력하실 수 없습니다", 
+                    // isTimeout:Boolean
+                    false); // end if
+                }
+                else if (myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "빈칸을 연속으로 입력하실 수 없습니다.", 
+                    // isTimeout:Boolean
+                    false); // end if
+                } // end if          
+            } // end if
+        } // end if        
+    }; // end method
+    MyEventService.prototype.getDefaultMetaListMyInfo = function () {
+        var defaultMetaList = [
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "이메일", 
+            // public placeholder:string
+            "이메일을 입력해주세요", 
+            // public eventKey:string
+            this.KEY_USER_EMAIL, 
+            // public checkerKey:string
+            "user_email"),
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "이름", 
+            // public placeholder:string
+            "이름을 입력해주세요", 
+            // public eventKey:string
+            this.KEY_USER_NAME, 
+            // public checkerKey:string
+            "user_name"),
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "닉네임", 
+            // public placeholder:string
+            "닉네임을 입력해주세요", 
+            // public eventKey:string
+            this.KEY_USER_NICKNAME, 
+            // public checkerKey:string
+            "user_nickname")
+        ];
+        return defaultMetaList;
     };
     MyEventService = __decorate([
         core_1.Injectable(), 

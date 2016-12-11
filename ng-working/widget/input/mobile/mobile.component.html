@@ -21,14 +21,14 @@
 	<div 	[ngClass]="{'rb-focus':isFocusMobileHead,'rb-blur':!isFocusMobileHead}"
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileHead
-				(click)="onClickMobileHead($event, inputMobileHead)"
-				(focus)="onFocusMobileHead($event, inputMobileHead)"
-				(keydown.tab)="onKeydownTabMobileHead($event, inputMobileHead)"
-				(keydown.shift.tab)="onKeydownTabShiftMobileHead($event, inputMobileHead)"
+				(click)="onClickHead($event, inputMobileHead)"
+				(focus)="onFocusHead($event, inputMobileHead)"
+				(keydown.tab)="onKeydownTabHead($event, inputMobileHead)"
+				(keydown.shift.tab)="onKeydownTabShiftHead($event, inputMobileHead)"
 				(keyup)="onKeyupHead($event, inputMobileHead, inputMobileBody)"
-				(blur)="onBlurMobileHead($event, inputMobileHead, inputMobileBody)"
-				class="form-control input-glass" 
-				value={{mobileHeadPrev}}
+				(blur)="onBlurHead($event, inputMobileHead, inputMobileBody)"
+				[(ngModel)]="ngModelHead"
+				class="form-control input-glass"
 				placeholder={{mobileHeadPrev}}>
 
 		<!-- tooltip -->
@@ -53,14 +53,14 @@
 	<div 	[ngClass]="{'rb-focus':isFocusMobileBody,'rb-blur':!isFocusMobileBody}"
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileBody
-				(click)="onClickMobileBody($event, inputMobileBody)"
-				(focus)="onFocusMobileBody($event, inputMobileBody)"
-				(keydown.tab)="onKeydownTabMobileBody($event, inputMobileBody)"
-				(keydown.shift.tab)="onKeydownTabShiftMobileBody($event, inputMobileBody)"
+				(click)="onClickBody($event, inputMobileBody)"
+				(focus)="onFocusBody($event, inputMobileBody)"
+				(keydown.tab)="onKeydownTabBody($event, inputMobileBody)"
+				(keydown.shift.tab)="onKeydownTabShiftBody($event, inputMobileBody)"
 				(keyup)="onKeyupBody($event, inputMobileBody, inputMobileTail)"
-				(blur)="onBlurMobileBody($event, inputMobileBody, inputMobileTail)"
-				class="form-control input-glass" 
-				value={{mobileBodyPrev}}
+				(blur)="onBlurBody($event, inputMobileBody, inputMobileTail)"
+				[(ngModel)]="ngModelBody"
+				class="form-control input-glass"
 				placeholder="****">
 
 		<!-- tooltip -->
@@ -85,14 +85,14 @@
 	<div 	[ngClass]="{'rb-focus':isFocusMobileTail,'rb-blur':!isFocusMobileTail}"
 			class="btn-box-phone radius-border">
 		<input 	#inputMobileTail
-				(click)="onClickMobileTail($event, inputMobileTail, inputMobileBody)"
-				(focus)="onFocusMobileTail($event, inputMobileTail)"
-				(keydown.tab)="onKeydownTabMobileTail($event, inputMobileTail)"
-				(keydown.shift.tab)="onKeydownTabShiftMobileTail($event, inputMobileTail)"
+				(click)="onClickTail($event, inputMobileTail, inputMobileBody)"
+				(focus)="onFocusTail($event, inputMobileTail)"
+				(keydown.tab)="onKeydownTabTail($event, inputMobileTail)"
+				(keydown.shift.tab)="onKeydownTabShiftTail($event, inputMobileTail)"
 				(keyup)="onKeyupTail($event, inputMobileTail)"
-				(blur)="onBlurMobileTail($event, inputMobileTail)"
-				class="form-control input-glass" 
-				value={{mobileTailPrev}}
+				(blur)="onBlurTail($event, inputMobileTail)"
+				[(ngModel)]="ngModelTail"
+				class="form-control input-glass"
 				placeholder="****">
 
 

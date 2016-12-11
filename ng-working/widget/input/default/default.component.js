@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var default_meta_1 = require('../../../widget/input/default/model/default-meta');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var DefaultComponent = (function () {
     function DefaultComponent(myCheckerService, myEventService, watchTower) {
@@ -23,16 +24,20 @@ var DefaultComponent = (function () {
         this.tooltipMsg = null;
         this.isShowTooltip = false;
         this.isFocus = false;
-        this.isValid = false;
-        // @ User Custom
-        this.title = "No Title";
-        this.placeholder = "No PlaceHolder";
-        this.eventKey = "";
-        this.checkerKey = "";
+        this.isValid = true;
         this.isDisabled = false;
-        this.eventKey = this.myEventService.KEY_USER_NAME;
-        this.checkerKey = "user_name";
-    }
+        // set default meta
+        this.meta =
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "No Title", 
+            // public placeholder:string
+            "No PlaceHolder", 
+            // public eventKey:string
+            "", 
+            // public checkerKey:string
+            "");
+    } // end constructor
     DefaultComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -83,7 +88,7 @@ var DefaultComponent = (function () {
         if (isDebug)
             console.log("default / setMyChecker / 시작");
         if (null == this.myChecker) {
-            this.myChecker = this.myCheckerService.getMyChecker(this.checkerKey);
+            this.myChecker = this.myCheckerService.getMyChecker(this.meta.checkerKey);
             if (isDebug)
                 console.log("default / setMyChecker / this.myChecker : ", this.myChecker);
         }
@@ -131,7 +136,7 @@ var DefaultComponent = (function () {
         if (this.isOK(input)) {
             if (isDebug)
                 console.log("default / setInput / updated!");
-            this.inputStrPrev = input;
+            this.ngModelInput = this.inputStrPrev = input;
         }
     };
     DefaultComponent.prototype.initInput = function () {
@@ -176,20 +181,33 @@ var DefaultComponent = (function () {
         this.isFocus = false;
     };
     DefaultComponent.prototype.onBlur = function (event, elementInput) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onBlur / 시작");
         event.stopPropagation();
         event.preventDefault();
-        if (null == this.myCheckerService) {
-            return;
-        }
         if (this.isFocus) {
             this.isFocus = false;
         } // end if
         var inputStr = elementInput.value;
-        this.onCheckInputValid(inputStr);
+        if (inputStr == this.inputStrPrev) {
+            if (isDebug)
+                console.log("default / onBlur / 중단 / 동일한 내용이라면 중단합니다.");
+            return;
+        }
+        var isValidInput = this.onCheckInputValid(inputStr);
+        if (isDebug)
+            console.log("default / onBlur / isValidInput : ", isValidInput);
+        if (isValidInput) {
+            if (isDebug)
+                console.log("default / onBlur / 입력이 문제없습니다.");
+            this.hideWarningTooptip();
+        }
     }; // end method
     DefaultComponent.prototype.emitEventOnChange = function (value) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / emitEventOnChange / 시작");
         if (null == value) {
@@ -201,7 +219,7 @@ var DefaultComponent = (function () {
         // public eventName:string
         this.myEventService.ON_CHANGE, 
         // public key:string
-        this.eventKey, 
+        this.meta.eventKey, 
         // public value:string
         value, 
         // public metaObj:any
@@ -213,8 +231,8 @@ var DefaultComponent = (function () {
             console.log("default / emitEventOnChange / Done!");
     };
     DefaultComponent.prototype.emitEventOnChangeNotValid = function (value, metaObj) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / emitEventOnChangeNotValid / 시작");
         if (null == value) {
@@ -231,7 +249,7 @@ var DefaultComponent = (function () {
         // public eventName:string
         this.myEventService.ON_CHANGE_NOT_VALID, 
         // public key:string
-        this.eventKey, 
+        this.meta.eventKey, 
         // public value:string
         value, 
         // public metaObj:any
@@ -244,8 +262,8 @@ var DefaultComponent = (function () {
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     DefaultComponent.prototype.showTooltipFailWarning = function (msg, isTimeout) {
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / showTooltipFailWarning / init");
         if (isDebug)
@@ -264,6 +282,7 @@ var DefaultComponent = (function () {
     };
     DefaultComponent.prototype.hideWarningTooptip = function () {
         this.tooltipMsg = null;
+        this.isValid = true;
         this.isShowTooltip = false;
     };
     DefaultComponent.prototype.hideTooltip = function (sec) {
@@ -279,22 +298,24 @@ var DefaultComponent = (function () {
     // @ Desc : 새로 입력받은 값이 문제가 없는지 확인합니다.
     // 입력받은 모든 값은 문자열입니다.
     DefaultComponent.prototype.onCheckInputValid = function (input) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onCheckInputValid / init");
+        if (isDebug)
+            console.log("default / onCheckInputValid / input : ", input);
         // 여기서 유저가 설정한 조건이 필요합니다.
         // 비어있는 문자열이라면 검사하지 않습니다.
         if (null == input || "" == input) {
             if (isDebug)
                 console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
-            return;
+            return true;
         }
         // 바뀌지 않았다면 검사하지 않습니다.
         if (this.inputStrPrev === input) {
             if (isDebug)
                 console.log("default / onCheckInputValid / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
-            return;
+            return true;
         }
         // MyChecker로 검사, 예외 사항에 대한 처리.
         var isNotOK = this.isNotOK(input);
@@ -312,7 +333,7 @@ var DefaultComponent = (function () {
                         console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우.");
                     this.showTooltipFailWarning(history_3.msg, true);
                     // 넘는 문자열은 지웁니다.
-                    this.ngModelInput = input = input.slice(0, history_3.value);
+                    this.inputStrPrev = input = input.slice(0, history_3.value);
                     this.isValid = false;
                     if (isDebug)
                         console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
@@ -321,12 +342,17 @@ var DefaultComponent = (function () {
                     // 최소 문자 갯수보다 적은 경우.
                     if (isDebug)
                         console.log("default / onCheckInputValid / 최소 문자 갯수보다 적은 경우.");
+                    // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
+                    // 예외적으로 true 반환.
+                    return true;
                 } // end if
                 // 모든 예외 사항에 대해 부모 객체에 전달합니다.
                 var metaObj = {
                     view: this,
                     history: history_3
                 };
+                if (isDebug)
+                    console.log("default / onCheckInputValid / 모든 예외 사항에 대해 부모 객체에 전달합니다.");
                 this.emitEventOnChangeNotValid(
                 // value:string
                 input, 
@@ -336,17 +362,23 @@ var DefaultComponent = (function () {
             else {
                 // TODO - 문제는 있으나 원인을 발견하지 못했습니다.
                 // 내부에서 처리할 수 없으므로 부모에게 전달, 조치합니다.
+                if (isDebug)
+                    console.log("default / onCheckInputValid / 문제는 있으나 원인을 발견하지 못했습니다.");
                 this.emitEventOnChangeNotValid(
                 // value:string
                 input, 
                 // metaObj
                 null);
-            } // end if      
+            } // end if 
+            return false;
         }
         else {
             // 정상적인 값입니다. 
             // 부모 객체에 전파합니다.
+            if (isDebug)
+                console.log("default / onCheckInputValid / 정상적인 값입니다.");
             this.emitEventOnChange(input);
+            return true;
         } // end if
     }; // end method
     DefaultComponent.prototype.onKeyup = function (event, elementInput) {
@@ -357,28 +389,51 @@ var DefaultComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         var inputStr = elementInput.value;
-        this.onCheckInputValid(inputStr);
+        if (inputStr == this.inputStrPrev) {
+            if (isDebug)
+                console.log("default / onKeyup / 중단 / 동일한 내용이라면 중단합니다.");
+            return;
+        }
+        var isValidInput = this.onCheckInputValid(inputStr);
+        if (isDebug)
+            console.log("default / onKeyup / isValidInput : ", isValidInput);
+        if (isValidInput) {
+            if (isDebug)
+                console.log("default / onKeyup / 입력이 문제없습니다. 저장합니다.");
+            this.inputStrPrev = inputStr;
+            this.hideWarningTooptip();
+        }
+        else {
+            if (isDebug)
+                console.log("default / onKeyup / 입력이 유효하지 않습니다. 이전으로 되돌립니다.");
+            this.ngModelInput = this.inputStrPrev;
+            if (isDebug)
+                console.log("default / onKeyup / 입력이 유효하지 않습니다. 이전으로 되돌립니다. / Done");
+        }
     }; // end method - keyup
+    DefaultComponent.prototype.getEventKey = function () {
+        if (this.meta.hasEventKey()) {
+            return this.meta.eventKey;
+        }
+        return "";
+    };
+    DefaultComponent.prototype.hasEventKey = function (eventKey) {
+        if (null == eventKey || "" === eventKey) {
+            return false;
+        }
+        if (eventKey === this.getEventKey()) {
+            return true;
+        }
+        return false;
+    };
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
     ], DefaultComponent.prototype, "emitter", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', String)
-    ], DefaultComponent.prototype, "title", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], DefaultComponent.prototype, "placeholder", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], DefaultComponent.prototype, "eventKey", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], DefaultComponent.prototype, "checkerKey", void 0);
+        __metadata('design:type', default_meta_1.DefaultMeta)
+    ], DefaultComponent.prototype, "meta", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)

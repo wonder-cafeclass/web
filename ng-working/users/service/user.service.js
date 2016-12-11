@@ -166,8 +166,8 @@ var UserService = (function () {
         mobileArr[2]);
     };
     UserService.prototype.updateUserMutableProps = function (apiKey, email, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / updateUserMutableProps / 시작");
         if (isDebug)

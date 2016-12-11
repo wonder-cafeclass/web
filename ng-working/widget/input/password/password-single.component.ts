@@ -39,9 +39,7 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   isShowTooltip:boolean=false;
 
   password:string="";
-  
-  isValid:boolean = false;
-  isWarning:boolean = false;
+  isValid:boolean = true;
 
   tooltipMsg:string=null;
   tooltipPasswordNeeds:string="패스워드를 먼저 입력해주세요.";
@@ -651,5 +649,10 @@ export class PasswordSingleComponent implements OnInit, AfterViewInit {
   public setplaceholder(placeholder:string) :void {
     this.placeholder = placeholder;
   }  
+
+  // REMOVE ME
+  /*
+  // isWarning:boolean = false;
+  */
 
 }

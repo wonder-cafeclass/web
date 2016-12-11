@@ -858,39 +858,6 @@ export class MyCheckerService {
 
             let inputStr:string = input;
 
-            // 음수는 검사 영역에 포함되지 않습니다.
-            let max = -1;
-            if(null != myChecker.max) {
-                max = myChecker.max;
-            }
-            if(0 < max && max < inputStr.length) {
-
-                this.history.reason = 
-                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
-                this.history.key = "max";
-                this.history.value = max;
-
-                return false;
-            }
-
-            let min = -1;
-            if(null != myChecker.min) {
-                min = myChecker.min;
-            }
-            if(0 <= min && inputStr.length < min) {
-
-                this.history.reason = 
-                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
-                this.history.key = "min";
-                this.history.value = min;
-
-                return false;
-            }
-
             let regexExclude:RegExp = myChecker.regexExclude;
             if(null != regexExclude) {
                 // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
@@ -973,6 +940,40 @@ export class MyCheckerService {
                     } // end if
                 } // end for
             } // end for
+
+            // 문자열의 최소, 최대 길이는 가장 마지막에 검사합니다.
+            // 음수는 검사 영역에 포함되지 않습니다.
+            let max = -1;
+            if(null != myChecker.max) {
+                max = myChecker.max;
+            }
+            if(0 < max && max < inputStr.length) {
+
+                this.history.reason = 
+                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
+                this.history.key = "max";
+                this.history.value = max;
+
+                return false;
+            }
+
+            let min = -1;
+            if(null != myChecker.min) {
+                min = myChecker.min;
+            }
+            if(0 <= min && inputStr.length < min) {
+
+                this.history.reason = 
+                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
+                this.history.key = "min";
+                this.history.value = min;
+
+                return false;
+            }            
 
 
         } else if(this.TYPE_NUMBER === myChecker.type) {

@@ -6,20 +6,12 @@
 			<tr> 
 				<td class="layout border-right">
 
-					<!-- Default Input : Name -->
+					<!-- Default Input : Email -->
 					<widget-input-default
-					[title]="titleArr[0]"
-					[placeholder]="placeholderArr[0]"
-					[eventKey]="eventKeyArr[0]"
-					[checkerKey]="checkerKeyArr[0]"
+					[isDisabled]="true"
+					[meta]="defaultMetaList[0]"
 					(emitter)="onChangedFromChild($event)">
 					</widget-input-default>
-
-					<!-- Email -->
-					<email	
-					[isDisabled]="true"
-					(emitter)="onChangedFromChild($event)">
-					</email>
 
 					<!-- Passwords Triplet -->
 					<passwords-triplet 
@@ -29,16 +21,18 @@
 					(emitter)="onChangedFromChild($event)">
 					</passwords-triplet>
 
-					<!-- 이름 -->
-					<name 
+					<!-- Default Input : Name -->
+					<widget-input-default
 					[isDisabled]="true"
+					[meta]="defaultMetaList[1]"
 					(emitter)="onChangedFromChild($event)">
-					</name>
+					</widget-input-default>
 
-					<!-- 닉네임 -->
-					<nickname 	
+					<!-- Default Input : Nickname -->
+					<widget-input-default
+					[meta]="defaultMetaList[2]"
 					(emitter)="onChangedFromChild($event)">
-					</nickname>
+					</widget-input-default>
 
 					<!-- EOL -->
 

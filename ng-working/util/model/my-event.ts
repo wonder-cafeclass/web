@@ -1,8 +1,10 @@
 import { MyChecker } from './my-checker';
+import { MyPropPicker } from './my-prop-picker';
 
 export class MyEvent {
 
 	public parentEventList:MyEvent[];
+	private myPropPicker:MyPropPicker;
 
 	constructor(
 		public id:number,
@@ -11,7 +13,9 @@ export class MyEvent {
 	    public value:string,
 	    public metaObj:any,
 	    public myChecker:MyChecker
-	) {}
+	) {
+		this.myPropPicker = new MyPropPicker();
+	}
 
 	public isNotValid() :boolean {
 		return !this.isValid();
@@ -47,71 +51,25 @@ export class MyEvent {
 		return hasMeta;
 	}
 
-	public digMetaProp(keys:string[]) :any {
-
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
-	    if(isDebug) console.log("my-event / digMetaProp / init");
-
-		if(null == keys || 0 === keys.length) {
-			return null;
-		}
-
-		if(isDebug) console.log("my-event / digMetaProp / digMetaPropRecursive");
-
-		return this.digMetaPropRecursive(keys, this.metaObj);
-	}
-
-	// REFACTOR ME - key value 처리 util을 만들어야 할 듯.
-	private loopCnt:number = 0;
-	private loopCntMax:number = 5;
-	private digMetaPropRecursive(keys:string[], metaObj) :any {
+	public searchMetaProp(keys:string[]) :any {
 
 	    // let isDebug:boolean = true;
 	    let isDebug:boolean = false;
-	    if(isDebug) console.log("my-event / digMetaPropRecursive / init");
-
-		if(this.loopCntMax < this.loopCnt) {
-			// 5 depths 이상일 경우는 중단.
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / 5 depths 이상일 경우");
-			return null;
-		}
+	    if(isDebug) console.log("my-event / searchMetaProp / init");
 
 		if(null == keys || 0 === keys.length) {
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / keys is not valid!");
-			return metaObj;
-		}
-		if(null == metaObj) {
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / metaObj is not valid!");
+			if(isDebug) console.log("my-event / searchMetaProp / 중단 / keys is not valid!");
 			return null;
 		}
 
-		if(isDebug) console.log("my-event / digMetaPropRecursive / BEFORE / keys.length : ",keys.length);
-
-		let key:string = keys.shift();
-		if(null == key || "" === key) {
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / key is not valid!");
-			return metaObj;
-		}
-		if(isDebug) console.log("my-event / digMetaPropRecursive / AFTER / keys.length : ",keys.length);
-		if(isDebug) console.log("my-event / digMetaPropRecursive / AFTER / key : ",key);
-
-		if(null == metaObj[key]) {
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / metaObj[key] is not valid!");
+		if(null == this.metaObj) {
+			if(isDebug) console.log("my-event / searchMetaProp / 중단 / this.metaObj is not valid!");
 			return null;
 		}
 
-		let nextMetaObj = metaObj[key];
-		if(0 == keys.length) {
-			if(isDebug) console.log("my-event / digMetaPropRecursive / 중단 / No more key!");
-			return nextMetaObj;
-		}
+		if(isDebug) console.log("my-event / searchMetaProp / this.myPropPicker.search");
 
-		this.loopCnt++;
-
-		if(isDebug) console.log("my-event / digMetaPropRecursive / this.loopCnt : ",this.loopCnt);
-
-		return this.digMetaPropRecursive(keys, nextMetaObj);
+		return this.myPropPicker.search(keys, this.metaObj);
 	}
 
 	public copy() :any {
@@ -148,5 +106,48 @@ export class MyEvent {
 		}		
 
 		return true;
-	}		
+	}	
+
+	public hasEventName(eventName:string) :boolean {
+
+		if(null == eventName || "" === eventName) {
+			return false;
+		}
+
+		if(this.eventName === eventName) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public hasKey(key:string) :boolean {
+
+		if(null == key || "" === key) {
+			return false;
+		}
+
+		if(this.key === key) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public isSameRegExp(left, right) :boolean {
+		if(null == left) {
+			return false;
+		}
+		if(null == right) {
+			return false;
+		}
+		let leftStr:string = "" + left;
+		let rightStr:string = "" + right;
+
+		if(leftStr === rightStr) {
+			return true;
+		}
+
+		return false;
+	}
 }

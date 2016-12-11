@@ -9,26 +9,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var email_component_1 = require('../../../widget/input/email/email.component');
+var router_1 = require('@angular/router');
 var profile_img_upload_component_1 = require('../../../widget/input/profile-img-upload/profile-img-upload.component');
 var passwords_triplet_component_1 = require('../../../widget/input/password/passwords-triplet.component');
 var mobile_component_1 = require('../../../widget/input/mobile/mobile.component');
-var name_component_1 = require('../../../widget/input/name/name.component');
 var gender_component_1 = require('../../../widget/input/gender/gender.component');
 var birthday_component_1 = require('../../../widget/input/birthday/birthday.component');
-var nickname_component_1 = require('../../../widget/input/nickname/nickname.component');
+var default_component_1 = require('../../../widget/input/default/default.component');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var user_service_1 = require('../../../users/service/user.service');
 var MyInfoComponent = (function () {
-    function MyInfoComponent(myEventService, myLoggerService, myCheckerService, userService, watchTower) {
+    function MyInfoComponent(myEventService, myLoggerService, myCheckerService, userService, watchTower, router) {
         this.myEventService = myEventService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.userService = userService;
         this.watchTower = watchTower;
+        this.router = router;
         this.emitter = new core_1.EventEmitter();
         this.gender = "";
         // @ mutables - done
@@ -43,27 +43,27 @@ var MyInfoComponent = (function () {
         this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
         this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
         this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
-        this.titleArr = [
-            "이름 - TEST"
-        ];
-        this.placeholderArr = [
-            "이름입력 - TEST"
-        ];
-        this.eventKeyArr = [
-            this.myEventService.KEY_USER_NAME
-        ];
-        this.checkerKeyArr = [
-            "user_name"
-        ];
+        this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
     }
     MyInfoComponent.prototype.ngOnInit = function () { };
     MyInfoComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / ngAfterViewInit");
+        this.setDefaultComponents();
+        this.asyncViewPack();
+    };
+    MyInfoComponent.prototype.setDefaultComponents = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("my-info / ngAfterViewInit");
-        this.asyncViewPack();
+            console.log("my-info / setDefaultComponents / 시작");
+        // DefaultComponent들을 세팅
+        this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+        this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+        this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
     };
     MyInfoComponent.prototype.asyncViewPack = function () {
         var _this = this;
@@ -97,27 +97,43 @@ var MyInfoComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     MyInfoComponent.prototype.setLoginUser = function () {
-        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("my-info / setLoginUser / 시작");
-        // 페이지 이동으로 로그인 알림을 받지 못할 경우는 직접 가져옵니다.
+        // 로그인 데이터를 가져옵니다.
         var loginUser = this.watchTower.getLoginUser();
         if (null != loginUser) {
             this.loginUser = loginUser;
             this.copyUser();
             this.fillViewUserInfo();
         }
-        // Subscribe login user
-        this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
+        else {
+            // 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.
+            // TODO - 페이지 리다이렉트 데이터를 전달해야 합니다.
+            this.router.navigate(['/login']);
+        } // end if
+    };
+    // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+    MyInfoComponent.prototype.getInput = function (eventKey) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-info / getInput / init");
+        var target = null;
+        this.inputComponentList.forEach(function (inputComponent) {
             if (isDebug)
-                console.log("my-info / setLoginUser : ", loginUser);
-            // 로그인한 유저 정보가 들어왔습니다.
-            _this.loginUser = loginUser;
-            _this.copyUser();
-            _this.fillViewUserInfo();
-        });
+                console.log("my-info / getInput / eventKey : ", eventKey);
+            if (isDebug)
+                console.log("my-info / getInput / inputComponent.getEventKey() : ", inputComponent.getEventKey());
+            if (inputComponent.hasEventKey(eventKey)) {
+                if (isDebug)
+                    console.log("my-info / getInput / inputComponent : ", inputComponent);
+                target = inputComponent;
+                return;
+            }
+        }); // end for-each
+        return target;
     };
     MyInfoComponent.prototype.copyUser = function () {
         // let isDebug:boolean = true;
@@ -150,23 +166,37 @@ var MyInfoComponent = (function () {
         this.setLoginUser();
     };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("my-info / fillViewUserInfo");
         if (isDebug)
             console.log("my-info / fillViewUserInfo / this.loginUser : ", this.loginUser);
         if (null == this.loginUser) {
+            if (isDebug)
+                console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
             return;
         }
         // email
-        this.emailComponent.setEmail(this.loginUser.email);
+        if (null != this.emailComponent) {
+            if (isDebug)
+                console.log("my-info / fillViewUserInfo / this.loginUser.email : ", this.loginUser.email);
+            this.emailComponent.setInput(this.loginUser.email);
+        }
         this.email = this.loginUser.email;
         // name
-        this.nameComponent.setName(this.loginUser.name);
+        if (null != this.nameComponent) {
+            if (isDebug)
+                console.log("my-info / fillViewUserInfo / this.loginUser.name : ", this.loginUser.name);
+            this.nameComponent.setInput(this.loginUser.name);
+        }
         this.name = this.loginUser.name;
         // nickname
-        this.nicknameComponent.setNickname(this.loginUser.nickname);
+        if (null != this.nicknameComponent) {
+            if (isDebug)
+                console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", this.loginUser.nickname);
+            this.nicknameComponent.setInput(this.loginUser.nickname);
+        }
         this.nickname = this.loginUser.nickname;
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.loginUser.thumbnail);
@@ -204,8 +234,14 @@ var MyInfoComponent = (function () {
             console.log("my-info / onChangedFromChild / myEvent : ", myEvent);
         if (isDebug)
             console.log("my-info / onChangedFromChild / myEvent.key : ", myEvent.key);
-        if (this.myEventService.ON_CHANGE === myEvent.eventName) {
-            if (this.myEventService.KEY_USER_CUR_PASSWORD === myEvent.key) {
+        if (myEvent.isNotValid()) {
+            if (isDebug)
+                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+            // TODO - Error Logger
+            return;
+        }
+        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
                 if (isDebug)
@@ -251,7 +287,7 @@ var MyInfoComponent = (function () {
                     } // end if
                 });
             }
-            else if (this.myEventService.KEY_USER_NEW_PASSWORD === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
                 // 유효한 새로운 패스워드를 받았습니다.
@@ -278,7 +314,7 @@ var MyInfoComponent = (function () {
                     "성공! 새로운 비밀번호가 완벽합니다.");
                 } // end if
             }
-            else if (this.myEventService.KEY_USER_RE_PASSWORD === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_RE_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
                 if (this.passwordNew !== myEvent.value) {
@@ -303,7 +339,7 @@ var MyInfoComponent = (function () {
                     this.hasChanged = true;
                 } // end if
             }
-            else if (this.myEventService.KEY_USER_NAME === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NAME");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -315,7 +351,7 @@ var MyInfoComponent = (function () {
                 // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("name", myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -327,7 +363,7 @@ var MyInfoComponent = (function () {
                 // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("nickname", myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -339,7 +375,7 @@ var MyInfoComponent = (function () {
                 // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("thumbnail", myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -352,7 +388,7 @@ var MyInfoComponent = (function () {
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileHead(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -365,7 +401,7 @@ var MyInfoComponent = (function () {
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileBody(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -374,11 +410,11 @@ var MyInfoComponent = (function () {
                         console.log("my-info / onChangedFromChild / 중단 / 전화번호 마지막 4자리가 유효하지 않습니다.");
                     return;
                 }
-                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 1. loginUser객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileTail(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -389,7 +425,7 @@ var MyInfoComponent = (function () {
                 }
                 this.updateNewBirthYear(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -400,7 +436,7 @@ var MyInfoComponent = (function () {
                 }
                 this.updateNewBirthMonth(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -411,7 +447,7 @@ var MyInfoComponent = (function () {
                 }
                 this.updateNewBirthDay(myEvent.value);
             }
-            else if (this.myEventService.KEY_USER_GENDER === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
                 var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -423,41 +459,8 @@ var MyInfoComponent = (function () {
                 this.updateNewProp("gender", myEvent.value);
             } // end if - ON CHANGE
         }
-        else if (this.myEventService.ON_CHANGE_NOT_VALID === myEvent.eventName) {
-            // 입력 내용이 변했습니다. 
-            // 하지만 문제가 있는 경우의 처리입니다.
-            if (isDebug)
-                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID");
-            if (myEvent.isNotValid()) {
-                if (isDebug)
-                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
-                // TODO - Error Logger
-                return;
-            }
-            if (myEvent.hasNotMetaObj()) {
-                if (isDebug)
-                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
-                // TODO - Error Logger
-                return;
-            }
-            var history_1 = myEvent.digMetaProp(["history"]);
-            if (isDebug)
-                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ", history_1);
-            if (null == history_1) {
-                if (isDebug)
-                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
-                // TODO - Error Logger
-                return;
-            }
-            var key = myEvent.digMetaProp(["history", "key"]);
-            if (isDebug)
-                console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ", key);
-            if (null == key || "" == key) {
-                if (isDebug)
-                    console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
-                // TODO - Error Logger
-                return;
-            }
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
+            this.myEventService.onChangeNotValid(myEvent);
         } // end if
     }; // end method
     MyInfoComponent.prototype.isOKBirthday = function (birthYear, birthMonth, birthDay) {
@@ -635,8 +638,8 @@ var MyInfoComponent = (function () {
         }
     };
     MyInfoComponent.prototype.updateNewProp = function (key, newValue) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("my-info / updateNewProp / init");
         if (null == key || "" == key) {
@@ -649,7 +652,7 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewProp / 중단 / this.loginUserCopy is not valid!");
             return;
         }
-        var valueFromDB = this.loginUser.thumbnail;
+        var valueFromDB = this.loginUser[key];
         if (valueFromDB !== newValue) {
             // 1-1. 변경된 값이라면 업데이트.
             if (null != this[key]) {
@@ -684,6 +687,8 @@ var MyInfoComponent = (function () {
         var hasChanged = this.checkUserInfoChanged();
         if (isDebug)
             console.log("my-info / onClickSave / hasChanged : ", hasChanged);
+        if (isDebug)
+            console.log("my-info / onClickSave / this.loginUserCopy : ", this.loginUserCopy);
         if (hasChanged) {
             // 변경되었다면 저장합니다.
             this.userService.updateUserByUser(this.watchTower.getApiKey(), this.loginUserCopy).then(function (myResponse) {
@@ -852,21 +857,13 @@ var MyInfoComponent = (function () {
         __metadata('design:type', Object)
     ], MyInfoComponent.prototype, "emitter", void 0);
     __decorate([
-        core_1.ViewChild(email_component_1.EmailComponent), 
-        __metadata('design:type', email_component_1.EmailComponent)
-    ], MyInfoComponent.prototype, "emailComponent", void 0);
+        core_1.ViewChildren(default_component_1.DefaultComponent), 
+        __metadata('design:type', core_1.QueryList)
+    ], MyInfoComponent.prototype, "inputComponentList", void 0);
     __decorate([
         core_1.ViewChild(passwords_triplet_component_1.PasswordsTripletComponent), 
         __metadata('design:type', passwords_triplet_component_1.PasswordsTripletComponent)
     ], MyInfoComponent.prototype, "passwordsComponent", void 0);
-    __decorate([
-        core_1.ViewChild(name_component_1.NameComponent), 
-        __metadata('design:type', name_component_1.NameComponent)
-    ], MyInfoComponent.prototype, "nameComponent", void 0);
-    __decorate([
-        core_1.ViewChild(nickname_component_1.NicknameComponent), 
-        __metadata('design:type', nickname_component_1.NicknameComponent)
-    ], MyInfoComponent.prototype, "nicknameComponent", void 0);
     __decorate([
         core_1.ViewChild(mobile_component_1.MobileComponent), 
         __metadata('design:type', mobile_component_1.MobileComponent)
@@ -890,7 +887,7 @@ var MyInfoComponent = (function () {
             templateUrl: 'my-info.component.html',
             styleUrls: ['my-info.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, user_service_1.UserService, my_event_watchtower_service_1.MyEventWatchTowerService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, user_service_1.UserService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], MyInfoComponent);
     return MyInfoComponent;
 }());

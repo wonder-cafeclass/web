@@ -197,8 +197,8 @@ export class UserService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / updateUserMutableProps / 시작");
     if(isDebug) console.log("user.service / updateUserMutableProps / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / updateUserMutableProps / email : ",email);

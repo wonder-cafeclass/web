@@ -57,7 +57,9 @@
 	<router-outlet></router-outlet>
 </section>
 
-<my-footer></my-footer>
+<div *ngIf="toggleTopMenu">
+	<my-footer></my-footer>
+</div>
 <!--
 <footer aria-label="Footer: Copyright, Privacy and Terms" class="copyright" role="contentinfo">FOOTER</footer>
 -->

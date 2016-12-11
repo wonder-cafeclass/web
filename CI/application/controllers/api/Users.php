@@ -259,11 +259,9 @@ class Users extends MY_REST_Controller {
         $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
         {
-            $output["check_list"] = $check_list;
             $is_ok = false;
         }
         $$password_hashed = "";
@@ -441,9 +439,8 @@ class Users extends MY_REST_Controller {
         $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $output["check_list"] = $check_list;
             $is_ok = false;
@@ -630,9 +627,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed()) 
         {
             $is_ok = false;
         }
@@ -829,9 +824,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $is_ok = false;
         }
@@ -954,9 +947,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $is_ok = false;
         }

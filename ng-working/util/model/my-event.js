@@ -1,4 +1,5 @@
 "use strict";
+var my_prop_picker_1 = require('./my-prop-picker');
 var MyEvent = (function () {
     function MyEvent(id, eventName, key, value, metaObj, myChecker) {
         this.id = id;
@@ -7,9 +8,7 @@ var MyEvent = (function () {
         this.value = value;
         this.metaObj = metaObj;
         this.myChecker = myChecker;
-        // REFACTOR ME - key value 처리 util을 만들어야 할 듯.
-        this.loopCnt = 0;
-        this.loopCntMax = 5;
+        this.myPropPicker = new my_prop_picker_1.MyPropPicker();
     }
     MyEvent.prototype.isNotValid = function () {
         return !this.isValid();
@@ -39,66 +38,24 @@ var MyEvent = (function () {
             console.log("my-event / hasMetaObj / hasMeta : ", hasMeta);
         return hasMeta;
     };
-    MyEvent.prototype.digMetaProp = function (keys) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("my-event / digMetaProp / init");
-        if (null == keys || 0 === keys.length) {
-            return null;
-        }
-        if (isDebug)
-            console.log("my-event / digMetaProp / digMetaPropRecursive");
-        return this.digMetaPropRecursive(keys, this.metaObj);
-    };
-    MyEvent.prototype.digMetaPropRecursive = function (keys, metaObj) {
+    MyEvent.prototype.searchMetaProp = function (keys) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("my-event / digMetaPropRecursive / init");
-        if (this.loopCntMax < this.loopCnt) {
-            // 5 depths 이상일 경우는 중단.
-            if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / 5 depths 이상일 경우");
-            return null;
-        }
+            console.log("my-event / searchMetaProp / init");
         if (null == keys || 0 === keys.length) {
             if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / keys is not valid!");
-            return metaObj;
+                console.log("my-event / searchMetaProp / 중단 / keys is not valid!");
+            return null;
         }
-        if (null == metaObj) {
+        if (null == this.metaObj) {
             if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / metaObj is not valid!");
+                console.log("my-event / searchMetaProp / 중단 / this.metaObj is not valid!");
             return null;
         }
         if (isDebug)
-            console.log("my-event / digMetaPropRecursive / BEFORE / keys.length : ", keys.length);
-        var key = keys.shift();
-        if (null == key || "" === key) {
-            if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / key is not valid!");
-            return metaObj;
-        }
-        if (isDebug)
-            console.log("my-event / digMetaPropRecursive / AFTER / keys.length : ", keys.length);
-        if (isDebug)
-            console.log("my-event / digMetaPropRecursive / AFTER / key : ", key);
-        if (null == metaObj[key]) {
-            if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / metaObj[key] is not valid!");
-            return null;
-        }
-        var nextMetaObj = metaObj[key];
-        if (0 == keys.length) {
-            if (isDebug)
-                console.log("my-event / digMetaPropRecursive / 중단 / No more key!");
-            return nextMetaObj;
-        }
-        this.loopCnt++;
-        if (isDebug)
-            console.log("my-event / digMetaPropRecursive / this.loopCnt : ", this.loopCnt);
-        return this.digMetaPropRecursive(keys, nextMetaObj);
+            console.log("my-event / searchMetaProp / this.myPropPicker.search");
+        return this.myPropPicker.search(keys, this.metaObj);
     };
     MyEvent.prototype.copy = function () {
         var copy = new MyEvent(this.id, this.eventName, this.key, this.value, this.metaObj, this.myChecker);
@@ -118,6 +75,38 @@ var MyEvent = (function () {
             return false;
         }
         return true;
+    };
+    MyEvent.prototype.hasEventName = function (eventName) {
+        if (null == eventName || "" === eventName) {
+            return false;
+        }
+        if (this.eventName === eventName) {
+            return true;
+        }
+        return false;
+    };
+    MyEvent.prototype.hasKey = function (key) {
+        if (null == key || "" === key) {
+            return false;
+        }
+        if (this.key === key) {
+            return true;
+        }
+        return false;
+    };
+    MyEvent.prototype.isSameRegExp = function (left, right) {
+        if (null == left) {
+            return false;
+        }
+        if (null == right) {
+            return false;
+        }
+        var leftStr = "" + left;
+        var rightStr = "" + right;
+        if (leftStr === rightStr) {
+            return true;
+        }
+        return false;
     };
     return MyEvent;
 }());
