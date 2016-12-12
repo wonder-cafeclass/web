@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_event_1 = require('../model/my-event');
+var my_regex_1 = require('../model/my-regex');
 var default_meta_1 = require('../../widget/input/default/model/default-meta');
 var MyEventService = (function () {
     function MyEventService() {
@@ -88,6 +89,7 @@ var MyEventService = (function () {
         this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결재정보.
         this.KEY_USER_MY_FAVORITE = "KEY_USER_MY_FAVORITE"; // 유저 - 내 관심강의(찜).
         this.uniqueIdx = 0;
+        this.myRegEx = new my_regex_1.MyRegEx();
     }
     // @ Deprecated
     MyEventService.prototype.has_it = function (event_name) {
@@ -324,10 +326,23 @@ var MyEventService = (function () {
                         console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ ]{2,10}/g");
                     view.showTooltipFailWarning(
                     // msg:string
-                    "빈칸을 연속으로 입력하실 수 없습니다.", 
+                    "빈칸을 연속으로 입력하실 수 없습니다", 
                     // isTimeout:Boolean
                     false); // end if
                 } // end if          
+            } // end if
+        }
+        else if (myEvent.hasKey(this.KEY_USER_EMAIL)) {
+            if ("regexInclude" === key) {
+                if (myEvent.isSameRegExp(this.myRegEx.EMAIL_REGEX, value)) {
+                    if (isDebug)
+                        console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                    view.showTooltipFailWarning(
+                    // msg:string
+                    "정상적인 이메일 주소를 입력해주세요", 
+                    // isTimeout:Boolean
+                    false); // end if
+                } // end if
             } // end if
         } // end if        
     }; // end method

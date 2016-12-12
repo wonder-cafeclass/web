@@ -743,14 +743,20 @@ class MY_Sql
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('email', $email);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->log_query(
-            // $user_id=-1
-            intval($user_id),
-            // $action_type=""
-            $this->CI->my_logger->QUERY_TYPE_UPDATE,
-            // $query=""
-            $sql
-        );
+
+        // email로 유저 정보를 가져온다. 
+        $user = $this->get_user_by_email($email);
+        if(isset($user) && isset($user->id)) 
+        {
+            $this->log_query(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->CI->my_logger->QUERY_TYPE_UPDATE,
+                // $query=""
+                $sql
+            );
+        }
 
         // QUERY EXECUTION
         $this->CI->db->where('email', $email);
@@ -866,9 +872,6 @@ class MY_Sql
             return;
         }
 
-        // 생일은 없는 경우, 공백 문자로 입력한다.
-        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
-
         $data = array(
             'password' => $password_hashed
         );
@@ -876,14 +879,19 @@ class MY_Sql
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
         $this->CI->db->where('email', $email);
-        $this->log_query(
-            // $user_id=-1
-            intval($user_id),
-            // $action_type=""
-            $this->CI->my_logger->QUERY_TYPE_UPDATE,
-            // $query=""
-            $sql
-        );
+
+        $user = $this->get_user_by_email($email);
+        if(isset($user) && isset($user->id)) 
+        {
+            $this->log_query(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->CI->my_logger->QUERY_TYPE_UPDATE,
+                // $query=""
+                $sql
+            );
+        }
 
         // QUERY EXECUTION
         $this->CI->db->where('email', $email);

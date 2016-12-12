@@ -4,6 +4,8 @@ import {  Component,
           Input, 
           Output,
           ViewChild,
+          ViewChildren,
+          QueryList,
           OnInit,
           AfterViewInit }                 from '@angular/core';
 import {  Router,
@@ -13,14 +15,17 @@ import {  Router,
 import { LoginService }                   from '../service/login.service';
 import { UserService }                    from '../../users/service/user.service';
 
-import { EmailComponent }                 from '../../widget/input/email/email.component';
+// import { EmailComponent }                 from '../../widget/input/email/email.component';
 import { ProfileImgUploadComponent }      from '../../widget/input/profile-img-upload/profile-img-upload.component';
 import { PasswordComponent }              from '../../widget/input/password/password.component';
 import { MobileComponent }                from '../../widget/input/mobile/mobile.component';
-import { NameComponent }                  from '../../widget/input/name/name.component';
+// import { NameComponent }                  from '../../widget/input/name/name.component';
 import { GenderComponent }                from '../../widget/input/gender/gender.component';
 import { BirthdayComponent }              from '../../widget/input/birthday/birthday.component';
-import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
+// import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
+
+import { DefaultComponent }               from '../../widget/input/default/default.component';
+import { DefaultMeta }                    from '../../widget/input/default/model/default-meta';
 
 import { MyLoggerService }                from '../../util/service/my-logger.service';
 import { MyCheckerService }               from '../../util/service/my-checker.service';
@@ -41,23 +46,23 @@ import { MyResponse }                     from '../../util/model/my-response';
 })
 export class SignupComponent implements OnInit, AfterViewInit {
 
-  private email:string;
-  private password:string;
-  private name:string;
-  private nickname:string;
-  private thumbnail:string;
-  private mobileNumHead:string;
-  private mobileNumBody:string;
-  private mobileNumTail:string;
+  private email:string="";
+  private password:string="";
+  private name:string="";
+  private nickname:string="";
+  private thumbnail:string="";
+  private mobileNumHead:string="";
+  private mobileNumBody:string="";
+  private mobileNumTail:string="";
   public gender:string="";
 
-  private birthYear:string;
-  private birthMonth:string;
-  private birthDay:string;
+  private birthYear:string="";
+  private birthMonth:string="";
+  private birthDay:string="";
 
-  private facebookId:string;
-  private kakaoId:string;
-  private naverId:string;
+  private facebookId:string="";
+  private kakaoId:string="";
+  private naverId:string="";
 
   private hasAgreedWithTerms:boolean = false;
 
@@ -66,17 +71,24 @@ export class SignupComponent implements OnInit, AfterViewInit {
   public tooltipMsgTerms:string=null;
   private tooltipMsgTermsWarning:string="약관 동의가 필요합니다.";
 
-  @ViewChild(EmailComponent)
-  private emailComponent: EmailComponent;
+  @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
+  defaultMetaList:DefaultMeta[];
+
+  private emailComponent: DefaultComponent;
+  private nameComponent: DefaultComponent;
+  private nicknameComponent: DefaultComponent;
+
+  // @ViewChild(EmailComponent)
+  // private emailComponent: EmailComponent;
 
   @ViewChild(PasswordComponent)
   private passwordComponent: PasswordComponent;
 
-  @ViewChild(NameComponent)
-  private nameComponent: NameComponent;
+  // @ViewChild(NameComponent)
+  // private nameComponent: NameComponent;
 
-  @ViewChild(NicknameComponent)
-  private nicknameComponent: NicknameComponent;
+  // @ViewChild(NicknameComponent)
+  // private nicknameComponent: NicknameComponent;
 
   @ViewChild(MobileComponent)
   private mobileComponent: MobileComponent;  
@@ -102,7 +114,17 @@ export class SignupComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService, 
                 private route:ActivatedRoute,
-                public router:Router) {}
+                public router:Router) {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / constructor / init");
+
+    this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
+
+    if(isDebug) console.log("signup / ngOnInit / this.defaultMetaList : ",this.defaultMetaList);
+
+  }
 
   ngOnInit(): void {
 
@@ -119,10 +141,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("signup / ngAfterViewInit");
 
+    this.setDefaultComponents();
+
     this.asyncViewPack();
+  }
+  private setDefaultComponents() :void {
 
-  }  
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / setDefaultComponents / 시작");
 
+    // DefaultComponent들을 세팅
+    this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+    this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+    this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
+  }
   private asyncViewPack(): void {
     
     // let isDebug:boolean = true;
@@ -168,7 +201,34 @@ export class SignupComponent implements OnInit, AfterViewInit {
     
     this.logPageEnter();
     this.checkSignedUpUserInfo();
+
+    // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+    this.watchTower.announceToggleTopMenu(false);
   }
+  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+  private getInput(eventKey:string) :any {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("signup / getInput / init");
+
+    let target:DefaultComponent = null;
+
+    this.inputComponentList.forEach(function(inputComponent) {
+
+      if(isDebug) console.log("signup / getInput / eventKey : ",eventKey);
+      if(isDebug) console.log("signup / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
+
+      if(inputComponent.hasEventKey(eventKey)) {
+        if(isDebug) console.log("signup / getInput / inputComponent : ",inputComponent);
+        target = inputComponent;
+        return;
+      }
+
+    }); // end for-each
+
+    return target;
+  }  
 
   private setMyChecker() :void {
 
@@ -286,13 +346,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
         // 페이스북 로그인 - 유저 정보 가져오기.
         // email
-        this.emailComponent.setEmail(this.user.email);
+        if(null != this.emailComponent) {
+          this.emailComponent.setInput(this.user.email);
+        }
         this.email = this.user.email;
         // name
-        this.nameComponent.setName(this.user.name);
+        if(null != this.nameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          this.nameComponent.setInput(this.user.name);
+        }
         this.name = this.user.name;
         // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
+        if(null != this.nicknameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          this.nicknameComponent.setInput(this.user.nickname);
+        }
         this.nickname = this.user.nickname;
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
@@ -304,10 +372,16 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
         // 카카오 로그인 - 유저 정보 가져오기.
         // name
-        this.nameComponent.setName(this.user.name);
+        if(null != this.nameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          this.nameComponent.setInput(this.user.name);
+        }
         this.name = this.user.name;
         // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
+        if(null != this.nicknameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          this.nicknameComponent.setInput(this.user.nickname);
+        }
         this.nickname = this.user.nickname;
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
@@ -319,13 +393,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
         // 네이버 로그인 - 유저 정보 가져오기.
         // email
-        this.emailComponent.setEmail(this.user.email);
+        if(null != this.emailComponent) {
+          this.emailComponent.setInput(this.user.email);
+        }
         this.email = this.user.email;
         // name
-        this.nameComponent.setName(this.user.name);
+        if(null != this.nameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          this.nameComponent.setInput(this.user.name);
+        }
         this.name = this.user.name;
         // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
+        if(null != this.nicknameComponent) {
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          this.nicknameComponent.setInput(this.user.nickname);
+        }
         this.nickname = this.user.nickname;
         // gender
         this.genderComponent.setGender(this.user.gender);
@@ -748,39 +830,25 @@ export class SignupComponent implements OnInit, AfterViewInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("signup / onChangedFromChild / 시작");
 
     if(isDebug) console.log("signup / onChangedFromChild / myEvent : ",myEvent);
 
-    if(null == myEvent) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEven");
-      return;
-    }
-    if(null == myEvent.myChecker) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEvent.myChecker");
-      return;
-    }
-    if(null == myEvent.value) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEvent.value");
-      return;
-    }
-
-    // 모든 myEvent는 myChecker를 가지고 들어와야 합니다.
-    // myChecker로 다시 한번 더 검사, 통과해야만 사용할 수 있습니다.
-    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-    if(!isOK) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / !isOK");
+    if(myEvent.isNotValid()) {
+      if(isDebug) console.log("signup / onChangedFromChild / 중단 / myEvent.isNotValid()");
       return;
     }
 
     // 정상적인 값을 가진 이벤트입니다.
-    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
-      if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+      if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
 
         let email:string = myEvent.value;
+
+        if(isDebug) console.log("signup / onChangedFromChild / email : ",email);
 
         // DB Unique test
         this.userService
@@ -795,40 +863,42 @@ export class SignupComponent implements OnInit, AfterViewInit {
             this.email = email;
 
             if(isDebug) console.log("signup / onChangedFromChild / email 등록이 가능합니다.");
+            if(isDebug) console.log("signup / onChangedFromChild / this.email : ",this.email);
+            
           } // end if
         }); // end service
 
-      } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_PASSWORD)) {
 
         this.password = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.password : ",this.password);
 
-      } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
 
         this.name = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.name : ",this.name);
 
-      } else if(this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
 
         this.nickname = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.nickname : ",this.nickname);
 
-      } else if(this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
         this.thumbnail = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.thumbnail : ",this.thumbnail);
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
 
         this.mobileNumHead = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumHead : ",this.mobileNumHead);
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
 
         this.mobileNumBody = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumBody : ",this.mobileNumBody);
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
 
         this.mobileNumTail = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumTail : ",this.mobileNumTail);
@@ -836,27 +906,31 @@ export class SignupComponent implements OnInit, AfterViewInit {
         // 휴대전화 번호가 모두 확인되었습니다. 
         // TODO - 이미 등록된 번호는 아닌지 확인.
 
-      } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
 
         this.gender = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.gender : ",this.gender);
 
-      } else if(this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
 
         this.birthYear = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.birthYear : ",this.birthYear);
 
-      } else if(this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
 
         this.birthMonth = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.birthMonth : ",this.birthMonth);
 
-      } else if(this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
 
         this.birthDay = myEvent.value;
         if(isDebug) console.log("signup / onChangedFromChild / this.birthDay : ",this.birthDay);
 
       } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
+
+      this.myEventService.onChangeNotValid(myEvent);
 
     } // end if
 

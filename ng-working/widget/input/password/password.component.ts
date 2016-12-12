@@ -51,6 +51,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   placeholderHead:string="비밀번호를 입력해주세요";
   isValidPassword:boolean = false;
   isWarningPassword:boolean = false;
+  isShowTooltipPassword:boolean = false;
   tooltipHeadMsg:string=null;
   tooltipHeadPasswordNeeds:string="패스워드를 먼저 입력해주세요.";
   tooltipHeadNotAllowed:string="앗! 패스워드에 문제가 있습니다.";
@@ -63,6 +64,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   isValidRepassword:boolean = false;
   isWarningRepassword:boolean = false;
+  isShowTooltipRepassword:boolean = false;
   tooltipTailMsg:string=null;
   tooltipTailInit:string="입력한 패스워드를 확인해볼께요.";
   tooltipTailNotMatch:string="앗! 패스워드가 일치하지 않습니다.";
@@ -206,6 +208,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusPassword = true;
     this.isWarningPassword = true;
     this.isValidPassword = false;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
 
   }
@@ -230,6 +233,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusRepassword = true;
     this.isWarningRepassword = true;
     this.isValidRepassword = false;
+    this.isShowTooltipRepassword = true;
 
     if((this.password !== this.repassword)) {
       this.tooltipTailMsg = this.tooltipTailNotMatch;  
@@ -440,6 +444,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipHeadMsg = null;
+      _self.isShowTooltipPassword = false;
     }, 1000 * sec);        
 
   }
@@ -453,6 +458,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipTailMsg = null;
+      _self.isShowTooltipRepassword = false;
     }, 1000 * sec);        
 
   }  
@@ -496,6 +502,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
       // 메시지 노출.
       this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
+      this.isShowTooltipPassword = true;
       this.isWarningPassword = true;
 
     } // end if
@@ -655,6 +662,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
           if("max" === history.key) {
             // 최대 문자 갯수보다 많은 경우.
             this.tooltipHeadMsg = history.msg;
+            this.isShowTooltipPassword = true;
             // 글자수를 줄여줍니다.
             let max:number = history.value;
             element.value = this.passwordPrev = this.password = this.password.slice(0, max);
@@ -679,12 +687,14 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   hideTooltipHeadFailWarning() :void {
     this.isFocusPassword = false;
     this.isValidPassword = true;
+    this.isShowTooltipPassword = false;
     this.tooltipHeadMsg = null;
   }
   // @ Desc : 실패 툴팁을 보여줍니다.
   showTooltipHeadFailWarning(warningMsg:string, isTimeout:boolean) :void {
     this.isFocusPassword = true;
     this.isValidPassword = false;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = warningMsg;
 
     if(null != isTimeout && isTimeout) {
@@ -695,6 +705,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   public showTooltipHeadSuccess(msg:string) :void {
     this.isFocusPassword = false;
     this.isValidPassword = true;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = msg;
     this.hideTooltipHead(2);
   }  
@@ -724,6 +735,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
     this.isFocusPassword = true;
     this.isWarningPassword = true;
+    this.isShowTooltipPassword = true;
     elementPassword.focus();
 
     if(null == this.tooltipHeadMsg || "" === this.tooltipHeadMsg) {
@@ -867,6 +879,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       this.tooltipTailMsg = "한글 및 공백을 사용할 수 없어요.";
       this.isValidPassword = false;
       this.isWarningPassword = true;
+      this.isShowTooltipRepassword = true;
       this.hideTooltipTail(2);
 
       if(isDebug) console.log("password / onKeyupRepassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
@@ -890,6 +903,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
             console.log("password / onKeyupRepassword / history : ",history);
             // 최대 문자 갯수보다 많은 경우.
             this.tooltipTailMsg = history.msg;
+            this.isShowTooltipRepassword = true;
             // 글자수를 줄여줍니다.
             let max:number = history.value;
             element.value = this.repasswordPrev = this.repassword = this.repassword.slice(0, max);
@@ -938,6 +952,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     // 패스워드 재입력 성공!
     if(isKeyup) {
       this.tooltipTailMsg = this.tooltipTailMatched;
+      this.isShowTooltipRepassword = true;
       this.hideTooltipTail(2);
 
       // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
@@ -974,6 +989,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusRepassword = false;
     this.isValidRepassword = false;
     this.isWarningRepassword = true;
+    this.isShowTooltipRepassword = true;
   }
 
   checkRepassword(element) :boolean {

@@ -14,14 +14,15 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var user_service_1 = require('../../users/service/user.service');
-var email_component_1 = require('../../widget/input/email/email.component');
+// import { EmailComponent }                 from '../../widget/input/email/email.component';
 var profile_img_upload_component_1 = require('../../widget/input/profile-img-upload/profile-img-upload.component');
 var password_component_1 = require('../../widget/input/password/password.component');
 var mobile_component_1 = require('../../widget/input/mobile/mobile.component');
-var name_component_1 = require('../../widget/input/name/name.component');
+// import { NameComponent }                  from '../../widget/input/name/name.component';
 var gender_component_1 = require('../../widget/input/gender/gender.component');
 var birthday_component_1 = require('../../widget/input/birthday/birthday.component');
-var nickname_component_1 = require('../../widget/input/nickname/nickname.component');
+// import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
+var default_component_1 = require('../../widget/input/default/default.component');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
@@ -36,13 +37,34 @@ var SignupComponent = (function () {
         this.watchTower = watchTower;
         this.route = route;
         this.router = router;
+        this.email = "";
+        this.password = "";
+        this.name = "";
+        this.nickname = "";
+        this.thumbnail = "";
+        this.mobileNumHead = "";
+        this.mobileNumBody = "";
+        this.mobileNumTail = "";
         this.gender = "";
+        this.birthYear = "";
+        this.birthMonth = "";
+        this.birthDay = "";
+        this.facebookId = "";
+        this.kakaoId = "";
+        this.naverId = "";
         this.hasAgreedWithTerms = false;
         this.tooltipMsgTerms = null;
         this.tooltipMsgTermsWarning = "약관 동의가 필요합니다.";
         this.redirectUrl = "/class-center";
         this.isAdmin = false;
         this.errorMsgArr = [];
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("signup / constructor / init");
+        this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
+        if (isDebug)
+            console.log("signup / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
     }
     SignupComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -56,7 +78,18 @@ var SignupComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("signup / ngAfterViewInit");
+        this.setDefaultComponents();
         this.asyncViewPack();
+    };
+    SignupComponent.prototype.setDefaultComponents = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("signup / setDefaultComponents / 시작");
+        // DefaultComponent들을 세팅
+        this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+        this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+        this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
     };
     SignupComponent.prototype.asyncViewPack = function () {
         var _this = this;
@@ -98,6 +131,29 @@ var SignupComponent = (function () {
         this.setViewPack();
         this.logPageEnter();
         this.checkSignedUpUserInfo();
+        // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+        this.watchTower.announceToggleTopMenu(false);
+    };
+    // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+    SignupComponent.prototype.getInput = function (eventKey) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("signup / getInput / init");
+        var target = null;
+        this.inputComponentList.forEach(function (inputComponent) {
+            if (isDebug)
+                console.log("signup / getInput / eventKey : ", eventKey);
+            if (isDebug)
+                console.log("signup / getInput / inputComponent.getEventKey() : ", inputComponent.getEventKey());
+            if (inputComponent.hasEventKey(eventKey)) {
+                if (isDebug)
+                    console.log("signup / getInput / inputComponent : ", inputComponent);
+                target = inputComponent;
+                return;
+            }
+        }); // end for-each
+        return target;
     };
     SignupComponent.prototype.setMyChecker = function () {
         // let isDebug:boolean = true;
@@ -195,13 +251,23 @@ var SignupComponent = (function () {
                     console.log("signup / checkSignedUpUserInfo / subscribe / 페이스북 로그인 - 유저 정보 가져오기.");
                 // 페이스북 로그인 - 유저 정보 가져오기.
                 // email
-                _this.emailComponent.setEmail(_this.user.email);
+                if (null != _this.emailComponent) {
+                    _this.emailComponent.setInput(_this.user.email);
+                }
                 _this.email = _this.user.email;
                 // name
-                _this.nameComponent.setName(_this.user.name);
+                if (null != _this.nameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                    _this.nameComponent.setInput(_this.user.name);
+                }
                 _this.name = _this.user.name;
                 // nickname
-                _this.nicknameComponent.setNickname(_this.user.nickname);
+                if (null != _this.nicknameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                    _this.nicknameComponent.setInput(_this.user.nickname);
+                }
                 _this.nickname = _this.user.nickname;
                 // thumbnail
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
@@ -212,10 +278,18 @@ var SignupComponent = (function () {
                     console.log("signup / checkSignedUpUserInfo / subscribe / 카카오 로그인 - 유저 정보 가져오기.");
                 // 카카오 로그인 - 유저 정보 가져오기.
                 // name
-                _this.nameComponent.setName(_this.user.name);
+                if (null != _this.nameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                    _this.nameComponent.setInput(_this.user.name);
+                }
                 _this.name = _this.user.name;
                 // nickname
-                _this.nicknameComponent.setNickname(_this.user.nickname);
+                if (null != _this.nicknameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                    _this.nicknameComponent.setInput(_this.user.nickname);
+                }
                 _this.nickname = _this.user.nickname;
                 // thumbnail
                 _this.profileImgUploadComponent.setProfileImg(_this.user.thumbnail);
@@ -226,13 +300,23 @@ var SignupComponent = (function () {
                     console.log("signup / checkSignedUpUserInfo / subscribe / 네이버 로그인 - 유저 정보 가져오기.");
                 // 네이버 로그인 - 유저 정보 가져오기.
                 // email
-                _this.emailComponent.setEmail(_this.user.email);
+                if (null != _this.emailComponent) {
+                    _this.emailComponent.setInput(_this.user.email);
+                }
                 _this.email = _this.user.email;
                 // name
-                _this.nameComponent.setName(_this.user.name);
+                if (null != _this.nameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                    _this.nameComponent.setInput(_this.user.name);
+                }
                 _this.name = _this.user.name;
                 // nickname
-                _this.nicknameComponent.setNickname(_this.user.nickname);
+                if (null != _this.nicknameComponent) {
+                    if (isDebug)
+                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                    _this.nicknameComponent.setInput(_this.user.nickname);
+                }
                 _this.nickname = _this.user.nickname;
                 // gender
                 _this.genderComponent.setGender(_this.user.gender);
@@ -625,39 +709,23 @@ var SignupComponent = (function () {
     SignupComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("signup / onChangedFromChild / 시작");
         if (isDebug)
             console.log("signup / onChangedFromChild / myEvent : ", myEvent);
-        if (null == myEvent) {
+        if (myEvent.isNotValid()) {
             if (isDebug)
-                console.log("signup / onChangedFromChild / 중단 / null == myEven");
-            return;
-        }
-        if (null == myEvent.myChecker) {
-            if (isDebug)
-                console.log("signup / onChangedFromChild / 중단 / null == myEvent.myChecker");
-            return;
-        }
-        if (null == myEvent.value) {
-            if (isDebug)
-                console.log("signup / onChangedFromChild / 중단 / null == myEvent.value");
-            return;
-        }
-        // 모든 myEvent는 myChecker를 가지고 들어와야 합니다.
-        // myChecker로 다시 한번 더 검사, 통과해야만 사용할 수 있습니다.
-        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if (!isOK) {
-            if (isDebug)
-                console.log("signup / onChangedFromChild / 중단 / !isOK");
+                console.log("signup / onChangedFromChild / 중단 / myEvent.isNotValid()");
             return;
         }
         // 정상적인 값을 가진 이벤트입니다.
-        if (this.myEventService.ON_CHANGE === myEvent.eventName) {
-            if (this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
                 var email_1 = myEvent.value;
+                if (isDebug)
+                    console.log("signup / onChangedFromChild / email : ", email_1);
                 // DB Unique test
                 this.userService
                     .getUserByEmail(email_1)
@@ -669,84 +737,81 @@ var SignupComponent = (function () {
                         _this.email = email_1;
                         if (isDebug)
                             console.log("signup / onChangedFromChild / email 등록이 가능합니다.");
+                        if (isDebug)
+                            console.log("signup / onChangedFromChild / this.email : ", _this.email);
                     } // end if
                 }); // end service
             }
-            else if (this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_PASSWORD)) {
                 this.password = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.password : ", this.password);
             }
-            else if (this.myEventService.KEY_USER_NAME === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
                 this.name = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.name : ", this.name);
             }
-            else if (this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
                 this.nickname = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.nickname : ", this.nickname);
             }
-            else if (this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 this.thumbnail = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.thumbnail : ", this.thumbnail);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
                 this.mobileNumHead = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.mobileNumHead : ", this.mobileNumHead);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
                 this.mobileNumBody = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.mobileNumBody : ", this.mobileNumBody);
             }
-            else if (this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
                 this.mobileNumTail = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.mobileNumTail : ", this.mobileNumTail);
             }
-            else if (this.myEventService.KEY_USER_GENDER === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
                 this.gender = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.gender : ", this.gender);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
                 this.birthYear = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.birthYear : ", this.birthYear);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
                 this.birthMonth = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.birthMonth : ", this.birthMonth);
             }
-            else if (this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
                 this.birthDay = myEvent.value;
                 if (isDebug)
                     console.log("signup / onChangedFromChild / this.birthDay : ", this.birthDay);
             } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
+            this.myEventService.onChangeNotValid(myEvent);
         } // end if
         if (isDebug)
             console.log("signup / onChangedFromChild / done");
     };
     __decorate([
-        core_1.ViewChild(email_component_1.EmailComponent), 
-        __metadata('design:type', email_component_1.EmailComponent)
-    ], SignupComponent.prototype, "emailComponent", void 0);
+        core_1.ViewChildren(default_component_1.DefaultComponent), 
+        __metadata('design:type', core_1.QueryList)
+    ], SignupComponent.prototype, "inputComponentList", void 0);
     __decorate([
         core_1.ViewChild(password_component_1.PasswordComponent), 
         __metadata('design:type', password_component_1.PasswordComponent)
     ], SignupComponent.prototype, "passwordComponent", void 0);
-    __decorate([
-        core_1.ViewChild(name_component_1.NameComponent), 
-        __metadata('design:type', name_component_1.NameComponent)
-    ], SignupComponent.prototype, "nameComponent", void 0);
-    __decorate([
-        core_1.ViewChild(nickname_component_1.NicknameComponent), 
-        __metadata('design:type', nickname_component_1.NicknameComponent)
-    ], SignupComponent.prototype, "nicknameComponent", void 0);
     __decorate([
         core_1.ViewChild(mobile_component_1.MobileComponent), 
         __metadata('design:type', mobile_component_1.MobileComponent)

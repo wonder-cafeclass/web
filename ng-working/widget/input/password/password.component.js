@@ -38,6 +38,7 @@ var PasswordComponent = (function () {
         this.placeholderHead = "비밀번호를 입력해주세요";
         this.isValidPassword = false;
         this.isWarningPassword = false;
+        this.isShowTooltipPassword = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadPasswordNeeds = "패스워드를 먼저 입력해주세요.";
         this.tooltipHeadNotAllowed = "앗! 패스워드에 문제가 있습니다.";
@@ -48,6 +49,7 @@ var PasswordComponent = (function () {
         this.lastKeyupTypeP = "";
         this.isValidRepassword = false;
         this.isWarningRepassword = false;
+        this.isShowTooltipRepassword = false;
         this.tooltipTailMsg = null;
         this.tooltipTailInit = "입력한 패스워드를 확인해볼께요.";
         this.tooltipTailNotMatch = "앗! 패스워드가 일치하지 않습니다.";
@@ -166,6 +168,7 @@ var PasswordComponent = (function () {
         this.isFocusPassword = true;
         this.isWarningPassword = true;
         this.isValidPassword = false;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
     };
     // @ Desc : 이메일 재입력이 제대로 입력되었는지 확인합니다.
@@ -186,6 +189,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = true;
         this.isWarningRepassword = true;
         this.isValidRepassword = false;
+        this.isShowTooltipRepassword = true;
         if ((this.password !== this.repassword)) {
             this.tooltipTailMsg = this.tooltipTailNotMatch;
         }
@@ -354,6 +358,7 @@ var PasswordComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
+            _self.isShowTooltipPassword = false;
         }, 1000 * sec);
     };
     PasswordComponent.prototype.hideTooltipTail = function (sec) {
@@ -364,6 +369,7 @@ var PasswordComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipTailMsg = null;
+            _self.isShowTooltipRepassword = false;
         }, 1000 * sec);
     };
     PasswordComponent.prototype.onKeydownTabShiftPassword = function (event, elementPassword) {
@@ -399,6 +405,7 @@ var PasswordComponent = (function () {
                 console.log("password / onKeydownTabPassword / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
             // 메시지 노출.
             this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
+            this.isShowTooltipPassword = true;
             this.isWarningPassword = true;
         } // end if
     };
@@ -534,6 +541,7 @@ var PasswordComponent = (function () {
                     if ("max" === history_1.key) {
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipHeadMsg = history_1.msg;
+                        this.isShowTooltipPassword = true;
                         // 글자수를 줄여줍니다.
                         var max = history_1.value;
                         element.value = this.passwordPrev = this.password = this.password.slice(0, max);
@@ -554,12 +562,14 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.hideTooltipHeadFailWarning = function () {
         this.isFocusPassword = false;
         this.isValidPassword = true;
+        this.isShowTooltipPassword = false;
         this.tooltipHeadMsg = null;
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     PasswordComponent.prototype.showTooltipHeadFailWarning = function (warningMsg, isTimeout) {
         this.isFocusPassword = true;
         this.isValidPassword = false;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = warningMsg;
         if (null != isTimeout && isTimeout) {
             this.hideTooltipHead(2);
@@ -569,6 +579,7 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.showTooltipHeadSuccess = function (msg) {
         this.isFocusPassword = false;
         this.isValidPassword = true;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = msg;
         this.hideTooltipHead(2);
     };
@@ -592,6 +603,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = false;
         this.isFocusPassword = true;
         this.isWarningPassword = true;
+        this.isShowTooltipPassword = true;
         elementPassword.focus();
         if (null == this.tooltipHeadMsg || "" === this.tooltipHeadMsg) {
             this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
@@ -712,6 +724,7 @@ var PasswordComponent = (function () {
             this.tooltipTailMsg = "한글 및 공백을 사용할 수 없어요.";
             this.isValidPassword = false;
             this.isWarningPassword = true;
+            this.isShowTooltipRepassword = true;
             this.hideTooltipTail(2);
             if (isDebug)
                 console.log("password / onKeyupRepassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
@@ -731,6 +744,7 @@ var PasswordComponent = (function () {
                         console.log("password / onKeyupRepassword / history : ", history_2);
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipTailMsg = history_2.msg;
+                        this.isShowTooltipRepassword = true;
                         // 글자수를 줄여줍니다.
                         var max = history_2.value;
                         element.value = this.repasswordPrev = this.repassword = this.repassword.slice(0, max);
@@ -766,6 +780,7 @@ var PasswordComponent = (function () {
         // 패스워드 재입력 성공!
         if (isKeyup) {
             this.tooltipTailMsg = this.tooltipTailMatched;
+            this.isShowTooltipRepassword = true;
             this.hideTooltipTail(2);
             // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
             // 부모 객체에게 Event 발송 
@@ -794,6 +809,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = false;
         this.isValidRepassword = false;
         this.isWarningRepassword = true;
+        this.isShowTooltipRepassword = true;
     };
     PasswordComponent.prototype.checkRepassword = function (element) {
         // let isDebug:boolean = true;

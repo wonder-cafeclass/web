@@ -13,6 +13,7 @@ var http_1 = require('@angular/http');
 var my_checker_1 = require('../model/my-checker');
 var url_service_1 = require("../../util/url.service");
 var my_extractor_1 = require('../../util/http/my-extractor');
+var my_regex_1 = require('../../util/model/my-regex');
 var MyCheckerService = (function () {
     function MyCheckerService(us, http) {
         this.us = us;
@@ -21,7 +22,7 @@ var MyCheckerService = (function () {
         this.TYPE_STRING = "TYPE_STRING";
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_ARRAY = "TYPE_ARRAY";
-        this.REGEX_SAFE_STR = /[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
+        // public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
         this.MIN_STR_SAFE_TITLE = 2;
         this.MAX_STR_SAFE_TITLE = 48;
         this.MIN_STR_SAFE_COMMENT = 2;
@@ -35,7 +36,6 @@ var MyCheckerService = (function () {
         this.regExpRegExIncludeMatch = /regex_match_include\[(.+)\]/i;
         // @ Referer : http://jsfiddle.net/ghvj4gy9/embedded/result,js/
         this.regValidEmail = /valid_emails/i;
-        this.EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         // is_natural_no_zero
         this.regIsNaturalNoZero = /is_natural_no_zero/i;
         // is_unique
@@ -52,6 +52,7 @@ var MyCheckerService = (function () {
         this.regExpLessThanEqualTo = /less_than_equal_to\[(.+)\]/i;
         this.regExpDBQueryUnique = /is_unique\[(.+)\]/i;
         this.myExtractor = new my_extractor_1.MyExtractor();
+        this.myRegEx = new my_regex_1.MyRegEx();
     }
     // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
     MyCheckerService.prototype.setReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
@@ -179,6 +180,7 @@ var MyCheckerService = (function () {
                 type = this.TYPE_STRING;
                 continue;
             } // end if
+            // wonder.jung
             // 필터 - 정상 이메일 검증
             var regExpValidEmailReceived = this.getValidEmails(filter);
             if (null != regExpValidEmailReceived) {
@@ -450,23 +452,24 @@ var MyCheckerService = (function () {
         }
         return null;
     };
+    // public EMAIL_REGEX:RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     MyCheckerService.prototype.getValidEmails = function (filter) {
         // let isDebug:boolean = true;
         var isDebug = false;
-        if (isDebug) {
+        if (isDebug)
+            console.log("my-checker / getValidEmails / init");
+        if (isDebug)
             console.log("my-checker / getValidEmails / filter : ", filter);
-        }
         // ex) "user_email":"valid_emails"
         if (null == filter || 0 == filter.length) {
             return null;
         }
         var matchArr = filter.match(this.regValidEmail);
-        if (isDebug) {
+        if (isDebug)
             console.log("my-checker / getValidEmails / matchArr : ", matchArr);
-        }
         if (null != matchArr && 1 == matchArr.length) {
             // email 검증을 할 수 있는 정규표현식을 돌려줍니다.
-            return this.EMAIL_REGEX;
+            return this.myRegEx.EMAIL_REGEX;
         }
         return null;
     };
@@ -794,13 +797,13 @@ var MyCheckerService = (function () {
         // public myChecker:MyChecker
         return new my_checker_1.MyChecker(
         // public type:string
-        this.TYPE_STRING, this.MIN_STR_SAFE_TITLE, this.MAX_STR_SAFE_TITLE, this.REGEX_SAFE_STR);
+        this.TYPE_STRING, this.MIN_STR_SAFE_TITLE, this.MAX_STR_SAFE_TITLE, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
     MyCheckerService.prototype.getCommentChecker = function () {
         // public myChecker:MyChecker
         return new my_checker_1.MyChecker(
         // public type:string
-        this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.REGEX_SAFE_STR);
+        this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
     MyCheckerService.prototype.sanitizeDirtyWord = function (target) {
         if (null == this.dirtyWordList || 0 == this.dirtyWordList.length) {

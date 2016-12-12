@@ -1,6 +1,7 @@
 import { Injectable }             from '@angular/core';
 import { MyEvent }                from '../model/my-event';
 import { MyChecker }              from '../model/my-checker';
+import { MyRegEx }                from '../model/my-regex';
 
 import { DefaultComponent }       from '../../widget/input/default/default.component';
 import { DefaultMeta }            from '../../widget/input/default/model/default-meta';
@@ -97,8 +98,10 @@ export class MyEventService {
     KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";     // 유저 - 내 관심강의(찜).
 
     private uniqueIdx:number=0;
+    private myRegEx:MyRegEx;
 
     constructor() {
+        this.myRegEx = new MyRegEx();
     }
 
     // @ Deprecated
@@ -377,12 +380,28 @@ export class MyEventService {
                     if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ ]{2,10}/g");
                     view.showTooltipFailWarning(
                         // msg:string
-                        "빈칸을 연속으로 입력하실 수 없습니다.",
+                        "빈칸을 연속으로 입력하실 수 없습니다",
                         // isTimeout:Boolean
                         false
                     ); // end if
 
                 } // end if          
+
+            } // end if
+
+        } else if(myEvent.hasKey(this.KEY_USER_EMAIL)) {
+
+            if("regexInclude" === key) {
+
+                if(myEvent.isSameRegExp(this.myRegEx.EMAIL_REGEX, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "정상적인 이메일 주소를 입력해주세요",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
 
             } // end if
 

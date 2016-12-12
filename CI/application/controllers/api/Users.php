@@ -757,22 +757,40 @@ class Users extends MY_REST_Controller {
             // $key=""
             "birth_year",
             // $key_filter=""
-            "user_birth_year"
+            "user_birth_year",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_year)) 
+        {
+            $birth_year = "";
+        }
         $birth_month = 
         $this->my_paramchecker->post(
             // $key=""
             "birth_month",
             // $key_filter=""
-            "user_birth_month"
+            "user_birth_month",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_month)) 
+        {
+            $birth_month = "";
+        }
         $birth_day = 
         $this->my_paramchecker->post(
             // $key=""
             "birth_day",
             // $key_filter=""
-            "user_birth_day"
+            "user_birth_day",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_day)) 
+        {
+            $birth_day = "";
+        }
         $thumbnail = 
         $this->my_paramchecker->post(
             // $key=""

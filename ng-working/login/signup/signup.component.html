@@ -25,22 +25,49 @@
 						<tr> 
 							<!-- First Column init -->
 							<td class="layout border-right">
-								<!-- Email / Unique 검사 진행해야 함. -->
+
+								<!-- Email -->
+								<widget-input-default
+								[meta]="defaultMetaList[0]"
+								(emitter)="onChangedFromChild($event)">
+								</widget-input-default>
+
+								<!--
 								<email 	
 								(emitter)="onChangedFromChild($event)">
 								</email>
+								-->
+
 								<!-- Password -->
 								<password 	
 								(emitter)="onChangedFromChild($event)">
 								</password>
+
+								<!-- Default Input : Name -->
+								<widget-input-default
+								[meta]="defaultMetaList[1]"
+								(emitter)="onChangedFromChild($event)">
+								</widget-input-default>
+
 								<!-- 이름 -->
+								<!--
 								<name 
 								(emitter)="onChangedFromChild($event)">
 								</name>
+								-->
+
+								<!-- Default Input : Nickname -->
+								<widget-input-default
+								[meta]="defaultMetaList[2]"
+								(emitter)="onChangedFromChild($event)">
+								</widget-input-default>
+
 								<!-- 닉네임 -->
+								<!--
 								<nickname 	
 								(emitter)="onChangedFromChild($event)">
 								</nickname>
+								-->
 							</td> 
 							<!-- First Column done -->
 							<!-- Second Column init -->

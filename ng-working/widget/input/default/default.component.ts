@@ -177,9 +177,11 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   public hasDone() :boolean {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / hasDone / 시작");
+    if(isDebug) console.log("default / hasDone / this.inputStrPrev : ",this.inputStrPrev);
+    if(isDebug) console.log("default / hasDone / this.ngModelInput : ",this.ngModelInput);
 
     let isOK:boolean = this.isOK(this.inputStrPrev);
 
@@ -226,11 +228,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     } // end if
 
     let inputStr:string = elementInput.value;
-
-    if(inputStr == this.inputStrPrev) {
-      if(isDebug) console.log("default / onBlur / 중단 / 동일한 내용이라면 중단합니다.");
-      return;
-    }
 
     let isValidInput:boolean = this.onCheckInputValid(inputStr);
     if(isDebug) console.log("default / onBlur / isValidInput : ",isValidInput);
@@ -348,8 +345,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // 입력받은 모든 값은 문자열입니다.
   private onCheckInputValid(input:string) :boolean {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / onCheckInputValid / init");
     if(isDebug) console.log("default / onCheckInputValid / input : ",input);
 
@@ -358,12 +355,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     // 비어있는 문자열이라면 검사하지 않습니다.
     if(null == input || "" == input) {
       if(isDebug) console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
-      return true;
-    }
-
-    // 바뀌지 않았다면 검사하지 않습니다.
-    if(this.inputStrPrev === input) {
-      if(isDebug) console.log("default / onCheckInputValid / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
       return true;
     }
 
@@ -458,6 +449,13 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     if(inputStr == this.inputStrPrev) {
       if(isDebug) console.log("default / onKeyup / 중단 / 동일한 내용이라면 중단합니다.");
+      return;
+    }
+
+    // 입력이 완료되는 onBlur에서만 검사해야 하는 항목들은 제외합니다.
+    if(this.myEventService.KEY_USER_EMAIL === this.meta.eventKey) {
+      if(isDebug) console.log("default / onKeyup / 중단 / 입력이 완료되는 onBlur에서만 검사해야 하는 항목들은 제외합니다.");
+      this.inputStrPrev = inputStr;
       return;
     }
 
