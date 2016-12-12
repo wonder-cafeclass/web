@@ -81,3 +81,8 @@ span.warning {
   margin-left: 100px;
   margin-top: -80px; 
 }
+textarea.my-style {
+  resize: none;
+  height: 150px;
+  font-size: 14px;
+}

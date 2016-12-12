@@ -125,6 +125,15 @@ var FooterComponent = (function () {
         event.preventDefault();
         this.router.navigate(['/private-info']);
     };
+    FooterComponent.prototype.onClickApplyTeacher = function (event) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("footer / onClickApplyTeacher / 시작");
+        event.stopPropagation();
+        event.preventDefault();
+        this.router.navigate(['/applyteacher']);
+    };
     FooterComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

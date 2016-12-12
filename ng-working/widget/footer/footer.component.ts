@@ -170,6 +170,19 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.router.navigate(['/private-info']);
 
-  }  
+  } 
+
+  onClickApplyTeacher(event) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("footer / onClickApplyTeacher / 시작");
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.router.navigate(['/applyteacher']);
+    
+  } 
 
 }

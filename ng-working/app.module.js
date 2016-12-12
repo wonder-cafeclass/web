@@ -16,6 +16,7 @@ var common_1 = require('@angular/common');
 var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var users_module_1 = require('./users/users.module');
+var teachers_module_1 = require('./teachers/teachers.module');
 var klass_center_module_1 = require('./klass/klass-center.module');
 var login_module_1 = require('./login/login.module');
 var policy_module_1 = require('./policy/policy.module');
@@ -32,6 +33,7 @@ var upload_service_1 = require('./util/service/upload.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var user_service_1 = require('./users/service/user.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
+var default_service_1 = require('./widget/input/default/service/default.service');
 require('./rxjs-extensions');
 require('./rxjs-operators');
 var AppModule = (function () {
@@ -44,6 +46,7 @@ var AppModule = (function () {
                 forms_1.FormsModule,
                 app_routing_1.routing,
                 users_module_1.UsersModule,
+                teachers_module_1.TeachersModule,
                 klass_center_module_1.KlassCenterModule,
                 login_module_1.LoginModule,
                 policy_module_1.PolicyModule,
@@ -68,6 +71,7 @@ var AppModule = (function () {
                 upload_service_1.UploadService,
                 my_event_watchtower_service_1.MyEventWatchTowerService,
                 user_service_1.UserService,
+                default_service_1.DefaultService,
                 my_checker_service_1.MyCheckerService
             ],
             bootstrap: [app_component_1.AppComponent]

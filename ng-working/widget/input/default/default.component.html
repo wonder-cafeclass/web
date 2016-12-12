@@ -4,27 +4,61 @@
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
+	
 
 	<!-- input -->
-	<input 	*ngIf="!isDisabled"
-			#input
-			(click)="onClick($event, input)"
-			(focus)="onFocus($event, input)"
-			(blur)="onBlur($event, input)"
-			(keyup)="onKeyup($event, input)"
-			(keydown.tab)="onKeydownTab($event)"
-			(keydown.shift.tab)="onKeydownTabShift($event)"
-			[(ngModel)]="ngModelInput"
-			value={{inputStrPrev}}
-			class="form-control input-glass" 
-			placeholder={{meta.placeholder}}>
-
+	<input 	
+	*ngIf="!isDisabled && meta.type == 'TYPE_INPUT'"
+	#input
+	(click)="onClick($event, input)"
+	(focus)="onFocus($event, input)"
+	(blur)="onBlur($event, input)"
+	(keyup)="onKeyup($event, input)"
+	(keydown.tab)="onKeydownTab($event)"
+	(keydown.shift.tab)="onKeydownTabShift($event)"
+	[(ngModel)]="ngModelInput"
+	value={{inputStrPrev}}
+	class="form-control input-glass" 
+	placeholder={{meta.placeholder}}>
 	<!-- input-disabled -->
-	<input 	*ngIf="isDisabled"
-			disabled="disabled" 
-			value={{inputStrPrev}}
-			class="form-control input-glass" 
-			placeholder={{meta.placeholder}}>
+	<input 	
+	*ngIf="isDisabled && meta.type == 'TYPE_INPUT'"
+	disabled="disabled" 
+	value={{inputStrPrev}}
+	class="form-control input-glass" 
+	placeholder={{meta.placeholder}}>
+
+
+	<!-- text-area -->
+	<textarea 
+	rows="4" 
+	cols="50" 	
+	*ngIf="!isDisabled && meta.type == 'TYPE_TEXTAREA'"
+	#textarea
+	(click)="onClick($event, textarea)"
+	(focus)="onFocus($event, textarea)"
+	(blur)="onBlur($event, textarea)"
+	(keyup)="onKeyup($event, textarea)"
+	(keydown.tab)="onKeydownTab($event)"
+	(keydown.shift.tab)="onKeydownTabShift($event)"
+	[(ngModel)]="ngModelInput"
+	value={{inputStrPrev}}
+	class="form-control input-glass my-style" 
+	placeholder={{meta.placeholder}}>
+	</textarea>
+	<!-- text-area-disabled -->
+	<textarea 
+	rows="4" 
+	cols="50"
+	*ngIf="isDisabled && meta.type == 'TYPE_TEXTAREA'"
+	disabled="disabled" 
+	value={{inputStrPrev}}
+	class="form-control input-glass my-style"
+	placeholder={{meta.placeholder}}>
+	</textarea>
+
+
+
 	
 	<!-- icon - warning -->
 	<span 	*ngIf="!isValid"

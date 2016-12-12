@@ -352,13 +352,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
         this.email = this.user.email;
         // name
         if(null != this.nameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.name : ",this.user.name);
           this.nameComponent.setInput(this.user.name);
         }
         this.name = this.user.name;
         // nickname
         if(null != this.nicknameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.nickname : ",this.user.nickname);
           this.nicknameComponent.setInput(this.user.nickname);
         }
         this.nickname = this.user.nickname;
@@ -373,13 +373,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
         // 카카오 로그인 - 유저 정보 가져오기.
         // name
         if(null != this.nameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.name : ",this.user.name);
           this.nameComponent.setInput(this.user.name);
         }
         this.name = this.user.name;
         // nickname
         if(null != this.nicknameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.nickname : ",this.user.nickname);
           this.nicknameComponent.setInput(this.user.nickname);
         }
         this.nickname = this.user.nickname;
@@ -399,13 +399,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
         this.email = this.user.email;
         // name
         if(null != this.nameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.name : ",this.loginUser.name);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.name : ",this.user.name);
           this.nameComponent.setInput(this.user.name);
         }
         this.name = this.user.name;
         // nickname
         if(null != this.nicknameComponent) {
-          if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ",this.loginUser.nickname);
+          if(isDebug) console.log("my-info / fillViewUserInfo / this.user.nickname : ",this.user.nickname);
           this.nicknameComponent.setInput(this.user.nickname);
         }
         this.nickname = this.user.nickname;

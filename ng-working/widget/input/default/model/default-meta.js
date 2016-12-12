@@ -1,10 +1,13 @@
 "use strict";
+var default_type_1 = require('./default-type');
 var DefaultMeta = (function () {
-    function DefaultMeta(title, placeholder, eventKey, checkerKey) {
+    function DefaultMeta(title, placeholder, eventKey, checkerKey, type) {
         this.title = title;
         this.placeholder = placeholder;
         this.eventKey = eventKey;
         this.checkerKey = checkerKey;
+        this.type = type;
+        this.defaultType = new default_type_1.DefaultType();
     }
     DefaultMeta.prototype.isOK = function () {
         if (this.hasNoTitle()) {

@@ -5,6 +5,7 @@ import { MyRegEx }                from '../model/my-regex';
 
 import { DefaultComponent }       from '../../widget/input/default/default.component';
 import { DefaultMeta }            from '../../widget/input/default/model/default-meta';
+import { DefaultType }            from '../../widget/input/default/model/default-type';
 
 @Injectable()
 export class MyEventService {
@@ -95,13 +96,18 @@ export class MyEventService {
     KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";           // 유저 - 내정보 수정.
     KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";     // 유저 - 내 수강이력.
     KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
-    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";     // 유저 - 내 관심강의(찜).
+    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";   // 유저 - 내 관심강의(찜).
+
+    KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";       // 선생님 - 경력
+    KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";   // 선생님 - 인사말
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;
+    private defaultType:DefaultType;
 
     constructor() {
         this.myRegEx = new MyRegEx();
+        this.defaultType = new DefaultType();
     }
 
     // @ Deprecated
@@ -421,7 +427,9 @@ export class MyEventService {
             // public eventKey:string
             this.KEY_USER_EMAIL,
             // public checkerKey:string
-            "user_email"
+            "user_email",
+            // public type:string
+            this.defaultType.TYPE_INPUT
           ),
           new DefaultMeta(
             // public title:string
@@ -431,7 +439,9 @@ export class MyEventService {
             // public eventKey:string
             this.KEY_USER_NAME,
             // public checkerKey:string
-            "user_name"
+            "user_name",
+            // public type:string
+            this.defaultType.TYPE_INPUT
           ),
           new DefaultMeta(
             // public title:string
@@ -441,12 +451,83 @@ export class MyEventService {
             // public eventKey:string
             this.KEY_USER_NICKNAME,
             // public checkerKey:string
-            "user_nickname"
+            "user_nickname",
+            // public type:string
+            this.defaultType.TYPE_INPUT
           )
         ];        
 
         return defaultMetaList;
     }
+
+    public getDefaultMetaListApplyTeacher() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+          new DefaultMeta(
+            // public title:string
+            "이메일",
+            // public placeholder:string
+            "이메일을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_EMAIL,
+            // public checkerKey:string
+            "user_email",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "이름",
+            // public placeholder:string
+            "이름을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NAME,
+            // public checkerKey:string
+            "user_name",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "닉네임",
+            // public placeholder:string
+            "닉네임을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NICKNAME,
+            // public checkerKey:string
+            "user_nickname",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "경력",
+            // public placeholder:string
+            "경력을 입력해주세요",
+            // public eventKey:string
+            this.KEY_TEACHER_RESUME,
+            // public checkerKey:string
+            "teacher_resume",
+            // public type:string
+            this.defaultType.TYPE_TEXTAREA
+          ),
+          new DefaultMeta(
+            // public title:string
+            "인사말",
+            // public placeholder:string
+            "인사말을 입력해주세요",
+            // public eventKey:string
+            this.KEY_TEACHER_GREETING,
+            // public checkerKey:string
+            "teacher_greeting",
+            // public type:string
+            this.defaultType.TYPE_TEXTAREA
+          )
+        ];        
+
+        return defaultMetaList;
+    }    
 
 
 }

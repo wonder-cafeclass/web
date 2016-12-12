@@ -15,9 +15,9 @@ var user_service_1 = require('../../users/service/user.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_cookie_1 = require('../../util/http/my-cookie');
 var NaverCallbackComponent = (function () {
     function NaverCallbackComponent(loginService, watchTower, myLoggerService, myCheckerService, userService, activatedRoute, router) {
-        // Do something...
         this.loginService = loginService;
         this.watchTower = watchTower;
         this.myLoggerService = myLoggerService;
@@ -29,6 +29,7 @@ var NaverCallbackComponent = (function () {
         this.isValidState = false;
         this.isAdmin = false;
         this.errorMsgArr = [];
+        this.myCookie = new my_cookie_1.MyCookie();
     } // end function
     NaverCallbackComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -336,9 +337,13 @@ var NaverCallbackComponent = (function () {
             // 쿠키 인증 성공!
             // 로그인 직전 페이지로 리다이렉트. 
             // 돌아갈 주소가 없다면, 홈으로 이동.
+            var redirectUrl = _this.myCookie.getCookie("redirectUrl");
+            if (null == redirectUrl || "" == redirectUrl) {
+                redirectUrl = '/class-center';
+            }
             if (isDebug)
-                console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-            _this.router.navigate([_this.redirectUrl]);
+                console.log("naver-callback / getUserByKakaoId / redirectUrl : ", redirectUrl);
+            _this.router.navigate([redirectUrl]);
         }); // end userService    
     }; // end method
     NaverCallbackComponent = __decorate([

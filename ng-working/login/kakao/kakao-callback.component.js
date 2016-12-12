@@ -15,6 +15,7 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var user_service_1 = require('../../users/service/user.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_cookie_1 = require('../../util/http/my-cookie');
 var KakaoCallbackComponent = (function () {
     function KakaoCallbackComponent(loginService, watchTower, userService, myLoggerService, myCheckerService, activatedRoute, router) {
         this.loginService = loginService;
@@ -28,7 +29,7 @@ var KakaoCallbackComponent = (function () {
         this.kakaoSignupCodeAlreadyRegisterd = -102;
         this.isAdmin = false;
         this.errorMsgArr = [];
-        // Do something...
+        this.myCookie = new my_cookie_1.MyCookie();
     } // end function
     KakaoCallbackComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -278,8 +279,8 @@ var KakaoCallbackComponent = (function () {
     }; // end method 
     KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("kakao-callback / getUserByKakaoId / 시작");
         this.userService
@@ -339,10 +340,15 @@ var KakaoCallbackComponent = (function () {
                         // 쿠키 인증 성공!
                         if (isDebug)
                             console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
-                        // 쿠키 정보로 가져온 유저 정보를 등록, 전파합니다.
                         // 로그인 직전 페이지로 리다이렉트. 
                         // 돌아갈 주소가 없다면, 홈으로 이동.
-                        _this.router.navigate(['/class-center']);
+                        var redirectUrl = _this.myCookie.getCookie("redirectUrl");
+                        if (null == redirectUrl || "" == redirectUrl) {
+                            redirectUrl = '/class-center';
+                        }
+                        if (isDebug)
+                            console.log("kakao-callback / getUserByKakaoId / redirectUrl : ", redirectUrl);
+                        _this.router.navigate([redirectUrl]);
                     }
                     else {
                         // kakaoid로 쿠키 인증 실패. 

@@ -69,12 +69,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private birthDay:string;
   // @ mutables - done
 
-  // 
-  private titleArr:string[] = [];
-  private placeholderArr:string[] = [];
-  private eventKeyArr:string[] = [];
-  private checkerKeyArr:string[] = [];
-
   // password event keys
   eventKeyPWHead:string;
   eventKeyPWBody:string;
@@ -246,6 +240,25 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   }
 
+  private logActionPage() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("my-info / logActionPage / 시작");
+
+    // 페이지 진입을 기록으로 남깁니다.
+    this.myLoggerService.logActionPage(
+      // apiKey:string
+      this.watchTower.getApiKey(),
+      // pageType:string
+      this.myLoggerService.pageTypeMyInfo
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("my-info / logActionPage / myResponse : ",myResponse);
+    }) // end service
+
+  }  
+
   private init() :void {
 
     // let isDebug:boolean = true;
@@ -256,6 +269,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.setViewPack();
     // 로그인한 유저 정보를 가져옵니다.
     this.setLoginUser();
+    // 페이지 진입을 기록으로 남깁니다.
+    this.logActionPage();
 
   }  
 

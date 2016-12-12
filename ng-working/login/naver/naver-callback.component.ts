@@ -15,6 +15,7 @@ import { MyLoggerService }            from '../../util/service/my-logger.service
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
 import { MyResponse }                 from '../../util/model/my-response';
+import { MyCookie }                   from '../../util/http/my-cookie';
 
 import { User }                       from '../../users/model/user';
 
@@ -36,6 +37,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
 
+  private myCookie:MyCookie;
+
   constructor(  public loginService: LoginService,
                 private watchTower:MyEventWatchTowerService,
                 public myLoggerService:MyLoggerService,
@@ -44,7 +47,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
                 private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
-    // Do something...
+    this.myCookie = new MyCookie();
 
   } // end function
 
@@ -405,10 +408,16 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
       }
 
       // 쿠키 인증 성공!
+
       // 로그인 직전 페이지로 리다이렉트. 
       // 돌아갈 주소가 없다면, 홈으로 이동.
-      if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-      this.router.navigate([this.redirectUrl]);
+      let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+      if(null == redirectUrl || "" == redirectUrl) {
+        redirectUrl = '/class-center';
+      }
+
+      if(isDebug) console.log("naver-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
+      this.router.navigate([redirectUrl]);
       
     }); // end userService    
     

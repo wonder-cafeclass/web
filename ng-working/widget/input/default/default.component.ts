@@ -52,6 +52,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       // public eventKey:string
       "",
       // public checkerKey:string
+      "",
+      // public type:string
       ""
     );
   } // end constructor

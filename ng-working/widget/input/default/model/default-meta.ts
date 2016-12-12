@@ -1,10 +1,20 @@
+import { DefaultType }	from './default-type';
+
 export class DefaultMeta {
+
+	private defaultType:DefaultType;
+
 	constructor(
 	    public title:string,
 	    public placeholder:string,
 	    public eventKey:string,
-	    public checkerKey:string
-	) {}
+	    public checkerKey:string,
+	    public type:string
+	) {
+
+		this.defaultType = new DefaultType();
+
+	}
 
 	public isOK() :boolean {
 

@@ -7,6 +7,8 @@ import { FormsModule }              	from '@angular/forms';
 
 import { NavTabsComponent }         	from './nav-tabs/nav-tabs.component';
 
+import { DefaultService }         		from './input/default/service/default.service';
+
 import { DefaultComponent }         	from './input/default/default.component';
 import { EmailComponent }         		from './input/email/email.component';
 import { ProfileImgUploadComponent }	from './input/profile-img-upload/profile-img-upload.component';
@@ -62,6 +64,9 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		NicknameComponent,
 		FooterComponent,
 		SafeHtmlPipe
+	],
+	providers: [
+		DefaultService
 	]
 })
 export class WidgetModule {}

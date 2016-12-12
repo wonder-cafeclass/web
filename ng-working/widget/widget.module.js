@@ -14,6 +14,7 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
 var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
+var default_service_1 = require('./input/default/service/default.service');
 var default_component_1 = require('./input/default/default.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
@@ -70,6 +71,9 @@ var WidgetModule = (function () {
                 nickname_component_1.NicknameComponent,
                 footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
+            ],
+            providers: [
+                default_service_1.DefaultService
             ]
         }), 
         __metadata('design:paramtypes', [])

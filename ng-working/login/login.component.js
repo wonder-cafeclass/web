@@ -18,9 +18,10 @@ var password_component_1 = require('../widget/input/password/password.component'
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_event_service_1 = require('../util/service/my-event.service');
+var my_cookie_1 = require('../util/http/my-cookie');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var LoginComponent = (function () {
-    function LoginComponent(authService, loginService, userService, myLoggerService, myCheckerService, myEventService, watchTower, router) {
+    function LoginComponent(authService, loginService, userService, myLoggerService, myCheckerService, myEventService, watchTower, activatedRoute, router) {
         this.authService = authService;
         this.loginService = loginService;
         this.userService = userService;
@@ -28,11 +29,13 @@ var LoginComponent = (function () {
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.watchTower = watchTower;
+        this.activatedRoute = activatedRoute;
         this.router = router;
         this.cafeclassAuthUrl = "http://google.co.kr";
         this.redirectUrl = "/class-center";
         this.isAdmin = false;
         this.errorMsgArr = [];
+        this.myCookie = new my_cookie_1.MyCookie();
     }
     LoginComponent.prototype.ngOnInit = function () {
         var isDebug = true;
@@ -100,6 +103,31 @@ var LoginComponent = (function () {
             }
         });
     };
+    LoginComponent.prototype.getQueryString = function () {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("kakao-callback / getQueryString / 시작");
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(function (param) {
+            if (isDebug)
+                console.log("kakao-callback / getQueryString / param : ", param);
+            var redirectUrl = param['redirect'];
+            if (null != _this.redirectUrl && "" != _this.redirectUrl) {
+                if (isDebug)
+                    console.log("kakao-callback / getQueryString / this.redirectUrl : ", _this.redirectUrl);
+                // 쿠키에 저장합니다.
+                _this.myCookie.setCookie(
+                // cname
+                "redirectUrl", 
+                // cvalue
+                redirectUrl, 
+                // exdays
+                1);
+            } // end if
+        }); // end subscribe
+    };
     LoginComponent.prototype.init = function () {
         var _this = this;
         var isDebug = true;
@@ -108,6 +136,8 @@ var LoginComponent = (function () {
             console.log("login / init / 시작");
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
+        // redirect url을 파라미터로 넘겼는지 확인합니다.
+        this.getQueryString();
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
@@ -256,8 +286,14 @@ var LoginComponent = (function () {
                     return;
                 }
                 if (isDebug)
-                    console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 홈화면으로 이동합니다.");
-                _this.router.navigate(['/class-center']);
+                    console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 리다이렉트합니다.");
+                var redirectUrl = _this.myCookie.getCookie("redirectUrl");
+                if (null == redirectUrl || "" == redirectUrl) {
+                    redirectUrl = '/class-center';
+                }
+                if (isDebug)
+                    console.log("login / confirmUserEmailPassword / 중단 / redirectUrl : ", redirectUrl);
+                _this.router.navigate([redirectUrl]);
             });
         } // end service    
     };
@@ -281,7 +317,7 @@ var LoginComponent = (function () {
             templateUrl: 'login.component.html',
             styleUrls: ['login.component.css']
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, login_service_1.LoginService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.ActivatedRoute, router_1.Router])
     ], LoginComponent);
     return LoginComponent;
 }());

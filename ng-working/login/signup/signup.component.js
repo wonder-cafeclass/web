@@ -258,14 +258,14 @@ var SignupComponent = (function () {
                 // name
                 if (null != _this.nameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                        console.log("my-info / fillViewUserInfo / this.user.name : ", _this.user.name);
                     _this.nameComponent.setInput(_this.user.name);
                 }
                 _this.name = _this.user.name;
                 // nickname
                 if (null != _this.nicknameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                        console.log("my-info / fillViewUserInfo / this.user.nickname : ", _this.user.nickname);
                     _this.nicknameComponent.setInput(_this.user.nickname);
                 }
                 _this.nickname = _this.user.nickname;
@@ -280,14 +280,14 @@ var SignupComponent = (function () {
                 // name
                 if (null != _this.nameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                        console.log("my-info / fillViewUserInfo / this.user.name : ", _this.user.name);
                     _this.nameComponent.setInput(_this.user.name);
                 }
                 _this.name = _this.user.name;
                 // nickname
                 if (null != _this.nicknameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                        console.log("my-info / fillViewUserInfo / this.user.nickname : ", _this.user.nickname);
                     _this.nicknameComponent.setInput(_this.user.nickname);
                 }
                 _this.nickname = _this.user.nickname;
@@ -307,14 +307,14 @@ var SignupComponent = (function () {
                 // name
                 if (null != _this.nameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.name : ", _this.loginUser.name);
+                        console.log("my-info / fillViewUserInfo / this.user.name : ", _this.user.name);
                     _this.nameComponent.setInput(_this.user.name);
                 }
                 _this.name = _this.user.name;
                 // nickname
                 if (null != _this.nicknameComponent) {
                     if (isDebug)
-                        console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", _this.loginUser.nickname);
+                        console.log("my-info / fillViewUserInfo / this.user.nickname : ", _this.user.nickname);
                     _this.nicknameComponent.setInput(_this.user.nickname);
                 }
                 _this.nickname = _this.user.nickname;

@@ -21,7 +21,9 @@ export class MyLoggerService {
 	public pageTypeKlassList:string="CLASS_LIST";
 	public pageTypePolicy:string="POLICY";
 	public pageTypeSignup:string="SIGNUP";
+	public pageTypeSignupTeacher:string="SIGNUP_TEACHER";
 	public pageTypeSignupSelect:string="SIGNUP_SELECT";
+	public pageTypeMyInfo:string="MY_INFO";
 
 	public errorTypeNotValidValue:string="NOT_VALID_VALUE";
 	public errorTypeUnknownError:string="UNKNOWN_ERROR";

@@ -36,6 +36,8 @@ var DefaultComponent = (function () {
             // public eventKey:string
             "", 
             // public checkerKey:string
+            "", 
+            // public type:string
             "");
     } // end constructor
     DefaultComponent.prototype.ngOnInit = function () {

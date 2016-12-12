@@ -15,6 +15,7 @@ var user_service_1 = require('../../users/service/user.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_cookie_1 = require('../../util/http/my-cookie');
 var FacebookCallbackComponent = (function () {
     function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, watchTower, userService, activatedRoute, router) {
         this.loginService = loginService;
@@ -28,7 +29,7 @@ var FacebookCallbackComponent = (function () {
         this.isValidState = false;
         this.isAdmin = false;
         this.errorMsgArr = [];
-        // Do something...
+        this.myCookie = new my_cookie_1.MyCookie();
     } // end function
     FacebookCallbackComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -294,9 +295,13 @@ var FacebookCallbackComponent = (function () {
             // 쿠키 인증 성공!
             // 로그인 직전 페이지로 리다이렉트. 
             // 돌아갈 주소가 없다면, 홈으로 이동.
+            var redirectUrl = _this.myCookie.getCookie("redirectUrl");
+            if (null == redirectUrl || "" == redirectUrl) {
+                redirectUrl = '/class-center';
+            }
             if (isDebug)
-                console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-            _this.router.navigate([_this.redirectUrl]);
+                console.log("facebook-callback / getUserByKakaoId / redirectUrl : ", redirectUrl);
+            _this.router.navigate([redirectUrl]);
         }); // end userService    
     };
     FacebookCallbackComponent = __decorate([

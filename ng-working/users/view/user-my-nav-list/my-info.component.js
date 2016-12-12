@@ -31,12 +31,6 @@ var MyInfoComponent = (function () {
         this.router = router;
         this.emitter = new core_1.EventEmitter();
         this.gender = "";
-        // @ mutables - done
-        // 
-        this.titleArr = [];
-        this.placeholderArr = [];
-        this.eventKeyArr = [];
-        this.checkerKeyArr = [];
         this.isAdmin = false;
         // @ Desc : 사용자가 자신의 유저 정보를 변경했는지 확인하는 플래그
         this.hasChanged = false;
@@ -155,6 +149,22 @@ var MyInfoComponent = (function () {
         if (isDebug)
             console.log("my-info / copyUser / isSame : ", isSame);
     };
+    MyInfoComponent.prototype.logActionPage = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-info / logActionPage / 시작");
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.watchTower.getApiKey(), 
+        // pageType:string
+        this.myLoggerService.pageTypeMyInfo).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("my-info / logActionPage / myResponse : ", myResponse);
+        }); // end service
+    };
     MyInfoComponent.prototype.init = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -164,6 +174,8 @@ var MyInfoComponent = (function () {
         this.setViewPack();
         // 로그인한 유저 정보를 가져옵니다.
         this.setLoginUser();
+        // 페이지 진입을 기록으로 남깁니다.
+        this.logActionPage();
     };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
         var isDebug = true;
