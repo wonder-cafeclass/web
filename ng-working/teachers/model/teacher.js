@@ -1,10 +1,13 @@
 "use strict";
 var Teacher = (function () {
-    function Teacher(id, nickname, name, gender, birthday, thumbnail, status, permission, mobile, email, date_created, date_updated) {
+    function Teacher(id, user_id, nickname, name, gender, resume, greeting, birthday, thumbnail, status, permission, mobile, email, date_created, date_updated) {
         this.id = id;
+        this.user_id = user_id;
         this.nickname = nickname;
         this.name = name;
         this.gender = gender;
+        this.resume = resume;
+        this.greeting = greeting;
         this.birthday = birthday;
         this.thumbnail = thumbnail;
         this.status = status;
@@ -18,13 +21,13 @@ var Teacher = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("user.model / getMobileArr / init");
+            console.log("teacher.model / getMobileArr / init");
         var mobileArr = this.mobile.split("-");
         var mobileHead = "";
         var mobileBody = "";
         var mobileTail = "";
         if (isDebug)
-            console.log("user.model / getMobileArr / mobileArr : ", mobileArr);
+            console.log("teacher.model / getMobileArr / mobileArr : ", mobileArr);
         if (null != mobileArr && 3 == mobileArr.length) {
             mobileHead = mobileArr[0];
             mobileBody = mobileArr[1];
@@ -69,13 +72,13 @@ var Teacher = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("user.model / getBirthdayArr / init");
+            console.log("teacher.model / getBirthdayArr / init");
         var birthdayArr = this.birthday.split("-");
         var birthYear = "";
         var birthMonth = "";
         var birthDay = "";
         if (isDebug)
-            console.log("user.model / getBirthdayArr / birthdayArr : ", birthdayArr);
+            console.log("teacher.model / getBirthdayArr / birthdayArr : ", birthdayArr);
         if (null != birthdayArr && 3 == birthdayArr.length) {
             birthYear = birthdayArr[0];
             birthMonth = birthdayArr[1];
@@ -120,10 +123,10 @@ var Teacher = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("user.model / updateWithJson / init");
+            console.log("teacher.model / updateWithJson / init");
         if (null == userJSON) {
             if (isDebug)
-                console.log("user.model / updateWithJson / 중단 / userJSON is not valid!");
+                console.log("teacher.model / updateWithJson / 중단 / userJSON is not valid!");
             return;
         }
         this.id = +userJSON["id"];

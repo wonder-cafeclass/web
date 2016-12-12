@@ -22,11 +22,19 @@ import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtow
 })
 export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
+  isFixedBottom:boolean=false;
+  isLoginTeacher:boolean=false;
+
   constructor(  private watchTower:MyEventWatchTowerService,
                 private elementRef:ElementRef,
-                public router:Router) {}
+                public router:Router) {
 
-  isFixedBottom:boolean=false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("footer / constructor / 시작");
+    if(isDebug) console.log("footer / constructor / 1 / this.isLoginTeacher : ",this.isLoginTeacher);
+
+  }
 
   getHeight(): number {
 
@@ -57,14 +65,15 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit(): void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("footer / ngOnInit / 시작");
+
     this.watchTower.contentHeight$.subscribe(
       (contentHeight:number) => {
 
       let windowHeight:number = window.innerHeight;
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("footer / contentHeight$.subscribe / 시작");
 
       if(isDebug) console.log("footer / contentHeight$.subscribe / contentHeight : ",contentHeight);
       if(isDebug) console.log("footer / contentHeight$.subscribe / windowHeight : ",windowHeight);
@@ -90,6 +99,12 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
     }); // end subscribe
 
+    // 선생님 로그인 여부를 관찰합니다.
+    this.watchTower.loginTeacherAnnounced$.subscribe(
+      (loginTeacher:Teacher) => {
+      this.isLoginTeacher = (null != loginTeacher)?true:false;
+      if(isDebug) console.log("footer / loginTeacherAnnounced$.subscribe / 2 / this.isLoginTeacher : ",this.isLoginTeacher);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -178,10 +193,15 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
     // let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickApplyTeacher / 시작");
 
+    if(this.isLoginTeacher) {
+      if(isDebug) console.log("footer / onClickApplyTeacher / 중단 / 로그인한 선생님 유저라면 선생님 등록을 다시 할 수 없다.");
+      return;
+    }
+
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['/applyteacher']);
+    this.router.navigate(['/applyteacherterm']);
     
   } 
 

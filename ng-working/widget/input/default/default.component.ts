@@ -496,3 +496,5 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
 
 } // end class
+
+// TODO - Dirty word list 검수 과정 필요!

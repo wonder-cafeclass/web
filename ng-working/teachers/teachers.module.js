@@ -15,6 +15,7 @@ var common_1 = require('@angular/common');
 var widget_module_1 = require('../widget/widget.module');
 var teachers_routing_1 = require('./teachers.routing');
 var apply_teacher_component_1 = require('./apply-teacher.component');
+var apply_teacher_term_component_1 = require('./view/apply-teacher-term.component');
 var login_service_1 = require('../login/service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var teacher_service_1 = require('./service/teacher.service');
@@ -31,7 +32,8 @@ var TeachersModule = (function () {
                 teachers_routing_1.teachersRouting
             ],
             declarations: [
-                apply_teacher_component_1.ApplyTeacherComponent
+                apply_teacher_component_1.ApplyTeacherComponent,
+                apply_teacher_term_component_1.ApplyTeacherTermComponent
             ],
             providers: [
                 login_service_1.LoginService,

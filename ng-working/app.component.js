@@ -14,16 +14,18 @@ var url_service_1 = require('./util/url.service');
 var auth_service_1 = require('./auth.service');
 var image_service_1 = require('./util/image.service');
 var user_service_1 = require('./users/service/user.service');
+var teacher_service_1 = require('./teachers/service/teacher.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
+    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
         // Do something...
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
+        this.teacherService = teacherService;
         this.imageService = imageService;
         this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
@@ -183,8 +185,28 @@ var AppComponent = (function () {
                 _this.loginUser = user;
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                 _this.watchTower.announceLogin(_this.loginUser);
+                // 회원이 선생님이라면 선생님 정보를 가져온다.
+                _this.getTeacherFromUser(+_this.loginUser.id);
             }
         });
+    };
+    AppComponent.prototype.getTeacherFromUser = function (userId) {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("app-root / getTeacherFromUser / \uC2DC\uC791");
+        if (isDebug)
+            console.log("app-root / getTeacherFromUser / userId : " + userId);
+        this.teacherService
+            .getTeacher(this.watchTower.getApiKey(), userId)
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / getTeacherFromUser / myResponse : ", myResponse);
+            var teacherFromDB = myResponse.getDataProp("teacher");
+            // 선생님 로그인 여부를 확인, 전파한다.
+            _this.watchTower.announceLoginTeacher(teacherFromDB);
+        }); // end service
     };
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
         event.stopPropagation();
@@ -209,7 +231,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());

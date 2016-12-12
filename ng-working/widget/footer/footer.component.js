@@ -17,6 +17,13 @@ var FooterComponent = (function () {
         this.elementRef = elementRef;
         this.router = router;
         this.isFixedBottom = false;
+        this.isLoginTeacher = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("footer / constructor / 시작");
+        if (isDebug)
+            console.log("footer / constructor / 1 / this.isLoginTeacher : ", this.isLoginTeacher);
     }
     FooterComponent.prototype.getHeight = function () {
         // let isDebug:boolean = true;
@@ -43,12 +50,12 @@ var FooterComponent = (function () {
     };
     FooterComponent.prototype.ngOnInit = function () {
         var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("footer / ngOnInit / 시작");
         this.watchTower.contentHeight$.subscribe(function (contentHeight) {
             var windowHeight = window.innerHeight;
-            // let isDebug:boolean = true;
-            var isDebug = false;
-            if (isDebug)
-                console.log("footer / contentHeight$.subscribe / 시작");
             if (isDebug)
                 console.log("footer / contentHeight$.subscribe / contentHeight : ", contentHeight);
             if (isDebug)
@@ -70,6 +77,12 @@ var FooterComponent = (function () {
                 _this.isFixedBottom = true;
             } // end if
         }); // end subscribe
+        // 선생님 로그인 여부를 관찰합니다.
+        this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
+            _this.isLoginTeacher = (null != loginTeacher) ? true : false;
+            if (isDebug)
+                console.log("footer / loginTeacherAnnounced$.subscribe / 2 / this.isLoginTeacher : ", _this.isLoginTeacher);
+        });
     };
     FooterComponent.prototype.ngAfterViewInit = function () {
         // this.updatePosition();
@@ -130,9 +143,14 @@ var FooterComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("footer / onClickApplyTeacher / 시작");
+        if (this.isLoginTeacher) {
+            if (isDebug)
+                console.log("footer / onClickApplyTeacher / 중단 / 로그인한 선생님 유저라면 선생님 등록을 다시 할 수 없다.");
+            return;
+        }
         event.stopPropagation();
         event.preventDefault();
-        this.router.navigate(['/applyteacher']);
+        this.router.navigate(['/applyteacherterm']);
     };
     FooterComponent = __decorate([
         core_1.Component({

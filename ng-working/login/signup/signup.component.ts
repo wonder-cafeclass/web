@@ -14,16 +14,13 @@ import {  Router,
 
 import { LoginService }                   from '../service/login.service';
 import { UserService }                    from '../../users/service/user.service';
+import { TeacherService }                 from '../../teachers/service/teacher.service';
 
-// import { EmailComponent }                 from '../../widget/input/email/email.component';
 import { ProfileImgUploadComponent }      from '../../widget/input/profile-img-upload/profile-img-upload.component';
 import { PasswordComponent }              from '../../widget/input/password/password.component';
 import { MobileComponent }                from '../../widget/input/mobile/mobile.component';
-// import { NameComponent }                  from '../../widget/input/name/name.component';
 import { GenderComponent }                from '../../widget/input/gender/gender.component';
 import { BirthdayComponent }              from '../../widget/input/birthday/birthday.component';
-// import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
-
 import { DefaultComponent }               from '../../widget/input/default/default.component';
 import { DefaultMeta }                    from '../../widget/input/default/model/default-meta';
 

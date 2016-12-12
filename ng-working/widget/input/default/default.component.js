@@ -452,4 +452,5 @@ var DefaultComponent = (function () {
     return DefaultComponent;
 }());
 exports.DefaultComponent = DefaultComponent; // end class
+// TODO - Dirty word list 검수 과정 필요! 
 //# sourceMappingURL=default.component.js.map

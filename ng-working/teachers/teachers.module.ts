@@ -9,6 +9,7 @@ import { WidgetModule }                   from '../widget/widget.module';
 import { teachersRouting }                from './teachers.routing';
 
 import { ApplyTeacherComponent }          from './apply-teacher.component';
+import { ApplyTeacherTermComponent }      from './view/apply-teacher-term.component';
 
 import { LoginService }                   from '../login/service/login.service';
 import { UserService }                    from '../users/service/user.service';
@@ -24,7 +25,8 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     teachersRouting
   ],
   declarations: [
-    ApplyTeacherComponent
+    ApplyTeacherComponent,
+    ApplyTeacherTermComponent
   ],
   providers: [
   	LoginService,

@@ -14,6 +14,9 @@ import { User }                            from "../../users/model/user";
 export class TeacherService {
 
   private getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
+  private getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
+  private insertTeacherUrl = '/CI/index.php/api/teachers/add';
+  private updateTeacherUrl = '/CI/index.php/api/teachers/update';
 
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
@@ -44,6 +47,245 @@ export class TeacherService {
                 .catch(this.myExtractor.handleError);
   }
 
+  getTeacherByUser (user:User): Teacher {
+    return null;
+  }
+
+  insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
+
+    let mobileArr:string[] = teacher.getMobileArr();
+    let birthdayArr:string[] = teacher.getBirthdayArr();
+
+    return this.insertTeacher(
+      // apiKey:string, 
+      apiKey,
+      // userId:number,
+      teacher.user_id,
+      // email:string, 
+      teacher.email,
+      // name:string, 
+      teacher.name,
+      // nickname:string, 
+      teacher.nickname,
+      // resume:string, 
+      teacher.resume,
+      // greeting:string, 
+      teacher.greeting,
+      // gender:string,
+      teacher.gender,
+      // birthYear:string,
+      birthdayArr[0],
+      // birthMonth:string,
+      birthdayArr[1],
+      // birthDay:string,
+      birthdayArr[2],
+      // thumbnail:string,
+      teacher.thumbnail,
+      // mobileHead:string,
+      mobileArr[0],
+      // mobileBody:string,
+      mobileArr[1],
+      // mobileTail:string
+      mobileArr[2]
+    );
+  }  
+
+  insertTeacher (
+    apiKey:string, 
+    userId:number,
+    email:string,
+    name:string, 
+    nickname:string, 
+    resume:string, 
+    greeting:string, 
+    gender:string,
+    birthYear:string,
+    birthMonth:string,
+    birthDay:string,
+    thumbnail:string,
+    mobileHead:string,
+    mobileBody:string,
+    mobileTail:string): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / insertTeacher / 시작");
+    if(isDebug) console.log("teacher.service / insertTeacher / apiKey : ",apiKey);
+    if(isDebug) console.log("teacher.service / insertTeacher / userId : ",userId);
+    if(isDebug) console.log("teacher.service / insertTeacher / email : ",email);
+    if(isDebug) console.log("teacher.service / insertTeacher / name : ",name);
+    if(isDebug) console.log("teacher.service / insertTeacher / nickname : ",nickname);
+    if(isDebug) console.log("teacher.service / insertTeacher / resume : ",resume);
+    if(isDebug) console.log("teacher.service / insertTeacher / greeting : ",greeting);
+    if(isDebug) console.log("teacher.service / insertTeacher / gender : ",gender);
+    if(isDebug) console.log("teacher.service / insertTeacher / birthYear : ",birthYear);
+    if(isDebug) console.log("teacher.service / insertTeacher / birthMonth : ",birthMonth);
+    if(isDebug) console.log("teacher.service / insertTeacher / birthDay : ",birthDay);
+    if(isDebug) console.log("teacher.service / insertTeacher / thumbnail : ",thumbnail);
+    if(isDebug) console.log("teacher.service / insertTeacher / mobileHead : ",mobileHead);
+    if(isDebug) console.log("teacher.service / insertTeacher / mobileBody : ",mobileBody);
+    if(isDebug) console.log("teacher.service / insertTeacher / mobileTail : ",mobileTail);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.insertTeacherUrl);
+
+    if(isDebug) console.log("teacher.service / insertTeacher / req_url : ",req_url);
+
+    let params = {
+      user_id:userId,
+      email:email,
+      name:name,
+      nickname:nickname,
+      resume:resume,
+      greeting:greeting,
+      gender:gender,
+      birth_year:birthYear,
+      birth_month:birthMonth,
+      birth_day:birthDay,
+      thumbnail:thumbnail,
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  } // end method 
+
+
+
+
+  updateTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
+
+    let mobileArr:string[] = teacher.getMobileArr();
+    let birthdayArr:string[] = teacher.getBirthdayArr();
+
+    return this.updateTeacher(
+      // apiKey:string, 
+      apiKey,
+      // userId:number,
+      teacher.user_id,
+      // email:string, 
+      teacher.email,
+      // name:string, 
+      teacher.name,
+      // nickname:string, 
+      teacher.nickname,
+      // resume:string, 
+      teacher.resume,
+      // greeting:string, 
+      teacher.greeting,
+      // gender:string,
+      teacher.gender,
+      // birthYear:string,
+      birthdayArr[0],
+      // birthMonth:string,
+      birthdayArr[1],
+      // birthDay:string,
+      birthdayArr[2],
+      // thumbnail:string,
+      teacher.thumbnail,
+      // mobileHead:string,
+      mobileArr[0],
+      // mobileBody:string,
+      mobileArr[1],
+      // mobileTail:string
+      mobileArr[2]
+    );
+  } 
+
+  updateTeacher (
+    apiKey:string, 
+    userId:number,
+    email:string,
+    name:string, 
+    nickname:string, 
+    resume:string, 
+    greeting:string, 
+    gender:string,
+    birthYear:string,
+    birthMonth:string,
+    birthDay:string,
+    thumbnail:string,
+    mobileHead:string,
+    mobileBody:string,
+    mobileTail:string): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / updateTeacher / 시작");
+    if(isDebug) console.log("teacher.service / updateTeacher / apiKey : ",apiKey);
+    if(isDebug) console.log("teacher.service / updateTeacher / userId : ",userId);
+    if(isDebug) console.log("teacher.service / updateTeacher / email : ",email);
+    if(isDebug) console.log("teacher.service / updateTeacher / name : ",name);
+    if(isDebug) console.log("teacher.service / updateTeacher / nickname : ",nickname);
+    if(isDebug) console.log("teacher.service / updateTeacher / resume : ",resume);
+    if(isDebug) console.log("teacher.service / updateTeacher / greeting : ",greeting);
+    if(isDebug) console.log("teacher.service / updateTeacher / gender : ",gender);
+    if(isDebug) console.log("teacher.service / updateTeacher / birthYear : ",birthYear);
+    if(isDebug) console.log("teacher.service / updateTeacher / birthMonth : ",birthMonth);
+    if(isDebug) console.log("teacher.service / updateTeacher / birthDay : ",birthDay);
+    if(isDebug) console.log("teacher.service / updateTeacher / thumbnail : ",thumbnail);
+    if(isDebug) console.log("teacher.service / updateTeacher / mobileHead : ",mobileHead);
+    if(isDebug) console.log("teacher.service / updateTeacher / mobileBody : ",mobileBody);
+    if(isDebug) console.log("teacher.service / updateTeacher / mobileTail : ",mobileTail);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.updateTeacherUrl);
+
+    if(isDebug) console.log("teacher.service / updateTeacher / req_url : ",req_url);
+
+    let params = {
+      user_id:userId,
+      email:email,
+      name:name,
+      nickname:nickname,
+      resume:resume,
+      greeting:greeting,
+      gender:gender,
+      birth_year:birthYear,
+      birth_month:birthMonth,
+      birth_day:birthDay,
+      thumbnail:thumbnail,
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  } // end method 
+
+  getTeacher(apiKey:string, userId:number): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / getTeacher / 시작");
+    if(isDebug) console.log("teacher.service / getTeacher / userId : ",userId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.getTeacherByUserIdUrl);
+
+    if(isDebug) console.log("teacher.service / getTeacher / req_url : ",req_url);
+
+    let params = {
+      user_id:userId
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
+
   getTeacherFromUser (user:User): Teacher {
 
     if(null == user) {
@@ -54,12 +296,18 @@ export class TeacherService {
     new Teacher(
       // public id:number,
       -1,
+      // public user_id:number,
+      +user.id,
       // public nickname:string,
       user.nickname,
       // public name:string,
       user.name,
       // public gender:string,
       user.gender,
+      // public resume:string,
+      "",
+      // public greeting:string,
+      "",
       // public birthday:string, 
       user.birthday,
       // public thumbnail:string,
@@ -80,7 +328,7 @@ export class TeacherService {
 
     return newTeacher;
 
-  }
+  } // end method  
 
 
 }

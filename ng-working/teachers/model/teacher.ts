@@ -1,9 +1,12 @@
 export class Teacher {
 	constructor(
 		public id:number,
+		public user_id:number,
 		public nickname:string,
 		public name:string,
 		public gender:string,
+		public resume:string,
+		public greeting:string,
 		public birthday:string, 
 		public thumbnail:string,
 		public status:string,
@@ -18,13 +21,13 @@ export class Teacher {
 
 		let isDebug:boolean = true;
 		// let isDebug:boolean = false;
-		if(isDebug) console.log("user.model / getMobileArr / init");
+		if(isDebug) console.log("teacher.model / getMobileArr / init");
 
 		let mobileArr:string[] = this.mobile.split("-");
 		let mobileHead:string = "";
 		let mobileBody:string = "";
 		let mobileTail:string = "";
-		if(isDebug) console.log("user.model / getMobileArr / mobileArr : ",mobileArr);
+		if(isDebug) console.log("teacher.model / getMobileArr / mobileArr : ",mobileArr);
 		if(null != mobileArr && 3 == mobileArr.length) {
 		  mobileHead = mobileArr[0];
 		  mobileBody = mobileArr[1];
@@ -77,13 +80,13 @@ export class Teacher {
 
 		let isDebug:boolean = true;
 		// let isDebug:boolean = false;
-		if(isDebug) console.log("user.model / getBirthdayArr / init");
+		if(isDebug) console.log("teacher.model / getBirthdayArr / init");
 
 		let birthdayArr:string[] = this.birthday.split("-");
 		let birthYear:string = "";
 		let birthMonth:string = "";
 		let birthDay:string = "";
-		if(isDebug) console.log("user.model / getBirthdayArr / birthdayArr : ",birthdayArr);
+		if(isDebug) console.log("teacher.model / getBirthdayArr / birthdayArr : ",birthdayArr);
 		if(null != birthdayArr && 3 == birthdayArr.length) {
 		  birthYear = birthdayArr[0];
 		  birthMonth = birthdayArr[1];
@@ -135,10 +138,10 @@ export class Teacher {
 
 		let isDebug:boolean = true;
 		// let isDebug:boolean = false;
-		if(isDebug) console.log("user.model / updateWithJson / init");
+		if(isDebug) console.log("teacher.model / updateWithJson / init");
 
 		if(null == userJSON) {
-			if(isDebug) console.log("user.model / updateWithJson / 중단 / userJSON is not valid!");
+			if(isDebug) console.log("teacher.model / updateWithJson / 중단 / userJSON is not valid!");
 			return;
 		}
 

@@ -26,6 +26,7 @@ var MyEventWatchTowerService = (function () {
         this.isViewPackReadySource = new Subject_1.Subject();
         // @ Optional for view
         this.loginAnnouncedSource = new Subject_1.Subject();
+        this.loginTeacherAnnouncedSource = new Subject_1.Subject();
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
         this.contentHeightSource = new Subject_1.Subject();
@@ -36,6 +37,7 @@ var MyEventWatchTowerService = (function () {
         this.isViewPackReady$ = this.isViewPackReadySource.asObservable();
         // @ Optional for view
         this.loginAnnounced$ = this.loginAnnouncedSource.asObservable();
+        this.loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.contentHeight$ = this.contentHeightSource.asObservable();
@@ -102,6 +104,10 @@ var MyEventWatchTowerService = (function () {
         this.loginUser = loginUser;
         this.loginAnnouncedSource.next(loginUser);
     };
+    MyEventWatchTowerService.prototype.announceLoginTeacher = function (loginTeacher) {
+        this.loginTeacher = loginTeacher;
+        this.loginTeacherAnnouncedSource.next(loginTeacher);
+    };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
         this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
     };
@@ -140,6 +146,9 @@ var MyEventWatchTowerService = (function () {
     };
     MyEventWatchTowerService.prototype.getLoginUser = function () {
         return this.loginUser;
+    };
+    MyEventWatchTowerService.prototype.getLoginTeacher = function () {
+        return this.loginTeacher;
     };
     MyEventWatchTowerService.prototype.getIsAdmin = function () {
         return this.isAdmin;

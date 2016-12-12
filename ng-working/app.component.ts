@@ -10,6 +10,7 @@ import { UrlService }          		from './util/url.service';
 import { AuthService }          	from './auth.service';
 import { ImageService }         	from './util/image.service';
 import { UserService }         		from './users/service/user.service';
+import { TeacherService }         	from './teachers/service/teacher.service';
 import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
 import { MyCheckerService }     	from './util/service/my-checker.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
@@ -17,6 +18,7 @@ import { MyLoggerService }          from './util/service/my-logger.service';
 import { MyResponse }               from './util/model/my-response';
 
 import { User } 					from './users/model/user';
+import { Teacher } 					from './teachers/model/teacher';
 
 @Component({
 	moduleId: module.id,
@@ -30,6 +32,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	constructor(	private authService:AuthService,
 					private urlService:UrlService,
 					private userService:UserService,
+					private teacherService:TeacherService,
 					public imageService:ImageService,
 					private watchTower:MyEventWatchTowerService,
 					private myCheckerService:MyCheckerService,
@@ -43,6 +46,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 	isAdmin:boolean=false;
 	loginUser:User;
+	loginTeacher:Teacher;
 	toggleTopMenu:boolean=true;
 
 	errorMsgArr: string[]=[];
@@ -217,8 +221,31 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 				// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
 				this.watchTower.announceLogin(this.loginUser);
+
+				// 회원이 선생님이라면 선생님 정보를 가져온다.
+				this.getTeacherFromUser(+this.loginUser.id);
 			}
 		});
+	}
+	private getTeacherFromUser(userId:number) :void {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / getTeacherFromUser / 시작`);
+	    if(isDebug) console.log(`app-root / getTeacherFromUser / userId : ${userId}`);
+
+	    this.teacherService
+	    .getTeacher(this.watchTower.getApiKey(), userId)
+		.then((myResponse:MyResponse) => {
+
+			if(isDebug) console.log(`app-root / getTeacherFromUser / myResponse : `,myResponse);
+
+			let teacherFromDB = myResponse.getDataProp("teacher");
+			// 선생님 로그인 여부를 확인, 전파한다.
+			this.watchTower.announceLoginTeacher(teacherFromDB);
+
+		}); // end service
+
 	}
 
 	onErrorThumbnail(event, thumbnail) :void{

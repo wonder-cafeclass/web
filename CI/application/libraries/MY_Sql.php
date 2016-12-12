@@ -9,6 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @license   MIT
  */
 
+require APPPATH . '/models/Teacher.php';
 require APPPATH . '/models/User.php';
 require APPPATH . '/models/UserValidation.php';
 require APPPATH . '/models/UserCookie.php';
@@ -391,7 +392,7 @@ class MY_Sql
         $this->CI->db->where('facebook_id', $facebook_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -488,7 +489,7 @@ class MY_Sql
         $this->CI->db->where('naver_id', $naver_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -908,7 +909,7 @@ class MY_Sql
         $this->CI->db->where('kakao_id', $kakao_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -936,7 +937,7 @@ class MY_Sql
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -986,7 +987,7 @@ class MY_Sql
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);        
 
         $password_hashed = "";
         foreach ($query->result() as $row)
@@ -1059,7 +1060,7 @@ class MY_Sql
         $this->CI->db->where('id', $user_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -1171,7 +1172,7 @@ class MY_Sql
         $this->CI->db->where('user_id', $user_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user_validation');
+        $query = $this->CI->db->get('user_validation', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'UserValidation');
 
@@ -1725,6 +1726,220 @@ class MY_Sql
 
         return $output;
     }     
+
+
+    public function insert_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email_insert", $email))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("teacher_resume", $resume))
+        {
+            return;
+        }
+        // TODO - 입력 글자수가 많으므로, escape 처리 필요.
+        if($this->is_not_ok("teacher_greeting", $greeting))
+        {
+            return;
+        }
+        // TODO - 입력 글자수가 많으므로, escape 처리 필요.
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            $birth_year = "";
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            $birth_month = "";
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            $birth_day = "";
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            $thumbnail = "";
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'user_id' => $user_id,
+            'nickname' => $nickname,
+            'name' => $name,
+            'resume' => $resume,
+            'greeting' => $greeting,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
+            'email' => $email
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('teacher');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('teacher', $data);
+    }
+
+    public function update_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_email_insert", $email))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            $birth_year = "";
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            $birth_month = "";
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            $birth_day = "";
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            $thumbnail = "";
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'nickname' => $nickname,
+            'name' => $name,
+            'resume' => $resume,
+            'greeting' => $greeting,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
+            'email' => $email
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $user_id);
+        $this->CI->db->update('teacher', $data);
+    } 
+
+    public function get_teacher_by_user_id($user_id=-1) 
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('user_id', $user_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    }            
 
 }
 

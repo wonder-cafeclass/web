@@ -14,13 +14,15 @@ var login_service_1 = require('../service/login.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var user_service_1 = require('../../users/service/user.service');
+var teacher_service_1 = require('../../teachers/service/teacher.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_cookie_1 = require('../../util/http/my-cookie');
 var KakaoCallbackComponent = (function () {
-    function KakaoCallbackComponent(loginService, watchTower, userService, myLoggerService, myCheckerService, activatedRoute, router) {
+    function KakaoCallbackComponent(loginService, watchTower, userService, teacherService, myLoggerService, myCheckerService, activatedRoute, router) {
         this.loginService = loginService;
         this.watchTower = watchTower;
         this.userService = userService;
+        this.teacherService = teacherService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.activatedRoute = activatedRoute;
@@ -326,7 +328,18 @@ var KakaoCallbackComponent = (function () {
                         console.log("kakao-callback / getUserByKakaoId / user : ", user_1);
                     // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                     _this.watchTower.announceLogin(user_1);
-                }
+                    // wonder.jung
+                    // 선생님 등록이 되어있는 회원인지 확인.
+                    _this.teacherService
+                        .getTeacher(_this.watchTower.getApiKey(), +user_1.id)
+                        .then(function (myResponse) {
+                        if (isDebug)
+                            console.log("kakao-callback / getTeacher / myResponse : ", myResponse);
+                        var teacherFromDB = myResponse.getDataProp("teacher");
+                        // 선생님 로그인 여부를 확인, 전파한다.
+                        _this.watchTower.announceLoginTeacher(teacherFromDB);
+                    }); // end service          
+                } // end if 
                 // api key 필요!
                 _this.userService
                     .confirmUserKakao(
@@ -376,7 +389,7 @@ var KakaoCallbackComponent = (function () {
             templateUrl: 'kakao-callback.component.html',
             styleUrls: ['kakao-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, teacher_service_1.TeacherService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
     ], KakaoCallbackComponent);
     return KakaoCallbackComponent;
 }());

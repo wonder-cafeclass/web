@@ -2,6 +2,7 @@ import { Injectable }           from '@angular/core';
 import { Subject }    			from 'rxjs/Subject';
 
 import { User }    				from '../../users/model/user';
+import { Teacher }    			from '../../teachers/model/teacher';
 /*
 *	@ Desc : 부모와 자식 객체 간의 - 모듈 단위로 부모, 자식 관계라도 상관없음. - 이벤트를 주고 받을수 있는 shared service 객체
 */
@@ -17,6 +18,7 @@ export class MyEventWatchTowerService {
 	private isViewPackReady:boolean = false;
 	// @ Optional for view
 	private loginUser:User;
+	private loginTeacher:Teacher;
 	private errorMsgArr:string[];
 	private contentHeight:number;
 
@@ -28,6 +30,7 @@ export class MyEventWatchTowerService {
 	private isViewPackReadySource = new Subject<boolean>();
 	// @ Optional for view
 	private loginAnnouncedSource = new Subject<User>();
+	private loginTeacherAnnouncedSource = new Subject<Teacher>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
 	private contentHeightSource = new Subject<number>();
@@ -41,6 +44,7 @@ export class MyEventWatchTowerService {
 	isViewPackReady$ = this.isViewPackReadySource.asObservable();
 	// @ Optional for view
 	loginAnnounced$ = this.loginAnnouncedSource.asObservable();
+	loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 	contentHeight$ = this.contentHeightSource.asObservable();
@@ -112,6 +116,11 @@ export class MyEventWatchTowerService {
 		this.loginUser = loginUser;
 		this.loginAnnouncedSource.next(loginUser);
 	}
+	announceLoginTeacher(loginTeacher: Teacher) {
+		this.loginTeacher = loginTeacher;
+		this.loginTeacherAnnouncedSource.next(loginTeacher);
+	}
+
 	announceToggleTopMenu(toggleTopMenu: boolean) {
 		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
 	}
@@ -159,6 +168,9 @@ export class MyEventWatchTowerService {
 
 	getLoginUser() :User {
 		return this.loginUser;
+	}
+	getLoginTeacher() :Teacher {
+		return this.loginTeacher;
 	}
 	getIsAdmin() :boolean {
 		return this.isAdmin;

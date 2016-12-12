@@ -4,10 +4,11 @@
 	<ul class="list-group my-style">
 		
 		<!-- First Row -->
-		<li class="list-group-item my-style first">
+		<li [ngClass]="{'fade':isLoginTeacher}"
+			(click)="onClickApplyTeacher($event)"
+			class="list-group-item my-style first">
 			<div style="text-align: center;">
-				<span 	(click)="onClickApplyTeacher($event)"
-						class="badge my-style">카페클래스 선생님되기</span>
+				<span class="badge my-style">카페클래스 선생님되기</span>
 			</div>
 		</li>
 		

@@ -29,6 +29,7 @@ var MyLoggerService = (function () {
         this.pageTypeSignupTeacher = "SIGNUP_TEACHER";
         this.pageTypeSignupSelect = "SIGNUP_SELECT";
         this.pageTypeMyInfo = "MY_INFO";
+        this.pageTypeApplyTeacherTerm = "APPLY_TEACHER_TERM";
         this.errorTypeNotValidValue = "NOT_VALID_VALUE";
         this.errorTypeUnknownError = "UNKNOWN_ERROR";
         this.errorAPIFailed = "API_FAILED";

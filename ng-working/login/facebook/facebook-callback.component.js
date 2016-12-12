@@ -12,17 +12,19 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../service/login.service');
 var user_service_1 = require('../../users/service/user.service');
+var teacher_service_1 = require('../../teachers/service/teacher.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_logger_service_1 = require('../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_cookie_1 = require('../../util/http/my-cookie');
 var FacebookCallbackComponent = (function () {
-    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, watchTower, userService, activatedRoute, router) {
+    function FacebookCallbackComponent(loginService, myLoggerService, myCheckerService, watchTower, userService, teacherService, activatedRoute, router) {
         this.loginService = loginService;
         this.myLoggerService = myLoggerService;
         this.myCheckerService = myCheckerService;
         this.watchTower = watchTower;
         this.userService = userService;
+        this.teacherService = teacherService;
         this.activatedRoute = activatedRoute;
         this.router = router;
         this.redirectUrl = "/class-center";
@@ -249,14 +251,24 @@ var FacebookCallbackComponent = (function () {
                         console.log("facebook-callback / getMe / loginUser : ", loginUser);
                     // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                     _this.watchTower.announceLogin(loginUser);
-                } // end if
+                    // 선생님 등록이 되어있는 회원인지 확인.
+                    _this.teacherService
+                        .getTeacher(_this.watchTower.getApiKey(), +user.id)
+                        .then(function (myResponse) {
+                        if (isDebug)
+                            console.log("naver-callback / getTeacher / myResponse : ", myResponse);
+                        var teacherFromDB = myResponse.getDataProp("teacher");
+                        // 선생님 로그인 여부를 확인, 전파한다.
+                        _this.watchTower.announceLoginTeacher(teacherFromDB);
+                    }); // end service
+                }
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
                 _this.confirmUserFacebook(facebookId);
             }
             else {
                 // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
-                // 하지만 추가 정보 필요. 
+                // 하지만 추가 정보 필요.
                 // 회원 가입창으로 이동.
                 if (isDebug)
                     console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
@@ -311,7 +323,7 @@ var FacebookCallbackComponent = (function () {
             templateUrl: 'facebook-callback.component.html',
             styleUrls: ['facebook-callback.component.css']
         }), 
-        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [login_service_1.LoginService, my_logger_service_1.MyLoggerService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, user_service_1.UserService, teacher_service_1.TeacherService, router_1.ActivatedRoute, router_1.Router])
     ], FacebookCallbackComponent);
     return FacebookCallbackComponent;
 }());
