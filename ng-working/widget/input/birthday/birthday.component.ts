@@ -394,8 +394,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   onChangeBirthYear(selectBirthYear) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("birtday / onChangeBirthYear / init");
 
     this.selectedYear = selectBirthYear;

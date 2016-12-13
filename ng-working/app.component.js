@@ -39,6 +39,7 @@ var AppComponent = (function () {
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
         this.subscribeLoginUser();
+        this.subscribeLoginTeacher();
         this.subscribeToggleTopMenu();
         this.setIsAdmin();
         this.setMyChecker();
@@ -84,6 +85,26 @@ var AppComponent = (function () {
             */
             // 로그인한 유저 정보가 들어왔습니다.
             _this.loginUser = loginUser;
+            // REMOVE ME
+            /*
+            // 1. 이미 등록된 선생님 정보가 있는지 확인.
+
+            // 들어온 로그인 유저 정보로 선생님 정보를 가져옵니다.
+            // 로그인 유저가 선생님인지 확인합니다.
+            // 선생님 등록이 되어있는 회원인지 확인.
+            this.teacherService
+            .getTeacher(this.watchTower.getApiKey(), +this.loginUser.id)
+            .then((myResponse:MyResponse) => {
+
+                if(isDebug) console.log(`app-root / getTeacher / myResponse : `,myResponse);
+
+                let teacherFromDB = myResponse.getDataProp("teacher");
+
+                // 선생님 로그인 여부를 확인, 전파한다.
+                this.watchTower.announceLoginTeacher(teacherFromDB);
+
+            }); // end service
+            */
         });
     };
     AppComponent.prototype.subscribeLoginTeacher = function () {
@@ -96,7 +117,7 @@ var AppComponent = (function () {
         // Subscribe login user
         this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
             if (isDebug)
-                console.log("app-root / subscribeLoginTeacher / loginUser : ", loginUser);
+                console.log("app-root / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
             _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
         });
@@ -183,8 +204,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
         this.userService
@@ -207,8 +228,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getTeacherFromUser = function (userId) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / getTeacherFromUser / \uC2DC\uC791");
         if (isDebug)

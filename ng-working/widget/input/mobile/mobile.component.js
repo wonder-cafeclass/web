@@ -532,8 +532,8 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupBody = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         var inputStr = element.value;
         if (null == inputStr || "" == inputStr) {
             if (isDebug)
@@ -853,8 +853,8 @@ var MobileComponent = (function () {
         // 모든 전화번호를 가져와야 함.
         // 완성이 된 전화번호만 검사합니다.
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
         var isOK = this.isOKHead(this.mobileHeadEmitted);
@@ -934,8 +934,8 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onBlurTail = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("mobile / onBlurTail / init");
         if (this.isFocusMobileTail) {

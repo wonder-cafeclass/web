@@ -237,8 +237,8 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
   onClickKlassVenue(klassVenue:KlassVenue) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
 
     this.klassVenuesNaverMap = klassVenue;

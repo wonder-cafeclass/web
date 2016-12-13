@@ -121,8 +121,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
     this.setDefaultComponents();
@@ -175,8 +175,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private setLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
@@ -196,8 +196,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
   private getInput(eventKey:string) :any {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / getInput / init");
 
     let target:DefaultComponent = null;
@@ -276,8 +276,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   fillViewUserInfo() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / fillViewUserInfo");
     if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser : ",this.loginUser);
 
@@ -338,8 +338,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / onChangedFromChild / init");
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent : ",myEvent);
     if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
@@ -624,8 +624,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileHead(newMobileHead:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewMobileHead / init");
 
     if(!this.mobileComponent.isOKHead(newMobileHead)) {
@@ -654,8 +654,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileBody(newMobileBody:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewMobileBody / init");
 
     if(!this.mobileComponent.isOKBody(newMobileBody)) {
@@ -684,8 +684,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileTail(newMobileTail:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewMobileTail / init");
 
     if(!this.mobileComponent.isOKTail(newMobileTail)) {
@@ -715,8 +715,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewBirthYear(newBirthYear:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewBirthYear / init");
 
     if(!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
@@ -747,8 +747,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthMonth(newBirthMonth:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewBirthMonth / init");
 
     if(!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
@@ -779,8 +779,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthDay(newBirthDay:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewBirthDay / init");
 
     if(!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
@@ -813,8 +813,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewProp(key:string, newValue:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / updateNewProp / init");
 
     if(null == key || "" == key) {
@@ -854,8 +854,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / onClickSave / init");
 
     let hasChanged:boolean = this.checkUserInfoChanged();
@@ -925,8 +925,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private checkUserInfoChanged() :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / checkUserInfoChanged / init");
     if(isDebug) console.log("my-info / checkUserInfoChanged / this.loginUser : ",this.loginUser);
 
@@ -1008,8 +1008,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private checkUserPasswordChanged() :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / checkUserPasswordChanged / init");
 
     let hasChanged:boolean = false;

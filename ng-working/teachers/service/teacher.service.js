@@ -44,7 +44,7 @@ var TeacherService = (function () {
             .catch(this.myExtractor.handleError);
     };
     TeacherService.prototype.getTeacherByUser = function (user) {
-        return null;
+        return this.getTeacherByEmail(user.email);
     };
     TeacherService.prototype.insertTeacherByTeacher = function (apiKey, teacher) {
         var mobileArr = teacher.getMobileArr();
@@ -82,8 +82,8 @@ var TeacherService = (function () {
         mobileArr[2]);
     };
     TeacherService.prototype.insertTeacher = function (apiKey, userId, email, name, nickname, resume, greeting, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.service / insertTeacher / 시작");
         if (isDebug)
@@ -178,8 +178,8 @@ var TeacherService = (function () {
         mobileArr[2]);
     };
     TeacherService.prototype.updateTeacher = function (apiKey, userId, email, name, nickname, resume, greeting, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.service / updateTeacher / 시작");
         if (isDebug)
@@ -239,8 +239,8 @@ var TeacherService = (function () {
             .catch(this.myExtractor.handleError);
     }; // end method 
     TeacherService.prototype.getTeacher = function (apiKey, userId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.service / getTeacher / 시작");
         if (isDebug)

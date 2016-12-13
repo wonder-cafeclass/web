@@ -14,8 +14,8 @@ export class KlassDetailResolve implements Resolve<Klass> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<Klass>|boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail-resolve / resolve / 시작");
     
     let id = +route.params['id'];

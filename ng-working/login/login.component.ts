@@ -75,8 +75,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / ngOnInit / init");
 
   }
@@ -84,8 +84,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -94,8 +94,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -128,8 +128,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private checkLoginUser(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / checkLoginUser / 시작");
 
     this.userService.getUserCookie(
@@ -150,8 +150,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private getQueryString() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getQueryString / 시작");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -179,8 +179,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -241,8 +241,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / onChangedFromChild / 시작");
     if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
@@ -314,8 +314,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   verifyEmailNPassword():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / verifyEmailNPassword / 시작");
 
 

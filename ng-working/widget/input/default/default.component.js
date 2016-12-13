@@ -169,8 +169,8 @@ var DefaultComponent = (function () {
         return !this.hasDone();
     };
     DefaultComponent.prototype.hasDone = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / hasDone / 시작");
         if (isDebug)
@@ -203,8 +203,8 @@ var DefaultComponent = (function () {
         this.isFocus = false;
     };
     DefaultComponent.prototype.onBlur = function (event, elementInput) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onBlur / 시작");
         event.stopPropagation();
@@ -343,8 +343,8 @@ var DefaultComponent = (function () {
     // @ Desc : 새로 입력받은 값이 문제가 없는지 확인합니다.
     // 입력받은 모든 값은 문자열입니다.
     DefaultComponent.prototype.onCheckInputValid = function (input, isBlur) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onCheckInputValid / init");
         if (isDebug)
@@ -428,8 +428,8 @@ var DefaultComponent = (function () {
         } // end if
     }; // end method
     DefaultComponent.prototype.onKeyup = function (event, elementInput) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onKeyup / init");
         event.stopPropagation();

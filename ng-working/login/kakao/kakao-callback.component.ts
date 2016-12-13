@@ -348,8 +348,8 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getUserByKakaoId(kakaoId:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("kakao-callback / getUserByKakaoId / 시작");
 
     this.userService

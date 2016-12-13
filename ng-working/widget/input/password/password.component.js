@@ -13,6 +13,7 @@ var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
+// @ Deprecated - REMOVE ME
 var PasswordComponent = (function () {
     function PasswordComponent(myEventService, myLoggerService, watchTower, myCheckerService) {
         this.myEventService = myEventService;
@@ -66,8 +67,8 @@ var PasswordComponent = (function () {
         this.isNewPW = false;
     }
     PasswordComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / ngOnInit / init");
         if (this.isCheckCurPW) {
@@ -77,16 +78,16 @@ var PasswordComponent = (function () {
     };
     PasswordComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / ngAfterViewInit");
         this.asyncViewPack();
     };
     PasswordComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -210,8 +211,8 @@ var PasswordComponent = (function () {
         if (!this.isCheckCurPW) {
             return;
         }
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onClickPasswordConfirm / 시작");
         event.stopPropagation();
@@ -296,8 +297,8 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.onBlurPassword = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onBlurPassword / init");
         if (null == this.myCheckerService) {
@@ -410,8 +411,8 @@ var PasswordComponent = (function () {
         } // end if
     };
     PasswordComponent.prototype.onKeyupEnter = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupEnter / init");
         event.stopPropagation();
@@ -438,8 +439,8 @@ var PasswordComponent = (function () {
         this.emitEventOnSubmitPW(eventKey);
     };
     PasswordComponent.prototype.emitEventOnSubmitPW = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / emitEventOnSubmitPW / init");
         // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -457,8 +458,8 @@ var PasswordComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     PasswordComponent.prototype.emitEventOnChangePW = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / emitEventOnChangePW / init");
         // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -478,8 +479,8 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.onKeyupPassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupPassword / init");
         // shift, tab
@@ -675,8 +676,8 @@ var PasswordComponent = (function () {
         }
     };
     PasswordComponent.prototype.onKeyupRepassword = function (event, element) {
-        var isDebug = true;
-        // let isDebug:boolean = false;  
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupRepassword / init");
         event.stopPropagation();
@@ -844,8 +845,8 @@ var PasswordComponent = (function () {
     };
     // @ Desc : 지금의 자신의 패스워드를 확인하는 모드로 바꿉니다.
     PasswordComponent.prototype.openCheckCurPWMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / openCheckCurPWMode / init");
         this.initPassword();
@@ -855,8 +856,8 @@ var PasswordComponent = (function () {
     };
     // @ Desc : 지금의 자신의 패스워드를 확인하는 모드를 해제합니다.
     PasswordComponent.prototype.closeCheckCurPWMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / releaseUpdateMode / init");
         this.isCheckCurPW = false;
@@ -881,8 +882,8 @@ var PasswordComponent = (function () {
         this.isNewPW = true;
     };
     PasswordComponent.prototype.onClickNewPasswordConfirm = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onClickNewPasswordConfirm / init");
         event.stopPropagation();
@@ -890,8 +891,8 @@ var PasswordComponent = (function () {
         this.emitEventOnSubmitPW(this.myEventService.KEY_USER_NEW_PASSWORD);
     };
     PasswordComponent.prototype.openNewPasswordMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / openNewPasswordMode / init");
         this.closeCheckCurPWMode();

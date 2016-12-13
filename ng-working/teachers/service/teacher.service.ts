@@ -47,8 +47,8 @@ export class TeacherService {
                 .catch(this.myExtractor.handleError);
   }
 
-  getTeacherByUser (user:User): Teacher {
-    return null;
+  getTeacherByUser (user:User): Promise<MyResponse> {
+    return this.getTeacherByEmail(user.email);
   }
 
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
@@ -107,8 +107,8 @@ export class TeacherService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / insertTeacher / 시작");
     if(isDebug) console.log("teacher.service / insertTeacher / apiKey : ",apiKey);
     if(isDebug) console.log("teacher.service / insertTeacher / userId : ",userId);
@@ -214,8 +214,8 @@ export class TeacherService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / updateTeacher / 시작");
     if(isDebug) console.log("teacher.service / updateTeacher / apiKey : ",apiKey);
     if(isDebug) console.log("teacher.service / updateTeacher / userId : ",userId);
@@ -264,8 +264,8 @@ export class TeacherService {
 
   getTeacher(apiKey:string, userId:number): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / getTeacher / 시작");
     if(isDebug) console.log("teacher.service / getTeacher / userId : ",userId);
 

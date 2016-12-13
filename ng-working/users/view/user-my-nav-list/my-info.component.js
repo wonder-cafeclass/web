@@ -42,8 +42,8 @@ var MyInfoComponent = (function () {
     MyInfoComponent.prototype.ngOnInit = function () { };
     MyInfoComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / ngAfterViewInit");
         this.setDefaultComponents();
@@ -91,8 +91,8 @@ var MyInfoComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     MyInfoComponent.prototype.setLoginUser = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / setLoginUser / 시작");
         // 로그인 데이터를 가져옵니다.
@@ -110,8 +110,8 @@ var MyInfoComponent = (function () {
     };
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
     MyInfoComponent.prototype.getInput = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / getInput / init");
         var target = null;
@@ -178,8 +178,8 @@ var MyInfoComponent = (function () {
         this.logActionPage();
     };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / fillViewUserInfo");
         if (isDebug)
@@ -238,8 +238,8 @@ var MyInfoComponent = (function () {
     };
     MyInfoComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / onChangedFromChild / init");
         if (isDebug)
@@ -488,8 +488,8 @@ var MyInfoComponent = (function () {
         return true;
     };
     MyInfoComponent.prototype.updateNewMobileHead = function (newMobileHead) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewMobileHead / init");
         if (!this.mobileComponent.isOKHead(newMobileHead)) {
@@ -514,8 +514,8 @@ var MyInfoComponent = (function () {
         this.hasChanged = true;
     };
     MyInfoComponent.prototype.updateNewMobileBody = function (newMobileBody) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewMobileBody / init");
         if (!this.mobileComponent.isOKBody(newMobileBody)) {
@@ -540,8 +540,8 @@ var MyInfoComponent = (function () {
         this.hasChanged = true;
     };
     MyInfoComponent.prototype.updateNewMobileTail = function (newMobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewMobileTail / init");
         if (!this.mobileComponent.isOKTail(newMobileTail)) {
@@ -566,8 +566,8 @@ var MyInfoComponent = (function () {
         this.hasChanged = true;
     };
     MyInfoComponent.prototype.updateNewBirthYear = function (newBirthYear) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewBirthYear / init");
         if (!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
@@ -594,8 +594,8 @@ var MyInfoComponent = (function () {
         }
     };
     MyInfoComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewBirthMonth / init");
         if (!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
@@ -622,8 +622,8 @@ var MyInfoComponent = (function () {
         }
     };
     MyInfoComponent.prototype.updateNewBirthDay = function (newBirthDay) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewBirthDay / init");
         if (!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
@@ -650,8 +650,8 @@ var MyInfoComponent = (function () {
         }
     };
     MyInfoComponent.prototype.updateNewProp = function (key, newValue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / updateNewProp / init");
         if (null == key || "" == key) {
@@ -692,8 +692,8 @@ var MyInfoComponent = (function () {
     }; // end method
     MyInfoComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / onClickSave / init");
         var hasChanged = this.checkUserInfoChanged();
@@ -753,8 +753,8 @@ var MyInfoComponent = (function () {
         this.hasChanged = false;
     };
     MyInfoComponent.prototype.checkUserInfoChanged = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / checkUserInfoChanged / init");
         if (isDebug)
@@ -849,8 +849,8 @@ var MyInfoComponent = (function () {
         return hasChanged;
     };
     MyInfoComponent.prototype.checkUserPasswordChanged = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / checkUserPasswordChanged / init");
         var hasChanged = false;

@@ -163,8 +163,8 @@ export class ApplyTeacherTermComponent implements OnInit, AfterViewInit {
 
   private setLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher-term / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
@@ -193,8 +193,8 @@ export class ApplyTeacherTermComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onChangeCheckTerms / 시작");
 
     if(null != checkboxTerms) {
@@ -216,8 +216,8 @@ export class ApplyTeacherTermComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickSignup / 시작");    
 
     // 약관 동의 확인. 

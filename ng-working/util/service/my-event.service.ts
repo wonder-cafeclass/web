@@ -261,8 +261,8 @@ export class MyEventService {
     // 여러 컴포넌트에서 공통적으로 사용.
     public onChangeNotValid(myEvent:MyEvent) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("my-info / onChangedFromChild / init");
 
 

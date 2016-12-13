@@ -73,8 +73,8 @@ var MyLoggerService = (function () {
             .catch(this.myExtractor.handleError);
     };
     MyLoggerService.prototype.logActionDirtyWord = function (apiKey, dirtyWord) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logActionDirtyWord / 시작");
         if (null == apiKey || "" == apiKey) {

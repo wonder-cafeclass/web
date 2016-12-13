@@ -147,8 +147,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
   } 
   setGender(gender:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / gender / init");
     if(isDebug) console.log("gender / gender / gender : ",gender);
 
@@ -233,8 +233,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderFemale(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / onClickGenderFemale / init");
     
     event.stopPropagation();
@@ -249,8 +249,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderMale(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / onClickGenderMale / init");
 
     event.stopPropagation();

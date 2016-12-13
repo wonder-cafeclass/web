@@ -61,8 +61,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / ngOnInit / init");
 
   }
@@ -70,8 +70,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -79,8 +79,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -113,8 +113,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -126,8 +126,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   getUserValidation(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / getUserValidation / init");
 
     // 외부 쿼리 스트링 파라미터를 가져옵니다.

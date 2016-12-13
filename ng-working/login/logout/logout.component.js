@@ -71,8 +71,8 @@ var LogoutComponent = (function () {
         } // end if
     };
     LogoutComponent.prototype.logActionPage = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("logout / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -88,8 +88,8 @@ var LogoutComponent = (function () {
     };
     LogoutComponent.prototype.deleteLoginCookie = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("logout / deleteLoginCookie / 시작");
         // 로그아웃시 해야할 일

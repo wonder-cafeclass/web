@@ -38,23 +38,23 @@ var LoginComponent = (function () {
         this.myCookie = new my_cookie_1.MyCookie();
     }
     LoginComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / ngOnInit / init");
     };
     LoginComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / ngAfterViewInit");
         this.asyncViewPack();
     };
     LoginComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -84,8 +84,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.checkLoginUser = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / checkLoginUser / 시작");
         this.userService.getUserCookie(this.myCheckerService.getAPIKey()).then(function (myResponse) {
@@ -105,8 +105,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.getQueryString = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("kakao-callback / getQueryString / 시작");
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -130,8 +130,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.init = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / init / 시작");
         // 뷰에 필요한 공통 정보를 설정합니다.
@@ -180,8 +180,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / onChangedFromChild / 시작");
         if (isDebug)
@@ -248,8 +248,8 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.verifyEmailNPassword = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("login / verifyEmailNPassword / 시작");
         var warningMsgHead = "아이디 또는 비밀번호를 다시 확인하세요.";

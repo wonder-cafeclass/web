@@ -649,8 +649,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
     let inputStr:string = element.value;
     if(null == inputStr || "" == inputStr) {
@@ -1042,8 +1042,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
     // 모든 전화번호를 가져와야 함.
     // 완성이 된 전화번호만 검사합니다.
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
 
     let isOK:boolean = this.isOKHead(this.mobileHeadEmitted);
@@ -1146,8 +1146,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / onBlurTail / init");
 
     if(this.isFocusMobileTail) {

@@ -72,8 +72,8 @@ var Teacher = (function () {
         return false;
     };
     Teacher.prototype.getMobileArr = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.model / getMobileArr / init");
         var mobileArr = this.mobile.split("-");
@@ -132,8 +132,8 @@ var Teacher = (function () {
         return (mobileTail === target) ? true : false;
     };
     Teacher.prototype.getBirthdayArr = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.model / getBirthdayArr / init");
         var birthdayArr = this.birthday.split("-");
@@ -192,8 +192,8 @@ var Teacher = (function () {
         return (birthdayTail === target) ? true : false;
     };
     Teacher.prototype.updateWithJSON = function (userJSON) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher.model / updateWithJson / init");
         if (null == userJSON) {

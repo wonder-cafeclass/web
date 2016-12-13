@@ -40,16 +40,16 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / ngOnInit / 시작");
         this.asyncViewPack();
     };
     KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -87,8 +87,8 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.logPageEnter = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / logPageEnter / 시작");
         // 페이지 진입을 기록으로 남깁니다.
@@ -112,8 +112,8 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.getKlassList = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / getKlassList / 시작");
         // REFACTOR ME!

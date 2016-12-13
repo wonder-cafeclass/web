@@ -133,8 +133,8 @@ var SignupComponent = (function () {
     };
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
     SignupComponent.prototype.getInput = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / getInput / init");
         var target = null;
@@ -324,8 +324,8 @@ var SignupComponent = (function () {
     SignupComponent.prototype.onClickSignup = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / onClickSignup / 시작");
         var isAllOK = true;
@@ -490,8 +490,8 @@ var SignupComponent = (function () {
     }; // end method
     SignupComponent.prototype.updateUser = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / updateUser / 시작");
         if (isDebug)
@@ -578,8 +578,8 @@ var SignupComponent = (function () {
     };
     SignupComponent.prototype.addUser = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / addUser / 시작");
         this.userService
@@ -706,8 +706,8 @@ var SignupComponent = (function () {
     SignupComponent.prototype.onChangedFromChild = function (myEvent) {
         // 자식 엘리먼트들의 이벤트 처리
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / onChangedFromChild / 시작");
         if (isDebug)

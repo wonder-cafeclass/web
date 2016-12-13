@@ -18,8 +18,8 @@ var FooterComponent = (function () {
         this.router = router;
         this.isFixedBottom = false;
         this.isLoginTeacher = false;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / constructor / 시작");
         if (isDebug)
@@ -50,8 +50,8 @@ var FooterComponent = (function () {
     };
     FooterComponent.prototype.ngOnInit = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / ngOnInit / 시작");
         this.watchTower.contentHeight$.subscribe(function (contentHeight) {
@@ -88,23 +88,23 @@ var FooterComponent = (function () {
         // this.updatePosition();
     };
     FooterComponent.prototype.ngOnChanges = function (changes) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / ngOnChanges / 시작");
         this.updatePosition();
     };
     FooterComponent.prototype.updatePosition = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / updatePosition / 시작");
         // 1. 화면안의 내용이 screen보다 작다면 bottom fixed.
         // 2. 화면안의 내용이 screen보다 크다면 bottom fixed 해제, 맨밑에 붙이기.
     };
     FooterComponent.prototype.onClickInfo = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / onClickInfo / 시작");
         event.stopPropagation();
@@ -112,8 +112,8 @@ var FooterComponent = (function () {
         this.router.navigate(['/']);
     };
     FooterComponent.prototype.onClickContact = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / onClickContact / 시작");
         event.stopPropagation();
@@ -121,8 +121,8 @@ var FooterComponent = (function () {
         this.router.navigate(['/']);
     };
     FooterComponent.prototype.onClickPolicy = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / onClickPolicy / 시작");
         event.stopPropagation();
@@ -130,8 +130,8 @@ var FooterComponent = (function () {
         this.router.navigate(['/policy']);
     };
     FooterComponent.prototype.onClickPrivateInfo = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / onClickPrivateInfo / 시작");
         event.stopPropagation();
@@ -139,8 +139,8 @@ var FooterComponent = (function () {
         this.router.navigate(['/private-info']);
     };
     FooterComponent.prototype.onClickApplyTeacher = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / onClickApplyTeacher / 시작");
         if (this.isLoginTeacher) {

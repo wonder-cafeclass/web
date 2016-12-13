@@ -29,8 +29,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
                 private elementRef:ElementRef,
                 public router:Router) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / constructor / 시작");
     if(isDebug) console.log("footer / constructor / 1 / this.isLoginTeacher : ",this.isLoginTeacher);
 
@@ -65,8 +65,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / ngOnInit / 시작");
 
     this.watchTower.contentHeight$.subscribe(
@@ -115,8 +115,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / ngOnChanges / 시작");
 
     this.updatePosition();
@@ -125,8 +125,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   updatePosition(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / updatePosition / 시작");
 
     // 1. 화면안의 내용이 screen보다 작다면 bottom fixed.
@@ -137,8 +137,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   onClickInfo(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickInfo / 시작");
 
     event.stopPropagation();
@@ -150,8 +150,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   onClickContact(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickContact / 시작");
 
     event.stopPropagation();
@@ -163,8 +163,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   onClickPolicy(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickPolicy / 시작");
 
     event.stopPropagation();
@@ -176,8 +176,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   onClickPrivateInfo(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickPrivateInfo / 시작");
 
     event.stopPropagation();
@@ -189,8 +189,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   onClickApplyTeacher(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / onClickApplyTeacher / 시작");
 
     if(this.isLoginTeacher) {

@@ -39,23 +39,23 @@ var ValidationComponent = (function () {
         this.myCookie = new my_cookie_1.MyCookie();
     }
     ValidationComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("validation / ngOnInit / init");
     };
     ValidationComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / ngAfterViewInit");
         this.asyncViewPack();
     };
     ValidationComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -84,8 +84,8 @@ var ValidationComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     ValidationComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("validation / init / 시작");
         // 뷰에 필요한 공통 정보를 설정합니다.
@@ -94,8 +94,8 @@ var ValidationComponent = (function () {
     };
     ValidationComponent.prototype.getUserValidation = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("validation / getUserValidation / init");
         // 외부 쿼리 스트링 파라미터를 가져옵니다.

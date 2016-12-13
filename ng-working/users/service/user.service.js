@@ -166,8 +166,8 @@ var UserService = (function () {
         mobileArr[2]);
     };
     UserService.prototype.updateUserMutableProps = function (apiKey, email, name, nickname, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / updateUserMutableProps / 시작");
         if (isDebug)
@@ -470,7 +470,7 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserCookie = function (apiKey) {
-        var isDebug = true;
+        // let isDebug:boolean = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / getUserCookie / 시작");
@@ -530,8 +530,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.updatePassword = function (apiKey, email, password) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / updatePassword / 시작");
         if (isDebug)

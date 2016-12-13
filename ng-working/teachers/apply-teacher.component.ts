@@ -185,8 +185,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private copyUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / copyUser / 시작");
 
     if(null == this.loginUser) {
@@ -220,8 +220,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private fillViewTeacherInfo() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / fillViewTeacherInfo");
     if(isDebug) console.log("apply-teacher / fillViewTeacherInfo / this.newTeacher : ",this.newTeacher);
 
@@ -343,8 +343,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private setLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
@@ -385,8 +385,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / onChangedFromChild / init");
     if(isDebug) console.log("apply-teacher / onChangedFromChild / myEvent : ",myEvent);
     if(isDebug) console.log("apply-teacher / onChangedFromChild / myEvent.key : ",myEvent.key);
@@ -610,8 +610,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileHead(newMobileHead:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewMobileHead / init");
 
     if(!this.mobileComponent.isOKHead(newMobileHead)) {
@@ -644,8 +644,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileBody(newMobileBody:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewMobileBody / init");
 
     if(!this.mobileComponent.isOKBody(newMobileBody)) {
@@ -678,8 +678,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileTail(newMobileTail:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewMobileTail / init");
 
     if(!this.mobileComponent.isOKTail(newMobileTail)) {
@@ -713,8 +713,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private updateNewBirthYear(newBirthYear:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewBirthYear / init");
 
     if(!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
@@ -749,8 +749,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthMonth(newBirthMonth:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewBirthMonth / init");
 
     if(!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
@@ -785,8 +785,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthDay(newBirthDay:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewBirthDay / init");
 
     if(!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
@@ -822,8 +822,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private updateNewProp(key:string, newValue:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / updateNewProp / init");
 
     if(null == key || "" == key) {
@@ -867,8 +867,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   isOKAll(showTooltip:boolean) :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / isOKAll / init");
 
     // 모든 값들을 검사. 
@@ -1009,8 +1009,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / onClickSave / init");
 
     // 모든 값들이 필수입니다.
@@ -1067,8 +1067,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   private checkUserInfoChanged() :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / checkUserInfoChanged / init");
     if(isDebug) console.log("apply-teacher / checkUserInfoChanged / this.newTeacher : ",this.newTeacher);
     if(isDebug) console.log("apply-teacher / checkUserInfoChanged / this.newTeacherCopy : ",this.newTeacherCopy);

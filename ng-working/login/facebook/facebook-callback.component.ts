@@ -259,8 +259,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getMe() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getMe / init");
 
     this.loginService
@@ -341,8 +341,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private confirmUserFacebook(facebookId:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
     if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
 

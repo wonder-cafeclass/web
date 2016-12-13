@@ -17,8 +17,8 @@ var KlassDetailResolve = (function () {
         this.router = router;
     }
     KlassDetailResolve.prototype.resolve = function (route) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail-resolve / resolve / 시작");
         var id = +route.params['id'];

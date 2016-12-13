@@ -108,8 +108,8 @@ var GenderComponent = (function () {
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     GenderComponent.prototype.setGender = function (gender) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / gender / init");
         if (isDebug)
@@ -179,8 +179,8 @@ var GenderComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     GenderComponent.prototype.onClickGenderFemale = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / onClickGenderFemale / init");
         event.stopPropagation();
@@ -190,8 +190,8 @@ var GenderComponent = (function () {
         this.tooltipMsg = null;
     };
     GenderComponent.prototype.onClickGenderMale = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / onClickGenderMale / init");
         event.stopPropagation();

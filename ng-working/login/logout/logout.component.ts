@@ -91,8 +91,8 @@ export class LogoutComponent implements OnInit {
 
   private logActionPage() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("logout / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -109,8 +109,8 @@ export class LogoutComponent implements OnInit {
 
   private deleteLoginCookie() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("logout / deleteLoginCookie / 시작");
 
     // 로그아웃시 해야할 일

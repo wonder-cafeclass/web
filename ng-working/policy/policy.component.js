@@ -20,8 +20,8 @@ var PolicyComponent = (function () {
     }
     PolicyComponent.prototype.ngOnInit = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("policy / ngOnInit / 시작");
         // my-checker.service의 apikey 가져옴. 
@@ -35,8 +35,8 @@ var PolicyComponent = (function () {
         });
     };
     PolicyComponent.prototype.logActionPage = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("policy / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.

@@ -13,7 +13,7 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
 
-
+// @ Deprecated - Remove me
 @Component({
   moduleId: module.id,
   selector: 'name',
@@ -21,7 +21,7 @@ import { MyEventWatchTowerService } from '../../../util/service/my-event-watchto
   styleUrls: [ 'name.component.css' ]
 })
 export class NameComponent implements OnInit, AfterViewInit {
-
+/*
   // @ Common Props
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -219,130 +219,10 @@ export class NameComponent implements OnInit, AfterViewInit {
 
     this.onCheckInputValid(inputStr);
 
-    /*
-    let name:string = elementInput.value;
-
-    // 입력한 이름을 검사합니다.
-    // 패스워드를 검사합니다.
-    if(null != name && "" != name) {
-      // 1. 사용자가 입력한 이메일 주소를 검사합니다.
-      let isOK:boolean = this.isOK(name);
-
-      if(!isOK) {
-
-        // 원인을 찾아봅니다.
-        let history = this.myCheckerService.getLastHistory();
-        console.log("password / onBlur / history : ",history);
-
-        if(null != history && null != history.key && null != history.msg) {
-          // Do something..
-          if("min" === history.key) {
-
-            // 최소 문자 갯수보다 적은 경우.
-            this.showTooltipFailWarning(history.msg, false);
-              return;
-
-          } else if("max" === history.key) {
-
-            // 최대 문자 갯수보다 많은 경우.
-            this.showTooltipFailWarning(history.msg, false);
-
-            // 넘는 문자열은 지웁니다.
-            elementInput.value = name = name.slice(0, history.value);
-
-            this.isValid = false;
-            return;
-
-          } else if("regexExclude" === history.key) {
-
-            // 정규표현식에 포함되지 않는 문자열인 경우.
-            this.showTooltipFailWarning(history.msg, false);
-
-            let regExpStr:string = history.value + "";
-            let regExpStrNameRange:string =  /[^a-zA-Z가-힣0-9 ]+/g + "";
-
-            if(regExpStr == regExpStrNameRange) {
-
-              this.showTooltipFailWarning("이름에 사용할 수 없는 문자가 있어요.", false);
-              let matchArr:string[] = history.matchArr;
-              if(null != matchArr && 0 < matchArr.length) {
-                for (var i = 0; i < matchArr.length; ++i) {
-                  let keywordNotAllowed:string = matchArr[i];
-                  // 사용할 수 없는 문자들을 지웁니다.
-                  elementInput.value = name = name.replace(keywordNotAllowed, "");
-                } // end for
-              } // end if
-
-              this.isValid = false;
-              return;
-
-            } // end if
-
-          } else {
-            // 이에 해당되지 않는 예외 실패.
-            this.showTooltipFailWarning(this.tooltipMsgNotAllowed, false);
-
-            this.isValid = false;
-            return;
-
-          } // end if
-        } // end if
-      } // end if - isOK
-
-      // 비속어, 욕설 검사.
-      let nameBeforeSanitize:string = name;
-      name = this.myCheckerService.sanitizeDirtyWord(name);
-
-      if(nameBeforeSanitize != name) {
-        // 비속어, 욕설이 제거되었습니다. 
-        // 사용자에게 금칙어임을 알립니다.
-        this.showTooltipFailWarning("금칙어는 제외됩니다.", true);
-
-        elementInput.value = name;
-        elementInput.focus();
-
-        // Logger - Spam 행위로 등록.
-        this.myLoggerService.logActionDirtyWord(
-          // apiKey:string
-          this.watchTower.getApiKey(),
-          // dirtyWord:string
-          nameBeforeSanitize
-        );
-
-        return;
-
-      } else {
-
-        // 성공! 비속어가 포함되지 않았습니다.
-        // 이전에 노출한 툴팁을 내립니다.
-
-        this.hideWarningTooptip();
-        elementInput.value = name;
-
-        // 부모 객체에게 정상적인 이름을 전달합니다.
-        // 부모 객체에게 Ready Event 발송 
-        this.emitEventOnChange(
-          // eventKey:string
-          this.myEventService.KEY_USER_NAME,
-          // value:string
-          name
-        );
-
-      } // end if - dirty word
-
-      // 마지막 공백 입력이 있다면 공백을 제거해줍니다.
-      let regExpLastEmptySpace:RegExp = /[\s]+$/gi;
-      elementInput.value = name = name.replace(regExpLastEmptySpace, "");
-
-    } // end if - check Name
-    */
-
   } // end method
 
   private emitEventOnChange(value:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
     if(isDebug) console.log("name / emitEventOnChange / 시작");
     if(null == value) {
       if(isDebug) console.log("name / emitEventOnChange / 중단 / value is not valid!");
@@ -370,8 +250,6 @@ export class NameComponent implements OnInit, AfterViewInit {
 
   private emitEventOnChangeNotValid(value:string, metaObj) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
     if(isDebug) console.log("name / emitEventOnChangeNotValid / 시작");
     if(null == value) {
       if(isDebug) console.log("name / emitEventOnChangeNotValid / 중단 / value is not valid!");
@@ -404,8 +282,6 @@ export class NameComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   private showTooltipFailWarning(msg:string, isTimeout:Boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
     if(isDebug) console.log("name / showTooltipFailWarning / init");
     if(isDebug) console.log("name / showTooltipFailWarning / msg : ",msg);
 
@@ -444,8 +320,6 @@ export class NameComponent implements OnInit, AfterViewInit {
   // 입력받은 모든 값은 문자열입니다.
   private onCheckInputValid(input:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
     if(isDebug) console.log("name / onCheckInputValid / init");
 
     // 여기서 유저가 설정한 조건이 필요합니다.
@@ -492,29 +366,6 @@ export class NameComponent implements OnInit, AfterViewInit {
 
         } // end if
 
-        /*
-        } else if("regexInclude" === history.key) {
-
-          // 정규표현식에 포함되지 않은 경우입니다.
-          // 이 객체를 사용하는 외부에서 history를 받아서 처리해줘야 합니다.
-          // 부모 객체는 예외 사항에 파악한뒤, 피드백을 input.component에게 주어야 합니다.
-
-
-        } else if("regexExclude" === history.key) {
-
-          // 정규표현식에 포함되지 않은 경우입니다.
-          // 이 객체를 사용하는 외부에서 history를 받아서 처리해줘야 합니다.
-          // 부모 객체는 예외 사항에 파악한뒤, 피드백을 input.component에게 주어야 합니다.
-
-          this.emitEventOnChangeNotValid(
-            // value:string
-            input, 
-            // history
-            history
-          );          
-
-        } // end if
-        */
 
         // 모든 예외 사항에 대해 부모 객체에 전달합니다.
         let metaObj = {
@@ -544,8 +395,6 @@ export class NameComponent implements OnInit, AfterViewInit {
   
   onKeyup(event, elementInput) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
     if(isDebug) console.log("name / onKeyup / init");
 
     event.stopPropagation();
@@ -555,106 +404,9 @@ export class NameComponent implements OnInit, AfterViewInit {
 
     this.onCheckInputValid(inputStr);
 
-    // REMOVE ME
-    /*
-    
-    // @ Common 
-    // 정규 표현식 - regex_include 조건을 위반하는 문자가 있는 경우의 처리.
-
-    // 한글이 아닌 문자에 대해서 삭제 처리
-    let regExpNotAllowed:RegExp = /[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]/gi;
-    let matchArr:RegExpMatchArray = inputStr.match(regExpNotAllowed);
-    if(null != matchArr && 0 < matchArr.length) {
-      // 지워야 할 문자를 발견했습니다.
-      for (var i = 0; i < matchArr.length; ++i) {
-        let match:string = matchArr[i];
-        if(null == match || "" == match) {
-          continue;
-        }
-
-        inputStr = inputStr.replace(match, "");
-      }
-
-      // wonder.jung
-      // 예외 문자를 삭제했음을 사용자에게 알려줍니다.
-      if(isDebug) console.log("name / onKeyup / 예외 문자를 삭제했음을 사용자에게 알려줍니다.");
-      this.showTooltipFailWarning(this.tooltipMsgRemoved, false);
-      elementInput.value = this.inputStrPrev = inputStr;
-      return;
-
-    }
-    
-    // @ User Custom
-    // 2칸 이상 공백에 대해 1칸으로 줄임.
-    // 2칸 이상의 공백을 포함하지 않는 조건을 찾아내는 것은 가능 
-    // 이 조건을 1칸의 공백으로 바꾸는 기능은 지원 불가.
-    let regExpEmptySpaces:RegExp = /[\s]{2,10}/gi;
-    let matchArrEmptySpaces:RegExpMatchArray = inputStr.match(regExpEmptySpaces);
-    if(null != matchArrEmptySpaces && 0 < matchArrEmptySpaces.length) {
-      
-      for (var i = 0; i < matchArrEmptySpaces.length; ++i) {
-        let match:string = matchArrEmptySpaces[i];
-        if(null == match || "" == match) {
-          continue;
-        }
-
-        inputStr = inputStr.replace(match, " ");
-      }      
-
-      // wonder.jung
-      // 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.
-      if(isDebug) console.log("name / onKeyup / 공백 삭제에 대해 사용자에게 메시지로 알려줍니다.");
-      this.showTooltipFailWarning(this.tooltipMsgEmpties, false);
-      elementInput.value = this.inputStrPrev = inputStr;
-      return;
-
-    }
-
-    // 최대 길이 제한 검사
-    let isOK:boolean = this.isOK(inputStr);
-    if(!isOK) {
-
-      // 원인을 찾아봅니다.
-      let history = this.myCheckerService.getLastHistory();
-      if(null != history && null != history.key && null != history.msg) {
-        // Do something..
-        if("max" === history.key) {
-
-          // 최대 문자 갯수보다 많은 경우.
-          if(isDebug) console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우.");
-          this.showTooltipFailWarning(history.msg, false);
-
-          // this.tooltipMsg = history.msg;
-          // this.hideTooltip(2);
-
-          // 넘는 문자열은 지웁니다.
-          inputStr = inputStr.slice(0, history.value);
-          this.isValid = false;
-
-          if(isDebug) console.log("name / onKeyup / 최대 문자 갯수보다 많은 경우. / history : ",history);
-        } // end if
-      } // end if
-
-    } else {
-      // 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.
-      if(isDebug) console.log("name / onKeyup / 입력된 문자열에 문제가 없습니다. 경고창을 띄웠다면 내립니다.");
-      this.hideWarningTooptip();
-
-      // 부모 객체에게 안전한 이름 문자열을 전달합니다.
-      this.emitEventOnChange(
-        // eventKey:string
-        this.myEventService.KEY_USER_NAME,
-        // value:string
-        inputStr
-      );
-
-    } // end if 
-
-    elementInput.value = this.inputStrPrev = inputStr;
-    */
 
   }
-
+*/
 
 
   // REMOVE ME

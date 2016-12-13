@@ -105,8 +105,14 @@ var MyEventWatchTowerService = (function () {
         this.loginAnnouncedSource.next(loginUser);
     };
     MyEventWatchTowerService.prototype.announceLoginTeacher = function (loginTeacher) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / announceLoginTeacher / \uC2DC\uC791");
         this.loginTeacher = loginTeacher;
         this.loginTeacherAnnouncedSource.next(loginTeacher);
+        if (isDebug)
+            console.log("my-event-watchtower / announceLoginTeacher / \uB05D");
     };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
         this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);

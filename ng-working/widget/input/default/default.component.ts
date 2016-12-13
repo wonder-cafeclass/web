@@ -195,8 +195,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   public hasDone() :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / hasDone / 시작");
     if(isDebug) console.log("default / hasDone / this.inputStrPrev : ",this.inputStrPrev);
     if(isDebug) console.log("default / hasDone / this.ngModelInput : ",this.ngModelInput);
@@ -234,8 +234,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   onBlur(event, elementInput) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onBlur / 시작");
 
     event.stopPropagation();
@@ -398,8 +398,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // 입력받은 모든 값은 문자열입니다.
   private onCheckInputValid(input:string, isBlur:boolean) :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onCheckInputValid / init");
     if(isDebug) console.log("default / onCheckInputValid / input : ",input);
 
@@ -499,8 +499,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   
   onKeyup(event, elementInput) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onKeyup / init");
 
     event.stopPropagation();

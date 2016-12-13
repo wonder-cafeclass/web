@@ -38,8 +38,8 @@ var TeacherInfoComponent = (function () {
     TeacherInfoComponent.prototype.ngOnInit = function () { };
     TeacherInfoComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / ngAfterViewInit");
         this.setDefaultComponents();
@@ -89,8 +89,8 @@ var TeacherInfoComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     TeacherInfoComponent.prototype.setLoginTeacher = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / setLoginTeacher / 시작");
         // 로그인 데이터를 가져옵니다.
@@ -108,8 +108,8 @@ var TeacherInfoComponent = (function () {
     };
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
     TeacherInfoComponent.prototype.getInput = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / getInput / init");
         var target = null;
@@ -156,8 +156,8 @@ var TeacherInfoComponent = (function () {
         this.logActionPage();
     };
     TeacherInfoComponent.prototype.fillViewTeacherInfo = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / fillViewTeacherInfo");
         if (isDebug)
@@ -173,24 +173,32 @@ var TeacherInfoComponent = (function () {
                 console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.email : ", this.loginTeacher.email);
             this.emailComponent.setInput(this.loginTeacher.email);
         }
-        // this.email = this.loginTeacher.email;
         // name
         if (null != this.nameComponent) {
             if (isDebug)
                 console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.name : ", this.loginTeacher.name);
             this.nameComponent.setInput(this.loginTeacher.name);
         }
-        // this.name = this.loginTeacher.name;
         // nickname
         if (null != this.nicknameComponent) {
             if (isDebug)
                 console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.nickname : ", this.loginTeacher.nickname);
             this.nicknameComponent.setInput(this.loginTeacher.nickname);
         }
-        // this.nickname = this.loginTeacher.nickname;
+        // resume
+        if (null != this.resumeComponent) {
+            if (isDebug)
+                console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.resume : ", this.loginTeacher.resume);
+            this.resumeComponent.setInput(this.loginTeacher.resume);
+        }
+        // greeting
+        if (null != this.greetingComponent) {
+            if (isDebug)
+                console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.greeting : ", this.loginTeacher.greeting);
+            this.greetingComponent.setInput(this.loginTeacher.greeting);
+        }
         // thumbnail
         this.profileImgUploadComponent.setProfileImg(this.loginTeacher.thumbnail);
-        // this.thumbnail = this.loginTeacher.thumbnail;
         // mobile
         var mobile = this.loginTeacher.mobile;
         var mobileArr = mobile.split("-");
@@ -215,8 +223,8 @@ var TeacherInfoComponent = (function () {
         }
     };
     TeacherInfoComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / onChangedFromChild / init");
         if (isDebug)
@@ -367,8 +375,8 @@ var TeacherInfoComponent = (function () {
         return true;
     };
     TeacherInfoComponent.prototype.updateNewMobileHead = function (newMobileHead) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewMobileHead / init");
         if (!this.mobileComponent.isOKHead(newMobileHead)) {
@@ -393,8 +401,8 @@ var TeacherInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     TeacherInfoComponent.prototype.updateNewMobileBody = function (newMobileBody) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewMobileBody / init");
         if (!this.mobileComponent.isOKBody(newMobileBody)) {
@@ -419,8 +427,8 @@ var TeacherInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     TeacherInfoComponent.prototype.updateNewMobileTail = function (newMobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewMobileTail / init");
         if (!this.mobileComponent.isOKTail(newMobileTail)) {
@@ -445,8 +453,8 @@ var TeacherInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     TeacherInfoComponent.prototype.updateNewBirthYear = function (newBirthYear) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewBirthYear / init");
         if (!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
@@ -473,8 +481,8 @@ var TeacherInfoComponent = (function () {
         }
     };
     TeacherInfoComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewBirthMonth / init");
         if (!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
@@ -501,8 +509,8 @@ var TeacherInfoComponent = (function () {
         }
     };
     TeacherInfoComponent.prototype.updateNewBirthDay = function (newBirthDay) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewBirthDay / init");
         if (!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
@@ -529,8 +537,8 @@ var TeacherInfoComponent = (function () {
         }
     };
     TeacherInfoComponent.prototype.updateNewProp = function (key, newValue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / updateNewProp / init");
         if (null == key || "" == key) {
@@ -557,25 +565,25 @@ var TeacherInfoComponent = (function () {
                 if (isDebug)
                     console.log("teacher-info / updateNewProp / this.loginTeacherCopy : ", this.loginTeacherCopy);
             }
-            // 저장 버튼을 노출합니다.
+            if (isDebug)
+                console.log("teacher-info / updateNewProp / 저장 버튼을 노출합니다.");
             this.isReadyToSave = true;
         }
         else {
-            // 변경되지 않았습니다.
-            if (this.checkTeacherInfoChanged()) {
-                // 모든 다른 항목중에 변경된 것이 없다면, 
-                // 저장 버튼을 비활성화 합니다.
+            if (this.checkHasNotChanged()) {
+                if (isDebug)
+                    console.log("teacher-info / updateNewProp / 모든 다른 항목중에 변경된 것이 없다면, 저장 버튼을 비활성화 합니다.");
                 this.isReadyToSave = false;
             } // end if
         } // end if
     }; // end method
     TeacherInfoComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / onClickSave / init");
-        var isReadyToSave = this.checkTeacherInfoChanged();
+        var isReadyToSave = this.checkHasChanged();
         if (isDebug)
             console.log("teacher-info / onClickSave / isReadyToSave : ", isReadyToSave);
         if (isDebug)
@@ -609,6 +617,10 @@ var TeacherInfoComponent = (function () {
         return !this.isOKAll();
     };
     TeacherInfoComponent.prototype.isOKAll = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("teacher-info / isOKAll / init");
         if (null == this.loginTeacherCopy) {
             return false;
         }
@@ -650,76 +662,81 @@ var TeacherInfoComponent = (function () {
         }
         return true;
     };
-    TeacherInfoComponent.prototype.checkTeacherInfoChanged = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+    TeacherInfoComponent.prototype.checkHasNotChanged = function () {
+        return !this.checkHasChanged();
+    };
+    TeacherInfoComponent.prototype.checkHasChanged = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("teacher-info / checkTeacherInfoChanged / init");
+            console.log("teacher-info / checkHasChanged / init");
         if (isDebug)
-            console.log("teacher-info / checkTeacherInfoChanged / this.loginTeacher : ", this.loginTeacher);
+            console.log("teacher-info / checkHasChanged / this.loginTeacher : ", this.loginTeacher);
         // 모든 입력이 정상적이어야 변화가 있었는지 검사할 수 있습니다.
         if (this.isNotOKAll()) {
-            return;
+            if (isDebug)
+                console.log("teacher-info / checkHasChanged / 중단 / 정상적이지 않은 값이 있습니다.");
+            return false;
         }
         // 검사 시작!
         if (this.loginTeacher.isNotSameName(this.loginTeacherCopy.name)) {
             // 1. name
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 이름이 변경됨");
+                console.log("teacher-info / checkHasChanged / 이름이 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameNickname(this.loginTeacherCopy.nickname)) {
             // 2. nickname
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 닉네임이 변경됨");
+                console.log("teacher-info / checkHasChanged / 닉네임이 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameThumbnail(this.loginTeacherCopy.thumbnail)) {
             // 3. profile-img
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 섬네일이 변경됨");
+                console.log("teacher-info / checkHasChanged / 섬네일이 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameMobileHead(this.loginTeacherCopy.getMobileHead())) {
             // 4-1. mobile head
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 휴대전화 첫 3자리 변경됨");
+                console.log("teacher-info / checkHasChanged / 휴대전화 첫 3자리 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameMobileBody(this.loginTeacherCopy.getMobileBody())) {
             // 4-2. mobile body
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 휴대전화 두번째 4자리 변경됨");
+                console.log("teacher-info / checkHasChanged / 휴대전화 두번째 4자리 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameMobileTail(this.loginTeacherCopy.getMobileTail())) {
             // 4-3. mobile tail
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 휴대전화 세번째 4자리 변경됨");
+                console.log("teacher-info / checkHasChanged / 휴대전화 세번째 4자리 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameGender(this.loginTeacherCopy.gender)) {
             // 5. gender
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 성별 변경됨");
+                console.log("teacher-info / checkHasChanged / 성별 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameBirthYear(this.loginTeacherCopy.getBirthYear())) {
             // 6-1. birthYear
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 생일 - 연도 변경됨");
+                console.log("teacher-info / checkHasChanged / 생일 - 연도 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameBirthMonth(this.loginTeacherCopy.getBirthMonth())) {
             // 6-2. birthMonth
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 생일 - 월 변경됨");
+                console.log("teacher-info / checkHasChanged / 생일 - 월 변경됨");
             return true;
         }
         else if (this.loginTeacher.isNotSameBirthDay(this.loginTeacherCopy.getBirthDay())) {
             // 6-3. birthDay
             if (isDebug)
-                console.log("teacher-info / checkTeacherInfoChanged / 생일 - 일 변경됨");
+                console.log("teacher-info / checkHasChanged / 생일 - 일 변경됨");
             return true;
         } // end if
         return false;

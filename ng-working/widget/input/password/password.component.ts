@@ -15,7 +15,7 @@ import { MyLoggerService }            from '../../../util/service/my-logger.serv
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../../../util/model/my-response';
 
-
+// @ Deprecated - REMOVE ME
 @Component({
   moduleId: module.id,
   selector: 'password',
@@ -89,8 +89,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / ngOnInit / init");
 
     if(this.isCheckCurPW) {
@@ -103,8 +103,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -112,8 +112,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -264,8 +264,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onClickPasswordConfirm / 시작");
 
     event.stopPropagation();
@@ -369,8 +369,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("password / onBlurPassword / init");
 
     if(null == this.myCheckerService) {
@@ -510,8 +510,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   onKeyupEnter(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeyupEnter / init");
 
     event.stopPropagation();
@@ -541,8 +541,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   private emitEventOnSubmitPW(eventKey:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / emitEventOnSubmitPW / init");
 
     // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -565,8 +565,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   private emitEventOnChangePW(eventKey:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / emitEventOnChangePW / init");
 
     // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -592,8 +592,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeyupPassword / init");
 
     // shift, tab
@@ -823,8 +823,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   private repasswordPrev:string="";
   onKeyupRepassword(event, element) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;  
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;  
 
     if(isDebug) console.log("password / onKeyupRepassword / init");
 
@@ -1030,8 +1030,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   // @ Desc : 지금의 자신의 패스워드를 확인하는 모드로 바꿉니다.
   public openCheckCurPWMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / openCheckCurPWMode / init");
 
     this.initPassword();
@@ -1043,8 +1043,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   // @ Desc : 지금의 자신의 패스워드를 확인하는 모드를 해제합니다.
   private closeCheckCurPWMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / releaseUpdateMode / init");
 
     this.isCheckCurPW = false;
@@ -1074,8 +1074,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   onClickNewPasswordConfirm(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onClickNewPasswordConfirm / init");
 
     event.stopPropagation();
@@ -1086,8 +1086,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   public openNewPasswordMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / openNewPasswordMode / init");
 
     this.closeCheckCurPWMode();

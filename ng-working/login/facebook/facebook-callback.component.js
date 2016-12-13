@@ -207,8 +207,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.getMe = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / getMe / init");
         this.loginService
@@ -278,8 +278,8 @@ var FacebookCallbackComponent = (function () {
     };
     FacebookCallbackComponent.prototype.confirmUserFacebook = function (facebookId) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("facebook-callback / confirmUserFacebook / init");
         if (isDebug)

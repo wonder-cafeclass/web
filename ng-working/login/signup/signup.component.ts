@@ -205,8 +205,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
   private getInput(eventKey:string) :any {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / getInput / init");
 
     let target:DefaultComponent = null;
@@ -420,8 +420,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onClickSignup / 시작");    
 
     let isAllOK:boolean = true;
@@ -592,8 +592,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   updateUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
     if(isDebug) console.log("signup / updateUser / this.user.id : ",this.user.id);
@@ -674,8 +674,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
   addUser(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / addUser / 시작");
 
     this.userService
@@ -822,13 +822,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // 개인정보 취급방침 페이지로 이동.
     window.open("/#/private-info");
 
-  }  
+  }
 
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / onChangedFromChild / 시작");
 
     if(isDebug) console.log("signup / onChangedFromChild / myEvent : ",myEvent);

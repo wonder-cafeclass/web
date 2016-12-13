@@ -85,8 +85,8 @@ export class MyLoggerService {
 
 	logActionDirtyWord (apiKey:string, dirtyWord:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionDirtyWord / 시작");
 
 		if(null == apiKey || "" == apiKey) {

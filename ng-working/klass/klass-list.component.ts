@@ -64,8 +64,8 @@ export class KlassListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / ngOnInit / 시작");
 
     this.asyncViewPack();
@@ -74,8 +74,8 @@ export class KlassListComponent implements OnInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -118,8 +118,8 @@ export class KlassListComponent implements OnInit {
 
   private logPageEnter() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / logPageEnter / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
@@ -149,8 +149,8 @@ export class KlassListComponent implements OnInit {
   }
   private getKlassList() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / getKlassList / 시작");
 
     // REFACTOR ME!

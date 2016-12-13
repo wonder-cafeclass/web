@@ -13,14 +13,15 @@ import { MyEvent }              from '../../../util/model/my-event';
 
 import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
 
+// @ Deprecated - REMOVE ME
 @Component({
   moduleId: module.id,
   selector: 'nickname',
   templateUrl: 'nickname.component.html',
   styleUrls: [ 'nickname.component.css' ]
 })
-export class NicknameComponent implements OnInit, AfterViewInit {
-
+export class NicknameComponent {
+  /*
   @Output() emitter = new EventEmitter<MyEvent>();
 
   private isShowTooltip:boolean=false;
@@ -348,30 +349,6 @@ export class NicknameComponent implements OnInit, AfterViewInit {
       // 부모 객체에게 Change Event 발송 
       this.emitEventOnChange(inputStr);
 
-      // REMOVE ME
-      /*
-      let inputStrBeforeSanitize:string = inputStr;
-      inputStr = this.myCheckerService.sanitizeDirtyWord(inputStr);
-
-      if(inputStrBeforeSanitize != inputStr) {
-
-      } else {
-
-        this.hideWarningTooptip();
-
-        // 부모 객체에게 Change Event 발송 
-        this.emitEventOnChange(
-          // eventKey:string
-          this.myEventService.KEY_USER_NICKNAME,
-          // value:string
-          name
-        );
-
-        return;
-
-      }// end if - dirty word
-      */
-
     } // end if - check inputStr    
   }
   private sanitizeDirtyWord(inputStrBeforeSanitize:string):string {
@@ -395,8 +372,8 @@ export class NicknameComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("nickname / onKeyup / init");
 
     let inputStr:string = element.value;
@@ -522,8 +499,8 @@ export class NicknameComponent implements OnInit, AfterViewInit {
 
   private emitEventOnChange(value:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("name / emitEventOnChange / 시작");
 
     if("" != value && !this.isOK(value)) {
@@ -554,8 +531,8 @@ export class NicknameComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   showTooltipFailWarning(warningMsg:string, isTimeout:boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("nickname / showTooltipFailWarning / init");
     if(isDebug) console.log("nickname / showTooltipFailWarning / warningMsg : ",warningMsg);
 
@@ -587,26 +564,6 @@ export class NicknameComponent implements OnInit, AfterViewInit {
       _self.hideWarningTooptip();
     }, 1000 * sec);        
 
-  }  
-
-  // REMOVE ME
-
-  // REMOVE ME
-  // @Input() top:number=-1;
-  // @Input() left:number=-1;
-  // @Input() topWarning:number=-1;
-  // @Input() leftWarning:number=-1;
-  // isWarning:boolean=false;
-
-  /*
-  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
-  public showWarning() :void {
-    this.isFocus = true;
-    this.isValid = false;
-    this.tooltipMsg = this.tooltipMsgNotAllowed;
-  } 
-  hideTooltipNow() :void {
-    this.isShowTooltip = false;
   }  
   */
 }

@@ -326,8 +326,8 @@ var BirthdayComponent = (function () {
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthYear = function (selectBirthYear) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("birtday / onChangeBirthYear / init");
         this.selectedYear = selectBirthYear;

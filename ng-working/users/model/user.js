@@ -19,8 +19,8 @@ var User = (function () {
         this.date_updated = date_updated;
     }
     User.prototype.getMobileArr = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.model / getMobileArr / init");
         var mobileArr = this.mobile.split("-");
@@ -70,8 +70,8 @@ var User = (function () {
         return (mobileTail === target) ? true : false;
     };
     User.prototype.getBirthdayArr = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.model / getBirthdayArr / init");
         var birthdayArr = this.birthday.split("-");
@@ -121,8 +121,8 @@ var User = (function () {
         return (birthdayTail === target) ? true : false;
     };
     User.prototype.updateWithJSON = function (userJSON) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.model / updateWithJson / init");
         if (null == userJSON) {

@@ -197,8 +197,8 @@ export class UserService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / updateUserMutableProps / 시작");
     if(isDebug) console.log("user.service / updateUserMutableProps / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / updateUserMutableProps / email : ",email);
@@ -525,7 +525,7 @@ export class UserService {
 
   public getUserCookie(apiKey:string):Promise<MyResponse> {
     
-    let isDebug:boolean = true;
+    // let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserCookie / 시작");
     if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
@@ -597,8 +597,8 @@ export class UserService {
 
   public updatePassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / updatePassword / 시작");
     if(isDebug) console.log("user.service / updatePassword / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / updatePassword / email : ",email);

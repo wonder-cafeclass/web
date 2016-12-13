@@ -117,8 +117,15 @@ export class MyEventWatchTowerService {
 		this.loginAnnouncedSource.next(loginUser);
 	}
 	announceLoginTeacher(loginTeacher: Teacher) {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 시작`);
+
 		this.loginTeacher = loginTeacher;
 		this.loginTeacherAnnouncedSource.next(loginTeacher);
+
+		if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 끝`);
 	}
 
 	announceToggleTopMenu(toggleTopMenu: boolean) {

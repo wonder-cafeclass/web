@@ -75,8 +75,8 @@ export class Teacher {
 
 	getMobileArr() :string[] {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("teacher.model / getMobileArr / init");
 
 		let mobileArr:string[] = this.mobile.split("-");
@@ -143,8 +143,8 @@ export class Teacher {
 
 	getBirthdayArr() :string[] {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("teacher.model / getBirthdayArr / init");
 
 		let birthdayArr:string[] = this.birthday.split("-");
@@ -210,8 +210,8 @@ export class Teacher {
 
 	updateWithJSON(userJSON) :void {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("teacher.model / updateWithJson / init");
 
 		if(null == userJSON) {

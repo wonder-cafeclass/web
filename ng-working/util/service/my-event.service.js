@@ -213,8 +213,8 @@ var MyEventService = (function () {
     // 변경된 내용이 문제가 있을 경우의 처리의 모음. 
     // 여러 컴포넌트에서 공통적으로 사용.
     MyEventService.prototype.onChangeNotValid = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-info / onChangedFromChild / init");
         // 입력 내용이 변했습니다. 

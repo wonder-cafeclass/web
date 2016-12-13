@@ -105,8 +105,8 @@ var ApplyTeacherComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     ApplyTeacherComponent.prototype.copyUser = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / copyUser / 시작");
         if (null == this.loginUser) {
@@ -133,8 +133,8 @@ var ApplyTeacherComponent = (function () {
         this.logActionPage();
     }; // end init
     ApplyTeacherComponent.prototype.fillViewTeacherInfo = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / fillViewTeacherInfo");
         if (isDebug)
@@ -245,8 +245,8 @@ var ApplyTeacherComponent = (function () {
         }); // end logError
     };
     ApplyTeacherComponent.prototype.setLoginUser = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / setLoginUser / 시작");
         // 로그인 데이터를 가져옵니다.
@@ -276,8 +276,8 @@ var ApplyTeacherComponent = (function () {
         return this.defaultService.getInput(this.inputComponentList, eventKey);
     };
     ApplyTeacherComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / onChangedFromChild / init");
         if (isDebug)
@@ -467,8 +467,8 @@ var ApplyTeacherComponent = (function () {
         return true;
     };
     ApplyTeacherComponent.prototype.updateNewMobileHead = function (newMobileHead) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewMobileHead / init");
         if (!this.mobileComponent.isOKHead(newMobileHead)) {
@@ -497,8 +497,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewMobileBody = function (newMobileBody) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewMobileBody / init");
         if (!this.mobileComponent.isOKBody(newMobileBody)) {
@@ -527,8 +527,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewMobileTail = function (newMobileTail) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewMobileTail / init");
         if (!this.mobileComponent.isOKTail(newMobileTail)) {
@@ -557,8 +557,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewBirthYear = function (newBirthYear) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewBirthYear / init");
         if (!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
@@ -588,8 +588,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewBirthMonth / init");
         if (!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
@@ -619,8 +619,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewBirthDay = function (newBirthDay) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewBirthDay / init");
         if (!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
@@ -650,8 +650,8 @@ var ApplyTeacherComponent = (function () {
         }
     };
     ApplyTeacherComponent.prototype.updateNewProp = function (key, newValue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / updateNewProp / init");
         if (null == key || "" == key) {
@@ -693,8 +693,8 @@ var ApplyTeacherComponent = (function () {
         } // end if
     }; // end method
     ApplyTeacherComponent.prototype.isOKAll = function (showTooltip) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / isOKAll / init");
         // 모든 값들을 검사. 
@@ -819,8 +819,8 @@ var ApplyTeacherComponent = (function () {
     };
     ApplyTeacherComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / onClickSave / init");
         // 모든 값들이 필수입니다.
@@ -867,8 +867,8 @@ var ApplyTeacherComponent = (function () {
         this.isReadyToSave = false;
     };
     ApplyTeacherComponent.prototype.checkUserInfoChanged = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / checkUserInfoChanged / init");
         if (isDebug)

@@ -128,8 +128,8 @@ var ApplyTeacherTermComponent = (function () {
         }); // end logError
     };
     ApplyTeacherTermComponent.prototype.setLoginUser = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher-term / setLoginUser / 시작");
         // 로그인 데이터를 가져옵니다.
@@ -152,8 +152,8 @@ var ApplyTeacherTermComponent = (function () {
     ApplyTeacherTermComponent.prototype.onChangeCheckTerms = function (event, checkboxTerms) {
         event.preventDefault();
         event.stopPropagation();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / onChangeCheckTerms / 시작");
         if (null != checkboxTerms) {
@@ -172,8 +172,8 @@ var ApplyTeacherTermComponent = (function () {
     ApplyTeacherTermComponent.prototype.onClickSignup = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("signup / onClickSignup / 시작");
         // 약관 동의 확인. 

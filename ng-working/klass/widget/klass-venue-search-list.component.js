@@ -168,8 +168,8 @@ var KlassVenueSearchListComponent = (function () {
         }
     };
     KlassVenueSearchListComponent.prototype.onClickKlassVenue = function (klassVenue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-venue-search-list / onClickKlassVenue / 시작");
         this.klassVenuesNaverMap = klassVenue;
