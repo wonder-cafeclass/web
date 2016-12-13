@@ -20,7 +20,7 @@ import { MyEventWatchTowerService } from '../../../util/service/my-event-watchto
   templateUrl: 'name.component.html',
   styleUrls: [ 'name.component.css' ]
 })
-export class NameComponent implements OnInit, AfterViewInit {
+export class NameComponent {
 /*
   // @ Common Props
   @Output() emitter = new EventEmitter<MyEvent>();

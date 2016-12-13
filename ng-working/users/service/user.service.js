@@ -471,7 +471,7 @@ var UserService = (function () {
     };
     UserService.prototype.getUserCookie = function (apiKey) {
         // let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserCookie / 시작");
         if (isDebug)
