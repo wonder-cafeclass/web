@@ -91,7 +91,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   private profileImgUploadComponent: ProfileImgUploadComponent;  
 
   // @ Desc : 사용자가 자신의 선생님 정보를 변경했는지 확인하는 플래그
-  hasChanged:boolean=false;
+  isReadyToSave:boolean=false;
 
   constructor(  private loginService:LoginService,
                 private myEventService:MyEventService,
@@ -586,6 +586,10 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
       this.myEventService.onChangeNotValid(myEvent);
 
+      // 유효하지 않은 값이 들어왔습니다. 
+      // 저장 버튼을 다시 비활성화합니다.
+      this.isReadyToSave = false;
+
     } // end if
 
 
@@ -632,7 +636,11 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.mobile = newMobile;
 
     // 저장 버튼 노출
-    this.hasChanged=true;
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    }
   }
   private updateNewMobileBody(newMobileBody:string) :void {
 
@@ -662,7 +670,11 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.mobile = newMobile;
 
     // 저장 버튼 노출
-    this.hasChanged=true;
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    }
   }
   private updateNewMobileTail(newMobileTail:string) :void {
 
@@ -692,7 +704,11 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.mobile = newMobile;    
 
     // 저장 버튼 노출
-    this.hasChanged=true;
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    }
   }
 
   private updateNewBirthYear(newBirthYear:string) :void {
@@ -723,9 +739,13 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.birthday = newBirthday;
 
     // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-      this.hasChanged=true;
+    // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
     }
+
   }
   private updateNewBirthMonth(newBirthMonth:string) :void {
 
@@ -755,9 +775,13 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.birthday = newBirthday;
 
     // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-      this.hasChanged=true;
+    // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
     }
+
   }
   private updateNewBirthDay(newBirthDay:string) :void {
 
@@ -787,8 +811,11 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.newTeacherCopy.birthday = newBirthday;
 
     // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-      this.hasChanged=true;
+    // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
     }
   }    
 
@@ -820,19 +847,165 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
         if(isDebug) console.log("apply-teacher / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
         if(isDebug) console.log("apply-teacher / updateNewProp / this.newTeacherCopy : ",this.newTeacherCopy);
       }
-      // 저장 버튼을 노출합니다.
-      this.hasChanged=true;
+
+      // 저장 버튼 노출은 모든 값이 정상적인 경우에만 노출됩니다.
+      this.isReadyToSave=this.isOKAll(false);
+
+      if(isDebug) console.log("apply-teacher / updateNewProp / this.isReadyToSave : ",this.isReadyToSave);
+
     } else {
       // 변경되지 않았습니다.
       if(this.checkUserInfoChanged()) {
         // 모든 다른 항목중에 변경된 것이 없다면, 
         // 저장 버튼을 비활성화 합니다.
-        this.hasChanged=false;
+        this.isReadyToSave=false;
       } // end if
 
     } // end if
 
   } // end method
+
+  isOKAll(showTooltip:boolean) :boolean {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("apply-teacher / isOKAll / init");
+
+    // 모든 값들을 검사. 
+    // 문제가 있다면, 사용자에게 알림.
+
+    if(null == this.newTeacherCopy) {
+      return false;
+    }
+
+    let isOK:boolean = false;
+
+    isOK = this.emailComponent.isOK(this.newTeacherCopy.email);
+    if(!isOK) {
+
+      if(showTooltip) {
+        this.emailComponent.showTooltipFailWarning(
+          // msg:string, 
+          this.emailComponent.getErrorMsg(), 
+          // isTimeout:Boolean
+          false
+        );
+      }
+      return false;
+    }
+    isOK = this.nameComponent.isOK(this.newTeacherCopy.name);
+    if(!isOK) {
+
+      if(showTooltip) {
+        this.nameComponent.showTooltipFailWarning(
+          // msg:string, 
+          this.nameComponent.getErrorMsg(), 
+          // isTimeout:Boolean
+          false
+        );
+      }
+      return false;
+    }
+    isOK = this.nicknameComponent.isOK(this.newTeacherCopy.nickname);
+    if(!isOK) {
+
+      if(showTooltip) {
+        this.nicknameComponent.showTooltipFailWarning(
+          // msg:string, 
+          this.nicknameComponent.getErrorMsg(), 
+          // isTimeout:Boolean
+          false
+        );
+      }
+      return false;
+    }
+    isOK = this.resumeComponent.isOK(this.newTeacherCopy.resume);
+    if(!isOK) {
+
+      if(showTooltip) {
+        this.resumeComponent.showTooltipFailWarning(
+          // msg:string, 
+          this.resumeComponent.getErrorMsg(), 
+          // isTimeout:Boolean
+          false
+        );      
+      }
+      return false;
+    }
+    isOK = this.greetingComponent.isOK(this.newTeacherCopy.greeting);
+    if(!isOK) {
+
+      if(showTooltip) {
+        this.greetingComponent.showTooltipFailWarning(
+          // msg:string, 
+          this.greetingComponent.getErrorMsg(), 
+          // isTimeout:Boolean
+          false
+        );
+      }
+      return false;
+    }
+    if(this.mobileComponent.hasNotDoneMobileHead()) {
+      if(showTooltip) {
+        this.mobileComponent.showWarningMobileHead();
+      }
+      return false;
+    }
+    if(this.mobileComponent.hasNotDoneMobileBody()) {
+      if(showTooltip) {
+        this.mobileComponent.showWarningMobileBody();
+      }
+      return false;
+    }
+    if(this.mobileComponent.hasNotDoneMobileTail()) {
+      if(showTooltip) {
+        this.mobileComponent.showWarningMobileTail();
+      }
+      return false;
+    }
+    isOK = this.genderComponent.isOK(this.newTeacherCopy.gender);
+    if(!isOK) {
+      if(showTooltip) {
+        this.genderComponent.showWarning();
+      }
+      return false;
+    }
+    if(this.birthdayComponent.hasNotDoneBirthYear()) {
+      if(showTooltip) {
+        this.birthdayComponent.showWarningBirthYear();
+      }
+      return false;
+    }
+    if(this.birthdayComponent.hasNotDoneBirthMonth()) {
+      if(showTooltip) {
+        this.birthdayComponent.showWarningBirthMonth();
+      }
+      return false;
+    }
+    if(this.birthdayComponent.hasNotDoneBirthDay()) {
+      if(showTooltip) {
+        this.birthdayComponent.showWarningBirthDay();
+      }
+      return false;
+    }
+
+    // 기본 이미지나 샘플 이미지 주소여서는 안됩니다.
+    if(this.newTeacherCopy.thumbnail === this.profileImgUploadComponent.userProfileDefaultUrl) {
+      // 선생님은 기본이미지를 사용할 수 없습니다.
+      if(showTooltip) {
+        this.profileImgUploadComponent.showWarning("기본이미지를 사용할 수 없습니다");
+      }
+      return false; 
+    }
+    if(this.profileImgUploadComponent.hasNotDone()) {
+      if(showTooltip) {
+        this.profileImgUploadComponent.showWarning("이미지를 확인해주세요");
+      }
+      return false; 
+    }
+
+    return true;
+  }
 
   onClickSave(event) :void{
 
@@ -840,10 +1013,17 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / onClickSave / init");
 
-    let hasChanged:boolean = this.checkUserInfoChanged();
-    if(isDebug) console.log("apply-teacher / onClickSave / hasChanged : ",hasChanged);
+    // 모든 값들이 필수입니다.
+    // 값에 문제가 없는지 확인합니다.
+    if(!this.isOKAll(true)) {
+      if(isDebug) console.log("apply-teacher / onClickSave / 중단 / 값에 문제가 있습니다.");
+      return;
+    }
+
+    let isReadyToSave:boolean = this.checkUserInfoChanged();
+    if(isDebug) console.log("apply-teacher / onClickSave / isReadyToSave : ",isReadyToSave);
     if(isDebug) console.log("apply-teacher / onClickSave / this.newTeacherCopy : ",this.newTeacherCopy);
-    if(hasChanged) {
+    if(isReadyToSave) {
 
       // 변경되었다면 저장합니다.
       if(isDebug) console.log("apply-teacher / onClickSave / 변경되었다면 저장합니다.");
@@ -862,7 +1042,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
           // 홈으로 리다이렉트 합니다.
           if(isDebug) console.log("apply-teacher / onClickSave / 저장완료! / 홈으로 리다이렉트 합니다.");
 
-          this.router.navigate([this.redirectUrl]);
+          // this.router.navigate([this.redirectUrl]);
 
         } else if(myResponse.isFailed()) { 
 
@@ -881,7 +1061,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     }
 
     // 저장 버튼 비활성화.
-    this.hasChanged=false;
+    this.isReadyToSave=false;
 
   }
 
@@ -903,79 +1083,79 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     let birthDay:string = this.newTeacher.getBirthDay();
 
     // 검사 시작!
-    let hasChanged:boolean = false;
+    let isReadyToSave:boolean = false;
 
     if( this.nameComponent.isOK(this.name) && 
         this.name !== this.newTeacher.name) {
       // 1. name
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 이름이 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
 
     } else if(  this.nicknameComponent.isOK(this.nickname) && 
                 this.nickname !== this.newTeacher.nickname) {
 
       // 2. nickname
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 닉네임이 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
 
     } else if(  this.resumeComponent.isOK(this.resume) && 
                 this.resume !== this.newTeacher.resume) {
 
       // 3. resume
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 경력이 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
 
     } else if(  this.greetingComponent.isOK(this.greeting) && 
                 this.greeting !== this.newTeacher.greeting) {
 
       // 4. greeting
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 경력이 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
 
     } else if(  this.profileImgUploadComponent.isOK(this.thumbnail) && 
                 this.thumbnail !== this.newTeacher.thumbnail) {
       // 3. profile-img
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 섬네일이 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.mobileComponent.isOKHead(this.mobileNumHead) && 
         mobileHead !== this.mobileNumHead) {
       // 4-1. mobile head
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 휴대전화 첫 3자리 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.mobileComponent.isOKBody(this.mobileNumBody) && 
         mobileBody !== this.mobileNumBody) {
       // 4-2. mobile body
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 휴대전화 두번째 4자리 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.mobileComponent.isOKTail(this.mobileNumTail) && 
         mobileTail !== this.mobileNumTail) {
       // 4-3. mobile tail
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 휴대전화 세번째 4자리 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if(  this.genderComponent.isOK(this.gender) && 
                 this.gender !== this.newTeacher.gender) {
       // 5. gender
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 성별 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.birthdayComponent.isOKBirthYear(this.birthYear) && 
         birthYear !== this.birthYear) {
       // 6-1. birthYear
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 생일 - 연도 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.birthdayComponent.isOKBirthMonth(this.birthMonth) && 
         birthMonth !== this.birthMonth) {
       // 6-2. birthMonth
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 생일 - 월 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
     } else if( this.birthdayComponent.isOKBirthDay(this.birthDay) && 
         birthDay !== this.birthDay) {
       // 6-3. birthDay
       if(isDebug) console.log("apply-teacher / checkUserInfoChanged / 생일 - 일 변경됨");
-      hasChanged = true;
+      isReadyToSave = true;
 
     } // end if
 
-    return hasChanged;
+    return isReadyToSave;
   }  
 
 } // end class

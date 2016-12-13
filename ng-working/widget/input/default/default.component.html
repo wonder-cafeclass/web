@@ -56,17 +56,15 @@
 	class="form-control input-glass my-style"
 	placeholder={{meta.placeholder}}>
 	</textarea>
-
-
-
 	
 	<!-- icon - warning -->
 	<span 	*ngIf="!isValid"
 			class="glyphicon glyphicon-exclamation-sign warning"
 			aria-hidden="true"></span>
 			
-	<!-- tooltip -->
-	<div 	[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
+	<!-- tooltip for input -->
+	<div 	*ngIf="meta.type == 'TYPE_INPUT'"
+			[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
 			class="tooltip top" 
 			role="tooltip"> 
 
@@ -77,5 +75,19 @@
 				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
 
 	</div>
+
+	<!-- tooltip for textarea -->
+	<div 	*ngIf="meta.type == 'TYPE_TEXTAREA'"
+			[ngClass]="{'show-my-tooltip-ta':isShowTooltip,'hide-my-tooltip-ta':!isShowTooltip}"
+			class="tooltip top" 
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
+
+	</div>	
 
 </div>

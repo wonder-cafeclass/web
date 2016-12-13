@@ -80,3 +80,45 @@ a.info {
   padding-top: 5px;
   text-decoration: underline;
 }
+.tooltip-warning-arrow {
+  border-top-color: #e85c41 !important;
+}
+.tooltip-warning-inner {
+  background-color: #e85c41;
+}
+.tooltip-success-arrow {
+  border-top-color: #5cb85c !important;
+}
+.tooltip-success-inner {
+  background-color: #5cb85c;
+}
+.show-my-tooltip-head {
+  opacity:1; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}
+.hide-my-tooltip-head {
+  opacity:0; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}
+.show-my-tooltip-body {
+  opacity:1; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}
+.hide-my-tooltip-body {
+  opacity:0; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}
+.show-my-tooltip-tail {
+  opacity:1; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}
+.hide-my-tooltip-tail {
+  opacity:0; 
+  margin-left: -20px;
+  margin-top: -85px; 
+}

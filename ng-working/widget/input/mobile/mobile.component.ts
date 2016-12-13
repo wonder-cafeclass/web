@@ -243,6 +243,15 @@ export class MobileComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public hasDoneMobile() :boolean {
+    if( this.hasDoneMobileHead() && 
+        this.hasDoneMobileBody() && 
+        this.hasDoneMobileTail()) {
+      return true;
+    }
+    return false;
+  }
+
   // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
   public hasNotDoneMobileHead() :boolean {
     return !this.hasDoneMobileHead();

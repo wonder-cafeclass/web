@@ -33,6 +33,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   private uploadUserProfileUrl:string = '/CI/index.php/api/upload/userprofile';
   public userProfilePath:string = "/assets/images/user/";
   public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
+  public userProfileDefaultUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
   public userProfileSampleArr:string[] = [
     "/assets/images/user/user_anonymous_150x150_cat.jpg",
@@ -57,6 +58,10 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   private myChecker:MyChecker;
 
   isAdmin:boolean=false;
+
+  isShowTooltip:boolean=false;
+  isValidInput:boolean=false;
+  tooltipMsg:string="";
 
   constructor(  private uploadService: UploadService,
                 private myEventService:MyEventService,
@@ -166,13 +171,19 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
     return isOK;
   } 
   // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
-  public showWarning() :void {
-    // Do something...
+  public showWarning(msg:string) :void {
+    this.isShowTooltip = true;
+    this.isValidInput = false;
+    this.tooltipMsg = msg;
   } 
+  public hideWarning() :void {
+    this.isShowTooltip = false;
+    this.isValidInput = false;
+    this.tooltipMsg = "";
+  }
   public getProfileImgUrl() :string {
     return this.userProfileUrl;
-  } 
-
+  }
 
   onClickSampleThumb(event, idx) :void {
 

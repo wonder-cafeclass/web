@@ -87,3 +87,13 @@ textarea.my-style {
   font-size: 14px;
   color:#777;
 }
+.show-my-tooltip-ta {
+  opacity:1; 
+  margin-left: 100px;
+  margin-top: -200px;
+}
+.hide-my-tooltip-ta {
+  opacity:0; 
+  margin-left: 100px;
+  margin-top: -200px;
+}

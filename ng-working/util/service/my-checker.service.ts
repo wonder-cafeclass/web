@@ -951,7 +951,7 @@ export class MyCheckerService {
             if(0 < max && max < inputStr.length) {
 
                 this.history.reason = 
-                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
+                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
                 this.history.success = false;
                 this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
                 this.history.key = "max";
@@ -967,7 +967,7 @@ export class MyCheckerService {
             if(0 <= min && inputStr.length < min) {
 
                 this.history.reason = 
-                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
+                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
                 this.history.success = false;
                 this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
                 this.history.key = "min";

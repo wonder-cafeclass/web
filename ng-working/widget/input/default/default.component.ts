@@ -154,6 +154,22 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     return isOK;
   }
+  public getLastHistory() :any {
+    if(null == this.myCheckerService) {
+      return null;
+    }
+    return this.myCheckerService.getLastHistory();
+  }
+  public getErrorMsg() :string {
+    if(null == this.myCheckerService) {
+      return null;
+    }
+    let history = this.myCheckerService.getLastHistory();
+    if(null != history && null != history["msg"]) {
+      return history["msg"];
+    }
+    return "";
+  }
   setInput(input:string) :void {
 
     // let isDebug:boolean = true;
@@ -231,15 +247,49 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     let inputStr:string = elementInput.value;
 
-    let isValidInput:boolean = this.onCheckInputValid(inputStr);
+    let isValidInput:boolean = this.onCheckInputValid(inputStr, true);
     if(isDebug) console.log("default / onBlur / isValidInput : ",isValidInput);
 
     if(isValidInput) {
       if(isDebug) console.log("default / onBlur / 입력이 문제없습니다.");
       this.hideWarningTooptip();
+    } else {
+      // 포커싱을 잃었으므로 사용자가 입력을 완료했다고 판단합니다. 
+      // 그 결과에 문제가 있으므로 부모 객체에게 실패원인을 전달합니다.
+      // 이벤트 키는 SUBMIT입니다.
+
     }
 
   } // end method
+
+  private emitEventOnSubmit(value:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / emitEventOnChange / 시작");
+    if(null == value) {
+      if(isDebug) console.log("default / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_SUBMIT,
+      // public key:string
+      this.meta.eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("default / emitEventOnChange / Done!");
+
+  }  
 
   private emitEventOnChange(value:string) :void {
 
@@ -327,6 +377,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   private hideWarningTooptip() :void {
     this.tooltipMsg = null;
     this.isValid = true;
+    this.isFocus = false;
     this.isShowTooltip = false;
   }
   private hideTooltip(sec:number) :void {
@@ -345,7 +396,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   // @ Desc : 새로 입력받은 값이 문제가 없는지 확인합니다.
   // 입력받은 모든 값은 문자열입니다.
-  private onCheckInputValid(input:string) :boolean {
+  private onCheckInputValid(input:string, isBlur:boolean) :boolean {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
@@ -377,11 +428,10 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
           // 최대 문자 갯수보다 많은 경우.
           if(isDebug) console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우.");
-          this.showTooltipFailWarning(history.msg, true);
+          this.showTooltipFailWarning(history.msg, false);
 
           // 넘는 문자열은 지웁니다.
           this.inputStrPrev = input = input.slice(0, history.value);
-          this.isValid = false;
 
           if(isDebug) console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ",history);
 
@@ -390,9 +440,17 @@ export class DefaultComponent implements OnInit, AfterViewInit {
           // 최소 문자 갯수보다 적은 경우.
           if(isDebug) console.log("default / onCheckInputValid / 최소 문자 갯수보다 적은 경우.");
 
-          // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
-          // 예외적으로 true 반환.
-          return true;
+          if(isBlur) {
+
+            // Blur 모드에서는 사용자가 입력을 완료했다고 판단합니다
+            // 그러므로 최소 글자수보다 작으면 경고를 표시해야 합니다.
+            this.showTooltipFailWarning(history.msg, false);
+
+          } else {
+            // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
+            // 예외적으로 true 반환.
+            return true;
+          }
 
         } // end if
 
@@ -430,6 +488,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       // 정상적인 값입니다. 
       // 부모 객체에 전파합니다.
       if(isDebug) console.log("default / onCheckInputValid / 정상적인 값입니다.");
+      this.hideWarningTooptip();
       this.emitEventOnChange(input);
       return true;
 
@@ -461,7 +520,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let isValidInput:boolean = this.onCheckInputValid(inputStr);
+    let isValidInput:boolean = this.onCheckInputValid(inputStr, false);
     if(isDebug) console.log("default / onKeyup / isValidInput : ",isValidInput);
 
     if(isValidInput) {

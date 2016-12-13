@@ -33,6 +33,15 @@ var BirthdayComponent = (function () {
         this.birthDayArr = [];
         this.selectedDay = -1;
         this.isAdmin = false;
+        this.isShowTooltipHead = false;
+        this.isShowTooltipBody = false;
+        this.isShowTooltipTail = false;
+        this.isValidHead = false;
+        this.isValidBody = false;
+        this.isValidTail = false;
+        this.tooltipHeadMsg = "";
+        this.tooltipBodyMsg = "";
+        this.tooltipTailMsg = "";
     }
     BirthdayComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -213,7 +222,13 @@ var BirthdayComponent = (function () {
     };
     // @ Desc : 생년을 입력해달라는 표시를 화면에 보여줍니다.
     BirthdayComponent.prototype.showWarningBirthYear = function () {
-        // Do something...
+        this.isShowTooltipHead = true;
+        this.isValidHead = false;
+        this.tooltipHeadMsg = "태어난 연도를 확인해주세요";
+    };
+    BirthdayComponent.prototype.hideWarningBirthYear = function () {
+        this.isShowTooltipHead = false;
+        this.tooltipHeadMsg = "";
     };
     BirthdayComponent.prototype.getBirthYear = function () {
         return "" + this.selectedYear;
@@ -231,7 +246,13 @@ var BirthdayComponent = (function () {
     };
     // @ Desc : 생월을 입력해달라는 표시를 화면에 보여줍니다.
     BirthdayComponent.prototype.showWarningBirthMonth = function () {
-        // Do something...
+        this.isShowTooltipBody = true;
+        this.isValidBody = false;
+        this.tooltipBodyMsg = "태어난 월을 확인해주세요";
+    };
+    BirthdayComponent.prototype.hideWarningBirthMonth = function () {
+        this.isShowTooltipBody = false;
+        this.tooltipBodyMsg = "";
     };
     BirthdayComponent.prototype.getBirthMonth = function () {
         var monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
@@ -250,7 +271,13 @@ var BirthdayComponent = (function () {
     };
     // @ Desc : 생일을 입력해달라는 표시를 화면에 보여줍니다.
     BirthdayComponent.prototype.showWarningBirthDay = function () {
-        // Do something...
+        this.isShowTooltipTail = true;
+        this.isValidTail = false;
+        this.tooltipTailMsg = "태어난 일을 확인해주세요";
+    };
+    BirthdayComponent.prototype.hideWarningBirthDay = function () {
+        this.isShowTooltipTail = false;
+        this.tooltipTailMsg = "";
     };
     BirthdayComponent.prototype.getBirthDay = function () {
         var monthCalFormat = this.setCalendarFormat("" + this.selectedDay);
@@ -290,8 +317,8 @@ var BirthdayComponent = (function () {
         } // end if
     };
     BirthdayComponent.prototype.onChangeBirthYear = function (selectBirthYear) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("birtday / onChangeBirthYear / init");
         this.selectedYear = selectBirthYear;
@@ -314,6 +341,8 @@ var BirthdayComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerBirthYear);
             this.emitter.emit(myEventOnChange);
+            // 노출된 경고창이 있다면 감춘다.
+            this.hideWarningBirthYear();
         }
         else {
             var history_4 = this.myCheckerService.getLastHistory();
@@ -333,6 +362,7 @@ var BirthdayComponent = (function () {
         if (isDebug)
             console.log("birtday / onChangeBirthMonth / this.selectedMonth : ", this.selectedMonth);
         var monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+        var dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
         var isOK = this.isOKBirthMonth(monthCalFormat);
         if (isDebug)
             console.log("birtday / onChangeBirthMonth / isOK : ", isOK);
@@ -350,6 +380,21 @@ var BirthdayComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerBirthMonth);
             this.emitter.emit(myEventOnChange);
+            // 부모 객체에게 Change Event 발송 
+            var myEventOnChange = this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_BIRTH_DAY, 
+            // public value:string
+            dayCalFormat, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerBirthDay);
+            this.emitter.emit(myEventOnChange);
+            // 노출된 경고창이 있다면 감춘다.
+            this.hideWarningBirthMonth();
         }
         else {
             var history_5 = this.myCheckerService.getLastHistory();
@@ -385,6 +430,8 @@ var BirthdayComponent = (function () {
             // public myChecker:MyChecker
             this.myCheckerBirthDay);
             this.emitter.emit(myEventOnChange);
+            // 노출된 경고창이 있다면 감춘다.
+            this.hideWarningBirthDay();
         }
         else {
             var history_6 = this.myCheckerService.getLastHistory();

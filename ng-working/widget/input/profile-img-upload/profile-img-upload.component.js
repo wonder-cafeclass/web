@@ -27,6 +27,7 @@ var ProfileImgUploadComponent = (function () {
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
+        this.userProfileDefaultUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
         this.userProfileSampleArr = [
             "/assets/images/user/user_anonymous_150x150_cat.jpg",
             "/assets/images/user/user_anonymous_150x150_lion.jpg",
@@ -41,6 +42,9 @@ var ProfileImgUploadComponent = (function () {
         this.isFocusInfo = false;
         this.isShowPopover = false;
         this.isAdmin = false;
+        this.isShowTooltip = false;
+        this.isValidInput = false;
+        this.tooltipMsg = "";
     }
     ProfileImgUploadComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -125,8 +129,15 @@ var ProfileImgUploadComponent = (function () {
         return isOK;
     };
     // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
-    ProfileImgUploadComponent.prototype.showWarning = function () {
-        // Do something...
+    ProfileImgUploadComponent.prototype.showWarning = function (msg) {
+        this.isShowTooltip = true;
+        this.isValidInput = false;
+        this.tooltipMsg = msg;
+    };
+    ProfileImgUploadComponent.prototype.hideWarning = function () {
+        this.isShowTooltip = false;
+        this.isValidInput = false;
+        this.tooltipMsg = "";
     };
     ProfileImgUploadComponent.prototype.getProfileImgUrl = function () {
         return this.userProfileUrl;

@@ -21,34 +21,83 @@
 	<tbody> 
 		<tr> 
 			<td class="layout select">
+<!-- Birth Year -->
 <div>
 	<select class="form-control padding" (change)="onChangeBirthYear($event.target.value)">
 		<option 	*ngFor="let birthYear of birthYearArr" 
 					[selected]="birthYear == selectedYear"
 					value={{birthYear}}>{{birthYear}}년</option>
 	</select>
+
+	<!-- tooltip init -->
+	<div 	[ngClass]="{'show-my-tooltip-head':isShowTooltipHead,'hide-my-tooltip-head':!isShowTooltipHead}"
+			class="tooltip top"
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValidHead,'tooltip-warning-arrow':!isValidHead}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValidHead,'tooltip-warning-inner':!isValidHead}">{{tooltipHeadMsg}}</div> 
+
+	</div>	
+	<!-- tooltip done -->
+
 	<div class="shim-select border-r"></div>
 </div>
 			</td>
+
 			<td class="layout select">
+<!-- Birth Month -->
 <div>
 	<select class="form-control padding" (change)="onChangeBirthMonth($event.target.value)">
 		<option 	*ngFor="let birthMonth of birthMonthArr" 
 					[selected]="birthMonth == selectedMonth"
 					value={{birthMonth}}>{{birthMonth}}월</option>
 	</select>
+
+	<!-- tooltip init -->
+	<div 	[ngClass]="{'show-my-tooltip-body':isShowTooltipBody,'hide-my-tooltip-body':!isShowTooltipBody}"
+			class="tooltip top"
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValidBody,'tooltip-warning-arrow':!isValidBody}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValidBody,'tooltip-warning-inner':!isValidBody}">{{tooltipBodyMsg}}</div> 
+
+	</div>	
+	<!-- tooltip done -->	
 	<div class="shim-select border-r"></div>
 </div>
 			</td>
+
 			<td class="layout select">
+<!-- Birth Day -->			
 <div>
 	<select class="form-control padding" (change)="onChangeBirthDay($event.target.value)">
 		<option 	*ngFor="let birthDay of birthDayArr" 
 					[selected]="birthDay == selectedDay"
 					value={{birthDay}}>{{birthDay}}일</option>
 	</select>
+
+	<!-- tooltip init -->
+	<div 	[ngClass]="{'show-my-tooltip-tail':isShowTooltipTail,'hide-my-tooltip-tail':!isShowTooltipTail}"
+			class="tooltip top"
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValidTail,'tooltip-warning-arrow':!isValidTail}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValidTail,'tooltip-warning-inner':!isValidTail}">{{tooltipTailMsg}}</div> 
+
+	</div>	
+	<!-- tooltip done -->		
 </div>
 			</td>
+
 		</tr>
 	</tbody>
 </table>

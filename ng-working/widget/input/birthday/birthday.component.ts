@@ -46,7 +46,19 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   myCheckerBirthMonth:MyChecker;  
   myCheckerBirthDay:MyChecker;
 
-  isAdmin:boolean=false;    
+  isAdmin:boolean=false;  
+
+  isShowTooltipHead:boolean=false;
+  isShowTooltipBody:boolean=false;
+  isShowTooltipTail:boolean=false;
+
+  isValidHead:boolean=false;
+  isValidBody:boolean=false;
+  isValidTail:boolean=false;
+
+  tooltipHeadMsg:string="";
+  tooltipBodyMsg:string="";
+  tooltipTailMsg:string="";
 
   constructor(  private myLoggerService:MyLoggerService, 
                 private myEventService:MyEventService,
@@ -256,7 +268,13 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   }
   // @ Desc : 생년을 입력해달라는 표시를 화면에 보여줍니다.
   public showWarningBirthYear() :void {
-    // Do something...
+    this.isShowTooltipHead = true;
+    this.isValidHead = false;
+    this.tooltipHeadMsg = "태어난 연도를 확인해주세요";
+  }
+  public hideWarningBirthYear() :void {
+    this.isShowTooltipHead = false;
+    this.tooltipHeadMsg = "";
   }
   public getBirthYear() :string {
     return "" + this.selectedYear;
@@ -277,8 +295,14 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   }  
   // @ Desc : 생월을 입력해달라는 표시를 화면에 보여줍니다.
   public showWarningBirthMonth() :void {
-    // Do something...
+    this.isShowTooltipBody = true;
+    this.isValidBody = false;
+    this.tooltipBodyMsg = "태어난 월을 확인해주세요";
   }  
+  public hideWarningBirthMonth() :void {
+    this.isShowTooltipBody = false;
+    this.tooltipBodyMsg = "";
+  }
   public getBirthMonth() :string {
     let monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
     return monthCalFormat;
@@ -301,8 +325,14 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   }   
   // @ Desc : 생일을 입력해달라는 표시를 화면에 보여줍니다.
   public showWarningBirthDay() :void {
-    // Do something...
+    this.isShowTooltipTail = true;
+    this.isValidTail = false;
+    this.tooltipTailMsg = "태어난 일을 확인해주세요";
   }
+  public hideWarningBirthDay() :void {
+    this.isShowTooltipTail = false;
+    this.tooltipTailMsg = "";
+  }  
   public getBirthDay() :string {
     let monthCalFormat = this.setCalendarFormat("" + this.selectedDay);
     return monthCalFormat;
@@ -355,8 +385,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   onChangeBirthYear(selectBirthYear) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("birtday / onChangeBirthYear / init");
 
     this.selectedYear = selectBirthYear;
@@ -385,6 +415,8 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
       );
       this.emitter.emit(myEventOnChange);
 
+      // 노출된 경고창이 있다면 감춘다.
+      this.hideWarningBirthYear();
     } else {
 
       let history = this.myCheckerService.getLastHistory();
@@ -408,6 +440,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("birtday / onChangeBirthMonth / this.selectedMonth : ",this.selectedMonth);
 
     let monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
+    let dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
     let isOK:boolean = this.isOKBirthMonth(monthCalFormat);
 
     if(isDebug) console.log("birtday / onChangeBirthMonth / isOK : ",isOK);
@@ -429,6 +462,25 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
         this.myCheckerBirthMonth
       );
       this.emitter.emit(myEventOnChange);
+
+      // 부모 객체에게 Change Event 발송 
+      let myEventOnChange:MyEvent =
+      this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE,
+        // public key:string
+        this.myEventService.KEY_USER_BIRTH_DAY,
+        // public value:string
+        dayCalFormat,
+        // public metaObj:any
+        null,
+        // public myChecker:MyChecker
+        this.myCheckerBirthDay
+      ); 
+      this.emitter.emit(myEventOnChange);     
+
+      // 노출된 경고창이 있다면 감춘다.
+      this.hideWarningBirthMonth();
 
     } else {
 
@@ -472,6 +524,9 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
         this.myCheckerBirthDay
       );
       this.emitter.emit(myEventOnChange);
+
+      // 노출된 경고창이 있다면 감춘다.
+      this.hideWarningBirthDay();
 
     } else {
 

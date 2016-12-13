@@ -205,6 +205,14 @@ var MobileComponent = (function () {
             this.ngModelTail = this.mobileTailEmitted = this.mobileTailPrev = mobileTail;
         }
     };
+    MobileComponent.prototype.hasDoneMobile = function () {
+        if (this.hasDoneMobileHead() &&
+            this.hasDoneMobileBody() &&
+            this.hasDoneMobileTail()) {
+            return true;
+        }
+        return false;
+    };
     // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
     MobileComponent.prototype.hasNotDoneMobileHead = function () {
         return !this.hasDoneMobileHead();

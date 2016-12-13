@@ -761,7 +761,7 @@ var MyCheckerService = (function () {
             }
             if (0 < max && max < inputStr.length) {
                 this.history.reason =
-                    "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
+                    "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
                 this.history.success = false;
                 this.history.msg = myChecker.msg = "\uCD5C\uB300 " + max + "\uC790\uAE4C\uC9C0 \uC785\uB825\uD560 \uC218 \uC788\uC5B4\uC694.";
                 this.history.key = "max";
@@ -774,7 +774,7 @@ var MyCheckerService = (function () {
             }
             if (0 <= min && inputStr.length < min) {
                 this.history.reason =
-                    "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
+                    "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
                 this.history.success = false;
                 this.history.msg = myChecker.msg = "\uCD5C\uC18C " + min + "\uC790 \uC774\uC0C1 \uC785\uB825\uD574\uC8FC\uC154\uC57C \uD574\uC694.";
                 this.history.key = "min";
