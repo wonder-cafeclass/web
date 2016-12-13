@@ -141,6 +141,9 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
     this.setMyChecker();
   }  
 
+  isNotOK(input:string) :boolean {
+    return !this.isOK(input);
+  }
   isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {

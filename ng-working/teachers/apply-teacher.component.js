@@ -848,6 +848,7 @@ var ApplyTeacherComponent = (function () {
                     // 홈으로 리다이렉트 합니다.
                     if (isDebug)
                         console.log("apply-teacher / onClickSave / 저장완료! / 홈으로 리다이렉트 합니다.");
+                    _this.router.navigate([_this.redirectUrl]);
                 }
                 else if (myResponse.isFailed()) {
                     if (null != myResponse.error && "" != myResponse.error) {

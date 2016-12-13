@@ -27,8 +27,11 @@
 
 			<!-- 유저 정보, 버튼 / 로그아웃  -->
 			<ul *ngIf="loginUser" class="nav navbar-nav navbar-right">
-				<!-- 우측 메뉴 탭 / 내정보 -->
-				<li>
+				<!-- 우측 메뉴 탭 / 내정보 / teacher/my-->
+				<li *ngIf="loginTeacher">
+					<a routerLink="/teacher/my" routerLinkActive="active">선생님 정보</a>
+				</li>
+				<li *ngIf="loginUser">
 					<a routerLink="/user/my" routerLinkActive="active">내정보</a>
 				</li>
 				<li>

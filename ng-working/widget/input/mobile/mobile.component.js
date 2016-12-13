@@ -124,6 +124,9 @@ var MobileComponent = (function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
     };
+    MobileComponent.prototype.isNotOKHead = function (input) {
+        return !this.isOKHead(input);
+    };
     MobileComponent.prototype.isOKHead = function (input) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -146,6 +149,9 @@ var MobileComponent = (function () {
         }
         return isOK;
     };
+    MobileComponent.prototype.isNotOKBody = function (input) {
+        return !this.isOKBody(input);
+    };
     MobileComponent.prototype.isOKBody = function (input) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -167,6 +173,9 @@ var MobileComponent = (function () {
                 console.log("mobile / isOKBody / history : ", history_2);
         }
         return isOK;
+    };
+    MobileComponent.prototype.isNotOKTail = function (input) {
+        return !this.isOKTail(input);
     };
     MobileComponent.prototype.isOKTail = function (input) {
         // let isDebug:boolean = true;

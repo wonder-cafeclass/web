@@ -110,6 +110,23 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			this.loginUser = loginUser;
 		});
 	}
+	private subscribeLoginTeacher() :void {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("app-root / subscribeLoginTeacher / 시작");
+
+		// 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+		// Subscribe login user
+		this.watchTower.loginTeacherAnnounced$.subscribe(
+			(loginTeacher:Teacher) => {
+
+			if(isDebug) console.log("app-root / subscribeLoginTeacher / loginUser : ",loginUser);
+		
+			// 로그인한 선생님 정보가 들어왔습니다.
+			this.loginTeacher = this.teacherService.getTeacherFromJSON(loginTeacher);
+		});
+	}	
 	private subscribeToggleTopMenu() :void {
 
 	    // let isDebug:boolean = true;
@@ -243,6 +260,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			let teacherFromDB = myResponse.getDataProp("teacher");
 			// 선생님 로그인 여부를 확인, 전파한다.
 			this.watchTower.announceLoginTeacher(teacherFromDB);
+
+			this.loginTeacher = this.teacherService.getTeacherFromUser(teacherFromDB);
 
 		}); // end service
 

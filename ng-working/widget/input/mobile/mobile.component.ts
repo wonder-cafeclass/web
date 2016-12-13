@@ -160,6 +160,9 @@ export class MobileComponent implements OnInit, AfterViewInit {
     this.setViewPack();
   }
 
+  isNotOKHead(input:string) :boolean {
+    return !this.isOKHead(input);
+  }
   isOKHead(input:string) :boolean {
 
     // let isDebug:boolean = true;
@@ -181,6 +184,9 @@ export class MobileComponent implements OnInit, AfterViewInit {
     }
 
     return isOK;
+  }
+  isNotOKBody(input:string) :boolean {
+    return !this.isOKBody(input);
   }
   isOKBody(input:string) :boolean {
 
@@ -204,6 +210,9 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
     return isOK;
   }
+  isNotOKTail(input:string) :boolean {
+    return !this.isOKTail(input);
+  }  
   isOKTail(input:string) :boolean {
 
     // let isDebug:boolean = true;

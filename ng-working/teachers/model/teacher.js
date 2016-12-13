@@ -17,6 +17,60 @@ var Teacher = (function () {
         this.date_created = date_created;
         this.date_updated = date_updated;
     }
+    Teacher.prototype.isNotSameName = function (name) {
+        return !this.isSameName(name);
+    };
+    Teacher.prototype.isSameName = function (name) {
+        if (null != name && name === this.name) {
+            return true;
+        }
+        return false;
+    };
+    Teacher.prototype.isNotSameNickname = function (nickname) {
+        return !this.isSameNickname(nickname);
+    };
+    Teacher.prototype.isSameNickname = function (nickname) {
+        if (null != nickname && nickname === this.nickname) {
+            return true;
+        }
+        return false;
+    };
+    Teacher.prototype.isNotSameGender = function (gender) {
+        return !this.isSameGender(gender);
+    };
+    Teacher.prototype.isSameGender = function (gender) {
+        if (null != gender && gender === this.gender) {
+            return true;
+        }
+        return false;
+    };
+    Teacher.prototype.isNotSameResume = function (resume) {
+        return !this.isSameResume(resume);
+    };
+    Teacher.prototype.isSameResume = function (resume) {
+        if (null != resume && resume === this.resume) {
+            return true;
+        }
+        return false;
+    };
+    Teacher.prototype.isNotSameGreeting = function (greeting) {
+        return !this.isSameGreeting(greeting);
+    };
+    Teacher.prototype.isSameGreeting = function (greeting) {
+        if (null != greeting && greeting === this.greeting) {
+            return true;
+        }
+        return false;
+    };
+    Teacher.prototype.isNotSameThumbnail = function (thumbnail) {
+        return !this.isSameThumbnail(thumbnail);
+    };
+    Teacher.prototype.isSameThumbnail = function (thumbnail) {
+        if (null != thumbnail && thumbnail === this.thumbnail) {
+            return true;
+        }
+        return false;
+    };
     Teacher.prototype.getMobileArr = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -39,6 +93,9 @@ var Teacher = (function () {
         var mobileArr = this.getMobileArr();
         return mobileArr[0];
     };
+    Teacher.prototype.isNotSameMobileHead = function (target) {
+        return !this.isSameMobileHead(target);
+    };
     Teacher.prototype.isSameMobileHead = function (target) {
         var mobileHead = this.getMobileHead();
         if (null == mobileHead || "" === mobileHead) {
@@ -50,6 +107,9 @@ var Teacher = (function () {
         var mobileArr = this.getMobileArr();
         return mobileArr[1];
     };
+    Teacher.prototype.isNotSameMobileBody = function (target) {
+        return !this.isSameMobileBody(target);
+    };
     Teacher.prototype.isSameMobileBody = function (target) {
         var mobileBody = this.getMobileBody();
         if (null == mobileBody || "" === mobileBody) {
@@ -60,6 +120,9 @@ var Teacher = (function () {
     Teacher.prototype.getMobileTail = function () {
         var mobileArr = this.getMobileArr();
         return mobileArr[2];
+    };
+    Teacher.prototype.isNotSameMobileTail = function (target) {
+        return !this.isSameMobileTail(target);
     };
     Teacher.prototype.isSameMobileTail = function (target) {
         var mobileTail = this.getMobileTail();
@@ -90,6 +153,9 @@ var Teacher = (function () {
         var birthdayArr = this.getBirthdayArr();
         return birthdayArr[0];
     };
+    Teacher.prototype.isNotSameBirthYear = function (target) {
+        return !this.isSameBirthYear(target);
+    };
     Teacher.prototype.isSameBirthYear = function (target) {
         var birthdayHead = this.getBirthYear();
         if (null == birthdayHead || "" === birthdayHead) {
@@ -101,6 +167,9 @@ var Teacher = (function () {
         var birthdayArr = this.getBirthdayArr();
         return birthdayArr[1];
     };
+    Teacher.prototype.isNotSameBirthMonth = function (target) {
+        return !this.isSameBirthMonth(target);
+    };
     Teacher.prototype.isSameBirthMonth = function (target) {
         var birthdayBody = this.getBirthMonth();
         if (null == birthdayBody || "" === birthdayBody) {
@@ -111,6 +180,9 @@ var Teacher = (function () {
     Teacher.prototype.getBirthDay = function () {
         var birthdayArr = this.getBirthdayArr();
         return birthdayArr[2];
+    };
+    Teacher.prototype.isNotSameBirthDay = function (target) {
+        return !this.isSameBirthDay(target);
     };
     Teacher.prototype.isSameBirthDay = function (target) {
         var birthdayTail = this.getBirthDay();
@@ -141,6 +213,39 @@ var Teacher = (function () {
         this.email = userJSON["email"];
         this.date_created = userJSON["date_created"];
         this.date_updated = userJSON["date_updated"];
+    };
+    Teacher.prototype.copy = function () {
+        return new Teacher(
+        // public id:number,
+        this.id, 
+        // public user_id:number,
+        this.user_id, 
+        // public nickname:string,
+        this.nickname, 
+        // public name:string,
+        this.name, 
+        // public gender:string,
+        this.gender, 
+        // public resume:string,
+        this.resume, 
+        // public greeting:string,
+        this.greeting, 
+        // public birthday:string, 
+        this.birthday, 
+        // public thumbnail:string,
+        this.thumbnail, 
+        // public status:string,
+        this.status, 
+        // public permission:string,
+        this.permission, 
+        // public mobile:string,
+        this.mobile, 
+        // public email:string,
+        this.email, 
+        // public date_created:string,
+        this.date_created, 
+        // public date_updated:string			
+        this.date_updated);
     };
     return Teacher;
 }());

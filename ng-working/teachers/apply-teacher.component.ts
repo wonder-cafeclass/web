@@ -1042,7 +1042,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
           // 홈으로 리다이렉트 합니다.
           if(isDebug) console.log("apply-teacher / onClickSave / 저장완료! / 홈으로 리다이렉트 합니다.");
 
-          // this.router.navigate([this.redirectUrl]);
+          this.router.navigate([this.redirectUrl]);
 
         } else if(myResponse.isFailed()) { 
 

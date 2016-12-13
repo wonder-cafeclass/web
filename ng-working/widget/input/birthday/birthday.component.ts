@@ -191,6 +191,9 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     
   }
 
+  isNotOKBirthYear(input:string) :boolean {
+    return !this.isOKBirthYear(input);
+  }
   isOKBirthYear(input:string) :boolean {
     if(null == this.myCheckerService) {
       return false;
@@ -198,6 +201,9 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
     return this.myCheckerService.isOK(this.myCheckerBirthYear, input);
   }  
+  isNotOKBirthMonth(input:string) :boolean {
+    return !this.isOKBirthMonth(input);
+  }
   isOKBirthMonth(input:string) :boolean {
     if(null == this.myCheckerService) {
       return false;
@@ -205,6 +211,9 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
     return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
   }  
+  isNotOKBirthDay(input:string) :boolean {
+    return !this.isOKBirthDay(input);
+  }
   isOKBirthDay(input:string) :boolean {
     if(null == this.myCheckerService) {
       return false;
@@ -448,7 +457,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     if(isOK) {
 
       // 부모 객체에게 Change Event 발송 
-      let myEventOnChange:MyEvent =
+      let myEventOnChangeBirthMonth:MyEvent =
       this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_CHANGE,
@@ -461,10 +470,10 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
         // public myChecker:MyChecker
         this.myCheckerBirthMonth
       );
-      this.emitter.emit(myEventOnChange);
+      this.emitter.emit(myEventOnChangeBirthMonth);
 
       // 부모 객체에게 Change Event 발송 
-      let myEventOnChange:MyEvent =
+      let myEventOnChangeBirthDay:MyEvent =
       this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_CHANGE,
@@ -477,7 +486,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
         // public myChecker:MyChecker
         this.myCheckerBirthDay
       ); 
-      this.emitter.emit(myEventOnChange);     
+      this.emitter.emit(myEventOnChangeBirthDay);     
 
       // 노출된 경고창이 있다면 감춘다.
       this.hideWarningBirthMonth();

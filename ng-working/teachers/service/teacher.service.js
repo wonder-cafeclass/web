@@ -294,7 +294,44 @@ var TeacherService = (function () {
         // public date_updated:string
         "");
         return newTeacher;
-    }; // end method  
+    }; // end method
+    TeacherService.prototype.getTeacherFromJSON = function (jsonObj) {
+        if (null == jsonObj) {
+            return null;
+        }
+        var newTeacher = new teacher_1.Teacher(
+        // public id:number,
+        jsonObj.id, 
+        // public user_id:number,
+        +jsonObj.user_id, 
+        // public nickname:string,
+        jsonObj.nickname, 
+        // public name:string,
+        jsonObj.name, 
+        // public gender:string,
+        jsonObj.gender, 
+        // public resume:string,
+        jsonObj.resume, 
+        // public greeting:string,
+        jsonObj.greeting, 
+        // public birthday:string, 
+        jsonObj.birthday, 
+        // public thumbnail:string,
+        jsonObj.thumbnail, 
+        // public status:string,
+        jsonObj.status, 
+        // public permission:string,
+        jsonObj.permission, 
+        // public mobile:string,
+        jsonObj.mobile, 
+        // public email:string,
+        jsonObj.email, 
+        // public date_created:string,
+        jsonObj.date_created, 
+        // public date_updated:string
+        jsonObj.date_updated);
+        return newTeacher;
+    };
     TeacherService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [url_service_1.UrlService, http_1.Http])

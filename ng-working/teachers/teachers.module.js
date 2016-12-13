@@ -16,6 +16,8 @@ var widget_module_1 = require('../widget/widget.module');
 var teachers_routing_1 = require('./teachers.routing');
 var apply_teacher_component_1 = require('./apply-teacher.component');
 var apply_teacher_term_component_1 = require('./view/apply-teacher-term.component');
+var teacher_my_nav_list_component_1 = require('./view/teacher-my-nav-list.component');
+var teacher_info_component_1 = require('./view/teacher-my-nav-list/teacher-info.component');
 var login_service_1 = require('../login/service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var teacher_service_1 = require('./service/teacher.service');
@@ -33,7 +35,9 @@ var TeachersModule = (function () {
             ],
             declarations: [
                 apply_teacher_component_1.ApplyTeacherComponent,
-                apply_teacher_term_component_1.ApplyTeacherTermComponent
+                apply_teacher_term_component_1.ApplyTeacherTermComponent,
+                teacher_my_nav_list_component_1.TeacherMyNavListComponent,
+                teacher_info_component_1.TeacherInfoComponent
             ],
             providers: [
                 login_service_1.LoginService,

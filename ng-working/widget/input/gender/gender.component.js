@@ -98,6 +98,9 @@ var GenderComponent = (function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
     };
+    GenderComponent.prototype.isNotOK = function (input) {
+        return this.isOK(input);
+    };
     GenderComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;

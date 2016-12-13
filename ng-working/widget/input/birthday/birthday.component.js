@@ -153,17 +153,26 @@ var BirthdayComponent = (function () {
         this.setBirthdayDefault();
         this.setMyChecker();
     };
+    BirthdayComponent.prototype.isNotOKBirthYear = function (input) {
+        return !this.isOKBirthYear(input);
+    };
     BirthdayComponent.prototype.isOKBirthYear = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthYear, input);
     };
+    BirthdayComponent.prototype.isNotOKBirthMonth = function (input) {
+        return !this.isOKBirthMonth(input);
+    };
     BirthdayComponent.prototype.isOKBirthMonth = function (input) {
         if (null == this.myCheckerService) {
             return false;
         }
         return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
+    };
+    BirthdayComponent.prototype.isNotOKBirthDay = function (input) {
+        return !this.isOKBirthDay(input);
     };
     BirthdayComponent.prototype.isOKBirthDay = function (input) {
         if (null == this.myCheckerService) {
@@ -368,7 +377,7 @@ var BirthdayComponent = (function () {
             console.log("birtday / onChangeBirthMonth / isOK : ", isOK);
         if (isOK) {
             // 부모 객체에게 Change Event 발송 
-            var myEventOnChange = this.myEventService.getMyEvent(
+            var myEventOnChangeBirthMonth = this.myEventService.getMyEvent(
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
@@ -379,9 +388,9 @@ var BirthdayComponent = (function () {
             null, 
             // public myChecker:MyChecker
             this.myCheckerBirthMonth);
-            this.emitter.emit(myEventOnChange);
+            this.emitter.emit(myEventOnChangeBirthMonth);
             // 부모 객체에게 Change Event 발송 
-            var myEventOnChange = this.myEventService.getMyEvent(
+            var myEventOnChangeBirthDay = this.myEventService.getMyEvent(
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
@@ -392,7 +401,7 @@ var BirthdayComponent = (function () {
             null, 
             // public myChecker:MyChecker
             this.myCheckerBirthDay);
-            this.emitter.emit(myEventOnChange);
+            this.emitter.emit(myEventOnChangeBirthDay);
             // 노출된 경고창이 있다면 감춘다.
             this.hideWarningBirthMonth();
         }

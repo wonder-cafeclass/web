@@ -460,5 +460,118 @@ export class KlassRadioBtnService {
         return optionList;
     }    
 
+    /*
+    *    @ Desc : 선생님의 내정보 페이지에 대한 Nav tabs에 들어갈 radiobtn 정보들
+    */
+    getNavTabsTeacherMyInfo(teacher:Teacher, keyFocus:string) :RadioBtnOption[] {
+
+        // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
+        let optionList:RadioBtnOption[] = [
+
+          new RadioBtnOption(
+            // public title:string,
+            "선생님 정보 수정",
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_INFO,
+            // public isFocus:boolean
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KEY_TEACHER_MY_INFO,
+              // public value:string
+              "",
+              // public metaObj:any
+              teacher,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
+          ),
+
+          new RadioBtnOption(
+            // public title:string,
+            "선생님 수업 이력",
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_HISTORY,
+            // public isFocus:boolean
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KEY_TEACHER_MY_HISTORY,
+              // public value:string
+              "",
+              // public metaObj:any
+              teacher,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
+          ), 
+
+          new RadioBtnOption(
+            // public title:string,
+            "선생님 결재정보",
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_PAYMENT,
+            // public isFocus:boolean
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KEY_TEACHER_MY_PAYMENT,
+              // public value:string
+              "",
+              // public metaObj:any
+              teacher,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
+          ), 
+
+          new RadioBtnOption(
+            // public title:string,
+            "피드백",
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_FEEDBACK,
+            // public isFocus:boolean
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KEY_TEACHER_MY_FEEDBACK,
+              // public value:string
+              "",
+              // public metaObj:any
+              teacher,
+              // public myChecker:MyChecker
+              null
+            ) // end MyEvent
+          )
+
+        ]; // end array
+
+
+        if(null != keyFocus && "" != keyFocus) {
+            for (var i = 0; i < optionList.length; ++i) {
+                let option:RadioBtnOption = optionList[i];
+
+                if(option.key === keyFocus) {
+                    option.isFocus = true;    
+                    optionList[i] = option;
+                }
+            }
+        } // end if
+
+
+        return optionList;
+    }    
 
 }

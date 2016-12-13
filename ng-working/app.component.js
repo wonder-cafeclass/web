@@ -86,6 +86,21 @@ var AppComponent = (function () {
             _this.loginUser = loginUser;
         });
     };
+    AppComponent.prototype.subscribeLoginTeacher = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / subscribeLoginTeacher / 시작");
+        // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+        // Subscribe login user
+        this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
+            if (isDebug)
+                console.log("app-root / subscribeLoginTeacher / loginUser : ", loginUser);
+            // 로그인한 선생님 정보가 들어왔습니다.
+            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+        });
+    };
     AppComponent.prototype.subscribeToggleTopMenu = function () {
         var _this = this;
         // let isDebug:boolean = true;
@@ -206,6 +221,7 @@ var AppComponent = (function () {
             var teacherFromDB = myResponse.getDataProp("teacher");
             // 선생님 로그인 여부를 확인, 전파한다.
             _this.watchTower.announceLoginTeacher(teacherFromDB);
+            _this.loginTeacher = _this.teacherService.getTeacherFromUser(teacherFromDB);
         }); // end service
     };
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {

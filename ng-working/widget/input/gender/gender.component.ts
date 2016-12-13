@@ -134,6 +134,9 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   }
 
+  isNotOK(input:string) :boolean {
+    return this.isOK(input);
+  }
   isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {

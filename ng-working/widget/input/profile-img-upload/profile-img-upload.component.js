@@ -105,6 +105,9 @@ var ProfileImgUploadComponent = (function () {
         this.setViewPack();
         this.setMyChecker();
     };
+    ProfileImgUploadComponent.prototype.isNotOK = function (input) {
+        return !this.isOK(input);
+    };
     ProfileImgUploadComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;

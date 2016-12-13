@@ -15,7 +15,63 @@ export class Teacher {
 		public email:string,
 		public date_created:string,
 		public date_updated:string
-	) {}  
+	) {} 
+
+	isNotSameName(name:string) :boolean {
+		return !this.isSameName(name);
+	}
+	isSameName(name:string) :boolean {
+		if(null != name && name === this.name) {
+			return true;
+		}
+		return false;
+	} 
+	isNotSameNickname(nickname:string) :boolean {
+		return !this.isSameNickname(nickname);
+	}
+	isSameNickname(nickname) :boolean {
+		if(null != nickname && nickname === this.nickname) {
+			return true;
+		}
+		return false;
+	} 
+	isNotSameGender(gender:string) :boolean {
+		return !this.isSameGender(gender);
+	}
+	isSameGender(gender) :boolean {
+		if(null != gender && gender === this.gender) {
+			return true;
+		}
+		return false;
+	}
+	isNotSameResume(resume:string) :boolean {
+		return !this.isSameResume(resume);
+	}
+	isSameResume(resume) :boolean {
+		if(null != resume && resume === this.resume) {
+			return true;
+		}
+		return false;
+	} 
+	isNotSameGreeting(greeting:string) :boolean {
+		return !this.isSameGreeting(greeting);
+	}
+	isSameGreeting(greeting) :boolean {
+		if(null != greeting && greeting === this.greeting) {
+			return true;
+		}
+		return false;
+	}
+	isNotSameThumbnail(thumbnail:string) :boolean {
+		return !this.isSameThumbnail(thumbnail);
+	}
+	isSameThumbnail(thumbnail) :boolean {
+		if(null != thumbnail && thumbnail === this.thumbnail) {
+			return true;
+		}
+		return false;
+	}	 
+
 
 	getMobileArr() :string[] {
 
@@ -42,6 +98,9 @@ export class Teacher {
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[0];
 	}
+	isNotSameMobileHead(target:string) :boolean {
+		return !this.isSameMobileHead(target);
+	}
 	isSameMobileHead(target:string) :boolean {
 		let mobileHead:string = this.getMobileHead();
 		if(null == mobileHead || "" === mobileHead) {
@@ -54,6 +113,9 @@ export class Teacher {
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[1];
 	}
+	isNotSameMobileBody(target:string) :boolean {
+		return !this.isSameMobileBody(target);
+	}
 	isSameMobileBody(target:string) :boolean {
 		let mobileBody:string = this.getMobileBody();
 		if(null == mobileBody || "" === mobileBody) {
@@ -65,6 +127,9 @@ export class Teacher {
 	getMobileTail() :string {
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[2];
+	}
+	isNotSameMobileTail(target:string) :boolean {
+		return !this.isSameMobileTail(target);
 	}
 	isSameMobileTail(target:string) :boolean {
 		let mobileTail:string = this.getMobileTail();
@@ -101,6 +166,9 @@ export class Teacher {
 		let birthdayArr:string[] = this.getBirthdayArr();
 		return birthdayArr[0];
 	}
+	isNotSameBirthYear(target:string) :boolean {
+		return !this.isSameBirthYear(target);
+	}
 	isSameBirthYear(target:string) :boolean {
 		let birthdayHead:string = this.getBirthYear();
 		if(null == birthdayHead || "" === birthdayHead) {
@@ -113,6 +181,9 @@ export class Teacher {
 		let birthdayArr:string[] = this.getBirthdayArr();
 		return birthdayArr[1];
 	}
+	isNotSameBirthMonth(target:string) :boolean {
+		return !this.isSameBirthMonth(target);
+	}
 	isSameBirthMonth(target:string) :boolean {
 		let birthdayBody:string = this.getBirthMonth();
 		if(null == birthdayBody || "" === birthdayBody) {
@@ -124,6 +195,9 @@ export class Teacher {
 	getBirthDay() :string {
 		let birthdayArr:string[] = this.getBirthdayArr();
 		return birthdayArr[2];
+	}
+	isNotSameBirthDay(target:string) :boolean {
+		return !this.isSameBirthDay(target);
 	}
 	isSameBirthDay(target:string) :boolean {
 		let birthdayTail:string = this.getBirthDay();
@@ -158,5 +232,40 @@ export class Teacher {
 		this.date_created = userJSON["date_created"];
 		this.date_updated = userJSON["date_updated"];
 	
-	} 	  
+	} 
+
+	copy() :Teacher {
+		return new Teacher(
+			// public id:number,
+			this.id,
+			// public user_id:number,
+			this.user_id,
+			// public nickname:string,
+			this.nickname,
+			// public name:string,
+			this.name,
+			// public gender:string,
+			this.gender,
+			// public resume:string,
+			this.resume,
+			// public greeting:string,
+			this.greeting,
+			// public birthday:string, 
+			this.birthday,
+			// public thumbnail:string,
+			this.thumbnail,
+			// public status:string,
+			this.status,
+			// public permission:string,
+			this.permission,
+			// public mobile:string,
+			this.mobile,
+			// public email:string,
+			this.email,
+			// public date_created:string,
+			this.date_created,
+			// public date_updated:string			
+			this.date_updated
+		);
+	}	  
 }

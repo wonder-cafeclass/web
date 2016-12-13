@@ -98,6 +98,11 @@ export class MyEventService {
     KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
     KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";   // 유저 - 내 관심강의(찜).
 
+    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";           // 선생님 - 내정보 수정.
+    KEY_TEACHER_MY_HISTORY:string="KEY_TEACHER_MY_HISTORY";     // 선생님 - 내 수강이력.
+    KEY_TEACHER_MY_PAYMENT:string="KEY_TEACHER_MY_PAYMENT";     // 선생님 - 내 결재정보.
+    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";   // 선생님 - 학생에게준 피드백.
+
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";       // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";   // 선생님 - 인사말
 

@@ -1,0 +1,100 @@
+<div>
+
+	<table class="table layout"> 
+		<tbody>
+
+			<tr> 
+				<td class="layout border-right">
+
+					<!-- Default Input : Email -->
+					<widget-input-default
+					[isDisabled]="true"
+					[meta]="defaultMetaList[0]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : Name -->
+					<widget-input-default
+					[isDisabled]="true"
+					[meta]="defaultMetaList[1]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : Nickname -->
+					<widget-input-default
+					[meta]="defaultMetaList[2]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : 경력 -->
+					<widget-input-default
+					[meta]="defaultMetaList[3]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : 자기소개 -->
+					<widget-input-default
+					[meta]="defaultMetaList[4]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- EOL -->
+
+				</td>
+				<td class="layout">
+
+					<!-- 프로필 이미지 -->
+					<profile-img-upload 
+					[top]="143"
+					[left]="490"
+					(emitter)="onChangedFromChild($event)">
+					</profile-img-upload>
+
+					<!-- 전화번호 -->
+					<mobile 	
+					[top]="90" 
+					[left]="390"
+					[topWarning]="151"
+					[leftWarning]="382"
+					(emitter)="onChangedFromChild($event)">
+					</mobile>
+
+					<!-- 성별 -->
+					<gender 	[top]="390" 
+								[left]="586"
+								[gender]="gender"
+								[topWarning]="251"
+								[leftWarning]="382"
+								(emitter)="onChangedFromChild($event)">
+					</gender>
+					<!-- 연령 / 월 / 일 -->
+					<birthday 	[top]="310" 
+								[left]="390"
+								(emitter)="onChangedFromChild($event)">
+					</birthday>
+
+					<!-- EOL -->
+
+				</td>
+			</tr>
+
+			<tr> 
+				<td class="layout border-top" colspan="2">
+
+					<button 	*ngIf="isReadyToSave"
+								(click)="onClickSave($event)"
+								type="button" 
+								class="btn btn-orange save">저장하기</button>
+
+					<button 	*ngIf="!isReadyToSave"
+								type="button-disabled" 
+								disabled="disabled"
+								class="btn btn-orange save">저장하기</button>
+
+				</td> 
+			</tr>
+
+		</tbody>
+	</table>
+
+</div>
