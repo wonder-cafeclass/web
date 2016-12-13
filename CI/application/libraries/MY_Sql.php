@@ -1824,7 +1824,7 @@ class MY_Sql
         $this->CI->db->insert('teacher', $data);
     }
 
-    public function update_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    public function update_teacher($user_id=-1, $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
     {
 
         // TODO - user id로 업데이트 되고 있음.
@@ -1836,14 +1836,6 @@ class MY_Sql
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
-        }
-        if($this->is_not_ok("user_email_insert", $email))
-        {
-            return;
-        }
-        if($this->is_not_ok("user_name", $name))
         {
             return;
         }
@@ -1897,17 +1889,16 @@ class MY_Sql
 
         $data = array(
             'nickname' => $nickname,
-            'name' => $name,
             'resume' => $resume,
             'greeting' => $greeting,
             'gender' => $gender,
             'birthday' => $birthday,
             'thumbnail' => $thumbnail,
-            'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
-            'email' => $email
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail"
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
         $this->log_query(
             // $user_id=-1
@@ -1919,7 +1910,7 @@ class MY_Sql
         );
 
         // QUERY EXECUTION
-        $this->CI->db->where('id', $user_id);
+        $this->CI->db->where('user_id', $user_id);
         $this->CI->db->update('teacher', $data);
     } 
 

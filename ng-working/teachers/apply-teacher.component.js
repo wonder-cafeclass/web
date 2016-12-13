@@ -766,7 +766,7 @@ var ApplyTeacherComponent = (function () {
         }
         if (this.mobileComponent.hasNotDoneMobileBody()) {
             if (showTooltip) {
-                this.mobileComponent.showWarningMobileBody();
+                this.mobileComponent.showWarningMobileBody(null);
             }
             return false;
         }

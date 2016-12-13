@@ -1,3 +1,6 @@
+import { HelperMobile } from '../../util/helper/mobile';
+import { HelperBirthday } 	from '../../util/helper/birthday';
+
 export class Teacher {
 	constructor(
 		public id:number,
@@ -15,8 +18,14 @@ export class Teacher {
 		public email:string,
 		public date_created:string,
 		public date_updated:string
-	) {} 
+	) {
+		// 휴대 전화번호를 관리하는 객체를 만듭니다.
+		this.helperMobile = new HelperMobile(this.mobile);
+		// 생일을 관리하는 객체를 만듭니다.
+		this.helperBirthday = new HelperBirthday(this.birthday);
+	} 
 
+	// Common Properties - INIT
 	isNotSameName(name:string) :boolean {
 		return !this.isSameName(name);
 	}
@@ -70,168 +79,138 @@ export class Teacher {
 			return true;
 		}
 		return false;
-	}	 
+	}
+	isEmptyThumbnail() :boolean {
+		return (null == this.thumbnail || "" === this.thumbnail)?true:false;
+	}
+	// Common Properties - DONE
 
 
+
+	// Mobile Methods - INIT
+	private helperMobile:HelperMobile;
 	getMobileArr() :string[] {
-
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
-		if(isDebug) console.log("teacher.model / getMobileArr / init");
-
-		let mobileArr:string[] = this.mobile.split("-");
-		let mobileHead:string = "";
-		let mobileBody:string = "";
-		let mobileTail:string = "";
-		if(isDebug) console.log("teacher.model / getMobileArr / mobileArr : ",mobileArr);
-		if(null != mobileArr && 3 == mobileArr.length) {
-		  mobileHead = mobileArr[0];
-		  mobileBody = mobileArr[1];
-		  mobileTail = mobileArr[2];
-		}
-
-		return [mobileHead, mobileBody, mobileTail];
-
-	}   
-
+		return this.helperMobile.getMobileArr();
+	} 
+	// Head
+	setMobileHead(mobileHead:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewHead(mobileHead);
+	}
 	getMobileHead() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[0];
+		return this.helperMobile.getMobileHead();
+	}
+	isMobileHeadEmpty() :boolean {
+		return this.helperMobile.isMobileHeadEmpty();
 	}
 	isNotSameMobileHead(target:string) :boolean {
-		return !this.isSameMobileHead(target);
+		return this.helperMobile.isMobileHeadNotSame(target);
 	}
 	isSameMobileHead(target:string) :boolean {
-		let mobileHead:string = this.getMobileHead();
-		if(null == mobileHead || "" === mobileHead) {
-			return false;
-		}
-		return (mobileHead === target)?true:false;
+		return this.helperMobile.isMobileHeadSame(target);
 	}
-
+	// Body
+	setMobileBody(mobileBody:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewBody(mobileBody);
+	}
 	getMobileBody() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[1];
+		return this.helperMobile.getMobileBody();
 	}
 	isNotSameMobileBody(target:string) :boolean {
-		return !this.isSameMobileBody(target);
+		return this.helperMobile.isMobileBodyNotSame(target);
 	}
 	isSameMobileBody(target:string) :boolean {
-		let mobileBody:string = this.getMobileBody();
-		if(null == mobileBody || "" === mobileBody) {
-			return false;
-		}
-		return (mobileBody === target)?true:false;
+		return this.helperMobile.isMobileBodySame(target);
 	}
-
+	// Tail
+	setMobileTail(mobileTail:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewTail(mobileTail);
+	}
 	getMobileTail() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[2];
+		return this.helperMobile.getMobileTail();
 	}
 	isNotSameMobileTail(target:string) :boolean {
-		return !this.isSameMobileTail(target);
+		return this.helperMobile.isMobileTailNotSame(target);
 	}
 	isSameMobileTail(target:string) :boolean {
-		let mobileTail:string = this.getMobileTail();
-		if(null == mobileTail || "" === mobileTail) {
-			return false;
-		}
-		return (mobileTail === target)?true:false;
+		return this.helperMobile.isMobileTailSame(target);
 	}
+	// Mobile Methods - DONE
 
 
 
+	// Birthday Methods - INIT
+	private helperBirthday:HelperBirthday;
 	getBirthdayArr() :string[] {
-
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
-		if(isDebug) console.log("teacher.model / getBirthdayArr / init");
-
-		let birthdayArr:string[] = this.birthday.split("-");
-		let birthYear:string = "";
-		let birthMonth:string = "";
-		let birthDay:string = "";
-		if(isDebug) console.log("teacher.model / getBirthdayArr / birthdayArr : ",birthdayArr);
-		if(null != birthdayArr && 3 == birthdayArr.length) {
-		  birthYear = birthdayArr[0];
-		  birthMonth = birthdayArr[1];
-		  birthDay = birthdayArr[2];
-		}
-
-		return [birthYear, birthMonth, birthDay];
-
+		return this.helperBirthday.getBirthdayArr();
+	}	
+	// Year
+	setBirthYear(newBirthYear:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthYear(newBirthYear);
 	}
-
 	getBirthYear() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[0];
+		return this.helperBirthday.getBirthYear();
 	}
 	isNotSameBirthYear(target:string) :boolean {
-		return !this.isSameBirthYear(target);
+		return this.helperBirthday.isBirthYearNotSame(target);
 	}
 	isSameBirthYear(target:string) :boolean {
-		let birthdayHead:string = this.getBirthYear();
-		if(null == birthdayHead || "" === birthdayHead) {
-			return false;
-		}
-		return (birthdayHead === target)?true:false;
+		return this.helperBirthday.isBirthYearSame(target);
 	}
-
+	// Month
+	setBirthMonth(newBirthMonth:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
+	}
 	getBirthMonth() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[1];
+		return this.helperBirthday.getBirthMonth();
 	}
 	isNotSameBirthMonth(target:string) :boolean {
-		return !this.isSameBirthMonth(target);
+		return this.helperBirthday.isBirthMonthNotSame(target);
 	}
 	isSameBirthMonth(target:string) :boolean {
-		let birthdayBody:string = this.getBirthMonth();
-		if(null == birthdayBody || "" === birthdayBody) {
-			return false;
-		}
-		return (birthdayBody === target)?true:false;
+		return this.helperBirthday.isBirthMonthSame(target);
 	}
-
+	// Day
+	setBirthDay(newBirthDay:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthDay(newBirthDay);
+	}
 	getBirthDay() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[2];
+		return this.helperBirthday.getBirthDay();
 	}
 	isNotSameBirthDay(target:string) :boolean {
-		return !this.isSameBirthDay(target);
+		return this.helperBirthday.isBirthDayNotSame(target);
 	}
 	isSameBirthDay(target:string) :boolean {
-		let birthdayTail:string = this.getBirthDay();
-		if(null == birthdayTail || "" === birthdayTail) {
-			return false;
-		}
-		return (birthdayTail === target)?true:false;
+		return this.helperBirthday.isBirthDaySame(target);
 	}
+	// Birthday Methods - DONE	
 
 
-	updateWithJSON(userJSON) :void {
+
+	updateWithJSON(teacherJSON) :void {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
 		if(isDebug) console.log("teacher.model / updateWithJson / init");
 
-		if(null == userJSON) {
-			if(isDebug) console.log("teacher.model / updateWithJson / 중단 / userJSON is not valid!");
+		if(null == teacherJSON) {
+			if(isDebug) console.log("teacher.model / updateWithJson / 중단 / teacherJSON is not valid!");
 			return;
 		}
 
-		this.id = +userJSON["id"];
-		this.nickname = userJSON["nickname"];
-		this.name = userJSON["name"];
-		this.gender = userJSON["gender"];
-		this.birthday = userJSON["birthday"];
-		this.thumbnail = userJSON["thumbnail"];
-		this.status = userJSON["status"];
-		this.permission = userJSON["permission"];
-		this.mobile = userJSON["mobile"];
-		this.email = userJSON["email"];
-		this.date_created = userJSON["date_created"];
-		this.date_updated = userJSON["date_updated"];
-	
+		this.id = +teacherJSON["id"];
+		this.nickname = teacherJSON["nickname"];
+		this.resume = teacherJSON["resume"];
+		this.greeting = teacherJSON["greeting"];
+		this.name = teacherJSON["name"];
+		this.gender = teacherJSON["gender"];
+		this.birthday = teacherJSON["birthday"];
+		this.thumbnail = teacherJSON["thumbnail"];
+		this.status = teacherJSON["status"];
+		this.permission = teacherJSON["permission"];
+		this.mobile = teacherJSON["mobile"];
+		this.email = teacherJSON["email"];
+		this.date_created = teacherJSON["date_created"];
+		this.date_updated = teacherJSON["date_updated"];
 	} 
 
 	copy() :Teacher {

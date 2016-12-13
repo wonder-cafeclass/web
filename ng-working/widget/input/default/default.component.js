@@ -350,8 +350,8 @@ var DefaultComponent = (function () {
         if (isDebug)
             console.log("default / onCheckInputValid / input : ", input);
         // 여기서 유저가 설정한 조건이 필요합니다.
-        // 비어있는 문자열이라면 검사하지 않습니다.
-        if (null == input || "" == input) {
+        // Blur가 아니라면, 비어있는 문자열이라면 검사하지 않습니다.
+        if (!isBlur && (null == input || "" == input)) {
             if (isDebug)
                 console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
             return true;

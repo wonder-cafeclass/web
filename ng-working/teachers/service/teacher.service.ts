@@ -168,10 +168,6 @@ export class TeacherService {
       apiKey,
       // userId:number,
       teacher.user_id,
-      // email:string, 
-      teacher.email,
-      // name:string, 
-      teacher.name,
       // nickname:string, 
       teacher.nickname,
       // resume:string, 
@@ -200,8 +196,6 @@ export class TeacherService {
   updateTeacher (
     apiKey:string, 
     userId:number,
-    email:string,
-    name:string, 
     nickname:string, 
     resume:string, 
     greeting:string, 
@@ -214,13 +208,11 @@ export class TeacherService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / updateTeacher / 시작");
     if(isDebug) console.log("teacher.service / updateTeacher / apiKey : ",apiKey);
     if(isDebug) console.log("teacher.service / updateTeacher / userId : ",userId);
-    if(isDebug) console.log("teacher.service / updateTeacher / email : ",email);
-    if(isDebug) console.log("teacher.service / updateTeacher / name : ",name);
     if(isDebug) console.log("teacher.service / updateTeacher / nickname : ",nickname);
     if(isDebug) console.log("teacher.service / updateTeacher / resume : ",resume);
     if(isDebug) console.log("teacher.service / updateTeacher / greeting : ",greeting);
@@ -241,8 +233,6 @@ export class TeacherService {
 
     let params = {
       user_id:userId,
-      email:email,
-      name:name,
       nickname:nickname,
       resume:resume,
       greeting:greeting,

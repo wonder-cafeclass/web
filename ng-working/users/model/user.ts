@@ -1,3 +1,6 @@
+import { HelperMobile } 	from '../../util/helper/mobile';
+import { HelperBirthday } 	from '../../util/helper/birthday';
+
 export class User {
 	constructor(
 		public id:number,
@@ -16,123 +19,176 @@ export class User {
 		public email:string,
 		public date_created:string,
 		public date_updated:string
-	) {}  
+	) {
+		// 휴대 전화번호를 관리하는 객체를 만듭니다.
+		this.helperMobile = new HelperMobile(this.mobile);
+		// 생일을 관리하는 객체를 만듭니다.
+		this.helperBirthday = new HelperBirthday(this.birthday);
+	}
 
-	getMobileArr() :string[] {
+	public password:string;
 
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
-		if(isDebug) console.log("user.model / getMobileArr / init");
-
-		let mobileArr:string[] = this.mobile.split("-");
-		let mobileHead:string = "";
-		let mobileBody:string = "";
-		let mobileTail:string = "";
-		if(isDebug) console.log("user.model / getMobileArr / mobileArr : ",mobileArr);
-		if(null != mobileArr && 3 == mobileArr.length) {
-		  mobileHead = mobileArr[0];
-		  mobileBody = mobileArr[1];
-		  mobileTail = mobileArr[2];
+	// Common Properties - INIT
+	isNotSameName(name:string) :boolean {
+		return !this.isSameName(name);
+	}
+	isSameName(name:string) :boolean {
+		if(null != name && name === this.name) {
+			return true;
 		}
+		return false;
+	} 
+	isNotSameNickname(nickname:string) :boolean {
+		return !this.isSameNickname(nickname);
+	}
+	isSameNickname(nickname) :boolean {
+		if(null != nickname && nickname === this.nickname) {
+			return true;
+		}
+		return false;
+	} 
+	isNotSameGender(gender:string) :boolean {
+		return !this.isSameGender(gender);
+	}
+	isSameGender(gender) :boolean {
+		if(null != gender && gender === this.gender) {
+			return true;
+		}
+		return false;
+	}
+	isNotSameThumbnail(thumbnail:string) :boolean {
+		return !this.isSameThumbnail(thumbnail);
+	}
+	isSameThumbnail(thumbnail) :boolean {
+		if(null != thumbnail && thumbnail === this.thumbnail) {
+			return true;
+		}
+		return false;
+	}
+	isEmptyThumbnail() :boolean {
+		return (null == this.thumbnail || "" === this.thumbnail)?true:false;
+	}
+	// Common Properties - DONE	
 
-		return [mobileHead, mobileBody, mobileTail];
+	
 
-	}   
 
+	// Platforms - INIT
+	isFacebookUser() :boolean {
+		return (null != this.facebook_id && "" != this.facebook_id)?true:false;
+	}  
+	isKakaoUser() :boolean {
+		return (null != this.kakao_id && "" != this.kakao_id)?true:false;
+	}  
+	isNaverUser() :boolean {
+		return (null != this.naver_id && "" != this.naver_id)?true:false;
+	}  
+	isGoogleUser() :boolean {
+		return (null != this.google_id && "" != this.google_id)?true:false;
+	} 
+	// Platforms - DONE 
+
+
+
+
+	// Mobile Methods - INIT
+	private helperMobile:HelperMobile;
+	getMobileArr() :string[] {
+		return this.helperMobile.getMobileArr();
+	} 
+
+	setMobileHead(mobileHead:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewHead(mobileHead);
+	}
 	getMobileHead() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[0];
+		return this.helperMobile.getMobileHead();
+	}
+	isMobileHeadEmpty() :boolean {
+		return this.helperMobile.isMobileHeadEmpty();
+	}
+	isNotSameMobileHead(target:string) :boolean {
+		return this.helperMobile.isMobileHeadNotSame(target);
 	}
 	isSameMobileHead(target:string) :boolean {
-		let mobileHead:string = this.getMobileHead();
-		if(null == mobileHead || "" === mobileHead) {
-			return false;
-		}
-		return (mobileHead === target)?true:false;
+		return this.helperMobile.isMobileHeadSame(target);
 	}
 
+	setMobileBody(mobileBody:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewBody(mobileBody);
+	}
 	getMobileBody() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[1];
+		return this.helperMobile.getMobileBody();
+	}
+	isNotSameMobileBody(target:string) :boolean {
+		return this.helperMobile.isMobileBodyNotSame(target);
 	}
 	isSameMobileBody(target:string) :boolean {
-		let mobileBody:string = this.getMobileBody();
-		if(null == mobileBody || "" === mobileBody) {
-			return false;
-		}
-		return (mobileBody === target)?true:false;
+		return this.helperMobile.isMobileBodySame(target);
 	}
 
+	setMobileTail(mobileTail:string) :void {
+		this.mobile = this.helperMobile.getMobileWithNewTail(mobileTail);
+	}
 	getMobileTail() :string {
-		let mobileArr:string[] = this.getMobileArr();
-		return mobileArr[2];
+		return this.helperMobile.getMobileTail();
+	}
+	isNotSameMobileTail(target:string) :boolean {
+		return this.helperMobile.isMobileTailNotSame(target);
 	}
 	isSameMobileTail(target:string) :boolean {
-		let mobileTail:string = this.getMobileTail();
-		if(null == mobileTail || "" === mobileTail) {
-			return false;
-		}
-		return (mobileTail === target)?true:false;
+		return this.helperMobile.isMobileTailSame(target);
 	}
+	// Mobile Methods - DONE
 
 
-
+	// Birthday Methods - INIT
+	private helperBirthday:HelperBirthday;
 	getBirthdayArr() :string[] {
+		return this.helperBirthday.getBirthdayArr();
+	}	
 
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
-		if(isDebug) console.log("user.model / getBirthdayArr / init");
-
-		let birthdayArr:string[] = this.birthday.split("-");
-		let birthYear:string = "";
-		let birthMonth:string = "";
-		let birthDay:string = "";
-		if(isDebug) console.log("user.model / getBirthdayArr / birthdayArr : ",birthdayArr);
-		if(null != birthdayArr && 3 == birthdayArr.length) {
-		  birthYear = birthdayArr[0];
-		  birthMonth = birthdayArr[1];
-		  birthDay = birthdayArr[2];
-		}
-
-		return [birthYear, birthMonth, birthDay];
-
+	setBirthYear(newBirthYear:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthYear(newBirthYear);
 	}
-
 	getBirthYear() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[0];
+		return this.helperBirthday.getBirthYear();
+	}
+	isNotSameBirthYear(target:string) :boolean {
+		return this.helperBirthday.isBirthYearNotSame(target);
 	}
 	isSameBirthYear(target:string) :boolean {
-		let birthdayHead:string = this.getBirthYear();
-		if(null == birthdayHead || "" === birthdayHead) {
-			return false;
-		}
-		return (birthdayHead === target)?true:false;
+		return this.helperBirthday.isBirthYearSame(target);
 	}
 
+	setBirthMonth(newBirthMonth:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
+	}
 	getBirthMonth() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[1];
+		return this.helperBirthday.getBirthMonth();
+	}
+	isNotSameBirthMonth(target:string) :boolean {
+		return this.helperBirthday.isBirthMonthNotSame(target);
 	}
 	isSameBirthMonth(target:string) :boolean {
-		let birthdayBody:string = this.getBirthMonth();
-		if(null == birthdayBody || "" === birthdayBody) {
-			return false;
-		}
-		return (birthdayBody === target)?true:false;
+		return this.helperBirthday.isBirthMonthSame(target);
 	}
 
+	setBirthDay(newBirthDay:string) :void {
+		this.birthday = this.helperBirthday.getBirthdayWithNewBirthDay(newBirthDay);
+	}
 	getBirthDay() :string {
-		let birthdayArr:string[] = this.getBirthdayArr();
-		return birthdayArr[2];
+		return this.helperBirthday.getBirthDay();
+	}
+	isNotSameBirthDay(target:string) :boolean {
+		return this.helperBirthday.isBirthDayNotSame(target);
 	}
 	isSameBirthDay(target:string) :boolean {
-		let birthdayTail:string = this.getBirthDay();
-		if(null == birthdayTail || "" === birthdayTail) {
-			return false;
-		}
-		return (birthdayTail === target)?true:false;
+		return this.helperBirthday.isBirthDaySame(target);
 	}
+	// Birthday Methods - DONE
+
+
+
 
 
 	updateWithJSON(userJSON) :void {
@@ -164,4 +220,41 @@ export class User {
 		this.date_updated = userJSON["date_updated"];
 	
 	} 	  
+
+	copy() :User {
+		return new User(
+			// public id:number,
+			this.id,
+			// public nickname:string,
+			this.nickname,
+			// public name:string,
+			this.name,
+			// public gender:string,
+			this.gender,
+			// public birthday:string, 
+			this.birthday,
+			// public thumbnail:string,
+			this.thumbnail,
+			// public status:string,
+			this.status,
+			// public permission:string,
+			this.permission,
+			// public kakao_id:string,
+			this.kakao_id,
+			// public naver_id:string,
+			this.naver_id,
+			// public facebook_id:string,
+			this.facebook_id,
+			// public google_id:string,
+			this.google_id,
+			// public mobile:string,
+			this.mobile,
+			// public email:string,
+			this.email,
+			// public date_created:string,
+			this.date_created,
+			// public date_updated:string
+			this.date_updated
+		);
+	}
 }

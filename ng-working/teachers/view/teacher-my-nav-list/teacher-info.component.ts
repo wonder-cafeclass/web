@@ -349,6 +349,34 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
         this.updateNewProp("nickname", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NICKNAME
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_RESUME)) {
+
+        if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_TEACHER_RESUME");
+
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
+          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 경력이 유효하지 않습니다.");
+          return;
+        }
+
+        // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
+        this.updateNewProp("resume", myEvent.value);
+        // end if - ON CHANGE - KEY_TEACHER_RESUME
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+
+        if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_TEACHER_GREETING");
+
+        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if(!isOK) {
+          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 인사말이 유효하지 않습니다.");
+          return;
+        }
+
+        // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
+        this.updateNewProp("greeting", myEvent.value);
+        // end if - ON CHANGE - KEY_TEACHER_GREETING        
+
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_THUMBNAIL");
@@ -465,6 +493,9 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
 
       this.myEventService.onChangeNotValid(myEvent);
+
+      // 필드값 중 하나라도 유효하지 않다면, 저장 버튼을 동작하지 않게 합니다.
+      this.isReadyToSave = false;
 
     } // end if
 
@@ -713,14 +744,14 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("teacher-info / onClickSave / init");
 
     let isReadyToSave:boolean = this.checkHasChanged();
     if(isDebug) console.log("teacher-info / onClickSave / isReadyToSave : ",isReadyToSave);
     if(isDebug) console.log("teacher-info / onClickSave / this.loginTeacherCopy : ",this.loginTeacherCopy);
-    if(isReadyToSave) {
+    if(this.isReadyToSave) {
       // 변경되었다면 저장합니다.
       this.teacherService.updateTeacherByTeacher(
         this.watchTower.getApiKey(),
@@ -729,12 +760,16 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
 
         if(isDebug) console.log("teacher-info / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
 
-        let userUpdated = myResponse.digDataProp(["user"]);
-        if(myResponse.isSuccess && null != userUpdated) {
+        let teacherUpdated = myResponse.digDataProp(["teacher"]);
+        if(myResponse.isSuccess && null != teacherUpdated) {
+          
           // 저장된 유저 정보를 다시 받아옵니다.
           // 받아온 유저 정보로 업데이트 합니다.
-          this.loginTeacher.updateWithJSON(userUpdated);
-          this.loginTeacherCopy.updateWithJSON(userUpdated);
+          this.loginTeacher.updateWithJSON(teacherUpdated);
+          this.loginTeacherCopy.updateWithJSON(teacherUpdated);
+
+          // 업데이트한 선생님 정보를 전파합니다.
+          this.watchTower.announceLoginTeacher(this.loginTeacher);
 
           if(isDebug) console.log("teacher-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
           if(isDebug) console.log("teacher-info / onClickSave / this.loginTeacher : ",this.loginTeacher);

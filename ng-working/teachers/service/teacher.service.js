@@ -150,10 +150,6 @@ var TeacherService = (function () {
         apiKey, 
         // userId:number,
         teacher.user_id, 
-        // email:string, 
-        teacher.email, 
-        // name:string, 
-        teacher.name, 
         // nickname:string, 
         teacher.nickname, 
         // resume:string, 
@@ -177,19 +173,15 @@ var TeacherService = (function () {
         // mobileTail:string
         mobileArr[2]);
     };
-    TeacherService.prototype.updateTeacher = function (apiKey, userId, email, name, nickname, resume, greeting, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+    TeacherService.prototype.updateTeacher = function (apiKey, userId, nickname, resume, greeting, gender, birthYear, birthMonth, birthDay, thumbnail, mobileHead, mobileBody, mobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("teacher.service / updateTeacher / 시작");
         if (isDebug)
             console.log("teacher.service / updateTeacher / apiKey : ", apiKey);
         if (isDebug)
             console.log("teacher.service / updateTeacher / userId : ", userId);
-        if (isDebug)
-            console.log("teacher.service / updateTeacher / email : ", email);
-        if (isDebug)
-            console.log("teacher.service / updateTeacher / name : ", name);
         if (isDebug)
             console.log("teacher.service / updateTeacher / nickname : ", nickname);
         if (isDebug)
@@ -219,8 +211,6 @@ var TeacherService = (function () {
             console.log("teacher.service / updateTeacher / req_url : ", req_url);
         var params = {
             user_id: userId,
-            email: email,
-            name: name,
             nickname: nickname,
             resume: resume,
             greeting: greeting,

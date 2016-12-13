@@ -1,4 +1,6 @@
 "use strict";
+var mobile_1 = require('../../util/helper/mobile');
+var birthday_1 = require('../../util/helper/birthday');
 var Teacher = (function () {
     function Teacher(id, user_id, nickname, name, gender, resume, greeting, birthday, thumbnail, status, permission, mobile, email, date_created, date_updated) {
         this.id = id;
@@ -16,7 +18,12 @@ var Teacher = (function () {
         this.email = email;
         this.date_created = date_created;
         this.date_updated = date_updated;
+        // 휴대 전화번호를 관리하는 객체를 만듭니다.
+        this.helperMobile = new mobile_1.HelperMobile(this.mobile);
+        // 생일을 관리하는 객체를 만듭니다.
+        this.helperBirthday = new birthday_1.HelperBirthday(this.birthday);
     }
+    // Common Properties - INIT
     Teacher.prototype.isNotSameName = function (name) {
         return !this.isSameName(name);
     };
@@ -71,148 +78,121 @@ var Teacher = (function () {
         }
         return false;
     };
+    Teacher.prototype.isEmptyThumbnail = function () {
+        return (null == this.thumbnail || "" === this.thumbnail) ? true : false;
+    };
     Teacher.prototype.getMobileArr = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("teacher.model / getMobileArr / init");
-        var mobileArr = this.mobile.split("-");
-        var mobileHead = "";
-        var mobileBody = "";
-        var mobileTail = "";
-        if (isDebug)
-            console.log("teacher.model / getMobileArr / mobileArr : ", mobileArr);
-        if (null != mobileArr && 3 == mobileArr.length) {
-            mobileHead = mobileArr[0];
-            mobileBody = mobileArr[1];
-            mobileTail = mobileArr[2];
-        }
-        return [mobileHead, mobileBody, mobileTail];
+        return this.helperMobile.getMobileArr();
+    };
+    // Head
+    Teacher.prototype.setMobileHead = function (mobileHead) {
+        this.mobile = this.helperMobile.getMobileWithNewHead(mobileHead);
     };
     Teacher.prototype.getMobileHead = function () {
-        var mobileArr = this.getMobileArr();
-        return mobileArr[0];
+        return this.helperMobile.getMobileHead();
+    };
+    Teacher.prototype.isMobileHeadEmpty = function () {
+        return this.helperMobile.isMobileHeadEmpty();
     };
     Teacher.prototype.isNotSameMobileHead = function (target) {
-        return !this.isSameMobileHead(target);
+        return this.helperMobile.isMobileHeadNotSame(target);
     };
     Teacher.prototype.isSameMobileHead = function (target) {
-        var mobileHead = this.getMobileHead();
-        if (null == mobileHead || "" === mobileHead) {
-            return false;
-        }
-        return (mobileHead === target) ? true : false;
+        return this.helperMobile.isMobileHeadSame(target);
+    };
+    // Body
+    Teacher.prototype.setMobileBody = function (mobileBody) {
+        this.mobile = this.helperMobile.getMobileWithNewBody(mobileBody);
     };
     Teacher.prototype.getMobileBody = function () {
-        var mobileArr = this.getMobileArr();
-        return mobileArr[1];
+        return this.helperMobile.getMobileBody();
     };
     Teacher.prototype.isNotSameMobileBody = function (target) {
-        return !this.isSameMobileBody(target);
+        return this.helperMobile.isMobileBodyNotSame(target);
     };
     Teacher.prototype.isSameMobileBody = function (target) {
-        var mobileBody = this.getMobileBody();
-        if (null == mobileBody || "" === mobileBody) {
-            return false;
-        }
-        return (mobileBody === target) ? true : false;
+        return this.helperMobile.isMobileBodySame(target);
+    };
+    // Tail
+    Teacher.prototype.setMobileTail = function (mobileTail) {
+        this.mobile = this.helperMobile.getMobileWithNewTail(mobileTail);
     };
     Teacher.prototype.getMobileTail = function () {
-        var mobileArr = this.getMobileArr();
-        return mobileArr[2];
+        return this.helperMobile.getMobileTail();
     };
     Teacher.prototype.isNotSameMobileTail = function (target) {
-        return !this.isSameMobileTail(target);
+        return this.helperMobile.isMobileTailNotSame(target);
     };
     Teacher.prototype.isSameMobileTail = function (target) {
-        var mobileTail = this.getMobileTail();
-        if (null == mobileTail || "" === mobileTail) {
-            return false;
-        }
-        return (mobileTail === target) ? true : false;
+        return this.helperMobile.isMobileTailSame(target);
     };
     Teacher.prototype.getBirthdayArr = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("teacher.model / getBirthdayArr / init");
-        var birthdayArr = this.birthday.split("-");
-        var birthYear = "";
-        var birthMonth = "";
-        var birthDay = "";
-        if (isDebug)
-            console.log("teacher.model / getBirthdayArr / birthdayArr : ", birthdayArr);
-        if (null != birthdayArr && 3 == birthdayArr.length) {
-            birthYear = birthdayArr[0];
-            birthMonth = birthdayArr[1];
-            birthDay = birthdayArr[2];
-        }
-        return [birthYear, birthMonth, birthDay];
+        return this.helperBirthday.getBirthdayArr();
+    };
+    // Year
+    Teacher.prototype.setBirthYear = function (newBirthYear) {
+        this.birthday = this.helperBirthday.getBirthdayWithNewBirthYear(newBirthYear);
     };
     Teacher.prototype.getBirthYear = function () {
-        var birthdayArr = this.getBirthdayArr();
-        return birthdayArr[0];
+        return this.helperBirthday.getBirthYear();
     };
     Teacher.prototype.isNotSameBirthYear = function (target) {
-        return !this.isSameBirthYear(target);
+        return this.helperBirthday.isBirthYearNotSame(target);
     };
     Teacher.prototype.isSameBirthYear = function (target) {
-        var birthdayHead = this.getBirthYear();
-        if (null == birthdayHead || "" === birthdayHead) {
-            return false;
-        }
-        return (birthdayHead === target) ? true : false;
+        return this.helperBirthday.isBirthYearSame(target);
+    };
+    // Month
+    Teacher.prototype.setBirthMonth = function (newBirthMonth) {
+        this.birthday = this.helperBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
     };
     Teacher.prototype.getBirthMonth = function () {
-        var birthdayArr = this.getBirthdayArr();
-        return birthdayArr[1];
+        return this.helperBirthday.getBirthMonth();
     };
     Teacher.prototype.isNotSameBirthMonth = function (target) {
-        return !this.isSameBirthMonth(target);
+        return this.helperBirthday.isBirthMonthNotSame(target);
     };
     Teacher.prototype.isSameBirthMonth = function (target) {
-        var birthdayBody = this.getBirthMonth();
-        if (null == birthdayBody || "" === birthdayBody) {
-            return false;
-        }
-        return (birthdayBody === target) ? true : false;
+        return this.helperBirthday.isBirthMonthSame(target);
+    };
+    // Day
+    Teacher.prototype.setBirthDay = function (newBirthDay) {
+        this.birthday = this.helperBirthday.getBirthdayWithNewBirthDay(newBirthDay);
     };
     Teacher.prototype.getBirthDay = function () {
-        var birthdayArr = this.getBirthdayArr();
-        return birthdayArr[2];
+        return this.helperBirthday.getBirthDay();
     };
     Teacher.prototype.isNotSameBirthDay = function (target) {
-        return !this.isSameBirthDay(target);
+        return this.helperBirthday.isBirthDayNotSame(target);
     };
     Teacher.prototype.isSameBirthDay = function (target) {
-        var birthdayTail = this.getBirthDay();
-        if (null == birthdayTail || "" === birthdayTail) {
-            return false;
-        }
-        return (birthdayTail === target) ? true : false;
+        return this.helperBirthday.isBirthDaySame(target);
     };
-    Teacher.prototype.updateWithJSON = function (userJSON) {
+    // Birthday Methods - DONE	
+    Teacher.prototype.updateWithJSON = function (teacherJSON) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("teacher.model / updateWithJson / init");
-        if (null == userJSON) {
+        if (null == teacherJSON) {
             if (isDebug)
-                console.log("teacher.model / updateWithJson / 중단 / userJSON is not valid!");
+                console.log("teacher.model / updateWithJson / 중단 / teacherJSON is not valid!");
             return;
         }
-        this.id = +userJSON["id"];
-        this.nickname = userJSON["nickname"];
-        this.name = userJSON["name"];
-        this.gender = userJSON["gender"];
-        this.birthday = userJSON["birthday"];
-        this.thumbnail = userJSON["thumbnail"];
-        this.status = userJSON["status"];
-        this.permission = userJSON["permission"];
-        this.mobile = userJSON["mobile"];
-        this.email = userJSON["email"];
-        this.date_created = userJSON["date_created"];
-        this.date_updated = userJSON["date_updated"];
+        this.id = +teacherJSON["id"];
+        this.nickname = teacherJSON["nickname"];
+        this.resume = teacherJSON["resume"];
+        this.greeting = teacherJSON["greeting"];
+        this.name = teacherJSON["name"];
+        this.gender = teacherJSON["gender"];
+        this.birthday = teacherJSON["birthday"];
+        this.thumbnail = teacherJSON["thumbnail"];
+        this.status = teacherJSON["status"];
+        this.permission = teacherJSON["permission"];
+        this.mobile = teacherJSON["mobile"];
+        this.email = teacherJSON["email"];
+        this.date_created = teacherJSON["date_created"];
+        this.date_updated = teacherJSON["date_updated"];
     };
     Teacher.prototype.copy = function () {
         return new Teacher(

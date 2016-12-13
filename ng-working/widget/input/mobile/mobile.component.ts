@@ -293,10 +293,15 @@ export class MobileComponent implements OnInit, AfterViewInit {
     return this.isOKBody(this.mobileBodyPrev);
   }
   // @ Desc : 전화번호 가운데 자리를 확인해 달라는 표시를 보여줍니다.
-  public showWarningMobileBody() :void {
+  public showWarningMobileBody(msg:string) :void {
+
+    if(null == msg) {
+      msg = this.tooltipHeadNotAllowed;
+    }
+
     this.isFocusMobileBody = true;
     this.isSuccessBodyInput = false;
-    this.tooltipBodyMsg = this.tooltipHeadNotAllowed;
+    this.tooltipBodyMsg = msg;
   }
   // @ Desc : 전화번호 마지막 자리가 제대로 입력되었는지 확인합니다.
   public hasNotDoneMobileTail() :boolean {
@@ -1046,24 +1051,47 @@ export class MobileComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
 
-    let isOK:boolean = this.isOKHead(this.mobileHeadEmitted);
-    if(!isOK) {
+    if(this.isNotOKHead(this.mobileHeadEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 첫 3자리에 문제가 있습니다.");
       return;
     }
-
-    isOK = this.isOKBody(this.mobileBodyEmitted);
-    if(!isOK) {
+    if(this.isNotOKBody(this.mobileBodyEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 두번째 3~4자리에 문제가 있습니다.");
       return;
     }
-
-    isOK = this.isOKTail(this.mobileTailEmitted);
-    if(!isOK) {
+    if(this.isNotOKTail(this.mobileTailEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 세번째 4자리에 문제가 있습니다.");
       return;
     }
 
+    // 부모 객체에게 Change Event 발송 
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
+      // public value:string
+      this.mobileTailEmitted,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myCheckerMobileTail
+    );
+    this.emitter.emit(myEventOnChange);         
+
+    // 이전에 노출한 경고 메시지가 있다면 내립니다.
+    this.tooltipBodyMsg = null;
+
+    // 포커싱을 모두 내립니다.
+    this.isFocusMobileHead = false;
+    this.isFocusMobileBody = false;
+    this.isFocusMobileTail = false;
+
+    // REMOVE ME
+    // TODO - 부모에게 전화번호 유효성 검사를 요청하는 이벤트를 보냅니다.
+    // 부모가 이 컴포넌트에게 상황에 따라 경고 메시지, 혹은 정상 처리를 합니다.
+    /*
     this.userService
     .getUserByMobile(
       this.myCheckerService.getAPIKey(),
@@ -1139,6 +1167,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
       } // end if
 
     });
+    */
   }
 
   onBlurTail(event, element, elementNext) :void {

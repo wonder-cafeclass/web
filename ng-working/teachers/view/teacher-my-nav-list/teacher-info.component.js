@@ -262,6 +262,30 @@ var TeacherInfoComponent = (function () {
                 // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("nickname", myEvent.value);
             }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_RESUME)) {
+                if (isDebug)
+                    console.log("teacher-info / onChangedFromChild / KEY_TEACHER_RESUME");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("teacher-info / onChangedFromChild / 중단 / 경력이 유효하지 않습니다.");
+                    return;
+                }
+                // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                this.updateNewProp("resume", myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+                if (isDebug)
+                    console.log("teacher-info / onChangedFromChild / KEY_TEACHER_GREETING");
+                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+                if (!isOK) {
+                    if (isDebug)
+                        console.log("teacher-info / onChangedFromChild / 중단 / 인사말이 유효하지 않습니다.");
+                    return;
+                }
+                // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                this.updateNewProp("greeting", myEvent.value);
+            }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 if (isDebug)
                     console.log("teacher-info / onChangedFromChild / KEY_USER_THUMBNAIL");
@@ -360,6 +384,8 @@ var TeacherInfoComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
             this.myEventService.onChangeNotValid(myEvent);
+            // 필드값 중 하나라도 유효하지 않다면, 저장 버튼을 동작하지 않게 합니다.
+            this.isReadyToSave = false;
         } // end if
     }; // end method
     TeacherInfoComponent.prototype.isOKBirthday = function (birthYear, birthMonth, birthDay) {
@@ -579,8 +605,8 @@ var TeacherInfoComponent = (function () {
     }; // end method
     TeacherInfoComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("teacher-info / onClickSave / init");
         var isReadyToSave = this.checkHasChanged();
@@ -588,17 +614,19 @@ var TeacherInfoComponent = (function () {
             console.log("teacher-info / onClickSave / isReadyToSave : ", isReadyToSave);
         if (isDebug)
             console.log("teacher-info / onClickSave / this.loginTeacherCopy : ", this.loginTeacherCopy);
-        if (isReadyToSave) {
+        if (this.isReadyToSave) {
             // 변경되었다면 저장합니다.
             this.teacherService.updateTeacherByTeacher(this.watchTower.getApiKey(), this.loginTeacherCopy).then(function (myResponse) {
                 if (isDebug)
                     console.log("teacher-info / onClickSave / 유저정보 업데이트 / myResponse : ", myResponse);
-                var userUpdated = myResponse.digDataProp(["user"]);
-                if (myResponse.isSuccess && null != userUpdated) {
+                var teacherUpdated = myResponse.digDataProp(["teacher"]);
+                if (myResponse.isSuccess && null != teacherUpdated) {
                     // 저장된 유저 정보를 다시 받아옵니다.
                     // 받아온 유저 정보로 업데이트 합니다.
-                    _this.loginTeacher.updateWithJSON(userUpdated);
-                    _this.loginTeacherCopy.updateWithJSON(userUpdated);
+                    _this.loginTeacher.updateWithJSON(teacherUpdated);
+                    _this.loginTeacherCopy.updateWithJSON(teacherUpdated);
+                    // 업데이트한 선생님 정보를 전파합니다.
+                    _this.watchTower.announceLoginTeacher(_this.loginTeacher);
                     if (isDebug)
                         console.log("teacher-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
                     if (isDebug)

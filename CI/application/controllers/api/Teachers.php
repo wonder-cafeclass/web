@@ -438,22 +438,6 @@ class Teachers extends MY_REST_Controller {
             "user_id"
         );
         // @ Required
-        $email = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "email",
-            // $key_filter=""
-            "user_email"
-        );
-        // @ Required
-        $name = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "name",
-            // $key_filter=""
-            "user_name"
-        );
-        // @ Required
         $resume = 
         $this->my_paramchecker->post(
             // $key=""
@@ -577,8 +561,6 @@ class Teachers extends MY_REST_Controller {
 
         $params = array(
             "user_id"=>$user_id,
-            "email"=>$email,
-            "name"=>$name,
             "nickname"=>$nickname,
             "resume"=>$resume,
             "greeting"=>$greeting,
@@ -608,10 +590,6 @@ class Teachers extends MY_REST_Controller {
             $this->my_sql->update_teacher(
                 // $user_id=-1
                 $user_id,
-                // $email=""
-                $email,
-                // $name=""
-                $name,
                 // $nickname=""
                 $nickname,
                 // $resume=""
