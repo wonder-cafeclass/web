@@ -30,10 +30,9 @@ var MyInfoComponent = (function () {
         this.watchTower = watchTower;
         this.router = router;
         this.emitter = new core_1.EventEmitter();
-        this.gender = "";
         this.isAdmin = false;
         // @ Desc : 사용자가 자신의 유저 정보를 변경했는지 확인하는 플래그
-        this.hasChanged = false;
+        this.isReadyToSave = false;
         this.eventKeyPWHead = this.myEventService.KEY_USER_CUR_PASSWORD;
         this.eventKeyPWBody = this.myEventService.KEY_USER_NEW_PASSWORD;
         this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
@@ -96,10 +95,14 @@ var MyInfoComponent = (function () {
         if (isDebug)
             console.log("my-info / setLoginUser / 시작");
         // 로그인 데이터를 가져옵니다.
-        var loginUser = this.watchTower.getLoginUser();
+        var userJSON = this.watchTower.getLoginUser();
+        var loginUser = null;
+        if (null != userJSON) {
+            loginUser = this.userService.getUserFromJSON(userJSON);
+        }
         if (null != loginUser) {
             this.loginUser = loginUser;
-            this.copyUser();
+            this.loginUserCopy = this.loginUser.copy();
             this.fillViewUserInfo();
         }
         else {
@@ -128,26 +131,6 @@ var MyInfoComponent = (function () {
             }
         }); // end for-each
         return target;
-    };
-    MyInfoComponent.prototype.copyUser = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("my-info / copyUser / 시작");
-        if (null == this.loginUser) {
-            // 유저가 없는 경우는 복사를 중단합니다.
-            if (isDebug)
-                console.log("my-info / copyUser / 중단 / 유저가 없는 경우는 복사를 중단합니다.");
-            return;
-        }
-        // 사용자 정보를 변경할 경우, 변경된 값을 저장할 User 객체의 복사본을 만듭니다.
-        this.loginUserCopy = this.userService.copyUser(this.loginUser);
-        if (isDebug)
-            console.log("my-info / copyUser / this.loginUserCopy : ", this.loginUserCopy);
-        // TEST
-        var isSame = this.userService.isSameUser(this.loginUser, this.loginUserCopy);
-        if (isDebug)
-            console.log("my-info / copyUser / isSame : ", isSame);
     };
     MyInfoComponent.prototype.logActionPage = function () {
         // let isDebug:boolean = true;
@@ -189,55 +172,121 @@ var MyInfoComponent = (function () {
                 console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
             return;
         }
-        // email
-        if (null != this.emailComponent) {
-            if (isDebug)
-                console.log("my-info / fillViewUserInfo / this.loginUser.email : ", this.loginUser.email);
-            this.emailComponent.setInput(this.loginUser.email);
-        }
-        this.email = this.loginUser.email;
-        // name
-        if (null != this.nameComponent) {
-            if (isDebug)
-                console.log("my-info / fillViewUserInfo / this.loginUser.name : ", this.loginUser.name);
-            this.nameComponent.setInput(this.loginUser.name);
-        }
-        this.name = this.loginUser.name;
-        // nickname
-        if (null != this.nicknameComponent) {
-            if (isDebug)
-                console.log("my-info / fillViewUserInfo / this.loginUser.nickname : ", this.loginUser.nickname);
-            this.nicknameComponent.setInput(this.loginUser.nickname);
-        }
-        this.nickname = this.loginUser.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.loginUser.thumbnail);
-        this.thumbnail = this.loginUser.thumbnail;
-        // mobile
-        var mobile = this.loginUser.mobile;
-        var mobileArr = mobile.split("-");
+        this.emailComponent.setInput(this.loginUserCopy.email);
+        this.nameComponent.setInput(this.loginUserCopy.name);
+        this.nicknameComponent.setInput(this.loginUserCopy.nickname);
+        this.profileImgUploadComponent.setProfileImg(this.loginUserCopy.thumbnail);
+        this.mobileComponent.setMobileHead(this.loginUserCopy.getMobileHead());
+        this.mobileComponent.setMobileBody(this.loginUserCopy.getMobileBody());
+        this.mobileComponent.setMobileTail(this.loginUserCopy.getMobileTail());
+        this.genderComponent.setGender(this.loginUserCopy.gender);
+        this.birthdayComponent.setBirthYear(this.loginUserCopy.getBirthYear());
+        this.birthdayComponent.setBirthMonth(this.loginUserCopy.getBirthMonth());
+        this.birthdayComponent.setBirthDay(this.loginUserCopy.getBirthMonth(), this.loginUserCopy.getBirthDay());
+    };
+    MyInfoComponent.prototype.confirmUserEmailPassword = function (password) {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("my-info / fillViewUserInfo / mobileArr : ", mobileArr);
-        if (null != mobileArr && 3 === mobileArr.length) {
-            this.mobileComponent.setMobileHead(mobileArr[0]);
-            this.mobileComponent.setMobileBody(mobileArr[1]);
-            this.mobileComponent.setMobileTail(mobileArr[2]);
-        }
-        // gender
-        this.genderComponent.setGender(this.loginUser.gender);
-        // birthday
-        var birthday = this.loginUser.birthday;
-        var birthdayArr = birthday.split("-");
+            console.log("my-info / confirmUserEmailPassword / init");
+        // 현재 유저의 비밀번호와 동일한지 비교합니다.
+        this.userService.confirmUserEmailPassword(
+        // apiKey:string
+        this.watchTower.getApiKey(), 
+        // email:string
+        this.loginUserCopy.email, 
+        // password:string
+        password).then(function (myResponse) {
+            if (isDebug)
+                console.log("my-info / confirmUserEmailPassword / myResponse : ", myResponse);
+            var user = null;
+            if (myResponse.isSuccess()) {
+                user = myResponse.digDataProp(["user", "mobile"]);
+            } // end if
+            if (null != user) {
+                if (isDebug)
+                    console.log("my-info / confirmUserEmailPassword / 패스워드가 확인되었습니다.");
+                if (isDebug)
+                    console.log("my-info / confirmUserEmailPassword / user : ", user);
+                // wonder.jung
+                // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
+                _this.passwordCur = password;
+                // 사용자에게 성공 메시지 노출
+                _this.passwordsComponent.showTooltipSuccess(
+                // eventKey:string
+                _this.passwordsComponent.eventKeyHead, 
+                // msg:string
+                "성공! 현재 비밀번호가 확인되었습니다.");
+            }
+            else {
+                // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
+                if (isDebug)
+                    console.log("my-info / confirmUserEmailPassword / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
+                _this.passwordsComponent.showTooltipWarning(
+                // eventKey:string
+                _this.passwordsComponent.eventKeyHead, 
+                // msg:string
+                "비밀번호를 다시 확인해주세요.");
+            } // end if
+        });
+    };
+    MyInfoComponent.prototype.confirmNewPassword = function (password) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("my-info / fillViewUserInfo / birthdayArr : ", birthdayArr);
-        if (null != birthdayArr && 3 === birthdayArr.length) {
-            this.birthdayComponent.setBirthYear(birthdayArr[0]);
-            this.birthdayComponent.setBirthMonth(birthdayArr[1]);
-            this.birthdayComponent.setBirthDay(birthdayArr[1], birthdayArr[2]);
+            console.log("my-info / confirmNewPassword / init");
+        // 1. 새로운 패스워드는 이전의 패스워드와 달라야 합니다.
+        if (this.passwordCur === password) {
+            if (isDebug)
+                console.log("my-info / confirmNewPassword / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
+            this.passwordsComponent.showTooltipWarning(
+            // eventKey:string
+            this.passwordsComponent.eventKeyBody, 
+            // msg:string
+            "새로운 비밀번호가 이전과 같습니다!");
         }
+        else {
+            if (isDebug)
+                console.log("my-info / confirmNewPassword / 유효한 새로운 패스워드를 받았습니다.");
+            // 변수에 저장합니다.
+            this.passwordNew = password;
+            // 사용자에게 성공 메시지 노출
+            this.passwordsComponent.showTooltipSuccess(
+            // eventKey:string
+            this.passwordsComponent.eventKeyBody, 
+            // msg:string
+            "성공! 새로운 비밀번호가 완벽합니다.");
+        } // end if
+    };
+    MyInfoComponent.prototype.confirmRepassword = function (password) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-info / confirmRepassword / init");
+        if (this.passwordNew !== password) {
+            // 새로운 비밀번호 재확인이 새로운 비밀번호와 다릅니다. 
+            // 경고 메시지 노출 
+            this.passwordsComponent.showTooltipWarning(
+            // eventKey:string
+            this.passwordsComponent.eventKeyTail, 
+            // msg:string
+            "새로운 비밀번호와 다릅니다!");
+        }
+        else {
+            // 변수에 저장합니다.
+            this.passwordRe = password;
+            // 사용자에게 성공 메시지 노출
+            this.passwordsComponent.showTooltipSuccess(
+            // eventKey:string
+            this.passwordsComponent.eventKeyTail, 
+            // msg:string
+            "성공! 새로운 비밀번호가 완벽합니다.");
+            // 저장 버튼 활성화.
+            this.isReadyToSave = true;
+        } // end if    
     };
     MyInfoComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -246,228 +295,84 @@ var MyInfoComponent = (function () {
             console.log("my-info / onChangedFromChild / myEvent : ", myEvent);
         if (isDebug)
             console.log("my-info / onChangedFromChild / myEvent.key : ", myEvent.key);
+        if (isDebug)
+            console.log("my-info / onChangedFromChild / myEvent.value : ", myEvent.value);
         if (myEvent.isNotValid()) {
             if (isDebug)
                 console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
             // TODO - Error Logger
             return;
         }
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if (!isOK) {
+            if (isDebug)
+                console.log("my-info / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+            return;
+        }
         if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
-                if (isDebug)
-                    console.log("my-info / onChangedFromChild / myEvent.value : ", myEvent.value);
-                // 현재 유저의 비밀번호와 동일한지 비교합니다.
-                this.userService.confirmUserEmailPassword(
-                // apiKey:string
-                this.watchTower.getApiKey(), 
-                // email:string
-                this.email, 
-                // password:string
-                myEvent.value).then(function (myResponse) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / myResponse : ", myResponse);
-                    var user = null;
-                    if (myResponse.isSuccess()) {
-                        user = myResponse.digDataProp(["user", "mobile"]);
-                    } // end if
-                    if (null != user) {
-                        if (isDebug)
-                            console.log("my-info / onChangedFromChild / 패스워드가 확인되었습니다.");
-                        if (isDebug)
-                            console.log("my-info / onChangedFromChild / user : ", user);
-                        // wonder.jung
-                        // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
-                        _this.passwordCur = myEvent.value;
-                        // 사용자에게 성공 메시지 노출
-                        _this.passwordsComponent.showTooltipSuccess(
-                        // eventKey:string
-                        _this.passwordsComponent.eventKeyHead, 
-                        // msg:string
-                        "성공! 현재 비밀번호가 확인되었습니다.");
-                    }
-                    else {
-                        // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
-                        if (isDebug)
-                            console.log("my-info / onChangedFromChild / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
-                        _this.passwordsComponent.showTooltipWarning(
-                        // eventKey:string
-                        _this.passwordsComponent.eventKeyHead, 
-                        // msg:string
-                        "비밀번호를 다시 확인해주세요.");
-                    } // end if
-                });
+                this.confirmUserEmailPassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
-                // 유효한 새로운 패스워드를 받았습니다.
-                // 1. 새로운 패스워드는 이전의 패스워드와 달라야 합니다.
-                if (this.passwordCur === myEvent.value) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
-                    this.passwordsComponent.showTooltipWarning(
-                    // eventKey:string
-                    this.passwordsComponent.eventKeyBody, 
-                    // msg:string
-                    "새로운 비밀번호가 이전과 같습니다!");
-                }
-                else {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 유효한 새로운 패스워드를 받았습니다.");
-                    // 변수에 저장합니다.
-                    this.passwordNew = myEvent.value;
-                    // 사용자에게 성공 메시지 노출
-                    this.passwordsComponent.showTooltipSuccess(
-                    // eventKey:string
-                    this.passwordsComponent.eventKeyBody, 
-                    // msg:string
-                    "성공! 새로운 비밀번호가 완벽합니다.");
-                } // end if
+                this.confirmNewPassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_RE_PASSWORD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
-                if (this.passwordNew !== myEvent.value) {
-                    // 새로운 비밀번호 재확인이 새로운 비밀번호와 다릅니다. 
-                    // 경고 메시지 노출 
-                    this.passwordsComponent.showTooltipWarning(
-                    // eventKey:string
-                    this.passwordsComponent.eventKeyTail, 
-                    // msg:string
-                    "새로운 비밀번호와 다릅니다!");
-                }
-                else {
-                    // 변수에 저장합니다.
-                    this.passwordRe = myEvent.value;
-                    // 사용자에게 성공 메시지 노출
-                    this.passwordsComponent.showTooltipSuccess(
-                    // eventKey:string
-                    this.passwordsComponent.eventKeyTail, 
-                    // msg:string
-                    "성공! 새로운 비밀번호가 완벽합니다.");
-                    // 저장 버튼 활성화.
-                    this.hasChanged = true;
-                } // end if
+                this.confirmRepassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NAME");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("name", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("nickname", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("thumbnail", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 첫번째 3자리가 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
-                // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileHead(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 두번째 4자리가 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
-                // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileBody(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 전화번호 마지막 4자리가 유효하지 않습니다.");
-                    return;
-                }
-                // 1. loginUser객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
-                // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileTail(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 생일-연도가 유효하지 않습니다.");
-                    return;
-                }
                 this.updateNewBirthYear(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 생일-월이 유효하지 않습니다.");
-                    return;
-                }
                 this.updateNewBirthMonth(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
-                    return;
-                }
                 this.updateNewBirthDay(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
                 if (isDebug)
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
-                var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-                if (!isOK) {
-                    if (isDebug)
-                        console.log("my-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
-                    return;
-                }
                 this.updateNewProp("gender", myEvent.value);
             } // end if - ON CHANGE
         }
@@ -475,18 +380,6 @@ var MyInfoComponent = (function () {
             this.myEventService.onChangeNotValid(myEvent);
         } // end if
     }; // end method
-    MyInfoComponent.prototype.isOKBirthday = function (birthYear, birthMonth, birthDay) {
-        if (!this.birthdayComponent.isOKBirthYear(birthYear)) {
-            return false;
-        }
-        if (!this.birthdayComponent.isOKBirthMonth(birthMonth)) {
-            return false;
-        }
-        if (!this.birthdayComponent.isOKBirthDay(birthDay)) {
-            return false;
-        }
-        return true;
-    };
     MyInfoComponent.prototype.updateNewMobileHead = function (newMobileHead) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -502,16 +395,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
             return;
         }
-        // let mobileHead:string = this.mobileNumHead = this.loginUserCopy.getMobileHead();
-        var mobileHead = this.mobileNumHead = newMobileHead;
-        var mobileBody = this.mobileNumBody = this.loginUserCopy.getMobileBody();
-        var mobileTail = this.mobileNumTail = this.loginUserCopy.getMobileTail();
-        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
-        if (isDebug)
-            console.log("my-info / updateNewMobileHead / newMobile : ", newMobile);
-        this.loginUserCopy.mobile = newMobile;
+        this.loginUserCopy.setMobileHead(newMobileHead);
         // 저장 버튼 노출
-        this.hasChanged = true;
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewMobileBody = function (newMobileBody) {
         // let isDebug:boolean = true;
@@ -528,16 +414,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
             return;
         }
-        var mobileHead = this.mobileNumHead = this.loginUserCopy.getMobileHead();
-        // let mobileBody:string = this.mobileNumBody = this.loginUserCopy.getMobileBody();
-        var mobileBody = this.mobileNumBody = newMobileBody;
-        var mobileTail = this.mobileNumTail = this.loginUserCopy.getMobileTail();
-        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
-        if (isDebug)
-            console.log("my-info / updateNewMobileBody / newMobile : ", newMobile);
-        this.loginUserCopy.mobile = newMobile;
+        this.loginUserCopy.setMobileBody(newMobileBody);
         // 저장 버튼 노출
-        this.hasChanged = true;
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewMobileTail = function (newMobileTail) {
         // let isDebug:boolean = true;
@@ -554,16 +433,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
             return;
         }
-        var mobileHead = this.mobileNumHead = this.loginUserCopy.getMobileHead();
-        var mobileBody = this.mobileNumBody = this.loginUserCopy.getMobileBody();
-        // let mobileTail:string = this.mobileNumTail = this.loginUserCopy.getMobileTail();
-        var mobileTail = this.mobileNumTail = newMobileTail;
-        var newMobile = mobileHead + "-" + mobileBody + "-" + mobileTail;
-        if (isDebug)
-            console.log("my-info / updateNewMobileTail / newMobile : ", newMobile);
-        this.loginUserCopy.mobile = newMobile;
+        this.loginUserCopy.setMobileTail(newMobileTail);
         // 저장 버튼 노출
-        this.hasChanged = true;
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthYear = function (newBirthYear) {
         // let isDebug:boolean = true;
@@ -580,18 +452,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
             return;
         }
-        // let birthYear:string = this.mobileNumHead = this.loginUserCopy.getBirthYear();
-        var birthYear = this.birthYear = newBirthYear;
-        var birthMonth = this.birthMonth = this.loginUserCopy.getBirthMonth();
-        var birthDay = this.birthDay = this.loginUserCopy.getBirthDay();
-        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
-        if (isDebug)
-            console.log("my-info / updateNewBirthYear / newBirthday : ", newBirthday);
-        this.loginUserCopy.birthday = newBirthday;
+        this.loginUserCopy.setBirthYear(newBirthYear);
         // 저장 버튼 노출
-        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-            this.hasChanged = true;
-        }
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
         // let isDebug:boolean = true;
@@ -608,18 +471,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
             return;
         }
-        var birthYear = this.mobileNumHead = this.loginUserCopy.getBirthYear();
-        // let birthMonth:string = this.birthMonth = this.loginUserCopy.getBirthMonth();
-        var birthMonth = this.birthMonth = newBirthMonth;
-        var birthDay = this.birthDay = this.loginUserCopy.getBirthDay();
-        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
-        if (isDebug)
-            console.log("my-info / updateNewBirthMonth / newBirthday : ", newBirthday);
-        this.loginUserCopy.birthday = newBirthday;
+        this.loginUserCopy.setBirthMonth(newBirthMonth);
         // 저장 버튼 노출
-        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-            this.hasChanged = true;
-        }
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthDay = function (newBirthDay) {
         // let isDebug:boolean = true;
@@ -636,18 +490,9 @@ var MyInfoComponent = (function () {
                 console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
             return;
         }
-        var birthYear = this.mobileNumHead = this.loginUserCopy.getBirthYear();
-        var birthMonth = this.birthMonth = this.loginUserCopy.getBirthMonth();
-        // let birthDay:string = this.birthDay = this.loginUserCopy.getBirthDay();
-        var birthDay = this.birthDay = newBirthDay;
-        var newBirthday = birthYear + "-" + birthMonth + "-" + birthDay;
-        if (isDebug)
-            console.log("my-info / updateNewBirthDay / newBirthday : ", newBirthday);
-        this.loginUserCopy.birthday = newBirthday;
+        this.loginUserCopy.setBirthDay(newBirthDay);
         // 저장 버튼 노출
-        if (this.isOKBirthday(birthYear, birthMonth, birthDay)) {
-            this.hasChanged = true;
-        }
+        this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewProp = function (key, newValue) {
         // let isDebug:boolean = true;
@@ -679,14 +524,14 @@ var MyInfoComponent = (function () {
                     console.log("my-info / updateNewProp / this.loginUserCopy : ", this.loginUserCopy);
             }
             // 저장 버튼을 노출합니다.
-            this.hasChanged = true;
+            this.isReadyToSave = true;
         }
         else {
             // 변경되지 않았습니다.
             if (this.checkUserInfoChanged()) {
                 // 모든 다른 항목중에 변경된 것이 없다면, 
                 // 저장 버튼을 비활성화 합니다.
-                this.hasChanged = false;
+                this.isReadyToSave = false;
             } // end if
         } // end if
     }; // end method
@@ -696,12 +541,12 @@ var MyInfoComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("my-info / onClickSave / init");
-        var hasChanged = this.checkUserInfoChanged();
+        var isReadyToSave = this.checkUserInfoChanged();
         if (isDebug)
-            console.log("my-info / onClickSave / hasChanged : ", hasChanged);
+            console.log("my-info / onClickSave / isReadyToSave : ", isReadyToSave);
         if (isDebug)
             console.log("my-info / onClickSave / this.loginUserCopy : ", this.loginUserCopy);
-        if (hasChanged) {
+        if (isReadyToSave) {
             // 변경되었다면 저장합니다.
             this.userService.updateUserByUser(this.watchTower.getApiKey(), this.loginUserCopy).then(function (myResponse) {
                 if (isDebug)
@@ -711,7 +556,7 @@ var MyInfoComponent = (function () {
                     // 저장된 유저 정보를 다시 받아옵니다.
                     // 받아온 유저 정보로 업데이트 합니다.
                     _this.loginUser.updateWithJSON(userUpdated);
-                    _this.loginUserCopy.updateWithJSON(userUpdated);
+                    _this.loginUserCopy = _this.loginUser.copy();
                     if (isDebug)
                         console.log("my-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
                     if (isDebug)
@@ -724,17 +569,17 @@ var MyInfoComponent = (function () {
             }); // end service
         }
         // 비밀번호 변경 여부 확인
-        var hasChangedPassword = this.checkUserPasswordChanged();
+        var isReadyToSavePassword = this.checkUserPasswordChanged();
         if (isDebug)
-            console.log("my-info / onClickSave / hasChangedPassword : ", hasChangedPassword);
-        if (hasChangedPassword) {
+            console.log("my-info / onClickSave / isReadyToSavePassword : ", isReadyToSavePassword);
+        if (isReadyToSavePassword) {
             // 변경되었다면 업데이트!
             // 3. DB Update!
             this.userService.updatePassword(
             // apiKey:string
             this.watchTower.getApiKey(), 
             // email:string 
-            this.email, 
+            this.loginUserCopy.email, 
             // password:string
             this.passwordNew).then(function (myResponse) {
                 if (isDebug)
@@ -750,7 +595,32 @@ var MyInfoComponent = (function () {
             });
         }
         // 저장 버튼 비활성화.
-        this.hasChanged = false;
+        this.isReadyToSave = false;
+    };
+    // @ Desc : 필수 입력 항목이 문제 없는지 검사
+    MyInfoComponent.prototype.isNotOKEssential = function () {
+        return !this.isOKEssential();
+    };
+    MyInfoComponent.prototype.isOKEssential = function () {
+        if (this.nameComponent.isNotOK(this.loginUserCopy.name)) {
+            return false;
+        }
+        if (this.nicknameComponent.isNotOK(this.loginUserCopy.nickname)) {
+            return false;
+        }
+        if (this.mobileComponent.isNotOKHead(this.loginUserCopy.getMobileHead())) {
+            return false;
+        }
+        if (this.mobileComponent.isNotOKBody(this.loginUserCopy.getMobileBody())) {
+            return false;
+        }
+        if (this.mobileComponent.isNotOKTail(this.loginUserCopy.getMobileTail())) {
+            return false;
+        }
+        if (this.genderComponent.isNotOK(this.loginUserCopy.gender)) {
+            return false;
+        }
+        return true;
     };
     MyInfoComponent.prototype.checkUserInfoChanged = function () {
         // let isDebug:boolean = true;
@@ -759,110 +629,34 @@ var MyInfoComponent = (function () {
             console.log("my-info / checkUserInfoChanged / init");
         if (isDebug)
             console.log("my-info / checkUserInfoChanged / this.loginUser : ", this.loginUser);
-        var mobileHead = this.loginUser.getMobileHead();
-        var mobileBody = this.loginUser.getMobileBody();
-        var mobileTail = this.loginUser.getMobileTail();
-        // 생일은 선택 입력이므로 없을 수도 있습니다.
-        var birthYear = this.loginUser.getBirthYear();
-        var birthMonth = this.loginUser.getBirthMonth();
-        var birthDay = this.loginUser.getBirthDay();
+        // 필수 항목들은 반드시 유효해야합니다.
+        if (this.isNotOKEssential()) {
+            return false;
+        }
         // 검사 시작!
-        var hasChanged = false;
-        if (this.nameComponent.isOK(this.name) &&
-            this.name !== this.loginUser.name) {
-            // 1. name
+        if (this.loginUser.isNotSame(this.loginUserCopy)) {
+            // 2. 유저정보
             if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 이름이 변경됨");
-            hasChanged = true;
+                console.log("my-info / checkUserInfoChanged / 유저정보 변경됨");
+            return true;
         }
-        else if (this.nicknameComponent.isOK(this.nickname) &&
-            this.nickname !== this.loginUser.nickname) {
-            // 2. nickname
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 닉네임이 변경됨");
-            hasChanged = true;
-        }
-        else if (this.profileImgUploadComponent.isOK(this.thumbnail) &&
-            this.thumbnail !== this.loginUser.thumbnail) {
-            // 3. profile-img
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 섬네일이 변경됨");
-            hasChanged = true;
-        }
-        else if (this.mobileComponent.isOKHead(this.mobileNumHead) &&
-            mobileHead !== this.mobileNumHead) {
-            // 4-1. mobile head
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 휴대전화 첫 3자리 변경됨");
-            hasChanged = true;
-        }
-        else if (this.mobileComponent.isOKBody(this.mobileNumBody) &&
-            mobileBody !== this.mobileNumBody) {
-            // 4-2. mobile body
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 휴대전화 두번째 4자리 변경됨");
-            hasChanged = true;
-        }
-        else if (this.mobileComponent.isOKTail(this.mobileNumTail) &&
-            mobileTail !== this.mobileNumTail) {
-            // 4-3. mobile tail
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 휴대전화 세번째 4자리 변경됨");
-            hasChanged = true;
-        }
-        else if (this.genderComponent.isOK(this.gender) &&
-            this.gender !== this.loginUser.gender) {
-            // 5. gender
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 성별 변경됨");
-            hasChanged = true;
-        }
-        else if (this.birthdayComponent.isOKBirthYear(this.birthYear) &&
-            birthYear !== this.birthYear) {
-            // 6-1. birthYear
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 생일 - 연도 변경됨");
-            hasChanged = true;
-        }
-        else if (this.birthdayComponent.isOKBirthMonth(this.birthMonth) &&
-            birthMonth !== this.birthMonth) {
-            // 6-2. birthMonth
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 생일 - 월 변경됨");
-            hasChanged = true;
-        }
-        else if (this.birthdayComponent.isOKBirthDay(this.birthDay) &&
-            birthDay !== this.birthDay) {
-            // 6-3. birthDay
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 생일 - 일 변경됨");
-            hasChanged = true;
-        }
-        else if (this.passwordsComponent.isOK(this.passwordNew) &&
-            this.passwordCur !== this.passwordNew &&
-            this.passwordNew === this.passwordRe) {
-            // 7. password
-            if (isDebug)
-                console.log("my-info / checkUserInfoChanged / 생일 - 일 변경됨");
-            hasChanged = true;
-        } // end if
-        return hasChanged;
+        return false;
     };
     MyInfoComponent.prototype.checkUserPasswordChanged = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("my-info / checkUserPasswordChanged / init");
-        var hasChanged = false;
+        var isReadyToSave = false;
         if (this.passwordsComponent.isOK(this.passwordNew) &&
             this.passwordCur !== this.passwordNew &&
             this.passwordNew === this.passwordRe) {
             // 7. password
             if (isDebug)
                 console.log("my-info / checkUserPasswordChanged / 비밀번호 변경됨.");
-            hasChanged = true;
+            isReadyToSave = true;
         } // end if
-        return hasChanged;
+        return isReadyToSave;
     };
     __decorate([
         core_1.Output(), 

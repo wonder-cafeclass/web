@@ -227,6 +227,40 @@ var Teacher = (function () {
         // public date_updated:string			
         this.date_updated);
     };
+    // @ 사용자가 변경 가능한 값들을 기준으로 비교, 결과를 알려준다.
+    Teacher.prototype.isNotSame = function (teacher) {
+        return !this.isSame(teacher);
+    };
+    Teacher.prototype.isSame = function (teacher) {
+        if (this.name !== teacher.name) {
+            return false;
+        }
+        if (this.email !== teacher.email) {
+            return false;
+        }
+        if (this.nickname !== teacher.nickname) {
+            return false;
+        }
+        if (this.gender !== teacher.gender) {
+            return false;
+        }
+        if (this.resume !== teacher.resume) {
+            return false;
+        }
+        if (this.greeting !== teacher.greeting) {
+            return false;
+        }
+        if (this.birthday !== teacher.birthday) {
+            return false;
+        }
+        if (this.thumbnail !== teacher.thumbnail) {
+            return false;
+        }
+        if (this.mobile !== teacher.mobile) {
+            return false;
+        }
+        return true;
+    };
     return Teacher;
 }());
 exports.Teacher = Teacher;

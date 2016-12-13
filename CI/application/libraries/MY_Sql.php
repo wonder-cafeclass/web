@@ -1914,6 +1914,24 @@ class MY_Sql
         $this->CI->db->update('teacher', $data);
     } 
 
+    public function get_teacher_by_email($email=-1) 
+    {
+        if($this->is_not_ok("email", $email))
+        {
+            return;
+        }
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('email', $email);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    }    
+
     public function get_teacher_by_user_id($user_id=-1) 
     {
         if($this->is_not_ok("user_id", $user_id))
@@ -1930,7 +1948,35 @@ class MY_Sql
         $row = $query->custom_row_object(0, 'Teacher');
 
         return $row;
-    }            
+    }
+
+    public function get_teacher_by_mobile($mobile_head="", $mobile_body="", $mobile_tail="") 
+    {
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        $mobile = "$mobile_head-$mobile_body-$mobile_tail";
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('mobile', $mobile);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    } 
 
 }
 

@@ -4,6 +4,7 @@ import { MyEvent }           from '../../util/model/my-event';
 import { RadioBtnOption }    from '../../widget/radiobtn/model/radiobtn-option';
 import { Klass }             from '../model/klass';
 import { User }              from '../../users/model/user';
+import { Teacher }           from '../../teachers/model/teacher';
 
 @Injectable()
 export class KlassRadioBtnService {

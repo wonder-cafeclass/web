@@ -222,6 +222,46 @@ var User = (function () {
         // public date_updated:string
         this.date_updated);
     };
+    // @ 사용자가 변경 가능한 값들을 기준으로 비교, 결과를 알려준다.
+    User.prototype.isNotSame = function (user) {
+        return !this.isSame(user);
+    };
+    User.prototype.isSame = function (user) {
+        if (this.name !== user.name) {
+            return false;
+        }
+        if (this.email !== user.email) {
+            return false;
+        }
+        if (this.nickname !== user.nickname) {
+            return false;
+        }
+        if (this.kakao_id !== user.kakao_id) {
+            return false;
+        }
+        if (this.naver_id !== user.naver_id) {
+            return false;
+        }
+        if (this.facebook_id !== user.facebook_id) {
+            return false;
+        }
+        if (this.google_id !== user.google_id) {
+            return false;
+        }
+        if (this.gender !== user.gender) {
+            return false;
+        }
+        if (this.birthday !== user.birthday) {
+            return false;
+        }
+        if (this.thumbnail !== user.thumbnail) {
+            return false;
+        }
+        if (this.mobile !== user.mobile) {
+            return false;
+        }
+        return true;
+    };
     return User;
 }());
 exports.User = User;

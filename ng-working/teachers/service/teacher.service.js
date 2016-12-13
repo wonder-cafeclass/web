@@ -18,6 +18,7 @@ var TeacherService = (function () {
     function TeacherService(urlService, http) {
         this.urlService = urlService;
         this.http = http;
+        this.getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
         this.getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
         this.getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
         this.insertTeacherUrl = '/CI/index.php/api/teachers/add';
@@ -25,27 +26,6 @@ var TeacherService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
-    TeacherService.prototype.getTeacherByEmail = function (email) {
-        // TODO 이메일로 사용자를 조회.
-        // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
-        var req_url = this.urlService.get(this.getTeacherByEmailUrl);
-        req_url = req_url + "?q=" + email;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("teacher.service / getUserByEmail / 시작");
-        if (isDebug)
-            console.log("teacher.service / getUserByEmail / email : ", email);
-        if (isDebug)
-            console.log("teacher.service / getUserByEmail / req_url : ", req_url);
-        return this.http.get(req_url)
-            .toPromise()
-            .then(this.myExtractor.extractData)
-            .catch(this.myExtractor.handleError);
-    };
-    TeacherService.prototype.getTeacherByUser = function (user) {
-        return this.getTeacherByEmail(user.email);
-    };
     TeacherService.prototype.insertTeacherByTeacher = function (apiKey, teacher) {
         var mobileArr = teacher.getMobileArr();
         var birthdayArr = teacher.getBirthdayArr();
@@ -242,6 +222,52 @@ var TeacherService = (function () {
             console.log("teacher.service / getTeacher / req_url : ", req_url);
         var params = {
             user_id: userId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    TeacherService.prototype.getTeacherByMobile = function (apiKey, mobileHead, mobileBody, mobileTail) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("teacher.service / getTeacherByMobile / 시작");
+        if (isDebug)
+            console.log("teacher.service / getTeacherByMobile / mobileHead : ", mobileHead);
+        if (isDebug)
+            console.log("teacher.service / getTeacherByMobile / mobileBody : ", mobileBody);
+        if (isDebug)
+            console.log("teacher.service / getTeacherByMobile / mobileTail : ", mobileTail);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.getTeacherByMobileUrl);
+        if (isDebug)
+            console.log("teacher.service / getTeacherByMobile / req_url : ", req_url);
+        var params = {
+            mobile_head: mobileHead,
+            mobile_body: mobileBody,
+            mobile_tail: mobileTail
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    TeacherService.prototype.getTeacherByEmail = function (apiKey, email) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("teacher.service / getUserByEmail / 시작");
+        if (isDebug)
+            console.log("teacher.service / getUserByEmail / email : ", email);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.getTeacherByEmailUrl);
+        if (isDebug)
+            console.log("teacher.service / getUserByEmail / req_url : ", req_url);
+        var params = {
+            email: email
         };
         return this.http.post(req_url, params, options)
             .toPromise()

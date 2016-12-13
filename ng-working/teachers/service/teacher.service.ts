@@ -13,6 +13,7 @@ import { User }                            from "../../users/model/user";
 @Injectable()
 export class TeacherService {
 
+  private getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
   private getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
   private getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
   private insertTeacherUrl = '/CI/index.php/api/teachers/add';
@@ -25,30 +26,6 @@ export class TeacherService {
                 private http: Http) {
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
-  }
-
-  getTeacherByEmail (email:string): Promise<MyResponse> {
-
-    // TODO 이메일로 사용자를 조회.
-    // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 
-
-    let req_url = this.urlService.get(this.getTeacherByEmailUrl);
-    req_url = `${ req_url }?q=${ email }`;
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("teacher.service / getUserByEmail / 시작");
-    if(isDebug) console.log("teacher.service / getUserByEmail / email : ",email);
-    if(isDebug) console.log("teacher.service / getUserByEmail / req_url : ",req_url);
-
-    return this.http.get(req_url)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-  }
-
-  getTeacherByUser (user:User): Promise<MyResponse> {
-    return this.getTeacherByEmail(user.email);
   }
 
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
@@ -275,6 +252,61 @@ export class TeacherService {
                 .catch(this.myExtractor.handleError);
 
   }
+
+  getTeacherByMobile( apiKey:string, 
+                      mobileHead:string,
+                      mobileBody:string,
+                      mobileTail:string ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / getTeacherByMobile / 시작");
+    if(isDebug) console.log("teacher.service / getTeacherByMobile / mobileHead : ",mobileHead);
+    if(isDebug) console.log("teacher.service / getTeacherByMobile / mobileBody : ",mobileBody);
+    if(isDebug) console.log("teacher.service / getTeacherByMobile / mobileTail : ",mobileTail);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.getTeacherByMobileUrl);
+
+    if(isDebug) console.log("teacher.service / getTeacherByMobile / req_url : ",req_url);
+
+    let params = {
+      mobile_head:mobileHead,
+      mobile_body:mobileBody,
+      mobile_tail:mobileTail
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  } 
+
+  getTeacherByEmail (apiKey:string, email:string): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / getUserByEmail / 시작");
+    if(isDebug) console.log("teacher.service / getUserByEmail / email : ",email);    
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.getTeacherByEmailUrl);
+
+    if(isDebug) console.log("teacher.service / getUserByEmail / req_url : ",req_url);
+
+    let params = {
+      email:email
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }   
 
   getTeacherFromUser (user:User): Teacher {
 

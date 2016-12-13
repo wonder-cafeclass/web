@@ -50,13 +50,13 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
   // private name:string;
   // private nickname:string;
   // private thumbnail:string;
-  private mobileNumHead:string;
-  private mobileNumBody:string;
-  private mobileNumTail:string;
-  gender:string="";
-  private birthYear:string;
-  private birthMonth:string;
-  private birthDay:string;
+  // private mobileNumHead:string;
+  // private mobileNumBody:string;
+  // private mobileNumTail:string;
+  // gender:string="";
+  // private birthYear:string;
+  // private birthMonth:string;
+  // private birthDay:string;
   // @ mutables - done
 
   @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
@@ -247,61 +247,19 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // email
-    if(null != this.emailComponent) {
-      if(isDebug) console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.email : ",this.loginTeacher.email);
-      this.emailComponent.setInput(this.loginTeacher.email);
-    }
-
-    // name
-    if(null != this.nameComponent) {
-      if(isDebug) console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.name : ",this.loginTeacher.name);
-      this.nameComponent.setInput(this.loginTeacher.name);
-    }
-  
-    // nickname
-    if(null != this.nicknameComponent) {
-      if(isDebug) console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.nickname : ",this.loginTeacher.nickname);
-      this.nicknameComponent.setInput(this.loginTeacher.nickname);
-    }
-
-    // resume
-    if(null != this.resumeComponent) {
-      if(isDebug) console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.resume : ",this.loginTeacher.resume);
-      this.resumeComponent.setInput(this.loginTeacher.resume);
-    }
-
-    // greeting
-    if(null != this.greetingComponent) {
-      if(isDebug) console.log("teacher-info / fillViewTeacherInfo / this.loginTeacher.greeting : ",this.loginTeacher.greeting);
-      this.greetingComponent.setInput(this.loginTeacher.greeting);
-    }
-
-    // thumbnail
-    this.profileImgUploadComponent.setProfileImg(this.loginTeacher.thumbnail);
-
-    // mobile
-    let mobile:string = this.loginTeacher.mobile;
-    let mobileArr:string[] = mobile.split("-");
-    if(isDebug) console.log("teacher-info / fillViewTeacherInfo / mobileArr : ",mobileArr);
-    if(null != mobileArr && 3 === mobileArr.length) {
-      this.mobileComponent.setMobileHead(mobileArr[0]);
-      this.mobileComponent.setMobileBody(mobileArr[1]);
-      this.mobileComponent.setMobileTail(mobileArr[2]);
-    }
-
-    // gender
-    this.genderComponent.setGender(this.loginTeacher.gender);
-
-    // birthday
-    let birthday:string = this.loginTeacher.birthday;
-    let birthdayArr:string[] = birthday.split("-");
-    if(isDebug) console.log("teacher-info / fillViewTeacherInfo / birthdayArr : ",birthdayArr);
-    if(null != birthdayArr && 3 === birthdayArr.length) {
-      this.birthdayComponent.setBirthYear(birthdayArr[0]);
-      this.birthdayComponent.setBirthMonth(birthdayArr[1]);
-      this.birthdayComponent.setBirthDay(birthdayArr[1], birthdayArr[2]);
-    }
+    this.emailComponent.setInput(this.loginTeacherCopy.email);
+    this.nameComponent.setInput(this.loginTeacherCopy.name);
+    this.nicknameComponent.setInput(this.loginTeacherCopy.nickname);
+    this.resumeComponent.setInput(this.loginTeacherCopy.resume);
+    this.greetingComponent.setInput(this.loginTeacherCopy.greeting);
+    this.profileImgUploadComponent.setProfileImg(this.loginTeacherCopy.thumbnail);
+    this.mobileComponent.setMobileHead(this.loginTeacherCopy.getMobileHead());
+    this.mobileComponent.setMobileBody(this.loginTeacherCopy.getMobileBody());
+    this.mobileComponent.setMobileTail(this.loginTeacherCopy.getMobileTail());
+    this.genderComponent.setGender(this.loginTeacherCopy.gender);
+    this.birthdayComponent.setBirthYear(this.loginTeacherCopy.getBirthYear());
+    this.birthdayComponent.setBirthMonth(this.loginTeacherCopy.getBirthMonth());
+    this.birthdayComponent.setBirthDay(this.loginTeacherCopy.getBirthMonth(), this.loginTeacherCopy.getBirthDay());
 
   }
 
@@ -319,18 +277,16 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if(this.myCheckerService.isOK(myEvent.myChecker, myEvent.value)) {
+      if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      return;
+    }
+
     if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_NAME");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("name", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NAME
@@ -338,13 +294,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_NICKNAME");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("nickname", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NICKNAME
@@ -352,13 +301,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_RESUME)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_TEACHER_RESUME");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 경력이 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("resume", myEvent.value);
         // end if - ON CHANGE - KEY_TEACHER_RESUME
@@ -366,13 +308,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_TEACHER_GREETING");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 인사말이 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("greeting", myEvent.value);
         // end if - ON CHANGE - KEY_TEACHER_GREETING        
@@ -380,13 +315,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_THUMBNAIL");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 이름이 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 이름인지 확인합니다.
         this.updateNewProp("thumbnail", myEvent.value);
         // end if - ON CHANGE - KEY_USER_THUMBNAIL
@@ -394,13 +322,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 전화번호 첫번째 3자리가 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
         // 새로운 전화번호라면 변수에 저장합니다.
         this.updateNewMobileHead(myEvent.value);
@@ -409,13 +330,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 전화번호 두번째 4자리가 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
         // 새로운 전화번호라면 변수에 저장합니다.
         this.updateNewMobileBody(myEvent.value);
@@ -424,13 +338,6 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 전화번호 마지막 4자리가 유효하지 않습니다.");
-          return;
-        }
-
         // 1. loginTeacher객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
         // 새로운 전화번호라면 변수에 저장합니다.
         this.updateNewMobileTail(myEvent.value);
@@ -439,52 +346,24 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 생일-연도가 유효하지 않습니다.");
-          return;
-        }
-
         this.updateNewBirthYear(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_YEAR
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 생일-월이 유효하지 않습니다.");
-          return;
-        }        
-
         this.updateNewBirthMonth(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_MONTH
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
-          return;
-        }   
-
         this.updateNewBirthDay(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_DAY
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
 
         if(isDebug) console.log("teacher-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
-
-        let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-        if(!isOK) {
-          if(isDebug) console.log("teacher-info / onChangedFromChild / 중단 / 생일-날짜 유효하지 않습니다.");
-          return;
-        }   
-
         this.updateNewProp("gender", myEvent.value);
         // end if - ON CHANGE - KEY_USER_GENDER
 
@@ -525,25 +404,16 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewMobileHead / 중단 / newMobileHead is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameMobileHead(newMobileHead)) {
       if(isDebug) console.log("teacher-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
       return;
     }
+    this.loginTeacherCopy.setMobileHead(newMobileHead);
 
-    // let mobileHead:string = this.mobileNumHead = this.loginTeacherCopy.getMobileHead();
-    let mobileHead:string = this.mobileNumHead = newMobileHead;
-    let mobileBody:string = this.mobileNumBody = this.loginTeacherCopy.getMobileBody();
-    let mobileTail:string = this.mobileNumTail = this.loginTeacherCopy.getMobileTail();
-
-    let newMobile:string = `${mobileHead}-${mobileBody}-${mobileTail}`;
-
-    if(isDebug) console.log("teacher-info / updateNewMobileHead / newMobile : ",newMobile);
-
-    this.loginTeacherCopy.mobile = newMobile;
-
-    // 저장 버튼 노출
-    this.isReadyToSave=true;
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
+      this.isReadyToSave=true;
+    }
   }
   private updateNewMobileBody(newMobileBody:string) :void {
 
@@ -555,25 +425,16 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewMobileBody / 중단 / newMobileBody is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameMobileBody(newMobileBody)) {
       if(isDebug) console.log("teacher-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
       return;
     }
+    this.loginTeacherCopy.setMobileBody(newMobileBody);
 
-    let mobileHead:string = this.mobileNumHead = this.loginTeacherCopy.getMobileHead();
-    // let mobileBody:string = this.mobileNumBody = this.loginTeacherCopy.getMobileBody();
-    let mobileBody:string = this.mobileNumBody = newMobileBody;
-    let mobileTail:string = this.mobileNumTail = this.loginTeacherCopy.getMobileTail();
-
-    let newMobile:string = `${mobileHead}-${mobileBody}-${mobileTail}`;
-
-    if(isDebug) console.log("teacher-info / updateNewMobileBody / newMobile : ",newMobile);
-
-    this.loginTeacherCopy.mobile = newMobile;
-
-    // 저장 버튼 노출
-    this.isReadyToSave=true;
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
+      this.isReadyToSave=true;
+    }    
   }
   private updateNewMobileTail(newMobileTail:string) :void {
 
@@ -585,25 +446,16 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewMobileTail / 중단 / newMobileTail is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameMobileTail(newMobileTail)) {
       if(isDebug) console.log("teacher-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
       return;
     }
+    this.loginTeacherCopy.setMobileBody(newMobileTail);
 
-    let mobileHead:string = this.mobileNumHead = this.loginTeacherCopy.getMobileHead();
-    let mobileBody:string = this.mobileNumBody = this.loginTeacherCopy.getMobileBody();
-    // let mobileTail:string = this.mobileNumTail = this.loginTeacherCopy.getMobileTail();
-    let mobileTail:string = this.mobileNumTail = newMobileTail;
-
-    let newMobile:string = `${mobileHead}-${mobileBody}-${mobileTail}`;
-
-    if(isDebug) console.log("teacher-info / updateNewMobileTail / newMobile : ",newMobile);
-
-    this.loginTeacherCopy.mobile = newMobile;    
-
-    // 저장 버튼 노출
-    this.isReadyToSave=true;
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
+      this.isReadyToSave=true;
+    }
   }
 
   private updateNewBirthYear(newBirthYear:string) :void {
@@ -616,25 +468,14 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewBirthYear / 중단 / newBirthYear is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameBirthYear(newBirthYear)) {
       if(isDebug) console.log("teacher-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
       return;
     }
+    this.loginTeacherCopy.setBirthYear(newBirthYear);
 
-    // let birthYear:string = this.mobileNumHead = this.loginTeacherCopy.getBirthYear();
-    let birthYear:string = this.birthYear = newBirthYear;
-    let birthMonth:string = this.birthMonth = this.loginTeacherCopy.getBirthMonth();
-    let birthDay:string = this.birthDay = this.loginTeacherCopy.getBirthDay();
-
-    let newBirthday:string = `${birthYear}-${birthMonth}-${birthDay}`;
-
-    if(isDebug) console.log("teacher-info / updateNewBirthYear / newBirthday : ",newBirthday);
-
-    this.loginTeacherCopy.birthday = newBirthday;
-
-    // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
       this.isReadyToSave=true;
     }
   }
@@ -648,25 +489,14 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameBirthMonth(newBirthMonth)) {
       if(isDebug) console.log("teacher-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
       return;
     }
+    this.loginTeacherCopy.setBirthMonth(newBirthMonth);
 
-    let birthYear:string = this.mobileNumHead = this.loginTeacherCopy.getBirthYear();
-    // let birthMonth:string = this.birthMonth = this.loginTeacherCopy.getBirthMonth();
-    let birthMonth:string = this.birthMonth = newBirthMonth;
-    let birthDay:string = this.birthDay = this.loginTeacherCopy.getBirthDay();
-
-    let newBirthday:string = `${birthYear}-${birthMonth}-${birthDay}`;
-
-    if(isDebug) console.log("teacher-info / updateNewBirthMonth / newBirthday : ",newBirthday);
-
-    this.loginTeacherCopy.birthday = newBirthday;
-
-    // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
       this.isReadyToSave=true;
     }
   }
@@ -680,25 +510,14 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("teacher-info / updateNewBirthDay / 중단 / newBirthDay is not valid!");
       return;
     }
-
     if(this.loginTeacherCopy.isSameBirthDay(newBirthDay)) {
       if(isDebug) console.log("teacher-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
       return;
     }
+    this.loginTeacherCopy.setBirthDay(newBirthDay);
 
-    let birthYear:string = this.mobileNumHead = this.loginTeacherCopy.getBirthYear();
-    let birthMonth:string = this.birthMonth = this.loginTeacherCopy.getBirthMonth();
-    // let birthDay:string = this.birthDay = this.loginTeacherCopy.getBirthDay();
-    let birthDay:string = this.birthDay = newBirthDay;
-
-    let newBirthday:string = `${birthYear}-${birthMonth}-${birthDay}`;
-
-    if(isDebug) console.log("teacher-info / updateNewBirthDay / newBirthday : ",newBirthday);
-
-    this.loginTeacherCopy.birthday = newBirthday;
-
-    // 저장 버튼 노출
-    if(this.isOKBirthday(birthYear, birthMonth, birthDay)) {
+    if(this.isOKAll()) {
+      // 저장 버튼 노출
       this.isReadyToSave=true;
     }
   }    
@@ -762,7 +581,7 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
 
         let teacherUpdated = myResponse.digDataProp(["teacher"]);
         if(myResponse.isSuccess && null != teacherUpdated) {
-          
+
           // 저장된 유저 정보를 다시 받아옵니다.
           // 받아온 유저 정보로 업데이트 합니다.
           this.loginTeacher.updateWithJSON(teacherUpdated);

@@ -52,27 +52,6 @@ class Teachers extends MY_REST_Controller {
         $this->load->library('MY_Auth');
     }
 
-    public function email_get()
-    {
-        if($this->is_not_ok())
-        {
-            return;
-        }
-
-        $email = $this->my_paramchecker->get('q','user_email');
-
-        $output = [];
-        $user = null;
-        if(!empty($email)) 
-        {
-            $user = $this->my_sql->get_user_by_email($email);
-        }
-
-        $output["user"] = $user;
-        $output["email"] = $email;
-        $this->respond_200($output);
-    }
-
     public function add_post()
     {
         if($this->is_not_ok())
@@ -402,6 +381,169 @@ class Teachers extends MY_REST_Controller {
             );
         } // end if
     }
+
+    public function email_post()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
+        }
+
+        // @ Required
+        $email = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "email",
+            // $key_filter=""
+            "user_email"
+        );
+        $params = array(
+            "email"=>$email
+        );
+        $output["params"] = $params;        
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed()) 
+        {
+            $is_ok = false;
+        }
+        if($is_ok) {
+            // 등록한 선생님 정보를 가져옵니다.
+            $teacher = $this->my_sql->get_teacher_by_email($email);
+            $output["teacher"] = $teacher;
+            $this->respond_200($output);
+        } 
+        else 
+        {
+            // 실패!
+            $this->respond_200_Failed(
+                // $msg=""
+                "Teacher select failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
+    }    
+
+    public function mobile_post()
+    {
+        if($this->is_not_ok())
+        {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );  
+            return;            
+        }
+
+        // @ Required
+        $mobile_head = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_head",
+            // $key_filter=""
+            "user_mobile_kor_head"
+        );
+        // @ Required
+        $mobile_body = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_body",
+            // $key_filter=""
+            "user_mobile_kor_body"
+        );
+        // @ Required
+        $mobile_tail = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "mobile_tail",
+            // $key_filter=""
+            "user_mobile_kor_tail"
+        );       
+
+        $params = array(
+            "mobile_head"=>$mobile_head,
+            "mobile_body"=>$mobile_body,
+            "mobile_tail"=>$mobile_tail
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed()) 
+        {
+            $is_ok = false;
+        }
+        if($is_ok) {
+            // 등록한 선생님 정보를 가져옵니다.
+            $teacher = $this->my_sql->get_teacher_by_mobile($user_id);
+            $output["teacher"] = $teacher;
+            $this->respond_200($output);
+        } 
+        else 
+        {
+            // 실패!
+            $this->respond_200_Failed(
+                // $msg=""
+                "Teacher select failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
+    }    
 
     public function update_post()
     {
