@@ -64,12 +64,15 @@ export class Klass {
     public price_list: string[];
     public klass_price_list: KlassPrice[];
     public price_list_width_discount: number[];
-    public $discount:string;
-    public $discount_arr:number[];
+    public discount:string;
+    public discount_arr:number[];
     public price_with_format: string;
     public class_status: string;
     public enrollment_interval_week:number;
     public class_img_url: string;
     public calendar_table_linear: Calendar[][];
     public calendar_table_monthly: Calendar[][][];
+
+    public date_created: string;
+    public date_updated: string;
 }

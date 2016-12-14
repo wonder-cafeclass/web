@@ -207,6 +207,8 @@ class Klass extends MY_REST_Controller {
 
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
         $output["klass_list"] = $klass_list;
+        $new_klass = $this->get_klass_course_new_class();
+        $output["new_klass"] = [$new_klass];
 
         if (empty($klass_list))
         {
@@ -281,6 +283,8 @@ class Klass extends MY_REST_Controller {
             $time
         );
         $output["klass_list"] = $klass_list;
+        $new_klass = $this->get_klass_course_new_class();
+        $output["new_klass"] = [$new_klass];
 
         if (empty($klass_list))
         {
@@ -290,6 +294,73 @@ class Klass extends MY_REST_Controller {
         }
         $this->respond_200($output);
     }
+    private function get_class_img_default() 
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'no_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
+    }
+    private function get_level_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_days_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_time_begin_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_img_url_list'
+        );    
+    }
+    private function get_venue_subway_station_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'everywhere',
+            'class_venue_subway_station_list',
+            'class_venue_subway_station_img_url_list'
+        );        
+    
+    } 
+    private function set_default_klass_course($klass_course) {
+
+        if(is_null($klass_course)) 
+        {
+            return null;
+        }
+
+        $klass_course->price = $klass_course->price_with_format = "0";
+
+        // 기본 이미지 설정.
+        $klass_course->level_img_url =  
+        $this->get_level_img_default();
+
+        $klass_course->days_img_url = 
+        $this->get_days_img_default();
+
+        $klass_course->time_begin_img_url = 
+        $this->get_time_begin_img_default();
+
+        $klass_course->venue_subway_station_img_url = 
+        $this->get_venue_subway_station_img_default();
+
+        return $klass_course;
+
+    }   
+
     private function get_klass_course_no_class() {
 
         if($this->is_not_ok()) {
@@ -297,16 +368,38 @@ class Klass extends MY_REST_Controller {
         }
         
         $klass_course = new KlassCourse();
+        $klass_course->id = -1;
         $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'no_class', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
+        $this->get_class_img_default();
+
+        $klass_course->title="수업이 없습니다.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
 
         return $klass_course;
     }
+    private function get_klass_course_new_class() {
+
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $klass_course = new KlassCourse();
+        $klass_course->id = -100;
+        $klass_course->class_img_url = 
+        $this->my_paramchecker->get_const_from_list(
+            'new_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
+        $klass_course->title="새로운 수업을 만들어요.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
+
+        return $klass_course;
+    }    
 
 
     private function get_levels() {

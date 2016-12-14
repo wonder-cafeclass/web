@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
+var klass_1 = require('./model/klass');
 var klass_venue_1 = require('./model/klass-venue');
 var url_service_1 = require('../util/url.service');
 var my_extractor_1 = require('../util/http/my-extractor');
@@ -193,6 +194,108 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     }; // end getKlassSelectile
+    KlassService.prototype.getKlassListFromJSON = function (klassJSONList) {
+        if (null == klassJSONList && 0 == klassJSONList.length) {
+            return [];
+        }
+        var klassList = [];
+        for (var i = 0; i < klassJSONList.length; ++i) {
+            var klassJSON = klassJSONList[i];
+            var klass = this.getKlassFromJSON(klassJSON);
+            klassList.push(klass);
+        }
+        return klassList;
+    };
+    KlassService.prototype.getKlassFromJSON = function (klassJSON) {
+        var klass = new klass_1.Klass();
+        // id,
+        klass.id = -1;
+        if (null != klassJSON.id) {
+            klass.id = +klassJSON.id;
+        }
+        // teacher_id,
+        klass.teacher_id = -1;
+        if (null != klassJSON.teacher_id) {
+            klass.teacher_id = +klassJSON.teacher_id;
+        }
+        // teacher_resume,
+        klass.teacher_resume = klassJSON.teacher_resume;
+        // teacher_greeting,
+        klass.teacher_greeting = klassJSON.teacher_greeting;
+        // title,
+        klass.title = klassJSON.title;
+        // desc,
+        klass.desc = klassJSON.desc;
+        // feature,
+        klass.feature = klassJSON.feature;
+        // target,
+        klass.target = klassJSON.target;
+        // schedule,
+        klass.schedule = klassJSON.schedule;
+        // date_begin,
+        klass.date_begin = klassJSON.date_begin;
+        // time_begin,
+        klass.time_begin = klassJSON.time_begin;
+        // time_duration_minutes,
+        klass.time_duration_minutes = klassJSON.time_duration_minutes;
+        // time_end,
+        klass.time_end = klassJSON.time_end;
+        // level,
+        klass.level = klassJSON.level;
+        // week_min,
+        klass.week_min = klassJSON.week_min;
+        // week_max,
+        klass.week_max = klassJSON.week_max;
+        // days,
+        klass.days = klassJSON.days;
+        // class_per_week, / Warning! 이름다름
+        klass.class_day_per_week = klassJSON.class_per_week;
+        // venue,
+        klass.venue = klassJSON.venue;
+        // venue_subway_station,
+        klass.venue_subway_station = klassJSON.venue_subway_station;
+        // venue_cafe,
+        klass.venue_cafe = klassJSON.venue_cafe;
+        // venue_map_link,
+        klass.venue_map_link = klassJSON.venue_map_link;
+        // venue_title,
+        klass.venue_title = klassJSON.venue_title;
+        // venue_telephone,
+        klass.venue_telephone = klassJSON.venue_telephone;
+        // venue_address,
+        klass.venue_address = klassJSON.venue_address;
+        // venue_road_address,
+        klass.venue_road_address = klassJSON.venue_road_address;
+        // venue_latitude,
+        klass.venue_latitude = klassJSON.venue_latitude;
+        // venue_longitude,
+        klass.venue_longitude = klassJSON.venue_longitude;
+        // status,
+        klass.class_status = klassJSON.status;
+        // enrollment_interval_week,
+        klass.enrollment_interval_week = klassJSON.enrollment_interval_week;
+        // tags,
+        klass.search_tag = klassJSON.tags;
+        // price,
+        klass.price = klassJSON.price;
+        // discount,
+        klass.discount = klassJSON.discount;
+        // class_img_url,
+        klass.class_img_url = klassJSON.class_img_url;
+        // level_img_url,
+        klass.level_img_url = klassJSON.level_img_url;
+        // days_img_url,
+        klass.days_img_url = klassJSON.days_img_url;
+        // time_begin_img_url,
+        klass.time_begin_img_url = klassJSON.time_begin_img_url;
+        // venue_subway_station_img_url,
+        klass.venue_subway_station_img_url = klassJSON.venue_subway_station_img_url;
+        // date_created,
+        klass.date_created = klassJSON.date_created;
+        // date_updated
+        klass.date_updated = klassJSON.date_updated;
+        return klass;
+    }; // end method
     KlassService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, url_service_1.UrlService])
