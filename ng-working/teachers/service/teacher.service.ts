@@ -30,9 +30,6 @@ export class TeacherService {
 
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
 
-    let mobileArr:string[] = teacher.getMobileArr();
-    let birthdayArr:string[] = teacher.getBirthdayArr();
-
     return this.insertTeacher(
       // apiKey:string, 
       apiKey,
@@ -51,19 +48,19 @@ export class TeacherService {
       // gender:string,
       teacher.gender,
       // birthYear:string,
-      birthdayArr[0],
+      teacher.getBirthYear(),
       // birthMonth:string,
-      birthdayArr[1],
+      teacher.getBirthMonth(),
       // birthDay:string,
-      birthdayArr[2],
+      teacher.getBirthDay(),
       // thumbnail:string,
       teacher.thumbnail,
       // mobileHead:string,
-      mobileArr[0],
+      teacher.getMobileHead(),
       // mobileBody:string,
-      mobileArr[1],
+      teacher.getMobileBody(),
       // mobileTail:string
-      mobileArr[2]
+      teacher.getMobileTail()
     );
   }  
 
@@ -185,8 +182,8 @@ export class TeacherService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / updateTeacher / 시작");
     if(isDebug) console.log("teacher.service / updateTeacher / apiKey : ",apiKey);
     if(isDebug) console.log("teacher.service / updateTeacher / userId : ",userId);
@@ -258,8 +255,8 @@ export class TeacherService {
                       mobileBody:string,
                       mobileTail:string ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / getTeacherByMobile / 시작");
     if(isDebug) console.log("teacher.service / getTeacherByMobile / mobileHead : ",mobileHead);
     if(isDebug) console.log("teacher.service / getTeacherByMobile / mobileBody : ",mobileBody);
@@ -286,8 +283,8 @@ export class TeacherService {
 
   getTeacherByEmail (apiKey:string, email:string): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher.service / getUserByEmail / 시작");
     if(isDebug) console.log("teacher.service / getUserByEmail / email : ",email);    
 

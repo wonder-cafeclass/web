@@ -262,50 +262,38 @@ var SignupComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("signup / onClickSignup / 시작");
-        var isAllOK = true;
-        // 약관 동의 확인. 
-        if (!this.hasAgreedWithTerms) {
-            if (isDebug)
-                console.log("signup / onClickSignup / this.hasAgreedWithTerms : ", this.hasAgreedWithTerms);
-            isAllOK = false;
-            // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
-            this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
-        }
-        // @ Required
-        // Email
         // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
         // 문제가 있다면 해당 필드에 경고를 보여줍니다.
-        if (this.emailComponent.hasNotDone()) {
-            isAllOK = false;
-        }
         // @ Required
-        // Password
+        if (this.emailComponent.hasNotDone()) {
+            this.nicknameComponent.showTooltipFailWarning(
+            // msg:string,
+            "이메일을 다시 확인해주세요", 
+            // isTimeout:Boolean
+            false);
+            return;
+        }
+        // @ Required - password
         if (this.passwordComponent.hasNotDoneP()) {
             if (isDebug)
                 console.log("signup / onClickSignup / 비밀번호에 문제가 있습니다. 경고 메시지를 노출합니다.");
             this.passwordComponent.showWarningP();
-            isAllOK = false;
+            return;
         }
-        else {
-            // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
-            if (this.passwordComponent.hasNotDoneRP()) {
-                if (isDebug)
-                    console.log("signup / onClickSignup / 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.");
-                this.passwordComponent.showWarningRP();
-                isAllOK = false;
-            }
+        else if (this.passwordComponent.hasNotDoneRP()) {
+            if (isDebug)
+                console.log("signup / onClickSignup / 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.");
+            this.passwordComponent.showWarningRP();
+            return;
         }
-        // @ Required
-        // 전화번호
-        var hasNotDoneMobileHead = this.mobileComponent.hasNotDoneMobileHead();
-        var hasNotDoneMobileBody = false;
-        var hasNotDoneMobileTail = false;
-        if (hasNotDoneMobileHead) {
+        // @ Required - Mobile
+        if (this.mobileComponent.hasNotDoneMobileHead()) {
             this.mobileComponent.showWarningMobileHead();
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneMobileHead : ");
-            isAllOK = false;
+            return;
         }
+        // @ Required - Mobile
         if (this.userCopy.isMobileHeadEmpty()) {
             // 전화번호 첫 3자리가 기본값 '010'일 경우, 컴포넌트에서 기본값을 가져온다.
             this.userCopy.setMobileHead(this.mobileComponent.getMobileHead());
@@ -316,81 +304,124 @@ var SignupComponent = (function () {
             this.mobileComponent.showWarningMobileBody(null);
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneMobileBody");
-            isAllOK = false;
+            return;
         }
         else if (this.mobileComponent.hasDoneMobileHead() &&
             this.mobileComponent.hasDoneMobileBody() &&
             this.mobileComponent.hasNotDoneMobileTail()) {
             // 휴대전화 첫 세자리 완료. 두번째 네자리는 완료. 휴대전화 세번째 4자리 아직 완료안됨. 경고.
             this.mobileComponent.showWarningMobileTail();
-            isAllOK = false;
+            return;
         }
         // @ Required - Gender
         if (this.genderComponent.hasNotDone()) {
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneGender");
-            isAllOK = false;
+            this.genderComponent.showWarning();
+            return;
         }
         // @ Required
         // name
         if (this.nicknameComponent.hasNotDone()) {
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneNickname");
+            // 유효한 값이 아닙니다!
+            this.nicknameComponent.showTooltipFailWarning(
+            // msg:string,
+            "닉네임을 다시 확인해주세요", 
+            // isTimeout:Boolean
+            false);
+            return;
         }
-        // @ Optional
+        // @ Required
         if (this.nameComponent.hasNotDone()) {
             if (isDebug)
                 console.log("signup / onClickSignup / hasNotDoneName");
+            // 유효한 값이 아닙니다!
+            this.nameComponent.showTooltipFailWarning(
+            // msg:string,
+            "이름을 다시 확인해주세요", 
+            // isTimeout:Boolean
+            false);
+            return;
         }
+        // @ Optional
+        // 프로필 이미지 검사 - 없는 경우, 기본값 설정.
+        if (this.userCopy.isEmptyThumbnail()) {
+            this.userCopy.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+        } // end if
+        // 약관 동의 확인. 
+        if (!this.hasAgreedWithTerms) {
+            if (isDebug)
+                console.log("signup / onClickSignup / this.hasAgreedWithTerms : ", this.hasAgreedWithTerms);
+            // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
+            this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+            return;
+        }
+        if (null != this.user) {
+            // 1-1. 플랫폼을 통해 가입 - facebook
+            // 1-2. 플랫폼을 통해 가입 - kakao
+            // 1-3. 플랫폼을 통해 가입 - naver
+            if (isDebug)
+                console.log("signup / onClickSignup / 플랫폼을 통해 가입");
+            this.updateUser();
+        }
+        else if (null == this.user) {
+            // 2. 플랫폼을 통하지 않고 직접 가입.
+            if (isDebug)
+                console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
+            this.addUser();
+        } // end inner if
+        // REMOVE ME
+        // let isAllOK:boolean = true;
         // @ Optional
         // 생년월일 검사
-        if (this.birthdayComponent.hasNotDoneBirthYear()) {
-            this.birthdayComponent.showWarningBirthYear();
-            if (isDebug)
-                console.log("signup / onClickSignup / hasNotDoneBirthYear");
+        /*
+        if(this.birthdayComponent.hasNotDoneBirthYear()) {
+          // this.birthdayComponent.showWarningBirthYear();
+          if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthYear");
+          // 유효한 값이 아닙니다!
         }
-        if (this.birthdayComponent.hasNotDoneBirthMonth()) {
-            this.birthdayComponent.showWarningBirthMonth();
-            if (isDebug)
-                console.log("signup / onClickSignup / hasNotDoneBirthMonth");
+        if(this.birthdayComponent.hasNotDoneBirthMonth()) {
+          // this.birthdayComponent.showWarningBirthMonth();
+          if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthMonth");
+          // 유효한 값이 아닙니다!
         }
-        if (this.birthdayComponent.hasNotDoneBirthDay()) {
-            this.birthdayComponent.showWarningBirthDay();
-            if (isDebug)
-                console.log("signup / onClickSignup / hasNotDoneBirthDay");
+        if(this.birthdayComponent.hasNotDoneBirthDay()) {
+          // this.birthdayComponent.showWarningBirthDay();
+          if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthDay");
+          // 유효한 값이 아닙니다!
         }
+    
         // @ Optional
         // 프로필 이미지 검사
-        if (this.profileImgUploadComponent.hasNotDone()) {
-            if (isDebug)
-                console.log("signup / onClickSignup / hasNotDoneProfileImg");
-        }
-        else {
-            if (this.userCopy.isEmptyThumbnail()) {
-                this.userCopy.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
-            } // end if
+        if(this.profileImgUploadComponent.hasNotDone()) {
+          if(isDebug) console.log("signup / onClickSignup / hasNotDoneProfileImg");
+          // 유효한 값이 아닙니다!
+        } else {
+          if(this.userCopy.isEmptyThumbnail()) {
+            this.userCopy.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+          } // end if
         } // end if
-        if (isDebug)
-            console.log("signup / onClickSignup / isAllOK : ", isAllOK);
+        */
         // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
-        if (isAllOK) {
-            if (isDebug)
-                console.log("signup / onClickSignup / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
-            if (null != this.user) {
-                // 1-1. 플랫폼을 통해 가입 - facebook
-                // 1-2. 플랫폼을 통해 가입 - kakao
-                // 1-3. 플랫폼을 통해 가입 - naver
-                if (isDebug)
-                    console.log("signup / onClickSignup / 플랫폼을 통해 가입");
-                this.updateUser();
-            }
-            else if (null == this.user) {
-                // 2. 플랫폼을 통하지 않고 직접 가입.
-                if (isDebug)
-                    console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
-                this.addUser();
-            } // end inner if
+        /*
+        if(isAllOK) {
+          if(isDebug) console.log("signup / onClickSignup / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
+    
+          if(null != this.user) {
+            // 1-1. 플랫폼을 통해 가입 - facebook
+            // 1-2. 플랫폼을 통해 가입 - kakao
+            // 1-3. 플랫폼을 통해 가입 - naver
+            if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통해 가입");
+            this.updateUser();
+          } else if(null == this.user) {
+            // 2. 플랫폼을 통하지 않고 직접 가입.
+            if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
+            this.addUser();
+          } // end inner if
         } // end outer if
+        */
     }; // end method
     SignupComponent.prototype.updateUser = function () {
         var _this = this;
@@ -755,8 +786,13 @@ var SignupComponent = (function () {
         // mobileTail:string
         this.userCopy.getMobileTail())
             .then(function (myResponse) {
+            if (isDebug)
+                console.log("signup / checkMobileUnique / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
-                if (myResponse.hasDataProp("user")) {
+                var userJSON = myResponse.getDataProp("user");
+                if (isDebug)
+                    console.log("signup / checkMobileUnique / userJSON : ", userJSON);
+                if (null != userJSON) {
                     _this.mobileComponent.showWarningMobileBody("이미 등록된 번호입니다");
                 }
                 else {

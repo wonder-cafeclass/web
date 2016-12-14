@@ -460,8 +460,8 @@ var TeacherInfoComponent = (function () {
     }; // end method
     TeacherInfoComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("teacher-info / onClickSave / init");
         var isReadyToSave = this.checkHasChanged();

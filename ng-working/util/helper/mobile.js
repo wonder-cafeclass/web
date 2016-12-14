@@ -18,11 +18,16 @@ var HelperMobile = (function () {
         if (null == mobileDigits || "" == mobileDigits) {
             return;
         }
+        if (isDebug)
+            console.log("helper.mobile / update / BEFORE / this.mobileDigits : ", this.mobileDigits);
+        this.mobileDigits = mobileDigits;
+        if (isDebug)
+            console.log("helper.mobile / update / AFTER / this.mobileDigits : ", this.mobileDigits);
         // 초기화.
         this.head = "010";
         this.body = "";
         this.tail = "";
-        var mobileArr = this.mobileDigits.split("-");
+        var mobileArr = mobileDigits.split("-");
         if (isDebug)
             console.log("helper.mobile / update / mobileArr : ", mobileArr);
         if (null != mobileArr && 3 == mobileArr.length) {

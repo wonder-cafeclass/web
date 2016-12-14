@@ -563,8 +563,8 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("teacher-info / onClickSave / init");
 
     let isReadyToSave:boolean = this.checkHasChanged();

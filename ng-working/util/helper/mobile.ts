@@ -22,13 +22,16 @@ export class HelperMobile {
 		if(null == mobileDigits || "" == mobileDigits) {
 			return;
 		}
+		if(isDebug) console.log("helper.mobile / update / BEFORE / this.mobileDigits : ",this.mobileDigits);
+		this.mobileDigits = mobileDigits;
+		if(isDebug) console.log("helper.mobile / update / AFTER / this.mobileDigits : ",this.mobileDigits);
 
 		// 초기화.
 		this.head = "010";
 		this.body = "";
 		this.tail = "";
 
-		let mobileArr:string[] = this.mobileDigits.split("-");
+		let mobileArr:string[] = mobileDigits.split("-");
 		if(isDebug) console.log("helper.mobile / update / mobileArr : ",mobileArr);
 		if(null != mobileArr && 3 == mobileArr.length) {
 			this.head = mobileArr[0];

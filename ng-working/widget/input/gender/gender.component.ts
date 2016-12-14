@@ -165,7 +165,7 @@ export class GenderComponent implements OnInit, AfterViewInit {
   public hasDone() :boolean {
     return this.isOK(this.gender);
   }
-  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  // @ Desc : 성별 입력을 확인해 달라는 표시를 보여줍니다.
   public showWarning() :void {
     this.isSuccessInput = false;
     this.tooltipMsg = this.tooltipMsgGenderNotValid;

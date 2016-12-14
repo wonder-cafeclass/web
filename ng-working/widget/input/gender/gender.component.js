@@ -127,7 +127,7 @@ var GenderComponent = (function () {
     GenderComponent.prototype.hasDone = function () {
         return this.isOK(this.gender);
     };
-    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    // @ Desc : 성별 입력을 확인해 달라는 표시를 보여줍니다.
     GenderComponent.prototype.showWarning = function () {
         this.isSuccessInput = false;
         this.tooltipMsg = this.tooltipMsgGenderNotValid;

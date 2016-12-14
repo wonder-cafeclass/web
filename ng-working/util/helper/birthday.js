@@ -18,10 +18,17 @@ var HelperBirthday = (function () {
         if (null == birthdayStr || "" == birthdayStr) {
             return;
         }
+        if (isDebug)
+            console.log("helper.birth / update / BEFORE / birthdayStr : ", birthdayStr);
+        this.birthdayStr = birthdayStr;
+        if (isDebug)
+            console.log("helper.birth / update / AFTER / birthdayStr : ", birthdayStr);
         // 초기화.
         this.head = "";
         this.body = "";
         this.tail = "";
+        if (isDebug)
+            console.log("helper.birth / update / this.birthdayStr : ", this.birthdayStr);
         var birthArr = this.birthdayStr.split("-");
         if (isDebug)
             console.log("helper.birth / update / birthArr : ", birthArr);
@@ -55,8 +62,12 @@ var HelperBirthday = (function () {
         if (null == newHead || "" == newHead) {
             return this.birthdayStr;
         }
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthYear / this.birthdayStr : ", this.birthdayStr);
         var birthArr = this.getBirthdayArr();
         var newBirthdayDigits = newHead + "-" + birthArr[1] + "-" + birthArr[2];
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthYear / newBirthdayDigits : ", newBirthdayDigits);
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };
@@ -110,8 +121,12 @@ var HelperBirthday = (function () {
         if (null == newBody || "" == newBody) {
             return this.birthdayStr;
         }
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthMonth / this.birthdayStr : ", this.birthdayStr);
         var birthArr = this.getBirthdayArr();
         var newBirthdayDigits = birthArr[0] + "-" + newBody + "-" + birthArr[2];
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthMonth / newBirthdayDigits : ", newBirthdayDigits);
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };
@@ -165,8 +180,12 @@ var HelperBirthday = (function () {
         if (null == newTail || "" == newTail) {
             return this.birthdayStr;
         }
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthDay / this.birthdayStr : ", this.birthdayStr);
         var birthArr = this.getBirthdayArr();
         var newBirthdayDigits = birthArr[0] + "-" + birthArr[1] + "-" + newTail;
+        if (isDebug)
+            console.log("helper.birth / getBirthdayWithNewBirthDay / newBirthdayDigits : ", newBirthdayDigits);
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };

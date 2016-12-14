@@ -682,9 +682,12 @@ var ApplyTeacherComponent = (function () {
             this.teacherService.insertTeacherByTeacher(this.watchTower.getApiKey(), this.newTeacherCopy).then(function (myResponse) {
                 if (isDebug)
                     console.log("apply-teacher / onClickSave / 유저정보 업데이트 / myResponse : ", myResponse);
-                var teacher = myResponse.digDataProp(["teacher"]);
-                if (myResponse.isSuccess() && null != teacher) {
+                var teacherJSON = myResponse.digDataProp(["teacher"]);
+                if (myResponse.isSuccess() && null != teacherJSON) {
                     // 저장완료!
+                    // 저장된 선생님 정보를 전파합니다.
+                    var teacher = _this.teacherService.getTeacherFromJSON(teacherJSON);
+                    _this.watchTower.announceLoginTeacher(teacher);
                     // 홈으로 리다이렉트 합니다.
                     if (isDebug)
                         console.log("apply-teacher / onClickSave / 저장완료! / 홈으로 리다이렉트 합니다.");
@@ -737,7 +740,8 @@ var ApplyTeacherComponent = (function () {
             .getTeacherByEmail(this.watchTower.getApiKey(), email)
             .then(function (myResponse) {
             if (myResponse.isSuccess()) {
-                if (myResponse.hasDataProp("teacher")) {
+                var teacherJSON = myResponse.getDataProp("teacher");
+                if (null != teacherJSON) {
                     // 등록된 유저가 있습니다. 유저에게 경고 메시지를 보여줍니다.
                     _this.emailComponent.showTooltipFailWarning(
                     // msg:string, 
@@ -792,7 +796,8 @@ var ApplyTeacherComponent = (function () {
         this.newTeacherCopy.getMobileTail())
             .then(function (myResponse) {
             if (myResponse.isSuccess()) {
-                if (myResponse.hasDataProp("user")) {
+                var teacherJSON = myResponse.getDataProp("teacher");
+                if (null != teacherJSON) {
                     _this.mobileComponent.showWarningMobileBody("이미 등록된 번호입니다");
                 }
                 else {
@@ -802,7 +807,7 @@ var ApplyTeacherComponent = (function () {
                     if (isDebug)
                         console.log("apply-teacher / checkMobileUnique / this.newTeacherCopy.mobile : ", _this.newTeacherCopy.mobile);
                     _this.newTeacherCopy.mobile = mobile;
-                }
+                } // end if
             }
             else {
                 // TODO - Error Report

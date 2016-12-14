@@ -821,13 +821,16 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
         if(isDebug) console.log("apply-teacher / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
 
-        let teacher:Teacher = myResponse.digDataProp(["teacher"]);
-        if(myResponse.isSuccess() && null != teacher) {
+        let teacherJSON = myResponse.digDataProp(["teacher"]);
+        if(myResponse.isSuccess() && null != teacherJSON) {
 
           // 저장완료!
+          // 저장된 선생님 정보를 전파합니다.
+          let teacher:Teacher = this.teacherService.getTeacherFromJSON(teacherJSON);
+          this.watchTower.announceLoginTeacher(teacher);
+
           // 홈으로 리다이렉트 합니다.
           if(isDebug) console.log("apply-teacher / onClickSave / 저장완료! / 홈으로 리다이렉트 합니다.");
-
           this.router.navigate([this.redirectUrl]);
 
         } else if(myResponse.isFailed()) { 
@@ -838,6 +841,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
           }
 
         } else {
+
           // TODO - Error Report
           if(isDebug) console.log("apply-teacher / onClickSave / Error Report");
           
@@ -885,7 +889,9 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
       if( myResponse.isSuccess() ) {
 
-        if(myResponse.hasDataProp("teacher")) {
+        let teacherJSON = myResponse.getDataProp("teacher");
+        if(null != teacherJSON) {
+
           // 등록된 유저가 있습니다. 유저에게 경고 메시지를 보여줍니다.
           this.emailComponent.showTooltipFailWarning(
             // msg:string, 
@@ -893,12 +899,15 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
             // isTimeout:Boolean
             false
           );
+
         } else {
+
           // 해당 이메일로 등록된 유저는 없습니다. 
           // email 등록이 가능합니다.
           this.newTeacherCopy.email = email;
           if(isDebug) console.log("apply-teacher / checkEmailUnique / email 등록이 가능합니다.");
           if(isDebug) console.log("apply-teacher / checkEmailUnique / this.newTeacherCopy.email : ",this.newTeacherCopy.email);
+
         } // end if
         
       } else {
@@ -947,16 +956,20 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
       if( myResponse.isSuccess() ) {
 
-        if(myResponse.hasDataProp("user")) {
+        let teacherJSON = myResponse.getDataProp("teacher");
+        if(null != teacherJSON) {
+
           this.mobileComponent.showWarningMobileBody("이미 등록된 번호입니다");
+
         } else {
+
           // 해당 전화번호로 등록된 유저는 없습니다. 
           if(isDebug) console.log("apply-teacher / checkMobileUnique / mobile 등록이 가능합니다.");
           if(isDebug) console.log("apply-teacher / checkMobileUnique / this.newTeacherCopy.mobile : ",this.newTeacherCopy.mobile);
 
           this.newTeacherCopy.mobile = mobile;
 
-        }
+        } // end if
         
       } else {
 
