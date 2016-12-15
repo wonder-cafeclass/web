@@ -76,31 +76,31 @@ class MY_Sql
         return true;
     }    
 
-    private function is_ok($key=null, $value=null) 
+    private function is_not_ok($key=null, $value=null) 
     {   
-        return !$this->is_not_ok($key, $value);
+        return !$this->is_ok($key, $value);
     }
 
-    private function is_not_ok($key=null, $value=null) 
+    private function is_ok($key=null, $value=null) 
     {
         if(is_null($key)) 
         {
-            return true;
+            return false;
         }
         if(is_null($value)) 
         {
-            return true;
+            return false;
         }
         if(!isset($this->CI->my_paramchecker)) 
         {
-            return true;
+            return false;
         }
 
-        if($this->CI->my_paramchecker->is_not_ok($key, $value))
+        $result = $this->CI->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
         {
             return true;
         }
-
         return false;
     }
 
@@ -1624,28 +1624,355 @@ class MY_Sql
             $teacher = $rows[0];   
         }
 
-        // REMOVE ME
-        /*
-        if(isset($teacher) && !empty($teacher->resume))
-        {
-            $teacher->resume_arr = explode("|",$teacher->resume);
-        }
-        if(isset($teacher) && !empty($teacher->greeting))
-        {
-            $teacher->greeting_arr = explode("|",$teacher->greeting);
-        }
-        if(isset($teacher) && !empty($teacher->thumbnail))
-        {
-            $teacher->thumbnail_url = $this->CI->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
-        }
-        if(isset($teacher) && empty($teacher->nickname))
-        {
-            $teacher->nickname = $teacher->name;
-        }
-        */
-
         return $teacher;
+    }
+
+    // @ Desc : 시작날짜 ex) 2016-10-10
+    private function get_klass_date_begin_default()
+    {   
+        if(isset($this->CI->my_time))
+        {
+            // 기본 시작 값은 일주일 뒤.
+            return $this->CI->my_time->get_days_after(7);
+        }
+        return "";
+    }
+    // @ Desc : 시작시간 ex) 19:00
+    private function get_klass_time_begin_default()
+    {   
+        // 기본 시작 값은 일주일 뒤.
+        return "19:00";
+    }
+    // @ Desc : 시작시간 ex) 21:00
+    private function get_klass_time_end_default()
+    {   
+        // 기본 시작 값은 일주일 뒤.
+        return "21:00";
+    }
+    // @ Desc : 수업시간 분으로 표시(minutes) ex) 120
+    private function get_klass_time_duration_minutes_default()
+    {   
+        return 120;
+    }
+    // @ Desc : 수업레벨 B(Beginner/왕초급),E(Elementary/초급),P(Pre-intermediate/초중급),I(Intermediate/중급),U(Upper-intermediate/중상급),A(Advanced/상급)
+    private function get_klass_level_default()
+    {
+        $class_level_list = $this->CI->my_paramchecker->get_const('class_level_list');
+        if(!empty($class_level_list)) {
+            return $class_level_list[1];
+        }
+
+        return "";
+    }
+    // @ Desc : '수업 최소 수강 week 수 ex) 2 - 2주'
+    private function get_klass_week_min_default()
+    {
+        return 2;
     }    
+    private function get_klass_week_max_default()
+    {
+        return 4;
+    }    
+    private function get_klass_days_default()
+    {
+        $class_level_list = $this->CI->my_paramchecker->get_const('class_days_list');
+        if(!empty($class_level_list)) {
+            return $class_level_list[1];
+        }
+
+        return "";
+    }
+    private function get_klass_class_per_week_default()
+    {
+        return 1;
+    }
+    private function get_klass_price_default()
+    {
+        return 65000;
+    }
+    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $week_min=-1, $week_max=-1, $days="", $class_per_week=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $teacher_resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $teacher_greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_title", $title))
+        {
+            $title = "수업 제목을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_desc", $desc))
+        {
+            $desc = "수업 설명을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_feature", $feature))
+        {
+            $feature = "수업 특징을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_target", $target))
+        {
+            $target = "수업 대상을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_schedule", $schedule))
+        {
+            $schedule = "수업 일정을 입력해주세요";
+        }
+
+        if($this->is_not_ok("klass_date_begin", $date_begin))
+        {
+            $date_begin = $this->get_klass_date_begin_default();
+        }
+        if($this->is_not_ok("klass_time", $time_begin))
+        {
+            $time_begin = $this->get_klass_time_begin_default();
+        }
+        if($this->is_not_ok("klass_time_range", $time_duration_minutes))
+        {
+            $time_duration_minutes = $this->get_klass_time_duration_minutes_default();
+        }
+        if($this->is_not_ok("klass_level", $level))
+        {
+            $level = $this->get_klass_level_default();
+        }
+
+        if($this->is_not_ok("klass_week_min", $week_min))
+        {
+            $week_min = $this->get_klass_week_min_default();
+        }
+        if($this->is_not_ok("klass_week_max", $week_max))
+        {
+            $week_max = $this->get_klass_week_max_default();
+        }
+        if($this->is_not_ok("klass_days", $days))
+        {
+            $days = $this->get_klass_days_default();
+        }
+        if($this->is_not_ok("klass_class_per_week", $class_per_week))
+        {
+            $class_per_week = $this->get_klass_class_per_week_default();
+        }
+        if($this->is_not_ok("klass_price", $price))
+        {
+            $price = $this->get_klass_price_default();
+        }
+
+        // wonder.jung
+
+        $data = array(
+            'teacher_id' => $teacher_id,
+            'teacher_resume' => $teacher_resume,
+            'teacher_greeting' => $teacher_greeting,
+            'title' => $title,
+            'desc' => $desc,
+            'feature' => $feature,
+            'target' => $target,
+            'schedule' => $schedule,
+            'date_begin' => $date_begin,
+            'time_begin' => $time_begin,
+            'time_duration_minutes' => $time_duration_minutes,
+            'level' => $level,
+            'week_min' => $week_min,
+            'week_max' => $week_max,
+            'days' => $days,
+            'class_per_week' => $class_per_week,
+            'price' => $price
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('klass');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('klass', $data);        
+
+    } // end method
+
+
+    private $delimiter_klass_banner="|||";
+    public function get_klass_banner_list($klass_id=-1)
+    {
+        // 클래스의 배너 정보를 가져옵니다.
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('class_banner_url');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $klass_banner_arr = [];
+        if(empty($rows)) 
+        {
+            return $klass_banner_arr;
+        }
+
+        $klass_banner_url = "";
+        foreach ($rows as $row) 
+        {
+            $klass_banner_url = $row->class_banner_url;
+            break;
+        }
+
+        if(!empty($klass_banner_url))
+        {
+            $klass_banner_arr = explode($this->delimiter_klass_banner,$klass_banner_url);    
+        }
+
+        return $klass_banner_arr;
+
+    }
+    // @ Desc : 클래스의 특정 배너를 추가한다.
+    public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_add))
+        {
+            return;
+        }
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        $class_banner_url_next = "";
+        if(empty($klass_banner_arr)) {
+            $class_banner_url_next = $klass_banner_url_to_add;
+        }
+        else
+        {
+            $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr) . $this->delimiter_klass_banner . $klass_banner_url_to_add;
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
+    }
+
+    // @ Desc : 클래스의 특정 배너를 삭제한다.
+    public function remove_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_delete="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_delete))
+        {
+            return;
+        } 
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        if(empty($klass_banner_arr)) 
+        {
+            // Error Report
+            return;
+        }
+
+        $klass_banner_arr_next = [];
+        for ($i=0; $i < count($klass_banner_arr); $i++) { 
+            $klass_banner = $klass_banner_arr[$i];
+
+            if( empty($klass_banner) || 
+                $klass_banner === $klass_banner_url_to_delete) 
+            {
+                // 삭제함.
+                continue;
+            }
+
+            array_push($klass_banner_arr_next, $klass_banner);
+        }
+        $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr_next);
+
+        $this->update_klass_banner($user_id, $klass_id, $klass_banner_url_to_update);
+    }
+    private function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_banner_url_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_banner_url_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'class_banner_url' => $klass_banner_url_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    }
+
+
 
     public function select_klass($klass_id=-1) 
     {
@@ -1654,7 +1981,7 @@ class MY_Sql
             return;
         }
 
-        $this->CI->db->where('id', $id);
+        $this->CI->db->where('id', $klass_id);
         $limit = 1;
         $offset = 0;
         $query = $this->CI->db->get('klass', $limit, $offset);
@@ -1668,6 +1995,34 @@ class MY_Sql
 
         return $klass;
     }
+    public function select_klass_by_teacher($teacher_id=-1) 
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+
+        // wonder.jung
+
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('klass');
+
+        $klass_list = $this->add_klass_extra_info($query);
+        $klass = null;
+        if(!empty($klass_list)) 
+        {
+            $klass = $klass_list[0];
+        }
+
+        return $klass;
+    }    
     private function add_klass_extra_info($query=null) 
     {
         if(is_null($query)) {

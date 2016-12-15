@@ -577,14 +577,19 @@ class MY_ParamChecker {
 		return $output;
     }
 
+    // REMOVE ME
+    /*
     public function is_not_ok($key="", $value="")
     {
-        return !$this->is_ok($key, $value);
+        $result = $this->is_ok($key, $value);
+        $is_ok = $result["success"];
+
+        return !$is_ok;
     }
+    */
 
     public function is_ok($key="", $value="")
     {
-
     	// 결과 / 실패했다면, 실패 원인을 알려줘야 합니다.
     	$result = 
     	[

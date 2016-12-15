@@ -28,6 +28,7 @@ import { CheckBoxOption }                from '../widget/checkbox/model/checkbox
 import { InputViewUpdown }               from '../widget/input-view/model/input-view-updown';
 import { Calendar }                      from '../widget/calendar/model/calendar';
 import { DialogService }                 from '../widget/dialog.service';
+import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 
@@ -89,7 +90,7 @@ export class KlassDetailComponent implements OnInit, OnChanges {
   miniCalWidth:number=60;
   miniCalCageWidth:number=60;
 
-  bannerImageTable:string[][];
+  
 
   watchTowerImgUrl:string;
   watchTowerWhiteImgUrl:string;
@@ -128,6 +129,12 @@ export class KlassDetailComponent implements OnInit, OnChanges {
 
   isAdmin:boolean=false;
   isTeacher:boolean=false;
+
+  @ViewChild(ImageGridComponent)
+  private imageGridComponent: ImageGridComponent;
+
+  // bannerImageTable:string[][];
+
   
   constructor(
     private route: ActivatedRoute,
@@ -136,6 +143,7 @@ export class KlassDetailComponent implements OnInit, OnChanges {
     public imageService: ImageService,
     public dialogService: DialogService,
     private authService: AuthService,
+    private myLoggerService:MyLoggerService,
     private myEventService: MyEventService,
     private watchTower:MyEventWatchTowerService,
     private radiobtnService:KlassRadioBtnService,
@@ -150,44 +158,81 @@ export class KlassDetailComponent implements OnInit, OnChanges {
     if(isDebug) console.log("klass-detail / ngOnInit / 시작");
 
     // 1. 로그인 정보를 가져온다
-    let loginUser:User = this.watchTower.getLoginUser();
-    this.isAdmin = loginUser.getIsAdmin();
-    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
-
-    if(isDebug) console.log("klass-detail / ngOnInit / loginUser : ",loginUser);
-    if(isDebug) console.log("klass-detail / ngOnInit / this.isAdmin : ",this.isAdmin);
-    if(isDebug) console.log("klass-detail / ngOnInit / loginTeacher : ",loginTeacher);
-
-    // 1-1. 선생님만이, 빈 수업 화면을 볼수 있습니다.
-    if(null == loginTeacher) {
-      if(isDebug) console.log("klass-detail / ngOnInit / 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
-      this.router.navigate(["/"]);
+    this.loginUser = this.watchTower.getLoginUser();
+    if(null != this.loginUser) {
+      this.isAdmin = this.loginUser.getIsAdmin();
+      this.loginTeacher = this.watchTower.getLoginTeacher();
     }
-    // 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
+
+    if(isDebug) console.log("klass-detail / ngOnInit / loginUser : ",this.loginUser);
+    if(isDebug) console.log("klass-detail / ngOnInit / this.isAdmin : ",this.isAdmin);
+    if(isDebug) console.log("klass-detail / ngOnInit / loginTeacher : ",this.loginTeacher);
+
 
     this.route.params
     .switchMap((params: Params) => {
 
       let klassId:number = +params['id'];
 
-      if(isDebug) console.log("klass-detail / ngOnInit / klassId : ",klassId);
+      if(klassId === -100 && null == this.loginTeacher) {
 
-      if(klassId < 0 && klassId == -100 && null != loginTeacher) {
-        // 새로운 수업 가져오기
-        return this.klassService.getKlassNew(+loginTeacher.id);
-      }
+        // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
+        if(isDebug) console.log("klass-detail / ngOnInit / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+        this.router.navigate(["/"]);
+        return;
+
+      } else if(klassId === -100) {
+
+        // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
+        if(isDebug) console.log("klass-detail / ngOnInit / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
+        return this.klassService.addKlassEmpty(
+          // apiKey:string, 
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // teacherId:number,
+          +this.loginTeacher.id,
+          // teacherResume:string,
+          this.loginTeacher.resume,
+          // teacherGreeting:string
+          this.loginTeacher.greeting
+        );
+
+      } // end if
 
       // 기존 수업 가져오기
+      if(isDebug) console.log("klass-detail / ngOnInit / 기존 수업 가져오기 / klassId : ",klassId);
       return this.klassService.getKlass(klassId);
     })
     .subscribe((myResponse: MyResponse) => {
 
       if(isDebug) console.log("klass-detail / ngOnInit / subscribe / myResponse : ",myResponse);
-      let klassJSON = myResponse.getDataProp("klass");
-      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / klassJSON : ",klassJSON);
-      if(myResponse.isSuccess() && null != klassJSON) {
-        this.klass = this.klassService.getKlassFromJSON(klassJSON);
-      }
+
+      if(myResponse.isSuccess()) {
+
+        let klassJSON = myResponse.getDataProp("klass");
+        if(isDebug) console.log("klass-detail / ngOnInit / subscribe / klassJSON : ",klassJSON);
+        if(null != klassJSON) {
+          this.klass = this.klassService.getKlassFromJSON(klassJSON);
+        } // end if
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail / ngOnInit / Failed!`
+        );        
+
+      } // end if
       if(isDebug) console.log("klass-detail / ngOnInit / subscribe / this.klass : ",this.klass);
 
     }); // end route
@@ -539,20 +584,62 @@ export class KlassDetailComponent implements OnInit, OnChanges {
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         // 섬네일 주소가 넘어옴.
-        let thumbnail_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
+        let banner_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
 
         // 이미지를 추가합니다. 
+        this.imageGridComponent.addImageSingleColumn(banner_url);
+
+        // REMOVE ME
+        /*
         if(null == this.bannerImageTable || 0 == this.bannerImageTable.length) {
-          this.bannerImageTable = [[thumbnail_url]];
+          if(isDebug) console.log("klass-detail / onChangedFromChild / 첫번째 배너 추가");
+          this.bannerImageTable = [[banner_url]];
         } else {
-          this.bannerImageTable[0].push(thumbnail_url);
+          if(isDebug) console.log("klass-detail / onChangedFromChild / 첫번째 배너 이후 추가");
+          this.bannerImageTable.push([banner_url]);
         } // end if
+        */
 
         // Footer의 속성을 fixed-bottom을 해제해야 함.
         this.watchTower.announceContentHeight();
-        if(isDebug) console.log("klass-detail / onChangedFromChild / thumbnail_url : ",thumbnail_url);
+        if(isDebug) console.log("klass-detail / onChangedFromChild / banner_url : ",banner_url);
 
         // TODO - class banner를 등록합니다.
+        this.klassService.addKlassBanner(
+          // apiKey:string, 
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // klassId:number,
+          +this.klass.id,
+          // klassBanner:string
+          myEvent.value
+        ).then((myResponse:MyResponse) => {
+          // 로그 등록 결과를 확인해볼 수 있습니다.
+          if(isDebug) console.log("klass-detail / onChangedFromChild / myResponse : ",myResponse);
+          if(myResponse.isSuccess()) {
+
+          } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+          } else {
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `klass-detail / onChangedFromChild / addKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${banner_url}`
+            ); // end logger      
+
+          } // end if
+
+        }) // end service
+
+        // wonder.jung
+        
 
       } // end if
 

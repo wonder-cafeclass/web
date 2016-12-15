@@ -73,12 +73,14 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     }
 
     // @ Required : MyClass interface
-    public function is_not_ok() {
+    public function is_not_ok() 
+    {
         return !$this->is_ok();
     }
 
     // @ Required : MyClass interface
-    public function is_ok() {
+    public function is_ok() 
+    {
 
         $is_ok = true;
         if($this->my_error->hasError()) {
@@ -100,6 +102,33 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         }
 
         return $is_ok;
+    }
+
+    public function is_not_ok_param($key=null, $value=null)
+    {
+        return !$this->is_ok_param($key, $value);
+    }
+    public function is_ok_param($key=null, $value=null)
+    {
+        if(is_null($key)) 
+        {
+            return false;
+        }
+        if(is_null($value)) 
+        {
+            return false;
+        }
+        if(!isset($this->my_paramchecker)) 
+        {
+            return false;
+        }
+
+        $result = $this->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
+        {
+            return true;
+        }
+        return false;
     }
 
     // Add methods ...

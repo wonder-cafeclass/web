@@ -352,7 +352,7 @@ class Facebook extends MY_REST_Controller {
 
         // 페이스북 유저 기본 정보
         $facebook_id = $this->my_keyvalue->dig($result, ["id"]);
-        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
+        if($this->is_not_ok_param("facebook_id", $facebook_id))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -367,7 +367,7 @@ class Facebook extends MY_REST_Controller {
             return;
         }
         $name = $this->my_keyvalue->dig($result, ["name"]);
-        if($this->my_paramchecker->is_not_ok("facebook_name", $name))
+        if($this->is_not_ok_param("facebook_name", $name))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -382,7 +382,7 @@ class Facebook extends MY_REST_Controller {
             return;
         }
         $email = $this->my_keyvalue->dig($result, ["email"]);
-        if($this->my_paramchecker->is_not_ok("user_email", $email))
+        if($this->is_not_ok_param("user_email", $email))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -560,7 +560,7 @@ class Facebook extends MY_REST_Controller {
     */
     public function get_user($facebook_id=-1) 
     {
-        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
+        if($this->is_not_ok_param("facebook_id", $facebook_id))
         {
             return null;   
         }
@@ -575,7 +575,7 @@ class Facebook extends MY_REST_Controller {
     public function add_user($facebook_id=-1, $name="", $email="", $thumbnail_url="") 
     {
 
-        if($this->my_paramchecker->is_not_ok("facebook_id", $facebook_id))
+        if($this->is_not_ok_param("facebook_id", $facebook_id))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -589,7 +589,7 @@ class Facebook extends MY_REST_Controller {
             );
             return;
         }
-        if($this->my_paramchecker->is_not_ok("user_email", $email))
+        if($this->is_not_ok_param("user_email", $email))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -603,7 +603,7 @@ class Facebook extends MY_REST_Controller {
             );            
             return;
         }
-        if($this->my_paramchecker->is_not_ok("facebook_name", $name))
+        if($this->is_not_ok_param("facebook_name", $name))
         {
             $this->respond_500_detail(
                 // $msg=""

@@ -17,6 +17,7 @@ import { KlassVenue }             from '../model/klass-venue';
 
 import { UrlService }             from '../../util/url.service';
 import { MyExtractor }            from '../../util/http/my-extractor';
+import { MyRequest }              from '../../util/http/my-request';
 import { MyResponse }             from '../../util/model/my-response';
 
 @Injectable()
@@ -30,13 +31,113 @@ export class KlassService {
   private klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
   private klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
 
+  private addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
+  private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
+  private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
+
   private baseHref = "";
 
   private myExtractor:MyExtractor;
+  private myRequest:MyRequest;
 
-  constructor(private http: Http, private us:UrlService) {
+  constructor(private http: Http, private urlService:UrlService) {
     this.myExtractor = new MyExtractor();
+    this.myRequest = new MyRequest();
   }
+
+  addKlassEmpty(    
+    apiKey:string, 
+    userId:number,
+    teacherId:number,
+    teacherResume:string,
+    teacherGreeting:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / addKlassEmpty / 시작");
+    if(isDebug) console.log("teacher.service / addKlassEmpty / apiKey : ",apiKey);
+    if(isDebug) console.log("teacher.service / addKlassEmpty / userId : ",userId);
+    if(isDebug) console.log("teacher.service / addKlassEmpty / teacherId : ",teacherId);
+    if(isDebug) console.log("teacher.service / addKlassEmpty / teacherResume : ",teacherResume);
+    if(isDebug) console.log("teacher.service / addKlassEmpty / teacherGreeting : ",teacherGreeting);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassEmptyUrl);
+
+    let params = {
+      user_id:userId,
+      teacher_id:teacherId,
+      teacher_resume:teacherResume,
+      teacher_greeting:teacherGreeting
+    }
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
+
+  addKlassBanner(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    klassBanner:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / insertTeacher / 시작");
+    if(isDebug) console.log("teacher.service / insertTeacher / apiKey : ",apiKey);
+    if(isDebug) console.log("teacher.service / insertTeacher / userId : ",userId);
+    if(isDebug) console.log("teacher.service / insertTeacher / klassId : ",klassId);
+    if(isDebug) console.log("teacher.service / insertTeacher / klassBanner : ",klassBanner);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassBannerUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_banner_url:klassBanner
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }
+
+  removeKlassBanner(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    klassBanner:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("teacher.service / removeKlassBanner / 시작");
+    if(isDebug) console.log("teacher.service / removeKlassBanner / apiKey : ",apiKey);
+    if(isDebug) console.log("teacher.service / removeKlassBanner / userId : ",userId);
+    if(isDebug) console.log("teacher.service / removeKlassBanner / klassId : ",klassId);
+    if(isDebug) console.log("teacher.service / removeKlassBanner / klassBanner : ",klassBanner);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.removeKlassBannerUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_banner_url:klassBanner
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
 
   searchKlassVenue (q:string): Observable<KlassVenue[]> {
 
@@ -46,7 +147,7 @@ export class KlassService {
     if(isDebug) console.log("klass.service / searchKlassVenue / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
-    let req_url = this.us.get(this.klassVenueSearchLocalUrl);
+    let req_url = this.urlService.get(this.klassVenueSearchLocalUrl);
 
     req_url = `${ req_url }?q=${ qEncoded }`;
 
@@ -91,7 +192,7 @@ export class KlassService {
     if(isDebug) console.log("klass.service / searchKlassMap / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
-    let req_url = this.us.get(this.klassVenueSearchMapUrl);
+    let req_url = this.urlService.get(this.klassVenueSearchMapUrl);
 
     req_url = `${ req_url }?q=${ qEncoded }`;
     if(isDebug) console.log("klass.service / searchKlassMap / req_url : ",req_url);
@@ -173,7 +274,7 @@ export class KlassService {
     if(isDebug) console.log("klass.service / searchKlassList / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
-    let req_url = this.us.get(this.klassSearchUrl);
+    let req_url = this.urlService.get(this.klassSearchUrl);
 
     req_url = `${ req_url }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
     if(isDebug) console.log("klass.service / searchKlassList / req_url : ",req_url);
@@ -194,7 +295,7 @@ export class KlassService {
     if(isDebug) console.log("klass.service / getKlass / id : ",id);
 
       
-    let req_url = this.us.get(this.klassUrl);
+    let req_url = this.urlService.get(this.klassUrl);
     req_url = `${ req_url }?id=${ id }`;
     if(isDebug) console.log("klass.service / getKlass / req_url : ",req_url);
 
@@ -204,13 +305,14 @@ export class KlassService {
                   .catch(this.myExtractor.handleError);
   }
 
+  /*
   getKlassNew (teacherId:number): Promise<MyResponse> {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassNew / 시작");
       
-    let req_url = this.us.get(this.klassNewUrl);
+    let req_url = this.urlService.get(this.klassNewUrl);
     req_url = `${ req_url }?teacher_id=${ teacherId }`;
     if(isDebug) console.log("klass.service / getKlassNew / req_url : ",req_url);
 
@@ -219,6 +321,7 @@ export class KlassService {
                   .then(this.myExtractor.extractData)
                   .catch(this.myExtractor.handleError);
   }  
+  */
 
   getKlasses (): Promise<MyResponse> {
 
@@ -226,7 +329,7 @@ export class KlassService {
     let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlasses / 시작");
 
-    let req_url = this.us.get(this.klassesUrl);
+    let req_url = this.urlService.get(this.klassesUrl);
 
     if(isDebug) console.log("klass.service / getKlasses / req_url : ",req_url);
 
@@ -242,7 +345,7 @@ export class KlassService {
     let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassSelectile / 시작");
 
-    let req_url = this.us.get(this.klassSelectileUrl);
+    let req_url = this.urlService.get(this.klassSelectileUrl);
 
     if(isDebug) console.log("klass.service / getKlassSelectile / req_url : ",req_url);
 
@@ -335,7 +438,7 @@ export class KlassService {
     klass.venue_latitude = klassJSON.venue_latitude;
     // venue_longitude,
     klass.venue_longitude = klassJSON.venue_longitude;
-    // status,
+    // staturlService,
     klass.class_status = klassJSON.status;
     // enrollment_interval_week,
     klass.enrollment_interval_week = klassJSON.enrollment_interval_week;

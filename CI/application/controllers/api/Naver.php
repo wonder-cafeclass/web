@@ -653,7 +653,7 @@ class Naver extends MY_REST_Controller {
     */
     public function get_user($naver_id=-1) 
     {
-        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        if($this->is_not_ok_param("naver_id", $naver_id))
         {
             return null;   
         }
@@ -715,14 +715,14 @@ class Naver extends MY_REST_Controller {
         }
         
         $birthday = $this->my_keyvalue->get($naver_user, "birthday");
-        if($this->my_paramchecker->is_not_ok("user_birthday", $birthday))
+        if($this->is_not_ok_param("user_birthday", $birthday))
         {
             // 기본값 설정
             $birthday = "";
         }
         
         $email = $this->my_keyvalue->get($naver_user, "email");
-        if($this->my_paramchecker->is_not_ok("user_email", $email))
+        if($this->is_not_ok_param("user_email", $email))
         {
             $this->respond_500_detail(
                 // $msg=""
@@ -737,7 +737,7 @@ class Naver extends MY_REST_Controller {
             return;
         }
         $gender = $this->my_keyvalue->get($naver_user, "gender");
-        if($this->my_paramchecker->is_not_ok("user_gender", $gender))
+        if($this->is_not_ok_param("user_gender", $gender))
         {
             // 기본값 설정 / 선택
             $user_gender_list = $this->get_const("user_gender_list");
@@ -749,7 +749,7 @@ class Naver extends MY_REST_Controller {
         }
 
         $naver_id = $this->my_keyvalue->get($naver_user, "id");
-        if($this->my_paramchecker->is_not_ok("naver_id", $naver_id))
+        if($this->is_not_ok_param("naver_id", $naver_id))
         {
             $this->respond_500_detail(
                 // $msg=""

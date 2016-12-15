@@ -300,7 +300,14 @@ var MyInfoComponent = (function () {
         if (myEvent.isNotValid()) {
             if (isDebug)
                 console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
-            // TODO - Error Logger
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+            // apiKey:string
+            this.watchTower.getApiKey(), 
+            // errorType:string
+            this.myLoggerService.errorTypeNotValidValue, 
+            // errorMsg:string
+            "my-info / onChangedFromChild / updateUserByUser / myEvent.isNotValid()"); // end logger      
             return;
         }
         var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
@@ -565,6 +572,14 @@ var MyInfoComponent = (function () {
                         console.log("my-info / onClickSave / this.loginUserCopy : ", _this.loginUserCopy);
                 }
                 else {
+                    // 에러 로그 등록
+                    _this.myLoggerService.logError(
+                    // apiKey:string
+                    _this.watchTower.getApiKey(), 
+                    // errorType:string
+                    _this.myLoggerService.errorAPIFailed, 
+                    // errorMsg:string
+                    "my-info / onClickSave / updateUserByUser / Failed! / " + _this.loginUserCopy.id); // end logger
                 } // end if
             }); // end service
         }

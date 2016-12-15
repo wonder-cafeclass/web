@@ -14,10 +14,11 @@ var klass_1 = require('../model/klass');
 var klass_venue_1 = require('../model/klass-venue');
 var url_service_1 = require('../../util/url.service');
 var my_extractor_1 = require('../../util/http/my-extractor');
+var my_request_1 = require('../../util/http/my-request');
 var KlassService = (function () {
-    function KlassService(http, us) {
+    function KlassService(http, urlService) {
         this.http = http;
-        this.us = us;
+        this.urlService = urlService;
         this.klassesUrl = '/CI/index.php/api/klass/list';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassNewUrl = '/CI/index.php/api/klass/coursenew';
@@ -25,9 +26,94 @@ var KlassService = (function () {
         this.klassSearchUrl = '/CI/index.php/api/klass/search';
         this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
         this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
+        this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
+        this.addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
+        this.removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
         this.baseHref = "";
         this.myExtractor = new my_extractor_1.MyExtractor();
+        this.myRequest = new my_request_1.MyRequest();
     }
+    KlassService.prototype.addKlassEmpty = function (apiKey, userId, teacherId, teacherResume, teacherGreeting) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / 시작");
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / userId : ", userId);
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / teacherId : ", teacherId);
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / teacherResume : ", teacherResume);
+        if (isDebug)
+            console.log("teacher.service / addKlassEmpty / teacherGreeting : ", teacherGreeting);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.addKlassEmptyUrl);
+        var params = {
+            user_id: userId,
+            teacher_id: teacherId,
+            teacher_resume: teacherResume,
+            teacher_greeting: teacherGreeting
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    KlassService.prototype.addKlassBanner = function (apiKey, userId, klassId, klassBanner) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("teacher.service / insertTeacher / 시작");
+        if (isDebug)
+            console.log("teacher.service / insertTeacher / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("teacher.service / insertTeacher / userId : ", userId);
+        if (isDebug)
+            console.log("teacher.service / insertTeacher / klassId : ", klassId);
+        if (isDebug)
+            console.log("teacher.service / insertTeacher / klassBanner : ", klassBanner);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.addKlassBannerUrl);
+        var params = {
+            user_id: userId,
+            klass_id: klassId,
+            klass_banner_url: klassBanner
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    KlassService.prototype.removeKlassBanner = function (apiKey, userId, klassId, klassBanner) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("teacher.service / removeKlassBanner / 시작");
+        if (isDebug)
+            console.log("teacher.service / removeKlassBanner / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("teacher.service / removeKlassBanner / userId : ", userId);
+        if (isDebug)
+            console.log("teacher.service / removeKlassBanner / klassId : ", klassId);
+        if (isDebug)
+            console.log("teacher.service / removeKlassBanner / klassBanner : ", klassBanner);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.removeKlassBannerUrl);
+        var params = {
+            user_id: userId,
+            klass_id: klassId,
+            klass_banner_url: klassBanner
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     KlassService.prototype.searchKlassVenue = function (q) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -36,7 +122,7 @@ var KlassService = (function () {
         if (isDebug)
             console.log("klass.service / searchKlassVenue / q : ", q);
         var qEncoded = encodeURIComponent(q);
-        var req_url = this.us.get(this.klassVenueSearchLocalUrl);
+        var req_url = this.urlService.get(this.klassVenueSearchLocalUrl);
         req_url = req_url + "?q=" + qEncoded;
         if (isDebug)
             console.log("klass.service / searchKlassVenue / req_url : ", req_url);
@@ -74,7 +160,7 @@ var KlassService = (function () {
         if (isDebug)
             console.log("klass.service / searchKlassMap / q : ", q);
         var qEncoded = encodeURIComponent(q);
-        var req_url = this.us.get(this.klassVenueSearchMapUrl);
+        var req_url = this.urlService.get(this.klassVenueSearchMapUrl);
         req_url = req_url + "?q=" + qEncoded;
         if (isDebug)
             console.log("klass.service / searchKlassMap / req_url : ", req_url);
@@ -144,7 +230,7 @@ var KlassService = (function () {
         if (isDebug)
             console.log("klass.service / searchKlassList / q : ", q);
         var qEncoded = encodeURIComponent(q);
-        var req_url = this.us.get(this.klassSearchUrl);
+        var req_url = this.urlService.get(this.klassSearchUrl);
         req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
         if (isDebug)
             console.log("klass.service / searchKlassList / req_url : ", req_url);
@@ -160,7 +246,7 @@ var KlassService = (function () {
             console.log("klass.service / getKlass / 시작");
         if (isDebug)
             console.log("klass.service / getKlass / id : ", id);
-        var req_url = this.us.get(this.klassUrl);
+        var req_url = this.urlService.get(this.klassUrl);
         req_url = req_url + "?id=" + id;
         if (isDebug)
             console.log("klass.service / getKlass / req_url : ", req_url);
@@ -169,26 +255,29 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.getKlassNew = function (teacherId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("klass.service / getKlassNew / 시작");
-        var req_url = this.us.get(this.klassNewUrl);
-        req_url = req_url + "?teacher_id=" + teacherId;
-        if (isDebug)
-            console.log("klass.service / getKlassNew / req_url : ", req_url);
-        return this.http.get(req_url)
-            .toPromise()
-            .then(this.myExtractor.extractData)
-            .catch(this.myExtractor.handleError);
-    };
+    /*
+    getKlassNew (teacherId:number): Promise<MyResponse> {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("klass.service / getKlassNew / 시작");
+        
+      let req_url = this.urlService.get(this.klassNewUrl);
+      req_url = `${ req_url }?teacher_id=${ teacherId }`;
+      if(isDebug) console.log("klass.service / getKlassNew / req_url : ",req_url);
+  
+      return this.http.get(req_url)
+                    .toPromise()
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
+    }
+    */
     KlassService.prototype.getKlasses = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlasses / 시작");
-        var req_url = this.us.get(this.klassesUrl);
+        var req_url = this.urlService.get(this.klassesUrl);
         if (isDebug)
             console.log("klass.service / getKlasses / req_url : ", req_url);
         return this.http.get(req_url)
@@ -201,7 +290,7 @@ var KlassService = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassSelectile / 시작");
-        var req_url = this.us.get(this.klassSelectileUrl);
+        var req_url = this.urlService.get(this.klassSelectileUrl);
         if (isDebug)
             console.log("klass.service / getKlassSelectile / req_url : ", req_url);
         return this.http.get(req_url)
@@ -285,7 +374,7 @@ var KlassService = (function () {
         klass.venue_latitude = klassJSON.venue_latitude;
         // venue_longitude,
         klass.venue_longitude = klassJSON.venue_longitude;
-        // status,
+        // staturlService,
         klass.class_status = klassJSON.status;
         // enrollment_interval_week,
         klass.enrollment_interval_week = klassJSON.enrollment_interval_week;

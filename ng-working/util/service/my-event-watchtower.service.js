@@ -139,8 +139,8 @@ var MyEventWatchTowerService = (function () {
     };
     // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
     MyEventWatchTowerService.prototype.announceContentHeight = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-event-watchtower / announceContentHeight / 시작");
         var body = document.body;

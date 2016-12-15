@@ -385,7 +385,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
     if(myEvent.isNotValid()) {
       if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
-      // TODO - Error Logger
+      // 에러 로그 등록
+      this.myLoggerService.logError(
+        // apiKey:string
+        this.watchTower.getApiKey(),
+        // errorType:string
+        this.myLoggerService.errorTypeNotValidValue,
+        // errorMsg:string
+        `my-info / onChangedFromChild / updateUserByUser / myEvent.isNotValid()`
+      ); // end logger      
       return;
     }
 
@@ -672,8 +680,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
           if(isDebug) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
 
         } else {
-          // Error Report
-          
+          // 에러 로그 등록
+          this.myLoggerService.logError(
+            // apiKey:string
+            this.watchTower.getApiKey(),
+            // errorType:string
+            this.myLoggerService.errorAPIFailed,
+            // errorMsg:string
+            `my-info / onClickSave / updateUserByUser / Failed! / ${this.loginUserCopy.id}`
+          ); // end logger
         } // end if
       }); // end service
     }

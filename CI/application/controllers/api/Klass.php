@@ -288,6 +288,306 @@ class Klass extends MY_REST_Controller {
         $this->respond_200($output);
     }
 
+    public function test_get()
+    {
+        $result = $this->my_sql->test();
+        echo $result;
+    }
+
+    // @ 새로운 빈 수업을 추가합니다.
+    public function addklassempty_post()
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        // wonder.jung
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $teacher_resume = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_resume",
+            // $key_filter=""
+            "teacher_resume"
+        );
+        $teacher_greeting = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_greeting",
+            // $key_filter=""
+            "teacher_greeting"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "teacher_id"=>$teacher_id,
+            "teacher_resume"=>$teacher_resume,
+            "teacher_greeting"=>$teacher_greeting
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+
+        if($is_ok) 
+        {
+            $this->my_sql->add_klass(
+                // $user_id=-1, 
+                $user_id,
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $teacher_resume="", 
+                $teacher_resume,
+                // $teacher_greeting=""
+                $teacher_greeting
+            );
+
+            $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
+            $output["klass"] = $klass;
+            $this->respond_200($output);
+        }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addklassempty_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );             
+        }
+    }
+
+    public function addbanner_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->add_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addbanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+
+    public function removebanner_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        // wonder.jung
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->remove_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "removebanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+
+
     public function search_get() 
     {
         if($this->is_not_ok()) {
@@ -657,136 +957,6 @@ class Klass extends MY_REST_Controller {
         return $klass_time_list;
     }
 
-
-
-
-    
-
-    // REMOVE ME
-    /*
-    private function get_klass_course_new_class() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'new_class', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-
-        return $klass_course;
-    }
-    private function get_klass_course_no_image() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'no_image', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
-
-        return $klass_course;
-    }  
-      
-
-
-    private function get_klass_course_error() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-        
-        $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'error', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
-
-        return $klass_course;
-    }
-
-    public function level_get() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_levels();
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }   
-    
-    public function day_get() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_days();
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }  
-    
-    public function time_get() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_times();
-
-        $response_body = 
-        [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-    } 
-
-    public function station_get() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_stations();
-
-        $response_body = 
-        [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }             
-    */
 
 
 }
