@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var Subject_1 = require('rxjs/Subject');
-var klass_service_1 = require('./klass.service');
+var klass_service_1 = require('./service/klass.service');
 var url_service_1 = require('../util/url.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
@@ -171,7 +171,7 @@ var KlassListComponent = (function () {
         // apiKey:string
         this.watchTower.getApiKey(), 
         // pageType:string
-        this.myLoggerService.pageTypeMyInfo).then(function (myResponse) {
+        this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
                 console.log("klass-list / logActionPage / myResponse : ", myResponse);
@@ -558,7 +558,7 @@ var KlassListComponent = (function () {
         if (newClassId === +klass.id) {
             if (isDebug)
                 console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
-            this.gotoNewClassDetail();
+            this.gotoNewClassDetail(klass);
         }
         else if (0 < +klass.id) {
             if (isDebug)
@@ -566,15 +566,15 @@ var KlassListComponent = (function () {
             this.gotoClassDetail(klass);
         } // end if
     }; // end method
-    KlassListComponent.prototype.gotoNewClassDetail = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+    KlassListComponent.prototype.gotoNewClassDetail = function (klass) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / gotoNewClassDetail / init");
+        this.router.navigate([klass.id], { relativeTo: this.route });
     };
     KlassListComponent.prototype.gotoClassDetail = function (klass) {
         // 수업 상세 페이지로 이동
-        // Navigate with relative link
         this.router.navigate([klass.id], { relativeTo: this.route });
     };
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {

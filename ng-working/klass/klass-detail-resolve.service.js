@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var klass_service_1 = require('./klass.service');
+var klass_service_1 = require('./service/klass.service');
 var KlassDetailResolve = (function () {
     function KlassDetailResolve(ks, router) {
         this.ks = ks;

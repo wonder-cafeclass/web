@@ -65,8 +65,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("footer / ngOnInit / 시작");
 
     this.watchTower.contentHeight$.subscribe(
@@ -74,12 +74,12 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
       let windowHeight:number = window.innerHeight;
 
-
-      if(isDebug) console.log("footer / contentHeight$.subscribe / contentHeight : ",contentHeight);
-      if(isDebug) console.log("footer / contentHeight$.subscribe / windowHeight : ",windowHeight);
-
       // 푸터의 높이를 가져옵니다.
       let footerHeight:number = this.getHeight();
+
+      if(isDebug) console.log("footer / contentHeight$.subscribe / windowHeight : ",windowHeight);
+      if(isDebug) console.log("footer / contentHeight$.subscribe / contentHeight : ",contentHeight);
+      if(isDebug) console.log("footer / contentHeight$.subscribe / footerHeight : ",footerHeight);
 
       if(windowHeight < (contentHeight + footerHeight)) {
 

@@ -19,11 +19,30 @@ var User = (function () {
         this.email = email;
         this.date_created = date_created;
         this.date_updated = date_updated;
+        this.isAdmin = false;
         // 휴대 전화번호를 관리하는 객체를 만듭니다.
         this.helperMobile = new mobile_1.HelperMobile(this.mobile);
         // 생일을 관리하는 객체를 만듭니다.
         this.helperBirthday = new birthday_1.HelperBirthday(this.birthday);
     }
+    User.prototype.setIsAdmin = function (isAdmin) {
+        if (null == isAdmin) {
+            return;
+        }
+        this.isAdmin = isAdmin;
+    };
+    User.prototype.getIsAdmin = function () {
+        return this.isAdmin;
+    };
+    User.prototype.isTeacher = function () {
+        return (null != this.teacher) ? true : false;
+    };
+    User.prototype.setTeacher = function (teacher) {
+        if (null == teacher) {
+            return;
+        }
+        this.teacher = teacher;
+    };
     // Common Properties - INIT
     User.prototype.isNotSameName = function (name) {
         return !this.isSameName(name);

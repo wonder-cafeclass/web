@@ -11,12 +11,12 @@ import { Observable }                  from 'rxjs/Observable';
 import { Subject }                     from 'rxjs/Subject';
 
 import { MyEventService }              from '../../util/service/my-event.service';
-import { KlassService }                from '../klass.service';
 import { MyEvent }                     from '../../util/model/my-event';
-import { KlassVenue }                  from '../model/klass-venue';
+import { MyResponse }                  from '../../util/model/my-response';
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 
-import { MyResponse }                  from '../../util/model/my-response';
+import { KlassVenue }                  from '../model/klass-venue';
+import { KlassService }                from '../service/klass.service';
 
 @Component({
   moduleId: module.id,

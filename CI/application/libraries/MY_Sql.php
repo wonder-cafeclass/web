@@ -1598,7 +1598,7 @@ class MY_Sql
 
     public function select_teacher($teacher_id=-1)
     {
-        if($this->is_not_ok("user_id", $teacher_id))
+        if($this->is_not_ok("teacher_id", $teacher_id))
         {
             return;
         }
@@ -1623,6 +1623,9 @@ class MY_Sql
         {
             $teacher = $rows[0];   
         }
+
+        // REMOVE ME
+        /*
         if(isset($teacher) && !empty($teacher->resume))
         {
             $teacher->resume_arr = explode("|",$teacher->resume);
@@ -1639,6 +1642,7 @@ class MY_Sql
         {
             $teacher->nickname = $teacher->name;
         }
+        */
 
         return $teacher;
     }    

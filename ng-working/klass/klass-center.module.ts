@@ -6,7 +6,7 @@ import { CommonModule }              from '@angular/common';
 
 import { WidgetModule }              from '../widget/widget.module';
 
-import { KlassService }              from './klass.service';
+import { KlassService }              from './service/klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassColorService }         from './service/klass-color.service';

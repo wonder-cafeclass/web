@@ -10,7 +10,7 @@ import { Teacher }    			from '../../teachers/model/teacher';
 export class MyEventWatchTowerService {
 
 	// @ Required for view
-	private isAdmin:boolean = null;
+	private isAdmin:boolean = false;
     private checkerMap;
     private constMap;
     private dirtyWordList;
@@ -54,6 +54,10 @@ export class MyEventWatchTowerService {
 	// @ Required for view
 	announceIsAdmin(isAdmin: boolean) {
 		this.isAdmin = isAdmin;
+		if(null != this.loginUser) {
+			this.loginUser.setIsAdmin(this.isAdmin);
+		}
+
 		this.isAdminSource.next(isAdmin);
 
 		this.announceIsViewPackReady();
@@ -113,8 +117,21 @@ export class MyEventWatchTowerService {
 	}
 	// @ Optional for view
 	announceLogin(loginUser: User) {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`my-event-watchtower / announceLogin / 시작`);
+
 		this.loginUser = loginUser;
+		if(null != this.loginTeacher) {
+			if(isDebug) console.log(`my-event-watchtower / announceLogin / setTeacher`);
+			this.loginUser.setTeacher(this.loginTeacher);
+		}
+		this.loginUser.setIsAdmin(this.isAdmin);
+
 		this.loginAnnouncedSource.next(loginUser);
+
+		if(isDebug) console.log(`my-event-watchtower / announceLogin / 끝`);
 	}
 	announceLoginTeacher(loginTeacher: Teacher) {
 
@@ -123,6 +140,11 @@ export class MyEventWatchTowerService {
 	    if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 시작`);
 
 		this.loginTeacher = loginTeacher;
+		if(null != this.loginTeacher) {
+			if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / setTeacher`);
+			this.loginUser.setTeacher(this.loginTeacher);
+		}
+
 		this.loginTeacherAnnouncedSource.next(loginTeacher);
 
 		if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 끝`);
@@ -134,11 +156,15 @@ export class MyEventWatchTowerService {
 	// @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
 	announceContentHeight() {
 
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / announceContentHeight / 시작");
+
 		let body = document.body;
 		let clientHeight:number = body.clientHeight;
 
 		if(this.contentHeight === clientHeight) {
-			// 같은 높이라면 업데이트하지 않습니다
+			if(isDebug) console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
 			return;
 		}
 

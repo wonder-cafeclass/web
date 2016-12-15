@@ -1,0 +1,129 @@
+div.btn-box {
+  padding: 10px;
+}
+div.radius-border {
+  border-radius: 5px;
+}
+div.img-uploader {
+  text-align: left;
+  padding: 0px;
+}
+button.img-uploader {
+  width: 100%;
+  margin-left: 0px;
+}
+.btn-orange {
+  color: #e85c41;
+  background-color: #fff;
+  border-color: #e85c41;
+}
+table.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout.no-border {
+  border: 0px;
+}
+td.layout.no-border.btn-style {
+  padding: 10px;
+}
+
+
+
+/*
+REMOVE ME
+td.layout.border-bottom {
+  border-bottom: 1px solid #ddd;
+}
+td.layout.border-top {
+  border-top: 1px solid #ddd;
+}
+td.layout.border-right {
+  border-right: 1px solid #ddd; 
+}
+td.layout.btn-box {
+  text-align: right;
+}
+img.user-profile {
+  border: 1px solid #e85c41;
+  width: 100px;
+  margin: 0px;
+}
+img.sample-profile {
+  border: 1px solid #e85c41;
+  width: 46px;
+}
+span.info {
+  float: right;
+  font-size: 18px;  
+}
+div.btn-box.text-left {
+  text-align: left;
+  color:#777;
+  padding-bottom: 0px;
+}
+div.btn-box.text-left.info {
+  padding-right: 0px;
+  width: 390px;  
+}
+label.title {
+  margin:0px;
+}
+.popover-show-info {
+  color:#e85c41;
+}
+.popover-show {
+  display: block;
+}
+.rb-blur {
+  border: 1px solid #ddd;
+}
+.rb-focus {
+  border: 1px solid #e85c41;
+}
+.input-glass {
+  height: 28px;
+  margin: 0px;
+  border: 0px;
+  box-shadow: inset 0 0px 0px rgba(0,0,0,0);
+  font-size: 20px;
+  color: #e85c41;  
+}
+.not-last {
+  margin-right: 10px;
+}
+.title-desc {
+  float: right;
+  color: #e85c41;
+  font-size: 10px;
+  padding-top: 5px;
+}
+.tooltip-warning-arrow {
+  border-top-color: #e85c41 !important;
+}
+.tooltip-warning-inner {
+  background-color: #e85c41;
+}
+.tooltip-success-arrow {
+  border-top-color: #5cb85c !important;
+}
+.tooltip-success-inner {
+  background-color: #5cb85c;
+}
+.show-my-tooltip {
+  opacity:1; 
+  margin-left: -38px;
+  margin-top: -137px; 
+}
+.hide-my-tooltip {
+  opacity:0; 
+  margin-left: -38px;
+  margin-top: -137px; 
+}
+*/

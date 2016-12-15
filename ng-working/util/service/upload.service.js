@@ -16,12 +16,18 @@ var UploadService = (function () {
         //     this.progressObserver = observer
         // }).share();
     }
-    UploadService.prototype.makeFileRequest = function (url, params, files) {
+    // makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
+    UploadService.prototype.makeFileRequest = function (url, paramsObj, files) {
         return Observable_1.Observable.create(function (observer) {
             var formData = new FormData(), xhr = new XMLHttpRequest();
             // 1개의 파일만 전송합니다.
             if (null != files && 1 == files.length) {
                 formData.append("userfile", files[0], files[0].name);
+            }
+            // 파라미터 전달
+            for (var key in paramsObj) {
+                var value = paramsObj[key];
+                formData.append(key, value);
             }
             /*
             // 여러개의 파일을 전송할 경우

@@ -237,7 +237,7 @@ var ProfileImgUploadComponent = (function () {
         }
         // max size / 100kb
         var req_url = this.urlService.get(this.uploadUserProfileUrl);
-        this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (myResponse) {
+        this.uploadService.makeFileRequest(req_url, {}, files).subscribe(function (myResponse) {
             // 섬네일 주소를 받아와서 화면에 표시해야 한다.
             if (isDebug)
                 console.log("profile-img / onChangeFile / myResponse : ", myResponse);

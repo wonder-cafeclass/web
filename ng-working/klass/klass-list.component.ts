@@ -9,7 +9,7 @@ import { ActivatedRoute, Router, Params }  from '@angular/router';
 import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
-import { KlassService }                    from './klass.service';
+import { KlassService }                    from './service/klass.service';
 import { UrlService }                      from '../util/url.service';
 
 import { Klass }                           from './model/klass';
@@ -21,7 +21,6 @@ import { KlassTime }                       from './model/klass-time';
 import { MyLoggerService }                 from '../util/service/my-logger.service';
 import { MyEventWatchTowerService }        from '../util/service/my-event-watchtower.service';
 import { MyCheckerService }                from '../util/service/my-checker.service';
-
 import { MyResponse }                      from '../util/model/my-response';
 
 import { UserService }                     from '../users/service/user.service';
@@ -217,7 +216,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       // apiKey:string
       this.watchTower.getApiKey(),
       // pageType:string
-      this.myLoggerService.pageTypeMyInfo
+      this.myLoggerService.pageTypeKlassList
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(isDebug) console.log("klass-list / logActionPage / myResponse : ",myResponse);
@@ -711,22 +710,22 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
     if(newClassId === +klass.id) {
       if(isDebug) console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
-      this.gotoNewClassDetail();
+      this.gotoNewClassDetail(klass);
     } else if(0 < +klass.id) {
       if(isDebug) console.log("klass-list / onSelectKlass / 수업 상세 화면으로 이동하기");
       this.gotoClassDetail(klass);
     } // end if
   } // end method
-  gotoNewClassDetail():void {
+  gotoNewClassDetail(klass: Klass):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / gotoNewClassDetail / init");
 
+    this.router.navigate([klass.id], { relativeTo: this.route });
   }
   gotoClassDetail(klass: Klass):void {
     // 수업 상세 페이지로 이동
-    // Navigate with relative link
     this.router.navigate([klass.id], { relativeTo: this.route });
   }
   onLoadFailClassImage(classImage, klassObj) {

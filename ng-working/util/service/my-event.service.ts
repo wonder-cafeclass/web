@@ -103,8 +103,10 @@ export class MyEventService {
     KEY_TEACHER_MY_PAYMENT:string="KEY_TEACHER_MY_PAYMENT";     // 선생님 - 내 결재정보.
     KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";   // 선생님 - 학생에게준 피드백.
 
-    KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";       // 선생님 - 경력
-    KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";   // 선생님 - 인사말
+    KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
+    KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
+
+    KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

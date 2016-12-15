@@ -65,11 +65,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 	ngAfterViewChecked() {
 
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
+		let isDebug:boolean = true;
+		// let isDebug:boolean = false;
 		if(isDebug) console.log("app-root / ngAfterViewChecked / 시작");
 
 		this.watchTower.announceContentHeight();
+		
 	}
 
 

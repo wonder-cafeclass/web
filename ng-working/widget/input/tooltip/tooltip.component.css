@@ -1,0 +1,20 @@
+.tooltip-warning-arrow {
+  border-top-color: #e85c41 !important;
+}
+.tooltip-warning-inner {
+  background-color: #e85c41;
+}
+.tooltip-success-arrow {
+  border-top-color: #5cb85c !important;
+}
+.tooltip-success-inner {
+  background-color: #5cb85c;
+}
+.show-my-tooltip {
+  opacity:1; 
+  margin-left: 0px;
+}
+.hide-my-tooltip {
+  opacity:0; 
+  margin-left: 0px;
+}

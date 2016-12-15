@@ -188,6 +188,149 @@ class MY_Thumbnail {
         return ($is_success)?"$thumb_dir_path/$filename":null;
     }
 
+    private function get_source_image($download_src_img_path=null) {
+
+        if(is_null($download_src_img_path)) 
+        {
+            return null;
+        }
+
+        // read the source image 
+        $source_image = null;
+        if( self::is_jpeg($download_src_img_path) || 
+            self::is_jpg($download_src_img_path)) 
+        {
+            $source_image = imagecreatefromjpeg($download_src_img_path);    
+        } 
+        else if(self::is_png($download_src_img_path)) 
+        {
+            $source_image = imagecreatefrompng($download_src_img_path); 
+        } 
+        else if(self::is_gif($download_src_img_path)) 
+        {
+            $source_image = imagecreatefromgif($download_src_img_path);
+        }
+
+        return $source_image;         
+    }
+
+    public function resize_width_height($src_uri="", $dest_dir="", $desired_width=-1, $desired_height=-1) 
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        $result = [];
+        $result["error"] = "";
+        $result["params"] =
+        array(
+            "src_uri"=>$src_uri,
+            "dest_dir"=>$dest_dir,
+            "desired_width"=>$desired_width,
+            "desired_height"=>$desired_height
+        );
+
+        if(empty($src_uri)) {
+            $result["error"] 
+            = "resize_width_height / empty(\$src_uri)";
+            return $result;
+        }
+        if(!file_exists($src_uri)) {
+            $result["error"]
+            = "resize_width_height / !file_exists(\$src_uri)";
+            return $result; 
+        }
+        if(is_null($dest_dir)) {
+            $result["error"]
+            = "resize_width_height / is_null(\$dest_dir)";
+            return $result;
+        }
+        if(!(0 < $desired_width) && !(0 < $desired_height)) {
+            $result["success"] = false;
+            $result["error"] 
+            = "resize_width_height / !(0 <\$desired_width) && !(0 < \$desired_height)";
+            return $result;
+        }
+        if(!(0 < $desired_width)) {
+            $result["success"] = false;
+            $result["error"] 
+            = "resize_width_height / !(0 <\$desired_width)";
+            return $result;
+        }
+        // 등록할 파일 이름을 가져옵니다.
+        $new_file_name = $this->get_file_name_from_uri($src_uri);
+        if(empty($new_file_name)) {
+            $result["success"] = false;
+            $result["error"] 
+            = "empty(\$new_file_name) <br/>";
+            return $result;
+        }
+        // 등록할 uri를 만듭니다.
+        $dest_dir = 
+        $this->my_path->get_path_img_dir(__FILE__, $dest_dir);
+        if(!is_writeable($dest_dir)) {
+            $result["error"]
+            = "resize_width_height / !is_writeable(\$dest_dir) <br/>";
+            return $result;
+        }
+        $new_file_uri = "$dest_dir/$new_file_name";
+
+        // 이미지 객체를 만듭니다.
+        $source_image = $this->get_source_image($src_uri);
+        if(is_null($source_image)) {
+            $result["success"] = false;
+            $result["error"]
+            = "resize_width_height / is_null(\$source_image) <br/>";
+            return $result;
+        }
+        $width = intval(imagesx($source_image));
+        $result->width = $width;
+        if(!(0 <$width)) {
+            $result["success"] = false;
+            $result["error"]
+            = "resize_width_height / !(0 <\$width) <br/>";
+            return $result;
+        }
+        $height = intval(imagesy($source_image));
+        $result->height = $height;
+        if(!(0 <$height)) {
+            $result["success"] = false;
+            $result["error"]
+            = "resize_width_height / !(0 <\$height) <br/>";
+            return $result;
+        }
+
+        // $desired_width가 유효, $desired_height는 유효하지 않음. 
+        // 입력한 이미지의 비율로 $desired_height를 계산함. 
+        // 가로 너비 기준, 원하는 사이즈로. 세로는 가로가 변경된 비율만큼 변한다.
+        if((0 < $desired_width) && !(0 < $desired_height)) 
+        {
+            $crop_info = 
+            $this->getHMatched($width, $height, $desired_width);
+            $desired_height = 
+            $crop_info->desired_height;
+        }
+        $result["params"]["desired_height"] = $desired_height;
+
+         // create a new, "virtual" image 
+        $virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+        
+         // copy source image at a resized size 
+        imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
+        
+         // create the physical thumbnail image to its destination 
+        imagejpeg($virtual_image, $new_file_uri);
+
+        // 임시 저장한 섬네일을 지웁니다.
+        $this->delete_thumbnail($src_uri); 
+
+        $result["success"] = true;
+        $result["thumbnail"] = $new_file_name;
+
+        return $result;
+    } // end method
+
     public function resize($src="", $dest="", $crop_size=-1) 
     {
         if($this->is_not_ok()) 

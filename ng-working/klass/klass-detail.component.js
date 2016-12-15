@@ -10,22 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var image_service_1 = require('../util/image.service');
-var my_event_service_1 = require('../util/service/my-event.service');
-var my_checker_service_1 = require('../util/service/my-checker.service');
-var dialog_service_1 = require('../widget/dialog.service');
 var auth_service_1 = require('../auth.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
+var klass_service_1 = require('./service/klass.service');
 var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
+var dialog_service_1 = require('../widget/dialog.service');
+var image_service_1 = require('../util/image.service');
+var my_event_service_1 = require('../util/service/my-event.service');
+var my_checker_service_1 = require('../util/service/my-checker.service');
+var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, imageService, dialogService, authService, myEventService, radiobtnService, checkboxService, myCheckerService) {
+    function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myEventService, watchTower, radiobtnService, checkboxService, myCheckerService) {
         this.route = route;
         this.router = router;
+        this.klassService = klassService;
         this.imageService = imageService;
         this.dialogService = dialogService;
         this.authService = authService;
         this.myEventService = myEventService;
+        this.watchTower = watchTower;
         this.radiobtnService = radiobtnService;
         this.checkboxService = checkboxService;
         this.myCheckerService = myCheckerService;
@@ -40,71 +44,85 @@ var KlassDetailComponent = (function () {
         this.miniCalHeight = 60;
         this.miniCalWidth = 60;
         this.miniCalCageWidth = 60;
+        // Image Uploader
+        this.imgUploaderUploadAPIUrl = "";
+        this.imgUploaderImagePath = "";
+        this.imgUploaderImageUrl = "";
+        this.imgUploaderEventKey = "";
         this.isAdmin = false;
+        this.isTeacher = false;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.route.data.forEach(function (data) {
-            if (null != data.klass) {
-                _this.klass = data.klass;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / ngOnInit / 시작");
+        // 1. 로그인 정보를 가져온다
+        var loginUser = this.watchTower.getLoginUser();
+        this.isAdmin = loginUser.getIsAdmin();
+        var loginTeacher = this.watchTower.getLoginTeacher();
+        if (isDebug)
+            console.log("klass-detail / ngOnInit / loginUser : ", loginUser);
+        if (isDebug)
+            console.log("klass-detail / ngOnInit / this.isAdmin : ", this.isAdmin);
+        if (isDebug)
+            console.log("klass-detail / ngOnInit / loginTeacher : ", loginTeacher);
+        // 1-1. 선생님만이, 빈 수업 화면을 볼수 있습니다.
+        if (null == loginTeacher) {
+            if (isDebug)
+                console.log("klass-detail / ngOnInit / 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+            this.router.navigate(["/"]);
+        }
+        // 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
+        this.route.params
+            .switchMap(function (params) {
+            var klassId = +params['id'];
+            if (isDebug)
+                console.log("klass-detail / ngOnInit / klassId : ", klassId);
+            if (klassId < 0 && klassId == -100 && null != loginTeacher) {
+                // 새로운 수업 가져오기
+                return _this.klassService.getKlassNew(+loginTeacher.id);
             }
-            _this.klassCalendarTableLinear = _this.klass.calendar_table_linear;
-            _this.klassCalendarTableMonthly = _this.klass.calendar_table_monthly;
-            _this.klassDayBegin = _this.klass.days;
-            // send time data to "clock board"
-            _this.klassTimeBegin = _this.klass.time_begin;
-            _this.klassTimeEnd = _this.klass.time_end;
-            _this.klassDateBegin = _this.klass.date_begin;
-            _this.klassWeekMin = _this.klass.week_min;
-            _this.klassWeekMax = _this.klass.week_max;
-            _this.priceTagCageWidth = _this.klass.weekly_price_list.length * _this.priceTagWidth;
-            // send image table to "image-grid"
-            _this.selectileImageTable =
-                [
-                    [
-                        _this.klass.level_img_url,
-                        _this.klass.venue_subway_station_img_url,
-                        _this.klass.venue_cafe_logo_img_url,
-                        _this.klass.days_img_url,
-                        _this.klass.time_begin_img_url,
-                    ]
-                ];
-            var fieldCntSelectile = _this.selectileImageTable[0].length;
-            _this.selectileCageWidth = (fieldCntSelectile * _this.selectileImageWidth) + 20;
-            var fieldCntCalMonthly = _this.klassCalendarTableMonthly.length;
-            _this.miniCalCageWidth = (fieldCntCalMonthly * _this.miniCalWidth);
-            _this.bannerImageTable =
-                [
-                    [
-                        _this.imageService.get(_this.imageService.noticeDrinksUrl)
-                    ],
-                    [
-                        _this.imageService.get(_this.imageService.noticeHelpUrl)
-                    ]
-                ];
-            _this.pricePerWeekFormat = _this.klass.week_min + "\uC8FC";
-            _this.pricetagDesc = "( \uC8FC " + _this.klass.days_list.length + "\uD68C )";
-            // 첫수업 날짜 가져오기
-            _this.setFirstClassDateFormat();
-            // nav-tabs : 수업 관련 내용
-            // wonder.jung
-            _this.radiobtnOptionListNavTabs =
-                _this.radiobtnService.getNavTabsKlassInfo(_this.klass, _this.myEventService.KLASS_DESC);
-            // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
-            _this.klassFeature = _this.klass.feature; // @ Deprecated
-            _this.klassTarget = _this.klass.target; // @ Deprecated
-            _this.klassSchedule = _this.klass.schedule;
-        });
-        this.authService.getAdminAuth()
-            .then(function (myResponse) {
-            if (myResponse.isSuccess() && myResponse.hasDataProp("is_admin")) {
-                _this.isAdmin = myResponse.getDataProp("is_admin");
-                // 운영툴 여부 결정 
-                if (_this.isAdmin) {
-                    _this.initAdmin();
-                }
+            // 기존 수업 가져오기
+            return _this.klassService.getKlass(klassId);
+        })
+            .subscribe(function (myResponse) {
+            if (isDebug)
+                console.log("klass-detail / ngOnInit / subscribe / myResponse : ", myResponse);
+            var klassJSON = myResponse.getDataProp("klass");
+            if (isDebug)
+                console.log("klass-detail / ngOnInit / subscribe / klassJSON : ", klassJSON);
+            if (myResponse.isSuccess() && null != klassJSON) {
+                _this.klass = _this.klassService.getKlassFromJSON(klassJSON);
             }
-        });
+            if (isDebug)
+                console.log("klass-detail / ngOnInit / subscribe / this.klass : ", _this.klass);
+        }); // end route
+        this.setKlassBannerImageUploader();
+    }; // end method
+    KlassDetailComponent.prototype.ngOnChanges = function (changes) {
+        // changes.prop contains the old and the new value...
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / ngOnChanges / 시작");
+        if (isDebug)
+            console.log("klass-detail / ngOnChanges / changes : ", changes);
+    };
+    KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {
+        // Set image uploader props
+        this.imgUploaderUploadAPIUrl = "/CI/index.php/api/upload/image";
+        this.imgUploaderImagePath = "/assets/images/class/banner";
+        this.imgUploaderImageUrl = "/assets/images/class/banner/banner_default.svg";
+        this.imgUploaderEventKey = this.myEventService.KEY_KLASS_BANNER;
+    };
+    KlassDetailComponent.prototype.setEmptyKlass = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setEmptyKlass / 시작");
+        // 새로운 수업을 만들때, 빈 수업 데이터를 만들어 가져옵니다.
     };
     KlassDetailComponent.prototype.setFirstClassDateFormat = function () {
         this.firstClassDate = this.getFirstClassDate(this.klass);
@@ -352,126 +370,39 @@ var KlassDetailComponent = (function () {
         */
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        console.log("TEST / XXX / onChangedFromChild / myEvent : ", myEvent);
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / onChangedFromChild / 시작");
+        if (isDebug)
+            console.log("klass-detail / onChangedFromChild / myEvent : ", myEvent);
         var eventName = myEvent.eventName;
-        var myEventService = this.myEventService;
-        // console.log("onChangedFromChild / eventName : ",eventName);
-        // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-        // console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
-        /*
-        if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
-    
-          // '수강신청일'이 변경되었습니다.
-    
-          let weekInterval:number = +myEvent.value;
-    
-          // 첫수업날짜가 변경됩니다.
-          if(4 === weekInterval) {
-    
-            this.klass.enrollment_interval_week = 4;
-            this.setFirstClassDateFormat();
-            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 4주");
-    
-          } else if(2 === weekInterval) {
-    
-            this.klass.enrollment_interval_week = 2;
-            this.setFirstClassDateFormat();
-            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 2주");
-    
-          } else if(1 === weekInterval) {
-    
-            this.klass.enrollment_interval_week = 1;
-            this.setFirstClassDateFormat();
-            console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
-    
-          }
-        } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
-    
-          // 드론 리스트 - klass.schedule을 수정합니다.
-          this.clearDronList();
-          this.dronListKey = this.myEventService.KLASS_SCHEDULE;
-          this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
-          this.dronListSEinnerHTML = myEvent.value;
-    
-          //ON_PREVIEW
-          
-        } else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
-    
-          console.log("onChangedFromChild / myEvent : ",myEvent);
-          console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-    
-          // 드론 리스트의 입력 내용이 수정되었습니다.
-          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-            
-            console.log("feature 입력 내용이 수정되었습니다.");
-            this.klassFeature = myEvent.value;
-    
-          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-            
-            console.log("target 입력 내용이 수정되었습니다.");
-            this.klassTarget = myEvent.value;
-    
-          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-            
-            console.log("schedule 입력 내용이 수정되었습니다.");
-            this.klassSchedule = myEvent.value;
-    
-          } // end if
-    
-        } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
-    
-          // @ Deprecated
-    
-          // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
-          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-            console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
-            console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-          }
-    
-    
-        } else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
-    
-          // @ Deprecated
-    
-          // 사용자가 드론리스트를 닫았습니다.
-          console.log("사용자가 드론리스트를 닫았습니다.");
-          // 관련 파라미터 초기화
-          this.clearDronList();
-    
-        } else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
-    
-          // @ Deprecated
-    
-          // 사용자가 드론리스트를 닫았습니다.
-          console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
-          // 관련 파라미터 초기화
-          this.clearDronList();
-    
-          // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
-          if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-            
-            console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-            this.klassFeature = myEvent.value;
-    
-          } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-            
-            console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-            this.klassTarget = myEvent.value;
-    
-          } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-            
-            console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-            this.klassSchedule = myEvent.value;
-    
-          } // end if
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if (!isOK) {
+            if (isDebug)
+                console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+            return;
         } // end if
-        */
+        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                // 섬네일 주소가 넘어옴.
+                var thumbnail_url = this.imgUploaderImagePath + "/" + myEvent.value;
+                // 이미지를 추가합니다. 
+                if (null == this.bannerImageTable || 0 == this.bannerImageTable.length) {
+                    this.bannerImageTable = [[thumbnail_url]];
+                }
+                else {
+                    this.bannerImageTable[0].push(thumbnail_url);
+                } // end if
+                // Footer의 속성을 fixed-bottom을 해제해야 함.
+                this.watchTower.announceContentHeight();
+                if (isDebug)
+                    console.log("klass-detail / onChangedFromChild / thumbnail_url : ", thumbnail_url);
+            } // end if
+        } // end if
     }; // end method
-    KlassDetailComponent.prototype.clearDronList = function () {
-        this.dronListTitle = null;
-        this.dronListSEinnerHTML = null;
-        this.dronListMyEventSingleInput = null;
-    };
     // Admin Section
     KlassDetailComponent.prototype.showSEKlassFeature = function () {
     };
@@ -481,7 +412,7 @@ var KlassDetailComponent = (function () {
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_event_service_1.MyEventService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, klass_service_1.KlassService, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, my_checker_service_1.MyCheckerService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

@@ -18,9 +18,11 @@ import { UrlService }             from '../util/url.service';
 import { MyExtractor }            from '../util/http/my-extractor';
 import { MyResponse }             from '../util/model/my-response';
 
+// REMOVE ME
+
 @Injectable()
 export class KlassService {
-
+/*
   private klassesUrl = '/CI/index.php/api/klass/list';
   private klassUrl = '/CI/index.php/api/klass/course';
   private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
@@ -345,5 +347,5 @@ export class KlassService {
     return klass;
 
   } // end method
-
+*/
 }

@@ -6,7 +6,7 @@ import { Location }             from '@angular/common';
 
 import { Subject }              from 'rxjs/Subject';
 
-import { KlassService }         from './klass.service';
+import { KlassService }         from './service/klass.service';
 
 import { KlassLevel }           from './model/klass-level';
 import { KlassStation }         from './model/klass-station';

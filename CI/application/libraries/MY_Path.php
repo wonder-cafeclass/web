@@ -19,6 +19,7 @@ class MY_Path {
 
     private $path_download="assets/images/download";
     private $path_thumbnail_user="assets/images/user";
+    private $path_thumbnail_class_banner="assets/images/class/banner";
     private $path_user_validation="login/signup/validation";
 
     public function __construct($params=null)
@@ -166,6 +167,41 @@ class MY_Path {
 
         return $thumb_dir_path;
     }
+
+    public function get_path_img_dir($cur_class_path="", $dest_dir="") 
+    {
+        if(empty($cur_class_path))
+        {
+            return "";
+        }
+        if(empty($dest_dir))
+        {
+            return "";
+        }
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $dest_dir;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+
+    }
+
+    public function get_path_class_banner($cur_class_path="") 
+    {
+        if(empty($cur_class_path))
+        {
+            return "";
+        }
+
+        $string = $cur_class_path;
+        $pattern = '/(.+\/)CI\/.+/i';
+        $replacement = '${1}' . $this->path_thumbnail_class_banner;
+        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+
+        return $thumb_dir_path;
+    }    
 
     public function get_path_user_thumb($cur_class_path="") 
     {

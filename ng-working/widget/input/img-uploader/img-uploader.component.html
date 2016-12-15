@@ -1,0 +1,35 @@
+<!-- 
+파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview 
+-->
+<div class="btn-box radius-border img-uploader">
+
+	<table class="table layout">
+		<tbody> 
+			<tr> 
+				<td class="layout no-border btn-style">
+					<button type="button" 
+							(click)="onClickFileUpload($event)"
+							(focus)="onFocusFileUpload($event)"
+							class="btn btn-default img-uploader btn-orange">
+						<span>{{btnName}}</span>
+					</button>
+
+					<!-- tooltip init -->
+					<tooltip></tooltip>
+				</td>
+			</tr>
+			
+			<tr> 
+				<td class="layout no-border">
+					<input  #fileInput 
+							style="display:none;"
+							type="file" 
+							name="userfile" 
+							(change)="onChangeFile($event)"/>
+				</td> 
+			</tr>
+
+		</tbody>
+	</table>
+
+</div>

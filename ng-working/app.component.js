@@ -45,8 +45,8 @@ var AppComponent = (function () {
         this.setMyChecker();
     };
     AppComponent.prototype.ngAfterViewChecked = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("app-root / ngAfterViewChecked / 시작");
         this.watchTower.announceContentHeight();

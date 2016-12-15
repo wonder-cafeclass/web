@@ -1,5 +1,6 @@
 import { HelperMobile } 	from '../../util/helper/mobile';
 import { HelperBirthday } 	from '../../util/helper/birthday';
+import { Teacher } 			from '../../teachers/model/teacher';
 
 export class User {
 	constructor(
@@ -27,6 +28,28 @@ export class User {
 	}
 
 	public password:string;
+	private isAdmin:boolean=false;
+	private teacher:Teacher;
+
+	setIsAdmin(isAdmin:boolean) :void {
+		if(null == isAdmin) {
+			return;
+		}
+		this.isAdmin = isAdmin;
+	}
+	getIsAdmin() :boolean {
+		return this.isAdmin;
+	}
+
+	isTeacher():boolean {
+		return (null != this.teacher)?true:false;
+	}
+	setTeacher(teacher:Teacher):void {
+		if(null == teacher) {
+			return;
+		}
+		this.teacher = teacher;
+	}
 
 	// Common Properties - INIT
 	isNotSameName(name:string) :boolean {

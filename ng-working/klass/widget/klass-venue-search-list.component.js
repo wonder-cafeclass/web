@@ -12,9 +12,9 @@ var core_1 = require('@angular/core');
 var Observable_1 = require('rxjs/Observable');
 var Subject_1 = require('rxjs/Subject');
 var my_event_service_1 = require('../../util/service/my-event.service');
-var klass_service_1 = require('../klass.service');
 var my_event_1 = require('../../util/model/my-event');
 var klass_venue_1 = require('../model/klass-venue');
+var klass_service_1 = require('../service/klass.service');
 var KlassVenueSearchListComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
     function KlassVenueSearchListComponent(myEventService, klassService, zone) {

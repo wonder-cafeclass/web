@@ -112,6 +112,75 @@ class Klass extends MY_REST_Controller {
         }
     }
 
+    public function coursenew_get()
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->get(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+
+        $output["param"] = array(
+            "teacher_id"=>$teacher_id
+        );        
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $output["check_list"] = $check_list;
+            $is_ok = false;
+        }
+        if($is_ok) {
+
+            // 새로 입력하는 수업 관련 기본 정보를 돌려줍니다.
+            // wonder.jung
+            // 수업 - 새로운 klass 정보를 가져옵니다.
+            $new_klass = $this->get_klass_course_new_class();
+
+            // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
+            $teacher = $this->my_sql->select_teacher($teacher_id);
+            $new_klass->teacher = $teacher;
+
+            // 수업의 리뷰를 가져옵니다.
+            $new_klass->review_list = [];
+
+            // 수업의 문의를 가져옵니다.
+            $new_klass->question_list = [];
+
+            $output["klass"] = $new_klass;
+            $this->respond_200($output);
+        }
+        else 
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "New course failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+
+
+    }
+
     public function course_get()
     {
         if($this->is_not_ok()) 
@@ -142,17 +211,17 @@ class Klass extends MY_REST_Controller {
         }
 
         // 수업의 리뷰를 가져옵니다.
-        $review_list = null;
+        // $review_list = null;
         if(0 < $klass->id)
         {
-            $review_list = $this->my_sql->select_klass_review_list($klass->id);
+            $klass->review_list = $this->my_sql->select_klass_review_list($klass->id);
         }
 
         // 수업의 문의를 가져옵니다.
-        $question_list = null;
+        // $question_list = null;
         if(0 < $klass->id)
         {
-            $question_list = $this->my_sql->select_klass_question_list($klass->id);
+            $klass->question_list = $this->my_sql->select_klass_question_list($klass->id);
         }
 
         // 조회 결과를 가져옵니다.
@@ -302,6 +371,14 @@ class Klass extends MY_REST_Controller {
             'klass_event_img_url_list'
         );
     }
+    private function get_class_img_new() 
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'new_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
+    }
     private function get_level_img_default()
     {
         return $this->my_paramchecker->get_const_from_list(
@@ -371,7 +448,6 @@ class Klass extends MY_REST_Controller {
         $klass_course->id = -1;
         $klass_course->class_img_url = 
         $this->get_class_img_default();
-
         $klass_course->title="수업이 없습니다.";
 
         $klass_course = 
@@ -388,20 +464,14 @@ class Klass extends MY_REST_Controller {
         $klass_course = new KlassCourse();
         $klass_course->id = -100;
         $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'new_class', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
+        $this->get_class_img_new();
         $klass_course->title="새로운 수업을 만들어요.";
 
         $klass_course = 
         $this->set_default_klass_course($klass_course);
 
         return $klass_course;
-    }    
-
-
+    }
     private function get_levels() {
 
         if($this->is_not_ok()) {

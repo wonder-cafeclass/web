@@ -1,0 +1,17 @@
+
+<div 	
+[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
+[style.margin-top]="marginTop + 'px'"
+class="tooltip top" 
+role="tooltip"> 
+
+	<div 	
+	class="tooltip-arrow"
+	[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+	></div> 
+	<div 	
+	class="tooltip-inner" 
+	[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}
+	</div> 
+
+</div>

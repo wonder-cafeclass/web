@@ -1,4 +1,4 @@
-<div class="container">
+<div *ngIf="klass" class="container">
   
   <!-- First Row -->
   <div class="row">
@@ -21,16 +21,45 @@
             <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
           
           </li>
-
-          <li class="list-group-item" style="padding:0px;">
-              <image-grid [imageTable]="bannerImageTable"
-                          [hasTableBorder]="false"></image-grid>
+          
+          <!-- Banner Image List INIT -->
+          <li *ngIf="bannerImageTable" 
+              class="list-group-item" style="padding:0px;">
+            <image-grid [imageTable]="bannerImageTable"
+                        [hasTableBorder]="false"></image-grid>
           </li>
+          <!-- Banner Image List DONE -->
+
+          <!-- Banner Image Input(Admin) INIT -->
+          <li *ngIf="isAdmin && imgUploaderUploadAPIUrl"
+              class="list-group-item" 
+              style="padding:0px;border-top: 0px;">
+            <img-uploader
+            [uploadAPIUrl]="imgUploaderUploadAPIUrl"
+            [imagePath]="imgUploaderImagePath"
+            [imageUrl]="imgUploaderImageUrl"
+            [eventKey]="imgUploaderEventKey"
+            [btnName]="'수업 배너이미지 올리기'"
+            [fileSizeKBMax]="300"
+            [fileWidth]="500"
+            [fileMinWidth]="100"
+            [fileMaxWidth]="800"
+            [fileMinHeight]="100"
+            [fileMaxHeight]="600"
+            (emitter)="onChangedFromChild($event)"
+            >
+            </img-uploader>
+          </li>
+          <!-- Banner Image Input(Admin) DONE -->
+
         </ul>
+        
 
         <!-- Second Column -->
         <ul class="list-group col-md-4" style="padding-right: 0px;">
-          
+
+          <!-- PRICE INIT -->
+          <!--
           <li class="list-group-item col-next first">
             <pricetag-h [title]="pricePerWeekFormat"
                         [fontSizeTitle]="40"
@@ -47,7 +76,10 @@
                         [currency]="priceTagCurrency"
                         [color]="priceTagColor"></pricetag-h>
           </li>
+          <!-- PRICE DONE -->
+
           <!-- FILTERS -->
+          <!--
           <li class="list-group-item col-next">
             <image-grid [imageTable]="selectileImageTable"
                         [imageHeight]="selectileImageHeight"
@@ -55,7 +87,8 @@
                         [hasTableBorder]="true"></image-grid>
           </li>
 
-          <!-- COURSE TIME -->
+          <!-- COURSE TIME INIT -->
+          <!--
           <li class="list-group-item col-next" style="height: 97px;">
             <clock-board  #clockboard 
                           [clockHeight]=86
@@ -63,8 +96,10 @@
                           [klassTimeBegin]="klassTimeBegin" 
                           [klassTimeEnd]="klassTimeEnd"></clock-board>
           </li>
+          <!-- COURSE TIME DONE -->
 
-          <!-- FIRST KLASS DATE -->
+          <!-- FIRST KLASS DATE INIT -->
+          <!--
           <li *ngIf="firstClassDateFormatStr" class="list-group-item col-next">
             <butterfly  [title]="'강의 참가 가능일'"
                         [fontSizeTitle]="16"
@@ -74,7 +109,10 @@
                         [paddingText]="5"
                         [color]="priceTagColor"></butterfly>
           </li>
-
+          <!-- FIRST KLASS DATE DONE -->
+          
+          <!-- KLASS VENUE INIT -->
+          <!--
           <li class="list-group-item col-next">
             <butterfly  [title]="'수업 장소'"
                         [fontSizeTitle]="16"
@@ -84,7 +122,8 @@
                         [paddingText]="5"
                         [color]="priceTagColor"></butterfly>          
           </li>
-
+          <!-- KLASS VENUE DONE -->
+          
           <li class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
@@ -100,6 +139,8 @@
   </div>
   
   <!-- Second Row -->
+  <!-- SECOND ROW INIT -->
+  <!--
   <div class="row">
     <div class="col-md-2" style="padding:0px;"></div>
     <div class="col-md-8 cc-div-col" style="padding:0px;">
@@ -115,4 +156,5 @@
     </div>
     <div class="col-md-2" style="padding:0px;"></div>
   </div>
+  <!-- SECOND ROW DONE -->
 </div>

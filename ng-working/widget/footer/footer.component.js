@@ -50,18 +50,20 @@ var FooterComponent = (function () {
     };
     FooterComponent.prototype.ngOnInit = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("footer / ngOnInit / 시작");
         this.watchTower.contentHeight$.subscribe(function (contentHeight) {
             var windowHeight = window.innerHeight;
+            // 푸터의 높이를 가져옵니다.
+            var footerHeight = _this.getHeight();
+            if (isDebug)
+                console.log("footer / contentHeight$.subscribe / windowHeight : ", windowHeight);
             if (isDebug)
                 console.log("footer / contentHeight$.subscribe / contentHeight : ", contentHeight);
             if (isDebug)
-                console.log("footer / contentHeight$.subscribe / windowHeight : ", windowHeight);
-            // 푸터의 높이를 가져옵니다.
-            var footerHeight = _this.getHeight();
+                console.log("footer / contentHeight$.subscribe / footerHeight : ", footerHeight);
             if (windowHeight < (contentHeight + footerHeight)) {
                 // 1. 컨텐츠 높이가 화면 높이보다 깁니다.
                 // 스크롤이 가능하므로, footer를 하단 고정을 해제합니다.

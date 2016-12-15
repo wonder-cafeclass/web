@@ -3,7 +3,7 @@ import { Router,
          Resolve,
          ActivatedRouteSnapshot } from '@angular/router';
 
-import { KlassService }           from './klass.service';
+import { KlassService }           from './service/klass.service';
 import { Klass }                  from './model/klass';
 
 import { MyResponse }             from '../util/model/my-response';

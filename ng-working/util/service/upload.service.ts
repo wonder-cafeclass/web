@@ -23,7 +23,8 @@ export class UploadService {
         
     }
 
-    makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
+    // makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
+    makeFileRequest (url: string, paramsObj: any, files: File[]): Observable<any> {
         return Observable.create(observer => {
             let formData: FormData = new FormData(),
                 xhr: XMLHttpRequest = new XMLHttpRequest();
@@ -31,6 +32,12 @@ export class UploadService {
             // 1개의 파일만 전송합니다.
             if(null != files && 1 == files.length) {
                 formData.append("userfile", files[0], files[0].name);
+            }
+
+            // 파라미터 전달
+            for (var key in paramsObj) {
+                let value = paramsObj[key];
+                formData.append(key, value);
             }
 
             /*

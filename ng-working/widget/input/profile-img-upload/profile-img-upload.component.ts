@@ -301,7 +301,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
     let req_url = this.urlService.get(this.uploadUserProfileUrl);
 
-    this.uploadService.makeFileRequest(req_url, [], files).subscribe((myResponse:MyResponse) => {
+    this.uploadService.makeFileRequest(req_url, {}, files).subscribe((myResponse:MyResponse) => {
       // 섬네일 주소를 받아와서 화면에 표시해야 한다.
       if(isDebug) console.log("profile-img / onChangeFile / myResponse : ",myResponse);
 

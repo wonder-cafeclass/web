@@ -16,7 +16,7 @@ var Subject_1 = require('rxjs/Subject');
 var MyEventWatchTowerService = (function () {
     function MyEventWatchTowerService() {
         // @ Required for view
-        this.isAdmin = null;
+        this.isAdmin = false;
         this.apiKey = "";
         this.isViewPackReady = false;
         // Observable sources
@@ -46,6 +46,9 @@ var MyEventWatchTowerService = (function () {
     // @ Required for view
     MyEventWatchTowerService.prototype.announceIsAdmin = function (isAdmin) {
         this.isAdmin = isAdmin;
+        if (null != this.loginUser) {
+            this.loginUser.setIsAdmin(this.isAdmin);
+        }
         this.isAdminSource.next(isAdmin);
         this.announceIsViewPackReady();
     };
@@ -101,8 +104,20 @@ var MyEventWatchTowerService = (function () {
     };
     // @ Optional for view
     MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / announceLogin / \uC2DC\uC791");
         this.loginUser = loginUser;
+        if (null != this.loginTeacher) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceLogin / setTeacher");
+            this.loginUser.setTeacher(this.loginTeacher);
+        }
+        this.loginUser.setIsAdmin(this.isAdmin);
         this.loginAnnouncedSource.next(loginUser);
+        if (isDebug)
+            console.log("my-event-watchtower / announceLogin / \uB05D");
     };
     MyEventWatchTowerService.prototype.announceLoginTeacher = function (loginTeacher) {
         // let isDebug:boolean = true;
@@ -110,6 +125,11 @@ var MyEventWatchTowerService = (function () {
         if (isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uC2DC\uC791");
         this.loginTeacher = loginTeacher;
+        if (null != this.loginTeacher) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceLoginTeacher / setTeacher");
+            this.loginUser.setTeacher(this.loginTeacher);
+        }
         this.loginTeacherAnnouncedSource.next(loginTeacher);
         if (isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uB05D");
@@ -119,10 +139,15 @@ var MyEventWatchTowerService = (function () {
     };
     // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
     MyEventWatchTowerService.prototype.announceContentHeight = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-event-watchtower / announceContentHeight / 시작");
         var body = document.body;
         var clientHeight = body.clientHeight;
         if (this.contentHeight === clientHeight) {
-            // 같은 높이라면 업데이트하지 않습니다
+            if (isDebug)
+                console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
             return;
         }
         // @ Alternatives

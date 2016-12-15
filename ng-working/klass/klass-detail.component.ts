@@ -1,36 +1,56 @@
-import { Component, OnInit, HostBinding,
-         trigger, transition, ViewChild,
-         animate, style, state }   from '@angular/core';
-import { Router, ActivatedRoute }  from '@angular/router';
+import { Component, 
+         OnInit, 
+         AfterViewInit,
+         OnChanges,
+         SimpleChanges,
+         HostBinding,
+         trigger, 
+         transition, 
+         ViewChild,
+         animate, 
+         style, 
+         state }                         from '@angular/core';
+import { Router, 
+         ActivatedRoute, 
+         Params }                        from '@angular/router';
+import { Observable }                    from 'rxjs/Observable';         
 
-import { Klass }                   from './model/klass';
-import { KlassPrice }              from './model/klass-price';
+import { Klass }                         from './model/klass';
+import { KlassPrice }                    from './model/klass-price';
 
-import { Calendar }                from '../widget/calendar/model/calendar';
-import { ImageService }            from '../util/image.service';
-import { MyEventService }          from '../util/service/my-event.service';
-import { MyCheckerService }        from '../util/service/my-checker.service';
-import { MyEvent }                 from '../util/model/my-event';
+import { AuthService }                   from '../auth.service';
+import { KlassRadioBtnService }          from './service/klass-radiobtn.service';
+import { KlassCheckBoxService }          from './service/klass-checkbox.service';
+import { KlassService }                  from './service/klass.service';
 
-import { DialogService }           from '../widget/dialog.service';
-import { AuthService }             from '../auth.service';
-import { KlassRadioBtnService }    from './service/klass-radiobtn.service';
-import { KlassCheckBoxService }    from './service/klass-checkbox.service';
+import { RadioBtnOption }                from '../widget/radiobtn/model/radiobtn-option';
+import { CheckBoxOption }                from '../widget/checkbox/model/checkbox-option';
+import { InputViewUpdown }               from '../widget/input-view/model/input-view-updown';
+import { Calendar }                      from '../widget/calendar/model/calendar';
+import { DialogService }                 from '../widget/dialog.service';
 
-import { RadioBtnOption }          from '../widget/radiobtn/model/radiobtn-option';
-import { CheckBoxOption }          from '../widget/checkbox/model/checkbox-option';
-import { InputViewUpdown }         from '../widget/input-view/model/input-view-updown';
+import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 
-import { KlassDetailNavListComponent }  from './klass-detail-nav-list.component';
+import { ImageService }                  from '../util/image.service';
+import { MyEventService }                from '../util/service/my-event.service';
+import { MyCheckerService }              from '../util/service/my-checker.service';
+import { MyEvent }                       from '../util/model/my-event';
+import { MyLoggerService }               from '../util/service/my-logger.service';
+import { MyEventWatchTowerService }      from '../util/service/my-event-watchtower.service';
+import { MyResponse }                    from '../util/model/my-response';
 
-import { MyResponse }                   from '../util/model/my-response';
+import { UserService }                   from '../users/service/user.service';
+import { User }                          from '../users/model/user';
+import { TeacherService }                from '../teachers/service/teacher.service';
+import { Teacher }                       from '../teachers/model/teacher';
+
 
 @Component({
   moduleId: module.id,
   styleUrls: ['klass-detail.component.css'],
   templateUrl: 'klass-detail.component.html'
 })
-export class KlassDetailComponent implements OnInit {
+export class KlassDetailComponent implements OnInit, OnChanges {
 
   klass: Klass;
   klassTimeBegin:string;
@@ -48,8 +68,8 @@ export class KlassDetailComponent implements OnInit {
   klassTarget:string;
   klassSchedule:string;
 
-  klassCalendarTableLinear:Calendar[][];
-  klassCalendarTableMonthly:Calendar[][][];
+  // klassCalendarTableLinear:Calendar[][];
+  // klassCalendarTableMonthly:Calendar[][][];
 
   editTitle: string;
 
@@ -71,8 +91,6 @@ export class KlassDetailComponent implements OnInit {
 
   bannerImageTable:string[][];
 
-  isAdmin:boolean=false;
-
   watchTowerImgUrl:string;
   watchTowerWhiteImgUrl:string;
   radiobtnOptionListCourseDuration:RadioBtnOption[];
@@ -92,19 +110,34 @@ export class KlassDetailComponent implements OnInit {
   firstClassDate:Calendar;
   firstClassDateFormatStr:string;
 
-  // DronList
-  dronListKey:string;
-  dronListTitle:string;
-  dronListSEinnerHTML:string;
-  dronListMyEventSingleInput:MyEvent;
+  // Image Uploader
+  imgUploaderUploadAPIUrl:string="";
+  imgUploaderImagePath:string="";
+  imgUploaderImageUrl:string="";
+  imgUploaderEventKey:string="";
 
+  // REMOVE ME
+  // DronList
+  // dronListKey:string;
+  // dronListTitle:string;
+  // dronListSEinnerHTML:string;
+  // dronListMyEventSingleInput:MyEvent;
+
+  loginUser:User;
+  loginTeacher:Teacher;
+
+  isAdmin:boolean=false;
+  isTeacher:boolean=false;
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private klassService:KlassService,
     public imageService: ImageService,
     public dialogService: DialogService,
     private authService: AuthService,
     private myEventService: MyEventService,
+    private watchTower:MyEventWatchTowerService,
     private radiobtnService:KlassRadioBtnService,
     private checkboxService:KlassCheckBoxService,
     private myCheckerService:MyCheckerService
@@ -112,86 +145,86 @@ export class KlassDetailComponent implements OnInit {
 
   ngOnInit() {
 
-    this.route.data.forEach((data: { klass: Klass }) => {
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / ngOnInit / 시작");
 
-      if(null != data.klass) {
-        this.klass = data.klass;
+    // 1. 로그인 정보를 가져온다
+    let loginUser:User = this.watchTower.getLoginUser();
+    this.isAdmin = loginUser.getIsAdmin();
+    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
+
+    if(isDebug) console.log("klass-detail / ngOnInit / loginUser : ",loginUser);
+    if(isDebug) console.log("klass-detail / ngOnInit / this.isAdmin : ",this.isAdmin);
+    if(isDebug) console.log("klass-detail / ngOnInit / loginTeacher : ",loginTeacher);
+
+    // 1-1. 선생님만이, 빈 수업 화면을 볼수 있습니다.
+    if(null == loginTeacher) {
+      if(isDebug) console.log("klass-detail / ngOnInit / 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+      this.router.navigate(["/"]);
+    }
+    // 1-2. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
+
+    this.route.params
+    .switchMap((params: Params) => {
+
+      let klassId:number = +params['id'];
+
+      if(isDebug) console.log("klass-detail / ngOnInit / klassId : ",klassId);
+
+      if(klassId < 0 && klassId == -100 && null != loginTeacher) {
+        // 새로운 수업 가져오기
+        return this.klassService.getKlassNew(+loginTeacher.id);
       }
 
-      this.klassCalendarTableLinear = this.klass.calendar_table_linear;
-      this.klassCalendarTableMonthly = this.klass.calendar_table_monthly;
+      // 기존 수업 가져오기
+      return this.klassService.getKlass(klassId);
+    })
+    .subscribe((myResponse: MyResponse) => {
 
-      this.klassDayBegin = this.klass.days;
-
-      // send time data to "clock board"
-      this.klassTimeBegin = this.klass.time_begin;
-      this.klassTimeEnd = this.klass.time_end;
-
-      this.klassDateBegin = this.klass.date_begin;
-      this.klassWeekMin = this.klass.week_min;
-      this.klassWeekMax = this.klass.week_max;
-
-      this.priceTagCageWidth = this.klass.weekly_price_list.length * this.priceTagWidth;
-
-      // send image table to "image-grid"
-      this.selectileImageTable =
-      [
-        [
-          this.klass.level_img_url, 
-          this.klass.venue_subway_station_img_url,
-          this.klass.venue_cafe_logo_img_url,
-          this.klass.days_img_url,
-          this.klass.time_begin_img_url,
-        ]
-      ];      
-      let fieldCntSelectile = this.selectileImageTable[0].length;
-      this.selectileCageWidth = (fieldCntSelectile * this.selectileImageWidth) + 20;
-
-      let fieldCntCalMonthly = this.klassCalendarTableMonthly.length;
-      this.miniCalCageWidth = (fieldCntCalMonthly * this.miniCalWidth);
-
-      this.bannerImageTable =
-      [
-        [
-          this.imageService.get(this.imageService.noticeDrinksUrl)
-        ],
-        [
-          this.imageService.get(this.imageService.noticeHelpUrl)
-        ]
-      ];
-
-      this.pricePerWeekFormat = `${this.klass.week_min}주`;
-      this.pricetagDesc = `( 주 ${this.klass.days_list.length}회 )`;
-
-      // 첫수업 날짜 가져오기
-      this.setFirstClassDateFormat();
-
-      // nav-tabs : 수업 관련 내용
-      // wonder.jung
-      this.radiobtnOptionListNavTabs = 
-      this.radiobtnService.getNavTabsKlassInfo(this.klass, this.myEventService.KLASS_DESC);
-      // this.radiobtnService.getNavTabsKlassInfo(this.klass, "klass_venue");
-
-      this.klassFeature = this.klass.feature;   // @ Deprecated
-      this.klassTarget = this.klass.target;     // @ Deprecated
-      this.klassSchedule = this.klass.schedule;
-
-    });
-
-    this.authService.getAdminAuth()
-    .then((myResponse:MyResponse) => {
-
-        if(myResponse.isSuccess() && myResponse.hasDataProp("is_admin")) {
-          this.isAdmin = myResponse.getDataProp("is_admin");
-
-          // 운영툴 여부 결정 
-          if(this.isAdmin){
-            this.initAdmin();            
-          }
-        }
+      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / myResponse : ",myResponse);
+      let klassJSON = myResponse.getDataProp("klass");
+      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / klassJSON : ",klassJSON);
+      if(myResponse.isSuccess() && null != klassJSON) {
+        this.klass = this.klassService.getKlassFromJSON(klassJSON);
       }
-    );
-    
+      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / this.klass : ",this.klass);
+
+    }); // end route
+
+    this.setKlassBannerImageUploader();
+
+  } // end method
+
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / ngOnChanges / 시작");
+
+    if(isDebug) console.log("klass-detail / ngOnChanges / changes : ",changes);
+
+
+  }  
+
+  private setKlassBannerImageUploader():void {
+    // Set image uploader props
+    this.imgUploaderUploadAPIUrl="/CI/index.php/api/upload/image";
+    this.imgUploaderImagePath="/assets/images/class/banner";
+    this.imgUploaderImageUrl="/assets/images/class/banner/banner_default.svg";
+    this.imgUploaderEventKey=this.myEventService.KEY_KLASS_BANNER;
+  }
+
+  private setEmptyKlass() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setEmptyKlass / 시작");
+
+    // 새로운 수업을 만들때, 빈 수업 데이터를 만들어 가져옵니다.
+
+
   }
 
   private setFirstClassDateFormat() :void {
@@ -486,136 +519,61 @@ export class KlassDetailComponent implements OnInit {
 
   onChangedFromChild(myEvent:MyEvent) {
 
-    console.log("TEST / XXX / onChangedFromChild / myEvent : ",myEvent);
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
+    if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
     let eventName:string = myEvent.eventName;
-    let myEventService:MyEventService = this.myEventService;
 
-    // console.log("onChangedFromChild / eventName : ",eventName);
-    // console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-    // console.log("onChangedFromChild / myEvent.valueNext : ",myEvent.valueNext);
-
-    /*  
-    if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
-
-      // '수강신청일'이 변경되었습니다.
-
-      let weekInterval:number = +myEvent.value;
-
-      // 첫수업날짜가 변경됩니다.
-      if(4 === weekInterval) {
-
-        this.klass.enrollment_interval_week = 4;
-        this.setFirstClassDateFormat();
-        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 4주");
-
-      } else if(2 === weekInterval) {
-
-        this.klass.enrollment_interval_week = 2;
-        this.setFirstClassDateFormat();
-        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 2주");
-
-      } else if(1 === weekInterval) {
-
-        this.klass.enrollment_interval_week = 1;
-        this.setFirstClassDateFormat();
-        console.log("onChangedFromChild / '수강신청일'이 변경되었습니다. / 매주");
-
-      }
-    } else if (myEventService.ON_CLICK_KLASS_SCHEDULE === eventName) {
-
-      // 드론 리스트 - klass.schedule을 수정합니다.
-      this.clearDronList();
-      this.dronListKey = this.myEventService.KLASS_SCHEDULE;
-      this.dronListTitle = "일일수업 스케쥴을 입력해주세요";
-      this.dronListSEinnerHTML = myEvent.value;
-
-      //ON_PREVIEW
-      
-    } else if (myEventService.ON_CHANGE_DRON_LIST === eventName) {
-
-      console.log("onChangedFromChild / myEvent : ",myEvent);
-      console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-
-      // 드론 리스트의 입력 내용이 수정되었습니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-        
-        console.log("feature 입력 내용이 수정되었습니다.");
-        this.klassFeature = myEvent.value;
-
-      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-        
-        console.log("target 입력 내용이 수정되었습니다.");
-        this.klassTarget = myEvent.value;
-
-      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-        
-        console.log("schedule 입력 내용이 수정되었습니다.");
-        this.klassSchedule = myEvent.value;
-
-      } // end if
-
-    } else if (myEventService.ON_SAVE_DRON_LIST === eventName) {
-
-      // @ Deprecated
-
-      // 드론 리스트의 입력 내용이 수정되었습니다. 저장합니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-        console.log("feature 입력 내용이 수정되었습니다. 저장합니다.");
-        console.log("onChangedFromChild / myEvent.value : ",myEvent.value);
-      }
-
-
-    } else if (myEventService.ON_SHUTDOWN_DRON_LIST === eventName) {
-
-      // @ Deprecated
-
-      // 사용자가 드론리스트를 닫았습니다.
-      console.log("사용자가 드론리스트를 닫았습니다.");
-      // 관련 파라미터 초기화
-      this.clearDronList();
-
-    } else if (myEventService.ON_SHUTDOWN_N_ROLLBACK_DRON_LIST === eventName) {
-
-      // @ Deprecated
-
-      // 사용자가 드론리스트를 닫았습니다.
-      console.log("사용자가 드론리스트를 닫았습니다. 입력 내용을 취소합니다.");
-      // 관련 파라미터 초기화
-      this.clearDronList();
-
-      // 드론 리스트의 입력 내용이 입력 이전 내용으로 돌아갑니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
-        
-        console.log("feature 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-        this.klassFeature = myEvent.value;
-
-      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
-        
-        console.log("target 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-        this.klassTarget = myEvent.value;
-
-      } else if(this.myEventService.KLASS_SCHEDULE === myEvent.key) {
-        
-        console.log("schedule 입력 내용이 입력 이전 내용으로 돌아갑니다.");
-        this.klassSchedule = myEvent.value;
-
-      } // end if
+    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+    if(!isOK) {
+      if(isDebug) console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      return;
     } // end if
-    */
 
+    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+
+        // 섬네일 주소가 넘어옴.
+        let thumbnail_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
+
+        // 이미지를 추가합니다. 
+        if(null == this.bannerImageTable || 0 == this.bannerImageTable.length) {
+          this.bannerImageTable = [[thumbnail_url]];
+        } else {
+          this.bannerImageTable[0].push(thumbnail_url);
+        } // end if
+
+        // Footer의 속성을 fixed-bottom을 해제해야 함.
+        this.watchTower.announceContentHeight();
+        if(isDebug) console.log("klass-detail / onChangedFromChild / thumbnail_url : ",thumbnail_url);
+
+        // TODO - class banner를 등록합니다.
+
+      } // end if
+
+    } // end if
 
   } // end method
 
-  clearDronList() :void {
-    this.dronListTitle = null;
-    this.dronListSEinnerHTML = null;
-    this.dronListMyEventSingleInput = null;
-  }
+
 
 
   // Admin Section
   showSEKlassFeature() :void {
 
   }
+
+  // REMOVE ME
+  /*
+  clearDronList() :void {
+    this.dronListTitle = null;
+    this.dronListSEinnerHTML = null;
+    this.dronListMyEventSingleInput = null;
+  }
+  */  
 }
