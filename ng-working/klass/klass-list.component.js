@@ -46,9 +46,6 @@ var KlassListComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("klass-list / ngOnInit / 시작");
-        this.asyncViewPack();
-        this.subscribeLoginUser();
-        this.subscribeLoginTeacher();
     };
     KlassListComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -57,6 +54,29 @@ var KlassListComponent = (function () {
         if (isDebug)
             console.log("klass-list / ngAfterViewInit");
         this.asyncViewPack();
+        this.subscribeLoginUser();
+        this.subscribeLoginTeacher();
+        // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
+        this.watchTower.announceToggleTopMenu(true);
+    };
+    KlassListComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-list / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (isDebug)
+                console.log("klass-list / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (isDebug)
+                console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe    
     };
     KlassListComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
@@ -90,25 +110,6 @@ var KlassListComponent = (function () {
             _this.getKlassList(true);
         });
     };
-    KlassListComponent.prototype.asyncViewPack = function () {
-        var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass-list / asyncViewPack / 시작");
-        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
-        if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
-                console.log("klass-list / asyncViewPack / isViewPackReady : ", true);
-            this.init();
-        } // end if
-        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
-        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
-                console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
-            _this.init();
-        }); // end subscribe    
-    };
     KlassListComponent.prototype.setViewPack = function () {
         this.isAdmin = this.watchTower.getIsAdmin();
         this.myCheckerService.setReady(
@@ -137,11 +138,10 @@ var KlassListComponent = (function () {
             this.loginUser = loginUser;
         }
         this.setLoginTeacher();
-        // 2. 
     };
     KlassListComponent.prototype.setLoginTeacher = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / setLoginTeacher / 시작");
         // 로그인 선생님 데이터를 가져옵니다.
@@ -189,30 +189,6 @@ var KlassListComponent = (function () {
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
     };
-    KlassListComponent.prototype.logPageEnter = function () {
-        var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass-list / logPageEnter / 시작");
-        // 페이지 진입을 기록으로 남깁니다.
-        this.myLoggerService.logActionPage(
-        // apiKey:string
-        this.watchTower.getApiKey(), 
-        // pageType:string
-        this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
-            if (isDebug)
-                console.log("klass-list / logPageEnter / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
-            }
-            else {
-                if (null != myResponse.error && "" != myResponse.error) {
-                    // 에러 내용은 화면에 표시한다.
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                }
-            } // end if
-        });
-    };
     KlassListComponent.prototype.getKlassList = function (isTeacher) {
         var _this = this;
         var isDebug = true;
@@ -221,51 +197,100 @@ var KlassListComponent = (function () {
             console.log("klass-list / getKlassList / 시작");
         if (isDebug)
             console.log("klass-list / getKlassList / isTeacher : ", isTeacher);
-        // REFACTOR ME!
-        this.route.params.forEach(function (params) {
+        // 1. 선생님인 경우, 자신의 수업을 추가한 리스트를 가져와야 합니다.
+        // 
+        this.klassService
+            .getKlasses()
+            .then(function (myResponse) {
             if (isDebug)
-                console.log("klass-list / getKlassList / params : ", params);
-            _this.selectedId = params['id'];
-            _this.klassService
-                .getKlasses()
-                .then(function (myResponse) {
+                console.log("klass-list / getKlassList / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
+                // 성공!
+                var klassJSONList = myResponse.getDataProp("klass_list");
                 if (isDebug)
-                    console.log("klass-list / getKlassList / myResponse : ", myResponse);
-                if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
-                    // 성공!
-                    var klassJSONList = myResponse.getDataProp("klass_list");
+                    console.log("klass-list / getKlassList / klassJSONList : ", klassJSONList);
+                var klassList = [];
+                if (null != klassJSONList) {
+                    klassList = _this.klassService.getKlassListFromJSON(klassJSONList);
                     if (isDebug)
-                        console.log("klass-list / getKlassList / klassJSONList : ", klassJSONList);
-                    var klassList = [];
-                    if (null != klassJSONList) {
-                        klassList = _this.klassService.getKlassListFromJSON(klassJSONList);
-                        if (isDebug)
-                            console.log("klass-list / getKlassList / klassList : ", klassList);
-                    }
-                    if (null != klassList && 0 < klassList.length) {
-                        // 1. 클래스 리스트를 가져왔습니다.
-                        _this.klasses = klassList;
-                    }
-                    // wonder.jung
-                    if (isTeacher) {
-                        // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
-                        var newKlassJSONList = myResponse.getDataProp("new_klass");
-                        var newKlass = _this.klassService.getKlassFromJSON(newKlassJSONList[0]);
-                        if (isDebug)
-                            console.log("klass-list / getKlassList / newKlass : ", newKlass);
-                        klassList.unshift(newKlass);
-                    } // end if
+                        console.log("klass-list / getKlassList / klassList : ", klassList);
                 }
-                else {
-                    if (null != myResponse.error && "" != myResponse.error) {
-                        // 에러 내용은 화면에 표시한다.
-                        _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                    }
+                if (null != klassList && 0 < klassList.length) {
+                    // 1. 클래스 리스트를 가져왔습니다.
+                    _this.klasses = klassList;
+                }
+                // wonder.jung
+                if (isTeacher) {
+                    // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
+                    var newKlassJSONList = myResponse.getDataProp("new_klass");
+                    var newKlass = _this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+                    if (isDebug)
+                        console.log("klass-list / getKlassList / newKlass : ", newKlass);
+                    klassList.unshift(newKlass);
                 } // end if
-            }); // end service
+            }
+            else {
+                if (null != myResponse.error && "" != myResponse.error) {
+                    // 에러 내용은 화면에 표시한다.
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+            } // end if
+        }); // end service    
+        // REFACTOR ME!
+        // wonder.jung
+        /*
+        this.route.params.forEach((params: Params) => {
+    
+          if(isDebug) console.log("klass-list / getKlassList / params : ",params);
+    
+          this.selectedId = params['id'];
+    
+          this.klassService
+          .getKlasses()
+          .then((myResponse:MyResponse) => {
+    
+            if(isDebug) console.log("klass-list / getKlassList / myResponse : ",myResponse);
+    
+            if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
+    
+              // 성공!
+              let klassJSONList = myResponse.getDataProp("klass_list");
+              if(isDebug) console.log("klass-list / getKlassList / klassJSONList : ",klassJSONList);
+    
+              let klassList:Klass[] = [];
+              if(null != klassJSONList) {
+                klassList = this.klassService.getKlassListFromJSON(klassJSONList);
+                if(isDebug) console.log("klass-list / getKlassList / klassList : ",klassList);
+              }
+              if(null != klassList && 0 < klassList.length) {
+                // 1. 클래스 리스트를 가져왔습니다.
+                this.klasses = klassList;
+              }
+    
+              // wonder.jung
+              if(isTeacher) {
+                // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
+                let newKlassJSONList = myResponse.getDataProp("new_klass");
+                let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+    
+                if(isDebug) console.log("klass-list / getKlassList / newKlass : ",newKlass);
+    
+                klassList.unshift(newKlass);
+              } // end if
+    
+              // let klass:Klass = new_klass
+              // 1-2. 유저라면 수업 없음 칸을 노출합니다.
+              // new_klass
+    
+            } else {
+              if(null != myResponse.error && "" != myResponse.error) {
+                // 에러 내용은 화면에 표시한다.
+                this.watchTower.announceErrorMsgArr([myResponse.error]);
+              }
+            } // end if
+          }); // end service
         }); // end param
-        // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
-        this.watchTower.announceToggleTopMenu(true);
+        */
     };
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();

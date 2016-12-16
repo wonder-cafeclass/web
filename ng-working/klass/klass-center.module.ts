@@ -22,9 +22,7 @@ import { KlassCenterComponent }      from './klass-center.component';
 import { KlassListComponent }        from './klass-list.component';
 import { KlassCenterHomeComponent }  from './klass-center-home.component';
 import { KlassDetailComponent }      from './klass-detail.component';
-import { 
-    KlassDetailNavListComponent 
-}                                    from './klass-detail-nav-list.component';
+import { KlassDetailNavListComponent } from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }  from './klass-filter-tile.component';
 import { klassCenterRouting }        from './klass-center.routing';
 import { KlassVenueSearchListComponent } from './widget/klass-venue-search-list.component';

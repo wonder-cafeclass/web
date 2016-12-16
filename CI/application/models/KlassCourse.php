@@ -128,8 +128,10 @@ class KlassCourse {
         public $class_status;
         // 수업 신청 타입
         public $enrollment_interval_week;
-        // 이미지 링크    
+        // 이미지 링크
         public $class_img_url;
+        // 배너 이미지 링크
+        public $class_banner_url;
         // 이미지 에러 링크    
         public $class_img_err_url;
         // 클래스 캘린더 리스트 (Linear) - Calendar[][]

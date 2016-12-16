@@ -10,3 +10,8 @@
     border-radius:6px;
     -moz-border-radius:6px;	
 }
+button.dron {
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;	
+}

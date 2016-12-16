@@ -29,7 +29,9 @@ var KlassService = (function () {
         this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
         this.addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
         this.removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
+        // /assets/images/class/banner
         this.baseHref = "";
+        this.dirPathKlassBanner = "/assets/images/class/banner";
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
@@ -310,8 +312,20 @@ var KlassService = (function () {
         }
         return klassList;
     };
+    KlassService.prototype.extractKlassBannerFromImgUrl = function (imgUrl) {
+        if (null == imgUrl || "" === imgUrl) {
+            return "";
+        }
+        return imgUrl.replace(this.dirPathKlassBanner, "");
+    };
     KlassService.prototype.getKlassFromJSON = function (klassJSON) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / getKlassFromJSON / 시작");
         var klass = new klass_1.Klass();
+        if (isDebug)
+            console.log("klass.service / getKlassFromJSON / klassJSON : ", klassJSON);
         // id,
         klass.id = -1;
         if (null != klassJSON.id) {
@@ -386,6 +400,23 @@ var KlassService = (function () {
         klass.discount = klassJSON.discount;
         // class_img_url,
         klass.class_img_url = klassJSON.class_img_url;
+        // class_banner_url,
+        klass.class_banner_url = klassJSON.class_banner_url;
+        // class_banner_url_arr,
+        if (null != klassJSON.class_banner_url && "" != klassJSON.class_banner_url) {
+            klass.class_banner_url_arr = klassJSON.class_banner_url.split("|||");
+            // 바로 로딩할 수 있는 주소로 변경!
+            for (var i = 0; i < klass.class_banner_url_arr.length; ++i) {
+                var class_banner_url = klass.class_banner_url_arr[i];
+                if (null == class_banner_url || "" == class_banner_url) {
+                    continue;
+                }
+                klass.class_banner_url_arr[i] = this.dirPathKlassBanner + "/" + class_banner_url;
+            }
+        }
+        else {
+            klass.class_banner_url_arr = [];
+        }
         // level_img_url,
         klass.level_img_url = klassJSON.level_img_url;
         // days_img_url,

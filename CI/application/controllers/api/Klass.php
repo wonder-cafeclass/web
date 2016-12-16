@@ -275,7 +275,10 @@ class Klass extends MY_REST_Controller {
         );
 
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
+        $last_query = $this->my_sql->get_last_query();
         $output["klass_list"] = $klass_list;
+        $output["query"] = $last_query;
+        
         $new_klass = $this->get_klass_course_new_class();
         $output["new_klass"] = [$new_klass];
 

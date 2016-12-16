@@ -19,6 +19,7 @@ var MyEventWatchTowerService = (function () {
         this.isAdmin = false;
         this.apiKey = "";
         this.isViewPackReady = false;
+        this.isLockedBottomFooterFlexible = false;
         // Observable sources
         // @ Required for view
         this.isAdminSource = new Subject_1.Subject();
@@ -30,6 +31,7 @@ var MyEventWatchTowerService = (function () {
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
         this.contentHeightSource = new Subject_1.Subject();
+        this.isLockedBottomFooterFlexibleSource = new Subject_1.Subject();
         // Observable streams
         // @ Required for view
         this.isAdmin$ = this.isAdminSource.asObservable();
@@ -41,6 +43,7 @@ var MyEventWatchTowerService = (function () {
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.contentHeight$ = this.contentHeightSource.asObservable();
+        this.isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
     }
     // Service message commands
     // @ Required for view
@@ -174,6 +177,10 @@ var MyEventWatchTowerService = (function () {
     MyEventWatchTowerService.prototype.announceErrorMsgArr = function (errorMsgArr) {
         this.errorMsgArr = errorMsgArr;
         this.errorMsgArrSource.next(errorMsgArr);
+    };
+    MyEventWatchTowerService.prototype.announceIsLockedBottomFooterFlexible = function (isLockedBottomFooterFlexible) {
+        this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
+        this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
     };
     MyEventWatchTowerService.prototype.getLoginUser = function () {
         return this.loginUser;

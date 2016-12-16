@@ -7,10 +7,17 @@
 
     <tr *ngFor="let row of imageTable">
       <td *ngFor="let field of row" class="td-layout" [style.width]="'10%'">
+        <button *ngIf="isAdmin"
+                (click)="onClickDelete($event, field)"
+                class="btn btn-default dron" 
+                type="button">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
         <img  *ngIf="field" src="{{field}}" 
               [style.width]="(0 < imageWidth)?imageWidth + 'px':'100%'">
       </td>
     </tr>
 
   </tbody>
+  
 </table>

@@ -61,6 +61,9 @@ export class MyEventService {
     STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
     CAUTION:string="CAUTION";                   // 유의사항
 
+    // Widget
+    KEY_IMAGE_GRID:string="KEY_IMAGE_GRID";               // Widget - image grid
+
     KEY_SEARCH_LIST:string="KEY_SEARCH_LIST";             // 검색시, 결과가 리스트에 노출됨.
     KEY_SMART_EDITOR:string="KEY_SMART_EDITOR";           // 네이버 스마트에디터
     KEY_INPUTS_BTNS_ROWS:string="KEY_INPUTS_BTNS_ROWS";   // 여러개의 열이 있는 입력창

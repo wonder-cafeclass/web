@@ -1,6 +1,7 @@
 import { Component, 
          OnInit, 
          AfterViewInit,
+         AfterViewChecked,
          OnChanges,
          SimpleChanges,
          HostBinding,
@@ -51,7 +52,7 @@ import { Teacher }                       from '../teachers/model/teacher';
   styleUrls: ['klass-detail.component.css'],
   templateUrl: 'klass-detail.component.html'
 })
-export class KlassDetailComponent implements OnInit, OnChanges {
+export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChecked, OnChanges {
 
   klass: Klass;
   klassTimeBegin:string;
@@ -151,22 +152,66 @@ export class KlassDetailComponent implements OnInit, OnChanges {
     private myCheckerService:MyCheckerService
   ) {}
 
+
   ngOnInit() {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / ngOnInit / 시작");
 
+  } // end method
+
+  ngAfterViewInit():void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / ngAfterViewInit / 시작");
+    if(isDebug) console.log("klass-detail / ngAfterViewInit / this.imageGridComponent : ", this.imageGridComponent);
+
+    this.watchTower.announceIsLockedBottomFooterFlexible(false);
+
+    this.init();
+  }
+
+  ngAfterViewChecked():void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / ngAfterViewChecked / 시작");
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / ngOnChanges / 시작");
+
+    if(isDebug) console.log("klass-detail / ngOnChanges / changes : ",changes);
+
+
+  } 
+
+  private init():void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / init / 시작");
+
     // 1. 로그인 정보를 가져온다
     this.loginUser = this.watchTower.getLoginUser();
     if(null != this.loginUser) {
       this.isAdmin = this.loginUser.getIsAdmin();
       this.loginTeacher = this.watchTower.getLoginTeacher();
+
+      this.isTeacher = this.loginUser.isTeacher();
     }
 
-    if(isDebug) console.log("klass-detail / ngOnInit / loginUser : ",this.loginUser);
-    if(isDebug) console.log("klass-detail / ngOnInit / this.isAdmin : ",this.isAdmin);
-    if(isDebug) console.log("klass-detail / ngOnInit / loginTeacher : ",this.loginTeacher);
+    if(isDebug) console.log("klass-detail / init / loginUser : ",this.loginUser);
+    if(isDebug) console.log("klass-detail / init / this.isAdmin : ",this.isAdmin);
+    if(isDebug) console.log("klass-detail / init / loginTeacher : ",this.loginTeacher);
+    if(isDebug) console.log("klass-detail / init / imageGridComponent : ",this.imageGridComponent);
 
 
     this.route.params
@@ -177,14 +222,14 @@ export class KlassDetailComponent implements OnInit, OnChanges {
       if(klassId === -100 && null == this.loginTeacher) {
 
         // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
-        if(isDebug) console.log("klass-detail / ngOnInit / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+        if(isDebug) console.log("klass-detail / init / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
         this.router.navigate(["/"]);
         return;
 
       } else if(klassId === -100) {
 
         // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
-        if(isDebug) console.log("klass-detail / ngOnInit / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
+        if(isDebug) console.log("klass-detail / init / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
         return this.klassService.addKlassEmpty(
           // apiKey:string, 
           this.watchTower.getApiKey(),
@@ -201,19 +246,29 @@ export class KlassDetailComponent implements OnInit, OnChanges {
       } // end if
 
       // 기존 수업 가져오기
-      if(isDebug) console.log("klass-detail / ngOnInit / 기존 수업 가져오기 / klassId : ",klassId);
+      if(isDebug) console.log("klass-detail / init / 기존 수업 가져오기 / klassId : ",klassId);
       return this.klassService.getKlass(klassId);
     })
     .subscribe((myResponse: MyResponse) => {
 
-      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / init / subscribe / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
 
         let klassJSON = myResponse.getDataProp("klass");
-        if(isDebug) console.log("klass-detail / ngOnInit / subscribe / klassJSON : ",klassJSON);
+        if(isDebug) console.log("klass-detail / init / subscribe / klassJSON : ",klassJSON);
         if(null != klassJSON) {
+
           this.klass = this.klassService.getKlassFromJSON(klassJSON);
+
+          if(isDebug) console.log("klass-detail / init / subscribe / this.imageGridComponent : ",this.imageGridComponent);
+
+          this.onAfterReceivingKlass();
+
+          if(null != this.imageGridComponent) {
+            this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+          }
+
         } // end if
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
@@ -233,25 +288,21 @@ export class KlassDetailComponent implements OnInit, OnChanges {
         );        
 
       } // end if
-      if(isDebug) console.log("klass-detail / ngOnInit / subscribe / this.klass : ",this.klass);
+      if(isDebug) console.log("klass-detail / init / subscribe / this.klass : ",this.klass);
 
     }); // end route
 
-    this.setKlassBannerImageUploader();
+    this.setKlassBannerImageUploader();    
+  } 
 
-  } // end method
-
-  ngOnChanges(changes: SimpleChanges) {
-    // changes.prop contains the old and the new value...
+  private onAfterReceivingKlass() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / ngOnChanges / 시작");
+    if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
+    if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ",this.imageGridComponent);
 
-    if(isDebug) console.log("klass-detail / ngOnChanges / changes : ",changes);
-
-
-  }  
+  }
 
   private setKlassBannerImageUploader():void {
     // Set image uploader props
@@ -562,7 +613,35 @@ export class KlassDetailComponent implements OnInit, OnChanges {
     */
   }
 
-  onChangedFromChild(myEvent:MyEvent) {
+  deleteBannerImg(imgUrlToDelete:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / deleteBannerImg / 시작");
+    if(isDebug) console.log("klass-detail / deleteBannerImg / imgUrlToDelete : ",imgUrlToDelete);
+
+    if(null == imgUrlToDelete || "" == imgUrlToDelete) {
+      if(isDebug) console.log("klass-detail / deleteBannerImg / 중단 / imgUrlToDelete is not valid!");
+      return;
+    }
+
+    this.klassService.removeKlassBanner(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // klassBanner:string
+      imgUrlToDelete
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / onChangedFromChild / myResponse : ",myResponse);
+    });
+
+  }
+
+  onChangedFromChild(myEvent:MyEvent):void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
@@ -570,6 +649,51 @@ export class KlassDetailComponent implements OnInit, OnChanges {
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
     let eventName:string = myEvent.eventName;
+
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
+
+        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_READY / KEY_IMAGE_GRID");
+
+        if(  null != myEvent.metaObj && 
+             null != this.klass && 
+             null != this.klass.class_banner_url_arr && 
+             (0 < this.klass.class_banner_url_arr.length)) {
+
+          if(isDebug) console.log("klass-detail / onChangedFromChild / KEY_IMAGE_GRID");
+
+          this.imageGridComponent = myEvent.metaObj; 
+          this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+
+          // 이미지가 추가되므로 높이가 변경되는 것을 전파!
+          this.watchTower.announceContentHeight();
+
+        } // end if
+
+      } // end if
+
+      // Ready는 여기서 중단.
+      return;
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
+
+        let imgUrlToDelete:string = this.klassService.extractKlassBannerFromImgUrl(myEvent.value);
+        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_REMOVE_ROW / KEY_IMAGE_GRID");
+
+        if(null != imgUrlToDelete && "" != imgUrlToDelete) {
+          this.deleteBannerImg(imgUrlToDelete);
+        }
+
+
+      } // end if
+
+      // Ready는 여기서 중단.
+      return;
+
+    } // end if
 
     let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
     if(!isOK) {
@@ -579,6 +703,8 @@ export class KlassDetailComponent implements OnInit, OnChanges {
 
     if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
+      // Do something...
+
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
@@ -587,18 +713,8 @@ export class KlassDetailComponent implements OnInit, OnChanges {
         let banner_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
 
         // 이미지를 추가합니다. 
+        if(isDebug) console.log("klass-detail / onChangedFromChild / this.imageGridComponent : ",this.imageGridComponent);
         this.imageGridComponent.addImageSingleColumn(banner_url);
-
-        // REMOVE ME
-        /*
-        if(null == this.bannerImageTable || 0 == this.bannerImageTable.length) {
-          if(isDebug) console.log("klass-detail / onChangedFromChild / 첫번째 배너 추가");
-          this.bannerImageTable = [[banner_url]];
-        } else {
-          if(isDebug) console.log("klass-detail / onChangedFromChild / 첫번째 배너 이후 추가");
-          this.bannerImageTable.push([banner_url]);
-        } // end if
-        */
 
         // Footer의 속성을 fixed-bottom을 해제해야 함.
         this.watchTower.announceContentHeight();

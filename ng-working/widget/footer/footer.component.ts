@@ -12,6 +12,7 @@ import {  Component,
 import { Router }                     from '@angular/router';
 
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
+import { Teacher }                    from '../../teachers/model/teacher';
 
 
 @Component({
@@ -22,6 +23,7 @@ import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtow
 })
 export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
+  isLocked:boolean = false;
   isFixedBottom:boolean=false;
   isLoginTeacher:boolean=false;
 
@@ -29,10 +31,19 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
                 private elementRef:ElementRef,
                 public router:Router) {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("footer / constructor / 시작");
     if(isDebug) console.log("footer / constructor / 1 / this.isLoginTeacher : ",this.isLoginTeacher);
+
+    this.watchTower.isLockedBottomFooterFlexible$.subscribe(
+      (isLockedBottomFooterFlexible:boolean) => {
+
+      if(isDebug) console.log("footer / constructor / isLockedBottomFooterFlexible : ",isLockedBottomFooterFlexible);
+      this.isLocked = isLockedBottomFooterFlexible;
+      this.isFixedBottom = isLockedBottomFooterFlexible;
+
+    }); // end if
 
   }
 
@@ -65,12 +76,17 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / ngOnInit / 시작");
 
     this.watchTower.contentHeight$.subscribe(
       (contentHeight:number) => {
+
+      if(this.isLocked) {
+        if(isDebug) console.log("footer / contentHeight$.subscribe / 중단 / this.isLocked : ",this.isLocked);
+        return;
+      }
 
       let windowHeight:number = window.innerHeight;
 

@@ -21,7 +21,7 @@ export class MyEventWatchTowerService {
 	private loginTeacher:Teacher;
 	private errorMsgArr:string[];
 	private contentHeight:number;
-
+	private isLockedBottomFooterFlexible:boolean = false;
 
 	// Observable sources
 	// @ Required for view
@@ -34,6 +34,7 @@ export class MyEventWatchTowerService {
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
 	private contentHeightSource = new Subject<number>();
+	private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
 
 
 
@@ -48,6 +49,7 @@ export class MyEventWatchTowerService {
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 	contentHeight$ = this.contentHeightSource.asObservable();
+	isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
 
 
 	// Service message commands
@@ -196,6 +198,10 @@ export class MyEventWatchTowerService {
 		this.errorMsgArr = errorMsgArr;
 		this.errorMsgArrSource.next(errorMsgArr);
 	}
+	announceIsLockedBottomFooterFlexible(isLockedBottomFooterFlexible: boolean) {
+		this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
+		this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
+	}	
 
 
 

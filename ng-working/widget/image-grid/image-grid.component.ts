@@ -1,4 +1,14 @@
-import { Component, OnInit, Input }   from '@angular/core';
+import { Component, 
+         OnInit, 
+         AfterViewInit, 
+         Output,
+         EventEmitter,
+         Input }                from '@angular/core';
+
+import { MyCheckerService }     from '../../util/service/my-checker.service';
+import { MyChecker }            from '../../util/model/my-checker';
+import { MyEventService }       from '../../util/service/my-event.service';
+import { MyEvent }              from '../../util/model/my-event';
 
 @Component({
   moduleId: module.id,
@@ -6,7 +16,10 @@ import { Component, OnInit, Input }   from '@angular/core';
   templateUrl: 'image-grid.component.html',
   styleUrls: [ 'image-grid.component.css' ]
 })
-export class ImageGridComponent implements OnInit {
+export class ImageGridComponent implements OnInit, AfterViewInit {
+
+  // @ Common Props
+  @Output() emitter = new EventEmitter<MyEvent>();
 
   @Input() imageTable:string[][];
   @Input() imageHeight:number=-1;
@@ -14,21 +27,33 @@ export class ImageGridComponent implements OnInit {
   @Input() tableWidth:number=-1;
   tableWidthStr:string;
   @Input() hasTableBorder:boolean=false;
+  @Input() isAdmin:boolean=false;
 
   gridWidth:number=100;
 
-  constructor() {}
+  constructor(  private myCheckerService:MyCheckerService,
+                private myEventService:MyEventService ) {}
 
   ngOnInit(): void {
 
     this.init();
+    this.emitEventOnReady();
 
   }
 
+  ngAfterViewInit():void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid / ngAfterViewInit / 시작");
+
+  }
+
+
   private init():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / init / 시작");
 
     if(null == this.imageTable || 0 == this.imageTable.length) {
@@ -83,7 +108,25 @@ export class ImageGridComponent implements OnInit {
       this.imageTable.push([imageUrl]);
     } // end if
 
-  }
+  } // end method
+
+  addImageListSingleColumn(imageUrlList:string[]):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid / addImageListSingleColumn / 시작");
+
+    if(null == imageUrlList || 0 == imageUrlList.length) {
+      return;
+    }
+
+    // 이미지를 추가합니다.
+    for (var i = 0; i < imageUrlList.length; ++i) {
+      let imageUrl:string = imageUrlList[i];
+      this.addImageSingleColumn(imageUrl);
+    } // end for
+
+  } // end method
 
   removeImage(imageUrl:string): void {
 
@@ -121,5 +164,68 @@ export class ImageGridComponent implements OnInit {
     this.imageTable = imageTableNext;
 
   }
+
+  onClickDelete(event, imgUrlToDelete:string) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(null == imgUrlToDelete || "" === imgUrlToDelete) {
+      return;
+    }
+
+    this.removeImage(imgUrlToDelete);
+    this.emitEventOnDelete(imgUrlToDelete);
+
+  }
+
+  private emitEventOnDelete(imgUrlToDelete:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid / emitEventOnDelete / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_REMOVE_ROW,
+      // public key:string
+      this.myEventService.KEY_IMAGE_GRID,
+      // public value:string
+      imgUrlToDelete,
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      null
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("image-grid / emitEventOnChange / Done!");    
+  }
+
+  private emitEventOnReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid / emitEventOnChange / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_READY,
+      // public key:string
+      this.myEventService.KEY_IMAGE_GRID,
+      // public value:string
+      "",
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      null
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("image-grid / emitEventOnChange / Done!");
+
+  }  
 
 }

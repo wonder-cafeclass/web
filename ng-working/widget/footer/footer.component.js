@@ -13,17 +13,25 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var FooterComponent = (function () {
     function FooterComponent(watchTower, elementRef, router) {
+        var _this = this;
         this.watchTower = watchTower;
         this.elementRef = elementRef;
         this.router = router;
+        this.isLocked = false;
         this.isFixedBottom = false;
         this.isLoginTeacher = false;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("footer / constructor / 시작");
         if (isDebug)
             console.log("footer / constructor / 1 / this.isLoginTeacher : ", this.isLoginTeacher);
+        this.watchTower.isLockedBottomFooterFlexible$.subscribe(function (isLockedBottomFooterFlexible) {
+            if (isDebug)
+                console.log("footer / constructor / isLockedBottomFooterFlexible : ", isLockedBottomFooterFlexible);
+            _this.isLocked = isLockedBottomFooterFlexible;
+            _this.isFixedBottom = isLockedBottomFooterFlexible;
+        }); // end if
     }
     FooterComponent.prototype.getHeight = function () {
         // let isDebug:boolean = true;
@@ -50,11 +58,16 @@ var FooterComponent = (function () {
     };
     FooterComponent.prototype.ngOnInit = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / ngOnInit / 시작");
         this.watchTower.contentHeight$.subscribe(function (contentHeight) {
+            if (_this.isLocked) {
+                if (isDebug)
+                    console.log("footer / contentHeight$.subscribe / 중단 / this.isLocked : ", _this.isLocked);
+                return;
+            }
             var windowHeight = window.innerHeight;
             // 푸터의 높이를 가져옵니다.
             var footerHeight = _this.getHeight();

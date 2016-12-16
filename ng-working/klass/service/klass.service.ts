@@ -34,11 +34,13 @@ export class KlassService {
   private addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
   private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
   private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
-
+// /assets/images/class/banner
   private baseHref = "";
 
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
+
+  private dirPathKlassBanner:string="/assets/images/class/banner";
 
   constructor(private http: Http, private urlService:UrlService) {
     this.myExtractor = new MyExtractor();
@@ -337,6 +339,7 @@ export class KlassService {
                   .toPromise()
                   .then(this.myExtractor.extractData)
                   .catch(this.myExtractor.handleError);
+
   } // end getKlasses
   
   getKlassSelectile(): Promise<MyResponse> {
@@ -372,9 +375,23 @@ export class KlassService {
     return klassList;
   }
 
+  extractKlassBannerFromImgUrl(imgUrl:string) :string {
+    if(null == imgUrl || "" ===  imgUrl) {
+      return "";
+    }
+
+    return imgUrl.replace(this.dirPathKlassBanner,"");
+  }
+
   getKlassFromJSON(klassJSON): Klass {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / getKlassFromJSON / 시작");
+
     let klass:Klass = new Klass();
+
+    if(isDebug) console.log("klass.service / getKlassFromJSON / klassJSON : ",klassJSON);
 
     // id,
     klass.id = -1;
@@ -450,6 +467,24 @@ export class KlassService {
     klass.discount = klassJSON.discount;
     // class_img_url,
     klass.class_img_url = klassJSON.class_img_url;
+    // class_banner_url,
+    klass.class_banner_url = klassJSON.class_banner_url;
+    // class_banner_url_arr,
+    if(null != klassJSON.class_banner_url && "" != klassJSON.class_banner_url) {
+      klass.class_banner_url_arr = klassJSON.class_banner_url.split("|||");
+
+      // 바로 로딩할 수 있는 주소로 변경!
+      for (var i = 0; i < klass.class_banner_url_arr.length; ++i) {
+        let class_banner_url:string = klass.class_banner_url_arr[i];
+        if(null == class_banner_url || "" == class_banner_url) {
+          continue;
+        }
+        klass.class_banner_url_arr[i] = `${this.dirPathKlassBanner}/${class_banner_url}`;
+      }
+
+    } else {
+      klass.class_banner_url_arr = [];
+    }
     // level_img_url,
     klass.level_img_url = klassJSON.level_img_url;
     // days_img_url,

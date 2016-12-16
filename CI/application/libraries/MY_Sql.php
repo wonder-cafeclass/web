@@ -30,6 +30,7 @@ require APPPATH . '/models/KlassQuestion.php';
 class MY_Sql
 {
 	private $CI=null;
+    private $query="";
 
     function __construct()
     {
@@ -49,6 +50,18 @@ class MY_Sql
         {
             return;
         }
+    }
+
+    public function get_last_query()
+    {
+        return $this->query;
+    }
+    private function set_last_query($query="")
+    {
+        if(!empty($query)) 
+        {
+            $this->query = $query;
+        } // end if
     }
 
     /*
@@ -1373,15 +1386,21 @@ class MY_Sql
     {
         if(!(0 < $offset)) 
         {
-            return;
+            $offset = 0;
         }
         if(!(0 < $limit)) 
         {
-            return;
+            $limit = 20;
         }
 
+        $this->CI->db->limit($offset, $limit);  // Produces: LIMIT 20, 10
         $this->CI->db->order_by('id', 'DESC');
-        $query = $this->CI->db->get('klass', $limit, $offset);
+
+        $sql = $this->CI->db->get_compiled_select('klass');
+        $this->set_last_query($sql);
+
+        $query = $this->CI->db->get('klass');
+
         $klass_list = $this->add_klass_extra_info($query);
 
         return $klass_list;
