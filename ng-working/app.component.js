@@ -204,6 +204,9 @@ var AppComponent = (function () {
                 // 회원이 선생님이라면 선생님 정보를 가져온다.
                 _this.getTeacherFromUser(+_this.loginUser.id);
             }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
         });
     };
     AppComponent.prototype.getTeacherFromUser = function (userId) {

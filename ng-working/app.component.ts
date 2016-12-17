@@ -244,7 +244,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 				// 회원이 선생님이라면 선생님 정보를 가져온다.
 				this.getTeacherFromUser(+this.loginUser.id);
-			}
+
+			} else if(myResponse.isFailed() && null != myResponse.error) {  
+
+				this.watchTower.announceErrorMsgArr([myResponse.error]);
+				
+	        }			
 		});
 	}
 	private getTeacherFromUser(userId:number) :void {

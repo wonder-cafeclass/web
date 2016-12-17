@@ -1273,7 +1273,7 @@ class MY_Sql
     }     
     public function select_user_cookie_by_key($key="")
     {
-        if($this->is_not_ok("user_cookie", $key))
+        if($this->is_not_ok("user_cookie_key", $key))
         {
             return;
         }
@@ -1283,6 +1283,10 @@ class MY_Sql
         $this->CI->db->where('key', $key);
         $this->CI->db->where('date_expire >', 'NOW()', FALSE);
         $this->CI->db->limit(1);
+        // 쿼리 등록
+        $last_query = $this->CI->db->get_compiled_select('user_cookie');
+        $this->set_last_query($last_query);
+        // 쿼리 실행
         $query = $this->CI->db->get('user_cookie');
 
         $row = $query->custom_row_object(0, 'UserCookie');

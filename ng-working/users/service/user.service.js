@@ -470,8 +470,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserCookie = function (apiKey) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("user.service / getUserCookie / 시작");
         if (isDebug)

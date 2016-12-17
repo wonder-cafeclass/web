@@ -1629,8 +1629,12 @@ class Users extends MY_REST_Controller {
             return;            
         }
 
+        $output["cookie_user_login_value"] = $this->my_cookie->get_user_login_cookie();
+
         $cookie_user_login = $this->my_cookie->get_user_login();
         $output["cookie_user_login"] = $cookie_user_login;
+
+        $output["last_query"] = $this->my_sql->get_last_query();
 
         $user_id = -1;
         if(isset($cookie_user_login) && isset($cookie_user_login->user_id)) 
