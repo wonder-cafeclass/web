@@ -8,8 +8,8 @@ var MyExtractor = (function () {
     function MyExtractor() {
     }
     MyExtractor.prototype.extractData = function (res) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-extractor / extractData / 시작");
         if (isDebug)

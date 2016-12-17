@@ -1403,7 +1403,7 @@ class MY_Sql
 
         $query = $this->CI->db->get('klass');
 
-        $klass_list = $this->add_klass_extra_info($query);
+        $klass_list = $this->decorate_klass($query);
 
         return $klass_list;
     }
@@ -1831,6 +1831,102 @@ class MY_Sql
     } // end method
 
 
+    // @ Desc : 클래스의 포스터 정보를 가져옵니다.
+    public function get_klass_poster($klass_id=-1)
+    {
+        
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('class_poster_url');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $klass_poster_url = "";
+        foreach ($rows as $row) 
+        {
+            $klass_poster_url = $row->class_poster_url;
+            break;
+        }
+        
+        return $klass_poster_url;
+
+    }
+    // @ Desc : 클래스의 포스터를 추가한다.
+    public function add_klass_poster($user_id=-1, $klass_id=-1, $klass_poster_url_to_add="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_poster_url", $klass_poster_url_to_add))
+        {
+            return;
+        }
+
+        // 새로운 poster 주소를 추가한다.
+        $this->update_klass_poster($user_id, $klass_id, $klass_poster_url_to_add);
+    }
+    private function update_klass_poster($user_id=-1, $klass_id=-1, $klass_poster_url_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_poster_url_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_poster_url_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'class_poster_url' => $klass_poster_url_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    } 
+
+
+
     private $delimiter_klass_banner="|||";
     public function get_klass_banner_list($klass_id=-1)
     {
@@ -1871,7 +1967,8 @@ class MY_Sql
 
         return $klass_banner_arr;
 
-    }
+    }       
+
     // @ Desc : 클래스의 특정 배너를 추가한다.
     public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
     {
@@ -2006,7 +2103,7 @@ class MY_Sql
         $limit = 1;
         $offset = 0;
         $query = $this->CI->db->get('klass', $limit, $offset);
-        $klass_list = $this->add_klass_extra_info($query);
+        $klass_list = $this->decorate_klass($query);
         $klass = null;
         if(!empty($klass_list)) 
         {
@@ -2035,7 +2132,7 @@ class MY_Sql
         $this->CI->db->limit(1);
         $query = $this->CI->db->get('klass');
 
-        $klass_list = $this->add_klass_extra_info($query);
+        $klass_list = $this->decorate_klass($query);
         $klass = null;
         if(!empty($klass_list)) 
         {
@@ -2044,7 +2141,7 @@ class MY_Sql
 
         return $klass;
     }    
-    private function add_klass_extra_info($query=null) 
+    private function decorate_klass($query=null) 
     {
         if(is_null($query)) {
             return;
@@ -2071,7 +2168,14 @@ class MY_Sql
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
-            $row->class_img_url = $this->CI->my_path->get("/assets/images/class/poster/no_image.svg");
+            if(empty($row->class_poster_url)) {
+                $row->class_poster_url = "";
+                $row->class_poster_url_loadable = $this->CI->my_path->get("/assets/images/class/poster/no_image.svg");
+            }
+            else
+            {
+                $row->class_poster_url_loadable = $this->CI->my_path->get_loadable_url_class_poster($row->class_poster_url);   
+            }
 
             // 주당 수업 가격에 대해 계산한다.
             // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
@@ -2112,19 +2216,19 @@ class MY_Sql
     {
         if($this->is_not_ready())
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            return;
+            return false;
         }
-        if($this->is_not_ok("user_email_insert", $email))
+        if($this->is_not_ok("user_email", $email))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_name", $name))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
@@ -2132,45 +2236,45 @@ class MY_Sql
         }
         if($this->is_not_ok("teacher_resume", $resume))
         {
-            return;
+            return false;
         }
         // TODO - 입력 글자수가 많으므로, escape 처리 필요.
         if($this->is_not_ok("teacher_greeting", $greeting))
         {
-            return;
+            return false;
         }
         // TODO - 입력 글자수가 많으므로, escape 처리 필요.
         if($this->is_not_ok("user_gender", $gender))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            $birth_year = "";
+            return false;
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            $birth_month = "";
+            return false;
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            $birth_day = "";
+            return false;
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            $thumbnail = "";
+            return false;
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
         {
-            return;
+            return false;
         }
         if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
         {
-            return;
+            return false;
         }
 
         // 생일은 없는 경우, 공백 문자로 입력한다.
@@ -2202,6 +2306,8 @@ class MY_Sql
 
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('teacher', $data);
+
+        return true;
     }
 
     public function update_teacher($user_id=-1, $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")

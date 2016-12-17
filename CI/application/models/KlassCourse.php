@@ -129,7 +129,9 @@ class KlassCourse {
         // 수업 신청 타입
         public $enrollment_interval_week;
         // 이미지 링크
-        public $class_img_url;
+        public $class_poster_url;
+        // 이미지 링크
+        public $class_poster_url_loadable;
         // 배너 이미지 링크
         public $class_banner_url;
         // 이미지 에러 링크    

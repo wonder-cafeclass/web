@@ -27,6 +27,7 @@ var KlassService = (function () {
         this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
         this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
         this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
+        this.addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
         this.addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
         this.removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
         // /assets/images/class/banner
@@ -35,21 +36,47 @@ var KlassService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    KlassService.prototype.addKlassPoster = function (apiKey, userId, klassId, klassPosterUrl) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / addKlassPoster / 시작");
+        if (isDebug)
+            console.log("klass.service / addKlassPoster / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("klass.service / addKlassPoster / userId : ", userId);
+        if (isDebug)
+            console.log("klass.service / addKlassPoster / klassId : ", klassId);
+        if (isDebug)
+            console.log("klass.service / addKlassPoster / klassPosterUrl : ", klassPosterUrl);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.addKlassPosterUrl);
+        var params = {
+            user_id: userId,
+            klass_id: klassId,
+            klass_poster_url: klassPosterUrl
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     KlassService.prototype.addKlassEmpty = function (apiKey, userId, teacherId, teacherResume, teacherGreeting) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / 시작");
+            console.log("klass.service / addKlassEmpty / 시작");
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / apiKey : ", apiKey);
+            console.log("klass.service / addKlassEmpty / apiKey : ", apiKey);
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / userId : ", userId);
+            console.log("klass.service / addKlassEmpty / userId : ", userId);
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / teacherId : ", teacherId);
+            console.log("klass.service / addKlassEmpty / teacherId : ", teacherId);
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / teacherResume : ", teacherResume);
+            console.log("klass.service / addKlassEmpty / teacherResume : ", teacherResume);
         if (isDebug)
-            console.log("teacher.service / addKlassEmpty / teacherGreeting : ", teacherGreeting);
+            console.log("klass.service / addKlassEmpty / teacherGreeting : ", teacherGreeting);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.addKlassEmptyUrl);
@@ -68,15 +95,15 @@ var KlassService = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("teacher.service / insertTeacher / 시작");
+            console.log("klass.service / addKlassBanner / 시작");
         if (isDebug)
-            console.log("teacher.service / insertTeacher / apiKey : ", apiKey);
+            console.log("klass.service / addKlassBanner / apiKey : ", apiKey);
         if (isDebug)
-            console.log("teacher.service / insertTeacher / userId : ", userId);
+            console.log("klass.service / addKlassBanner / userId : ", userId);
         if (isDebug)
-            console.log("teacher.service / insertTeacher / klassId : ", klassId);
+            console.log("klass.service / addKlassBanner / klassId : ", klassId);
         if (isDebug)
-            console.log("teacher.service / insertTeacher / klassBanner : ", klassBanner);
+            console.log("klass.service / addKlassBanner / klassBanner : ", klassBanner);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.addKlassBannerUrl);
@@ -94,15 +121,15 @@ var KlassService = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("teacher.service / removeKlassBanner / 시작");
+            console.log("klass.service / removeKlassBanner / 시작");
         if (isDebug)
-            console.log("teacher.service / removeKlassBanner / apiKey : ", apiKey);
+            console.log("klass.service / removeKlassBanner / apiKey : ", apiKey);
         if (isDebug)
-            console.log("teacher.service / removeKlassBanner / userId : ", userId);
+            console.log("klass.service / removeKlassBanner / userId : ", userId);
         if (isDebug)
-            console.log("teacher.service / removeKlassBanner / klassId : ", klassId);
+            console.log("klass.service / removeKlassBanner / klassId : ", klassId);
         if (isDebug)
-            console.log("teacher.service / removeKlassBanner / klassBanner : ", klassBanner);
+            console.log("klass.service / removeKlassBanner / klassBanner : ", klassBanner);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.removeKlassBannerUrl);
@@ -398,8 +425,10 @@ var KlassService = (function () {
         klass.price = klassJSON.price;
         // discount,
         klass.discount = klassJSON.discount;
-        // class_img_url,
-        klass.class_img_url = klassJSON.class_img_url;
+        // class_poster_url,
+        klass.class_poster_url = klassJSON.class_poster_url;
+        // class_poster_url_loadable,
+        klass.class_poster_url_loadable = klassJSON.class_poster_url_loadable;
         // class_banner_url,
         klass.class_banner_url = klassJSON.class_banner_url;
         // class_banner_url_arr,

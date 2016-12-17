@@ -560,7 +560,7 @@ class MY_Thumbnail {
         }
         $path_class_banner = $this->CI->my_path->get_path_class_poster(__FILE__);
 
-        return $path_class_banner . $thumbnail;
+        return $path_class_banner . "/" . $thumbnail;
     }
 
 

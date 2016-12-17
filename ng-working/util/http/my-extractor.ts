@@ -12,8 +12,8 @@ export class MyExtractor {
 
 	public extractData(res: Response) :MyResponse{
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("my-extractor / extractData / 시작");
 		if(isDebug) console.log("my-extractor / extractData / res : ",res);
 		

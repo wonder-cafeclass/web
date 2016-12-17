@@ -403,6 +403,110 @@ class Klass extends MY_REST_Controller {
         }
     }
 
+    public function addposter_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_poster_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_poster_url",
+            // $key_filter=""
+            "klass_poster_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_poster_url"=>$klass_poster_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            // 이전 포스터 주소를 가져옵니다.
+            $klass_poster_prev = $this->my_sql->get_klass_poster($klass_id);
+            // 있다면 해당 포스터를 삭제합니다.
+            if(!empty($klass_poster_prev)) 
+            {
+                $output["klass_poster_deleted"] = $klass_poster_prev;
+                $output["klass_poster_path_deleted"]
+                = $this->my_thumbnail->get_path_thumbnail_klass_poster($klass_poster_prev);
+                $output["has_deleted"]
+                = $this->my_thumbnail->delete_thumbnail_klass_poster($klass_poster_prev);
+            }
+
+            $this->my_sql->add_klass_poster(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_poster_url_to_add=""
+                $klass_poster_url
+            );
+            $output["klass_poster"] = $this->my_sql->get_klass_poster($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addposter_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }    
+
     public function addbanner_post() 
     {
         if($this->is_not_ok()) {
@@ -753,7 +857,7 @@ class Klass extends MY_REST_Controller {
         
         $klass_course = new KlassCourse();
         $klass_course->id = -1;
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url_loadable = 
         $this->get_class_img_default();
         $klass_course->title="수업이 없습니다.";
 
@@ -770,7 +874,7 @@ class Klass extends MY_REST_Controller {
 
         $klass_course = new KlassCourse();
         $klass_course->id = -100;
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url_loadable = 
         $this->get_class_img_new();
         $klass_course->title="새로운 수업을 만들어요.";
 

@@ -44,8 +44,8 @@ var ApplyTeacherComponent = (function () {
         this.defaultMetaList = this.myEventService.getDefaultMetaListApplyTeacher();
     } // end function
     ApplyTeacherComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("apply-teacher / ngOnInit / 시작");
         // 선생님 등록화면에서는 상,하단 메뉴를 가립니다.
@@ -659,8 +659,8 @@ var ApplyTeacherComponent = (function () {
     };
     ApplyTeacherComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("apply-teacher / onClickSave / init");
         // 모든 값들이 필수입니다.
@@ -681,7 +681,7 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / onClickSave / 변경되었다면 저장합니다.");
             this.teacherService.insertTeacherByTeacher(this.watchTower.getApiKey(), this.newTeacherCopy).then(function (myResponse) {
                 if (isDebug)
-                    console.log("apply-teacher / onClickSave / 유저정보 업데이트 / myResponse : ", myResponse);
+                    console.log("apply-teacher / onClickSave / myResponse : ", myResponse);
                 var teacherJSON = myResponse.digDataProp(["teacher"]);
                 if (myResponse.isSuccess() && null != teacherJSON) {
                     // 저장완료!
@@ -760,7 +760,6 @@ var ApplyTeacherComponent = (function () {
                 } // end if
             }
             else {
-                // TODO - Error Report
                 if (isDebug)
                     console.log("apply-teacher / checkMobileUnique / Error Report");
                 _this.myLoggerService.logError(

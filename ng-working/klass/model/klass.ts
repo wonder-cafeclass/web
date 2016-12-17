@@ -71,7 +71,8 @@ export class Klass {
     public enrollment_interval_week:number;
     public class_banner_url:string;
     public class_banner_url_arr:string[];
-    public class_img_url: string;
+    public class_poster_url:string;
+    public class_poster_url_loadable:string;
     public calendar_table_linear: Calendar[][];
     public calendar_table_monthly: Calendar[][][];
 

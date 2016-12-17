@@ -272,7 +272,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           if(isDebug) console.log("klass-detail / init / subscribe / this.imageGridComponent : ",this.imageGridComponent);
 
           // fill datas
-          this.imgUploaderImageUrlKlassPoster = this.klass.class_img_url;
+          this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
 
           this.onAfterReceivingKlass();
 
@@ -779,12 +779,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
 
-        let poster_url:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
-        this.imgUploaderImageUrlKlassPoster = poster_url;
+        // let posterUrl:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
+        // this.imgUploaderImageUrlKlassPoster = posterUrl;
 
-        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER poster_url : ",poster_url);
+        // if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER PosterUrl : ",posterUrl);
 
         // DB Update!
+        this.addKlassPoster(myEvent.value);
 
       }
 
@@ -845,6 +846,57 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     } // end if
 
   } // end method
+
+
+  private addKlassPoster(posterUrl:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / addKlassPoster / 시작");
+
+    this.klassService.addKlassPoster(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // klassPoster:string
+      posterUrl
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addKlassPoster / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+
+        let klassPosterUrl:string = myResponse.getDataProp("klass_poster");
+
+        if(null != klassPosterUrl && "" != klassPosterUrl) {
+          klassPosterUrl = `${this.imgUploaderImagePathKlassPoster}/${klassPosterUrl}`;
+          this.imgUploaderImageUrlKlassPoster = klassPosterUrl;
+        }
+
+        if(isDebug) console.log("klass-detail / addKlassPoster / klassPosterUrl : ",klassPosterUrl);
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail / addKlassPoster / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / posterUrl : ${posterUrl}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service    
+
+  }
 
 
 

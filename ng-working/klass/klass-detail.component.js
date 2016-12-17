@@ -155,7 +155,7 @@ var KlassDetailComponent = (function () {
                     if (isDebug)
                         console.log("klass-detail / init / subscribe / this.imageGridComponent : ", _this.imageGridComponent);
                     // fill datas
-                    _this.imgUploaderImageUrlKlassPoster = _this.klass.class_img_url;
+                    _this.imgUploaderImageUrlKlassPoster = _this.klass.class_poster_url_loadable;
                     _this.onAfterReceivingKlass();
                     if (null != _this.imageGridComponent) {
                         _this.imageGridComponent.addImageListSingleColumn(_this.klass.class_banner_url_arr);
@@ -562,10 +562,11 @@ var KlassDetailComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_DONE)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
-                var poster_url = this.imgUploaderImagePathKlassPoster + "/" + myEvent.value;
-                this.imgUploaderImageUrlKlassPoster = poster_url;
-                if (isDebug)
-                    console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER poster_url : ", poster_url);
+                // let posterUrl:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
+                // this.imgUploaderImageUrlKlassPoster = posterUrl;
+                // if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER PosterUrl : ",posterUrl);
+                // DB Update!
+                this.addKlassPoster(myEvent.value);
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
@@ -612,6 +613,48 @@ var KlassDetailComponent = (function () {
             } // end if
         } // end if
     }; // end method
+    KlassDetailComponent.prototype.addKlassPoster = function (posterUrl) {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / addKlassPoster / 시작");
+        this.klassService.addKlassPoster(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userId:number,
+        +this.loginUser.id, 
+        // klassId:number,
+        +this.klass.id, 
+        // klassPoster:string
+        posterUrl).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("klass-detail / addKlassPoster / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+                var klassPosterUrl = myResponse.getDataProp("klass_poster");
+                if (null != klassPosterUrl && "" != klassPosterUrl) {
+                    klassPosterUrl = _this.imgUploaderImagePathKlassPoster + "/" + klassPosterUrl;
+                    _this.imgUploaderImageUrlKlassPoster = klassPosterUrl;
+                }
+                if (isDebug)
+                    console.log("klass-detail / addKlassPoster / klassPosterUrl : ", klassPosterUrl);
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "klass-detail / addKlassPoster / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / posterUrl : " + posterUrl); // end logger      
+            } // end if
+        }); // end service    
+    };
     // Admin Section
     KlassDetailComponent.prototype.showSEKlassFeature = function () {
     };

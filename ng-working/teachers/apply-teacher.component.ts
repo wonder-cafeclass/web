@@ -94,8 +94,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / ngOnInit / 시작");
 
     // 선생님 등록화면에서는 상,하단 메뉴를 가립니다.
@@ -795,8 +795,8 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("apply-teacher / onClickSave / init");
 
     // 모든 값들이 필수입니다.
@@ -819,7 +819,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
         this.newTeacherCopy
       ).then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("apply-teacher / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
+        if(isDebug) console.log("apply-teacher / onClickSave / myResponse : ",myResponse);
 
         let teacherJSON = myResponse.digDataProp(["teacher"]);
         if(myResponse.isSuccess() && null != teacherJSON) {
@@ -912,7 +912,6 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
         
       } else {
 
-        // TODO - Error Report
         if(isDebug) console.log("apply-teacher / checkMobileUnique / Error Report");
         this.myLoggerService.logError(
           // apiKey:string

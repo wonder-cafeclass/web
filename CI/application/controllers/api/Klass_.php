@@ -495,7 +495,7 @@ class Klass_ extends REST_Controller implements MY_Class{
         }
 
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url = 
         $this->my_paramchecker->get_const_from_list(
             'new_class', 
             'klass_event_img_list', 
@@ -512,7 +512,7 @@ class Klass_ extends REST_Controller implements MY_Class{
         }
         
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url = 
         $this->my_paramchecker->get_const_from_list(
             'no_class', 
             'klass_event_img_list', 
@@ -530,7 +530,7 @@ class Klass_ extends REST_Controller implements MY_Class{
         }
 
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url = 
         $this->my_paramchecker->get_const_from_list(
             'no_image', 
             'klass_event_img_list', 
@@ -548,7 +548,7 @@ class Klass_ extends REST_Controller implements MY_Class{
         }
         
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
+        $klass_course->class_poster_url = 
         $this->my_paramchecker->get_const_from_list(
             'error', 
             'klass_event_img_list', 
@@ -953,7 +953,7 @@ class Klass_ extends REST_Controller implements MY_Class{
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
             $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
-            $row->class_img_url = $this->my_path->get("/assets/images/class/test.jpg");
+            $row->class_poster_url = $this->my_path->get("/assets/images/class/test.jpg");
 
             // 주당 수업 가격에 대해 계산한다.
             // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.

@@ -189,6 +189,16 @@ class MY_Path {
 
     }
 
+    public function get_loadable_url_class_poster($poster="") 
+    {
+        if(empty($poster))
+        {
+            return "";
+        }
+
+        return $this->path_thumbnail_class_poster . "/" . $poster;
+    }     
+
     public function get_path_class_poster($cur_class_path="") 
     {
         if(empty($cur_class_path))

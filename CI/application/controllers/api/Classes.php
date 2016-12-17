@@ -82,7 +82,7 @@ class Classes extends REST_Controller {
         // param 유효성 검사를 진행합니다.
 
         // Classes from a data store e.g. database
-        // $query = $this->db->query('SELECT `id`,`title`,`desc`,`date_begin`,`time_begin`,`time_duration_minutes`,`time_end`,`level`,`week_min`,`week_max`,`days`,`class_per_week`,`venue`,`venue_subway_station`,`venue_cafe`,`venue_map_link`,`status`,`tags`,`price`,`class_img_url`,`date_created`,`date_updated` FROM cclass');
+        // $query = $this->db->query('SELECT `id`,`title`,`desc`,`date_begin`,`time_begin`,`time_duration_minutes`,`time_end`,`level`,`week_min`,`week_max`,`days`,`class_per_week`,`venue`,`venue_subway_station`,`venue_cafe`,`venue_map_link`,`status`,`tags`,`price`,`class_poster_url`,`date_created`,`date_updated` FROM cclass');
 
         // wonder.jung
         // $q = $this->get('q');
