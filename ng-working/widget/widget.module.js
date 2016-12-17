@@ -29,6 +29,8 @@ var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
 var tooltip_component_1 = require('./input/tooltip/tooltip.component');
+var image_entry_component_1 = require('./image-grid/image-entry.component');
+var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var footer_component_1 = require('./footer/footer.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
@@ -47,6 +49,8 @@ var WidgetModule = (function () {
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 img_uploader_component_1.ImgUploaderComponent,
+                image_entry_component_1.ImageEntryComponent,
+                image_grid_v2_component_1.ImageGridV2Component,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
@@ -68,6 +72,8 @@ var WidgetModule = (function () {
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
                 img_uploader_component_1.ImgUploaderComponent,
+                image_entry_component_1.ImageEntryComponent,
+                image_grid_v2_component_1.ImageGridV2Component,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,

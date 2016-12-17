@@ -98,6 +98,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
+        this.KEY_KLASS_TITLE = "KEY_KLASS_TITLE"; // 수업 - 수업 이름
         this.KEY_KLASS_POSTER = "KEY_KLASS_POSTER"; // 수업 - 포스터 이미지
         this.KEY_KLASS_BANNER = "KEY_KLASS_BANNER"; // 수업 - 배너 이미지
         this.uniqueIdx = 0;
@@ -454,6 +455,22 @@ var MyEventService = (function () {
             "teacher_greeting", 
             // public type:string
             this.defaultType.TYPE_TEXTAREA)
+        ];
+        return defaultMetaList;
+    };
+    MyEventService.prototype.getDefaultMetaListKlassDetail = function () {
+        var defaultMetaList = [
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "수업 제목", 
+            // public placeholder:string
+            "수업 제목을 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_TITLE, 
+            // public checkerKey:string
+            "klass_title", 
+            // public type:string
+            this.defaultType.TYPE_INPUT)
         ];
         return defaultMetaList;
     };

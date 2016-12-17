@@ -110,6 +110,7 @@ export class MyEventService {
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
 
+    KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
 
@@ -539,7 +540,28 @@ export class MyEventService {
         ];        
 
         return defaultMetaList;
-    }    
+    }
+
+    public getDefaultMetaListKlassDetail() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+          new DefaultMeta(
+            // public title:string
+            "수업 제목",
+            // public placeholder:string
+            "수업 제목을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TITLE,
+            // public checkerKey:string
+            "klass_title",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          )
+        ];        
+
+        return defaultMetaList;
+    }        
 
 
 }

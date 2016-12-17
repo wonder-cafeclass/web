@@ -1,7 +1,9 @@
 import { Component, 
          OnInit, 
-         AfterViewInit, 
+         AfterViewInit,
          Output,
+         ViewChildren,
+         QueryList,
          EventEmitter,
          Input }                from '@angular/core';
 
@@ -10,13 +12,15 @@ import { MyChecker }            from '../../util/model/my-checker';
 import { MyEventService }       from '../../util/service/my-event.service';
 import { MyEvent }              from '../../util/model/my-event';
 
+import { ImageEntryComponent }  from './image-entry.component';
+
 @Component({
   moduleId: module.id,
-  selector: 'image-grid',
-  templateUrl: 'image-grid.component.html',
-  styleUrls: [ 'image-grid.component.css' ]
+  selector: 'image-grid-v2',
+  templateUrl: 'image-grid-v2.component.html',
+  styleUrls: [ 'image-grid-v2.component.css' ]
 })
-export class ImageGridComponent implements OnInit, AfterViewInit {
+export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   // @ Common Props
   @Output() emitter = new EventEmitter<MyEvent>();
@@ -33,6 +37,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
   gridWidth:number=100;
   isDisabled:boolean=false;
 
+  @ViewChildren(ImageEntryComponent) imageEntryList: QueryList<ImageEntryComponent>;
+
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService ) {}
 
@@ -47,16 +53,15 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / ngAfterViewInit / 시작");
+    if(isDebug) console.log("image-grid-v2 / ngAfterViewInit / 시작");
 
   }
-
 
   private init():void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / init / 시작");
+    if(isDebug) console.log("image-grid-v2 / init / 시작");
 
     if(null == this.imageTable || 0 == this.imageTable.length) {
       return;
@@ -95,7 +100,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / addImageSingleColumn / 시작");
+    if(isDebug) console.log("image-grid-v2 / addImageSingleColumn / 시작");
 
     if(null == imageUrl || "" === imageUrl) {
       return;
@@ -103,10 +108,10 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     // 이미지를 추가합니다. 
     if(null == this.imageTable || 0 == this.imageTable.length) {
-      if(isDebug) console.log("image-grid / addImageSingleColumn / 첫번째 배너 추가");
+      if(isDebug) console.log("image-grid-v2 / addImageSingleColumn / 첫번째 배너 추가");
       this.imageTable = [[imageUrl]];
     } else {
-      if(isDebug) console.log("image-grid / addImageSingleColumn / 첫번째 배너 이후 추가");
+      if(isDebug) console.log("image-grid-v2 / addImageSingleColumn / 첫번째 배너 이후 추가");
       this.imageTable.push([imageUrl]);
     } // end if
 
@@ -116,7 +121,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / addImageListSingleColumn / 시작");
+    if(isDebug) console.log("image-grid-v2 / addImageListSingleColumn / 시작");
 
     if(null == imageUrlList || 0 == imageUrlList.length) {
       return;
@@ -134,7 +139,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / removeImage / 시작");
+    if(isDebug) console.log("image-grid-v2 / removeImage / 시작");
 
     if(null == imageUrl || "" === imageUrl) {
       return;
@@ -171,7 +176,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / onChangeCheck / 시작");
+    if(isDebug) console.log("image-grid-v2 / onChangeCheck / 시작");
 
     event.stopPropagation();
     event.preventDefault();
@@ -181,11 +186,11 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
     }
 
     let checked:boolean = checkboxToggle.checked;
-    if(isDebug) console.log("image-grid / onChangeCheck / checked : ",checked);
+    if(isDebug) console.log("image-grid-v2 / onChangeCheck / checked : ",checked);
 
     this.isDisabled = !checked;
 
-    if(isDebug) console.log("image-grid / onChangeCheck / targetImg : ",targetImg);
+    if(isDebug) console.log("image-grid-v2 / onChangeCheck / targetImg : ",targetImg);
 
   }
 
@@ -207,7 +212,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / emitEventOnDelete / 시작");
+    if(isDebug) console.log("image-grid-v2 / emitEventOnDelete / 시작");
 
     let myEventOnChange:MyEvent =
     this.myEventService.getMyEvent(
@@ -224,14 +229,14 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("image-grid / emitEventOnChange / Done!");    
+    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / Done!");    
   }
 
   private emitEventOnReady() :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid / emitEventOnChange / 시작");
+    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / 시작");
 
     let myEventOnChange:MyEvent =
     this.myEventService.getMyEvent(
@@ -248,8 +253,57 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("image-grid / emitEventOnChange / Done!");
+    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / Done!");
 
   }  
+
+  //onChangedFromChild
+  onChangedFromChild(myEvent:MyEvent):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / onChangedFromChild / 시작");
+    if(isDebug) console.log("image-grid-v2 / onChangedFromChild / myEvent : ",myEvent);
+
+    let eventName:string = myEvent.eventName;
+
+
+    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+    if(!isOK) {
+      if(isDebug) console.log("image-grid-v2 / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      return;
+    } // end if
+
+    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+
+        // this.updateKlassTitle(myEvent.value, false);
+
+      }
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+
+        // this.updateKlassTitle(myEvent.value, true);
+
+      }      
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_DONE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
+
+        // this.addKlassPoster(myEvent.value);
+
+      }
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+
+      // Do something ...
+
+    } // end if
+
+  } // end method  
 
 }

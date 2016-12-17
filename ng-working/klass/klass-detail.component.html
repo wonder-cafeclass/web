@@ -31,10 +31,10 @@
             alt={{klass.title}}>
 
             <!-- LABEL : klass title -->
-            <div *ngIf="klass.title" class="klass-title-overlay">
-              <h5 class="font"><strong>{{klass.title}}</strong></h5>
+            <div class="klass-title-overlay">
+              <h5 class="font"><strong>{{klassTitle}}</strong></h5>
             </div>
-            <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
+            <div class="klass-title-overlay-bg"></div>
           
           </li>
           
@@ -48,39 +48,33 @@
               <span>수업 포스터 올리기</span>
             </button>
           </li>
+
+          <!-- 수업 제목 입력 창 -->
+          <li *ngIf="isAdmin && isTeacher" 
+              class="list-group-item"
+              style="padding: 0px;">
+
+            <widget-input-default
+            [ngModelInput]="klassTitle"
+            [width]="353"
+            [meta]="defaultMetaList[0]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+
+          </li>
           
           <!-- Banner Image List INIT -->
           <li class="list-group-item" 
               style="padding:0px;border-top:0px;">
-            <image-grid 
+            <image-grid-v2
+            [imageTable]="imageTableBannerList"
+            [handleType]="'checkbox'"
             [hasTableBorder]="false"
             [isAdmin]="isTeacher"
             (emitter)="onChangedFromChild($event)">
-            </image-grid>
+            </image-grid-v2>
           </li>
           <!-- Banner Image List DONE -->
-
-          <!-- Banner Image Input(Admin) INIT -->
-          <li *ngIf="isAdmin && imgUploaderUploadAPIUrl"
-              class="list-group-item" 
-              style="padding:0px;">
-            <img-uploader
-            [uploadAPIUrl]="imgUploaderUploadAPIUrl"
-            [imagePath]="imgUploaderImagePath"
-            [imageUrl]="imgUploaderImageUrl"
-            [eventKey]="imgUploaderEventKey"
-            [btnName]="'수업 배너이미지 올리기'"
-            [fileSizeKBMax]="300"
-            [fileWidth]="500"
-            [fileMinWidth]="100"
-            [fileMaxWidth]="800"
-            [fileMinHeight]="100"
-            [fileMaxHeight]="600"
-            (emitter)="onChangedFromChild($event)"
-            >
-            </img-uploader>
-          </li>
-          <!-- Banner Image Input(Admin) DONE -->
 
         </ul>
         

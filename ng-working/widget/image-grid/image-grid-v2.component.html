@@ -1,0 +1,24 @@
+<table  class="table" 
+        [ngClass]="{'round':hasTableBorder}"
+        style="margin-bottom:0px;" 
+        [style.width]="tableWidthStr">
+
+  <tbody>
+
+    <tr *ngFor="let row of imageTable">
+      <td *ngFor="let field of row" class="td-layout" [style.width]="'10%'">
+
+        <image-entry 
+        [imageUrl]="field"
+        [handleType]="handleType"
+        [isAdmin]="isAdmin"
+        (emitter)="onChangedFromChild($event)">
+          
+        </image-entry>
+
+      </td>
+    </tr>
+
+  </tbody>
+  
+</table>

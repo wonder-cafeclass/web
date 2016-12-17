@@ -26,7 +26,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // @ Common Props
   @Output() emitter = new EventEmitter<MyEvent>();
 
-  ngModelInput:string;
+  @Input() ngModelInput:string;
   private inputStrPrev:string="";
   private tooltipMsg:string=null;
   private isShowTooltip:boolean=false;
@@ -37,6 +37,9 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // @ User Custom
   @Input() meta:DefaultMeta;
   @Input() isDisabled:boolean=false;
+  @Input() isShowTitle:boolean=true;
+  @Input() width:number=380;
+  
 
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
@@ -63,6 +66,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("default / ngOnInit / init");
+
+    this.emitEventOnReady();
 
   }
 
@@ -172,14 +177,17 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   setInput(input:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / setInput / 시작");
     if(isDebug) console.log("default / setInput / input : ",input);
 
     if(this.isOK(input)) {
       if(isDebug) console.log("default / setInput / updated!");
       this.ngModelInput = this.inputStrPrev = input;
+    } else {
+      let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("default / setInput / history : ",history);
     }
   }
   public initInput() :void {
@@ -253,22 +261,47 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     if(isValidInput) {
       if(isDebug) console.log("default / onBlur / 입력이 문제없습니다.");
       this.hideWarningTooptip();
+      this.emitEventOnSubmit(inputStr);
     } else {
       // 포커싱을 잃었으므로 사용자가 입력을 완료했다고 판단합니다. 
       // 그 결과에 문제가 있으므로 부모 객체에게 실패원인을 전달합니다.
       // 이벤트 키는 SUBMIT입니다.
-
     }
 
   } // end method
+
+  private emitEventOnReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / emitEventOnReady / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_READY,
+      // public key:string
+      this.meta.eventKey,
+      // public value:string
+      null,
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("default / emitEventOnReady / Done!");
+
+  }  
 
   private emitEventOnSubmit(value:string) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("default / emitEventOnChange / 시작");
+    if(isDebug) console.log("default / emitEventOnSubmit / 시작");
     if(null == value) {
-      if(isDebug) console.log("default / emitEventOnChange / 중단 / value is not valid!");
+      if(isDebug) console.log("default / emitEventOnSubmit / 중단 / value is not valid!");
       return;
     }
 
@@ -287,7 +320,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("default / emitEventOnChange / Done!");
+    if(isDebug) console.log("default / emitEventOnSubmit / Done!");
 
   }  
 

@@ -32,6 +32,9 @@ export class KlassService {
   private klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
 
   private addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
+
+  private updateKlassTitleUrl = '/CI/index.php/api/klass/updatetitle';
+
   private addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
   private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
   private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
@@ -47,6 +50,36 @@ export class KlassService {
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
   }
+
+  updateKlassTitle(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    klassTitle:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / updateKlassTitle / 시작");
+    if(isDebug) console.log("klass.service / updateKlassTitle / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / updateKlassTitle / userId : ",userId);
+    if(isDebug) console.log("klass.service / updateKlassTitle / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / updateKlassTitle / klassTitle : ",klassTitle);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.updateKlassTitleUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_title:klassTitle
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }   
 
   addKlassPoster(    
     apiKey:string, 

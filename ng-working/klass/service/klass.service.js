@@ -27,6 +27,7 @@ var KlassService = (function () {
         this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
         this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
         this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
+        this.updateKlassTitleUrl = '/CI/index.php/api/klass/updatetitle';
         this.addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
         this.addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
         this.removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
@@ -36,6 +37,32 @@ var KlassService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    KlassService.prototype.updateKlassTitle = function (apiKey, userId, klassId, klassTitle) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / updateKlassTitle / 시작");
+        if (isDebug)
+            console.log("klass.service / updateKlassTitle / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("klass.service / updateKlassTitle / userId : ", userId);
+        if (isDebug)
+            console.log("klass.service / updateKlassTitle / klassId : ", klassId);
+        if (isDebug)
+            console.log("klass.service / updateKlassTitle / klassTitle : ", klassTitle);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.updateKlassTitleUrl);
+        var params = {
+            user_id: userId,
+            klass_id: klassId,
+            klass_title: klassTitle
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     KlassService.prototype.addKlassPoster = function (apiKey, userId, klassId, klassPosterUrl) {
         var isDebug = true;
         // let isDebug:boolean = false;

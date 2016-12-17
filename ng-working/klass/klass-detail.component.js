@@ -18,14 +18,16 @@ var input_view_updown_1 = require('../widget/input-view/model/input-view-updown'
 var dialog_service_1 = require('../widget/dialog.service');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
 var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-uploader.component');
+var default_component_1 = require('../widget/input/default/default.component');
+var default_service_1 = require('../widget/input/default/service/default.service');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
+var teacher_service_1 = require('../teachers/service/teacher.service');
 var KlassDetailComponent = (function () {
-    //
-    function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, myCheckerService) {
+    function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
         this.route = route;
         this.router = router;
         this.klassService = klassService;
@@ -37,6 +39,8 @@ var KlassDetailComponent = (function () {
         this.watchTower = watchTower;
         this.radiobtnService = radiobtnService;
         this.checkboxService = checkboxService;
+        this.teacherService = teacherService;
+        this.defaultService = defaultService;
         this.myCheckerService = myCheckerService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
@@ -59,6 +63,17 @@ var KlassDetailComponent = (function () {
         this.imgUploaderEventKeyKlassPoster = "";
         this.isAdmin = false;
         this.isTeacher = false;
+        this.imageTableBannerList = [
+            ["assets/images/class/banner/drinks.png"],
+            ["assets/images/class/banner/help.png"]
+        ];
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / constructor / init");
+        this.defaultMetaList = this.myEventService.getDefaultMetaListKlassDetail();
+        if (isDebug)
+            console.log("klass-detail / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var isDebug = true;
@@ -91,41 +106,99 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / ngOnChanges / changes : ", changes);
     };
-    KlassDetailComponent.prototype.init = function () {
+    KlassDetailComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / subscribeLoginTeacher / 시작");
+        // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+        // Subscribe login user
+        this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
+            if (isDebug)
+                console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
+            // 로그인한 선생님 정보가 들어왔습니다.
+            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginUser = _this.watchTower.getLoginUser();
+            if (null != _this.loginUser) {
+                _this.isAdmin = _this.loginUser.getIsAdmin();
+                _this.isTeacher = _this.loginUser.isTeacher();
+            } // end if
+        }); // end subscribe
+    };
+    KlassDetailComponent.prototype.init = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / init / 시작");
+        this.setUserInfo();
+        this.setKlassBannerImageUploader();
+        this.setKlassPosterImageUploader();
+        this.setDefaultComponents();
+        this.getParams();
+    };
+    KlassDetailComponent.prototype.setUserInfo = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / setUserInfo / 시작");
         // 1. 로그인 정보를 가져온다
         this.loginUser = this.watchTower.getLoginUser();
         if (null != this.loginUser) {
+            // 1-1. 이미 등록되어 있는 로그인 정보가 있는 경우.
             this.isAdmin = this.loginUser.getIsAdmin();
-            this.loginTeacher = this.watchTower.getLoginTeacher();
             this.isTeacher = this.loginUser.isTeacher();
         }
+        this.loginTeacher = this.watchTower.getLoginTeacher();
+        if (null == this.loginTeacher) {
+            // 1-2. 선생님 로그인 정보가 없다!
+            // 2. 선생님 로그인 정보가 업데이트 되는 것을 비동기로 기다린다.
+            this.subscribeLoginTeacher();
+        }
         if (isDebug)
-            console.log("klass-detail / init / loginUser : ", this.loginUser);
+            console.log("klass-detail / setUserInfo / loginUser : ", this.loginUser);
         if (isDebug)
-            console.log("klass-detail / init / this.isAdmin : ", this.isAdmin);
+            console.log("klass-detail / setUserInfo / this.isAdmin : ", this.isAdmin);
         if (isDebug)
-            console.log("klass-detail / init / loginTeacher : ", this.loginTeacher);
+            console.log("klass-detail / setUserInfo / loginTeacher : ", this.loginTeacher);
         if (isDebug)
-            console.log("klass-detail / init / imageGridComponent : ", this.imageGridComponent);
+            console.log("klass-detail / setUserInfo / imageGridComponent : ", this.imageGridComponent);
+    };
+    KlassDetailComponent.prototype.setDefaultComponents = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setDefaultComponents / 시작");
+        // DefaultComponent들을 세팅
+        var target = this.getInput(this.myEventService.KEY_KLASS_TITLE);
+        if (null != target) {
+            this.klassTitleComponent = target;
+        } // end if
+    };
+    // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+    KlassDetailComponent.prototype.getInput = function (eventKey) {
+        return this.defaultService.getInput(this.inputComponentList, eventKey);
+    };
+    KlassDetailComponent.prototype.getParams = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / getParams / 시작");
         this.route.params
             .switchMap(function (params) {
             var klassId = +params['id'];
             if (klassId === -100 && null == _this.loginTeacher) {
                 // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
                 if (isDebug)
-                    console.log("klass-detail / init / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+                    console.log("klass-detail / getParams / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
                 _this.router.navigate(["/"]);
                 return;
             }
             else if (klassId === -100) {
                 // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
                 if (isDebug)
-                    console.log("klass-detail / init / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
+                    console.log("klass-detail / getParams / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
                 return _this.klassService.addKlassEmpty(
                 // apiKey:string, 
                 _this.watchTower.getApiKey(), 
@@ -140,26 +213,21 @@ var KlassDetailComponent = (function () {
             } // end if
             // 기존 수업 가져오기
             if (isDebug)
-                console.log("klass-detail / init / 기존 수업 가져오기 / klassId : ", klassId);
+                console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ", klassId);
             return _this.klassService.getKlass(klassId);
         })
             .subscribe(function (myResponse) {
             if (isDebug)
-                console.log("klass-detail / init / subscribe / myResponse : ", myResponse);
+                console.log("klass-detail / getParams / subscribe / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
                 var klassJSON = myResponse.getDataProp("klass");
                 if (isDebug)
-                    console.log("klass-detail / init / subscribe / klassJSON : ", klassJSON);
+                    console.log("klass-detail / getParams / subscribe / klassJSON : ", klassJSON);
                 if (null != klassJSON) {
                     _this.klass = _this.klassService.getKlassFromJSON(klassJSON);
                     if (isDebug)
-                        console.log("klass-detail / init / subscribe / this.imageGridComponent : ", _this.imageGridComponent);
-                    // fill datas
-                    _this.imgUploaderImageUrlKlassPoster = _this.klass.class_poster_url_loadable;
+                        console.log("klass-detail / getParams / subscribe / this.imageGridComponent : ", _this.imageGridComponent);
                     _this.onAfterReceivingKlass();
-                    if (null != _this.imageGridComponent) {
-                        _this.imageGridComponent.addImageListSingleColumn(_this.klass.class_banner_url_arr);
-                    }
                 } // end if
             }
             else if (myResponse.isFailed() && null != myResponse.error) {
@@ -173,21 +241,25 @@ var KlassDetailComponent = (function () {
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
-                "klass-detail / ngOnInit / Failed!");
+                "klass-detail / getParams / Failed!");
             } // end if
             if (isDebug)
-                console.log("klass-detail / init / subscribe / this.klass : ", _this.klass);
-        }); // end route
-        this.setKlassBannerImageUploader();
-        this.setKlassPosterImageUploader();
+                console.log("klass-detail / getParams / subscribe / this.klass : ", _this.klass);
+        }); // end route    
     };
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
-        if (isDebug)
-            console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ", this.imageGridComponent);
+        // fill datas
+        this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
+        this.klassTitle = this.klass.title;
+        if (null != this.imageGridComponent) {
+            if (isDebug)
+                console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ", this.imageGridComponent);
+            this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+        }
     };
     KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {
         // Set image uploader props
@@ -513,7 +585,6 @@ var KlassDetailComponent = (function () {
         });
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -536,7 +607,13 @@ var KlassDetailComponent = (function () {
                     // 이미지가 추가되므로 높이가 변경되는 것을 전파!
                     this.watchTower.announceContentHeight();
                 } // end if
-            } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+                if (null != myEvent.metaObj) {
+                    this.klassTitleComponent = myEvent.metaObj;
+                }
+            }
+            // end if
             // Ready는 여기서 중단.
             return;
         }
@@ -559,58 +636,68 @@ var KlassDetailComponent = (function () {
             return;
         } // end if
         if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+                this.updateKlassTitle(myEvent.value, false);
+            }
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+                this.updateKlassTitle(myEvent.value, true);
+            }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_DONE)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
-                // let posterUrl:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
-                // this.imgUploaderImageUrlKlassPoster = posterUrl;
-                // if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER PosterUrl : ",posterUrl);
-                // DB Update!
                 this.addKlassPoster(myEvent.value);
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
-                // 섬네일 주소가 넘어옴.
-                var banner_url_1 = this.imgUploaderImagePath + "/" + myEvent.value;
-                // 이미지를 추가합니다. 
-                if (isDebug)
-                    console.log("klass-detail / onChangedFromChild / this.imageGridComponent : ", this.imageGridComponent);
-                this.imageGridComponent.addImageSingleColumn(banner_url_1);
-                // Footer의 속성을 fixed-bottom을 해제해야 함.
-                this.watchTower.announceContentHeight();
-                if (isDebug)
-                    console.log("klass-detail / onChangedFromChild / banner_url : ", banner_url_1);
-                // TODO - class banner를 등록합니다.
-                this.klassService.addKlassBanner(
-                // apiKey:string, 
-                this.watchTower.getApiKey(), 
-                // userId:number,
-                +this.loginUser.id, 
-                // klassId:number,
-                +this.klass.id, 
-                // klassBanner:string
-                myEvent.value).then(function (myResponse) {
-                    // 로그 등록 결과를 확인해볼 수 있습니다.
-                    if (isDebug)
-                        console.log("klass-detail / onChangedFromChild / myResponse : ", myResponse);
-                    if (myResponse.isSuccess()) {
-                    }
-                    else if (myResponse.isFailed() && null != myResponse.error) {
-                        _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                    }
-                    else {
-                        // 에러 로그 등록
-                        _this.myLoggerService.logError(
-                        // apiKey:string
-                        _this.watchTower.getApiKey(), 
-                        // errorType:string
-                        _this.myLoggerService.errorAPIFailed, 
-                        // errorMsg:string
-                        "klass-detail / onChangedFromChild / addKlassBanner / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / banner_url : " + banner_url_1); // end logger      
-                    } // end if
-                }); // end service
             } // end if
+        } // end if
+    }; // end method
+    KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassTitle / 시작");
+        if (isDebug)
+            console.log("klass-detail / updateKlassTitle / klassTitle : ", klassTitle);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTitle / isDBUpdate : ", isDBUpdate);
+        if (null == klassTitle || "" == klassTitle) {
+            return;
+        }
+        this.klassTitle = klassTitle;
+        if (isDBUpdate) {
+            this.klassService.updateKlassTitle(
+            // apiKey:string, 
+            this.watchTower.getApiKey(), 
+            // userId:number,
+            +this.loginUser.id, 
+            // klassId:number,
+            +this.klass.id, 
+            // klassTitle:string
+            klassTitle).then(function (myResponse) {
+                // 로그 등록 결과를 확인해볼 수 있습니다.
+                if (isDebug)
+                    console.log("klass-detail / updateKlassTitle / myResponse : ", myResponse);
+                if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+                }
+                else if (myResponse.isFailed() && null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                else {
+                    // 에러 로그 등록
+                    _this.myLoggerService.logError(
+                    // apiKey:string
+                    _this.watchTower.getApiKey(), 
+                    // errorType:string
+                    _this.myLoggerService.errorAPIFailed, 
+                    // errorMsg:string
+                    "klass-detail / updateKlassTitle / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / klassTitle : " + klassTitle); // end logger      
+                } // end if
+            }); // end service 
         } // end if
     }; // end method
     KlassDetailComponent.prototype.addKlassPoster = function (posterUrl) {
@@ -659,6 +746,10 @@ var KlassDetailComponent = (function () {
     KlassDetailComponent.prototype.showSEKlassFeature = function () {
     };
     __decorate([
+        core_1.ViewChildren(default_component_1.DefaultComponent), 
+        __metadata('design:type', core_1.QueryList)
+    ], KlassDetailComponent.prototype, "inputComponentList", void 0);
+    __decorate([
         core_1.ViewChild(image_grid_component_1.ImageGridComponent), 
         __metadata('design:type', image_grid_component_1.ImageGridComponent)
     ], KlassDetailComponent.prototype, "imageGridComponent", void 0);
@@ -672,7 +763,7 @@ var KlassDetailComponent = (function () {
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, klass_service_1.KlassService, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, klass_service_1.KlassService, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, teacher_service_1.TeacherService, default_service_1.DefaultService, my_checker_service_1.MyCheckerService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

@@ -8,6 +8,8 @@ import { Component,
          trigger, 
          transition, 
          ViewChild,
+         ViewChildren,
+         QueryList,
          animate, 
          style, 
          state }                         from '@angular/core';
@@ -31,6 +33,9 @@ import { Calendar }                      from '../widget/calendar/model/calendar
 import { DialogService }                 from '../widget/dialog.service';
 import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
+import { DefaultComponent }              from '../widget/input/default/default.component';
+import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
+import { DefaultService }                from '../widget/input/default/service/default.service';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 
@@ -71,10 +76,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   klassTarget:string;
   klassSchedule:string;
 
+  klassTitle:string;
+
   // klassCalendarTableLinear:Calendar[][];
   // klassCalendarTableMonthly:Calendar[][][];
 
-  editTitle: string;
+  editTitle: string; // Deprecated
 
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
@@ -137,13 +144,22 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   isAdmin:boolean=false;
   isTeacher:boolean=false;
 
+  @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
+  defaultMetaList:DefaultMeta[];
+
+  private klassTitleComponent: DefaultComponent;
+
   @ViewChild(ImageGridComponent)
   private imageGridComponent: ImageGridComponent;
 
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
 
-  //
+  imageTableBannerList:string[][] = 
+  [
+    ["assets/images/class/banner/drinks.png"],
+    ["assets/images/class/banner/help.png"]
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -157,8 +173,21 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     private watchTower:MyEventWatchTowerService,
     private radiobtnService:KlassRadioBtnService,
     private checkboxService:KlassCheckBoxService,
+    private teacherService:TeacherService,
+    private defaultService:DefaultService,
     private myCheckerService:MyCheckerService
-  ) {}
+  ) {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / constructor / init");
+
+    this.defaultMetaList = this.myEventService.getDefaultMetaListKlassDetail();
+
+    if(isDebug) console.log("klass-detail / ngOnInit / this.defaultMetaList : ",this.defaultMetaList);
+
+
+  }
 
 
   ngOnInit() {
@@ -199,7 +228,32 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / ngOnChanges / changes : ",changes);
 
 
-  } 
+  }
+
+  private subscribeLoginTeacher() :void {
+
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("klass-detail / subscribeLoginTeacher / 시작");
+
+    // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+    // Subscribe login user
+    this.watchTower.loginTeacherAnnounced$.subscribe(
+      (loginTeacher:Teacher) => {
+
+      if(isDebug) console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
+    
+      // 로그인한 선생님 정보가 들어왔습니다.
+      this.loginTeacher = this.teacherService.getTeacherFromJSON(loginTeacher);
+
+      this.loginUser = this.watchTower.getLoginUser();
+      if(null != this.loginUser) {
+        this.isAdmin = this.loginUser.getIsAdmin();
+        this.isTeacher = this.loginUser.isTeacher();
+      } // end if
+
+    }); // end subscribe
+  }   
 
   private init():void {
 
@@ -207,19 +261,66 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / init / 시작");
 
+    this.setUserInfo();
+    this.setKlassBannerImageUploader(); 
+    this.setKlassPosterImageUploader();  
+    this.setDefaultComponents();
+    this.getParams(); 
+  } 
+
+  private setUserInfo() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setUserInfo / 시작");
+
     // 1. 로그인 정보를 가져온다
     this.loginUser = this.watchTower.getLoginUser();
     if(null != this.loginUser) {
+      // 1-1. 이미 등록되어 있는 로그인 정보가 있는 경우.
       this.isAdmin = this.loginUser.getIsAdmin();
-      this.loginTeacher = this.watchTower.getLoginTeacher();
-
       this.isTeacher = this.loginUser.isTeacher();
     }
 
-    if(isDebug) console.log("klass-detail / init / loginUser : ",this.loginUser);
-    if(isDebug) console.log("klass-detail / init / this.isAdmin : ",this.isAdmin);
-    if(isDebug) console.log("klass-detail / init / loginTeacher : ",this.loginTeacher);
-    if(isDebug) console.log("klass-detail / init / imageGridComponent : ",this.imageGridComponent);
+    this.loginTeacher = this.watchTower.getLoginTeacher();
+    if(null == this.loginTeacher) {
+      // 1-2. 선생님 로그인 정보가 없다!
+      // 2. 선생님 로그인 정보가 업데이트 되는 것을 비동기로 기다린다.
+      this.subscribeLoginTeacher();
+    }
+
+    if(isDebug) console.log("klass-detail / setUserInfo / loginUser : ",this.loginUser);
+    if(isDebug) console.log("klass-detail / setUserInfo / this.isAdmin : ",this.isAdmin);
+    if(isDebug) console.log("klass-detail / setUserInfo / loginTeacher : ",this.loginTeacher);
+    if(isDebug) console.log("klass-detail / setUserInfo / imageGridComponent : ",this.imageGridComponent);
+
+  }
+
+  private setDefaultComponents() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setDefaultComponents / 시작");
+
+    // DefaultComponent들을 세팅
+    let target = this.getInput(this.myEventService.KEY_KLASS_TITLE);
+    if(null != target) {
+      this.klassTitleComponent = target;
+    } // end if
+
+  }  
+  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+  private getInput(eventKey:string) :any {
+
+    return this.defaultService.getInput(this.inputComponentList, eventKey);
+
+  } 
+
+  private getParams() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / getParams / 시작");
 
 
     this.route.params
@@ -230,14 +331,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(klassId === -100 && null == this.loginTeacher) {
 
         // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
-        if(isDebug) console.log("klass-detail / init / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
+        if(isDebug) console.log("klass-detail / getParams / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
         this.router.navigate(["/"]);
         return;
 
       } else if(klassId === -100) {
 
         // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
-        if(isDebug) console.log("klass-detail / init / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
+        if(isDebug) console.log("klass-detail / getParams / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
         return this.klassService.addKlassEmpty(
           // apiKey:string, 
           this.watchTower.getApiKey(),
@@ -254,31 +355,26 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } // end if
 
       // 기존 수업 가져오기
-      if(isDebug) console.log("klass-detail / init / 기존 수업 가져오기 / klassId : ",klassId);
+      if(isDebug) console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ",klassId);
       return this.klassService.getKlass(klassId);
     })
     .subscribe((myResponse: MyResponse) => {
 
-      if(isDebug) console.log("klass-detail / init / subscribe / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / getParams / subscribe / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
 
         let klassJSON = myResponse.getDataProp("klass");
-        if(isDebug) console.log("klass-detail / init / subscribe / klassJSON : ",klassJSON);
+        if(isDebug) console.log("klass-detail / getParams / subscribe / klassJSON : ",klassJSON);
         if(null != klassJSON) {
 
           this.klass = this.klassService.getKlassFromJSON(klassJSON);
 
-          if(isDebug) console.log("klass-detail / init / subscribe / this.imageGridComponent : ",this.imageGridComponent);
+          if(isDebug) console.log("klass-detail / getParams / subscribe / this.imageGridComponent : ",this.imageGridComponent);
 
-          // fill datas
-          this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
 
           this.onAfterReceivingKlass();
 
-          if(null != this.imageGridComponent) {
-            this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
-          }
 
         } // end if
 
@@ -295,24 +391,30 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail / ngOnInit / Failed!`
+          `klass-detail / getParams / Failed!`
         );        
 
       } // end if
-      if(isDebug) console.log("klass-detail / init / subscribe / this.klass : ",this.klass);
+      if(isDebug) console.log("klass-detail / getParams / subscribe / this.klass : ",this.klass);
 
-    }); // end route
+    }); // end route    
 
-    this.setKlassBannerImageUploader(); 
-    this.setKlassPosterImageUploader();   
-  } 
+  }   
 
   private onAfterReceivingKlass() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
-    if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ",this.imageGridComponent);
+
+    // fill datas
+    this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
+    this.klassTitle = this.klass.title;
+
+    if(null != this.imageGridComponent) {
+      if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ",this.imageGridComponent);
+      this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+    }
 
   }
 
@@ -739,7 +841,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
         } // end if
 
-      } // end if
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.klassTitleComponent = myEvent.metaObj; 
+        }
+
+      }
+      // end if
 
       // Ready는 여기서 중단.
       return;
@@ -771,20 +880,24 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
-      // Do something...
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
 
-      //
+        this.updateKlassTitle(myEvent.value, false);
+
+      }
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+
+        this.updateKlassTitle(myEvent.value, true);
+
+      }      
 
     } else if(myEvent.hasEventName(this.myEventService.ON_DONE)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
 
-        // let posterUrl:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
-        // this.imgUploaderImageUrlKlassPoster = posterUrl;
-
-        // if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER PosterUrl : ",posterUrl);
-
-        // DB Update!
         this.addKlassPoster(myEvent.value);
 
       }
@@ -793,6 +906,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
+        /*
         // 섬네일 주소가 넘어옴.
         let banner_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
 
@@ -837,6 +951,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           } // end if
 
         }) // end service
+        */
 
         // wonder.jung
         
@@ -846,6 +961,64 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     } // end if
 
   } // end method
+
+  private updateKlassTitle(klassTitle:string, isDBUpdate:boolean) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassTitle / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassTitle / klassTitle : ",klassTitle);
+    if(isDebug) console.log("klass-detail / updateKlassTitle / isDBUpdate : ",isDBUpdate);
+
+    if(null == klassTitle || "" == klassTitle) {
+      return;
+    }
+
+    this.klassTitle = klassTitle;
+
+    if(isDBUpdate) {
+
+      this.klassService.updateKlassTitle(
+        // apiKey:string, 
+        this.watchTower.getApiKey(),
+        // userId:number,
+        +this.loginUser.id,
+        // klassId:number,
+        +this.klass.id,
+        // klassTitle:string
+        klassTitle      
+      ).then((myResponse:MyResponse) => {
+
+        // 로그 등록 결과를 확인해볼 수 있습니다.
+        if(isDebug) console.log("klass-detail / updateKlassTitle / myResponse : ",myResponse);
+        if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+
+          // Do something..
+
+        } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+        } else {
+          // 에러 로그 등록
+          this.myLoggerService.logError(
+            // apiKey:string
+            this.watchTower.getApiKey(),
+            // errorType:string
+            this.myLoggerService.errorAPIFailed,
+            // errorMsg:string
+            `klass-detail / updateKlassTitle / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / klassTitle : ${klassTitle}`
+          ); // end logger      
+
+        } // end if
+
+      }) // end service 
+
+    } // end if
+
+  } // end method
+
+
 
 
   private addKlassPoster(posterUrl:string) :void {

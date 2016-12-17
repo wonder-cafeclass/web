@@ -23,6 +23,8 @@ import { GenderComponent }         		from './input/gender/gender.component';
 import { BirthdayComponent }         	from './input/birthday/birthday.component';
 import { NicknameComponent }         	from './input/nickname/nickname.component';
 import { TooltipComponent }         	from './input/tooltip/tooltip.component';
+import { ImageEntryComponent }         	from './image-grid/image-entry.component';
+import { ImageGridV2Component }         from './image-grid/image-grid-v2.component';
 
 import { FooterComponent }         		from './footer/footer.component';
 
@@ -40,6 +42,8 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		EmailComponent,
 		ProfileImgUploadComponent,
 		ImgUploaderComponent,
+		ImageEntryComponent,
+		ImageGridV2Component,
 		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
@@ -61,6 +65,8 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		EmailComponent,
 		ProfileImgUploadComponent,
 		ImgUploaderComponent,
+		ImageEntryComponent,
+		ImageGridV2Component,
 		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,

@@ -14,8 +14,8 @@ var DefaultService = (function () {
     }
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
     DefaultService.prototype.getInput = function (inputComponentList, eventKey) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("default.service / getInput / init");
         var target = null;

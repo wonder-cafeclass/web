@@ -11,8 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
-var ImageGridComponent = (function () {
-    function ImageGridComponent(myCheckerService, myEventService) {
+var image_entry_component_1 = require('./image-entry.component');
+var ImageGridV2Component = (function () {
+    function ImageGridV2Component(myCheckerService, myEventService) {
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         // @ Common Props
@@ -26,21 +27,21 @@ var ImageGridComponent = (function () {
         this.gridWidth = 100;
         this.isDisabled = false;
     }
-    ImageGridComponent.prototype.ngOnInit = function () {
+    ImageGridV2Component.prototype.ngOnInit = function () {
         this.init();
         this.emitEventOnReady();
     };
-    ImageGridComponent.prototype.ngAfterViewInit = function () {
+    ImageGridV2Component.prototype.ngAfterViewInit = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("image-grid / ngAfterViewInit / 시작");
+            console.log("image-grid-v2 / ngAfterViewInit / 시작");
     };
-    ImageGridComponent.prototype.init = function () {
+    ImageGridV2Component.prototype.init = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("image-grid / init / 시작");
+            console.log("image-grid-v2 / init / 시작");
         if (null == this.imageTable || 0 == this.imageTable.length) {
             return;
         }
@@ -70,31 +71,31 @@ var ImageGridComponent = (function () {
             this.tableWidthStr = "100%";
         }
     };
-    ImageGridComponent.prototype.addImageSingleColumn = function (imageUrl) {
+    ImageGridV2Component.prototype.addImageSingleColumn = function (imageUrl) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("image-grid / addImageSingleColumn / 시작");
+            console.log("image-grid-v2 / addImageSingleColumn / 시작");
         if (null == imageUrl || "" === imageUrl) {
             return;
         }
         // 이미지를 추가합니다. 
         if (null == this.imageTable || 0 == this.imageTable.length) {
             if (isDebug)
-                console.log("image-grid / addImageSingleColumn / 첫번째 배너 추가");
+                console.log("image-grid-v2 / addImageSingleColumn / 첫번째 배너 추가");
             this.imageTable = [[imageUrl]];
         }
         else {
             if (isDebug)
-                console.log("image-grid / addImageSingleColumn / 첫번째 배너 이후 추가");
+                console.log("image-grid-v2 / addImageSingleColumn / 첫번째 배너 이후 추가");
             this.imageTable.push([imageUrl]);
         } // end if
     }; // end method
-    ImageGridComponent.prototype.addImageListSingleColumn = function (imageUrlList) {
+    ImageGridV2Component.prototype.addImageListSingleColumn = function (imageUrlList) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("image-grid / addImageListSingleColumn / 시작");
+            console.log("image-grid-v2 / addImageListSingleColumn / 시작");
         if (null == imageUrlList || 0 == imageUrlList.length) {
             return;
         }
@@ -104,11 +105,11 @@ var ImageGridComponent = (function () {
             this.addImageSingleColumn(imageUrl);
         } // end for
     }; // end method
-    ImageGridComponent.prototype.removeImage = function (imageUrl) {
+    ImageGridV2Component.prototype.removeImage = function (imageUrl) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("image-grid / removeImage / 시작");
+            console.log("image-grid-v2 / removeImage / 시작");
         if (null == imageUrl || "" === imageUrl) {
             return;
         }
@@ -131,11 +132,11 @@ var ImageGridComponent = (function () {
         }
         this.imageTable = imageTableNext;
     };
-    ImageGridComponent.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
+    ImageGridV2Component.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("image-grid / onChangeCheck / 시작");
+            console.log("image-grid-v2 / onChangeCheck / 시작");
         event.stopPropagation();
         event.preventDefault();
         if (null == checkboxToggle) {
@@ -143,12 +144,12 @@ var ImageGridComponent = (function () {
         }
         var checked = checkboxToggle.checked;
         if (isDebug)
-            console.log("image-grid / onChangeCheck / checked : ", checked);
+            console.log("image-grid-v2 / onChangeCheck / checked : ", checked);
         this.isDisabled = !checked;
         if (isDebug)
-            console.log("image-grid / onChangeCheck / targetImg : ", targetImg);
+            console.log("image-grid-v2 / onChangeCheck / targetImg : ", targetImg);
     };
-    ImageGridComponent.prototype.onClickDelete = function (event, imgUrlToDelete) {
+    ImageGridV2Component.prototype.onClickDelete = function (event, imgUrlToDelete) {
         event.stopPropagation();
         event.preventDefault();
         if (null == imgUrlToDelete || "" === imgUrlToDelete) {
@@ -157,11 +158,11 @@ var ImageGridComponent = (function () {
         this.removeImage(imgUrlToDelete);
         this.emitEventOnDelete(imgUrlToDelete);
     };
-    ImageGridComponent.prototype.emitEventOnDelete = function (imgUrlToDelete) {
+    ImageGridV2Component.prototype.emitEventOnDelete = function (imgUrlToDelete) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("image-grid / emitEventOnDelete / 시작");
+            console.log("image-grid-v2 / emitEventOnDelete / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_REMOVE_ROW, 
@@ -175,13 +176,13 @@ var ImageGridComponent = (function () {
         null);
         this.emitter.emit(myEventOnChange);
         if (isDebug)
-            console.log("image-grid / emitEventOnChange / Done!");
+            console.log("image-grid-v2 / emitEventOnChange / Done!");
     };
-    ImageGridComponent.prototype.emitEventOnReady = function () {
+    ImageGridV2Component.prototype.emitEventOnReady = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("image-grid / emitEventOnChange / 시작");
+            console.log("image-grid-v2 / emitEventOnChange / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_READY, 
@@ -195,50 +196,84 @@ var ImageGridComponent = (function () {
         null);
         this.emitter.emit(myEventOnChange);
         if (isDebug)
-            console.log("image-grid / emitEventOnChange / Done!");
+            console.log("image-grid-v2 / emitEventOnChange / Done!");
     };
+    //onChangedFromChild
+    ImageGridV2Component.prototype.onChangedFromChild = function (myEvent) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-grid-v2 / onChangedFromChild / 시작");
+        if (isDebug)
+            console.log("image-grid-v2 / onChangedFromChild / myEvent : ", myEvent);
+        var eventName = myEvent.eventName;
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if (!isOK) {
+            if (isDebug)
+                console.log("image-grid-v2 / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+            return;
+        } // end if
+        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+            }
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+            }
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_DONE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
+            }
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+        } // end if
+    }; // end method  
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], ImageGridComponent.prototype, "emitter", void 0);
+    ], ImageGridV2Component.prototype, "emitter", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
-    ], ImageGridComponent.prototype, "imageTable", void 0);
+    ], ImageGridV2Component.prototype, "imageTable", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ImageGridComponent.prototype, "imageHeight", void 0);
+    ], ImageGridV2Component.prototype, "imageHeight", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ImageGridComponent.prototype, "imageWidth", void 0);
+    ], ImageGridV2Component.prototype, "imageWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
-    ], ImageGridComponent.prototype, "tableWidth", void 0);
+    ], ImageGridV2Component.prototype, "tableWidth", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], ImageGridComponent.prototype, "hasTableBorder", void 0);
+    ], ImageGridV2Component.prototype, "hasTableBorder", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], ImageGridComponent.prototype, "isAdmin", void 0);
+    ], ImageGridV2Component.prototype, "isAdmin", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], ImageGridComponent.prototype, "handleType", void 0);
-    ImageGridComponent = __decorate([
+    ], ImageGridV2Component.prototype, "handleType", void 0);
+    __decorate([
+        core_1.ViewChildren(image_entry_component_1.ImageEntryComponent), 
+        __metadata('design:type', core_1.QueryList)
+    ], ImageGridV2Component.prototype, "imageEntryList", void 0);
+    ImageGridV2Component = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'image-grid',
-            templateUrl: 'image-grid.component.html',
-            styleUrls: ['image-grid.component.css']
+            selector: 'image-grid-v2',
+            templateUrl: 'image-grid-v2.component.html',
+            styleUrls: ['image-grid-v2.component.css']
         }), 
         __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService])
-    ], ImageGridComponent);
-    return ImageGridComponent;
+    ], ImageGridV2Component);
+    return ImageGridV2Component;
 }());
-exports.ImageGridComponent = ImageGridComponent;
-//# sourceMappingURL=image-grid.component.js.map
+exports.ImageGridV2Component = ImageGridV2Component;
+//# sourceMappingURL=image-grid-v2.component.js.map

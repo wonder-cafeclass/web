@@ -403,6 +403,104 @@ class Klass extends MY_REST_Controller {
         }
     }
 
+    public function updatetitle_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_title",
+            // $key_filter=""
+            "klass_title"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_title"=>$klass_title
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) 
+        {
+            $this->my_sql->update_klass_title(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_title_to_update=""
+                $klass_title
+            );
+            $klass = $this->my_sql->select_klass($klass_id);
+            $klass_title = "";
+            if(isset($klass) && isset($klass->title)) 
+            {
+                $klass_title = $klass->title;
+            }
+            $output["klass_title"] = $klass_title;
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addposter_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }    
+
     public function addposter_post() 
     {
         if($this->is_not_ok()) {

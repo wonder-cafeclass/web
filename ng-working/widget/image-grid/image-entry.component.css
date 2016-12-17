@@ -1,0 +1,9 @@
+.dron {
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;	
+    z-index:1000;
+}
+img.fade {
+    opacity:.3;
+}

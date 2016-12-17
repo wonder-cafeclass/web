@@ -1835,6 +1835,82 @@ class MY_Sql
     } // end method
 
 
+    // @ Desc : 클래스의 타이틀을 가져옵니다.
+    /*
+    public function get_klass_title($klass_id=-1)
+    {
+        
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('title');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $title = "";
+        foreach ($rows as $row) 
+        {
+            $title = $row->title;
+            break;
+        }
+        
+        return $title;
+    }
+    */
+
+    
+    // @ Desc : 클래스의 제목을 업데이트합니다.
+    public function update_klass_title($user_id=-1, $klass_id=-1, $klass_title_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_title_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_title_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'title' => $klass_title_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    } 
+
+
     // @ Desc : 클래스의 포스터 정보를 가져옵니다.
     public function get_klass_poster($klass_id=-1)
     {
