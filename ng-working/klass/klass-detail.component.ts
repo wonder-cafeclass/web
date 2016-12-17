@@ -30,6 +30,7 @@ import { InputViewUpdown }               from '../widget/input-view/model/input-
 import { Calendar }                      from '../widget/calendar/model/calendar';
 import { DialogService }                 from '../widget/dialog.service';
 import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
+import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 
@@ -118,6 +119,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   imgUploaderImageUrl:string="";
   imgUploaderEventKey:string="";
 
+  imgUploaderImagePathKlassPoster:string="";
+  imgUploaderImageUrlKlassPoster:string="";
+  imgUploaderEventKeyKlassPoster:string="";
+
+
   // REMOVE ME
   // DronList
   // dronListKey:string;
@@ -134,9 +140,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   @ViewChild(ImageGridComponent)
   private imageGridComponent: ImageGridComponent;
 
-  // bannerImageTable:string[][];
+  @ViewChild(HiddenUploaderComponent)
+  private hiddenUploaderComponent: HiddenUploaderComponent;
 
-  
+  //
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -263,6 +271,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
           if(isDebug) console.log("klass-detail / init / subscribe / this.imageGridComponent : ",this.imageGridComponent);
 
+          // fill datas
+          this.imgUploaderImageUrlKlassPoster = this.klass.class_img_url;
+
           this.onAfterReceivingKlass();
 
           if(null != this.imageGridComponent) {
@@ -292,7 +303,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     }); // end route
 
-    this.setKlassBannerImageUploader();    
+    this.setKlassBannerImageUploader(); 
+    this.setKlassPosterImageUploader();   
   } 
 
   private onAfterReceivingKlass() :void {
@@ -310,6 +322,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.imgUploaderImagePath="/assets/images/class/banner";
     this.imgUploaderImageUrl="/assets/images/class/banner/banner_default.svg";
     this.imgUploaderEventKey=this.myEventService.KEY_KLASS_BANNER;
+  }
+
+  private setKlassPosterImageUploader():void {
+    // Set image uploader props
+    this.imgUploaderUploadAPIUrl="/CI/index.php/api/upload/image";
+    this.imgUploaderImagePathKlassPoster="/assets/images/class/poster";
+    this.imgUploaderImageUrlKlassPoster="/assets/images/class/poster/no_image.svg";
+    this.imgUploaderEventKeyKlassPoster=this.myEventService.KEY_KLASS_POSTER;
   }
 
   private setEmptyKlass() :void {
@@ -569,19 +589,47 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
 
   // EVENT
-  onClickEnrollment(event, klass:Klass) {
+  onClickKlassPoster(event) {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / onClickKlassPoster / 시작");
+
+    if(!this.isAdmin || !this.isTeacher) {
+      if(isDebug) console.log("klass-detail / onClickKlassPoster / 중단 / 수업 포스터를 수정할수 없습니다.");
+      return;
+    }
+
     event.stopPropagation();
+    event.preventDefault();
+
+    // 수업 이미지 업로드를 시작합니다.
+    this.hiddenUploaderComponent.initFileUpload();
+  }
+
+
+  onClickEnrollment(event, klass:Klass) {
+
+    event.stopPropagation();
+
     console.log("onClickEnrollment / klass ::: ",klass);
+
   }
 
   onClickWishList(event, klass:Klass) {
+
     event.stopPropagation();
+
     console.log("onClickEnrollment / klass ::: ",klass);
+
   }
 
   onClickYellowID(event, klass:Klass) {
+
     event.stopPropagation();
+
     console.log("onClickYellowID / klass ::: ",klass);
+
   }
 
   onChangedFromMiniCalendar(myEvent:MyEvent) {
@@ -636,7 +684,27 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       imgUrlToDelete
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / onChangedFromChild / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / deleteBannerImg / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail / deleteBannerImg / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+        ); // end logger      
+
+      } // end if
+      
     });
 
   }
@@ -705,6 +773,21 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       // Do something...
 
+      //
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_DONE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
+
+        let poster_url:string = `${this.imgUploaderImagePathKlassPoster}/${myEvent.value}`;
+        this.imgUploaderImageUrlKlassPoster = poster_url;
+
+        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER poster_url : ",poster_url);
+
+        // DB Update!
+
+      }
+
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
@@ -762,6 +845,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     } // end if
 
   } // end method
+
+
+
 
 
 

@@ -13,6 +13,7 @@ import { DefaultComponent }         	from './input/default/default.component';
 import { EmailComponent }         		from './input/email/email.component';
 import { ProfileImgUploadComponent }	from './input/profile-img-upload/profile-img-upload.component';
 import { ImgUploaderComponent }			from './input/img-uploader/img-uploader.component';
+import { HiddenUploaderComponent }		from './input/img-uploader/hidden-uploader.component';
 import { PasswordComponent }         	from './input/password/password.component';
 import { PasswordSingleComponent }      from './input/password/password-single.component';
 import { PasswordsTripletComponent }    from './input/password/passwords-triplet.component';
@@ -39,6 +40,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		EmailComponent,
 		ProfileImgUploadComponent,
 		ImgUploaderComponent,
+		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
 		PasswordsTripletComponent,
@@ -59,6 +61,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		EmailComponent,
 		ProfileImgUploadComponent,
 		ImgUploaderComponent,
+		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
 		PasswordsTripletComponent,

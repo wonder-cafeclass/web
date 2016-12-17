@@ -34,6 +34,7 @@ var MyEventService = (function () {
         this.ON_MOUSE_ENTER = "ON_MOUSE_ENTER";
         this.ON_PREVIEW = "ON_PREVIEW";
         this.ON_UNPREVIEW = "ON_UNPREVIEW";
+        this.ON_DONE = "ON_DONE";
         // SPECIFIC ATTR
         this.KLASS_WEEK_MAX = "KLASS_WEEK_MAX";
         this.KLASS_ENROLMENT_INTERVAL = "KLASS_ENROLMENT_INTERVAL";
@@ -97,6 +98,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
+        this.KEY_KLASS_POSTER = "KEY_KLASS_POSTER"; // 수업 - 포스터 이미지
         this.KEY_KLASS_BANNER = "KEY_KLASS_BANNER"; // 수업 - 배너 이미지
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();

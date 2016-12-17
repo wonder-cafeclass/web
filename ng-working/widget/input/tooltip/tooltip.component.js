@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var TooltipComponent = (function () {
     function TooltipComponent() {
         this.marginTop = -73;
+        this.marginLeft = 0;
         this.isShowTooltip = false;
         this.isFocus = false;
         this.isValid = false;
@@ -59,6 +60,10 @@ var TooltipComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], TooltipComponent.prototype, "marginTop", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], TooltipComponent.prototype, "marginLeft", void 0);
     TooltipComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

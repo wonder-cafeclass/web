@@ -16,6 +16,8 @@ export class UploadService {
     private myRequest:MyRequest;
 
     constructor () {
+
+        this.myExtractor = new MyExtractor();
         
         // this.progress = Observable.create(observer => {
         //     this.progressObserver = observer
@@ -25,6 +27,11 @@ export class UploadService {
 
     // makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
     makeFileRequest (url: string, paramsObj: any, files: File[]): Observable<any> {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("upload.service / makeFileRequest / 시작");
+
         return Observable.create(observer => {
             let formData: FormData = new FormData(),
                 xhr: XMLHttpRequest = new XMLHttpRequest();
@@ -56,7 +63,24 @@ export class UploadService {
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        observer.next(JSON.parse(xhr.response));
+
+                        // wonder.jung
+                        // my-response로 만듦.
+                        if(isDebug) console.log("upload.service / makeFileRequest / xhr : ",xhr);
+                        if(isDebug) console.log("upload.service / makeFileRequest / xhr.response : ",xhr.response);
+
+                        // JSON 객체일 경우만 진행합니다.
+
+                        let resJSON = JSON.parse(xhr.response);
+
+                        if(isDebug) console.log("upload.service / makeFileRequest / resJSON : ",resJSON);
+
+                        let myResponse:MyResponse = this.myExtractor.getMyResponseFromJSON(resJSON);
+
+                        if(isDebug) console.log("upload.service / makeFileRequest / myResponse : ",myResponse);
+
+                        observer.next(myResponse);
+                        
                         observer.complete();
                     } else {
                         observer.error(xhr.response);
@@ -73,7 +97,6 @@ export class UploadService {
                 this.progressObserver.next(this.progress);
             };
             */
-            
 
             xhr.open('POST', url, true);
             xhr.send(formData);

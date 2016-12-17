@@ -14,6 +14,7 @@ import {  Component,
 export class TooltipComponent implements OnInit, AfterViewInit {
 
   @Input() marginTop:number = -73;
+  @Input() marginLeft:number = 0;
 
   isShowTooltip:boolean=false;
   isFocus:boolean=false;

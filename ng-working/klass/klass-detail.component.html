@@ -9,17 +9,44 @@
         <!-- First Column -->
         <ul class="list-group col-md-4">
           <li class="list-group-item" style="padding: 0px;">
+            <hidden-uploader
+            [uploadAPIUrl]="imgUploaderUploadAPIUrl"
+            [imagePath]="imgUploaderImagePathKlassPoster"
+            [imageUrl]="imgUploaderImageUrlKlassPoster"
+            [eventKey]="imgUploaderEventKeyKlassPoster"
+            [fileSizeKBMax]="400"
+            [fileWidth]="535"
+            [fileMinWidth]="512"
+            [fileMaxWidth]="1024"
+            [fileMinHeight]="256"
+            [fileMaxHeight]="512"
+            (emitter)="onChangedFromChild($event)">
+            </hidden-uploader>
+            <img  
+            #classImage 
+            (click)="onClickKlassPoster($event)"
+            class="klass-image refactor-me" 
+            style="width: 100%;"
+            src={{imgUploaderImageUrlKlassPoster}} 
+            alt={{klass.title}}>
 
-            <img  #classImage 
-                class="klass-image refactor-me" 
-                style="width: 100%;"
-                src={{klass.class_img_url}} 
-                alt={{klass.title}}>
+            <!-- LABEL : klass title -->
             <div *ngIf="klass.title" class="klass-title-overlay">
               <h5 class="font"><strong>{{klass.title}}</strong></h5>
             </div>
             <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
           
+          </li>
+          
+          <!-- 포스터 올리기 열 -->
+          <li *ngIf="isAdmin && isTeacher" 
+              class="list-group-item" 
+              style="padding: 10px;">
+            <button type="button" 
+                (click)="onClickKlassPoster($event)"
+                class="btn btn-default img-uploader btn-orange">
+              <span>수업 포스터 올리기</span>
+            </button>
           </li>
           
           <!-- Banner Image List INIT -->

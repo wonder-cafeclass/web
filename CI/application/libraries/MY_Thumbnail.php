@@ -537,35 +537,54 @@ class MY_Thumbnail {
         }
 
         return $dir_path . "/" . $filename;
-    }    
+    } 
 
-    // REMOVE ME
-    /*
-    private function get_path_download() 
+
+
+    public function delete_thumbnail_klass_poster($thumbnail="") 
     {
-        $string = __FILE__;
-        $pattern = '/(.+\/)CI\/.+/i';
-        $replacement = '${1}' . $this->download_path;
-        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
+        if(empty($thumbnail)) 
+        {
+            return false;
+        }
 
-        return $thumb_dir_path;
+        $path_thumbnail_klass_poster = $this->get_path_thumbnail_klass_poster($thumbnail);
+
+        return $this->delete_thumbnail($path_thumbnail_klass_poster);
     }
-
-    public function get_path_user_thumb() 
+    public function get_path_thumbnail_klass_poster($thumbnail="")
     {
-        if($this->is_not_ok()) 
+        if(empty($thumbnail)) 
         {
             return "";
         }
+        $path_class_banner = $this->CI->my_path->get_path_class_poster(__FILE__);
 
-        $string = __FILE__;
-        $pattern = '/(.+\/)CI\/.+/i';
-        $replacement = '${1}' . $this->thumbnail_path_user;
-        $thumb_dir_path = preg_replace($pattern, $replacement, $string);
-
-        return $thumb_dir_path;
+        return $path_class_banner . $thumbnail;
     }
-    */
+
+
+    public function delete_thumbnail_klass_banner($thumbnail="") 
+    {
+        if(empty($thumbnail)) 
+        {
+            return false;
+        }
+
+        $path_thumbnail_klass_banner = $this->get_path_thumbnail_klass_banner($thumbnail);
+
+        return $this->delete_thumbnail($path_thumbnail_klass_banner);
+    }
+    public function get_path_thumbnail_klass_banner($thumbnail="")
+    {
+        if(empty($thumbnail)) 
+        {
+            return "";
+        }
+        $path_class_banner = $this->CI->my_path->get_path_class_banner(__FILE__);
+
+        return $path_class_banner . $thumbnail;
+    }
 
     /*
     *   @ Desc : 임시 섬네일을 지웁니다.

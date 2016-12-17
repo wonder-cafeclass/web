@@ -30,6 +30,7 @@ export class MyEventService {
     ON_MOUSE_ENTER:string="ON_MOUSE_ENTER";
     ON_PREVIEW:string="ON_PREVIEW";
     ON_UNPREVIEW:string="ON_UNPREVIEW";
+    ON_DONE:string="ON_DONE";
 
     // SPECIFIC ATTR
     KLASS_WEEK_MAX:string="KLASS_WEEK_MAX";
@@ -109,6 +110,7 @@ export class MyEventService {
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
 
+    KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
 
     private uniqueIdx:number=0;

@@ -12,8 +12,8 @@ export class MyExtractor {
 
 	public extractData(res: Response) :MyResponse{
 
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
+		let isDebug:boolean = true;
+		// let isDebug:boolean = false;
 		if(isDebug) console.log("my-extractor / extractData / 시작");
 		if(isDebug) console.log("my-extractor / extractData / res : ",res);
 		
@@ -99,6 +99,8 @@ export class MyExtractor {
 				null != jsonObj["success"] && 
 				null != jsonObj["message"] ) {
 
+				// wonder.jung - 에러 정보 넘어오지 않음.
+
 				myResponse = 
 				new MyResponse(
 					// public success:boolean
@@ -120,7 +122,10 @@ export class MyExtractor {
 
 		} else if(hasErrorHtml(res)){
 
+			// let jsonObj = getJson(res);
+
 			if(isDebug) console.log("my-extractor / extractData / 1-2. body string이 json object이 아니고, 에러 메시지 html일 경우.");
+			// if(isDebug) console.log("my-extractor / extractData / jsonObj : ",jsonObj);
 
 			myResponse = 
 			new MyResponse(
@@ -145,6 +150,37 @@ export class MyExtractor {
 			return null;
 			
 		} // end if
+	}
+
+	public getMyResponseFromJSON(jsonObj:any) :MyResponse{
+
+		let myResponse:MyResponse = null;
+
+		if(	null != jsonObj && 
+			null != jsonObj["success"] && 
+			null != jsonObj["message"] ) {
+
+			// wonder.jung - 에러 정보 넘어오지 않음.
+
+			myResponse = 
+			new MyResponse(
+				// public success:boolean
+				jsonObj["success"],
+				// public message:string
+				jsonObj["message"],
+				// public query:string
+				jsonObj["query"],
+				// public error:string
+				jsonObj["error"],
+				// public data:any
+				jsonObj["data"],
+				// public extra:any
+				jsonObj["extra"]
+			);
+		}
+
+		return myResponse;		
+
 	}
 
 	public handleError (error: Response) :MyResponse{

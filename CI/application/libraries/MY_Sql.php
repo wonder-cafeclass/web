@@ -572,6 +572,8 @@ class MY_Sql
             return false;
         }
 
+        $this->set_last_query($query);
+
         $is_success = 
         $this->insert_log_query(
             // $agent=""
@@ -1948,7 +1950,7 @@ class MY_Sql
         }
         $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr_next);
 
-        $this->update_klass_banner($user_id, $klass_id, $klass_banner_url_to_update);
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
     }
     private function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
     {
@@ -2069,7 +2071,7 @@ class MY_Sql
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
-            $row->class_img_url = $this->CI->my_path->get("/assets/images/class/test.jpg");
+            $row->class_img_url = $this->CI->my_path->get("/assets/images/class/poster/no_image.svg");
 
             // 주당 수업 가격에 대해 계산한다.
             // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.

@@ -17,13 +17,14 @@ var klass_service_1 = require('./service/klass.service');
 var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var dialog_service_1 = require('../widget/dialog.service');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
+var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-uploader.component');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var KlassDetailComponent = (function () {
-    // bannerImageTable:string[][];
+    //
     function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, myCheckerService) {
         this.route = route;
         this.router = router;
@@ -53,6 +54,9 @@ var KlassDetailComponent = (function () {
         this.imgUploaderImagePath = "";
         this.imgUploaderImageUrl = "";
         this.imgUploaderEventKey = "";
+        this.imgUploaderImagePathKlassPoster = "";
+        this.imgUploaderImageUrlKlassPoster = "";
+        this.imgUploaderEventKeyKlassPoster = "";
         this.isAdmin = false;
         this.isTeacher = false;
     }
@@ -150,6 +154,8 @@ var KlassDetailComponent = (function () {
                     _this.klass = _this.klassService.getKlassFromJSON(klassJSON);
                     if (isDebug)
                         console.log("klass-detail / init / subscribe / this.imageGridComponent : ", _this.imageGridComponent);
+                    // fill datas
+                    _this.imgUploaderImageUrlKlassPoster = _this.klass.class_img_url;
                     _this.onAfterReceivingKlass();
                     if (null != _this.imageGridComponent) {
                         _this.imageGridComponent.addImageListSingleColumn(_this.klass.class_banner_url_arr);
@@ -173,6 +179,7 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / init / subscribe / this.klass : ", _this.klass);
         }); // end route
         this.setKlassBannerImageUploader();
+        this.setKlassPosterImageUploader();
     };
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
         var isDebug = true;
@@ -188,6 +195,13 @@ var KlassDetailComponent = (function () {
         this.imgUploaderImagePath = "/assets/images/class/banner";
         this.imgUploaderImageUrl = "/assets/images/class/banner/banner_default.svg";
         this.imgUploaderEventKey = this.myEventService.KEY_KLASS_BANNER;
+    };
+    KlassDetailComponent.prototype.setKlassPosterImageUploader = function () {
+        // Set image uploader props
+        this.imgUploaderUploadAPIUrl = "/CI/index.php/api/upload/image";
+        this.imgUploaderImagePathKlassPoster = "/assets/images/class/poster";
+        this.imgUploaderImageUrlKlassPoster = "/assets/images/class/poster/no_image.svg";
+        this.imgUploaderEventKeyKlassPoster = this.myEventService.KEY_KLASS_POSTER;
     };
     KlassDetailComponent.prototype.setEmptyKlass = function () {
         var isDebug = true;
@@ -407,6 +421,21 @@ var KlassDetailComponent = (function () {
         // this.router.navigate(['../', { id: klassId, foo: 'foo' }], { relativeTo: this.route });
     };
     // EVENT
+    KlassDetailComponent.prototype.onClickKlassPoster = function (event) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / onClickKlassPoster / 시작");
+        if (!this.isAdmin || !this.isTeacher) {
+            if (isDebug)
+                console.log("klass-detail / onClickKlassPoster / 중단 / 수업 포스터를 수정할수 없습니다.");
+            return;
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        // 수업 이미지 업로드를 시작합니다.
+        this.hiddenUploaderComponent.initFileUpload();
+    };
     KlassDetailComponent.prototype.onClickEnrollment = function (event, klass) {
         event.stopPropagation();
         console.log("onClickEnrollment / klass ::: ", klass);
@@ -442,6 +471,7 @@ var KlassDetailComponent = (function () {
         */
     };
     KlassDetailComponent.prototype.deleteBannerImg = function (imgUrlToDelete) {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -464,7 +494,22 @@ var KlassDetailComponent = (function () {
         imgUrlToDelete).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
-                console.log("klass-detail / onChangedFromChild / myResponse : ", myResponse);
+                console.log("klass-detail / deleteBannerImg / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "klass-detail / deleteBannerImg / removeKlassBanner / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / banner_url : " + imgUrlToDelete); // end logger      
+            } // end if
         });
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
@@ -514,6 +559,14 @@ var KlassDetailComponent = (function () {
             return;
         } // end if
         if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_DONE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
+                var poster_url = this.imgUploaderImagePathKlassPoster + "/" + myEvent.value;
+                this.imgUploaderImageUrlKlassPoster = poster_url;
+                if (isDebug)
+                    console.log("klass-detail / onChangedFromChild / ON_DONE / KEY_KLASS_POSTER poster_url : ", poster_url);
+            }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
@@ -566,6 +619,10 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(image_grid_component_1.ImageGridComponent), 
         __metadata('design:type', image_grid_component_1.ImageGridComponent)
     ], KlassDetailComponent.prototype, "imageGridComponent", void 0);
+    __decorate([
+        core_1.ViewChild(hidden_uploader_component_1.HiddenUploaderComponent), 
+        __metadata('design:type', hidden_uploader_component_1.HiddenUploaderComponent)
+    ], KlassDetailComponent.prototype, "hiddenUploaderComponent", void 0);
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

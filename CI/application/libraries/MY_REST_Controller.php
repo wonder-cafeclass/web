@@ -240,7 +240,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 유저 파라미터에 의한 실패.
     */
-    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null)
+    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null, $error_msg="", $extra=null)
     {
         if(is_null($msg)) 
         {
@@ -281,9 +281,9 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
                 // $data=null 
                 $data,
                 // $error=null
-                null,
+                $error_msg,
                 // $extra=null
-                null
+                $extra
             );
             $this->set_response($response_body, REST_Controller::HTTP_OK);
         }

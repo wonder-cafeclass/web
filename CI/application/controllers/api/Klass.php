@@ -56,11 +56,9 @@ class Klass extends MY_REST_Controller {
         */
 
         // Please add library you need here!
-        // init MyCalendar
         $this->load->library('MY_Calendar');
-
-        // init MyKlassCalendar
         $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
+        $this->load->library('MY_Thumbnail');
     }
 
     public function selectile_get() {
@@ -548,6 +546,7 @@ class Klass extends MY_REST_Controller {
         $output = array();
         $output["params"] = 
         [
+            "user_id"=>$user_id,
             "klass_id"=>$klass_id,
             "klass_banner_url"=>$klass_banner_url
         ];
@@ -571,6 +570,11 @@ class Klass extends MY_REST_Controller {
                 // $klass_banner_url_to_add=""
                 $klass_banner_url
             );
+            $output["query"] = $this->my_sql->get_last_query();
+
+            // 해당 파일을 삭제합니다.
+            $this->my_thumbnail->delete_thumbnail_klass_banner($klass_banner_url);
+
             $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
             $this->respond_200($output);
 

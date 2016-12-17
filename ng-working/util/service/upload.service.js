@@ -10,14 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var Observable_1 = require('rxjs/Observable');
 var core_1 = require('@angular/core');
+var my_extractor_1 = require('../http/my-extractor');
 var UploadService = (function () {
     function UploadService() {
+        this.myExtractor = new my_extractor_1.MyExtractor();
         // this.progress = Observable.create(observer => {
         //     this.progressObserver = observer
         // }).share();
     }
     // makeFileRequest (url: string, params: string[], files: File[]): Observable<any> {
     UploadService.prototype.makeFileRequest = function (url, paramsObj, files) {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("upload.service / makeFileRequest / 시작");
         return Observable_1.Observable.create(function (observer) {
             var formData = new FormData(), xhr = new XMLHttpRequest();
             // 1개의 파일만 전송합니다.
@@ -44,7 +51,20 @@ var UploadService = (function () {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        observer.next(JSON.parse(xhr.response));
+                        // wonder.jung
+                        // my-response로 만듦.
+                        if (isDebug)
+                            console.log("upload.service / makeFileRequest / xhr : ", xhr);
+                        if (isDebug)
+                            console.log("upload.service / makeFileRequest / xhr.response : ", xhr.response);
+                        // JSON 객체일 경우만 진행합니다.
+                        var resJSON = JSON.parse(xhr.response);
+                        if (isDebug)
+                            console.log("upload.service / makeFileRequest / resJSON : ", resJSON);
+                        var myResponse = _this.myExtractor.getMyResponseFromJSON(resJSON);
+                        if (isDebug)
+                            console.log("upload.service / makeFileRequest / myResponse : ", myResponse);
+                        observer.next(myResponse);
                         observer.complete();
                     }
                     else {

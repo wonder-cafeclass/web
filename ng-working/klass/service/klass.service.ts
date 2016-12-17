@@ -380,13 +380,13 @@ export class KlassService {
       return "";
     }
 
-    return imgUrl.replace(this.dirPathKlassBanner,"");
+    return imgUrl.replace(this.dirPathKlassBanner,"").replace("/","");
   }
 
   getKlassFromJSON(klassJSON): Klass {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassFromJSON / 시작");
 
     let klass:Klass = new Klass();

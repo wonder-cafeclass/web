@@ -132,15 +132,23 @@ class Upload extends MY_REST_Controller {
             "uploading_image_dir_dest"
         ); 
 
+        $image_file_size = intval($image_file_size);
+        $desired_width = intval($desired_width);
+        $desired_height = intval($desired_height);
+        $min_width = intval($min_width);
+        $max_width = intval($max_width);
+        $min_height = intval($min_height);
+        $max_height = intval($max_height);
+
         $params = array(
-            "image_file_size"=>intval($image_file_size),
-            "image_dir_dest"=>intval($image_dir_dest),
-            "desired_width"=>intval($desired_width),
-            "desired_height"=>intval($desired_height),
-            "min_width"=>intval($min_width),
-            "max_width"=>intval($max_width),
-            "min_height"=>intval($min_height),
-            "max_height"=>intval($max_height)
+            "image_file_size"=>$image_file_size,
+            "image_dir_dest"=>$image_dir_dest,
+            "desired_width"=>$desired_width,
+            "desired_height"=>$desired_height,
+            "min_width"=>$min_width,
+            "max_width"=>$max_width,
+            "min_height"=>$min_height,
+            "max_height"=>$max_height
         );
         $output["params"] = $params;
 
@@ -177,13 +185,22 @@ class Upload extends MY_REST_Controller {
             // 업로드를 진행합니다.
             $config['upload_path']          = $this->my_path->get_path_download(__FILE__);
             $config['allowed_types']        = 'gif|jpg|png|jpeg';
-            $config['max_size']             = intval($image_file_size); // kb?
+            $config['max_size']             = $image_file_size; // kb?
 
-            $config['min_width']            = intval($min_width);
-            $config['min_height']           = intval($min_height);
+            $config['min_width']            = $min_width;
+            $config['min_height']           = $min_height;
 
-            $config['max_width']            = intval($max_width);
-            $config['max_height']           = intval($max_height);
+            $config['max_width']            = $max_width;
+            $config['max_height']           = $max_height;
+
+        // $image_file_size = intval($image_file_size);
+        // $desired_width = intval($desired_width);
+        // $desired_height = intval($desired_height);
+        // $min_width = intval($min_width);
+        // $max_width = intval($max_width);
+        // $min_height = intval($min_height);
+        // $max_height = intval($max_height);
+
             
             $this->load->library('upload', $config);
 
@@ -191,8 +208,55 @@ class Upload extends MY_REST_Controller {
             $data = null;
             if ( ! $this->upload->do_upload('userfile'))
             {
-                $error = array('error' => $this->upload->display_errors());
-                $output["error"]=$error;
+                $error_data = array('error' => $this->upload->display_errors());
+
+                $image_file_type_actual = $this->upload->data("image_type");
+                $image_file_size_actual = intval($this->upload->data("file_size"));
+                $image_file_width_actual = intval($this->upload->data("image_width"));
+                $image_file_height_actual = intval($this->upload->data("image_height"));
+                $image_file_valid_actual = $this->upload->data("is_image");
+
+                $reason = "";
+                if(!$image_file_valid_actual)
+                {
+                    $reason = "파일이 이미지가 아닙니다.";
+                }
+                else if($image_file_size_actual < 0) 
+                {
+                    $reason = "파일 크기가 0 kb 보다 작습니다.";
+                } 
+                else if($image_file_size < $image_file_size_actual)
+                {
+                    $reason = "파일 크기가 $image_file_size kb 보다 큽니다.";
+                }
+                else if($image_file_width_actual < $min_width)
+                {
+                    $reason = "파일 너비가 $min_width px 보다 작습니다.";
+                }
+                else if($max_width < $image_file_width_actual)
+                {
+                    $reason = "파일 너비가 $max_width px 보다 작습니다.";
+                }
+                else if($image_file_height_actual < $min_height)
+                {
+                    $reason = "파일 너비가 $min_height px 보다 작습니다.";
+                }
+                else if($max_height < $image_file_height_actual)
+                {
+                    $reason = "파일 너비가 $max_height px 보다 작습니다.";
+                } // end if
+
+                $error = [
+                    "data"=>$this->upload->data(),
+                    "reasone"=>$reason,
+                    "file"=> [
+                        "image_file_type_actual"=>$image_file_type_actual,
+                        "image_file_size_actual"=>$image_file_size_actual,
+                        "image_file_width_actual"=>$image_file_width_actual,
+                        "image_file_height_actual"=>$image_file_height_actual,
+                        "image_file_valid_actual"=>$image_file_valid_actual
+                    ]
+                ];
 
                 $this->respond_200_Failed(
                     // $msg=""
@@ -204,7 +268,11 @@ class Upload extends MY_REST_Controller {
                     // $line=""
                     __LINE__,
                     // $data=null
-                    $output
+                    $output,
+                    // $error=null
+                    $reason,
+                    // $extra=null
+                    $error
                 );
                 return;            
             }

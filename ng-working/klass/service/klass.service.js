@@ -316,11 +316,11 @@ var KlassService = (function () {
         if (null == imgUrl || "" === imgUrl) {
             return "";
         }
-        return imgUrl.replace(this.dirPathKlassBanner, "");
+        return imgUrl.replace(this.dirPathKlassBanner, "").replace("/", "");
     };
     KlassService.prototype.getKlassFromJSON = function (klassJSON) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassFromJSON / 시작");
         var klass = new klass_1.Klass();

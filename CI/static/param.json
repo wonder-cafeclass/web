@@ -268,10 +268,10 @@
 			"error"
 		],
 		"klass_event_img_url_list":[
-			"assets/images/event/new_class.svg",
-			"assets/images/event/no_class.svg",
-			"assets/images/event/no_image.svg",
-			"assets/images/event/error.svg"
+			"assets/images/class/poster/new_class.svg",
+			"assets/images/class/poster/no_class.svg",
+			"assets/images/class/poster/no_image.svg",
+			"assets/images/class/poster/error.svg"
 		],
 
 		"user_thumbnail_default":"user_anonymous_150x150.png",
