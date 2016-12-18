@@ -28,6 +28,7 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
   @Input() handleType:string="";
 
   isDisabled:boolean=false;
+  isChecked:boolean=false;
 
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService ) {}
@@ -73,7 +74,11 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("image-entry / hasImage / this.imageUrl : ",this.imageUrl);
     if(isDebug) console.log("image-entry / hasImage / imageUrl : ",imageUrl);
 
-    return (this.imageUrl === imageUrl)?true:false;
+    // 이미지 이름이 주소에 포함되어 있다면 같은 이미지라고 판단한다.
+    if(-1 < this.imageUrl.indexOf(imageUrl)) {
+      return true;
+    }
+    return false;
   }
 
   onChangeCheck(event, checkboxToggle, targetImg) :void {
@@ -105,6 +110,11 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
       this.emitEventOnDelete(targetImg);
     } // end if
 
+  }
+
+  setDisabled(isDisabled:boolean):void {
+    this.isDisabled = isDisabled;
+    this.isChecked = !isDisabled;
   }
 
   onClickDelete(event, imgUrlToDelete:string) :void {

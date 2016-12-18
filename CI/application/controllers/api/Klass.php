@@ -603,8 +603,101 @@ class Klass extends MY_REST_Controller {
                 $output
             );            
         } // end if
-    }    
+    }  
 
+    public function updatebanner_post()   
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->update_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "updatebanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+
+    /*
     public function addbanner_post() 
     {
         if($this->is_not_ok()) {
@@ -795,7 +888,7 @@ class Klass extends MY_REST_Controller {
             );            
         } // end if
     }
-
+    */
 
     public function search_get() 
     {

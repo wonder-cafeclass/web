@@ -140,8 +140,8 @@ var ImageGridV2Component = (function () {
         if (isDebug)
             console.log("image-grid-v2 / compareImage / imageEntry : ", imageEntry);
         if (null == this.imageListFromUser || 0 == this.imageListFromUser.length) {
-            if (isDebug)
-                console.log("image-grid-v2 / compareImage / 중단 / imageListFromUser is not valid!");
+            // 유저가 설정한 이미지가 없으므로 모두 비활성화 처리
+            imageEntry.setDisabled(true);
             return;
         }
         var hasImage = false;
@@ -154,6 +154,7 @@ var ImageGridV2Component = (function () {
                 // 활성 처리
                 if (isDebug)
                     console.log("image-grid-v2 / compareImage / 활성 처리");
+                imageEntry.setDisabled(false);
                 return;
             }
         } // end for
@@ -161,6 +162,7 @@ var ImageGridV2Component = (function () {
             // 비활성 처리
             if (isDebug)
                 console.log("image-grid-v2 / compareImage / 비활성 처리");
+            imageEntry.setDisabled(true);
         } // end if
     }; // end method
     ImageGridV2Component.prototype.removeImage = function (imageUrl) {

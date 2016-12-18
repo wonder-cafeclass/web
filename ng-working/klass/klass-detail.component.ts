@@ -155,11 +155,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
 
+  // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
   [
     ["assets/images/class/banner/drinks.png"],
     ["assets/images/class/banner/help.png"]
   ];
+
+  // 사용자가 보게되는 배너 이미지 리스트
+  imageTableBannerListService:string[][] = [];
 
   eventKeyKlassBanner:string="";
 
@@ -414,10 +418,23 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
     this.klassTitle = this.klass.title;
 
-    // set image-grid
+    // set image-grid admin
     if(null != this.imageGridComponent) {
+      // TODO - wonder.jung - loadable url 
       this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
     }
+
+    // set image-grid service
+    let classBannerUrlArr:string[] = this.klass.class_banner_url_arr;
+    if(null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
+      for (var i = 0; i < classBannerUrlArr.length; ++i) {
+        let classBannerUrl:string = classBannerUrlArr[i];
+        classBannerUrl = this.klassService.getKlassBannerUrlLoadable(classBannerUrl);
+        this.imageTableBannerListService.push([classBannerUrl]);    
+      } // end for
+    } // end if
+
+    if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageTableBannerListService : ",this.imageTableBannerListService);
   }
 
   private setKlassBannerImageUploader():void {
@@ -972,27 +989,84 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / addKlassBanner / banner : ",banner);
 
     // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+    let classBannerUrlNext:string="";
     if(this.klass.hasNotBanner(banner)) {
       // 배너가 있어야 삭제할 수 있습니다.
       this.klass.addBanner(banner);
       if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
       if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+
+      // 새로 추가된 배너가 포함된 전체 문자열을 만들어 DB에 업데이트합니다.
+      classBannerUrlNext = this.klass.class_banner_url;
+    }
+    if(null == classBannerUrlNext || "" === classBannerUrlNext) {
+      if(isDebug) console.log("klass-detail / addKlassBanner / 중단 / classBannerUrlNext is not valid!");
+      return;
     }
 
+    this.updateKlassBanners(classBannerUrlNext);
 
-    /*
-    this.klassService.addKlassBanner(
+  } // end method
+  removeKlassBanner(imgUrlToDelete:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / removeKlassBanner / 시작");
+    if(isDebug) console.log("klass-detail / removeKlassBanner / imgUrlToDelete : ",imgUrlToDelete);
+
+    if(null == imgUrlToDelete || "" == imgUrlToDelete) {
+      if(isDebug) console.log("klass-detail / removeKlassBanner / 중단 / imgUrlToDelete is not valid!");
+      return;
+    }
+
+    // TODO - banner 이름을 추출합니다.
+    let banner:string = this.klassService.extractKlassBannerFromImgUrl(imgUrlToDelete);
+    if(isDebug) console.log("klass-detail / removeKlassBanner / banner : ",banner);
+
+    // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+    let classBannerUrlNext:string="";
+    if(this.klass.hasBanner(banner)) {
+      // 배너가 있어야 삭제할 수 있습니다.
+      this.klass.removeBanner(banner);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+
+      // 삭제된 배너가 빠진 전체 문자열을 만들어 DB에 업데이트합니다.
+      // 공백도 가능합니다.
+      classBannerUrlNext = this.klass.class_banner_url;
+    }
+    if(null == classBannerUrlNext) {
+      if(isDebug) console.log("klass-detail / addKlassBanner / 중단 / classBannerUrlNext is not valid!");
+      return;
+    } // end if
+
+    this.updateKlassBanners(classBannerUrlNext);
+  } // end method
+  private updateKlassBanners(classBannerUrlNext:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassBanners / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassBanners / classBannerUrlNext : ",classBannerUrlNext);
+
+
+    if(null == classBannerUrlNext) {
+      if(isDebug) console.log("klass-detail / updateKlassBanners / 중단 / classBannerUrlNext is not valid!");
+      return;
+    }
+
+    this.klassService.updateKlassBanner(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number,
       +this.loginUser.id,
       // klassId:number,
       +this.klass.id,
-      // klassBanner:string
-      imgUrlToAdd
+      // klassBanners:string
+      classBannerUrlNext
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / addKlassBanner / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / updateKlassBanner / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
 
@@ -1011,79 +1085,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail / addKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
-        ); // end logger      
-
-      } // end if
-      
-    }); 
-    */   
-
-
-  }
-
-  removeKlassBanner(imgUrlToDelete:string):void {
-
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / removeKlassBanner / 시작");
-    if(isDebug) console.log("klass-detail / removeKlassBanner / imgUrlToDelete : ",imgUrlToDelete);
-
-    if(null == imgUrlToDelete || "" == imgUrlToDelete) {
-      if(isDebug) console.log("klass-detail / removeKlassBanner / 중단 / imgUrlToDelete is not valid!");
-      return;
-    }
-
-    // TODO - banner 이름을 추출합니다.
-    let banner:string = this.klassService.extractKlassBannerFromImgUrl(imgUrlToDelete);
-    if(isDebug) console.log("klass-detail / removeKlassBanner / banner : ",banner);
-
-    // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
-    if(this.klass.hasBanner(banner)) {
-      // 배너가 있어야 삭제할 수 있습니다.
-      this.klass.removeBanner(banner);
-      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
-      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
-    }
-
-
-    /*
-    this.klassService.removeKlassBanner(
-      // apiKey:string, 
-      this.watchTower.getApiKey(),
-      // userId:number,
-      +this.loginUser.id,
-      // klassId:number,
-      +this.klass.id,
-      // klassBanner:string
-      imgUrlToDelete
-    ).then((myResponse:MyResponse) => {
-      // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / removeKlassBanner / myResponse : ",myResponse);
-
-      if(myResponse.isSuccess()) {
-
-      } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-        this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-      } else {
-        // 에러 로그 등록
-        this.myLoggerService.logError(
-          // apiKey:string
-          this.watchTower.getApiKey(),
-          // errorType:string
-          this.myLoggerService.errorAPIFailed,
-          // errorMsg:string
-          `klass-detail / removeKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+          `klass-detail / updateKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${classBannerUrlNext}`
         ); // end logger      
 
       } // end if
       
     }); // end service
-    */
 
-  }  
+  } // end method
+
+
 
 
 

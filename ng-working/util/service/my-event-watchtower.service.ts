@@ -125,12 +125,11 @@ export class MyEventWatchTowerService {
 	    if(isDebug) console.log(`my-event-watchtower / announceLogin / 시작`);
 
 		this.loginUser = loginUser;
-		if(null != this.loginTeacher) {
+		if(null != this.loginUser) {
 			if(isDebug) console.log(`my-event-watchtower / announceLogin / setTeacher`);
 			this.loginUser.setTeacher(this.loginTeacher);
+			this.loginUser.setIsAdmin(this.isAdmin);
 		}
-		this.loginUser.setIsAdmin(this.isAdmin);
-
 		this.loginAnnouncedSource.next(loginUser);
 
 		if(isDebug) console.log(`my-event-watchtower / announceLogin / 끝`);

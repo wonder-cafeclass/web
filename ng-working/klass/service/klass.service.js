@@ -29,8 +29,9 @@ var KlassService = (function () {
         this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
         this.updateKlassTitleUrl = '/CI/index.php/api/klass/updatetitle';
         this.addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
-        this.addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
-        this.removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
+        this.updateKlassBannerUrl = '/CI/index.php/api/klass/updatebanner';
+        // private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
+        // private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
         // /assets/images/class/banner
         this.baseHref = "";
         this.dirPathKlassBanner = "/assets/images/class/banner";
@@ -118,7 +119,7 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.addKlassBanner = function (apiKey, userId, klassId, klassBanner) {
+    KlassService.prototype.updateKlassBanner = function (apiKey, userId, klassId, klassBanners) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -130,46 +131,82 @@ var KlassService = (function () {
         if (isDebug)
             console.log("klass.service / addKlassBanner / klassId : ", klassId);
         if (isDebug)
-            console.log("klass.service / addKlassBanner / klassBanner : ", klassBanner);
+            console.log("klass.service / addKlassBanner / klassBanners : ", klassBanners);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-        var req_url = this.urlService.get(this.addKlassBannerUrl);
+        var req_url = this.urlService.get(this.updateKlassBannerUrl);
         var params = {
             user_id: userId,
             klass_id: klassId,
-            klass_banner_url: klassBanner
+            klass_banner_url: klassBanners
         };
         return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.removeKlassBanner = function (apiKey, userId, klassId, klassBanner) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("klass.service / removeKlassBanner / 시작");
-        if (isDebug)
-            console.log("klass.service / removeKlassBanner / apiKey : ", apiKey);
-        if (isDebug)
-            console.log("klass.service / removeKlassBanner / userId : ", userId);
-        if (isDebug)
-            console.log("klass.service / removeKlassBanner / klassId : ", klassId);
-        if (isDebug)
-            console.log("klass.service / removeKlassBanner / klassBanner : ", klassBanner);
-        // POST
-        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-        var req_url = this.urlService.get(this.removeKlassBannerUrl);
-        var params = {
-            user_id: userId,
-            klass_id: klassId,
-            klass_banner_url: klassBanner
-        };
-        return this.http.post(req_url, params, options)
-            .toPromise()
-            .then(this.myExtractor.extractData)
-            .catch(this.myExtractor.handleError);
-    };
+    // REMOVE ME
+    /*
+    addKlassBanner(
+      apiKey:string,
+      userId:number,
+      klassId:number,
+      klassBanner:string
+    ): Promise<MyResponse> {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("klass.service / addKlassBanner / 시작");
+      if(isDebug) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
+      if(isDebug) console.log("klass.service / addKlassBanner / userId : ",userId);
+      if(isDebug) console.log("klass.service / addKlassBanner / klassId : ",klassId);
+      if(isDebug) console.log("klass.service / addKlassBanner / klassBanner : ",klassBanner);
+  
+      // POST
+      let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+      let req_url = this.urlService.get(this.addKlassBannerUrl);
+  
+      let params = {
+        user_id:userId,
+        klass_id:klassId,
+        klass_banner_url:klassBanner
+      }
+      return this.http.post(req_url, params, options)
+                  .toPromise()
+                  .then(this.myExtractor.extractData)
+                  .catch(this.myExtractor.handleError);
+    }
+  
+    removeKlassBanner(
+      apiKey:string,
+      userId:number,
+      klassId:number,
+      klassBanner:string
+    ): Promise<MyResponse> {
+  
+      let isDebug:boolean = true;
+      // let isDebug:boolean = false;
+      if(isDebug) console.log("klass.service / removeKlassBanner / 시작");
+      if(isDebug) console.log("klass.service / removeKlassBanner / apiKey : ",apiKey);
+      if(isDebug) console.log("klass.service / removeKlassBanner / userId : ",userId);
+      if(isDebug) console.log("klass.service / removeKlassBanner / klassId : ",klassId);
+      if(isDebug) console.log("klass.service / removeKlassBanner / klassBanner : ",klassBanner);
+  
+      // POST
+      let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+      let req_url = this.urlService.get(this.removeKlassBannerUrl);
+  
+      let params = {
+        user_id:userId,
+        klass_id:klassId,
+        klass_banner_url:klassBanner
+      }
+      return this.http.post(req_url, params, options)
+                  .toPromise()
+                  .then(this.myExtractor.extractData)
+                  .catch(this.myExtractor.handleError);
+    }
+    */
     KlassService.prototype.searchKlassVenue = function (q) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -365,6 +402,12 @@ var KlassService = (function () {
             klassList.push(klass);
         }
         return klassList;
+    };
+    KlassService.prototype.getKlassBannerUrlLoadable = function (imgUrl) {
+        if (null == imgUrl || "" === imgUrl) {
+            return "";
+        }
+        return this.dirPathKlassBanner + "/" + imgUrl;
     };
     KlassService.prototype.extractKlassBannerFromImgUrl = function (imgUrl) {
         if (null == imgUrl || "" === imgUrl) {

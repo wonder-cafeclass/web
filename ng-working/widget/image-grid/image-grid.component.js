@@ -31,14 +31,14 @@ var ImageGridComponent = (function () {
         this.emitEventOnReady();
     };
     ImageGridComponent.prototype.ngAfterViewInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / ngAfterViewInit / 시작");
     };
     ImageGridComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / init / 시작");
         if (null == this.imageTable || 0 == this.imageTable.length) {
@@ -91,8 +91,8 @@ var ImageGridComponent = (function () {
         } // end if
     }; // end method
     ImageGridComponent.prototype.addImageListSingleColumn = function (imageUrlList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / addImageListSingleColumn / 시작");
         if (null == imageUrlList || 0 == imageUrlList.length) {
@@ -132,8 +132,8 @@ var ImageGridComponent = (function () {
         this.imageTable = imageTableNext;
     };
     ImageGridComponent.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / onChangeCheck / 시작");
         event.stopPropagation();
@@ -158,8 +158,8 @@ var ImageGridComponent = (function () {
         this.emitEventOnDelete(imgUrlToDelete);
     };
     ImageGridComponent.prototype.emitEventOnDelete = function (imgUrlToDelete) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / emitEventOnDelete / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(

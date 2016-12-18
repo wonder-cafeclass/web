@@ -55,7 +55,7 @@
 		"klass_days":"is_str|||min_length[1]",
 		"klass_class_per_week":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[7]",
 		"klass_price":"is_number|||is_natural_no_zero|||greater_than_equal_to[45000]|||less_than_equal_to[1000000]",
-		"klass_banner_url":"is_str|||regex_match_include[/(jpg|png)$/]",
+		"klass_banner_url":"is_str",
 		"klass_poster_url":"is_str|||regex_match_include[/(jpg|png)$/]",
 
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",

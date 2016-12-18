@@ -23,6 +23,7 @@ var ImageEntryComponent = (function () {
         this.isAdmin = false;
         this.handleType = "";
         this.isDisabled = false;
+        this.isChecked = false;
     }
     ImageEntryComponent.prototype.ngOnInit = function () {
         this.init();
@@ -57,7 +58,11 @@ var ImageEntryComponent = (function () {
             console.log("image-entry / hasImage / this.imageUrl : ", this.imageUrl);
         if (isDebug)
             console.log("image-entry / hasImage / imageUrl : ", imageUrl);
-        return (this.imageUrl === imageUrl) ? true : false;
+        // 이미지 이름이 주소에 포함되어 있다면 같은 이미지라고 판단한다.
+        if (-1 < this.imageUrl.indexOf(imageUrl)) {
+            return true;
+        }
+        return false;
     };
     ImageEntryComponent.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
         var isDebug = true;
@@ -83,6 +88,10 @@ var ImageEntryComponent = (function () {
             // 2. remove image
             this.emitEventOnDelete(targetImg);
         } // end if
+    };
+    ImageEntryComponent.prototype.setDisabled = function (isDisabled) {
+        this.isDisabled = isDisabled;
+        this.isChecked = !isDisabled;
     };
     ImageEntryComponent.prototype.onClickDelete = function (event, imgUrlToDelete) {
         event.stopPropagation();

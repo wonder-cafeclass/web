@@ -45,8 +45,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / ngAfterViewInit / 시작");
 
   }
@@ -54,8 +54,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   private init():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / init / 시작");
 
     if(null == this.imageTable || 0 == this.imageTable.length) {
@@ -114,8 +114,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   addImageListSingleColumn(imageUrlList:string[]):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / addImageListSingleColumn / 시작");
 
     if(null == imageUrlList || 0 == imageUrlList.length) {
@@ -169,8 +169,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   onChangeCheck(event, checkboxToggle, targetImg) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / onChangeCheck / 시작");
 
     event.stopPropagation();
@@ -205,8 +205,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   private emitEventOnDelete(imgUrlToDelete:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / emitEventOnDelete / 시작");
 
     let myEventOnChange:MyEvent =

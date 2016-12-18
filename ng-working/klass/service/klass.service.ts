@@ -36,8 +36,9 @@ export class KlassService {
   private updateKlassTitleUrl = '/CI/index.php/api/klass/updatetitle';
 
   private addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
-  private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
-  private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
+  private updateKlassBannerUrl = '/CI/index.php/api/klass/updatebanner';
+  // private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
+  // private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
 // /assets/images/class/banner
   private baseHref = "";
 
@@ -143,8 +144,40 @@ export class KlassService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
-  }  
+  }
 
+  updateKlassBanner(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    klassBanners:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / addKlassBanner / 시작");
+    if(isDebug) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / addKlassBanner / userId : ",userId);
+    if(isDebug) console.log("klass.service / addKlassBanner / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / addKlassBanner / klassBanners : ",klassBanners);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.updateKlassBannerUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_banner_url:klassBanners
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }    
+
+  // REMOVE ME
+  /*
   addKlassBanner(    
     apiKey:string, 
     userId:number,
@@ -204,6 +237,7 @@ export class KlassService {
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
   }  
+  */
 
   searchKlassVenue (q:string): Observable<KlassVenue[]> {
 
@@ -437,6 +471,16 @@ export class KlassService {
     }
 
     return klassList;
+  }
+
+  getKlassBannerUrlLoadable(imgUrl:string):string {
+    
+    if(null == imgUrl || "" ===  imgUrl) {
+      return "";
+    }
+
+    return `${this.dirPathKlassBanner}/${imgUrl}`;
+
   }
 
   extractKlassBannerFromImgUrl(imgUrl:string) :string {

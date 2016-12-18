@@ -2050,6 +2050,7 @@ class MY_Sql
 
     }       
 
+    /*
     // @ Desc : 클래스의 특정 배너를 추가한다.
     public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
     {
@@ -2130,7 +2131,8 @@ class MY_Sql
 
         $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
     }
-    private function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
+    */
+    public function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
     {
         if($this->is_not_ready())
         {
