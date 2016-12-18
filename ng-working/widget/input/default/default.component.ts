@@ -287,7 +287,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       // public metaObj:any
       this,
       // public myChecker:MyChecker
-      this.myChecker
+      this.myCheckerService.getFreePassChecker()
     );
     this.emitter.emit(myEventOnChange);
 

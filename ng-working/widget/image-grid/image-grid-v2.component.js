@@ -24,6 +24,7 @@ var ImageGridV2Component = (function () {
         this.hasTableBorder = false;
         this.isAdmin = false;
         this.handleType = "";
+        this.eventKey = "";
         this.gridWidth = 100;
         this.isDisabled = false;
     }
@@ -36,6 +37,8 @@ var ImageGridV2Component = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("image-grid-v2 / ngAfterViewInit / 시작");
+        if (isDebug)
+            console.log("image-grid-v2 / ngAfterViewInit / imageEntryList : ", this.imageEntryList);
     };
     ImageGridV2Component.prototype.init = function () {
         var isDebug = true;
@@ -105,6 +108,61 @@ var ImageGridV2Component = (function () {
             this.addImageSingleColumn(imageUrl);
         } // end for
     }; // end method
+    // @ Desc : image-grid와 사용자가 전달한 이미지 주소 리스트를 대조, 사용자가 가지고 있지 않은 이미지들은 비활성 처리합니다.
+    ImageGridV2Component.prototype.compareUserImages = function (imageUrlList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-grid-v2 / compareUserImages / 시작");
+        if (null == imageUrlList || 0 == imageUrlList.length) {
+            if (isDebug)
+                console.log("image-grid-v2 / compareUserImages / 중단 / imageUrlList is not valid!");
+            return;
+        }
+        if (isDebug)
+            console.log("image-grid-v2 / compareUserImages / imageUrlList : ", imageUrlList);
+        this.imageListFromUser = imageUrlList;
+        // wonder.jung
+        if (null != this.imageEntryList) {
+            this.imageEntryList.forEach(function (imageEntry) {
+                // imageEntry
+                if (isDebug)
+                    console.log("image-grid-v2 / compareUserImages / imageEntry : ", imageEntry);
+            }); // end for-each
+        }
+    };
+    // @ Desc : image-entry 객체가 유효한 이미지 주소를 가지고 있는지 확인합니다.
+    ImageGridV2Component.prototype.compareImage = function (imageEntry) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-grid-v2 / compareImage / 시작");
+        if (isDebug)
+            console.log("image-grid-v2 / compareImage / imageEntry : ", imageEntry);
+        if (null == this.imageListFromUser || 0 == this.imageListFromUser.length) {
+            if (isDebug)
+                console.log("image-grid-v2 / compareImage / 중단 / imageListFromUser is not valid!");
+            return;
+        }
+        var hasImage = false;
+        for (var i = 0; i < this.imageListFromUser.length; ++i) {
+            var imageFromUser = this.imageListFromUser[i];
+            if (null == imageFromUser || "" === imageFromUser) {
+                continue;
+            }
+            if (imageEntry.hasImage(imageFromUser)) {
+                // 활성 처리
+                if (isDebug)
+                    console.log("image-grid-v2 / compareImage / 활성 처리");
+                return;
+            }
+        } // end for
+        if (!hasImage) {
+            // 비활성 처리
+            if (isDebug)
+                console.log("image-grid-v2 / compareImage / 비활성 처리");
+        } // end if
+    }; // end method
     ImageGridV2Component.prototype.removeImage = function (imageUrl) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -149,56 +207,6 @@ var ImageGridV2Component = (function () {
         if (isDebug)
             console.log("image-grid-v2 / onChangeCheck / targetImg : ", targetImg);
     };
-    ImageGridV2Component.prototype.onClickDelete = function (event, imgUrlToDelete) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (null == imgUrlToDelete || "" === imgUrlToDelete) {
-            return;
-        }
-        this.removeImage(imgUrlToDelete);
-        this.emitEventOnDelete(imgUrlToDelete);
-    };
-    ImageGridV2Component.prototype.emitEventOnDelete = function (imgUrlToDelete) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("image-grid-v2 / emitEventOnDelete / 시작");
-        var myEventOnChange = this.myEventService.getMyEvent(
-        // public eventName:string
-        this.myEventService.ON_REMOVE_ROW, 
-        // public key:string
-        this.myEventService.KEY_IMAGE_GRID, 
-        // public value:string
-        imgUrlToDelete, 
-        // public metaObj:any
-        this, 
-        // public myChecker:MyChecker
-        null);
-        this.emitter.emit(myEventOnChange);
-        if (isDebug)
-            console.log("image-grid-v2 / emitEventOnChange / Done!");
-    };
-    ImageGridV2Component.prototype.emitEventOnReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("image-grid-v2 / emitEventOnChange / 시작");
-        var myEventOnChange = this.myEventService.getMyEvent(
-        // public eventName:string
-        this.myEventService.ON_READY, 
-        // public key:string
-        this.myEventService.KEY_IMAGE_GRID, 
-        // public value:string
-        "", 
-        // public metaObj:any
-        this, 
-        // public myChecker:MyChecker
-        null);
-        this.emitter.emit(myEventOnChange);
-        if (isDebug)
-            console.log("image-grid-v2 / emitEventOnChange / Done!");
-    };
-    //onChangedFromChild
     ImageGridV2Component.prototype.onChangedFromChild = function (myEvent) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -213,21 +221,75 @@ var ImageGridV2Component = (function () {
                 console.log("image-grid-v2 / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
             return;
         } // end if
-        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
-            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
-            }
-        }
-        else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
-            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
-            }
-        }
-        else if (myEvent.hasEventName(this.myEventService.ON_DONE)) {
-            if (myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
+                // this.updateKlassTitle(myEvent.value, false);
+                // TODO - image-entry가 모두 준비가 된다면, image-grid-v2도 부모에게 Ready 이벤트를 전달해줍니다.
+                // 사용자가 전달한 유효한 이미지 리스트가 있다면 여기에서 비교, 활성/비활성화 처리를 합니다.
+                this.compareImage(myEvent.metaObj);
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
+                this.emitEventOnAdd(myEvent);
+            }
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
+                this.emitEventOnDelete(myEvent);
+            }
         } // end if
-    }; // end method  
+    }; // end method 
+    ImageGridV2Component.prototype.emitEventOnAdd = function (myEvent) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnAdd / 시작");
+        if (null == myEvent) {
+            return;
+        }
+        // image-entry의 이벤트 객체를 그대로 전달.
+        // 이벤트 키만 변경합니다.
+        myEvent.key = this.eventKey;
+        this.emitter.emit(myEvent);
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnAdd / Done!");
+    };
+    ImageGridV2Component.prototype.emitEventOnDelete = function (myEvent) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnDelete / 시작");
+        if (null == myEvent) {
+            return;
+        }
+        // image-entry의 이벤트 객체를 그대로 전달.
+        // 이벤트 키만 변경합니다.
+        myEvent.key = this.eventKey;
+        this.emitter.emit(myEvent);
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnDelete / Done!");
+    };
+    ImageGridV2Component.prototype.emitEventOnReady = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnReady / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        this.eventKey, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        this, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("image-grid-v2 / emitEventOnReady / Done!");
+    };
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -260,6 +322,10 @@ var ImageGridV2Component = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ImageGridV2Component.prototype, "handleType", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ImageGridV2Component.prototype, "eventKey", void 0);
     __decorate([
         core_1.ViewChildren(image_entry_component_1.ImageEntryComponent), 
         __metadata('design:type', core_1.QueryList)

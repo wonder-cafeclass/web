@@ -16,7 +16,7 @@ var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_service_1 = require('./service/klass.service');
 var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var dialog_service_1 = require('../widget/dialog.service');
-var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
+var image_grid_v2_component_1 = require('../widget/image-grid/image-grid-v2.component');
 var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-uploader.component');
 var default_component_1 = require('../widget/input/default/default.component');
 var default_service_1 = require('../widget/input/default/service/default.service');
@@ -67,6 +67,7 @@ var KlassDetailComponent = (function () {
             ["assets/images/class/banner/drinks.png"],
             ["assets/images/class/banner/help.png"]
         ];
+        this.eventKeyKlassBanner = "";
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -74,6 +75,7 @@ var KlassDetailComponent = (function () {
         this.defaultMetaList = this.myEventService.getDefaultMetaListKlassDetail();
         if (isDebug)
             console.log("klass-detail / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
+        this.eventKeyKlassBanner = this.myEventService.KEY_KLASS_BANNER;
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         var isDebug = true;
@@ -255,10 +257,9 @@ var KlassDetailComponent = (function () {
         // fill datas
         this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
         this.klassTitle = this.klass.title;
+        // set image-grid
         if (null != this.imageGridComponent) {
-            if (isDebug)
-                console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ", this.imageGridComponent);
-            this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+            this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
         }
     };
     KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {
@@ -542,48 +543,6 @@ var KlassDetailComponent = (function () {
         } // end if
         */
     };
-    KlassDetailComponent.prototype.deleteBannerImg = function (imgUrlToDelete) {
-        var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
-            console.log("klass-detail / deleteBannerImg / 시작");
-        if (isDebug)
-            console.log("klass-detail / deleteBannerImg / imgUrlToDelete : ", imgUrlToDelete);
-        if (null == imgUrlToDelete || "" == imgUrlToDelete) {
-            if (isDebug)
-                console.log("klass-detail / deleteBannerImg / 중단 / imgUrlToDelete is not valid!");
-            return;
-        }
-        this.klassService.removeKlassBanner(
-        // apiKey:string, 
-        this.watchTower.getApiKey(), 
-        // userId:number,
-        +this.loginUser.id, 
-        // klassId:number,
-        +this.klass.id, 
-        // klassBanner:string
-        imgUrlToDelete).then(function (myResponse) {
-            // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
-                console.log("klass-detail / deleteBannerImg / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
-            }
-            else if (myResponse.isFailed() && null != myResponse.error) {
-                _this.watchTower.announceErrorMsgArr([myResponse.error]);
-            }
-            else {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.watchTower.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errorMsg:string
-                "klass-detail / deleteBannerImg / removeKlassBanner / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / banner_url : " + imgUrlToDelete); // end logger      
-            } // end if
-        });
-    };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -591,54 +550,34 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / myEvent : ", myEvent);
-        var eventName = myEvent.eventName;
-        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
-            if (myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
-                if (isDebug)
-                    console.log("klass-detail / onChangedFromChild / ON_READY / KEY_IMAGE_GRID");
-                if (null != myEvent.metaObj &&
-                    null != this.klass &&
-                    null != this.klass.class_banner_url_arr &&
-                    (0 < this.klass.class_banner_url_arr.length)) {
-                    if (isDebug)
-                        console.log("klass-detail / onChangedFromChild / KEY_IMAGE_GRID");
-                    this.imageGridComponent = myEvent.metaObj;
-                    this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
-                    // 이미지가 추가되므로 높이가 변경되는 것을 전파!
-                    this.watchTower.announceContentHeight();
-                } // end if
-            }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
-                if (null != myEvent.metaObj) {
-                    this.klassTitleComponent = myEvent.metaObj;
-                }
-            }
-            // end if
-            // Ready는 여기서 중단.
-            return;
-        }
-        else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
-            if (myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
-                var imgUrlToDelete = this.klassService.extractKlassBannerFromImgUrl(myEvent.value);
-                if (isDebug)
-                    console.log("klass-detail / onChangedFromChild / ON_REMOVE_ROW / KEY_IMAGE_GRID");
-                if (null != imgUrlToDelete && "" != imgUrlToDelete) {
-                    this.deleteBannerImg(imgUrlToDelete);
-                }
-            } // end if
-            // Ready는 여기서 중단.
-            return;
-        } // end if
         var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
         if (!isOK) {
             if (isDebug)
                 console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+            var lastHistory = this.myCheckerService.getLastHistory();
+            if (isDebug)
+                console.log("klass-detail / onChangedFromChild / lastHistory : ", lastHistory);
             return;
         } // end if
-        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+                if (null != myEvent.metaObj) {
+                    this.klassTitleComponent = myEvent.metaObj;
+                }
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                if (null != myEvent.metaObj) {
+                    this.imageGridComponent = myEvent.metaObj;
+                } // end if
+                if (null != this.klass && null != this.imageGridComponent) {
+                    this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
+                } // end if
+            } // end if      
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
                 this.updateKlassTitle(myEvent.value, false);
-            }
+            } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
@@ -652,7 +591,13 @@ var KlassDetailComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                this.addKlassBanner(myEvent.value);
             } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                this.removeKlassBanner(myEvent.value);
+            } // end if      
         } // end if
     }; // end method
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
@@ -742,6 +687,131 @@ var KlassDetailComponent = (function () {
             } // end if
         }); // end service    
     };
+    KlassDetailComponent.prototype.addKlassBanner = function (imgUrlToAdd) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / addKlassBanner / 시작");
+        if (isDebug)
+            console.log("klass-detail / addKlassBanner / imgUrlToAdd : ", imgUrlToAdd);
+        if (null == imgUrlToAdd || "" == imgUrlToAdd) {
+            if (isDebug)
+                console.log("klass-detail / addKlassBanner / 중단 / imgUrlToAdd is not valid!");
+            return;
+        }
+        // TODO - banner 이름을 추출합니다.
+        var banner = this.klassService.extractKlassBannerFromImgUrl(imgUrlToAdd);
+        if (isDebug)
+            console.log("klass-detail / addKlassBanner / banner : ", banner);
+        // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+        if (this.klass.hasNotBanner(banner)) {
+            // 배너가 있어야 삭제할 수 있습니다.
+            this.klass.addBanner(banner);
+            if (isDebug)
+                console.log("klass-detail / addKlassBanner / this.klass.class_banner_url : ", this.klass.class_banner_url);
+            if (isDebug)
+                console.log("klass-detail / addKlassBanner / this.klass.class_banner_url_arr : ", this.klass.class_banner_url_arr);
+        }
+        /*
+        this.klassService.addKlassBanner(
+          // apiKey:string,
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // klassId:number,
+          +this.klass.id,
+          // klassBanner:string
+          imgUrlToAdd
+        ).then((myResponse:MyResponse) => {
+          // 로그 등록 결과를 확인해볼 수 있습니다.
+          if(isDebug) console.log("klass-detail / addKlassBanner / myResponse : ",myResponse);
+    
+          if(myResponse.isSuccess()) {
+    
+            // TODO - 가져온 klass 객체의 banner list를 업데이트 해야 합니다.
+    
+          } else if(myResponse.isFailed() && null != myResponse.error) {
+    
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+    
+          } else {
+    
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `klass-detail / addKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+            ); // end logger
+    
+          } // end if
+          
+        });
+        */
+    };
+    KlassDetailComponent.prototype.removeKlassBanner = function (imgUrlToDelete) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / removeKlassBanner / 시작");
+        if (isDebug)
+            console.log("klass-detail / removeKlassBanner / imgUrlToDelete : ", imgUrlToDelete);
+        if (null == imgUrlToDelete || "" == imgUrlToDelete) {
+            if (isDebug)
+                console.log("klass-detail / removeKlassBanner / 중단 / imgUrlToDelete is not valid!");
+            return;
+        }
+        // TODO - banner 이름을 추출합니다.
+        var banner = this.klassService.extractKlassBannerFromImgUrl(imgUrlToDelete);
+        if (isDebug)
+            console.log("klass-detail / removeKlassBanner / banner : ", banner);
+        // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+        if (this.klass.hasBanner(banner)) {
+            // 배너가 있어야 삭제할 수 있습니다.
+            this.klass.removeBanner(banner);
+            if (isDebug)
+                console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url : ", this.klass.class_banner_url);
+            if (isDebug)
+                console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url_arr : ", this.klass.class_banner_url_arr);
+        }
+        /*
+        this.klassService.removeKlassBanner(
+          // apiKey:string,
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // klassId:number,
+          +this.klass.id,
+          // klassBanner:string
+          imgUrlToDelete
+        ).then((myResponse:MyResponse) => {
+          // 로그 등록 결과를 확인해볼 수 있습니다.
+          if(isDebug) console.log("klass-detail / removeKlassBanner / myResponse : ",myResponse);
+    
+          if(myResponse.isSuccess()) {
+    
+          } else if(myResponse.isFailed() && null != myResponse.error) {
+    
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+    
+          } else {
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `klass-detail / removeKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+            ); // end logger
+    
+          } // end if
+          
+        }); // end service
+        */
+    };
     // Admin Section
     KlassDetailComponent.prototype.showSEKlassFeature = function () {
     };
@@ -750,8 +820,8 @@ var KlassDetailComponent = (function () {
         __metadata('design:type', core_1.QueryList)
     ], KlassDetailComponent.prototype, "inputComponentList", void 0);
     __decorate([
-        core_1.ViewChild(image_grid_component_1.ImageGridComponent), 
-        __metadata('design:type', image_grid_component_1.ImageGridComponent)
+        core_1.ViewChild(image_grid_v2_component_1.ImageGridV2Component), 
+        __metadata('design:type', image_grid_v2_component_1.ImageGridV2Component)
     ], KlassDetailComponent.prototype, "imageGridComponent", void 0);
     __decorate([
         core_1.ViewChild(hidden_uploader_component_1.HiddenUploaderComponent), 

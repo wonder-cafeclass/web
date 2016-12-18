@@ -1815,7 +1815,8 @@ class MY_Sql
             'week_max' => $week_max,
             'days' => $days,
             'class_per_week' => $class_per_week,
-            'price' => $price
+            'price' => $price,
+            'class_banner_url' => "drinks.png|||help.png"
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.

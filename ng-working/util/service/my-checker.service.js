@@ -19,6 +19,7 @@ var MyCheckerService = (function () {
         this.us = us;
         this.http = http;
         this.apiGetChecker = '/CI/index.php/api/admin/checker';
+        this.TYPE_NONE = "TYPE_NONE";
         this.TYPE_STRING = "TYPE_STRING";
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_ARRAY = "TYPE_ARRAY";
@@ -805,6 +806,12 @@ var MyCheckerService = (function () {
         // public type:string
         this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
+    MyCheckerService.prototype.getFreePassChecker = function () {
+        // public myChecker:MyChecker
+        return new my_checker_1.MyChecker(
+        // public type:string
+        this.TYPE_NONE, null, null, null);
+    };
     MyCheckerService.prototype.sanitizeDirtyWord = function (target) {
         if (null == this.dirtyWordList || 0 == this.dirtyWordList.length) {
             return target;

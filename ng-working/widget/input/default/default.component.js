@@ -248,7 +248,7 @@ var DefaultComponent = (function () {
         // public metaObj:any
         this, 
         // public myChecker:MyChecker
-        this.myChecker);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventOnChange);
         if (isDebug)
             console.log("default / emitEventOnReady / Done!");

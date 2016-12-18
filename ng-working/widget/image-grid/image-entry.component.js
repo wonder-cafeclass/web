@@ -40,6 +40,25 @@ var ImageEntryComponent = (function () {
         if (isDebug)
             console.log("image-entry / init / 시작");
     };
+    ImageEntryComponent.prototype.hasNotImage = function (imageUrl) {
+        return !this.hasImage(imageUrl);
+    };
+    ImageEntryComponent.prototype.hasImage = function (imageUrl) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-entry / hasImage / 시작");
+        if (null == imageUrl || "" === imageUrl) {
+            if (isDebug)
+                console.log("image-entry / hasImage / 중단 / imageUrl is not valid!");
+            return;
+        }
+        if (isDebug)
+            console.log("image-entry / hasImage / this.imageUrl : ", this.imageUrl);
+        if (isDebug)
+            console.log("image-entry / hasImage / imageUrl : ", imageUrl);
+        return (this.imageUrl === imageUrl) ? true : false;
+    };
     ImageEntryComponent.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -56,6 +75,14 @@ var ImageEntryComponent = (function () {
         this.isDisabled = !checked;
         if (isDebug)
             console.log("image-entry / onChangeCheck / targetImg : ", targetImg);
+        if (checked) {
+            // 1. add image
+            this.emitEventOnAdd(targetImg);
+        }
+        else {
+            // 2. remove image
+            this.emitEventOnDelete(targetImg);
+        } // end if
     };
     ImageEntryComponent.prototype.onClickDelete = function (event, imgUrlToDelete) {
         event.stopPropagation();
@@ -64,6 +91,26 @@ var ImageEntryComponent = (function () {
             return;
         }
         this.emitEventOnDelete(imgUrlToDelete);
+    };
+    ImageEntryComponent.prototype.emitEventOnAdd = function (imgUrlToDelete) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("image-entry / emitEventOnDelete / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_ADD_ROW, 
+        // public key:string
+        this.myEventService.KEY_IMAGE_ENTRY, 
+        // public value:string
+        imgUrlToDelete, 
+        // public metaObj:any
+        this, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("image-entry / emitEventOnChange / Done!");
     };
     ImageEntryComponent.prototype.emitEventOnDelete = function (imgUrlToDelete) {
         var isDebug = true;
@@ -74,13 +121,13 @@ var ImageEntryComponent = (function () {
         // public eventName:string
         this.myEventService.ON_REMOVE_ROW, 
         // public key:string
-        this.myEventService.KEY_IMAGE_GRID, 
+        this.myEventService.KEY_IMAGE_ENTRY, 
         // public value:string
         imgUrlToDelete, 
         // public metaObj:any
         this, 
         // public myChecker:MyChecker
-        null);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventOnChange);
         if (isDebug)
             console.log("image-entry / emitEventOnChange / Done!");
@@ -94,13 +141,13 @@ var ImageEntryComponent = (function () {
         // public eventName:string
         this.myEventService.ON_READY, 
         // public key:string
-        this.myEventService.KEY_IMAGE_GRID, 
+        this.myEventService.KEY_IMAGE_ENTRY, 
         // public value:string
         "", 
         // public metaObj:any
         this, 
         // public myChecker:MyChecker
-        null);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventOnChange);
         if (isDebug)
             console.log("image-entry / emitEventOnChange / Done!");

@@ -24,6 +24,7 @@ export class MyCheckerService {
     private dirtyWordList;
     private apiKey:string;
 
+    public TYPE_NONE:string="TYPE_NONE";
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
     public TYPE_ARRAY:string="TYPE_ARRAY";
@@ -1021,6 +1022,19 @@ export class MyCheckerService {
           , this.myRegEx.REGEX_SAFE_STR
         );
     } // end method
+    getFreePassChecker() :MyChecker {
+        // public myChecker:MyChecker
+        return new MyChecker(
+          // public type:string
+          this.TYPE_NONE
+          // public min:number
+          , null
+          // public max:number
+          , null
+          // public regex:string
+          , null
+        );        
+    }
 
     sanitizeDirtyWord(target:string) :string {
 

@@ -31,7 +31,7 @@ import { CheckBoxOption }                from '../widget/checkbox/model/checkbox
 import { InputViewUpdown }               from '../widget/input-view/model/input-view-updown';
 import { Calendar }                      from '../widget/calendar/model/calendar';
 import { DialogService }                 from '../widget/dialog.service';
-import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
+import { ImageGridV2Component }          from '../widget/image-grid/image-grid-v2.component';
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
@@ -149,8 +149,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private klassTitleComponent: DefaultComponent;
 
-  @ViewChild(ImageGridComponent)
-  private imageGridComponent: ImageGridComponent;
+  @ViewChild(ImageGridV2Component)
+  private imageGridComponent: ImageGridV2Component;
 
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
@@ -160,6 +160,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     ["assets/images/class/banner/drinks.png"],
     ["assets/images/class/banner/help.png"]
   ];
+
+  eventKeyKlassBanner:string="";
 
   constructor(
     private route: ActivatedRoute,
@@ -186,6 +188,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     if(isDebug) console.log("klass-detail / ngOnInit / this.defaultMetaList : ",this.defaultMetaList);
 
+    this.eventKeyKlassBanner = this.myEventService.KEY_KLASS_BANNER;
 
   }
 
@@ -411,11 +414,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
     this.klassTitle = this.klass.title;
 
+    // set image-grid
     if(null != this.imageGridComponent) {
-      if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageGridComponent : ",this.imageGridComponent);
-      this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
+      this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
     }
-
   }
 
   private setKlassBannerImageUploader():void {
@@ -763,53 +765,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     */
   }
 
-  deleteBannerImg(imgUrlToDelete:string):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / deleteBannerImg / 시작");
-    if(isDebug) console.log("klass-detail / deleteBannerImg / imgUrlToDelete : ",imgUrlToDelete);
-
-    if(null == imgUrlToDelete || "" == imgUrlToDelete) {
-      if(isDebug) console.log("klass-detail / deleteBannerImg / 중단 / imgUrlToDelete is not valid!");
-      return;
-    }
-
-    this.klassService.removeKlassBanner(
-      // apiKey:string, 
-      this.watchTower.getApiKey(),
-      // userId:number,
-      +this.loginUser.id,
-      // klassId:number,
-      +this.klass.id,
-      // klassBanner:string
-      imgUrlToDelete
-    ).then((myResponse:MyResponse) => {
-      // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / deleteBannerImg / myResponse : ",myResponse);
-
-      if(myResponse.isSuccess()) {
-
-      } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-        this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-      } else {
-        // 에러 로그 등록
-        this.myLoggerService.logError(
-          // apiKey:string
-          this.watchTower.getApiKey(),
-          // errorType:string
-          this.myLoggerService.errorAPIFailed,
-          // errorMsg:string
-          `klass-detail / deleteBannerImg / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
-        ); // end logger      
-
-      } // end if
-      
-    });
-
-  }
 
   onChangedFromChild(myEvent:MyEvent):void {
 
@@ -818,73 +774,41 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
-    let eventName:string = myEvent.eventName;
+    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+    if(!isOK) {
+      if(isDebug) console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      let lastHistory = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("klass-detail / onChangedFromChild / lastHistory : ",lastHistory);
+      return;
+    } // end if
 
     if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
-
-        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_READY / KEY_IMAGE_GRID");
-
-        if(  null != myEvent.metaObj && 
-             null != this.klass && 
-             null != this.klass.class_banner_url_arr && 
-             (0 < this.klass.class_banner_url_arr.length)) {
-
-          if(isDebug) console.log("klass-detail / onChangedFromChild / KEY_IMAGE_GRID");
-
-          this.imageGridComponent = myEvent.metaObj; 
-          this.imageGridComponent.addImageListSingleColumn(this.klass.class_banner_url_arr);
-
-          // 이미지가 추가되므로 높이가 변경되는 것을 전파!
-          this.watchTower.announceContentHeight();
-
-        } // end if
-
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
 
         if(  null != myEvent.metaObj ) {
           this.klassTitleComponent = myEvent.metaObj; 
         }
 
-      }
-      // end if
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
-      // Ready는 여기서 중단.
-      return;
+        if( null != myEvent.metaObj ) {
+          this.imageGridComponent = myEvent.metaObj;
 
-    } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+        } // end if
+        if( null != this.klass && null != this.imageGridComponent ) {
+          this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
+        } // end if
 
-      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_GRID)) {
+      } // end if      
 
-        let imgUrlToDelete:string = this.klassService.extractKlassBannerFromImgUrl(myEvent.value);
-        if(isDebug) console.log("klass-detail / onChangedFromChild / ON_REMOVE_ROW / KEY_IMAGE_GRID");
-
-        if(null != imgUrlToDelete && "" != imgUrlToDelete) {
-          this.deleteBannerImg(imgUrlToDelete);
-        }
-
-
-      } // end if
-
-      // Ready는 여기서 중단.
-      return;
-
-    } // end if
-
-    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-    if(!isOK) {
-      if(isDebug) console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
-      return;
-    } // end if
-
-    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
 
         this.updateKlassTitle(myEvent.value, false);
 
-      }
+      } // end if
 
     } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
 
@@ -906,57 +830,17 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
-        /*
-        // 섬네일 주소가 넘어옴.
-        let banner_url:string = `${this.imgUploaderImagePath}/${myEvent.value}`;
-
-        // 이미지를 추가합니다. 
-        if(isDebug) console.log("klass-detail / onChangedFromChild / this.imageGridComponent : ",this.imageGridComponent);
-        this.imageGridComponent.addImageSingleColumn(banner_url);
-
-        // Footer의 속성을 fixed-bottom을 해제해야 함.
-        this.watchTower.announceContentHeight();
-        if(isDebug) console.log("klass-detail / onChangedFromChild / banner_url : ",banner_url);
-
-        // TODO - class banner를 등록합니다.
-        this.klassService.addKlassBanner(
-          // apiKey:string, 
-          this.watchTower.getApiKey(),
-          // userId:number,
-          +this.loginUser.id,
-          // klassId:number,
-          +this.klass.id,
-          // klassBanner:string
-          myEvent.value
-        ).then((myResponse:MyResponse) => {
-          // 로그 등록 결과를 확인해볼 수 있습니다.
-          if(isDebug) console.log("klass-detail / onChangedFromChild / myResponse : ",myResponse);
-          if(myResponse.isSuccess()) {
-
-          } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-            this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-          } else {
-            // 에러 로그 등록
-            this.myLoggerService.logError(
-              // apiKey:string
-              this.watchTower.getApiKey(),
-              // errorType:string
-              this.myLoggerService.errorAPIFailed,
-              // errorMsg:string
-              `klass-detail / onChangedFromChild / addKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${banner_url}`
-            ); // end logger      
-
-          } // end if
-
-        }) // end service
-        */
-
-        // wonder.jung
-        
+        this.addKlassBanner(myEvent.value);
 
       } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+
+        this.removeKlassBanner(myEvent.value);
+
+      } // end if      
 
     } // end if
 
@@ -1070,6 +954,136 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     }) // end service    
 
   }
+
+  addKlassBanner(imgUrlToAdd:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / addKlassBanner / 시작");
+    if(isDebug) console.log("klass-detail / addKlassBanner / imgUrlToAdd : ",imgUrlToAdd);
+
+    if(null == imgUrlToAdd || "" == imgUrlToAdd) {
+      if(isDebug) console.log("klass-detail / addKlassBanner / 중단 / imgUrlToAdd is not valid!");
+      return;
+    }
+
+    // TODO - banner 이름을 추출합니다.
+    let banner:string = this.klassService.extractKlassBannerFromImgUrl(imgUrlToAdd);
+    if(isDebug) console.log("klass-detail / addKlassBanner / banner : ",banner);
+
+    // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+    if(this.klass.hasNotBanner(banner)) {
+      // 배너가 있어야 삭제할 수 있습니다.
+      this.klass.addBanner(banner);
+      if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
+      if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+    }
+
+
+    /*
+    this.klassService.addKlassBanner(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // klassBanner:string
+      imgUrlToAdd
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addKlassBanner / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+        // TODO - 가져온 klass 객체의 banner list를 업데이트 해야 합니다.
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail / addKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+        ); // end logger      
+
+      } // end if
+      
+    }); 
+    */   
+
+
+  }
+
+  removeKlassBanner(imgUrlToDelete:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / removeKlassBanner / 시작");
+    if(isDebug) console.log("klass-detail / removeKlassBanner / imgUrlToDelete : ",imgUrlToDelete);
+
+    if(null == imgUrlToDelete || "" == imgUrlToDelete) {
+      if(isDebug) console.log("klass-detail / removeKlassBanner / 중단 / imgUrlToDelete is not valid!");
+      return;
+    }
+
+    // TODO - banner 이름을 추출합니다.
+    let banner:string = this.klassService.extractKlassBannerFromImgUrl(imgUrlToDelete);
+    if(isDebug) console.log("klass-detail / removeKlassBanner / banner : ",banner);
+
+    // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
+    if(this.klass.hasBanner(banner)) {
+      // 배너가 있어야 삭제할 수 있습니다.
+      this.klass.removeBanner(banner);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+    }
+
+
+    /*
+    this.klassService.removeKlassBanner(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // klassBanner:string
+      imgUrlToDelete
+    ).then((myResponse:MyResponse) => {
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / removeKlassBanner / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail / removeKlassBanner / removeKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${imgUrlToDelete}`
+        ); // end logger      
+
+      } // end if
+      
+    }); // end service
+    */
+
+  }  
 
 
 

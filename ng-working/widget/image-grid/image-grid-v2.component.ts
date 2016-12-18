@@ -33,9 +33,12 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
   @Input() hasTableBorder:boolean=false;
   @Input() isAdmin:boolean=false;
   @Input() handleType:string="";
+  @Input() eventKey:string="";
 
   gridWidth:number=100;
   isDisabled:boolean=false;
+
+  private imageListFromUser:string[];
 
   @ViewChildren(ImageEntryComponent) imageEntryList: QueryList<ImageEntryComponent>;
 
@@ -54,6 +57,7 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / ngAfterViewInit / 시작");
+    if(isDebug) console.log("image-grid-v2 / ngAfterViewInit / imageEntryList : ",this.imageEntryList);
 
   }
 
@@ -135,7 +139,68 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   } // end method
 
-  removeImage(imageUrl:string): void {
+  // @ Desc : image-grid와 사용자가 전달한 이미지 주소 리스트를 대조, 사용자가 가지고 있지 않은 이미지들은 비활성 처리합니다.
+  compareUserImages(imageUrlList:string[]):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / compareUserImages / 시작");
+
+    if(null == imageUrlList || 0 == imageUrlList.length) {
+      if(isDebug) console.log("image-grid-v2 / compareUserImages / 중단 / imageUrlList is not valid!");
+      return;
+    }
+    if(isDebug) console.log("image-grid-v2 / compareUserImages / imageUrlList : ",imageUrlList);
+
+    this.imageListFromUser = imageUrlList;
+
+    // wonder.jung
+    if(null != this.imageEntryList) {
+      this.imageEntryList.forEach(function(imageEntry) {
+
+        // imageEntry
+        if(isDebug) console.log("image-grid-v2 / compareUserImages / imageEntry : ",imageEntry);
+
+      }); // end for-each
+    }
+
+  }
+  // @ Desc : image-entry 객체가 유효한 이미지 주소를 가지고 있는지 확인합니다.
+  compareImage(imageEntry:ImageEntryComponent):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / compareImage / 시작");
+    if(isDebug) console.log("image-grid-v2 / compareImage / imageEntry : ",imageEntry);
+
+    if(null == this.imageListFromUser || 0 == this.imageListFromUser.length) {
+      if(isDebug) console.log("image-grid-v2 / compareImage / 중단 / imageListFromUser is not valid!");
+      return;
+    }
+
+    let hasImage:boolean = false;
+    for (var i = 0; i < this.imageListFromUser.length; ++i) {
+      let imageFromUser:string = this.imageListFromUser[i];
+      if(null == imageFromUser || "" === imageFromUser) {
+        continue;
+      }
+
+      if(imageEntry.hasImage(imageFromUser)) {
+        // 활성 처리
+        if(isDebug) console.log("image-grid-v2 / compareImage / 활성 처리");
+        return;
+      }
+
+    } // end for
+
+    if(!hasImage) {
+      // 비활성 처리
+      if(isDebug) console.log("image-grid-v2 / compareImage / 비활성 처리");
+    } // end if
+
+  } // end method
+
+  removeImage(imageUrl:string):void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -194,70 +259,6 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   }
 
-  onClickDelete(event, imgUrlToDelete:string) :void {
-
-    event.stopPropagation();
-    event.preventDefault();
-
-    if(null == imgUrlToDelete || "" === imgUrlToDelete) {
-      return;
-    }
-
-    this.removeImage(imgUrlToDelete);
-    this.emitEventOnDelete(imgUrlToDelete);
-
-  }
-
-  private emitEventOnDelete(imgUrlToDelete:string) :void {
-
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid-v2 / emitEventOnDelete / 시작");
-
-    let myEventOnChange:MyEvent =
-    this.myEventService.getMyEvent(
-      // public eventName:string
-      this.myEventService.ON_REMOVE_ROW,
-      // public key:string
-      this.myEventService.KEY_IMAGE_GRID,
-      // public value:string
-      imgUrlToDelete,
-      // public metaObj:any
-      this,
-      // public myChecker:MyChecker
-      null
-    );
-    this.emitter.emit(myEventOnChange);
-
-    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / Done!");    
-  }
-
-  private emitEventOnReady() :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / 시작");
-
-    let myEventOnChange:MyEvent =
-    this.myEventService.getMyEvent(
-      // public eventName:string
-      this.myEventService.ON_READY,
-      // public key:string
-      this.myEventService.KEY_IMAGE_GRID,
-      // public value:string
-      "",
-      // public metaObj:any
-      this,
-      // public myChecker:MyChecker
-      null
-    );
-    this.emitter.emit(myEventOnChange);
-
-    if(isDebug) console.log("image-grid-v2 / emitEventOnChange / Done!");
-
-  }  
-
-  //onChangedFromChild
   onChangedFromChild(myEvent:MyEvent):void {
 
     let isDebug:boolean = true;
@@ -274,36 +275,99 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
       return;
     } // end if
 
-    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
+      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
 
         // this.updateKlassTitle(myEvent.value, false);
+        // TODO - image-entry가 모두 준비가 된다면, image-grid-v2도 부모에게 Ready 이벤트를 전달해줍니다.
 
-      }
-
-    } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
-
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
-
-        // this.updateKlassTitle(myEvent.value, true);
-
-      }      
-
-    } else if(myEvent.hasEventName(this.myEventService.ON_DONE)) {
-
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_POSTER)) {
-
-        // this.addKlassPoster(myEvent.value);
+        // 사용자가 전달한 유효한 이미지 리스트가 있다면 여기에서 비교, 활성/비활성화 처리를 합니다.
+        this.compareImage(myEvent.metaObj);
 
       }
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
 
-      // Do something ...
+      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
+
+        this.emitEventOnAdd(myEvent);
+
+      }       
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_IMAGE_ENTRY)) {
+
+        this.emitEventOnDelete(myEvent);
+
+      }      
 
     } // end if
 
-  } // end method  
+  } // end method 
+
+  private emitEventOnAdd(myEvent:MyEvent) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / emitEventOnAdd / 시작");
+
+    if(null == myEvent) {
+      return;
+    }
+
+    // image-entry의 이벤트 객체를 그대로 전달.
+    // 이벤트 키만 변경합니다.
+    myEvent.key = this.eventKey;
+
+    this.emitter.emit(myEvent);
+
+    if(isDebug) console.log("image-grid-v2 / emitEventOnAdd / Done!");
+  }  
+
+  private emitEventOnDelete(myEvent:MyEvent) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / emitEventOnDelete / 시작");
+
+    if(null == myEvent) {
+      return;
+    }
+
+    // image-entry의 이벤트 객체를 그대로 전달.
+    // 이벤트 키만 변경합니다.
+    myEvent.key = this.eventKey;
+
+    this.emitter.emit(myEvent);
+
+    if(isDebug) console.log("image-grid-v2 / emitEventOnDelete / Done!");
+  }
+
+  private emitEventOnReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("image-grid-v2 / emitEventOnReady / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_READY,
+      // public key:string
+      this.eventKey,
+      // public value:string
+      "",
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      this.myCheckerService.getFreePassChecker()
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("image-grid-v2 / emitEventOnReady / Done!");
+
+  }
 
 }

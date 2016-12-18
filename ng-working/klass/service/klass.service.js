@@ -370,7 +370,7 @@ var KlassService = (function () {
         if (null == imgUrl || "" === imgUrl) {
             return "";
         }
-        return imgUrl.replace(this.dirPathKlassBanner, "").replace("/", "");
+        return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi, "").replace(/[\/]+/gi, "");
     };
     KlassService.prototype.getKlassFromJSON = function (klassJSON) {
         // let isDebug:boolean = true;
@@ -461,14 +461,6 @@ var KlassService = (function () {
         // class_banner_url_arr,
         if (null != klassJSON.class_banner_url && "" != klassJSON.class_banner_url) {
             klass.class_banner_url_arr = klassJSON.class_banner_url.split("|||");
-            // 바로 로딩할 수 있는 주소로 변경!
-            for (var i = 0; i < klass.class_banner_url_arr.length; ++i) {
-                var class_banner_url = klass.class_banner_url_arr[i];
-                if (null == class_banner_url || "" == class_banner_url) {
-                    continue;
-                }
-                klass.class_banner_url_arr[i] = this.dirPathKlassBanner + "/" + class_banner_url;
-            }
         }
         else {
             klass.class_banner_url_arr = [];

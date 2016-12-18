@@ -56,6 +56,26 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   }
 
+  hasNotImage(imageUrl:string):boolean {
+    return !this.hasImage(imageUrl);
+  }
+  hasImage(imageUrl:string):boolean {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-entry / hasImage / 시작");
+
+    if(null == imageUrl || "" === imageUrl) {
+      if(isDebug) console.log("image-entry / hasImage / 중단 / imageUrl is not valid!");
+      return;
+    }
+
+    if(isDebug) console.log("image-entry / hasImage / this.imageUrl : ",this.imageUrl);
+    if(isDebug) console.log("image-entry / hasImage / imageUrl : ",imageUrl);
+
+    return (this.imageUrl === imageUrl)?true:false;
+  }
+
   onChangeCheck(event, checkboxToggle, targetImg) :void {
 
     let isDebug:boolean = true;
@@ -76,6 +96,15 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
     if(isDebug) console.log("image-entry / onChangeCheck / targetImg : ",targetImg);
 
+    if(checked) {
+      // 1. add image
+      this.emitEventOnAdd(targetImg);
+
+    } else {
+      // 2. remove image
+      this.emitEventOnDelete(targetImg);
+    } // end if
+
   }
 
   onClickDelete(event, imgUrlToDelete:string) :void {
@@ -91,6 +120,30 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   }
 
+  private emitEventOnAdd(imgUrlToDelete:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("image-entry / emitEventOnDelete / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_ADD_ROW,
+      // public key:string
+      this.myEventService.KEY_IMAGE_ENTRY,
+      // public value:string
+      imgUrlToDelete,
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      this.myCheckerService.getFreePassChecker()
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("image-entry / emitEventOnChange / Done!");    
+  }  
+
   private emitEventOnDelete(imgUrlToDelete:string) :void {
 
     let isDebug:boolean = true;
@@ -102,13 +155,13 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
       // public eventName:string
       this.myEventService.ON_REMOVE_ROW,
       // public key:string
-      this.myEventService.KEY_IMAGE_GRID,
+      this.myEventService.KEY_IMAGE_ENTRY,
       // public value:string
       imgUrlToDelete,
       // public metaObj:any
       this,
       // public myChecker:MyChecker
-      null
+      this.myCheckerService.getFreePassChecker()
     );
     this.emitter.emit(myEventOnChange);
 
@@ -126,13 +179,13 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
       // public eventName:string
       this.myEventService.ON_READY,
       // public key:string
-      this.myEventService.KEY_IMAGE_GRID,
+      this.myEventService.KEY_IMAGE_ENTRY,
       // public value:string
       "",
       // public metaObj:any
       this,
       // public myChecker:MyChecker
-      null
+      this.myCheckerService.getFreePassChecker()
     );
     this.emitter.emit(myEventOnChange);
 

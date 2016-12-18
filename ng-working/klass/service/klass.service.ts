@@ -444,7 +444,7 @@ export class KlassService {
       return "";
     }
 
-    return imgUrl.replace(this.dirPathKlassBanner,"").replace("/","");
+    return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi,"").replace(/[\/]+/gi,"");
   }
 
   getKlassFromJSON(klassJSON): Klass {
@@ -539,6 +539,8 @@ export class KlassService {
     if(null != klassJSON.class_banner_url && "" != klassJSON.class_banner_url) {
       klass.class_banner_url_arr = klassJSON.class_banner_url.split("|||");
 
+      // REMOVE ME
+      /*
       // 바로 로딩할 수 있는 주소로 변경!
       for (var i = 0; i < klass.class_banner_url_arr.length; ++i) {
         let class_banner_url:string = klass.class_banner_url_arr[i];
@@ -547,6 +549,7 @@ export class KlassService {
         }
         klass.class_banner_url_arr[i] = `${this.dirPathKlassBanner}/${class_banner_url}`;
       }
+      */
 
     } else {
       klass.class_banner_url_arr = [];

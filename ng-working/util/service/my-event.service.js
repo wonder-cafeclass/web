@@ -62,6 +62,7 @@ var MyEventService = (function () {
         this.CAUTION = "CAUTION"; // 유의사항
         // Widget
         this.KEY_IMAGE_GRID = "KEY_IMAGE_GRID"; // Widget - image grid
+        this.KEY_IMAGE_ENTRY = "KEY_IMAGE_ENTRY"; // Widget - image entry
         this.KEY_SEARCH_LIST = "KEY_SEARCH_LIST"; // 검색시, 결과가 리스트에 노출됨.
         this.KEY_SMART_EDITOR = "KEY_SMART_EDITOR"; // 네이버 스마트에디터
         this.KEY_INPUTS_BTNS_ROWS = "KEY_INPUTS_BTNS_ROWS"; // 여러개의 열이 있는 입력창

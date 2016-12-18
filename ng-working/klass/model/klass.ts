@@ -3,6 +3,7 @@ import { KlassPrice }               from './klass-price';
 import { KlassTeacher }             from './klass-teacher';
 import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
+import { HelperMyArray }            from '../../util/helper/my-array';
 
 export class Klass {
     public id: number;
@@ -78,4 +79,29 @@ export class Klass {
 
     public date_created: string;
     public date_updated: string;
+
+    private delimiter_banner:string="|||";
+    private helperMyArray:HelperMyArray;
+
+    constructor() {
+        this.helperMyArray = new HelperMyArray();
+    }
+
+    hasNotBanner(banner:string) :boolean {
+        return this.helperMyArray.hasNotStr(this.class_banner_url_arr, banner);
+    }
+    hasBanner(banner:string) :boolean {
+        return this.helperMyArray.hasStr(this.class_banner_url_arr, banner);
+    }
+    removeBanner(banner:string):void {
+        this.class_banner_url_arr = this.helperMyArray.removeStr(this.class_banner_url_arr, banner);
+        this.updateBannerUrl();
+    }
+    addBanner(banner:string):void {
+        this.class_banner_url_arr = this.helperMyArray.addStrUnique(this.class_banner_url_arr, banner);
+        this.updateBannerUrl();
+    }    
+    private updateBannerUrl():void {
+        this.class_banner_url = this.class_banner_url_arr.join(this.delimiter_banner);
+    }
 }
