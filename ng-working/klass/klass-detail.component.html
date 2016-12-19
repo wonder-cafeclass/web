@@ -169,11 +169,31 @@
           </li>
           <!-- COURSE TIME DONE -->
 
-          <!-- COURSE TIME ADMIN INIT -->
+          <!-- COURSE TIME BEGIN ADMIN INIT -->
           <li class="list-group-item col-next">
-            COURSE TIME ADMIN
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [isDisabled]="false"
+            [meta]="defaultMetaList[2]"
+            [minutesUnit]="30"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
           </li>
-          <!-- COURSE TIME ADMIN DONE -->
+          <!-- COURSE TIME BEGIN ADMIN DONE -->
+
+          <!-- COURSE TIME END ADMIN INIT -->
+          <li class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [isDisabled]="false"
+            [meta]="defaultMetaList[3]"
+            [minutesUnit]="30"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- COURSE TIME END ADMIN DONE -->          
 
 
           <!-- FIRST KLASS DATE INIT -->

@@ -14,6 +14,7 @@ import { DefaultMeta }              from '../../../widget/input/default/model/de
 import { DefaultType }              from '../../../widget/input/default/model/default-type';
 
 import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
+import { HelperMyTime }             from '../../../util/helper/my-time';
 
 
 @Component({
@@ -43,7 +44,10 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   @Input() isShowTitle:boolean=true;
   @Input() width:number=-1;
   @Input() numUnit:number=-1; // 숫자 변경시 최소 변경 단위.
+  @Input() minutesUnit:number=-1; // 시간 변경시 최소 변경 분 단위.
   widthStr:string="";
+
+  private myTime:HelperMyTime;
   
 
   constructor(  private myCheckerService:MyCheckerService,
@@ -74,6 +78,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
 
     this.defaultType = new DefaultType();
+    this.myTime = new HelperMyTime();
+
   } // end constructor
 
   ngOnInit(): void {
@@ -310,6 +316,64 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       this.emitEventOnChange(this.ngModelInput);
     } // end if
   } // end method
+
+  onClickIncreaseHHMM(event) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / onClickIncreaseHHMM / 시작");
+
+    if(0 < this.minutesUnit) {
+      this.updateInputHHMM(this.minutesUnit);
+    }
+
+  }
+
+  onClickDecreaseHHMM(event) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / onClickDecreaseHHMM / 시작");
+
+    if(0 < this.minutesUnit) {
+      this.updateInputHHMM(-1 * this.minutesUnit);
+    }
+
+  }
+
+  private updateInputHHMM(minutesChanged:number):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / updateInputHHMM / 시작");
+    if(isDebug) console.log("default / updateInputHHMM / minutesChanged : ",minutesChanged);
+
+    // wonder.jung
+
+    let nextHHMM:string = this.myTime.addMinutesHHMM(this.ngModelInput, minutesChanged);
+
+    let error = null;
+    if(!this.isOK(nextHHMM)) {
+      if(isDebug) console.log("default / updateInputHHMM / 중단 / nextNum is not valid!");
+      error = this.myCheckerService.getLastHistory();
+    }
+    if(null != error) {
+      if(isDebug) console.log("default / updateInputHHMM / error : ",error);
+      this.showTooltipFailWarning(error.msg, false);
+      return;
+    }
+    this.hideWarningTooptip();
+
+    // UPDATE!
+    this.ngModelInput = this.inputStrPrev = nextHHMM;
+    this.emitEventOnChange(this.ngModelInput);
+  } // end method  
 
   onFocus(event, element) :void {
     if(!this.isFocus) {

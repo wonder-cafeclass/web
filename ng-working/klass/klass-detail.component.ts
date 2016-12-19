@@ -156,6 +156,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private klassTitleComponent: DefaultComponent;
   private klassPriceComponent: DefaultComponent;
+  private klassTimeBeginComponent: DefaultComponent;
+  private klassTimeEndComponent: DefaultComponent;
 
   @ViewChild(ImageGridV2Component)
   private imageGridComponent: ImageGridV2Component;
@@ -334,6 +336,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       this.klassPriceComponent = target;
     } // end if
 
+    target = this.getInput(this.myEventService.KEY_KLASS_TIME_BEGIN);
+    if(null != target) {
+      this.klassTimeBeginComponent = target;
+    } // end if
+
+    target = this.getInput(this.myEventService.KEY_KLASS_TIME_END);
+    if(null != target) {
+      this.klassTimeEndComponent = target;
+    } // end if
+
   }  
   // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
   private getInput(eventKey:string) :any {
@@ -438,7 +450,33 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.klassPriceComponent.setInput(""+this.klassCopy.price);
 
-  }   
+  } // end method
+
+  private setKlassTimeBegin() :void {
+
+    if(null == this.klass || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
+      return;
+    }
+    if(null == this.klassTimeBeginComponent) {
+      return;
+    }
+
+    this.klassTimeBeginComponent.setInput(""+this.klassCopy.time_begin);
+
+  } // end method
+
+  private setKlassTimeEnd() :void {
+
+    if(null == this.klass || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
+      return;
+    }
+    if(null == this.klassTimeEndComponent) {
+      return;
+    }
+
+    this.klassTimeEndComponent.setInput(""+this.klassCopy.time_end);
+
+  } // end method
 
   private onAfterReceivingKlass() :void {
 
@@ -479,6 +517,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // set default-input: klass price
     this.setKlassPrice();
+    this.setKlassTimeBegin();
+    this.setKlassTimeEnd();
 
     // set image-grid service
     let classBannerUrlArr:string[] = this.klassCopy.class_banner_url_arr;
@@ -843,6 +883,20 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.setKlassPrice();
         }
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.klassTimeBeginComponent = myEvent.metaObj;
+          this.setKlassTimeBegin();
+        }
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_END)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.klassTimeEndComponent = myEvent.metaObj;
+          this.setKlassTimeEnd();
+        }
+
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         if( null != myEvent.metaObj ) {
@@ -874,7 +928,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
 
-        this.updateKlassPrice(myEvent.value);        
+        this.updateKlassPrice(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+
+        this.updateKlassTimeBegin(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {  
+
+        this.updateKlassTimeEnd(myEvent.value);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
 
@@ -1031,6 +1093,50 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.klassCopy.price = parseInt(klassPrice);
     this.priceTagHComponent.setPrice(this.klassCopy.price);
+
+  }
+
+  private updateKlassTimeBegin(klassTimeBegin:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassTimeBegin / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassTimeBegin / klassTimeBegin : ",klassTimeBegin);
+
+    if(null == klassTimeBegin || "" == klassTimeBegin) {
+      return;
+    }
+
+    // wonder.jung
+
+    // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
+    // 만약 그렇지 않다면 시작 시간은 종료시간보다 이전 값으로 변경해야 합니다.
+
+    // TODO - my-time에 diff 기능 추가.
+
+    // TODO - Duration도 함께 업데이트 해줍니다.
+
+  }
+
+  private updateKlassTimeEnd(klassTimeEnd:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassTimeEnd / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassTimeEnd / klassTimeEnd : ",klassTimeEnd);
+
+    if(null == klassTimeEnd || "" == klassTimeEnd) {
+      return;
+    }
+
+    // wonder.jung
+
+    // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
+    // 만약 그렇지 않다면 종료시간은 시작시간보다 이후 값으로 변경해야 합니다.
+
+    // TODO - my-time에 diff 기능 추가.
+
+    // TODO - Duration도 함께 업데이트 해줍니다.
 
   }
 

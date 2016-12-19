@@ -185,6 +185,14 @@ var KlassDetailComponent = (function () {
         if (null != target) {
             this.klassPriceComponent = target;
         } // end if
+        target = this.getInput(this.myEventService.KEY_KLASS_TIME_BEGIN);
+        if (null != target) {
+            this.klassTimeBeginComponent = target;
+        } // end if
+        target = this.getInput(this.myEventService.KEY_KLASS_TIME_END);
+        if (null != target) {
+            this.klassTimeEndComponent = target;
+        } // end if
     };
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
     KlassDetailComponent.prototype.getInput = function (eventKey) {
@@ -266,7 +274,25 @@ var KlassDetailComponent = (function () {
             return;
         }
         this.klassPriceComponent.setInput("" + this.klassCopy.price);
-    };
+    }; // end method
+    KlassDetailComponent.prototype.setKlassTimeBegin = function () {
+        if (null == this.klass || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
+            return;
+        }
+        if (null == this.klassTimeBeginComponent) {
+            return;
+        }
+        this.klassTimeBeginComponent.setInput("" + this.klassCopy.time_begin);
+    }; // end method
+    KlassDetailComponent.prototype.setKlassTimeEnd = function () {
+        if (null == this.klass || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
+            return;
+        }
+        if (null == this.klassTimeEndComponent) {
+            return;
+        }
+        this.klassTimeEndComponent.setInput("" + this.klassCopy.time_end);
+    }; // end method
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -302,6 +328,8 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ", this.klassFilterTileComponent);
         // set default-input: klass price
         this.setKlassPrice();
+        this.setKlassTimeBegin();
+        this.setKlassTimeEnd();
         // set image-grid service
         var classBannerUrlArr = this.klassCopy.class_banner_url_arr;
         if (null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
@@ -601,6 +629,18 @@ var KlassDetailComponent = (function () {
                     this.setKlassPrice();
                 }
             }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {
+                if (null != myEvent.metaObj) {
+                    this.klassTimeBeginComponent = myEvent.metaObj;
+                    this.setKlassTimeBegin();
+                }
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_END)) {
+                if (null != myEvent.metaObj) {
+                    this.klassTimeEndComponent = myEvent.metaObj;
+                    this.setKlassTimeEnd();
+                }
+            }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 if (null != myEvent.metaObj) {
                     this.imageGridComponent = myEvent.metaObj;
@@ -625,6 +665,12 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
                 this.updateKlassPrice(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                this.updateKlassTimeBegin(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
+                this.updateKlassTimeEnd(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
                 this.updateKlassLevelDayTimeStation(myEvent.metaObj);
@@ -766,6 +812,38 @@ var KlassDetailComponent = (function () {
         }
         this.klassCopy.price = parseInt(klassPrice);
         this.priceTagHComponent.setPrice(this.klassCopy.price);
+    };
+    KlassDetailComponent.prototype.updateKlassTimeBegin = function (klassTimeBegin) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / 시작");
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / klassTimeBegin : ", klassTimeBegin);
+        if (null == klassTimeBegin || "" == klassTimeBegin) {
+            return;
+        }
+        // wonder.jung
+        // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
+        // 만약 그렇지 않다면 시작 시간은 종료시간보다 이전 값으로 변경해야 합니다.
+        // TODO - my-time에 diff 기능 추가.
+        // TODO - Duration도 함께 업데이트 해줍니다.
+    };
+    KlassDetailComponent.prototype.updateKlassTimeEnd = function (klassTimeEnd) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeEnd / 시작");
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeEnd / klassTimeEnd : ", klassTimeEnd);
+        if (null == klassTimeEnd || "" == klassTimeEnd) {
+            return;
+        }
+        // wonder.jung
+        // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
+        // 만약 그렇지 않다면 종료시간은 시작시간보다 이후 값으로 변경해야 합니다.
+        // TODO - my-time에 diff 기능 추가.
+        // TODO - Duration도 함께 업데이트 해줍니다.
     };
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
         var _this = this;

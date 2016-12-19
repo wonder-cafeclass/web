@@ -14,6 +14,7 @@ var my_event_service_1 = require('../../../util/service/my-event.service');
 var default_meta_1 = require('../../../widget/input/default/model/default-meta');
 var default_type_1 = require('../../../widget/input/default/model/default-type');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
+var my_time_1 = require('../../../util/helper/my-time');
 var DefaultComponent = (function () {
     function DefaultComponent(myCheckerService, myEventService, watchTower) {
         this.myCheckerService = myCheckerService;
@@ -31,6 +32,7 @@ var DefaultComponent = (function () {
         this.isShowTitle = true;
         this.width = -1;
         this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
+        this.minutesUnit = -1; // 시간 변경시 최소 변경 분 단위.
         this.widthStr = "";
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -54,6 +56,7 @@ var DefaultComponent = (function () {
         if (isDebug)
             console.log("default / constructor / this.width : ", this.width);
         this.defaultType = new default_type_1.DefaultType();
+        this.myTime = new my_time_1.HelperMyTime();
     } // end constructor
     DefaultComponent.prototype.ngOnInit = function () {
         var isDebug = true;
@@ -274,6 +277,54 @@ var DefaultComponent = (function () {
             this.emitEventOnChange(this.ngModelInput);
         } // end if
     }; // end method
+    DefaultComponent.prototype.onClickIncreaseHHMM = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onClickIncreaseHHMM / 시작");
+        if (0 < this.minutesUnit) {
+            this.updateInputHHMM(this.minutesUnit);
+        }
+    };
+    DefaultComponent.prototype.onClickDecreaseHHMM = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onClickDecreaseHHMM / 시작");
+        if (0 < this.minutesUnit) {
+            this.updateInputHHMM(-1 * this.minutesUnit);
+        }
+    };
+    DefaultComponent.prototype.updateInputHHMM = function (minutesChanged) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / updateInputHHMM / 시작");
+        if (isDebug)
+            console.log("default / updateInputHHMM / minutesChanged : ", minutesChanged);
+        // wonder.jung
+        var nextHHMM = this.myTime.addMinutesHHMM(this.ngModelInput, minutesChanged);
+        var error = null;
+        if (!this.isOK(nextHHMM)) {
+            if (isDebug)
+                console.log("default / updateInputHHMM / 중단 / nextNum is not valid!");
+            error = this.myCheckerService.getLastHistory();
+        }
+        if (null != error) {
+            if (isDebug)
+                console.log("default / updateInputHHMM / error : ", error);
+            this.showTooltipFailWarning(error.msg, false);
+            return;
+        }
+        this.hideWarningTooptip();
+        // UPDATE!
+        this.ngModelInput = this.inputStrPrev = nextHHMM;
+        this.emitEventOnChange(this.ngModelInput);
+    }; // end method  
     DefaultComponent.prototype.onFocus = function (event, element) {
         if (!this.isFocus) {
             this.isFocus = true;
@@ -619,6 +670,11 @@ var DefaultComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], DefaultComponent.prototype, "numUnit", void 0);
+    __decorate([
+        // 숫자 변경시 최소 변경 단위.
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], DefaultComponent.prototype, "minutesUnit", void 0);
     DefaultComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

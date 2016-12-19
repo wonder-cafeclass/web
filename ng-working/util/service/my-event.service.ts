@@ -113,6 +113,8 @@ export class MyEventService {
 
     KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
     KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
+    KEY_KLASS_TIME_BEGIN:string="KEY_KLASS_TIME_BEGIN";         // 수업 - 수업 시작 시간
+    KEY_KLASS_TIME_END:string="KEY_KLASS_TIME_END";             // 수업 - 수업 종료 시간
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
     KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";           // 수업 - 장소, 레벨, 요일, 시간
@@ -549,7 +551,7 @@ export class MyEventService {
 
         let defaultMetaList:DefaultMeta[] = 
         [
-          new DefaultMeta(
+            new DefaultMeta(
             // public title:string
             "수업 제목",
             // public placeholder:string
@@ -560,8 +562,8 @@ export class MyEventService {
             "klass_title",
             // public type:string
             this.defaultType.TYPE_INPUT
-          ),
-          new DefaultMeta(
+            ),
+            new DefaultMeta(
             // public title:string
             "수업 가격",
             // public placeholder:string
@@ -572,7 +574,31 @@ export class MyEventService {
             "klass_price",
             // public type:string
             this.defaultType.TYPE_NUMBER
-          )          
+            ),
+            new DefaultMeta(
+            // public title:string
+            "수업 시작 시간",
+            // public placeholder:string
+            "수업 시작 시간을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TIME_BEGIN,
+            // public checkerKey:string
+            "klass_time_hhmm",
+            // public type:string
+            this.defaultType.TYPE_HHMM
+            ),
+            new DefaultMeta(
+            // public title:string
+            "수업 시작 종료",
+            // public placeholder:string
+            "수업 시작 종료을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TIME_END,
+            // public checkerKey:string
+            "klass_time_hhmm",
+            // public type:string
+            this.defaultType.TYPE_HHMM
+            )            
         ];        
 
         return defaultMetaList;

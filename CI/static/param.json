@@ -48,6 +48,7 @@
 		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",
 		"klass_day":"is_str|||matches[class_days_list]|||exclude[class_days_list|0]",
 		"klass_date_begin":"is_str|||regex_match_include[/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1})$/]",
+		"klass_time_hhmm":"is_str|||regex_match_include[/^([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
 		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
 		"klass_time_range":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[24]",
 		"klass_week_min":"is_number|||is_natural_no_zero",

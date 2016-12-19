@@ -4,6 +4,7 @@ var DefaultType = (function () {
         this.TYPE_INPUT = "TYPE_INPUT";
         this.TYPE_TEXTAREA = "TYPE_TEXTAREA";
         this.TYPE_NUMBER = "TYPE_NUMBER";
+        this.TYPE_HHMM = "TYPE_HHMM";
     }
     return DefaultType;
 }());
