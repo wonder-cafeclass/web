@@ -32,6 +32,10 @@ var DefaultComponent = (function () {
         this.width = -1;
         this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
         this.widthStr = "";
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / constructor / init");
         // set default meta
         this.meta =
             new default_meta_1.DefaultMeta(
@@ -45,19 +49,27 @@ var DefaultComponent = (function () {
             "", 
             // public type:string
             "");
+        if (isDebug)
+            console.log("default / constructor / meta : ", this.meta);
+        if (isDebug)
+            console.log("default / constructor / this.width : ", this.width);
+        this.defaultType = new default_type_1.DefaultType();
+    } // end constructor
+    DefaultComponent.prototype.ngOnInit = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / ngOnInit / init");
+        if (isDebug)
+            console.log("default / ngOnInit / meta : ", this.meta);
+        if (isDebug)
+            console.log("default / ngOnInit / this.width : ", this.width);
         if (0 < this.width) {
             this.widthStr = this.width + "px";
         }
         else {
             this.widthStr = "100%";
         }
-        this.defaultType = new default_type_1.DefaultType();
-    } // end constructor
-    DefaultComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("default / ngOnInit / init");
         this.asyncViewPack();
     };
     DefaultComponent.prototype.ngAfterViewInit = function () {

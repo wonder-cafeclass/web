@@ -50,6 +50,10 @@ export class DefaultComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService  ) {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / constructor / init");
+
     // set default meta
     this.meta = 
     new DefaultMeta(
@@ -65,20 +69,27 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       ""
     );
 
-    if(0 < this.width) {
-      this.widthStr = this.width + "px";
-    } else {
-      this.widthStr = "100%";
-    }
+    if(isDebug) console.log("default / constructor / meta : ",this.meta);
+    if(isDebug) console.log("default / constructor / this.width : ",this.width);
+
 
     this.defaultType = new DefaultType();
   } // end constructor
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / ngOnInit / init");
+
+    if(isDebug) console.log("default / ngOnInit / meta : ",this.meta);
+    if(isDebug) console.log("default / ngOnInit / this.width : ",this.width);
+
+    if(0 < this.width) {
+      this.widthStr = this.width + "px";
+    } else {
+      this.widthStr = "100%";
+    }
 
     this.asyncViewPack();
 

@@ -980,6 +980,28 @@ export class MyCheckerService {
 
         } else if(this.TYPE_NUMBER === myChecker.type) {
 
+            // 숫자라면 숫자 이외의 문자는 허용하지 않는다.
+            // 여기서는 자연수만 허용.
+            // wonder.jung
+            let inputStr:string = "" + input;
+            let regexExclude:RegExp = this.myRegEx.REGEX_NATURAL_NUM;
+            if(null != regexExclude) {
+                // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
+                let matchArr = inputStr.match(regexExclude);
+                if(null != matchArr && 0 < matchArr.length) {
+                    this.history.reason = 
+                    `target string is not allowed with regexExclude : ${regexExclude}`;
+                    this.history.success = false;
+                    this.history.matchArr = matchArr;
+                    this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                    this.history.key = "regexExclude";
+                    this.history.value = regexExclude;
+                    this.history.matchArr = matchArr;
+
+                    return false;
+                }
+            } // end if
+
             let inputNum:number = parseInt(input);
 
             if ('number' != typeof inputNum) {
@@ -1070,6 +1092,19 @@ export class MyCheckerService {
           , this.myRegEx.REGEX_SAFE_STR
         );
     } // end method
+    getNaturalNumberChecker() :MyChecker {
+        // public myChecker:MyChecker
+        return new MyChecker(
+          // public type:string
+          this.TYPE_NONE
+          // public min:number
+          , 0
+          // public max:number
+          , Number.MAX_SAFE_INTEGER
+          // public regex:string
+          , this.myRegEx.REGEX_NATURAL_NUM
+        );        
+    }    
     getFreePassChecker() :MyChecker {
         // public myChecker:MyChecker
         return new MyChecker(

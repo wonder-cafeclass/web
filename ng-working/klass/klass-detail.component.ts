@@ -981,8 +981,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassLevelDayTimeStation(klassSelectile:any) :void { // wonder.jung
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / 시작");
     if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassSelectile : ",klassSelectile);
 

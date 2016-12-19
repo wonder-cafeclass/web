@@ -784,6 +784,26 @@ var MyCheckerService = (function () {
             }
         }
         else if (this.TYPE_NUMBER === myChecker.type) {
+            // 숫자라면 숫자 이외의 문자는 허용하지 않는다.
+            // 여기서는 자연수만 허용.
+            // wonder.jung
+            var inputStr = "" + input;
+            var regexExclude = this.myRegEx.REGEX_NATURAL_NUM;
+            if (null != regexExclude) {
+                // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
+                var matchArr = inputStr.match(regexExclude);
+                if (null != matchArr && 0 < matchArr.length) {
+                    this.history.reason =
+                        "target string is not allowed with regexExclude : " + regexExclude;
+                    this.history.success = false;
+                    this.history.matchArr = matchArr;
+                    this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                    this.history.key = "regexExclude";
+                    this.history.value = regexExclude;
+                    this.history.matchArr = matchArr;
+                    return false;
+                }
+            } // end if
             var inputNum = parseInt(input);
             if ('number' != typeof inputNum) {
                 this.history.reason = "'number' != typeof inputNum";
@@ -845,6 +865,12 @@ var MyCheckerService = (function () {
         // public type:string
         this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
+    MyCheckerService.prototype.getNaturalNumberChecker = function () {
+        // public myChecker:MyChecker
+        return new my_checker_1.MyChecker(
+        // public type:string
+        this.TYPE_NONE, 0, Number.MAX_SAFE_INTEGER, this.myRegEx.REGEX_NATURAL_NUM);
+    };
     MyCheckerService.prototype.getFreePassChecker = function () {
         // public myChecker:MyChecker
         return new my_checker_1.MyChecker(

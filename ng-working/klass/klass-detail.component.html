@@ -39,7 +39,7 @@
           </li>
           
           <!-- 포스터 올리기 열 -->
-          <li *ngIf="isAdmin && isTeacher" 
+          <li *ngIf="isTeacher" 
               class="list-group-item" 
               style="padding: 10px;">
             <button type="button" 
@@ -50,7 +50,7 @@
           </li>
 
           <!-- 수업 제목 입력 창 -->
-          <li *ngIf="isAdmin && isTeacher" 
+          <li *ngIf="isTeacher" 
               class="list-group-item"
               style="padding: 0px;">
 
@@ -75,7 +75,7 @@
           <!-- Banner Image List For Service DONE -->
           
           <!-- Banner Image List For Admin INIT -->
-          <li *ngIf="isAdmin && isTeacher" 
+          <li *ngIf="isTeacher" 
               class="list-group-item" 
               style="padding:0px;border-top:0px;">
             <image-grid-v2
@@ -117,7 +117,7 @@
           <!-- PRICE ADMIN INIT -->
           <!-- Default Input : Number -->
           <li 
-          *ngIf="isAdmin && isTeacher" 
+          *ngIf="isTeacher" 
           class="list-group-item col-next">
             <widget-input-default
             [width]="-1"
@@ -131,7 +131,9 @@
           <!-- PRICE ADMIN DONE -->
 
           <!-- FILTERS INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next">
             <div class="box-selectile-show">
               <image-grid [imageTable]="selectileImageTable"
                           [imageHeight]="selectileImageHeight"
@@ -143,7 +145,9 @@
           <!-- FILTERS DONE -->
   
           <!-- FILTERS ADMIN INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
             <div class="box-selectile">
               <div class="pin-selectile">
                 <klass-filter-tile

@@ -717,8 +717,8 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
     };
     KlassDetailComponent.prototype.updateKlassLevelDayTimeStation = function (klassSelectile) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassLevelDayTimeStation / 시작");
         if (isDebug)
