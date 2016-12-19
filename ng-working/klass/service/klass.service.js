@@ -20,6 +20,7 @@ var url_service_1 = require('../../util/url.service');
 var my_extractor_1 = require('../../util/http/my-extractor');
 var my_request_1 = require('../../util/http/my-request');
 var my_array_1 = require('../../util/helper/my-array');
+var my_time_1 = require('../../util/helper/my-time');
 var KlassService = (function () {
     function KlassService(http, urlService) {
         this.http = http;
@@ -43,6 +44,7 @@ var KlassService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
         this.myArray = new my_array_1.HelperMyArray();
+        this.myTime = new my_time_1.HelperMyTime();
     }
     KlassService.prototype.updateKlassTitle = function (apiKey, userId, klassId, klassTitle) {
         var isDebug = true;
@@ -151,68 +153,6 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    // REMOVE ME
-    /*
-    addKlassBanner(
-      apiKey:string,
-      userId:number,
-      klassId:number,
-      klassBanner:string
-    ): Promise<MyResponse> {
-  
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("klass.service / addKlassBanner / 시작");
-      if(isDebug) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
-      if(isDebug) console.log("klass.service / addKlassBanner / userId : ",userId);
-      if(isDebug) console.log("klass.service / addKlassBanner / klassId : ",klassId);
-      if(isDebug) console.log("klass.service / addKlassBanner / klassBanner : ",klassBanner);
-  
-      // POST
-      let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-      let req_url = this.urlService.get(this.addKlassBannerUrl);
-  
-      let params = {
-        user_id:userId,
-        klass_id:klassId,
-        klass_banner_url:klassBanner
-      }
-      return this.http.post(req_url, params, options)
-                  .toPromise()
-                  .then(this.myExtractor.extractData)
-                  .catch(this.myExtractor.handleError);
-    }
-  
-    removeKlassBanner(
-      apiKey:string,
-      userId:number,
-      klassId:number,
-      klassBanner:string
-    ): Promise<MyResponse> {
-  
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("klass.service / removeKlassBanner / 시작");
-      if(isDebug) console.log("klass.service / removeKlassBanner / apiKey : ",apiKey);
-      if(isDebug) console.log("klass.service / removeKlassBanner / userId : ",userId);
-      if(isDebug) console.log("klass.service / removeKlassBanner / klassId : ",klassId);
-      if(isDebug) console.log("klass.service / removeKlassBanner / klassBanner : ",klassBanner);
-  
-      // POST
-      let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-      let req_url = this.urlService.get(this.removeKlassBannerUrl);
-  
-      let params = {
-        user_id:userId,
-        klass_id:klassId,
-        klass_banner_url:klassBanner
-      }
-      return this.http.post(req_url, params, options)
-                  .toPromise()
-                  .then(this.myExtractor.extractData)
-                  .catch(this.myExtractor.handleError);
-    }
-    */
     KlassService.prototype.searchKlassVenue = function (q) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -422,8 +362,8 @@ var KlassService = (function () {
         return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi, "").replace(/[\/]+/gi, "");
     };
     KlassService.prototype.getKlassFromJSON = function (klassJSON) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass.service / getKlassFromJSON / 시작");
         var klass = new klass_1.Klass();
@@ -458,9 +398,18 @@ var KlassService = (function () {
         // time_begin,
         klass.time_begin = klassJSON.time_begin;
         // time_duration_minutes,
-        klass.time_duration_minutes = klassJSON.time_duration_minutes;
+        klass.time_duration_minutes = parseInt(klassJSON.time_duration_minutes);
         // time_end,
         klass.time_end = klassJSON.time_end;
+        if (null == klass.time_end ||
+            "" === klass.time_end) {
+            if (null != klass.time_begin &&
+                "" != klass.time_begin &&
+                !isNaN(klass.time_duration_minutes)) {
+                // 끝나는 시간이 없고, 시작 시간과 진행 시간 정보가 있다면 계산해서 넣어준다.
+                klass.time_end = this.myTime.addMinutesHHMM(klass.time_begin, klass.time_duration_minutes);
+            } // end if
+        } // end if
         // level,
         klass.level = klassJSON.level;
         // week_min,

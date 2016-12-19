@@ -160,15 +160,21 @@
           <!-- FILTERS ADMIN DONE -->
 
           <!-- COURSE TIME INIT -->
-          <!--
           <li class="list-group-item col-next" style="height: 97px;">
             <clock-board  #clockboard 
                           [clockHeight]=86
                           [clockWidth]=300
-                          [klassTimeBegin]="klassTimeBegin" 
-                          [klassTimeEnd]="klassTimeEnd"></clock-board>
+                          [klassTimeBegin]="this.klassCopy.time_begin" 
+                          [klassTimeEnd]="this.klassCopy.time_end"></clock-board>
           </li>
           <!-- COURSE TIME DONE -->
+
+          <!-- COURSE TIME ADMIN INIT -->
+          <li class="list-group-item col-next">
+            COURSE TIME ADMIN
+          </li>
+          <!-- COURSE TIME ADMIN DONE -->
+
 
           <!-- FIRST KLASS DATE INIT -->
           <!--
