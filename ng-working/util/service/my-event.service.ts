@@ -112,6 +112,7 @@ export class MyEventService {
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
 
     KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
+    KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
 
@@ -558,7 +559,19 @@ export class MyEventService {
             "klass_title",
             // public type:string
             this.defaultType.TYPE_INPUT
-          )
+          ),
+          new DefaultMeta(
+            // public title:string
+            "수업 가격",
+            // public placeholder:string
+            "수업 가격을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE,
+            // public checkerKey:string
+            "klass_price",
+            // public type:string
+            this.defaultType.TYPE_NUMBER
+          )          
         ];        
 
         return defaultMetaList;

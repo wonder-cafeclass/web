@@ -36,6 +36,7 @@ import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidd
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
 import { DefaultService }                from '../widget/input/default/service/default.service';
+import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 
@@ -61,6 +62,7 @@ import { Teacher }                       from '../teachers/model/teacher';
 export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChecked, OnChanges {
 
   klass: Klass;
+  klassCopy: Klass;
   klassTimeBegin:string;
   klassTimeEnd:string;
 
@@ -87,7 +89,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   priceTagColor:string="#e85c41";
   priceTagWidth:number=105;
   priceTagCageWidth:number=105;
-  pricePerWeekFormat:string="주";
+  pricePerWeekFormat:string="4주";
   pricetagDesc:string;
 
   selectileImageTable:string[][];
@@ -148,12 +150,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   defaultMetaList:DefaultMeta[];
 
   private klassTitleComponent: DefaultComponent;
+  private klassPriceComponent: DefaultComponent;
 
   @ViewChild(ImageGridV2Component)
   private imageGridComponent: ImageGridV2Component;
 
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
+
+  @ViewChild(PriceTagHComponent)
+  private priceTagHComponent: PriceTagHComponent;
 
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
@@ -199,16 +205,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   ngOnInit() {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / ngOnInit / 시작");
 
   } // end method
 
   ngAfterViewInit():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / ngAfterViewInit / 시작");
     if(isDebug) console.log("klass-detail / ngAfterViewInit / this.imageGridComponent : ", this.imageGridComponent);
 
@@ -219,8 +225,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   ngAfterViewChecked():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / ngAfterViewChecked / 시작");
 
   }
@@ -315,6 +321,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       this.klassTitleComponent = target;
     } // end if
 
+    target = this.getInput(this.myEventService.KEY_KLASS_PRICE);
+    if(null != target) {
+      this.klassPriceComponent = target;
+    } // end if
+
   }  
   // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
   private getInput(eventKey:string) :any {
@@ -406,6 +417,19 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     }); // end route    
 
+  }
+
+  private setKlassPrice() :void {
+
+    if(null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
+      return;
+    }
+    if(null == this.klassPriceComponent) {
+      return;
+    }
+
+    this.klassPriceComponent.setInput(""+this.klassCopy.price);
+
   }   
 
   private onAfterReceivingKlass() :void {
@@ -414,18 +438,24 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
 
+    // 저장 이전의 모든 데이터는 복사본에서 가져와 사용합니다.
+    // 저장 이후에 복사본의 데이터를 원본으로 백업합니다.
+    this.klassCopy = this.klass.copy();
+
     // fill datas
-    this.imgUploaderImageUrlKlassPoster = this.klass.class_poster_url_loadable;
-    this.klassTitle = this.klass.title;
+    this.imgUploaderImageUrlKlassPoster = this.klassCopy.class_poster_url_loadable;
+    this.klassTitle = this.klassCopy.title;
 
     // set image-grid admin
     if(null != this.imageGridComponent) {
-      // TODO - wonder.jung - loadable url 
-      this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
+      this.imageGridComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
     }
 
+    // set default-input: klass price
+    this.setKlassPrice();
+
     // set image-grid service
-    let classBannerUrlArr:string[] = this.klass.class_banner_url_arr;
+    let classBannerUrlArr:string[] = this.klassCopy.class_banner_url_arr;
     if(null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
       for (var i = 0; i < classBannerUrlArr.length; ++i) {
         let classBannerUrl:string = classBannerUrlArr[i];
@@ -522,7 +552,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // 수강신청 가능 기간
     let optionList:RadioBtnOption[] = 
-    this.radiobtnService.getKlassEnrolmentInterval(this.klass, ""+this.klass.enrollment_interval_week);
+    this.radiobtnService.getKlassEnrolmentInterval(this.klass, ""+this.klassCopy.enrollment_interval_week);
     this.radiobtnOptionListEnrollment = optionList;
 
     let fontSizeTitle:number=16;
@@ -548,7 +578,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // public key:string
         this.myEventService.KLASS_TITLE,
         // public value:string
-        this.klass.title,
+        this.klassCopy.title,
         // public metaObj:any
         this.klass,
         // public myChecker:MyChecker
@@ -575,7 +605,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // public key:string
         this.myEventService.KLASS_DESC,
         // public value:string
-        this.klass.desc,
+        this.klassCopy.desc,
         // public metaObj:any
         this.klass,
         // public myChecker:MyChecker
@@ -603,7 +633,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // public key:string
         this.myEventService.KLASS_TIME_BEGIN,
         // public value:string
-        this.klass.time_begin,
+        this.klassCopy.time_begin,
         // public metaObj:any
         this.klass,
         // public myChecker:MyChecker
@@ -631,7 +661,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // public key:string
         this.myEventService.KLASS_TIME_END,
         // public value:string
-        this.klass.time_end,
+        this.klassCopy.time_end,
         // public metaObj:any
         this.klass,
         // public myChecker:MyChecker
@@ -659,7 +689,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // public key:string
         this.myEventService.KLASS_WEEK_MAX,
         // public value:string
-        ""+this.klass.price,
+        ""+this.klassCopy.price,
         // public metaObj:any
         this.klass,
         // public myChecker:MyChecker
@@ -677,7 +707,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
 
   save() {
-    this.klass.title = this.editTitle;
+    this.klassCopy.title = this.editTitle;
     this.gotoKlassList();
   }
 
@@ -697,7 +727,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
 
   gotoKlassList() {
-    let klassId = this.klass ? this.klass.id : null;
+    let klassId = this.klass ? this.klassCopy.id : null;
 
     console.log("gotoKlassList / klassId : ",klassId);
 
@@ -753,34 +783,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
-  onChangedFromMiniCalendar(myEvent:MyEvent) {
 
-    let eventName:string = myEvent.eventName;
-    let myEventService:MyEventService = this.myEventService;
-
-    /*
-    if(this.myEventService.is_it(eventName,myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
-      console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
-    } else if(this.myEventService.is_it(eventName,myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
-      console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
-    }
-    */
-
-  }
-
-  // @ Deprecated
-  onChangedFromInputView(myEvent:MyEvent) {
-
-    let eventName:string = myEvent.eventName;
-    let myEventService:MyEventService = this.myEventService;
-
-    /*
-    if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
-      // '수강신청일'이 변경되었습니다.
-      console.log("'수강신청일'이 변경되었습니다.");
-    } // end if
-    */
-  }
 
 
 
@@ -807,14 +810,20 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.klassTitleComponent = myEvent.metaObj; 
         }
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
+
+        if( null != myEvent.metaObj ) {
+          this.klassPriceComponent = myEvent.metaObj;
+          this.setKlassPrice();
+        }
+
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         if( null != myEvent.metaObj ) {
           this.imageGridComponent = myEvent.metaObj;
-
         } // end if
         if( null != this.klass && null != this.imageGridComponent ) {
-          this.imageGridComponent.compareUserImages(this.klass.class_banner_url_arr);
+          this.imageGridComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
         } // end if
 
       } // end if      
@@ -824,6 +833,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
 
         this.updateKlassTitle(myEvent.value, false);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
+
+        this.updateKlassPrice(myEvent.value);        
 
       } // end if
 
@@ -863,6 +876,23 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   } // end method
 
+  private updateKlassPrice(klassPrice:string) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassPrice / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassPrice / klassPrice : ",klassPrice);
+
+    if(null == klassPrice || "" == klassPrice) {
+      return;
+    }
+
+    // wonder.jung    
+    this.klassCopy.price = parseInt(klassPrice);
+    this.priceTagHComponent.setPrice(this.klassCopy.price);
+
+  }
+
   private updateKlassTitle(klassTitle:string, isDBUpdate:boolean) :void {
 
     let isDebug:boolean = true;
@@ -885,7 +915,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         // userId:number,
         +this.loginUser.id,
         // klassId:number,
-        +this.klass.id,
+        +this.klassCopy.id,
         // klassTitle:string
         klassTitle      
       ).then((myResponse:MyResponse) => {
@@ -908,7 +938,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
             // errorType:string
             this.myLoggerService.errorAPIFailed,
             // errorMsg:string
-            `klass-detail / updateKlassTitle / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / klassTitle : ${klassTitle}`
+            `klass-detail / updateKlassTitle / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / klassTitle : ${klassTitle}`
           ); // end logger      
 
         } // end if
@@ -934,7 +964,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       // userId:number,
       +this.loginUser.id,
       // klassId:number,
-      +this.klass.id,
+      +this.klassCopy.id,
       // klassPoster:string
       posterUrl
     ).then((myResponse:MyResponse) => {
@@ -963,7 +993,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail / addKlassPoster / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / posterUrl : ${posterUrl}`
+          `klass-detail / addKlassPoster / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / posterUrl : ${posterUrl}`
         ); // end logger      
 
       } // end if
@@ -990,14 +1020,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
     let classBannerUrlNext:string="";
-    if(this.klass.hasNotBanner(banner)) {
+    if(this.klassCopy.hasNotBanner(banner)) {
       // 배너가 있어야 삭제할 수 있습니다.
-      this.klass.addBanner(banner);
-      if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
-      if(isDebug) console.log("klass-detail / addKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+      this.klassCopy.addBanner(banner);
+      if(isDebug) console.log("klass-detail / addKlassBanner / this.klassCopy.class_banner_url : ",this.klassCopy.class_banner_url);
+      if(isDebug) console.log("klass-detail / addKlassBanner / this.klassCopy.class_banner_url_arr : ",this.klassCopy.class_banner_url_arr);
 
       // 새로 추가된 배너가 포함된 전체 문자열을 만들어 DB에 업데이트합니다.
-      classBannerUrlNext = this.klass.class_banner_url;
+      classBannerUrlNext = this.klassCopy.class_banner_url;
     }
     if(null == classBannerUrlNext || "" === classBannerUrlNext) {
       if(isDebug) console.log("klass-detail / addKlassBanner / 중단 / classBannerUrlNext is not valid!");
@@ -1025,15 +1055,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // TODO - 가져온 klass 객체의 banner list에서 해당하는 배너 이름이 있는지 확인합니다.
     let classBannerUrlNext:string="";
-    if(this.klass.hasBanner(banner)) {
+    if(this.klassCopy.hasBanner(banner)) {
       // 배너가 있어야 삭제할 수 있습니다.
-      this.klass.removeBanner(banner);
-      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url : ",this.klass.class_banner_url);
-      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klass.class_banner_url_arr : ",this.klass.class_banner_url_arr);
+      this.klassCopy.removeBanner(banner);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klassCopy.class_banner_url : ",this.klassCopy.class_banner_url);
+      if(isDebug) console.log("klass-detail / removeKlassBanner / this.klassCopy.class_banner_url_arr : ",this.klassCopy.class_banner_url_arr);
 
       // 삭제된 배너가 빠진 전체 문자열을 만들어 DB에 업데이트합니다.
       // 공백도 가능합니다.
-      classBannerUrlNext = this.klass.class_banner_url;
+      classBannerUrlNext = this.klassCopy.class_banner_url;
     }
     if(null == classBannerUrlNext) {
       if(isDebug) console.log("klass-detail / addKlassBanner / 중단 / classBannerUrlNext is not valid!");
@@ -1061,7 +1091,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       // userId:number,
       +this.loginUser.id,
       // klassId:number,
-      +this.klass.id,
+      +this.klassCopy.id,
       // klassBanners:string
       classBannerUrlNext
     ).then((myResponse:MyResponse) => {
@@ -1085,7 +1115,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail / updateKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / banner_url : ${classBannerUrlNext}`
+          `klass-detail / updateKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / banner_url : ${classBannerUrlNext}`
         ); // end logger      
 
       } // end if
@@ -1096,16 +1126,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
 
 
-
-
-
-
-
-
   // Admin Section
   showSEKlassFeature() :void {
 
   }
+
+} // end class
+
+
+
 
   // REMOVE ME
   /*
@@ -1115,4 +1144,32 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.dronListMyEventSingleInput = null;
   }
   */  
-}
+  // REMOVE ME
+  /*
+  onChangedFromMiniCalendar(myEvent:MyEvent) {
+
+    let eventName:string = myEvent.eventName;
+    let myEventService:MyEventService = this.myEventService;
+
+    if(this.myEventService.is_it(eventName,myEventService.ON_MOUSEENTER_KLASS_CALENDAR_DATE)) {
+      console.log("ON_MOUSEENTER_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
+    } else if(this.myEventService.is_it(eventName,myEventService.ON_MOUSELEAVE_KLASS_CALENDAR_DATE)) {
+      console.log("ON_MOUSELEAVE_KLASS_CALENDAR_DATE / myEvent : ",myEvent);
+    }
+
+  }
+  */
+  // REMOVE ME
+  /*
+  // @ Deprecated
+  onChangedFromInputView(myEvent:MyEvent) {
+
+    let eventName:string = myEvent.eventName;
+    let myEventService:MyEventService = this.myEventService;
+
+    if(this.myEventService.is_it(eventName,myEventService.ON_CHANGE_KLASS_ENROLMENT_INTERVAL)) {
+      // '수강신청일'이 변경되었습니다.
+      console.log("'수강신청일'이 변경되었습니다.");
+    } // end if
+  }
+  */

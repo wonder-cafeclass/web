@@ -29,6 +29,17 @@ var PriceTagHComponent = (function () {
             this.cageWidthStr = "100%";
         }
     };
+    PriceTagHComponent.prototype.setPrice = function (price) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("pricetag-h / setPrice / 시작");
+        if (isDebug)
+            console.log("pricetag-h / setPrice / price : ", price);
+        this.priceWithFormat = this.numberWithCommas(price);
+        if (isDebug)
+            console.log("pricetag-h / setPrice / this.priceWithFormat : ", this.priceWithFormat);
+    };
     PriceTagHComponent.prototype.numberWithCommas = function (x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };

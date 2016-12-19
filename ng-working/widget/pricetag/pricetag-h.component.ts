@@ -40,6 +40,18 @@ export class PriceTagHComponent implements OnInit {
 
   }
 
+  setPrice(price:number): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("pricetag-h / setPrice / 시작");
+    if(isDebug) console.log("pricetag-h / setPrice / price : ",price);
+
+    this.priceWithFormat = this.numberWithCommas(price);
+
+    if(isDebug) console.log("pricetag-h / setPrice / this.priceWithFormat : ",this.priceWithFormat);
+  }
+
   private numberWithCommas(x) :string{
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }

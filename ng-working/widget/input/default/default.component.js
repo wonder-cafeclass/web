@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var default_meta_1 = require('../../../widget/input/default/model/default-meta');
+var default_type_1 = require('../../../widget/input/default/model/default-type');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var DefaultComponent = (function () {
     function DefaultComponent(myCheckerService, myEventService, watchTower) {
@@ -26,8 +27,11 @@ var DefaultComponent = (function () {
         this.isFocus = false;
         this.isValid = true;
         this.isDisabled = false;
+        this.isNoSpace = false;
         this.isShowTitle = true;
-        this.width = 380;
+        this.width = -1;
+        this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
+        this.widthStr = "";
         // set default meta
         this.meta =
             new default_meta_1.DefaultMeta(
@@ -41,13 +45,20 @@ var DefaultComponent = (function () {
             "", 
             // public type:string
             "");
+        if (0 < this.width) {
+            this.widthStr = this.width + "px";
+        }
+        else {
+            this.widthStr = "100%";
+        }
+        this.defaultType = new default_type_1.DefaultType();
     } // end constructor
     DefaultComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("default / ngOnInit / init");
-        this.emitEventOnReady();
+        this.asyncViewPack();
     };
     DefaultComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -55,7 +66,6 @@ var DefaultComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("default / ngAfterViewInit");
-        this.asyncViewPack();
     };
     DefaultComponent.prototype.asyncViewPack = function () {
         var _this = this;
@@ -88,8 +98,8 @@ var DefaultComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     DefaultComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("default / setMyChecker / 시작");
         if (null == this.myChecker) {
@@ -107,6 +117,8 @@ var DefaultComponent = (function () {
         this.setViewPack();
         // checker를 설정합니다.
         this.setMyChecker();
+        // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
+        this.emitEventOnReady();
     };
     DefaultComponent.prototype.isNotOK = function (input) {
         return !this.isOK(input);
@@ -200,6 +212,56 @@ var DefaultComponent = (function () {
             this.isFocus = true;
         } // end if
     };
+    DefaultComponent.prototype.onClickIncreaseNumber = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onClickIncreaseNumber / 시작");
+        if (0 < this.numUnit) {
+            this.updateInputNum(this.numUnit);
+        }
+    };
+    DefaultComponent.prototype.onClickDecreaseNumber = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onClickDecreaseNumber / 시작");
+        if (0 < this.numUnit) {
+            this.updateInputNum(-1 * this.numUnit);
+        }
+    };
+    DefaultComponent.prototype.updateInputNum = function (numAmountChanged) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / updateInputNum / 시작");
+        if (isDebug)
+            console.log("default / updateInputNum / numAmountChanged : ", numAmountChanged);
+        var curNum = parseInt(this.ngModelInput);
+        var nextNum = curNum + numAmountChanged;
+        var error = null;
+        if (!this.isOK("" + nextNum)) {
+            if (isDebug)
+                console.log("default / updateInputNum / 중단 / nextNum is not valid!");
+            error = this.myCheckerService.getLastHistory();
+        }
+        if (null != error) {
+            if (isDebug)
+                console.log("default / updateInputNum / error : ", error);
+            this.showTooltipFailWarning(error.msg, false);
+            return;
+        }
+        this.hideWarningTooptip();
+        // 반드시 0 이상이어야 합니다.
+        if (0 <= nextNum) {
+            this.ngModelInput = this.inputStrPrev = "" + nextNum;
+            this.emitEventOnChange(this.ngModelInput);
+        } // end if
+    }; // end method
     DefaultComponent.prototype.onFocus = function (event, element) {
         if (!this.isFocus) {
             this.isFocus = true;
@@ -244,7 +306,7 @@ var DefaultComponent = (function () {
         // public key:string
         this.meta.eventKey, 
         // public value:string
-        null, 
+        "", 
         // public metaObj:any
         this, 
         // public myChecker:MyChecker
@@ -335,12 +397,14 @@ var DefaultComponent = (function () {
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     DefaultComponent.prototype.showTooltipFailWarning = function (msg, isTimeout) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;    
         if (isDebug)
             console.log("default / showTooltipFailWarning / init");
         if (isDebug)
             console.log("default / showTooltipFailWarning / msg : ", msg);
+        if (isDebug)
+            console.log("default / showTooltipFailWarning / isTimeout : ", isTimeout);
         this.isShowTooltip = true;
         this.isFocus = true;
         this.isValid = false;
@@ -463,6 +527,9 @@ var DefaultComponent = (function () {
             console.log("default / onKeyup / init");
         event.stopPropagation();
         event.preventDefault();
+        // wonder.jung
+        // 1. 숫자 입력
+        // 2. 문자 입력 
         var inputStr = elementInput.value;
         if (inputStr == this.inputStrPrev) {
             if (isDebug)
@@ -527,11 +594,19 @@ var DefaultComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
+    ], DefaultComponent.prototype, "isNoSpace", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
     ], DefaultComponent.prototype, "isShowTitle", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
     ], DefaultComponent.prototype, "width", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], DefaultComponent.prototype, "numUnit", void 0);
     DefaultComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -4,6 +4,7 @@ import { KlassTeacher }             from './klass-teacher';
 import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
 import { HelperMyArray }            from '../../util/helper/my-array';
+import { HelperMyIs }               from '../../util/helper/my-is';
 
 export class Klass {
     public id: number;
@@ -82,9 +83,11 @@ export class Klass {
 
     private delimiter_banner:string="|||";
     private helperMyArray:HelperMyArray;
+    private helperMyIs:HelperMyIs;
 
     constructor() {
         this.helperMyArray = new HelperMyArray();
+        this.helperMyIs = new HelperMyIs();
     }
 
     hasNotBanner(banner:string) :boolean {
@@ -104,4 +107,15 @@ export class Klass {
     private updateBannerUrl():void {
         this.class_banner_url = this.class_banner_url_arr.join(this.delimiter_banner);
     }
+
+    copy():Klass {
+
+        return this.helperMyIs.copy(
+            // src:any
+            this, 
+            // copy:any
+            new Klass()
+        );
+
+    } // end method
 }

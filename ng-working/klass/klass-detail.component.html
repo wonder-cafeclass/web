@@ -28,7 +28,7 @@
             class="klass-image refactor-me" 
             style="width: 100%;"
             src={{imgUploaderImageUrlKlassPoster}} 
-            alt={{klass.title}}>
+            alt={{klassCopy.title}}>
 
             <!-- LABEL : klass title -->
             <div class="klass-title-overlay">
@@ -96,15 +96,14 @@
         <ul class="list-group col-md-4" style="padding-right: 0px;">
 
           <!-- PRICE INIT -->
-          <!--
           <li class="list-group-item col-next first">
             <pricetag-h [title]="pricePerWeekFormat"
                         [fontSizeTitle]="40"
                         [paddingTitle]="5"
 
-                        [price]="klass.price"
+                        [price]="klassCopy.price"
                         [fontSizePrice]="25"
-                        [paddingTopPrice]="25"
+                        [paddingTopPrice]="15"
   
                         [desc]="pricetagDesc"
                         [fontSizeDesc]="14"
@@ -114,6 +113,21 @@
                         [color]="priceTagColor"></pricetag-h>
           </li>
           <!-- PRICE DONE -->
+
+          <!-- PRICE ADMIN INIT -->
+          <!-- Default Input : Number -->
+          <li class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [isDisabled]="false"
+            [meta]="defaultMetaList[1]"
+            [numUnit]="5000"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- PRICE ADMIN DONE -->
+
 
           <!-- FILTERS -->
           <!--

@@ -1,15 +1,16 @@
 <div 	*ngIf="isShowTitle" 
+		[ngClass]="{'no-l':isNoSpace,'no-t':isNoSpace}"
 		class="btn-box text-left info">
 	<label class="title">{{meta.title}}</label>
 </div>
-<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
-		[style.width]="width + 'px'"
+<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus,'no-l':isNoSpace,'no-tb':meta.type == defaultType.TYPE_NUMBER}"
+		[style.width]="widthStr"
 		class="btn-box radius-border">
 	
 
 	<!-- input -->
 	<input 	
-	*ngIf="!isDisabled && meta.type == 'TYPE_INPUT'"
+	*ngIf="!isDisabled && meta.type == defaultType.TYPE_INPUT"
 	#input
 	(click)="onClick($event, input)"
 	(focus)="onFocus($event, input)"
@@ -23,7 +24,7 @@
 	placeholder={{meta.placeholder}}>
 	<!-- input-disabled -->
 	<input 	
-	*ngIf="isDisabled && meta.type == 'TYPE_INPUT'"
+	*ngIf="isDisabled && meta.type == defaultType.TYPE_INPUT"
 	disabled="disabled" 
 	value={{inputStrPrev}}
 	class="form-control input-glass" 
@@ -34,7 +35,7 @@
 	<textarea 
 	rows="4" 
 	cols="50" 	
-	*ngIf="!isDisabled && meta.type == 'TYPE_TEXTAREA'"
+	*ngIf="!isDisabled && meta.type == defaultType.TYPE_TEXTAREA"
 	#textarea
 	(click)="onClick($event, textarea)"
 	(focus)="onFocus($event, textarea)"
@@ -51,20 +52,58 @@
 	<textarea 
 	rows="4" 
 	cols="50"
-	*ngIf="isDisabled && meta.type == 'TYPE_TEXTAREA'"
+	*ngIf="isDisabled && meta.type == defaultType.TYPE_TEXTAREA"
 	disabled="disabled" 
 	value={{inputStrPrev}}
 	class="form-control input-glass my-style"
 	placeholder={{meta.placeholder}}>
 	</textarea>
+
+
+	<!-- Number:Up-down -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_NUMBER">
+
+        <button   
+        type="button"
+		class="btn btn-default btn-l btn-num" 
+		(click)="onClickIncreaseNumber($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-top"></span>
+        </button>
+        <button   
+        type="button"
+		class="btn btn-default btn-r btn-num" 
+		(click)="onClickDecreaseNumber($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-bottom"></span>
+        </button>
+		<input 
+		#inputNumber
+		(click)="onClick($event, inputNumber)"
+		(focus)="onFocus($event, inputNumber)"
+		(blur)="onBlur($event, inputNumber)"
+		(keyup)="onKeyup($event, inputNumber)"
+		(keydown.tab)="onKeydownTab($event)"
+		(keydown.shift.tab)="onKeydownTabShift($event)"
+		[(ngModel)]="ngModelInput"
+		value={{inputStrPrev}}
+		class="form-control input-glass input-num" 
+		placeholder={{meta.placeholder}}>
+	</div>
+
+	<!-- Number:Up-down / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_NUMBER">
+		Number Controller - Disabled
+	</div>
+
 	
 	<!-- icon - warning -->
-	<span 	*ngIf="!isValid"
-			class="glyphicon glyphicon-exclamation-sign warning"
-			aria-hidden="true"></span>
+	<span 	
+	*ngIf="!isValid"
+	[ngClass]="{'num-warning':meta.type == defaultType.TYPE_NUMBER,'text-warning':meta.type != defaultType.TYPE_NUMBER}"
+	class="glyphicon glyphicon-exclamation-sign warning">
+	</span>
 			
 	<!-- tooltip for input -->
-	<div 	*ngIf="meta.type == 'TYPE_INPUT'"
+	<div 	*ngIf="meta.type == defaultType.TYPE_INPUT"
 			[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
 			class="tooltip top" 
 			role="tooltip"> 
@@ -78,7 +117,7 @@
 	</div>
 
 	<!-- tooltip for textarea -->
-	<div 	*ngIf="meta.type == 'TYPE_TEXTAREA'"
+	<div 	*ngIf="meta.type == defaultType.TYPE_TEXTAREA"
 			[ngClass]="{'show-my-tooltip-ta':isShowTooltip,'hide-my-tooltip-ta':!isShowTooltip}"
 			class="tooltip top" 
 			role="tooltip"> 
@@ -89,6 +128,20 @@
 		<div 	class="tooltip-inner" 
 				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
 
-	</div>	
+	</div>
+
+	<!-- tooltip for textarea -->
+	<div 	*ngIf="meta.type == defaultType.TYPE_NUMBER"
+			[ngClass]="{'show-my-tooltip-num':isShowTooltip,'hide-my-tooltip-num':!isShowTooltip}"
+			class="tooltip top" 
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
+
+	</div>		
 
 </div>

@@ -980,13 +980,61 @@ export class MyCheckerService {
 
         } else if(this.TYPE_NUMBER === myChecker.type) {
 
-            if ('number' != typeof input) {
+            let inputNum:number = parseInt(input);
 
-                this.history.reason = "'number' != typeof input";
+            if ('number' != typeof inputNum) {
+
+                this.history.reason = "'number' != typeof inputNum";
                 this.history.success = false;
 
                 return false;
             }
+
+            let min:number = myChecker.min;
+            if((0 < min) && (inputNum < min)) {
+                this.history.reason = `inputNum:${inputNum} < min:${min}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${min} 이상이어야 합니다.`;
+                this.history.key = "min";
+                this.history.value = min;
+
+                return false;
+            }
+
+            let max:number = myChecker.max;
+            if((0 < max) && (max < inputNum)) {
+                this.history.reason = `max:${max} < inputNum:${inputNum}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${max} 이하이어야 합니다.`;
+                this.history.key = "max";
+                this.history.value = max;
+
+                return false;
+            }
+
+            // @ Deprecated - max과 동일
+            let lessThanEqualTo:number = myChecker.lessThanEqualTo;
+            if((0 < lessThanEqualTo) && (lessThanEqualTo < inputNum)) {
+                this.history.reason = `lessThanEqualTo:${lessThanEqualTo} < inputNum:${inputNum}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${lessThanEqualTo} 이하이어야 합니다.`;
+                this.history.key = "lessThanEqualTo";
+                this.history.value = lessThanEqualTo;
+
+                return false;
+            } // end if
+
+            // @ Deprecated - min과 동일
+            let greaterThanEqualTo:number = myChecker.greaterThanEqualTo;
+            if((0 < greaterThanEqualTo) && (inputNum < greaterThanEqualTo)) {
+                this.history.reason = `inputNum:${inputNum} < greaterThanEqualTo:${greaterThanEqualTo}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${greaterThanEqualTo} 이상이어야 합니다.`;
+                this.history.key = "greaterThanEqualTo";
+                this.history.value = greaterThanEqualTo;
+
+                return false;
+            } // end if
 
         } else if(this.TYPE_ARRAY === myChecker.type) {
 

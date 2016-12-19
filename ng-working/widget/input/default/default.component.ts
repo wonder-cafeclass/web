@@ -11,6 +11,7 @@ import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
 import { DefaultMeta }              from '../../../widget/input/default/model/default-meta';
+import { DefaultType }              from '../../../widget/input/default/model/default-type';
 
 import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
 
@@ -33,12 +34,16 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   private isFocus:boolean=false;
   private isValid:boolean=true;
   private myChecker:MyChecker;
+  defaultType:DefaultType;
 
   // @ User Custom
   @Input() meta:DefaultMeta;
   @Input() isDisabled:boolean=false;
+  @Input() isNoSpace:boolean=false;
   @Input() isShowTitle:boolean=true;
-  @Input() width:number=380;
+  @Input() width:number=-1;
+  @Input() numUnit:number=-1; // 숫자 변경시 최소 변경 단위.
+  widthStr:string="";
   
 
   constructor(  private myCheckerService:MyCheckerService,
@@ -59,6 +64,14 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       // public type:string
       ""
     );
+
+    if(0 < this.width) {
+      this.widthStr = this.width + "px";
+    } else {
+      this.widthStr = "100%";
+    }
+
+    this.defaultType = new DefaultType();
   } // end constructor
 
   ngOnInit(): void {
@@ -67,7 +80,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("default / ngOnInit / init");
 
-    this.emitEventOnReady();
+    this.asyncViewPack();
 
   }
 
@@ -77,8 +90,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("default / ngAfterViewInit");
-
-    this.asyncViewPack();
 
   }
 
@@ -115,8 +126,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     ); // end setReady
   }
   private setMyChecker() :void {
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / setMyChecker / 시작");
 
     if(null == this.myChecker) {
@@ -134,6 +145,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     this.setViewPack();
     // checker를 설정합니다.
     this.setMyChecker();
+    // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
+    this.emitEventOnReady();
   }
   public isNotOK(input:string) :boolean {
     return !this.isOK(input);
@@ -228,6 +241,65 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     } // end if
   } 
 
+  onClickIncreaseNumber(event) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / onClickIncreaseNumber / 시작");
+
+    if(0 < this.numUnit) {
+      this.updateInputNum(this.numUnit);
+    }
+
+  }
+
+  onClickDecreaseNumber(event) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / onClickDecreaseNumber / 시작");
+
+    if(0 < this.numUnit) {
+      this.updateInputNum(-1 * this.numUnit);
+    }
+
+  }
+
+  private updateInputNum(numAmountChanged:number):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / updateInputNum / 시작");
+    if(isDebug) console.log("default / updateInputNum / numAmountChanged : ",numAmountChanged);
+
+    let curNum:number = parseInt(this.ngModelInput);
+    let nextNum:number = curNum + numAmountChanged;
+
+    let error = null;
+    if(!this.isOK("" + nextNum)) {
+      if(isDebug) console.log("default / updateInputNum / 중단 / nextNum is not valid!");
+      error = this.myCheckerService.getLastHistory();
+    }
+    if(null != error) {
+      if(isDebug) console.log("default / updateInputNum / error : ",error);
+      this.showTooltipFailWarning(error.msg, false);
+      return;
+    }
+    this.hideWarningTooptip();
+
+    // 반드시 0 이상이어야 합니다.
+    if(0 <= nextNum) {
+      this.ngModelInput = this.inputStrPrev = "" + nextNum;
+      this.emitEventOnChange(this.ngModelInput);
+    } // end if
+  } // end method
+
   onFocus(event, element) :void {
     if(!this.isFocus) {
       this.isFocus = true;
@@ -283,7 +355,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       // public key:string
       this.meta.eventKey,
       // public value:string
-      null,
+      "",
       // public metaObj:any
       this,
       // public myChecker:MyChecker
@@ -389,10 +461,11 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   public showTooltipFailWarning(msg:string, isTimeout:Boolean) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;    
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;    
     if(isDebug) console.log("default / showTooltipFailWarning / init");
     if(isDebug) console.log("default / showTooltipFailWarning / msg : ",msg);
+    if(isDebug) console.log("default / showTooltipFailWarning / isTimeout : ",isTimeout);
 
     this.isShowTooltip = true;
     this.isFocus = true;
@@ -538,6 +611,12 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     event.stopPropagation();
     event.preventDefault();    
+
+    // wonder.jung
+
+    // 1. 숫자 입력
+
+    // 2. 문자 입력 
 
     let inputStr:string = elementInput.value;
 
