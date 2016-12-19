@@ -981,12 +981,28 @@ class Klass extends MY_REST_Controller {
             'klass_event_img_url_list'
         );
     }
+    private function get_level_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
+        );
+    }
     private function get_level_img_default()
     {
         return $this->my_paramchecker->get_const_from_list(
             'ALL', 
             'class_level_list', 
             'class_level_img_url_list'
+        );
+    }
+    private function get_days_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
         );
     }
     private function get_days_img_default()
@@ -997,6 +1013,14 @@ class Klass extends MY_REST_Controller {
             'class_level_img_url_list'
         );
     }
+    private function get_time_begin_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_list'
+        );    
+    }
     private function get_time_begin_img_default()
     {
         return $this->my_paramchecker->get_const_from_list(
@@ -1004,6 +1028,15 @@ class Klass extends MY_REST_Controller {
             'class_times_list',
             'class_times_img_url_list'
         );    
+    }
+    private function get_venue_subway_station_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'everywhere',
+            'class_venue_subway_station_list',
+            'class_venue_subway_station_list'
+        );        
+    
     }
     private function get_venue_subway_station_img_default()
     {
@@ -1024,15 +1057,23 @@ class Klass extends MY_REST_Controller {
         $klass_course->price = $klass_course->price_with_format = "0";
 
         // 기본 이미지 설정.
+        $klass_course->level =  
+        $this->get_level_default();
         $klass_course->level_img_url =  
         $this->get_level_img_default();
 
+        $klass_course->days = 
+        $this->get_days_default();
         $klass_course->days_img_url = 
         $this->get_days_img_default();
 
+        $klass_course->time_begin = 
+        $this->get_time_begin_default();
         $klass_course->time_begin_img_url = 
         $this->get_time_begin_img_default();
 
+        $klass_course->venue_subway_station = 
+        $this->get_venue_subway_station_default();
         $klass_course->venue_subway_station_img_url = 
         $this->get_venue_subway_station_img_default();
 
@@ -1229,6 +1270,7 @@ class Klass extends MY_REST_Controller {
         $klass_times_list = $const_map->class_times_list;
         $klass_times_eng_list = $const_map->class_times_eng_list;
         $klass_times_kor_list = $const_map->class_times_kor_list;
+        $class_times_hh_mm_list = $const_map->class_times_hh_mm_list;
         $klass_times_img_url_list = $const_map->class_times_img_url_list;
 
         // check list is valid
@@ -1250,8 +1292,16 @@ class Klass extends MY_REST_Controller {
             $name_eng = $klass_times_eng_list[$i];
             $name_kor = $klass_times_kor_list[$i];
             $img_url = $klass_times_img_url_list[$i];
+            $hh_mm = $class_times_hh_mm_list[$i];
 
-            $time_obj = new KlassTime($key, $name_eng, $name_kor, $img_url);
+            $time_obj = 
+            new KlassTime(
+                $key, 
+                $name_eng, 
+                $name_kor, 
+                $img_url, 
+                $hh_mm
+            );
 
             array_push($klass_time_list, $time_obj);
         }

@@ -33,6 +33,35 @@ var HelperMyIs = (function () {
         } // end for
         return copy;
     }; // end method
+    HelperMyIs.prototype.isSame = function (src, target) {
+        if (null == src || null == target) {
+            return false;
+        }
+        for (var key in src) {
+            if (null == target[key]) {
+                return false;
+            }
+            if (src[key] != target[key]) {
+                return false;
+            }
+        } // end for
+        return true;
+    };
+    HelperMyIs.prototype.isSharing = function (key, src, target) {
+        if (null == src || null == target) {
+            return false;
+        }
+        if (null == key || "" === key) {
+            return false;
+        }
+        if (null == src[key] || null == target[key]) {
+            return false;
+        }
+        if (src[key] != target[key]) {
+            return false;
+        }
+        return true;
+    };
     return HelperMyIs;
 }());
 exports.HelperMyIs = HelperMyIs;

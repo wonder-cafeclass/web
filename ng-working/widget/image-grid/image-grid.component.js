@@ -25,6 +25,7 @@ var ImageGridComponent = (function () {
         this.handleType = "";
         this.gridWidth = 100;
         this.isDisabled = false;
+        this.tdWidthStr = "";
     }
     ImageGridComponent.prototype.ngOnInit = function () {
         this.init();
@@ -63,6 +64,10 @@ var ImageGridComponent = (function () {
             } // end if
         } // end outer for
         this.gridWidth = this.imageWidth * colCnt;
+        this.tdWidthStr = "10%";
+        if (0 < this.imageWidth) {
+            this.tdWidthStr = this.imageWidth + "px";
+        }
         if (0 < this.tableWidth) {
             this.tableWidthStr = this.tableWidth + "px";
         }

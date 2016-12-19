@@ -22,6 +22,7 @@ import { MyLoggerService }                 from '../util/service/my-logger.servi
 import { MyEventWatchTowerService }        from '../util/service/my-event-watchtower.service';
 import { MyCheckerService }                from '../util/service/my-checker.service';
 import { MyResponse }                      from '../util/model/my-response';
+import { HelperMyIs }                      from '../util/helper/my-is';
 
 import { UserService }                     from '../users/service/user.service';
 import { User }                            from '../users/model/user';
@@ -49,6 +50,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   private apiKey:string;
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
+
+  private helperMyIs:HelperMyIs;
 
   constructor(
     private klassService:KlassService,
@@ -538,31 +541,85 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     }
 
     this.keywordMap = {};
-
+    
     let klassDays = selectile.klassDays;
     for (let i = 0; i < klassDays.length; ++i) {
-      var curObj:KlassDay = klassDays[i];
-      this.keywordMap[curObj.name_kor] = curObj;
-      this.keywordMap[curObj.name_eng] = curObj;
+      // wonder.jung
+      let curObj = klassDays[i];
+      let klassDay:KlassDay = 
+      new KlassDay(
+        // public key: string,
+        curObj["key"],
+        // public name_eng: string,
+        curObj["name_eng"],
+        // public name_kor: string,
+        curObj["name_kor"],
+        // public img_url: string
+        curObj["img_url"]
+      );
+
+      this.keywordMap[klassDay.name_kor] = klassDay;
+      this.keywordMap[klassDay.name_eng] = klassDay;
     }
     let klassLevels = selectile.klassLevels;
     for (let i = 0; i < klassLevels.length; ++i) {
-      var curObj:KlassLevel = klassLevels[i];
-      this.keywordMap[curObj.name_kor] = curObj;
-      this.keywordMap[curObj.name_eng] = curObj;
+      // wonder.jung
+      let curObj = klassLevels[i];
+      let klassLevel:KlassLevel =
+      new KlassLevel(
+        // public key: string,
+        curObj["key"],
+        // public name_eng: string,
+        curObj["name_eng"],
+        // public name_kor: string,
+        curObj["name_kor"],
+        // public img_url: string
+        curObj["img_url"]
+      );      
+
+      this.keywordMap[klassLevel.name_kor] = klassLevel;
+      this.keywordMap[klassLevel.name_eng] = klassLevel;
     }
     let klassStations = selectile.klassStations;
     for (let i = 0; i < klassStations.length; ++i) {
-      var curObj:KlassStation = klassStations[i];
-      this.keywordMap[curObj.name_kor] = curObj;
-      this.keywordMap[curObj.name_eng] = curObj;
+      // wonder.jung
+      let curObj = klassStations[i];
+      let klassStation:KlassStation =
+      new KlassStation(
+        // public key: string,
+        curObj["key"],
+        // public name_eng: string,
+        curObj["name_eng"],
+        // public name_kor: string,
+        curObj["name_kor"],
+        // public img_url: string
+        curObj["img_url"]
+      );      
+
+      this.keywordMap[klassStation.name_kor] = klassStation;
+      this.keywordMap[klassStation.name_eng] = klassStation;
     }
 
     let klassTimes = selectile.klassTimes;
     for (let i = 0; i < klassTimes.length; ++i) {
-      var curObj:KlassTime = klassTimes[i];
-      this.keywordMap[curObj.name_kor] = curObj;
-      this.keywordMap[curObj.name_eng] = curObj;
+      // wonder.jung
+      let curObj = klassTimes[i];
+      let klassTime:KlassTime = 
+      new KlassTime(
+        // public key: string,
+        curObj["key"],
+        // public name_eng: string,
+        curObj["name_eng"],
+        // public name_kor: string,
+        curObj["name_kor"],
+        // public hh_mm: string,
+        curObj["hh_mm"],
+        // public img_url: string
+        curObj["img_url"]
+      ); 
+
+      this.keywordMap[klassTime.name_kor] = klassTime;
+      this.keywordMap[klassTime.name_eng] = klassTime;
     }
 
   }

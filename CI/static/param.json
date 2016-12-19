@@ -133,6 +133,7 @@
 		"class_times_range_list":[0,7,12,14,19],
 		"class_times_eng_list":["Always","Morning","Noon","Afternoon","Evening"],
 		"class_times_kor_list":["모든 시간","오전","점심","오후","저녁"],
+		"class_times_hh_mm_list":["00:00","10:00","13:00","16:00","19:00"],
 		"class_times_img_url_list":[
 			"assets/images/time/always.svg",
 			"assets/images/time/morning.svg",

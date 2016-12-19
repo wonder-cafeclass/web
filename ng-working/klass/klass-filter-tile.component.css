@@ -9,7 +9,7 @@
 }
 .selectile-img:hover {
     border: 2px dotted #e85c41;
-    border-radius: 25px;
+    border-radius: 50%;
 }
 .selectile-container {
     float: left;
@@ -194,17 +194,3 @@
     top: 49px;
     left: 47px;
 }
-
-
-
-
-/*
-- REMOVE ME
-.cc-img-filter {
-    height:40px;
-    width:40px;
-    z-index: 2000;
-    margin-right: 10px;
-}
-
-*/

@@ -115,6 +115,7 @@ export class MyEventService {
     KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
+    KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";           // 수업 - 장소, 레벨, 요일, 시간
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

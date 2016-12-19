@@ -33,6 +33,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
   gridWidth:number=100;
   isDisabled:boolean=false;
 
+  tdWidthStr:string="";
+
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService ) {}
 
@@ -83,6 +85,11 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
     } // end outer for
 
     this.gridWidth = this.imageWidth * colCnt;
+    this.tdWidthStr = "10%";
+    if(0 < this.imageWidth) {
+      this.tdWidthStr = this.imageWidth + "px";
+    }
+
 
     if(0 < this.tableWidth) {
       this.tableWidthStr=`${this.tableWidth}px`;

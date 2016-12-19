@@ -11,10 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var klass_1 = require('../model/klass');
+var klass_level_1 = require('../model/klass-level');
+var klass_station_1 = require('../model/klass-station');
+var klass_day_1 = require('../model/klass-day');
+var klass_time_1 = require('../model/klass-time');
 var klass_venue_1 = require('../model/klass-venue');
 var url_service_1 = require('../../util/url.service');
 var my_extractor_1 = require('../../util/http/my-extractor');
 var my_request_1 = require('../../util/http/my-request');
+var my_array_1 = require('../../util/helper/my-array');
 var KlassService = (function () {
     function KlassService(http, urlService) {
         this.http = http;
@@ -37,6 +42,7 @@ var KlassService = (function () {
         this.dirPathKlassBanner = "/assets/images/class/banner";
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
+        this.myArray = new my_array_1.HelperMyArray();
     }
     KlassService.prototype.updateKlassTitle = function (apiKey, userId, klassId, klassTitle) {
         var isDebug = true;
@@ -522,11 +528,317 @@ var KlassService = (function () {
         klass.date_updated = klassJSON.date_updated;
         return klass;
     }; // end method
+    KlassService.prototype.getKlassLevel = function (constMap, key) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / getKlassLevel / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlassLevel / constMap : ", constMap);
+        if (isDebug)
+            console.log("klass.service / getKlassLevel / key : ", key);
+        if (null == constMap) {
+            if (isDebug)
+                console.log("klass.service / getKlassLevel / 중단 / null == constMap");
+            return null;
+        }
+        if (null == key || "" === key) {
+            // 지정된 값이 없다면 첫번째 값을 돌려줍니다.
+            key = constMap.class_level_list[0];
+        }
+        var class_level_img_url = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_level_list, 
+        // targetList:string[]
+        constMap.class_level_img_url_list);
+        if (null == class_level_img_url || "" === class_level_img_url) {
+            if (isDebug)
+                console.log("klass.service / getKlassLevel / 중단 / class_level_img_url is not valid!");
+            return null;
+        } // end if
+        var class_level_eng = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_level_list, 
+        // targetList:string[]
+        constMap.class_level_eng_list);
+        if (null == class_level_eng || "" === class_level_eng) {
+            if (isDebug)
+                console.log("klass.service / getKlassLevel / 중단 / class_level_eng is not valid!");
+            return null;
+        } // end if
+        var class_level_kor = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_level_list, 
+        // targetList:string[]
+        constMap.class_level_kor_list);
+        if (null == class_level_kor || "" === class_level_kor) {
+            if (isDebug)
+                console.log("klass.service / getKlassLevel / 중단 / class_level_kor is not valid!");
+            return null;
+        } // end if
+        var klassLevel = new klass_level_1.KlassLevel(
+        // public key: string,
+        key, 
+        // public name_eng: string,
+        class_level_eng, 
+        // public name_kor: string,
+        class_level_kor, 
+        // public img_url: string  
+        class_level_img_url);
+        if (null == klassLevel) {
+            if (isDebug)
+                console.log("klass.service / getKlassLevel / 중단 / klassLevel is not valid!");
+            return null;
+        } // end if
+        return klassLevel;
+    };
+    KlassService.prototype.getKlassStation = function (constMap, key) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / getKlassStation / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlassStation / constMap : ", constMap);
+        if (isDebug)
+            console.log("klass.service / getKlassStation / key : ", key);
+        if (null == constMap) {
+            if (isDebug)
+                console.log("klass.service / getKlassStation / 중단 / null == constMap");
+            return null;
+        }
+        if (null == key || "" === key) {
+            // 지정된 값이 없다면 첫번째 값을 돌려줍니다.
+            key = constMap.class_venue_subway_station_list[0];
+        }
+        var class_venue_subway_station_img_url = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_venue_subway_station_list, 
+        // targetList:string[]
+        constMap.class_venue_subway_station_img_url_list);
+        if (null == class_venue_subway_station_img_url || "" === class_venue_subway_station_img_url) {
+            if (isDebug)
+                console.log("klass.service / getKlassStation / 중단 / class_venue_subway_station_img_url is not valid!");
+            return null;
+        } // end if
+        var class_venue_subway_station_eng = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_venue_subway_station_list, 
+        // targetList:string[]
+        constMap.class_venue_subway_station_eng_list);
+        if (null == class_venue_subway_station_eng || "" === class_venue_subway_station_eng) {
+            if (isDebug)
+                console.log("klass.service / getKlassStation / 중단 / class_venue_subway_station_eng is not valid!");
+            return null;
+        } // end if
+        var class_venue_subway_station_kor = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_venue_subway_station_list, 
+        // targetList:string[]
+        constMap.class_venue_subway_station_kor_list);
+        if (null == class_venue_subway_station_kor || "" === class_venue_subway_station_kor) {
+            if (isDebug)
+                console.log("klass.service / getKlassStation / 중단 / class_venue_subway_station_kor is not valid!");
+            return null;
+        } // end if
+        var klassStation = new klass_station_1.KlassStation(
+        // public key: string,
+        key, 
+        // public name_eng: string,
+        class_venue_subway_station_eng, 
+        // public name_kor: string,
+        class_venue_subway_station_kor, 
+        // public img_url: string  
+        class_venue_subway_station_img_url);
+        if (null == klassStation) {
+            if (isDebug)
+                console.log("klass.service / getKlassStation / 중단 / klassStation is not valid!");
+            return null;
+        } // end if
+        return klassStation;
+    };
+    KlassService.prototype.getKlassDay = function (constMap, key) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / getKlassDay / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlassDay / constMap : ", constMap);
+        if (isDebug)
+            console.log("klass.service / getKlassDay / key : ", key);
+        if (null == constMap) {
+            if (isDebug)
+                console.log("klass.service / getKlassDay / 중단 / null == constMap");
+            return null;
+        }
+        if (null == key || "" === key) {
+            // 지정된 값이 없다면 첫번째 값을 돌려줍니다.
+            key = constMap.class_days_list[0];
+        }
+        var class_days_img_url = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_days_list, 
+        // targetList:string[]
+        constMap.class_days_img_url_list);
+        if (null == class_days_img_url || "" === class_days_img_url) {
+            if (isDebug)
+                console.log("klass.service / getKlassDay / 중단 / class_days_img_url is not valid!");
+            return null;
+        } // end if
+        var class_days_eng = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_days_list, 
+        // targetList:string[]
+        constMap.class_days_eng_list);
+        if (null == class_days_eng || "" === class_days_eng) {
+            if (isDebug)
+                console.log("klass.service / getKlassDay / 중단 / class_days_eng is not valid!");
+            return null;
+        } // end if
+        var class_days_kor = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_days_list, 
+        // targetList:string[]
+        constMap.class_days_kor_list);
+        if (null == class_days_kor || "" === class_days_kor) {
+            if (isDebug)
+                console.log("klass.service / getKlassDay / 중단 / class_days_kor is not valid!");
+            return null;
+        } // end if
+        var klassday = new klass_day_1.KlassDay(
+        // public key: string,
+        key, 
+        // public name_eng: string,
+        class_days_eng, 
+        // public name_kor: string,
+        class_days_kor, 
+        // public img_url: string  
+        class_days_img_url);
+        if (null == klassday) {
+            if (isDebug)
+                console.log("klass.service / getKlassDay / 중단 / klassday is not valid!");
+            return null;
+        } // end if
+        return klassday;
+    };
+    KlassService.prototype.getKlassTime = function (constMap, key) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / getKlassTime / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlassTime / constMap : ", constMap);
+        if (isDebug)
+            console.log("klass.service / getKlassTime / key : ", key);
+        if (null == constMap) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / null == constMap");
+            return null;
+        }
+        if (null == key || "" === key) {
+            // 지정된 값이 없다면 첫번째 값을 돌려줍니다.
+            key = constMap.class_times_hh_mm_list[0];
+        }
+        var class_times = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_times_hh_mm_list, 
+        // targetList:string[]
+        constMap.class_times_list);
+        if (null == class_times || "" === class_times) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / class_times is not valid!");
+            return null;
+        } // end if    
+        var class_times_img_url = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_times_hh_mm_list, 
+        // targetList:string[]
+        constMap.class_times_img_url_list);
+        if (null == class_times_img_url || "" === class_times_img_url) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / class_times_img_url is not valid!");
+            return null;
+        } // end if
+        var class_times_eng = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_times_hh_mm_list, 
+        // targetList:string[]
+        constMap.class_times_eng_list);
+        if (null == class_times_eng || "" === class_times_eng) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / class_times_eng is not valid!");
+            return null;
+        } // end if
+        var class_times_kor = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_times_hh_mm_list, 
+        // targetList:string[]
+        constMap.class_times_kor_list);
+        if (null == class_times_kor || "" === class_times_kor) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / class_times_kor is not valid!");
+            return null;
+        } // end if
+        var class_hh_mm = this.myArray.getValueFromLists(
+        // key:string, 
+        key, 
+        // srcList:string[], 
+        constMap.class_times_hh_mm_list, 
+        // targetList:string[]
+        constMap.class_times_hh_mm_list);
+        if (null == class_hh_mm || "" === class_hh_mm) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / class_hh_mm is not valid!");
+            return null;
+        } // end if    
+        var klassTime = new klass_time_1.KlassTime(
+        // public key: string,
+        class_times, 
+        // public name_eng: string,
+        class_times_eng, 
+        // public name_kor: string,
+        class_times_kor, 
+        // public hh_mm: string,
+        class_hh_mm, 
+        // public img_url: string  
+        class_times_img_url);
+        if (null == klassTime) {
+            if (isDebug)
+                console.log("klass.service / getKlassTime / 중단 / klassTime is not valid!");
+            return null;
+        } // end if
+        return klassTime;
+    }; // end method
     KlassService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, url_service_1.UrlService])
     ], KlassService);
     return KlassService;
 }());
-exports.KlassService = KlassService;
+exports.KlassService = KlassService; // end class
 //# sourceMappingURL=klass.service.js.map

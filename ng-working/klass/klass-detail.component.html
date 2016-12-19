@@ -116,7 +116,9 @@
 
           <!-- PRICE ADMIN INIT -->
           <!-- Default Input : Number -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="isAdmin && isTeacher" 
+          class="list-group-item col-next">
             <widget-input-default
             [width]="-1"
             [isNoSpace]="true"
@@ -128,15 +130,30 @@
           </li>
           <!-- PRICE ADMIN DONE -->
 
-
-          <!-- FILTERS -->
-          <!--
+          <!-- FILTERS INIT -->
           <li class="list-group-item col-next">
-            <image-grid [imageTable]="selectileImageTable"
-                        [imageHeight]="selectileImageHeight"
-                        [imageWidth]="selectileImageWidth"
-                        [hasTableBorder]="true"></image-grid>
+            <div class="box-selectile-show">
+              <image-grid [imageTable]="selectileImageTable"
+                          [imageHeight]="selectileImageHeight"
+                          [imageWidth]="selectileImageWidth"
+                          [hasTableBorder]="false">
+              </image-grid>
+            </div>
           </li>
+          <!-- FILTERS DONE -->
+  
+          <!-- FILTERS ADMIN INIT -->
+          <li class="list-group-item col-next">
+            <div class="box-selectile">
+              <div class="pin-selectile">
+                <klass-filter-tile
+                [elementWidth]="60"
+                (emitter)="onChangedFromChild($event)">
+                </klass-filter-tile>
+              </div>
+            </div>
+          </li>
+          <!-- FILTERS ADMIN DONE -->
 
           <!-- COURSE TIME INIT -->
           <!--

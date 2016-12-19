@@ -48,6 +48,48 @@ export class HelperMyIs {
 		
 	} // end method
 
+	isSame(src:any, target:any) :boolean {
+
+		if(null == src || null == target) {
+			return false;
+		}
+
+        for(var key in src) {
+
+        	if(null == target[key]) {
+        		return false;
+        	}
+
+        	if(src[key] != target[key]) {
+        		return false;
+        	}
+
+        } // end for
+
+
+		return true;
+
+	}
+
+	isSharing(key:string, src:any, target:any) :boolean {
+
+		if(null == src || null == target) {
+			return false;
+		}
+		if(null == key || "" ===  key) {
+			return false;
+		}
+		if(null == src[key] || null == target[key]) {
+			return false;
+		}
+    	if(src[key] != target[key]) {
+    		return false;
+    	}
+
+		return true;
+
+	}	
+
 }
 
 /*

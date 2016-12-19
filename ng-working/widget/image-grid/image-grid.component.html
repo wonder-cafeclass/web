@@ -6,7 +6,10 @@
   <tbody>
 
     <tr *ngFor="let row of imageTable">
-      <td *ngFor="let field of row" class="td-layout" [style.width]="'10%'">
+      <td 
+      *ngFor="let field of row; let isLast=last" 
+      class="td-layout" 
+      [style.width]="(!isLast)?tdWidthStr:'100%'">
 
         <button *ngIf="isAdmin && handleType=='button'"
                 (click)="onClickDelete($event, field)"

@@ -103,6 +103,7 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE = "KEY_KLASS_PRICE"; // 수업 - 수업 가격
         this.KEY_KLASS_POSTER = "KEY_KLASS_POSTER"; // 수업 - 포스터 이미지
         this.KEY_KLASS_BANNER = "KEY_KLASS_BANNER"; // 수업 - 배너 이미지
+        this.KEY_KLASS_SELECTILE = "KEY_KLASS_SELECTILE"; // 수업 - 장소, 레벨, 요일, 시간
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

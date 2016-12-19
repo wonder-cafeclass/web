@@ -58,6 +58,44 @@ var HelperMyArray = (function () {
         arrStr.push(value);
         return arrStr;
     };
+    HelperMyArray.prototype.getValueFromLists = function (key, srcList, targetList) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-array / getValueFromLists / 시작");
+        if (null == key || "" === key) {
+            if (isDebug)
+                console.log("my-array / getValueFromLists / 중단 / key is not valid!");
+            return "";
+        }
+        if (null == srcList || 0 === srcList.length) {
+            if (isDebug)
+                console.log("my-array / getValueFromLists / 중단 / srcList is not valid!");
+            return "";
+        }
+        if (null == targetList || 0 === targetList.length) {
+            if (isDebug)
+                console.log("my-array / getValueFromLists / 중단 / targetList is not valid!");
+            return "";
+        }
+        if (srcList.length !== targetList.length) {
+            if (isDebug)
+                console.log("my-array / getValueFromLists / 중단 / srcList.length !== targetList.length");
+            return "";
+        }
+        if (this.hasNotStr(srcList, key)) {
+            if (isDebug)
+                console.log("my-array / getValueFromLists / 중단 / this.hasNotStr(srcList, key)");
+            return "";
+        }
+        for (var i = 0; i < srcList.length; ++i) {
+            var keyFromList = srcList[i];
+            if (keyFromList === key) {
+                return targetList[i];
+            }
+        }
+        return "";
+    };
     return HelperMyArray;
 }());
 exports.HelperMyArray = HelperMyArray;

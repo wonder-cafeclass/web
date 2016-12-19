@@ -96,6 +96,22 @@ table.pricetag {
     top: 5px;
     left: 3px;    
 }
+div.box-selectile {
+    height: 72px;
+    width: 385px;
+    border:solid 1px #e85c41;
+    border-radius: 5px;
+}
+div.pin-selectile {
+    position: relative;
+    top: -11px;
+    left: -26px;    
+}
+div.box-selectile-show {
+    padding: 5px;
+    border:solid 1px #e85c41;
+    border-radius: 5px;    
+}
 
 
 

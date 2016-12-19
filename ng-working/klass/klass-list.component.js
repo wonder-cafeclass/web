@@ -13,6 +13,10 @@ var router_1 = require('@angular/router');
 var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./service/klass.service');
 var url_service_1 = require('../util/url.service');
+var klass_level_1 = require('./model/klass-level');
+var klass_station_1 = require('./model/klass-station');
+var klass_day_1 = require('./model/klass-day');
+var klass_time_1 = require('./model/klass-time');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
@@ -434,27 +438,69 @@ var KlassListComponent = (function () {
         this.keywordMap = {};
         var klassDays = selectile.klassDays;
         for (var i = 0; i < klassDays.length; ++i) {
+            // wonder.jung
             var curObj = klassDays[i];
-            this.keywordMap[curObj.name_kor] = curObj;
-            this.keywordMap[curObj.name_eng] = curObj;
+            var klassDay = new klass_day_1.KlassDay(
+            // public key: string,
+            curObj["key"], 
+            // public name_eng: string,
+            curObj["name_eng"], 
+            // public name_kor: string,
+            curObj["name_kor"], 
+            // public img_url: string
+            curObj["img_url"]);
+            this.keywordMap[klassDay.name_kor] = klassDay;
+            this.keywordMap[klassDay.name_eng] = klassDay;
         }
         var klassLevels = selectile.klassLevels;
         for (var i = 0; i < klassLevels.length; ++i) {
+            // wonder.jung
             var curObj = klassLevels[i];
-            this.keywordMap[curObj.name_kor] = curObj;
-            this.keywordMap[curObj.name_eng] = curObj;
+            var klassLevel = new klass_level_1.KlassLevel(
+            // public key: string,
+            curObj["key"], 
+            // public name_eng: string,
+            curObj["name_eng"], 
+            // public name_kor: string,
+            curObj["name_kor"], 
+            // public img_url: string
+            curObj["img_url"]);
+            this.keywordMap[klassLevel.name_kor] = klassLevel;
+            this.keywordMap[klassLevel.name_eng] = klassLevel;
         }
         var klassStations = selectile.klassStations;
         for (var i = 0; i < klassStations.length; ++i) {
+            // wonder.jung
             var curObj = klassStations[i];
-            this.keywordMap[curObj.name_kor] = curObj;
-            this.keywordMap[curObj.name_eng] = curObj;
+            var klassStation = new klass_station_1.KlassStation(
+            // public key: string,
+            curObj["key"], 
+            // public name_eng: string,
+            curObj["name_eng"], 
+            // public name_kor: string,
+            curObj["name_kor"], 
+            // public img_url: string
+            curObj["img_url"]);
+            this.keywordMap[klassStation.name_kor] = klassStation;
+            this.keywordMap[klassStation.name_eng] = klassStation;
         }
         var klassTimes = selectile.klassTimes;
         for (var i = 0; i < klassTimes.length; ++i) {
+            // wonder.jung
             var curObj = klassTimes[i];
-            this.keywordMap[curObj.name_kor] = curObj;
-            this.keywordMap[curObj.name_eng] = curObj;
+            var klassTime = new klass_time_1.KlassTime(
+            // public key: string,
+            curObj["key"], 
+            // public name_eng: string,
+            curObj["name_eng"], 
+            // public name_kor: string,
+            curObj["name_kor"], 
+            // public hh_mm: string,
+            curObj["hh_mm"], 
+            // public img_url: string
+            curObj["img_url"]);
+            this.keywordMap[klassTime.name_kor] = klassTime;
+            this.keywordMap[klassTime.name_eng] = klassTime;
         }
     };
     KlassListComponent.prototype.searchKeywordMap = function (keyword) {
