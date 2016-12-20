@@ -1,6 +1,6 @@
 import {  Component, OnInit, Input }      from '@angular/core';
 import { ImageService }                   from '../../util/image.service';
-import { ClockTime }                      from './model/clock-time';
+import { MyClockTime }                    from '../../util/model/my-clock-time';
 
 /*
 * @ Desc   : 시간을 나타내주는 원형 시계 컴포넌트, 시작 시간과 종료 시간을 작은 List로 나타내주는 시계 리스트를 담고 있는 컨테이너 컴포넌트입니다.
@@ -17,8 +17,8 @@ export class ClockDigitalComponent implements OnInit {
 
   @Input() clockHeight:number=83;
   @Input() clockWidth:number=83;
-  @Input() clockTimeBegin:ClockTime;
-  @Input() clockTimeEnd:ClockTime;
+  @Input() clockTimeBegin:MyClockTime;
+  @Input() clockTimeEnd:MyClockTime;
   @Input() is24:boolean=false;
 
   rowHeight:number=0;

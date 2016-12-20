@@ -1,4 +1,5 @@
 "use strict";
+var my_clock_time_1 = require('../model/my-clock-time');
 /*
 *	@ Desc : 시간 관련 함수 모음
 */
@@ -36,6 +37,37 @@ var HelperMyTime = (function () {
             return hours + ":" + minutes;
         }
         return "";
+    }; // end method
+    HelperMyTime.prototype.getDiffMinutesHHMM = function (headHHMM, tailHHMM) {
+        if (null == headHHMM || "" === headHHMM) {
+            return -1;
+        }
+        if (this.isNotHHMM(headHHMM)) {
+            return -1;
+        }
+        if (null == tailHHMM || "" === tailHHMM) {
+            return -1;
+        }
+        if (this.isNotHHMM(tailHHMM)) {
+            return -1;
+        }
+        var headDate = this.getDateFromHHMM(headHHMM);
+        if (null == headDate) {
+            return -1;
+        }
+        var tailDate = this.getDateFromHHMM(tailHHMM);
+        if (null == tailDate) {
+            return -1;
+        }
+        return this.getDiffMinutes(headDate, tailDate);
+    };
+    HelperMyTime.prototype.getDiffMinutes = function (head, tail) {
+        var minutes = 60 * 1000;
+        return Math.abs((head.getTime() - tail.getTime()) / minutes);
+    };
+    HelperMyTime.prototype.getDiffHours = function (head, tail) {
+        var hour = 60 * 60 * 1000;
+        return Math.abs((head.getTime() - tail.getTime()) / hour);
     };
     HelperMyTime.prototype.addHoursHHMM = function (hhmm, hours) {
         // let isDebug:boolean = true;
@@ -237,6 +269,10 @@ var HelperMyTime = (function () {
         if (null == time_str || "" === time_str) {
             return false;
         }
+        var res = time_str.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):[0-5]0$/gi);
+        if (null === res || !(0 < res.length)) {
+            return false;
+        }
         // 17:11 의 포맷인지 확인합니다.
         var time_arr = time_str.split(":");
         if (time_arr == null ||
@@ -252,6 +288,63 @@ var HelperMyTime = (function () {
             return "0" + target_number;
         }
         return "" + target_number;
+    };
+    HelperMyTime.prototype.getClockTime = function (hhmm) {
+        if (this.isNotHHMM(hhmm)) {
+            return null;
+        }
+        // 1. ex) 16:00 24시간 형태로 인자를 받습니다.
+        var hhmmfragments = hhmm.split(":");
+        var hoursStr = hhmmfragments[0];
+        var hours = parseInt(hoursStr);
+        var minutesStr = hhmmfragments[1];
+        var minutes = parseInt(minutesStr);
+        var totalMinutes = 60 * hours + minutes;
+        var hoursForRotate = hours;
+        var isAM = true;
+        var hhmm24 = hhmm;
+        var hhmm12 = "\uC624\uC804 " + hoursStr + ":" + minutesStr;
+        if (12 <= hoursForRotate) {
+            // 오후 시간대 표시
+            hoursForRotate -= 12;
+            var hoursIn12 = "" + hoursForRotate;
+            if (0 == hoursForRotate) {
+                // 낮 12시인 경우.
+                hoursIn12 = "12";
+                hhmm12 = "\uB0AE " + hoursIn12 + ":" + minutesStr;
+            }
+            else if (0 < hoursForRotate && hoursForRotate < 3) {
+                hoursIn12 = "0" + hoursForRotate;
+                hhmm12 = "\uB0AE " + hoursIn12 + ":" + minutesStr;
+            }
+            else if (3 <= hoursForRotate && hoursForRotate < 6) {
+                hoursIn12 = "0" + hoursForRotate;
+                hhmm12 = "\uC624\uD6C4 " + hoursIn12 + ":" + minutesStr;
+            }
+            else if (6 <= hoursForRotate && hoursForRotate < 9) {
+                // 저녁 시간을 나타냄. 오후 6시부터 저녁
+                hoursIn12 = "0" + hoursForRotate;
+                hhmm12 = "\uC800\uB141 " + hoursIn12 + ":" + minutesStr;
+            }
+            else if (9 <= hoursForRotate) {
+                // 밤 시간을 나타냄. 밤은 9시부터...
+                if (hoursForRotate < 10) {
+                    hoursIn12 = "0" + hoursForRotate;
+                }
+                hhmm12 = "\uBC24 " + hoursIn12 + ":" + minutesStr;
+            }
+            isAM = false;
+        }
+        var clockTimeObj = new my_clock_time_1.MyClockTime();
+        clockTimeObj.hhmm = hhmm;
+        clockTimeObj.hours = hours;
+        clockTimeObj.minutes = minutes;
+        clockTimeObj.totalMinutes = totalMinutes;
+        clockTimeObj.hoursForRotate = hoursForRotate;
+        clockTimeObj.isAM = isAM;
+        clockTimeObj.hhmm24 = hhmm24;
+        clockTimeObj.hhmm12 = hhmm12;
+        return clockTimeObj;
     };
     return HelperMyTime;
 }());

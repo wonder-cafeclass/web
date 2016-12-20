@@ -9,8 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var clock_component_1 = require('./clock.component');
+var clock_digital_component_1 = require('./clock-digital.component');
 var image_service_1 = require('../../util/image.service');
-var clock_time_1 = require('./model/clock-time');
+var my_time_1 = require('../../util/helper/my-time');
 /*
 * @ Desc   : 시간을 나타내주는 원형 시계 컴포넌트, 시작 시간과 종료 시간을 작은 List로 나타내주는 시계 리스트를 담고 있는 컨테이너 컴포넌트입니다.
 * @ Author : Wonder Jung
@@ -23,11 +25,15 @@ var ClockBoardComponent = (function () {
         this.simpleClockHeight = 82;
         this.clockDigitalHeight = 83;
         this.dcLeftMargin = 10;
+        this.myTime = new my_time_1.HelperMyTime();
     }
     ClockBoardComponent.prototype.ngOnInit = function () {
         // Do something
-        this.clockTimeBegin = this.getClockTime(this.klassTimeBegin);
-        this.clockTimeEnd = this.getClockTime(this.klassTimeEnd);
+        if (this.isNotSafeTimeRange(this.klassTimeBegin, this.klassTimeEnd)) {
+            return;
+        } // end if
+        this.clockTimeBegin = this.myTime.getClockTime(this.klassTimeBegin);
+        this.clockTimeEnd = this.myTime.getClockTime(this.klassTimeEnd);
         this.dcLeftMargin = Math.round(this.clockHeight / 2);
         this.simpleClockHeight = this.clockHeight - 1;
         this.clockDigitalHeight = this.clockHeight;
@@ -37,64 +43,57 @@ var ClockBoardComponent = (function () {
         }
         else {
             this.clockDigitalWidthStr = "100%";
+        } // end if
+    }; // end method
+    ClockBoardComponent.prototype.isNotSafeTimeRange = function (hhmmBegin, hhmmEnd) {
+        return !this.isSafeTimeRange(hhmmBegin, hhmmEnd);
+    }; // end method
+    ClockBoardComponent.prototype.isSafeTimeRange = function (hhmmBegin, hhmmEnd) {
+        if (this.myTime.isNotHHMM(hhmmBegin)) {
+            return false;
         }
-    };
-    ClockBoardComponent.prototype.getClockTime = function (time_hh_mm) {
-        if (null === time_hh_mm || "" === time_hh_mm) {
-            return null;
+        if (this.myTime.isNotHHMM(hhmmEnd)) {
+            return false;
         }
-        // 0. 유효한 시간값인지 검사합니다.
-        // ex) 07:30, 08:00, 07:40, 08:10, 처럼 10분 단위까지 허용합니다. - 퇴근 시간이후롤 노린 마케팅 목적도 있음.
-        // 23:00 ~ 25:00 처럼 순방향 진행은 24시를 넘는 표현도 허용합니다.
-        // 23:00 ~ 01:00 는 오류로 처리합니다.
-        var res = time_hh_mm.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):[0-5]0$/gi);
-        if (null === res || !(0 < res.length)) {
-            console.log("유효한 시간 값이 아닙니다.", time_hh_mm);
-            return null;
+        var diffMinutes = this.myTime.getDiffMinutesHHMM(hhmmBegin, hhmmEnd);
+        // 최대 표현할 수 있는 시간 범위인지 확인한다.
+        // 1hr/1hr 30mins/2hr/2hr 30mins/3hr
+        if (!(60 <= diffMinutes && diffMinutes <= 180)) {
+            return false;
         }
-        // 1. ex) 16:00 24시간 형태로 인자를 받습니다.
-        var time_hh_mm_fragments = time_hh_mm.split(":");
-        var hoursStr = time_hh_mm_fragments[0];
-        var hours = parseInt(hoursStr);
-        var minutesStr = time_hh_mm_fragments[1];
-        var minutes = parseInt(minutesStr);
-        var totalMinutes = 60 * hours + minutes;
-        var hoursForRotate = hours;
-        var isAM = true;
-        var time_hh_mm_24 = time_hh_mm;
-        var time_hh_mm_12 = "\uC624\uC804 " + hoursStr + ":" + minutesStr;
-        if (12 <= hoursForRotate) {
-            hoursForRotate -= 12;
-            var hoursIn12 = "" + hoursForRotate;
-            if (hoursForRotate == 0 || hoursForRotate <= 2) {
-                // 낮 12시인 경우.
-                hoursIn12 = "12";
-                time_hh_mm_12 = "\uB0AE " + hoursIn12 + ":" + minutesStr;
-            }
-            else if (9 <= hoursForRotate) {
-                // 밤 시간을 나타냄. 밤은 9시부터...
-                if (hoursForRotate < 10) {
-                    hoursIn12 = "0" + hoursForRotate;
-                }
-                time_hh_mm_12 = "\uBC24 " + hoursIn12 + ":" + minutesStr;
-            }
-            else if (hoursForRotate < 10) {
-                hoursIn12 = "0" + hoursForRotate;
-                time_hh_mm_12 = "\uC624\uD6C4 " + hoursIn12 + ":" + minutesStr;
-            }
-            isAM = false;
+        var clockTimeBegin = this.myTime.getClockTime(hhmmBegin);
+        if (null == clockTimeBegin) {
+            return false;
         }
-        var clockTimeObj = new clock_time_1.ClockTime();
-        clockTimeObj.time_hh_mm = time_hh_mm;
-        clockTimeObj.hours = hours;
-        clockTimeObj.minutes = minutes;
-        clockTimeObj.totalMinutes = totalMinutes;
-        clockTimeObj.hoursForRotate = hoursForRotate;
-        clockTimeObj.isAM = isAM;
-        clockTimeObj.time_hh_mm_24 = time_hh_mm_24;
-        clockTimeObj.time_hh_mm_12 = time_hh_mm_12;
-        return clockTimeObj;
-    };
+        var clockTimeEnd = this.myTime.getClockTime(hhmmEnd);
+        if (null == clockTimeEnd) {
+            return false;
+        }
+        return true;
+    }; // end method
+    ClockBoardComponent.prototype.setClockTimeBeginEnd = function (hhmmBegin, hhmmEnd) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("clock-board / setClockTimeBeginEnd / init");
+        if (this.isNotSafeTimeRange(hhmmBegin, hhmmEnd)) {
+            return;
+        }
+        var clockTimeBegin = this.myTime.getClockTime(hhmmBegin);
+        var clockTimeEnd = this.myTime.getClockTime(hhmmEnd);
+        if (isDebug)
+            console.log("clock-board / setClockTimeBeginEnd / clockTimeBegin : ", clockTimeBegin);
+        if (isDebug)
+            console.log("clock-board / setClockTimeBeginEnd / clockTimeEnd : ", clockTimeEnd);
+        if (null == clockTimeBegin || null == clockTimeEnd) {
+            return;
+        }
+        this.clockTimeBegin = clockTimeBegin;
+        this.clockTimeEnd = clockTimeEnd;
+        if (null != this.clockComponent) {
+            this.clockComponent.show(this.clockTimeBegin, this.clockTimeEnd);
+        }
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -119,6 +118,14 @@ var ClockBoardComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], ClockBoardComponent.prototype, "clockDigitalHeight", void 0);
+    __decorate([
+        core_1.ViewChild(clock_component_1.ClockComponent), 
+        __metadata('design:type', clock_component_1.ClockComponent)
+    ], ClockBoardComponent.prototype, "clockComponent", void 0);
+    __decorate([
+        core_1.ViewChild(clock_digital_component_1.ClockDigitalComponent), 
+        __metadata('design:type', clock_digital_component_1.ClockDigitalComponent)
+    ], ClockBoardComponent.prototype, "clockDigitalComponent", void 0);
     ClockBoardComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

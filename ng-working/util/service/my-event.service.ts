@@ -589,9 +589,9 @@ export class MyEventService {
             ),
             new DefaultMeta(
             // public title:string
-            "수업 시작 종료",
+            "수업 종료 시간",
             // public placeholder:string
-            "수업 시작 종료을 입력해주세요",
+            "수업 종료 시간을 입력해주세요",
             // public eventKey:string
             this.KEY_KLASS_TIME_END,
             // public checkerKey:string

@@ -21,12 +21,14 @@ var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-u
 var default_component_1 = require('../widget/input/default/default.component');
 var default_service_1 = require('../widget/input/default/service/default.service');
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
+var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
+var my_time_1 = require('../util/helper/my-time');
 var teacher_service_1 = require('../teachers/service/teacher.service');
 var KlassDetailComponent = (function () {
     function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
@@ -73,6 +75,8 @@ var KlassDetailComponent = (function () {
         // 사용자가 보게되는 배너 이미지 리스트
         this.imageTableBannerListService = [];
         this.eventKeyKlassBanner = "";
+        this.klassTimeMinutesMin = 60;
+        this.klassTimeMinutesMax = 180;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -81,6 +85,7 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
         this.eventKeyKlassBanner = this.myEventService.KEY_KLASS_BANNER;
+        this.myTime = new my_time_1.HelperMyTime();
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -667,9 +672,12 @@ var KlassDetailComponent = (function () {
                 this.updateKlassPrice(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+                this.updateKlassBanners(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {
                 this.updateKlassTimeBegin(myEvent.value);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_END)) {
                 this.updateKlassTimeEnd(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
@@ -814,37 +822,124 @@ var KlassDetailComponent = (function () {
         this.priceTagHComponent.setPrice(this.klassCopy.price);
     };
     KlassDetailComponent.prototype.updateKlassTimeBegin = function (klassTimeBegin) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassTimeBegin / 시작");
-        if (isDebug)
-            console.log("klass-detail / updateKlassTimeBegin / klassTimeBegin : ", klassTimeBegin);
-        if (null == klassTimeBegin || "" == klassTimeBegin) {
+        if (this.myTime.isNotHHMM(klassTimeBegin)) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 중단 / this.myTime.isNotHHMM(klassTimeBegin)");
             return;
         }
-        // wonder.jung
-        // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
-        // 만약 그렇지 않다면 시작 시간은 종료시간보다 이전 값으로 변경해야 합니다.
-        // TODO - my-time에 diff 기능 추가.
-        // TODO - Duration도 함께 업데이트 해줍니다.
-    };
+        if (null == this.klassTimeBeginComponent) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 중단 / this.klassTimeBeginComponent is not valid!");
+            return;
+        }
+        if (null == this.klassTimeEndComponent) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 중단 / this.klassTimeEndComponent is not valid!");
+            return;
+        }
+        var klassTimeEnd = this.klassTimeEndComponent.getInput();
+        if (this.myTime.isNotHHMM(klassTimeEnd)) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 중단 / this.klassTimeEnd is not valid!");
+            return;
+        }
+        var minutesDiff = this.myTime.getDiffMinutesHHMM(klassTimeBegin, klassTimeEnd);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / klassTimeBegin : ", klassTimeBegin);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / klassTimeEnd : ", klassTimeEnd);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / minutesDiff : ", minutesDiff);
+        if (minutesDiff < this.klassTimeMinutesMin) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 1시간 미만의 수업은 불가능합니다.");
+            // 1시간 미만의 수업은 불가능합니다.
+            // 1시간 미만일 경우, 변경한 시작 시간에서 1시간 이후를 종료 시간으로 고정합니다.
+            // FIX ME - 00시를 경계로 2시간이 증가되는 버그가 있음.
+            var klassTimeEnd1hrAfter = this.myTime.addMinutesHHMM(klassTimeBegin, this.klassTimeMinutesMin);
+            this.klassTimeEndComponent.setInput(klassTimeEnd1hrAfter);
+            this.klassCopy.setTimeBeginEnd(klassTimeBegin, klassTimeEnd1hrAfter);
+        }
+        else if (this.klassTimeMinutesMax < minutesDiff) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeBegin / 3시간 이상의 수업은 불가능합니다.");
+            // 3시간 이상의 수업은 불가능합니다.
+            // 3시간 이상일 경우, 변경한 시작 시간에서 3시간 이후를 종료 시간으로 고정합니다.
+            var klassTimeEnd3hrsAfter = this.myTime.addMinutesHHMM(klassTimeBegin, this.klassTimeMinutesMax);
+            this.klassTimeEndComponent.setInput(klassTimeEnd3hrsAfter);
+            this.klassCopy.setTimeBeginEnd(klassTimeBegin, klassTimeEnd3hrsAfter);
+        }
+        else {
+            this.klassCopy.setTimeBegin(klassTimeBegin);
+        }
+        this.updateClockTime(this.klassCopy.time_begin, this.klassCopy.time_end);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeBegin / this.klassCopy : ", this.klassCopy);
+    }; // end method
     KlassDetailComponent.prototype.updateKlassTimeEnd = function (klassTimeEnd) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassTimeEnd / 시작");
         if (isDebug)
             console.log("klass-detail / updateKlassTimeEnd / klassTimeEnd : ", klassTimeEnd);
-        if (null == klassTimeEnd || "" == klassTimeEnd) {
+        if (this.myTime.isNotHHMM(klassTimeEnd)) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 중단 / this.myTime.isNotHHMM(klassTimeBegin)");
             return;
         }
-        // wonder.jung
-        // TODO - 시작 시간은 종료 시간보다 짧아야 합니다. 
-        // 만약 그렇지 않다면 종료시간은 시작시간보다 이후 값으로 변경해야 합니다.
-        // TODO - my-time에 diff 기능 추가.
-        // TODO - Duration도 함께 업데이트 해줍니다.
+        if (null == this.klassTimeBeginComponent) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 중단 / this.klassTimeBeginComponent is not valid!");
+            return;
+        }
+        if (null == this.klassTimeEndComponent) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 중단 / this.klassTimeEndComponent is not valid!");
+            return;
+        }
+        var klassTimeBegin = this.klassTimeBeginComponent.getInput();
+        if (this.myTime.isNotHHMM(klassTimeBegin)) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 중단 / this.myTime.isNotHHMM(klassTimeBegin)");
+            return;
+        }
+        var minutesDiff = this.myTime.getDiffMinutesHHMM(klassTimeBegin, klassTimeEnd);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeEnd / minutesDiff : ", minutesDiff);
+        if (minutesDiff < this.klassTimeMinutesMin) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 1시간 미만의 수업은 불가능합니다.");
+            // 1시간 미만의 수업은 불가능합니다.
+            // 1시간 미만일 경우, 변경한 시작 시간에서 1시간 이후를 종료 시간으로 고정합니다.
+            var klassTimeBegin1hrBefore = this.myTime.addMinutesHHMM(klassTimeEnd, -1 * this.klassTimeMinutesMin);
+            this.klassTimeBeginComponent.setInput(klassTimeBegin1hrBefore);
+            this.klassCopy.setTimeBeginEnd(klassTimeBegin1hrBefore, klassTimeEnd);
+        }
+        else if (this.klassTimeMinutesMax < minutesDiff) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassTimeEnd / 3시간 이상의 수업은 불가능합니다.");
+            // 3시간 이상의 수업은 불가능합니다.
+            // 3시간 이상일 경우, 변경한 시작 시간에서 3시간 이후를 종료 시간으로 고정합니다.
+            var klassTimeBegin3hrsBefore = this.myTime.addMinutesHHMM(klassTimeEnd, -1 * this.klassTimeMinutesMax);
+            this.klassTimeBeginComponent.setInput(klassTimeBegin3hrsBefore);
+            this.klassCopy.setTimeBeginEnd(klassTimeBegin3hrsBefore, klassTimeEnd);
+        }
+        else {
+            this.klassCopy.setTimeEnd(klassTimeEnd);
+        }
+        this.updateClockTime(this.klassCopy.time_begin, this.klassCopy.time_end);
+        if (isDebug)
+            console.log("klass-detail / updateKlassTimeEnd / this.klassCopy : ", this.klassCopy);
     };
+    KlassDetailComponent.prototype.updateClockTime = function (hhmmBeing, hhmmEnd) {
+        // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
+        this.clockBoardComponent.setClockTimeBeginEnd(hhmmBeing, hhmmEnd);
+    }; // end method
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
         var _this = this;
         var isDebug = true;
@@ -1068,6 +1163,10 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(klass_filter_tile_component_1.KlassFilterTileComponent), 
         __metadata('design:type', klass_filter_tile_component_1.KlassFilterTileComponent)
     ], KlassDetailComponent.prototype, "klassFilterTileComponent", void 0);
+    __decorate([
+        core_1.ViewChild(clock_board_component_1.ClockBoardComponent), 
+        __metadata('design:type', clock_board_component_1.ClockBoardComponent)
+    ], KlassDetailComponent.prototype, "clockBoardComponent", void 0);
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
-var clock_time_1 = require('./model/clock-time');
+var my_clock_time_1 = require('../../util/model/my-clock-time');
 /*
 * @ Desc   : 시간을 나타내주는 원형 시계 컴포넌트, 시작 시간과 종료 시간을 작은 List로 나타내주는 시계 리스트를 담고 있는 컨테이너 컴포넌트입니다.
 * @ Author : Wonder Jung
@@ -48,11 +48,11 @@ var ClockDigitalComponent = (function () {
     ], ClockDigitalComponent.prototype, "clockWidth", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', clock_time_1.ClockTime)
+        __metadata('design:type', my_clock_time_1.MyClockTime)
     ], ClockDigitalComponent.prototype, "clockTimeBegin", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', clock_time_1.ClockTime)
+        __metadata('design:type', my_clock_time_1.MyClockTime)
     ], ClockDigitalComponent.prototype, "clockTimeEnd", void 0);
     __decorate([
         core_1.Input(), 

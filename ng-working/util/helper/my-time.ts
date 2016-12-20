@@ -1,3 +1,5 @@
+import { MyClockTime } from '../model/my-clock-time';
+
 /*
 *	@ Desc : 시간 관련 함수 모음
 */
@@ -46,6 +48,42 @@ export class HelperMyTime {
 
 		return "";
 
+	} // end method
+
+	getDiffMinutesHHMM(headHHMM:string, tailHHMM:string):number {
+		if(null == headHHMM || "" === headHHMM) {
+			return -1;
+		}
+		if(this.isNotHHMM(headHHMM)) {
+			return -1;
+		}
+		if(null == tailHHMM || "" === tailHHMM) {
+			return -1;
+		}
+		if(this.isNotHHMM(tailHHMM)) {
+			return -1;
+		}
+
+		let headDate:Date = this.getDateFromHHMM(headHHMM);
+		if(null == headDate) {
+			return -1;
+		}
+		let tailDate:Date = this.getDateFromHHMM(tailHHMM);
+		if(null == tailDate) {
+			return -1;
+		}
+
+		return this.getDiffMinutes(headDate, tailDate);
+	}
+
+	private getDiffMinutes(head:Date, tail:Date) :number{
+		let minutes = 60*1000;
+		return Math.abs((head.getTime() - tail.getTime()) / minutes);
+	}
+
+	private getDiffHours(head:Date, tail:Date) :number{
+		let hour = 60*60*1000;
+		return Math.abs((head.getTime() - tail.getTime()) / hour);
 	}
 
 	addHoursHHMM(hhmm:string, hours:number):string {
@@ -268,16 +306,21 @@ export class HelperMyTime {
 		return null;
 	}
 
-	private isNotHHMM(time_str:string):boolean{	
+	public isNotHHMM(time_str:string):boolean{	
 		return !this.isHHMM(time_str);
 	}
 	// @ Public
 	// @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (00시 00분) 확인합니다.
-	private isHHMM(time_str:string):boolean{
+	public isHHMM(time_str:string):boolean{
 
 		if(null == time_str || "" === time_str) {
 			return false;
 		}
+
+		let res = time_str.match(/^([0-9]|0[0-9]|1[0-9]|2[0-6]):[0-5]0$/gi);
+		if(null === res || !(0 < res.length)) {
+		  return false;
+		}		
 
 		// 17:11 의 포맷인지 확인합니다.
 		let time_arr = time_str.split(":");
@@ -297,6 +340,77 @@ export class HelperMyTime {
 		}
 		return ""+target_number;
 	}
+
+	public getClockTime(hhmm:string): MyClockTime {
+
+		if(this.isNotHHMM(hhmm)) {
+			return null;
+		}
+
+		// 1. ex) 16:00 24시간 형태로 인자를 받습니다.
+		let hhmmfragments = hhmm.split(":");
+		let hoursStr = hhmmfragments[0];
+		let hours = parseInt(hoursStr);
+		let minutesStr = hhmmfragments[1];
+		let minutes = parseInt(minutesStr);
+		let totalMinutes = 60 * hours +  minutes;
+		let hoursForRotate = hours;
+		let isAM = true;
+		let hhmm24 = hhmm;
+		let hhmm12 = `오전 ${hoursStr}:${minutesStr}`;
+		if(12 <= hoursForRotate) {
+
+		  // 오후 시간대 표시
+		  hoursForRotate -= 12;
+
+		  let hoursIn12:string = ""+hoursForRotate;
+		  if( 0 == hoursForRotate ) {
+
+		    // 낮 12시인 경우.
+		    hoursIn12 = `12`;
+		    hhmm12 = `낮 ${hoursIn12}:${minutesStr}`;
+
+		  } else if( 0 < hoursForRotate && hoursForRotate < 3 ) {
+
+		  	hoursIn12 = `0${hoursForRotate}`;
+		  	hhmm12 = `낮 ${hoursIn12}:${minutesStr}`;
+
+		  } else if( 3 <= hoursForRotate && hoursForRotate < 6 ) {
+
+		    hoursIn12 = `0${hoursForRotate}`;
+		    hhmm12 = `오후 ${hoursIn12}:${minutesStr}`;
+
+		  } else if( 6 <= hoursForRotate && hoursForRotate < 9 ) {
+
+		    // 저녁 시간을 나타냄. 오후 6시부터 저녁
+		    hoursIn12 = `0${hoursForRotate}`;
+		    hhmm12 = `저녁 ${hoursIn12}:${minutesStr}`;
+
+		  } else if( 9 <= hoursForRotate) {
+
+		    // 밤 시간을 나타냄. 밤은 9시부터...
+		    if(hoursForRotate < 10) {
+		      hoursIn12 = `0${hoursForRotate}`;
+		    }
+		    hhmm12 = `밤 ${hoursIn12}:${minutesStr}`;
+
+		  }
+
+		  isAM = false;
+		}
+
+		let clockTimeObj:MyClockTime = new MyClockTime();
+		clockTimeObj.hhmm = hhmm;
+		clockTimeObj.hours = hours;
+		clockTimeObj.minutes = minutes;
+		clockTimeObj.totalMinutes = totalMinutes;
+		clockTimeObj.hoursForRotate = hoursForRotate;
+		clockTimeObj.isAM = isAM;
+		clockTimeObj.hhmm24 = hhmm24;
+		clockTimeObj.hhmm12 = hhmm12;
+
+		return clockTimeObj;
+	} 	
 
 
 }

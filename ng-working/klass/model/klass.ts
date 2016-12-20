@@ -5,6 +5,7 @@ import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
+import { HelperMyTime }             from '../../util/helper/my-time';
 
 export class Klass {
     public id: number;
@@ -84,10 +85,52 @@ export class Klass {
     private delimiter_banner:string="|||";
     private helperMyArray:HelperMyArray;
     private helperMyIs:HelperMyIs;
+    private myTime:HelperMyTime;
 
     constructor() {
         this.helperMyArray = new HelperMyArray();
         this.helperMyIs = new HelperMyIs();
+        this.myTime = new HelperMyTime();
+    }
+
+    setTimeBegin(hhmmBegin:string) :void {
+        if(this.myTime.isNotHHMM(hhmmBegin)) {
+            return;
+        }
+        this.time_begin = hhmmBegin;
+
+        if(this.myTime.isNotHHMM(this.time_end)) {
+            return;
+        }
+        // 종료 시간이 있다면, 수업 시간을 구합니다.
+        let diffMinutes:number = this.myTime.getDiffMinutesHHMM(this.time_begin, this.time_end);
+        if(0 < diffMinutes) {
+            this.time_duration_minutes = diffMinutes;
+        } // end if
+
+    } // end method
+    setTimeEnd(hhmmEnd:string) :void {
+        if(this.myTime.isNotHHMM(hhmmEnd)) {
+            return;
+        }
+        this.time_end = hhmmEnd;
+
+        if(this.myTime.isNotHHMM(this.time_begin)) {
+            return;
+        }
+        // 시작 시간이 있다면, 수업 시간을 구합니다.
+        let diffMinutes:number = this.myTime.getDiffMinutesHHMM(this.time_begin, this.time_end);
+        if(0 < diffMinutes) {
+            this.time_duration_minutes = diffMinutes;
+        } // end if
+        
+    }
+    setTimeBeginEnd(hhmmBegin:string, hhmmEnd:string) :void {
+        if(this.myTime.isNotHHMM(hhmmBegin) || this.myTime.isNotHHMM(hhmmEnd)) {
+            return;
+        }
+        this.setTimeBegin(hhmmBegin);
+        this.setTimeEnd(hhmmEnd);
     }
 
     hasNotBanner(banner:string) :boolean {

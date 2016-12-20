@@ -1,6 +1,6 @@
 import { Component, OnInit, Input }   from '@angular/core';
 import { ImageService }               from '../../util/image.service';
-import { ClockTime }                  from './model/clock-time';
+import { MyClockTime }                from '../../util/model/my-clock-time';
 
 @Component({
   moduleId: module.id,
@@ -10,8 +10,8 @@ import { ClockTime }                  from './model/clock-time';
 })
 export class ClockComponent implements OnInit {
 
-  @Input() clockTimeBegin:ClockTime;
-  @Input() clockTimeEnd:ClockTime;
+  @Input() clockTimeBegin:MyClockTime;
+  @Input() clockTimeEnd:MyClockTime;
   @Input() clockHeight:number=80;
 
   private clock1hr00m00mUrl:string;
@@ -87,7 +87,7 @@ export class ClockComponent implements OnInit {
     this.show(this.clockTimeBegin, this.clockTimeEnd);
   }
 
-  show(clockTimeBegin:ClockTime, clockTimeEnd:ClockTime) :void {
+  show(clockTimeBegin:MyClockTime, clockTimeEnd:MyClockTime) :void {
 
     if(null === clockTimeBegin) {
       return;
