@@ -42,10 +42,11 @@ export class Klass {
     public month_max: number;
     public days: string;
     public days_list: string[];
+    public days_img_url: string;
+    public days_img_url_list: string[];
     public days_eng: string;
     public days_kor: string;
-    public days_img_url: string;
-    public class_day_per_week: number;
+    public class_day_per_week: number; // 주 n회 수업
 
     public resume: string;
     public greeting: string;
@@ -86,14 +87,54 @@ export class Klass {
     public date_updated: string;
 
     private delimiter_banner:string="|||";
-    private helperMyArray:HelperMyArray;
+    private myArray:HelperMyArray;
     private helperMyIs:HelperMyIs;
     private myTime:HelperMyTime;
 
     constructor() {
-        this.helperMyArray = new HelperMyArray();
+        this.myArray = new HelperMyArray();
         this.helperMyIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
+    }
+
+    addDay(day:string, imgUrl:string) :void {
+
+        if(null == day || "" === day) {
+            return;
+        }
+        if(null == imgUrl || "" === imgUrl) {
+            return;
+        }
+
+        if(null == this.days_list) {
+            this.days_list = [];
+            this.days_img_url_list = [];
+        }
+        this.days_list.push(day);
+        this.days = this.days_list.join(this.delimiter_banner);
+
+        this.days_img_url_list.push(imgUrl);
+        this.days_img_url = this.days_img_url_list.join(this.delimiter_banner);
+    }
+    removeDay(day:string, imgUrl:string) :void {
+
+        if(null == day || "" === day) {
+            return;
+        }
+        if(null == imgUrl || "" === imgUrl) {
+            return;
+        }        
+
+        if(null == this.days_list) {
+            this.days_list = [];
+            this.days_img_url_list = [];
+        }
+
+        this.days_list = this.myArray.removeStr(this.days_list, day);
+        this.days = this.days_list.join(this.delimiter_banner);
+
+        this.days_img_url_list = this.myArray.removeStr(this.days_img_url_list, imgUrl);
+        this.days_img_url = this.days_img_url_list.join(this.delimiter_banner);
     }
 
     setTimeBegin(hhmmBegin:string) :void {
@@ -137,17 +178,17 @@ export class Klass {
     }
 
     hasNotBanner(banner:string) :boolean {
-        return this.helperMyArray.hasNotStr(this.class_banner_url_arr, banner);
+        return this.myArray.hasNotStr(this.class_banner_url_arr, banner);
     }
     hasBanner(banner:string) :boolean {
-        return this.helperMyArray.hasStr(this.class_banner_url_arr, banner);
+        return this.myArray.hasStr(this.class_banner_url_arr, banner);
     }
     removeBanner(banner:string):void {
-        this.class_banner_url_arr = this.helperMyArray.removeStr(this.class_banner_url_arr, banner);
+        this.class_banner_url_arr = this.myArray.removeStr(this.class_banner_url_arr, banner);
         this.updateBannerUrl();
     }
     addBanner(banner:string):void {
-        this.class_banner_url_arr = this.helperMyArray.addStrUnique(this.class_banner_url_arr, banner);
+        this.class_banner_url_arr = this.myArray.addStrUnique(this.class_banner_url_arr, banner);
         this.updateBannerUrl();
     }    
     private updateBannerUrl():void {

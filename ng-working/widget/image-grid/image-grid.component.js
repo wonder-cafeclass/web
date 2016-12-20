@@ -23,6 +23,7 @@ var ImageGridComponent = (function () {
         this.hasTableBorder = false;
         this.isAdmin = false;
         this.handleType = "";
+        this.eventKey = "";
         this.gridWidth = 100;
         this.isDisabled = false;
         this.tdWidthStr = "";
@@ -75,6 +76,9 @@ var ImageGridComponent = (function () {
             this.tableWidthStr = "100%";
         }
     };
+    // 테이블에 이미지를 추가합니다.
+    ImageGridComponent.prototype.addImage = function (imageUrl) {
+    };
     ImageGridComponent.prototype.addImageSingleColumn = function (imageUrl) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -110,13 +114,17 @@ var ImageGridComponent = (function () {
         } // end for
     }; // end method
     ImageGridComponent.prototype.removeImage = function (imageUrl) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("image-grid / removeImage / 시작");
+        if (isDebug)
+            console.log("image-grid / removeImage / imageUrl : ", imageUrl);
         if (null == imageUrl || "" === imageUrl) {
             return;
         }
+        if (isDebug)
+            console.log("image-grid / removeImage / this.imageTable : ", this.imageTable);
         var imageTableNext = [];
         for (var i = 0; i < this.imageTable.length; ++i) {
             var columnList = this.imageTable[i];
@@ -126,6 +134,8 @@ var ImageGridComponent = (function () {
                 if (null != banner &&
                     "" != banner &&
                     banner !== imageUrl) {
+                    if (isDebug)
+                        console.log("image-grid / removeImage / banner : ", banner);
                     // 유효한 배너 이미지입니다.
                     columnListNext.push(banner);
                 }
@@ -234,6 +244,10 @@ var ImageGridComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ImageGridComponent.prototype, "handleType", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ImageGridComponent.prototype, "eventKey", void 0);
     ImageGridComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

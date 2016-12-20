@@ -16,6 +16,17 @@ export class HelperMyIs {
 		return (type == '[object Function]')?true:false;
 	}
 
+	isArray(functionToCheck:any) :boolean {
+
+		let type:string = this.getType(functionToCheck);
+		if(null == type || "" === type) {
+			false;
+		}
+
+		var getType = {};
+		return (type == '[object Array]')?true:false;
+	}	
+
 	getType(anyToCheck:any) :string {
 
 		var getType = {};

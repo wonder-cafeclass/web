@@ -13,6 +13,14 @@ var HelperMyIs = (function () {
         var getType = {};
         return (type == '[object Function]') ? true : false;
     };
+    HelperMyIs.prototype.isArray = function (functionToCheck) {
+        var type = this.getType(functionToCheck);
+        if (null == type || "" === type) {
+            false;
+        }
+        var getType = {};
+        return (type == '[object Array]') ? true : false;
+    };
     HelperMyIs.prototype.getType = function (anyToCheck) {
         var getType = {};
         if (null == anyToCheck) {

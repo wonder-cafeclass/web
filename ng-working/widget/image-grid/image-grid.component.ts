@@ -29,6 +29,7 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
   @Input() hasTableBorder:boolean=false;
   @Input() isAdmin:boolean=false;
   @Input() handleType:string="";
+  @Input() eventKey:string="";
 
   gridWidth:number=100;
   isDisabled:boolean=false;
@@ -98,6 +99,11 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
     }    
   }
 
+  // 테이블에 이미지를 추가합니다.
+  addImage(imageUrl:string): void {
+
+  }
+
   addImageSingleColumn(imageUrl:string): void {
 
     // let isDebug:boolean = true;
@@ -139,13 +145,16 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   removeImage(imageUrl:string): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / removeImage / 시작");
+    if(isDebug) console.log("image-grid / removeImage / imageUrl : ",imageUrl);
 
     if(null == imageUrl || "" === imageUrl) {
       return;
     }
+
+    if(isDebug) console.log("image-grid / removeImage / this.imageTable : ",this.imageTable);
 
     let imageTableNext:string[][] = [];
     for (var i = 0; i < this.imageTable.length; ++i) {
@@ -157,6 +166,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
         if( null != banner && 
             "" != banner && 
             banner !== imageUrl) {
+
+          if(isDebug) console.log("image-grid / removeImage / banner : ",banner);
 
           // 유효한 배너 이미지입니다.
           columnListNext.push(banner);

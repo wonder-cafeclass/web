@@ -50,7 +50,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   private myTime:HelperMyTime;
 
-  selectOptionList:DefaultOption[];
+  selectOptionList:DefaultOption[];   // 셀렉 박스 선택 정보로 사용.
+  checkOptionTable:DefaultOption[][]; // 바둑판 형태의 checkbox 테이블 데이터로 사용
 
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
@@ -229,6 +230,16 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     }
 
     this.selectOptionList = selectOptionList;
+
+  }
+  setCheckOption(checkOptionTable:DefaultOption[][]) :void {
+
+    if(null == checkOptionTable || 0 == checkOptionTable.length) {
+      return;
+    }
+
+    this.checkOptionTable = checkOptionTable;
+
   }
   public initInput() :void {
     this.ngModelInput="";
@@ -427,6 +438,62 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   } // end method
 
+  onCheck(event, selectedValue, isChecked:boolean) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / onCheck / 시작");
+    if(isDebug) console.log("default / onCheck / selectedValue : ",selectedValue);
+    if(isDebug) console.log("default / onCheck / isChecked : ",isChecked);
+
+    let selectedOption:DefaultOption = this.getCheckOptionFromTable(selectedValue);
+    selectedOption.isFocus = isChecked;
+
+    // private emitEventOnChangeWithMeta(value:string, metaObj:any) :void {
+
+    this.emitEventOnChangeWithMeta(
+      // value:string
+      selectedValue,
+      // metaObj:any  
+      selectedOption    
+    );
+    
+  }
+
+  getCheckOptionFromTable(value:string):DefaultOption {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / getCheckOptionFromTable / 시작");
+
+    if(null == value || "" === value) {
+      return null;
+    }
+
+    for (var i = 0; i < this.checkOptionTable.length; ++i) {
+      let row = this.checkOptionTable[i];
+      if(null == row) {
+        continue;
+      }
+
+      for (var j = 0; j < row.length; ++j) {
+        let option:DefaultOption = row[j];
+        if(null == option) {
+          continue;
+        }
+
+        if(isDebug) console.log("default / getCheckOptionFromTable / option : ",option);
+
+        if(option.value === value) {
+          return option;
+        } // end if
+      } // end for
+    } // end for
+
+    return null;
+
+  } // end method
+
   onSelect(event, selectedValue) :void {
 
     let isDebug:boolean = true;
@@ -568,6 +635,35 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("default / emitEventOnChange / Done!");
 
   }
+
+  private emitEventOnChangeWithMeta(value:string, metaObj:any) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / emitEventOnChangeWithMeta / 시작");
+    if(null == value) {
+      if(isDebug) console.log("default / emitEventOnChangeWithMeta / 중단 / value is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      this.meta.eventKey,
+      // public value:string
+      value,
+      // public metaObj:any
+      metaObj,
+      // public myChecker:MyChecker
+      this.myChecker
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("default / emitEventOnChange / Done!");
+
+  }  
 
   private emitEventOnChangeNotValid(value:string, metaObj) :void {
 

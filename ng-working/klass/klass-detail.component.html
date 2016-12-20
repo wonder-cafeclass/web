@@ -68,6 +68,7 @@
               class="list-group-item" 
               style="padding:0px;border-top:0px;">
             <image-grid
+            [eventKey]="myEventService.KEY_KLASS_BANNER_VIEW"
             [imageTable]="imageTableBannerListService"
             [hasTableBorder]="false">
             </image-grid>
@@ -79,7 +80,7 @@
               class="list-group-item" 
               style="padding:0px;border-top:0px;">
             <image-grid-v2
-            [eventKey]="eventKeyKlassBanner"
+            [eventKey]="myEventService.KEY_KLASS_BANNER"
             [imageTable]="imageTableBannerList"
             [handleType]="'checkbox'"
             [hasTableBorder]="false"
@@ -131,20 +132,21 @@
           <!-- PRICE ADMIN DONE -->
 
           <!-- FILTERS INIT -->
-          <li 
-          *ngIf="!isTeacher"
-          class="list-group-item col-next">
+          <li class="list-group-item col-next">
             <div class="box-selectile-show">
-              <image-grid [imageTable]="selectileImageTable"
-                          [imageHeight]="selectileImageHeight"
-                          [imageWidth]="selectileImageWidth"
-                          [hasTableBorder]="false">
+              <image-grid 
+              [eventKey]="myEventService.KEY_KLASS_SELECTILE_VIEW"
+              [imageTable]="selectileImageTable"
+              [imageHeight]="selectileImageHeight"
+              [imageWidth]="selectileImageWidth"
+              [hasTableBorder]="false">
               </image-grid>
             </div>
           </li>
           <!-- FILTERS DONE -->
   
           <!-- FILTERS ADMIN INIT -->
+          <!-- REMOVE ME
           <li 
           *ngIf="isTeacher"
           class="list-group-item col-next">
@@ -157,7 +159,19 @@
               </div>
             </div>
           </li>
+          -->
           <!-- FILTERS ADMIN DONE -->
+
+          <!-- CLASS DAYS ADMIN INIT -->
+          <li 
+          class="list-group-item col-next">
+            <widget-input-default
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[5]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- CLASS DAYS ADMIN DONE -->          
 
           <!-- COURSE TIME INIT -->
           <li class="list-group-item col-next" style="height: 97px;">
@@ -216,7 +230,9 @@
           <!-- FIRST KLASS DATE DONE -->
 
           <!-- FIRST KLASS DATE ADMIN INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
             <div>
               <widget-input-default
               [isNoSpace]="true"

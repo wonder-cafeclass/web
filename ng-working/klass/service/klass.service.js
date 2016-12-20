@@ -401,6 +401,9 @@ var KlassService = (function () {
         klass.week_max = klassJSON.week_max;
         // days,
         klass.days = klassJSON.days;
+        if (null != klass.days && "" != klass.days) {
+            klass.days_list = klass.days.split("|||");
+        }
         // class_per_week, / Warning! 이름다름
         klass.class_day_per_week = klassJSON.class_per_week;
         // venue,
@@ -450,6 +453,13 @@ var KlassService = (function () {
         klass.level_img_url = klassJSON.level_img_url;
         // days_img_url,
         klass.days_img_url = klassJSON.days_img_url;
+        // days_img_url_list
+        if (null != klassJSON.days_img_url && "" != klassJSON.days_img_url) {
+            klass.days_img_url_list = klassJSON.days_img_url.split("|||");
+        }
+        else {
+            klass.days_img_url_list = [];
+        }
         // time_begin_img_url,
         klass.time_begin_img_url = klassJSON.time_begin_img_url;
         // venue_subway_station_img_url,

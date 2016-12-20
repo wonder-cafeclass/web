@@ -145,6 +145,46 @@
 	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT">
 		Select Controller - Disabled
 	</div>
+
+
+
+
+	<!-- CHECK BOX / checkOptionTable -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_CHECKBOX">
+
+		<table class="table my-ck-style">
+			<tbody> 
+				<tr *ngFor="let row of checkOptionTable"> 
+					<td *ngFor="let option of row" class="my-ck-style">
+						<div class="checkbox">
+							<label>
+								<input 
+								#checkbox
+								[checked]="option.isFocus"
+								(change)="onCheck($event, $event.target.value, checkbox.checked)"
+								type="checkbox" 
+								name={{option.key}} 
+								value={{option.value}}>{{option.key}}
+							</label>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+	<!-- CHECK BOX / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_CHECKBOX">
+		CheckBox Controller - Disabled
+	</div>
+
+
+
+
+
+
+
 	
 	<!-- icon - warning -->
 	<span 	
@@ -152,6 +192,12 @@
 	[ngClass]="{'num-warning':meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM,'text-warning':meta.type != defaultType.TYPE_NUMBER && meta.type != defaultType.TYPE_HHMM}"
 	class="glyphicon glyphicon-exclamation-sign warning">
 	</span>
+
+
+
+
+
+
 			
 	<!-- tooltip for input -->
 	<div 	*ngIf="meta.type == defaultType.TYPE_INPUT"

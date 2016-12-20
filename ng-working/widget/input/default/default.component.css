@@ -154,3 +154,9 @@ input.input-num {
   float: right;
   margin-top: 10px;  
 }
+table.my-ck-style {
+  margin: 0px;
+}
+td.my-ck-style {
+  border:0px;
+}

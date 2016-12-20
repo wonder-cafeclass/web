@@ -198,6 +198,12 @@ var DefaultComponent = (function () {
         }
         this.selectOptionList = selectOptionList;
     };
+    DefaultComponent.prototype.setCheckOption = function (checkOptionTable) {
+        if (null == checkOptionTable || 0 == checkOptionTable.length) {
+            return;
+        }
+        this.checkOptionTable = checkOptionTable;
+    };
     DefaultComponent.prototype.initInput = function () {
         this.ngModelInput = "";
         this.inputStrPrev = "";
@@ -364,6 +370,51 @@ var DefaultComponent = (function () {
         else {
         }
     }; // end method
+    DefaultComponent.prototype.onCheck = function (event, selectedValue, isChecked) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("default / onCheck / 시작");
+        if (isDebug)
+            console.log("default / onCheck / selectedValue : ", selectedValue);
+        if (isDebug)
+            console.log("default / onCheck / isChecked : ", isChecked);
+        var selectedOption = this.getCheckOptionFromTable(selectedValue);
+        selectedOption.isFocus = isChecked;
+        // private emitEventOnChangeWithMeta(value:string, metaObj:any) :void {
+        this.emitEventOnChangeWithMeta(
+        // value:string
+        selectedValue, 
+        // metaObj:any  
+        selectedOption);
+    };
+    DefaultComponent.prototype.getCheckOptionFromTable = function (value) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("default / getCheckOptionFromTable / 시작");
+        if (null == value || "" === value) {
+            return null;
+        }
+        for (var i = 0; i < this.checkOptionTable.length; ++i) {
+            var row = this.checkOptionTable[i];
+            if (null == row) {
+                continue;
+            }
+            for (var j = 0; j < row.length; ++j) {
+                var option = row[j];
+                if (null == option) {
+                    continue;
+                }
+                if (isDebug)
+                    console.log("default / getCheckOptionFromTable / option : ", option);
+                if (option.value === value) {
+                    return option;
+                } // end if
+            } // end for
+        } // end for
+        return null;
+    }; // end method
     DefaultComponent.prototype.onSelect = function (event, selectedValue) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -476,6 +527,31 @@ var DefaultComponent = (function () {
         value, 
         // public metaObj:any
         null, 
+        // public myChecker:MyChecker
+        this.myChecker);
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("default / emitEventOnChange / Done!");
+    };
+    DefaultComponent.prototype.emitEventOnChangeWithMeta = function (value, metaObj) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("default / emitEventOnChangeWithMeta / 시작");
+        if (null == value) {
+            if (isDebug)
+                console.log("default / emitEventOnChangeWithMeta / 중단 / value is not valid!");
+            return;
+        }
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_CHANGE, 
+        // public key:string
+        this.meta.eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        metaObj, 
         // public myChecker:MyChecker
         this.myChecker);
         this.emitter.emit(myEventOnChange);

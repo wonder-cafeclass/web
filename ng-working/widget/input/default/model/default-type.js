@@ -6,6 +6,7 @@ var DefaultType = (function () {
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_HHMM = "TYPE_HHMM";
         this.TYPE_SELECT = "TYPE_SELECT";
+        this.TYPE_CHECKBOX = "TYPE_CHECKBOX";
     }
     return DefaultType;
 }());

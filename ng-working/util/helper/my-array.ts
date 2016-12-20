@@ -1,9 +1,14 @@
+import { HelperMyIs } from './my-is';
 /*
 *	@ Desc : 배열 관련 함수 모음
 */
 export class HelperMyArray {
 
-	constructor() {}
+    private myIs:HelperMyIs;
+
+	constructor() {
+        this.myIs = new HelperMyIs();
+    }
 
 	hasNotStr(arrStr:string[], value:string):boolean {
 		return !this.hasStr(arrStr, value);
@@ -26,6 +31,32 @@ export class HelperMyArray {
         return false;
 
 	}
+    // @ Desc : 중첩 배열도 검색하여, 해당 문자열을 삭제.
+    removeStrRecursive(arrStr:string[], value:string):string[] {
+
+        if(null == value || "" == value) {
+            return arrStr;
+        } else if(null == arrStr || 0 == arrStr.length) {
+            return arrStr;
+        }
+
+        let arrStrNext:string[] = [];
+        for (var i = 0; i < arrStr.length; ++i) {
+
+            let element:any = arrStr[i];
+
+            if(this.myIs.isArray(element)) {
+                element = this.removeStrRecursive(element, value);
+            } else if(element === value) {
+                continue;
+            }
+
+            arrStrNext.push(element);
+        }
+
+        return arrStrNext;
+
+    }
 	removeStr(arrStr:string[], value:string):string[] {
 
         if(null == value || "" == value) {
