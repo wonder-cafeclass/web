@@ -341,52 +341,50 @@ export class KlassFilterTileComponent implements OnInit {
     if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 시작");
 
     if(null == klassLevel){
-      console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassLevel is not valid!");
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassLevel is not valid!");
       return;
     } 
     if(null == klassStation){
-      console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassStation is not valid!");
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassStation is not valid!");
       return;
     } 
     if(null == klassDay){
-      console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassDay is not valid!");
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassDay is not valid!");
       return;
     } 
     if(null == klassTime){
-      console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassTime is not valid!");
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassTime is not valid!");
       return;
     } 
 
     this.selectileTable;
 
-    console.log("klass-filter-tile / updateShowingSelectilesAll / this.selectileTable : ",this.selectileTable);
-
     // 선택된 필드들을 검색, 지정한다.
     for (var i = 0; i < this.klassLevels.length; ++i) {
       let klassLevelFromList:KlassLevel = this.klassLevels[i];
       if(klassLevelFromList.isSharing("key", klassLevel)) {
-        console.log("klass-filter-tile / updateShowingSelectilesAll / klassLevelFromList : ",klassLevelFromList);
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassLevelFromList : ",klassLevelFromList);
         this.klassLevelSelected = klassLevelFromList;
       }
     } // end for
     for (var i = 0; i < this.klassStations.length; ++i) {
       let klassStationFromList:KlassStation = this.klassStations[i];
       if(klassStationFromList.isSharing("key", klassStation)) {
-        console.log("klass-filter-tile / updateShowingSelectilesAll / klassStationFromList : ",klassStationFromList);
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassStationFromList : ",klassStationFromList);
         this.klassStationSelected = klassStationFromList;
       }
     } // end for
     for (var i = 0; i < this.klassDays.length; ++i) {
       let klassDayFromList:KlassDay = this.klassDays[i];
       if(klassDayFromList.isSharing("key", klassDay)) {
-        console.log("klass-filter-tile / updateShowingSelectilesAll / klassDayFromList : ",klassDayFromList);
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassDayFromList : ",klassDayFromList);
         this.klassDaySelected = klassDayFromList;
       }
     } // end for
     for (var i = 0; i < this.klassTimes.length; ++i) {
       let klassTimeFromList:KlassTime = this.klassTimes[i];
       if(klassTimeFromList.isSharing("key", klassTime)) {
-        console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ",klassTimeFromList);
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ",klassTimeFromList);
         this.klassTimeSelected = klassTimeFromList;
       }
     } // end for

@@ -201,17 +201,26 @@
 
 
           <!-- FIRST KLASS DATE INIT -->
-          <!--
-          <li *ngIf="firstClassDateFormatStr" class="list-group-item col-next">
-            <butterfly  [title]="'강의 참가 가능일'"
-                        [fontSizeTitle]="16"
-                        [paddingTitle]="7"
-                        [text]="firstClassDateFormatStr"
-                        [fontSizeText]="18"
-                        [paddingText]="5"
-                        [color]="priceTagColor"></butterfly>
+          <li class="list-group-item col-next">
+            <butterfly  
+            [title]="'강의 참가 가능일'"
+            [fontSizeTitle]="16"
+            [paddingTitle]="7"
+            [text]="firstClassDateFormatStr"
+            [fontSizeText]="18"
+            [paddingText]="5"
+            [color]="priceTagColor"
+            [eventKey]="myEventService.KEY_KLASS_DATE_ENROLLMENT"
+            (emitter)="onChangedFromChild($event)">
+            </butterfly>
           </li>
           <!-- FIRST KLASS DATE DONE -->
+
+          <!-- FIRST KLASS DATE ADMIN INIT -->
+          <li class="list-group-item col-next">
+          FIRST KLASS DATE ADMIN INIT
+          </li>
+          <!-- FIRST KLASS DATE ADMIN DONE -->
           
           <!-- KLASS VENUE INIT -->
           <!--

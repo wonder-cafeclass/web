@@ -2191,7 +2191,7 @@ class MY_Sql
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
-            // $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
+            $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
         }
 
         return $klass;

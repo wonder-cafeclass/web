@@ -115,6 +115,7 @@ export class MyEventService {
     KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
     KEY_KLASS_TIME_BEGIN:string="KEY_KLASS_TIME_BEGIN";         // 수업 - 수업 시작 시간
     KEY_KLASS_TIME_END:string="KEY_KLASS_TIME_END";             // 수업 - 수업 종료 시간
+    KEY_KLASS_DATE_ENROLLMENT:string="KEY_KLASS_DATE_ENROLLMENT";// 수업 - 등록 가능한 수업 시작일
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
     KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";           // 수업 - 장소, 레벨, 요일, 시간

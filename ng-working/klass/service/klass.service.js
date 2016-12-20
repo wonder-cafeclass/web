@@ -454,6 +454,11 @@ var KlassService = (function () {
         klass.time_begin_img_url = klassJSON.time_begin_img_url;
         // venue_subway_station_img_url,
         klass.venue_subway_station_img_url = klassJSON.venue_subway_station_img_url;
+        // calendar_table_linear // @ Deprecated
+        // klass.calendar_table_linear = klassJSON.calendar_table_linear;
+        // calendar_table_monthly
+        klass.calendar_table_monthly = klassJSON.calendar_table_monthly;
+        klass.setKlassCalendarList(klassJSON.calendar_table_monthly);
         // date_created,
         klass.date_created = klassJSON.date_created;
         // date_updated

@@ -22,6 +22,7 @@ var default_component_1 = require('../widget/input/default/default.component');
 var default_service_1 = require('../widget/input/default/service/default.service');
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
+var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
@@ -281,7 +282,7 @@ var KlassDetailComponent = (function () {
         this.klassPriceComponent.setInput("" + this.klassCopy.price);
     }; // end method
     KlassDetailComponent.prototype.setKlassTimeBegin = function () {
-        if (null == this.klass || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
+        if (null == this.klassCopy || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
             return;
         }
         if (null == this.klassTimeBeginComponent) {
@@ -290,7 +291,7 @@ var KlassDetailComponent = (function () {
         this.klassTimeBeginComponent.setInput("" + this.klassCopy.time_begin);
     }; // end method
     KlassDetailComponent.prototype.setKlassTimeEnd = function () {
-        if (null == this.klass || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
+        if (null == this.klassCopy || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
             return;
         }
         if (null == this.klassTimeEndComponent) {
@@ -298,9 +299,30 @@ var KlassDetailComponent = (function () {
         }
         this.klassTimeEndComponent.setInput("" + this.klassCopy.time_end);
     }; // end method
+    // @ 가장 가까운 수업 시작일을 의미합니다.
+    KlassDetailComponent.prototype.setKlassDateEnrollment = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassDateEnrollment / 시작");
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDateEnrollment / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (null == this.butterflyComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDateEnrollment / 중단 / this.butterflyComponent is not valid!");
+            return;
+        }
+        var enrollmentDate = this.klassCopy.getEnrollmentDate();
+        if (isDebug)
+            console.log("klass-detail / setKlassDateEnrollment / enrollmentDate : ", enrollmentDate);
+        this.butterflyComponent.setText(enrollmentDate);
+    };
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
         if (isDebug)
@@ -335,6 +357,7 @@ var KlassDetailComponent = (function () {
         this.setKlassPrice();
         this.setKlassTimeBegin();
         this.setKlassTimeEnd();
+        this.setKlassDateEnrollment();
         // set image-grid service
         var classBannerUrlArr = this.klassCopy.class_banner_url_arr;
         if (null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
@@ -368,48 +391,55 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / setEmptyKlass / 시작");
         // 새로운 수업을 만들때, 빈 수업 데이터를 만들어 가져옵니다.
     };
-    KlassDetailComponent.prototype.setFirstClassDateFormat = function () {
-        this.firstClassDate = this.getFirstClassDate(this.klass);
-        if (this.firstClassDate) {
-            this.firstClassDateFormatStr = this.firstClassDate.month + "\uC6D4 " + this.firstClassDate.date + "\uC77C " + this.firstClassDate.dayKor + "\uC694\uC77C";
-        }
-    };
-    KlassDetailComponent.prototype.getFirstClassDate = function (klass) {
-        var calendar_table_monthly = klass.calendar_table_monthly;
-        for (var i = 0; i < calendar_table_monthly.length; ++i) {
-            var calendar_table = calendar_table_monthly[i];
-            // console.log("calendar_table : ",calendar_table);
-            for (var j = 0; j < calendar_table.length; ++j) {
-                var week = calendar_table[j];
-                // console.log("week : ",week);
-                for (var k = 0; k < week.length; ++k) {
-                    var date = week[k];
-                    // console.log("date : ",date);
-                    if (null === date) {
-                        continue;
-                    }
-                    if (date.isExpired) {
-                        continue;
-                    }
-                    if (!date.hasKlass) {
-                        continue;
-                    }
-                    if (4 == +klass.enrollment_interval_week && !date.isEnrollment4weeks) {
-                        continue;
-                    }
-                    else if (2 == +klass.enrollment_interval_week && !date.isEnrollment2weeks) {
-                        continue;
-                    }
-                    else if (1 == +klass.enrollment_interval_week && !date.isEnrollmentWeek) {
-                        continue;
-                    }
-                    // 첫 수업을 찾았습니다.
-                    return date;
-                }
+    // REMOVE ME
+    /*
+    private setFirstClassDateFormat() :void {
+      this.firstClassDate = this.getFirstClassDate(this.klass);
+  
+      if(this.firstClassDate) {
+        this.firstClassDateFormatStr = `${this.firstClassDate.month}월 ${this.firstClassDate.date}일 ${this.firstClassDate.dayKor}요일`;
+      }
+    }
+    private getFirstClassDate(klass:Klass) :Calendar {
+  
+      let calendar_table_monthly = klass.calendar_table_monthly;
+      for (var i = 0; i < calendar_table_monthly.length; ++i) {
+        let calendar_table = calendar_table_monthly[i];
+        // console.log("calendar_table : ",calendar_table);
+        for (var j = 0; j < calendar_table.length; ++j) {
+          let week = calendar_table[j];
+          // console.log("week : ",week);
+          for (var k = 0; k < week.length; ++k) {
+            let date:Calendar = week[k];
+            // console.log("date : ",date);
+  
+            if(null === date) {
+              continue;
             }
+            if(date.isExpired) {
+              continue;
+            }
+            if(!date.hasKlass) {
+              continue;
+            }
+  
+            if(4 == +klass.enrollment_interval_week && !date.isEnrollment4weeks) {
+              continue;
+            } else if(2 == +klass.enrollment_interval_week && !date.isEnrollment2weeks) {
+              continue;
+            } else if(1 == +klass.enrollment_interval_week && !date.isEnrollmentWeek) {
+              continue;
+            }
+  
+            // 첫 수업을 찾았습니다.
+            return date;
+          }
         }
-        return null;
-    };
+      }
+  
+      return null;
+    }
+    */
     KlassDetailComponent.prototype.initAdmin = function () {
         this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
         this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
@@ -644,6 +674,12 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.klassTimeEndComponent = myEvent.metaObj;
                     this.setKlassTimeEnd();
+                }
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT)) {
+                if (null != myEvent.metaObj) {
+                    this.butterflyComponent = myEvent.metaObj;
+                    this.setKlassDateEnrollment();
                 }
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
@@ -1167,6 +1203,10 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(clock_board_component_1.ClockBoardComponent), 
         __metadata('design:type', clock_board_component_1.ClockBoardComponent)
     ], KlassDetailComponent.prototype, "clockBoardComponent", void 0);
+    __decorate([
+        core_1.ViewChild(butterfly_component_1.ButterflyComponent), 
+        __metadata('design:type', butterfly_component_1.ButterflyComponent)
+    ], KlassDetailComponent.prototype, "butterflyComponent", void 0);
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

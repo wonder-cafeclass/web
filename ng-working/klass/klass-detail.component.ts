@@ -42,6 +42,7 @@ import { DefaultMeta }                   from '../widget/input/default/model/def
 import { DefaultService }                from '../widget/input/default/service/default.service';
 import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.component';
 import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
+import { ButterflyComponent }            from '../widget/butterfly/butterfly.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 import { KlassFilterTileComponent }      from './klass-filter-tile.component';
@@ -176,6 +177,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   @ViewChild(ClockBoardComponent)
   private clockBoardComponent: ClockBoardComponent;
 
+  @ViewChild(ButterflyComponent)
+  private butterflyComponent: ButterflyComponent;
 
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
@@ -202,7 +205,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     public dialogService: DialogService,
     private authService: AuthService,
     private myLoggerService:MyLoggerService,
-    private myEventService: MyEventService,
+    public myEventService: MyEventService,
     private watchTower:MyEventWatchTowerService,
     private radiobtnService:KlassRadioBtnService,
     private checkboxService:KlassCheckBoxService,
@@ -465,7 +468,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassTimeBegin() :void {
 
-    if(null == this.klass || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
+    if(null == this.klassCopy || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
       return;
     }
     if(null == this.klassTimeBeginComponent) {
@@ -478,7 +481,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassTimeEnd() :void {
 
-    if(null == this.klass || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
+    if(null == this.klassCopy || null == this.klassCopy.time_end || "" == this.klassCopy.time_end) {
       return;
     }
     if(null == this.klassTimeEndComponent) {
@@ -489,10 +492,34 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   } // end method
 
+  // @ 가장 가까운 수업 시작일을 의미합니다.
+  private setKlassDateEnrollment() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+
+    if(null == this.butterflyComponent) {
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 중단 / this.butterflyComponent is not valid!");
+      return;
+    }
+
+    let enrollmentDate:string = this.klassCopy.getEnrollmentDate();
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollment / enrollmentDate : ",enrollmentDate);
+
+    this.butterflyComponent.setText(enrollmentDate);
+
+  }
+
   private onAfterReceivingKlass() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klass : ",this.klass);
 
@@ -530,6 +557,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.setKlassPrice();
     this.setKlassTimeBegin();
     this.setKlassTimeEnd();
+    this.setKlassDateEnrollment();
 
     // set image-grid service
     let classBannerUrlArr:string[] = this.klassCopy.class_banner_url_arr;
@@ -571,6 +599,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
+  // REMOVE ME
+  /*
   private setFirstClassDateFormat() :void {
     this.firstClassDate = this.getFirstClassDate(this.klass);
 
@@ -617,6 +647,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     return null;
   }
+  */
 
   initAdmin() {
 
@@ -906,6 +937,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         if( null != myEvent.metaObj ) {
           this.klassTimeEndComponent = myEvent.metaObj;
           this.setKlassTimeEnd();
+        }
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.butterflyComponent = myEvent.metaObj;
+          this.setKlassDateEnrollment();
         }
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
