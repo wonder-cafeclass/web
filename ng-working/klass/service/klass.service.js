@@ -47,8 +47,8 @@ var KlassService = (function () {
         this.myTime = new my_time_1.HelperMyTime();
     }
     KlassService.prototype.updateKlassTitle = function (apiKey, userId, klassId, klassTitle) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / updateKlassTitle / 시작");
         if (isDebug)
@@ -73,8 +73,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassPoster = function (apiKey, userId, klassId, klassPosterUrl) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassPoster / 시작");
         if (isDebug)
@@ -99,8 +99,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassEmpty = function (apiKey, userId, teacherId, teacherResume, teacherGreeting) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassEmpty / 시작");
         if (isDebug)
@@ -128,8 +128,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.updateKlassBanner = function (apiKey, userId, klassId, klassBanners) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassBanner / 시작");
         if (isDebug)
@@ -294,23 +294,6 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    /*
-    getKlassNew (teacherId:number): Promise<MyResponse> {
-  
-      let isDebug:boolean = true;
-      // let isDebug:boolean = false;
-      if(isDebug) console.log("klass.service / getKlassNew / 시작");
-        
-      let req_url = this.urlService.get(this.klassNewUrl);
-      req_url = `${ req_url }?teacher_id=${ teacherId }`;
-      if(isDebug) console.log("klass.service / getKlassNew / req_url : ",req_url);
-  
-      return this.http.get(req_url)
-                    .toPromise()
-                    .then(this.myExtractor.extractData)
-                    .catch(this.myExtractor.handleError);
-    }
-    */
     KlassService.prototype.getKlasses = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -362,8 +345,8 @@ var KlassService = (function () {
         return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi, "").replace(/[\/]+/gi, "");
     };
     KlassService.prototype.getKlassFromJSON = function (klassJSON) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassFromJSON / 시작");
         var klass = new klass_1.Klass();
@@ -478,8 +461,8 @@ var KlassService = (function () {
         return klass;
     }; // end method
     KlassService.prototype.getKlassLevel = function (constMap, key) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassLevel / 시작");
         if (isDebug)
@@ -548,8 +531,8 @@ var KlassService = (function () {
         return klassLevel;
     };
     KlassService.prototype.getKlassStation = function (constMap, key) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassStation / 시작");
         if (isDebug)
@@ -618,8 +601,8 @@ var KlassService = (function () {
         return klassStation;
     };
     KlassService.prototype.getKlassDay = function (constMap, key) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassDay / 시작");
         if (isDebug)
@@ -688,8 +671,8 @@ var KlassService = (function () {
         return klassday;
     };
     KlassService.prototype.getKlassTime = function (constMap, key) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / getKlassTime / 시작");
         if (isDebug)

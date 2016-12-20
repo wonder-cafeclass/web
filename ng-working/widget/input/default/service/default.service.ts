@@ -10,8 +10,8 @@ export class DefaultService {
 	// @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
 	public getInput(inputComponentList: QueryList<DefaultComponent>, eventKey:string) :any {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("default.service / getInput / init");
 
 		let target:DefaultComponent = null;

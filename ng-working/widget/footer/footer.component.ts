@@ -31,8 +31,8 @@ export class FooterComponent implements OnInit, AfterViewInit, OnChanges {
                 private elementRef:ElementRef,
                 public router:Router) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("footer / constructor / 시작");
     if(isDebug) console.log("footer / constructor / 1 / this.isLoginTeacher : ",this.isLoginTeacher);
 

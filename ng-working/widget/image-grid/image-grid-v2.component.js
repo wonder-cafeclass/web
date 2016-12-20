@@ -33,16 +33,16 @@ var ImageGridV2Component = (function () {
         this.emitEventOnReady();
     };
     ImageGridV2Component.prototype.ngAfterViewInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / ngAfterViewInit / 시작");
         if (isDebug)
             console.log("image-grid-v2 / ngAfterViewInit / imageEntryList : ", this.imageEntryList);
     };
     ImageGridV2Component.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / init / 시작");
         if (null == this.imageTable || 0 == this.imageTable.length) {
@@ -95,8 +95,8 @@ var ImageGridV2Component = (function () {
         } // end if
     }; // end method
     ImageGridV2Component.prototype.addImageListSingleColumn = function (imageUrlList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / addImageListSingleColumn / 시작");
         if (null == imageUrlList || 0 == imageUrlList.length) {
@@ -110,8 +110,8 @@ var ImageGridV2Component = (function () {
     }; // end method
     // @ Desc : image-grid와 사용자가 전달한 이미지 주소 리스트를 대조, 사용자가 가지고 있지 않은 이미지들은 비활성 처리합니다.
     ImageGridV2Component.prototype.compareUserImages = function (imageUrlList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / compareUserImages / 시작");
         if (null == imageUrlList || 0 == imageUrlList.length) {
@@ -133,8 +133,8 @@ var ImageGridV2Component = (function () {
     };
     // @ Desc : image-entry 객체가 유효한 이미지 주소를 가지고 있는지 확인합니다.
     ImageGridV2Component.prototype.compareImage = function (imageEntry) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / compareImage / 시작");
         if (isDebug)
@@ -193,8 +193,8 @@ var ImageGridV2Component = (function () {
         this.imageTable = imageTableNext;
     };
     ImageGridV2Component.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / onChangeCheck / 시작");
         event.stopPropagation();
@@ -210,8 +210,8 @@ var ImageGridV2Component = (function () {
             console.log("image-grid-v2 / onChangeCheck / targetImg : ", targetImg);
     };
     ImageGridV2Component.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / onChangedFromChild / 시작");
         if (isDebug)
@@ -243,8 +243,8 @@ var ImageGridV2Component = (function () {
         } // end if
     }; // end method 
     ImageGridV2Component.prototype.emitEventOnAdd = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / emitEventOnAdd / 시작");
         if (null == myEvent) {
@@ -258,8 +258,8 @@ var ImageGridV2Component = (function () {
             console.log("image-grid-v2 / emitEventOnAdd / Done!");
     };
     ImageGridV2Component.prototype.emitEventOnDelete = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid-v2 / emitEventOnDelete / 시작");
         if (null == myEvent) {

@@ -242,8 +242,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private getKlassList(isTeacher:boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / getKlassList / 시작");
     if(isDebug) console.log("klass-list / getKlassList / isTeacher : ",isTeacher);
 
@@ -778,8 +778,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-list / onSelectKlass");
     if(isDebug) console.log("klass-list / onSelectKlass / klass : ",klass);
 

@@ -170,7 +170,9 @@
           <!-- COURSE TIME DONE -->
 
           <!-- COURSE TIME BEGIN ADMIN INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
             <widget-input-default
             [width]="-1"
             [isNoSpace]="true"
@@ -183,7 +185,9 @@
           <!-- COURSE TIME BEGIN ADMIN DONE -->
 
           <!-- COURSE TIME END ADMIN INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
             <widget-input-default
             [width]="-1"
             [isNoSpace]="true"

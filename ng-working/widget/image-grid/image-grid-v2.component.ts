@@ -54,8 +54,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   ngAfterViewInit():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / ngAfterViewInit / 시작");
     if(isDebug) console.log("image-grid-v2 / ngAfterViewInit / imageEntryList : ",this.imageEntryList);
 
@@ -63,8 +63,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   private init():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / init / 시작");
 
     if(null == this.imageTable || 0 == this.imageTable.length) {
@@ -123,8 +123,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   addImageListSingleColumn(imageUrlList:string[]):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / addImageListSingleColumn / 시작");
 
     if(null == imageUrlList || 0 == imageUrlList.length) {
@@ -142,8 +142,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
   // @ Desc : image-grid와 사용자가 전달한 이미지 주소 리스트를 대조, 사용자가 가지고 있지 않은 이미지들은 비활성 처리합니다.
   compareUserImages(imageUrlList:string[]):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / compareUserImages / 시작");
 
     if(null == imageUrlList || 0 == imageUrlList.length) {
@@ -168,8 +168,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
   // @ Desc : image-entry 객체가 유효한 이미지 주소를 가지고 있는지 확인합니다.
   compareImage(imageEntry:ImageEntryComponent):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / compareImage / 시작");
     if(isDebug) console.log("image-grid-v2 / compareImage / imageEntry : ",imageEntry);
 
@@ -243,8 +243,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   onChangeCheck(event, checkboxToggle, targetImg) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / onChangeCheck / 시작");
 
     event.stopPropagation();
@@ -265,8 +265,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / onChangedFromChild / 시작");
     if(isDebug) console.log("image-grid-v2 / onChangedFromChild / myEvent : ",myEvent);
 
@@ -313,8 +313,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   private emitEventOnAdd(myEvent:MyEvent) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / emitEventOnAdd / 시작");
 
     if(null == myEvent) {
@@ -332,8 +332,8 @@ export class ImageGridV2Component implements OnInit, AfterViewInit {
 
   private emitEventOnDelete(myEvent:MyEvent) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid-v2 / emitEventOnDelete / 시작");
 
     if(null == myEvent) {

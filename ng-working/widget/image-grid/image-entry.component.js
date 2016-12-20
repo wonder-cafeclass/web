@@ -30,14 +30,14 @@ var ImageEntryComponent = (function () {
         this.emitEventOnReady();
     };
     ImageEntryComponent.prototype.ngAfterViewInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / ngAfterViewInit / 시작");
     };
     ImageEntryComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / init / 시작");
     };
@@ -45,8 +45,8 @@ var ImageEntryComponent = (function () {
         return !this.hasImage(imageUrl);
     };
     ImageEntryComponent.prototype.hasImage = function (imageUrl) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / hasImage / 시작");
         if (null == imageUrl || "" === imageUrl) {
@@ -65,8 +65,8 @@ var ImageEntryComponent = (function () {
         return false;
     };
     ImageEntryComponent.prototype.onChangeCheck = function (event, checkboxToggle, targetImg) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / onChangeCheck / 시작");
         event.stopPropagation();
@@ -102,8 +102,8 @@ var ImageEntryComponent = (function () {
         this.emitEventOnDelete(imgUrlToDelete);
     };
     ImageEntryComponent.prototype.emitEventOnAdd = function (imgUrlToDelete) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / emitEventOnDelete / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
@@ -122,8 +122,8 @@ var ImageEntryComponent = (function () {
             console.log("image-entry / emitEventOnChange / Done!");
     };
     ImageEntryComponent.prototype.emitEventOnDelete = function (imgUrlToDelete) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-entry / emitEventOnDelete / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(

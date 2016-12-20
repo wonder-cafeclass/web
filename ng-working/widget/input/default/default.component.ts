@@ -54,8 +54,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService  ) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / constructor / init");
 
     // set default meta
@@ -84,8 +84,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / ngOnInit / init");
 
     if(isDebug) console.log("default / ngOnInit / meta : ",this.meta);
@@ -143,8 +143,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     ); // end setReady
   }
   private setMyChecker() :void {
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / setMyChecker / 시작");
 
     if(null == this.myChecker) {
@@ -207,8 +207,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   setInput(input:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / setInput / 시작");
     if(isDebug) console.log("default / setInput / input : ",input);
 
@@ -263,8 +263,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onClickIncreaseNumber / 시작");
 
     if(0 < this.numUnit) {
@@ -278,8 +278,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onClickDecreaseNumber / 시작");
 
     if(0 < this.numUnit) {
@@ -290,8 +290,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   private updateInputNum(numAmountChanged:number):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / updateInputNum / 시작");
     if(isDebug) console.log("default / updateInputNum / numAmountChanged : ",numAmountChanged);
 
@@ -322,8 +322,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onClickIncreaseHHMM / 시작");
 
     if(0 < this.minutesUnit) {
@@ -337,8 +337,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onClickDecreaseHHMM / 시작");
 
     if(0 < this.minutesUnit) {
@@ -349,8 +349,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   private updateInputHHMM(minutesChanged:number):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / updateInputHHMM / 시작");
     if(isDebug) console.log("default / updateInputHHMM / minutesChanged : ",minutesChanged);
 
@@ -536,8 +536,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   public showTooltipFailWarning(msg:string, isTimeout:Boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("default / showTooltipFailWarning / init");
     if(isDebug) console.log("default / showTooltipFailWarning / msg : ",msg);
     if(isDebug) console.log("default / showTooltipFailWarning / isTimeout : ",isTimeout);

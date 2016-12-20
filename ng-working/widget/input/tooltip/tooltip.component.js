@@ -22,8 +22,8 @@ var TooltipComponent = (function () {
     TooltipComponent.prototype.ngAfterViewInit = function () { };
     // @ Desc : 실패 툴팁을 보여줍니다.
     TooltipComponent.prototype.showTooltipFailWarning = function (msg, isTimeout) {
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("tooltip / showTooltipFailWarning / init");
         if (isDebug)

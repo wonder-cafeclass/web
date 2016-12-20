@@ -34,8 +34,8 @@ var DefaultComponent = (function () {
         this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
         this.minutesUnit = -1; // 시간 변경시 최소 변경 분 단위.
         this.widthStr = "";
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / constructor / init");
         // set default meta
@@ -59,8 +59,8 @@ var DefaultComponent = (function () {
         this.myTime = new my_time_1.HelperMyTime();
     } // end constructor
     DefaultComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / ngOnInit / init");
         if (isDebug)
@@ -113,8 +113,8 @@ var DefaultComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     DefaultComponent.prototype.setMyChecker = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / setMyChecker / 시작");
         if (null == this.myChecker) {
@@ -175,8 +175,8 @@ var DefaultComponent = (function () {
         return "";
     };
     DefaultComponent.prototype.setInput = function (input) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / setInput / 시작");
         if (isDebug)
@@ -230,8 +230,8 @@ var DefaultComponent = (function () {
     DefaultComponent.prototype.onClickIncreaseNumber = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onClickIncreaseNumber / 시작");
         if (0 < this.numUnit) {
@@ -241,8 +241,8 @@ var DefaultComponent = (function () {
     DefaultComponent.prototype.onClickDecreaseNumber = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onClickDecreaseNumber / 시작");
         if (0 < this.numUnit) {
@@ -250,8 +250,8 @@ var DefaultComponent = (function () {
         }
     };
     DefaultComponent.prototype.updateInputNum = function (numAmountChanged) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / updateInputNum / 시작");
         if (isDebug)
@@ -280,8 +280,8 @@ var DefaultComponent = (function () {
     DefaultComponent.prototype.onClickIncreaseHHMM = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onClickIncreaseHHMM / 시작");
         if (0 < this.minutesUnit) {
@@ -291,8 +291,8 @@ var DefaultComponent = (function () {
     DefaultComponent.prototype.onClickDecreaseHHMM = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onClickDecreaseHHMM / 시작");
         if (0 < this.minutesUnit) {
@@ -300,8 +300,8 @@ var DefaultComponent = (function () {
         }
     };
     DefaultComponent.prototype.updateInputHHMM = function (minutesChanged) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / updateInputHHMM / 시작");
         if (isDebug)
@@ -460,8 +460,8 @@ var DefaultComponent = (function () {
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     DefaultComponent.prototype.showTooltipFailWarning = function (msg, isTimeout) {
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / showTooltipFailWarning / init");
         if (isDebug)

@@ -195,8 +195,8 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.getKlassList = function (isTeacher) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / getKlassList / 시작");
         if (isDebug)
@@ -619,8 +619,8 @@ var KlassListComponent = (function () {
     KlassListComponent.prototype.onSelectKlass = function (event, klass) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-list / onSelectKlass");
         if (isDebug)

@@ -65,8 +65,8 @@ export class KlassService {
     klassTitle:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / updateKlassTitle / 시작");
     if(isDebug) console.log("klass.service / updateKlassTitle / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / updateKlassTitle / userId : ",userId);
@@ -95,8 +95,8 @@ export class KlassService {
     klassPosterUrl:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassPoster / 시작");
     if(isDebug) console.log("klass.service / addKlassPoster / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassPoster / userId : ",userId);
@@ -126,8 +126,8 @@ export class KlassService {
     teacherGreeting:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassEmpty / 시작");
     if(isDebug) console.log("klass.service / addKlassEmpty / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassEmpty / userId : ",userId);
@@ -159,8 +159,8 @@ export class KlassService {
     klassBanners:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassBanner / 시작");
     if(isDebug) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassBanner / userId : ",userId);
@@ -348,24 +348,6 @@ export class KlassService {
                   .catch(this.myExtractor.handleError);
   }
 
-  /*
-  getKlassNew (teacherId:number): Promise<MyResponse> {
-
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlassNew / 시작");
-      
-    let req_url = this.urlService.get(this.klassNewUrl);
-    req_url = `${ req_url }?teacher_id=${ teacherId }`;
-    if(isDebug) console.log("klass.service / getKlassNew / req_url : ",req_url);
-
-    return this.http.get(req_url)
-                  .toPromise()
-                  .then(this.myExtractor.extractData)
-                  .catch(this.myExtractor.handleError);
-  }  
-  */
-
   getKlasses (): Promise<MyResponse> {
 
     // let isDebug:boolean = true;
@@ -436,8 +418,8 @@ export class KlassService {
 
   getKlassFromJSON(klassJSON): Klass {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassFromJSON / 시작");
 
     let klass:Klass = new Klass();
@@ -559,8 +541,8 @@ export class KlassService {
 
   getKlassLevel(constMap:any, key:string):KlassLevel {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassLevel / 시작");
 
     if(isDebug) console.log("klass.service / getKlassLevel / constMap : ",constMap);
@@ -638,8 +620,8 @@ export class KlassService {
   }
   getKlassStation(constMap:any, key:string):KlassStation {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassStation / 시작");
 
     if(isDebug) console.log("klass.service / getKlassStation / constMap : ",constMap);
@@ -718,8 +700,8 @@ export class KlassService {
   }
   getKlassDay(constMap:any, key:string):KlassDay {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassDay / 시작");
 
     if(isDebug) console.log("klass.service / getKlassDay / constMap : ",constMap);
@@ -798,8 +780,8 @@ export class KlassService {
   }
   getKlassTime(constMap:any, key:string):KlassTime {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / getKlassTime / 시작");
 
     if(isDebug) console.log("klass.service / getKlassTime / constMap : ",constMap);

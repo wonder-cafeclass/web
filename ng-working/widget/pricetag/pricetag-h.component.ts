@@ -42,8 +42,8 @@ export class PriceTagHComponent implements OnInit {
 
   setPrice(price:number): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("pricetag-h / setPrice / 시작");
     if(isDebug) console.log("pricetag-h / setPrice / price : ",price);
 

@@ -42,8 +42,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / ngAfterViewInit / 시작");
 
   }
@@ -51,8 +51,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   private init():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / init / 시작");
 
   }
@@ -62,8 +62,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
   }
   hasImage(imageUrl:string):boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / hasImage / 시작");
 
     if(null == imageUrl || "" === imageUrl) {
@@ -83,8 +83,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   onChangeCheck(event, checkboxToggle, targetImg) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / onChangeCheck / 시작");
 
     event.stopPropagation();
@@ -132,8 +132,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   private emitEventOnAdd(imgUrlToDelete:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / emitEventOnDelete / 시작");
 
     let myEventOnChange:MyEvent =
@@ -156,8 +156,8 @@ export class ImageEntryComponent implements OnInit, AfterViewInit {
 
   private emitEventOnDelete(imgUrlToDelete:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-entry / emitEventOnDelete / 시작");
 
     let myEventOnChange:MyEvent =

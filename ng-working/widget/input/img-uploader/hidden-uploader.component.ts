@@ -128,8 +128,8 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("hidden-uploader / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -241,8 +241,8 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   initFileUpload():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("hidden-uploader / initFileUpload / init");
     
     // from http://stackoverflow.com/a/32010791/217408
@@ -253,8 +253,8 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   onChangeFile(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("hidden-uploader / onChangeFile / init");
 
     if(this.isNotValidParams()) {
@@ -361,8 +361,8 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   private emitEventOnDone(eventKey:string, value:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("hidden-uploader / emitEventOnDone / 시작");
 
     if(null == eventKey) {

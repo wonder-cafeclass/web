@@ -30,8 +30,8 @@ export class TooltipComponent implements OnInit, AfterViewInit {
   // @ Desc : 실패 툴팁을 보여줍니다.
   public showTooltipFailWarning(msg:string, isTimeout:Boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("tooltip / showTooltipFailWarning / init");
     if(isDebug) console.log("tooltip / showTooltipFailWarning / msg : ",msg);
 

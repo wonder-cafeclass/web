@@ -20,8 +20,8 @@ var FooterComponent = (function () {
         this.isLocked = false;
         this.isFixedBottom = false;
         this.isLoginTeacher = false;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("footer / constructor / 시작");
         if (isDebug)

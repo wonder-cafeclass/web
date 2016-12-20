@@ -44,8 +44,8 @@ var ApplyTeacherComponent = (function () {
         this.defaultMetaList = this.myEventService.getDefaultMetaListApplyTeacher();
     } // end function
     ApplyTeacherComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / ngOnInit / 시작");
         // 선생님 등록화면에서는 상,하단 메뉴를 가립니다.
@@ -659,8 +659,8 @@ var ApplyTeacherComponent = (function () {
     };
     ApplyTeacherComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("apply-teacher / onClickSave / init");
         // 모든 값들이 필수입니다.

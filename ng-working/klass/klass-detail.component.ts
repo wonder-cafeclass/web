@@ -257,12 +257,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   ngOnChanges(changes: SimpleChanges) {
     // changes.prop contains the old and the new value...
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / ngOnChanges / 시작");
-
     if(isDebug) console.log("klass-detail / ngOnChanges / changes : ",changes);
-
 
   }
 
@@ -293,8 +291,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private init():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / init / 시작");
 
     this.setUserInfo();
@@ -334,8 +332,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setDefaultComponents() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setDefaultComponents / 시작");
 
     // DefaultComponent들을 세팅
@@ -493,8 +491,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private onAfterReceivingKlass() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klass : ",this.klass);
 
@@ -564,8 +562,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setEmptyKlass() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setEmptyKlass / 시작");
 
     // 새로운 수업을 만들때, 빈 수업 데이터를 만들어 가져옵니다.
@@ -821,8 +819,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   // EVENT
   onClickKlassPoster(event) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onClickKlassPoster / 시작");
 
     if(!this.isAdmin || !this.isTeacher) {
@@ -868,8 +866,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -999,8 +997,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassSelectile() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassSelectile / 시작");
 
     if(null == this.klassCopy) {
@@ -1099,8 +1097,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassPrice(klassPrice:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassPrice / 시작");
     if(isDebug) console.log("klass-detail / updateKlassPrice / klassPrice : ",klassPrice);
 
@@ -1246,8 +1244,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassTitle(klassTitle:string, isDBUpdate:boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassTitle / 시작");
     if(isDebug) console.log("klass-detail / updateKlassTitle / klassTitle : ",klassTitle);
     if(isDebug) console.log("klass-detail / updateKlassTitle / isDBUpdate : ",isDBUpdate);
@@ -1305,8 +1303,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private addKlassPoster(posterUrl:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / addKlassPoster / 시작");
 
     this.klassService.addKlassPoster(
@@ -1355,8 +1353,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   addKlassBanner(imgUrlToAdd:string):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / addKlassBanner / 시작");
     if(isDebug) console.log("klass-detail / addKlassBanner / imgUrlToAdd : ",imgUrlToAdd);
 
@@ -1390,8 +1388,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   } // end method
   removeKlassBanner(imgUrlToDelete:string):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / removeKlassBanner / 시작");
     if(isDebug) console.log("klass-detail / removeKlassBanner / imgUrlToDelete : ",imgUrlToDelete);
 
@@ -1425,8 +1423,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   } // end method
   private updateKlassBanners(classBannerUrlNext:string):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassBanners / 시작");
     if(isDebug) console.log("klass-detail / updateKlassBanners / classBannerUrlNext : ",classBannerUrlNext);
 

@@ -111,8 +111,8 @@ var KlassDetailComponent = (function () {
     };
     KlassDetailComponent.prototype.ngOnChanges = function (changes) {
         // changes.prop contains the old and the new value...
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / ngOnChanges / 시작");
         if (isDebug)
@@ -139,8 +139,8 @@ var KlassDetailComponent = (function () {
         }); // end subscribe
     };
     KlassDetailComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / init / 시작");
         this.setUserInfo();
@@ -177,8 +177,8 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / setUserInfo / imageGridComponent : ", this.imageGridComponent);
     };
     KlassDetailComponent.prototype.setDefaultComponents = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setDefaultComponents / 시작");
         // DefaultComponent들을 세팅
@@ -299,8 +299,8 @@ var KlassDetailComponent = (function () {
         this.klassTimeEndComponent.setInput("" + this.klassCopy.time_end);
     }; // end method
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
         if (isDebug)
@@ -362,8 +362,8 @@ var KlassDetailComponent = (function () {
         this.imgUploaderEventKeyKlassPoster = this.myEventService.KEY_KLASS_POSTER;
     };
     KlassDetailComponent.prototype.setEmptyKlass = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setEmptyKlass / 시작");
         // 새로운 수업을 만들때, 빈 수업 데이터를 만들어 가져옵니다.
@@ -580,8 +580,8 @@ var KlassDetailComponent = (function () {
     };
     // EVENT
     KlassDetailComponent.prototype.onClickKlassPoster = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onClickKlassPoster / 시작");
         if (!this.isAdmin || !this.isTeacher) {
@@ -607,8 +607,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -706,8 +706,8 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end method
     KlassDetailComponent.prototype.updateKlassSelectile = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassSelectile / 시작");
         if (null == this.klassCopy) {
@@ -809,8 +809,8 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end if
     KlassDetailComponent.prototype.updateKlassPrice = function (klassPrice) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassPrice / 시작");
         if (isDebug)
@@ -942,8 +942,8 @@ var KlassDetailComponent = (function () {
     }; // end method
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassTitle / 시작");
         if (isDebug)
@@ -987,8 +987,8 @@ var KlassDetailComponent = (function () {
     }; // end method
     KlassDetailComponent.prototype.addKlassPoster = function (posterUrl) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / addKlassPoster / 시작");
         this.klassService.addKlassPoster(
@@ -1028,8 +1028,8 @@ var KlassDetailComponent = (function () {
         }); // end service    
     };
     KlassDetailComponent.prototype.addKlassBanner = function (imgUrlToAdd) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / addKlassBanner / 시작");
         if (isDebug)
@@ -1063,8 +1063,8 @@ var KlassDetailComponent = (function () {
         this.updateKlassBanners(classBannerUrlNext);
     }; // end method
     KlassDetailComponent.prototype.removeKlassBanner = function (imgUrlToDelete) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / removeKlassBanner / 시작");
         if (isDebug)
@@ -1100,8 +1100,8 @@ var KlassDetailComponent = (function () {
     }; // end method
     KlassDetailComponent.prototype.updateKlassBanners = function (classBannerUrlNext) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassBanners / 시작");
         if (isDebug)

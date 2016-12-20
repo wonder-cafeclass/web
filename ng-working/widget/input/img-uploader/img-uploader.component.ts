@@ -129,8 +129,8 @@ export class ImgUploaderComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("img-uploader / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -251,8 +251,8 @@ export class ImgUploaderComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("img-uploader / onClickFileUpload / init");
     
     // from http://stackoverflow.com/a/32010791/217408
@@ -262,8 +262,8 @@ export class ImgUploaderComponent implements OnInit, AfterViewInit {
   }
   onChangeFile(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("img-uploader / onChangeFile / init");
 
     if(this.isNotValidParams()) {
@@ -352,8 +352,8 @@ export class ImgUploaderComponent implements OnInit, AfterViewInit {
 
   private emitEventOnAddRow(eventKey:string, value:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("img-uploader / emitEventOnAddRow / 시작");
 
     if(null == eventKey) {

@@ -99,8 +99,8 @@ var ImgUploaderComponent = (function () {
     };
     ImgUploaderComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("img-uploader / ngAfterViewInit");
         this.asyncViewPack();
@@ -198,8 +198,8 @@ var ImgUploaderComponent = (function () {
     ImgUploaderComponent.prototype.onClickFileUpload = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("img-uploader / onClickFileUpload / init");
         // from http://stackoverflow.com/a/32010791/217408
@@ -208,8 +208,8 @@ var ImgUploaderComponent = (function () {
     };
     ImgUploaderComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("img-uploader / onChangeFile / init");
         if (this.isNotValidParams()) {
@@ -286,8 +286,8 @@ var ImgUploaderComponent = (function () {
         });
     }; // end method
     ImgUploaderComponent.prototype.emitEventOnAddRow = function (eventKey, value) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("img-uploader / emitEventOnAddRow / 시작");
         if (null == eventKey) {

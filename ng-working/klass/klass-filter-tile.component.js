@@ -41,8 +41,8 @@ var KlassFilterTileComponent = (function () {
     }
     KlassFilterTileComponent.prototype.ngOnInit = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-filter-tile / ngOnInit / 시작");
         this.klassService
@@ -401,8 +401,8 @@ var KlassFilterTileComponent = (function () {
         }
     };
     KlassFilterTileComponent.prototype.showSelectile = function (targetList, targetObj, focusIdx) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-filter-file / constructor / init");
         if (isDebug)

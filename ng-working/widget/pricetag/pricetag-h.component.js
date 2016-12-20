@@ -30,8 +30,8 @@ var PriceTagHComponent = (function () {
         }
     };
     PriceTagHComponent.prototype.setPrice = function (price) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("pricetag-h / setPrice / 시작");
         if (isDebug)

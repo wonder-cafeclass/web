@@ -525,8 +525,8 @@ export class UserService {
 
   public getUserCookie(apiKey:string):Promise<MyResponse> {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserCookie / 시작");
     if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 

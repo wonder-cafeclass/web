@@ -79,8 +79,8 @@ export class KlassFilterTileComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-filter-tile / ngOnInit / 시작");
 
     this.klassService
@@ -526,8 +526,8 @@ export class KlassFilterTileComponent implements OnInit {
   }
   private showSelectile(targetList:any[], targetObj:any, focusIdx:number) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-filter-file / constructor / init");
 
     if(isDebug) console.log("klass-filter-file / constructor / this.klassLevelSelected : ",this.klassLevelSelected);

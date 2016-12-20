@@ -98,8 +98,8 @@ var HiddenUploaderComponent = (function () {
     };
     HiddenUploaderComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("hidden-uploader / ngAfterViewInit");
         this.asyncViewPack();
@@ -191,8 +191,8 @@ var HiddenUploaderComponent = (function () {
         return true;
     };
     HiddenUploaderComponent.prototype.initFileUpload = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("hidden-uploader / initFileUpload / init");
         // from http://stackoverflow.com/a/32010791/217408
@@ -201,8 +201,8 @@ var HiddenUploaderComponent = (function () {
     };
     HiddenUploaderComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("hidden-uploader / onChangeFile / init");
         if (this.isNotValidParams()) {
@@ -292,8 +292,8 @@ var HiddenUploaderComponent = (function () {
         });
     }; // end method
     HiddenUploaderComponent.prototype.emitEventOnDone = function (eventKey, value) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("hidden-uploader / emitEventOnDone / 시작");
         if (null == eventKey) {
