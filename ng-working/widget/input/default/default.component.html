@@ -128,6 +128,23 @@
 		Number Controller - Disabled
 	</div>
 
+
+
+	<!-- SELECT BOX -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" style="padding-left: 10px;">
+		<select 
+		class="form-control" 
+		(change)="onSelect($event, $event.target.value)">
+			<option 	
+			*ngFor="let option of selectOptionList" 
+			[selected]="option.isFocus"
+			value={{option.value}}>{{option.key}}</option>
+		</select>
+	</div>
+	<!-- SELECT BOX / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT">
+		Select Controller - Disabled
+	</div>
 	
 	<!-- icon - warning -->
 	<span 	

@@ -10,8 +10,9 @@ import { MyChecker }            from '../../../util/model/my-checker';
 import { MyEventService }       from '../../../util/service/my-event.service';
 import { MyEvent }              from '../../../util/model/my-event';
 
-import { DefaultMeta }              from '../../../widget/input/default/model/default-meta';
-import { DefaultType }              from '../../../widget/input/default/model/default-type';
+import { DefaultMeta }              from './model/default-meta';
+import { DefaultType }              from './model/default-type';
+import { DefaultOption }            from './model/default-option';
 
 import { MyEventWatchTowerService } from '../../../util/service/my-event-watchtower.service';
 import { HelperMyTime }             from '../../../util/helper/my-time';
@@ -48,7 +49,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   widthStr:string="";
 
   private myTime:HelperMyTime;
-  
+
+  selectOptionList:DefaultOption[];
 
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
@@ -219,6 +221,14 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       let history = this.myCheckerService.getLastHistory();
       if(isDebug) console.log("default / setInput / history : ",history);
     }
+  }
+  setSelectOption(selectOptionList:DefaultOption[]) :void {
+
+    if(null == selectOptionList || 0 == selectOptionList.length) {
+      return;
+    }
+
+    this.selectOptionList = selectOptionList;
   }
   public initInput() :void {
     this.ngModelInput="";
@@ -416,6 +426,65 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     }
 
   } // end method
+
+  onSelect(event, selectedValue) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / onSelect / 시작");
+    if(isDebug) console.log("default / onSelect / selectedValue : ",selectedValue);
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isFocus) {
+      this.isFocus = false;
+    } // end if
+
+    let isValidInput:boolean = this.onCheckInputValid(selectedValue, true);
+    if(isDebug) console.log("default / onSelect / isValidInput : ",isValidInput);
+
+    if(isValidInput) {
+      if(isDebug) console.log("default / onSelect / 입력이 문제없습니다.");
+      this.hideWarningTooptip();
+      this.emitEventOnChange(selectedValue);
+    } else {
+      // 포커싱을 잃었으므로 사용자가 입력을 완료했다고 판단합니다. 
+      // 그 결과에 문제가 있으므로 부모 객체에게 실패원인을 전달합니다.
+      // 이벤트 키는 SUBMIT입니다.
+    }
+
+  } // end method 
+
+  getKeyFromSelect(value:string) :string {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("default / getKeyFromSelect / 시작");
+    if(isDebug) console.log("default / getKeyFromSelect / value : ",value);
+
+
+    if( null == value || "" === value ) {
+      return "";
+    }
+
+    if( null == this.selectOptionList || 0 === this.selectOptionList.length ) {
+      return "";
+    }
+
+    for (var i = 0; i < this.selectOptionList.length; ++i) {
+      let defaultOption:DefaultOption = this.selectOptionList[i];
+      if(null == defaultOption) {
+        continue;
+      }
+
+      if(defaultOption.value === value) {
+        return defaultOption.key;
+      }
+    }
+
+    return "";
+  } 
 
   private emitEventOnReady() :void {
 

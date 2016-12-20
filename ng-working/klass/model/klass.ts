@@ -154,13 +154,13 @@ export class Klass {
         this.class_banner_url = this.class_banner_url_arr.join(this.delimiter_banner);
     }
 
-    // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
-    getEnrollmentDate():string {
+    getEnrollmentDateList():KlassCalendarDay[] {
 
         if(null == this.klass_calendar_list || 0 == this.klass_calendar_list.length) {
-            return "";
+            return [];
         } // end if
 
+        let enrollmentDateList:KlassCalendarDay[] = [];
         for (var i = 0; i < this.klass_calendar_list.length; ++i) {
             let klassCalendar:KlassCalendar = this.klass_calendar_list[i];
             let klassCalDayList:KlassCalendarDay[] = klassCalendar.getDayList();
@@ -188,16 +188,38 @@ export class Klass {
                 }
 
                 if(klassCalDay.isEnrollment) {
-                    return `${klassCalDay.month}월 ${klassCalDay.date}일 ${klassCalDay.dayKor}요일`;
+                    enrollmentDateList.push(klassCalDay);
                 } // end if
 
             } // end for
 
         } // end for
 
-        return "";
+        return enrollmentDateList;
+    }
+
+    // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
+    getEnrollmentDate():string {
+
+        let enrollmentDateList:KlassCalendarDay[] = this.getEnrollmentDateList();
+        if(null == enrollmentDateList || 0 == enrollmentDateList.length) {
+            return "";
+        } // end if
+
+        let enrollmentDate:KlassCalendarDay = enrollmentDateList[0];
+
+        return this.getEnrollmentDateStr(enrollmentDate);
 
     } // end method
+
+    getEnrollmentDateStr(enrollmentDate:KlassCalendarDay):string {
+
+        if(null == enrollmentDate) {
+            return "";
+        }
+
+        return `${enrollmentDate.month}월 ${enrollmentDate.date}일 ${enrollmentDate.dayKor}요일`;
+    }
 
     setKlassCalendarList(klassCalendarJSONList:any[]):void {
 

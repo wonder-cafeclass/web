@@ -1,8 +1,11 @@
 import { HelperMyIs } from '../../util/helper/my-is';
+import { HelperMyTime } from '../../util/helper/my-time';
 
 export class KlassCalendarDay {
 
 	private myIs:HelperMyIs;
+	private myTime:HelperMyTime;
+
 	public year:number;
 	public month:number;
 	public date:number;
@@ -29,6 +32,7 @@ export class KlassCalendarDay {
 	
 	constructor() {
 		this.myIs = new HelperMyIs();
+		this.myTime = new HelperMyTime();
 	}
 
 	setFromJSON(json:any):KlassCalendarDay {
@@ -108,6 +112,13 @@ export class KlassCalendarDay {
 		}
 
 		return this;
+	}
+
+	getYYYYMMDD():string {
+		let month:string = this.myTime.getDoubleDigit(this.month);
+		let date:string = this.myTime.getDoubleDigit(this.date);
+
+		return `${this.year}-${month}-${date}`;
 	}
 
 	isSame(target:KlassCalendarDay):boolean {

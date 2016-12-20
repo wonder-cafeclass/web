@@ -104,6 +104,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_TIME_BEGIN = "KEY_KLASS_TIME_BEGIN"; // 수업 - 수업 시작 시간
         this.KEY_KLASS_TIME_END = "KEY_KLASS_TIME_END"; // 수업 - 수업 종료 시간
         this.KEY_KLASS_DATE_ENROLLMENT = "KEY_KLASS_DATE_ENROLLMENT"; // 수업 - 등록 가능한 수업 시작일
+        this.KEY_KLASS_DATE_ENROLLMENT_VIEW = "KEY_KLASS_DATE_ENROLLMENT_VIEW"; // 수업 - 등록 가능한 수업 시작일
+        this.KEY_KLASS_DATE_ENROLLMENT_INPUT = "KEY_KLASS_DATE_ENROLLMENT_INPUT"; // 수업 - 등록 가능한 수업 시작일
         this.KEY_KLASS_POSTER = "KEY_KLASS_POSTER"; // 수업 - 포스터 이미지
         this.KEY_KLASS_BANNER = "KEY_KLASS_BANNER"; // 수업 - 배너 이미지
         this.KEY_KLASS_SELECTILE = "KEY_KLASS_SELECTILE"; // 수업 - 장소, 레벨, 요일, 시간
@@ -509,7 +511,18 @@ var MyEventService = (function () {
             // public checkerKey:string
             "klass_time_hhmm", 
             // public type:string
-            this.defaultType.TYPE_HHMM)
+            this.defaultType.TYPE_HHMM),
+            new default_meta_1.DefaultMeta(
+            // public title:string
+            "수업 시작 날짜", 
+            // public placeholder:string
+            "수업 시작 날짜를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_DATE_ENROLLMENT_INPUT, 
+            // public checkerKey:string
+            "klass_date_begin", 
+            // public type:string
+            this.defaultType.TYPE_SELECT)
         ];
         return defaultMetaList;
     };

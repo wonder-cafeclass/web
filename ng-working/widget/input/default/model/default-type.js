@@ -5,6 +5,7 @@ var DefaultType = (function () {
         this.TYPE_TEXTAREA = "TYPE_TEXTAREA";
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_HHMM = "TYPE_HHMM";
+        this.TYPE_SELECT = "TYPE_SELECT";
     }
     return DefaultType;
 }());

@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
-var default_meta_1 = require('../../../widget/input/default/model/default-meta');
-var default_type_1 = require('../../../widget/input/default/model/default-type');
+var default_meta_1 = require('./model/default-meta');
+var default_type_1 = require('./model/default-type');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_time_1 = require('../../../util/helper/my-time');
 var DefaultComponent = (function () {
@@ -192,6 +192,12 @@ var DefaultComponent = (function () {
                 console.log("default / setInput / history : ", history_2);
         }
     };
+    DefaultComponent.prototype.setSelectOption = function (selectOptionList) {
+        if (null == selectOptionList || 0 == selectOptionList.length) {
+            return;
+        }
+        this.selectOptionList = selectOptionList;
+    };
     DefaultComponent.prototype.initInput = function () {
         this.ngModelInput = "";
         this.inputStrPrev = "";
@@ -358,6 +364,54 @@ var DefaultComponent = (function () {
         else {
         }
     }; // end method
+    DefaultComponent.prototype.onSelect = function (event, selectedValue) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / onSelect / 시작");
+        if (isDebug)
+            console.log("default / onSelect / selectedValue : ", selectedValue);
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isFocus) {
+            this.isFocus = false;
+        } // end if
+        var isValidInput = this.onCheckInputValid(selectedValue, true);
+        if (isDebug)
+            console.log("default / onSelect / isValidInput : ", isValidInput);
+        if (isValidInput) {
+            if (isDebug)
+                console.log("default / onSelect / 입력이 문제없습니다.");
+            this.hideWarningTooptip();
+            this.emitEventOnChange(selectedValue);
+        }
+        else {
+        }
+    }; // end method 
+    DefaultComponent.prototype.getKeyFromSelect = function (value) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("default / getKeyFromSelect / 시작");
+        if (isDebug)
+            console.log("default / getKeyFromSelect / value : ", value);
+        if (null == value || "" === value) {
+            return "";
+        }
+        if (null == this.selectOptionList || 0 === this.selectOptionList.length) {
+            return "";
+        }
+        for (var i = 0; i < this.selectOptionList.length; ++i) {
+            var defaultOption = this.selectOptionList[i];
+            if (null == defaultOption) {
+                continue;
+            }
+            if (defaultOption.value === value) {
+                return defaultOption.key;
+            }
+        }
+        return "";
+    };
     DefaultComponent.prototype.emitEventOnReady = function () {
         // let isDebug:boolean = true;
         var isDebug = false;

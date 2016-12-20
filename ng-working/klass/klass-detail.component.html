@@ -191,7 +191,6 @@
             <widget-input-default
             [width]="-1"
             [isNoSpace]="true"
-            [isDisabled]="false"
             [meta]="defaultMetaList[3]"
             [minutesUnit]="30"
             (emitter)="onChangedFromChild($event)">
@@ -210,7 +209,7 @@
             [fontSizeText]="18"
             [paddingText]="5"
             [color]="priceTagColor"
-            [eventKey]="myEventService.KEY_KLASS_DATE_ENROLLMENT"
+            [eventKey]="myEventService.KEY_KLASS_DATE_ENROLLMENT_VIEW"
             (emitter)="onChangedFromChild($event)">
             </butterfly>
           </li>
@@ -218,7 +217,13 @@
 
           <!-- FIRST KLASS DATE ADMIN INIT -->
           <li class="list-group-item col-next">
-          FIRST KLASS DATE ADMIN INIT
+            <div>
+              <widget-input-default
+              [isNoSpace]="true"
+              [meta]="defaultMetaList[4]"
+              (emitter)="onChangedFromChild($event)">
+              </widget-input-default>
+            </div>
           </li>
           <!-- FIRST KLASS DATE ADMIN DONE -->
           

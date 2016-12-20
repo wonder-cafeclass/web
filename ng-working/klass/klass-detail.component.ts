@@ -24,6 +24,8 @@ import { KlassStation }                  from './model/klass-station';
 import { KlassDay }                      from './model/klass-day';
 import { KlassTime }                     from './model/klass-time';
 import { KlassPrice }                    from './model/klass-price';
+import { KlassCalendar }                 from './model/klass-calendar';
+import { KlassCalendarDay }              from './model/klass-calendar-day';
 
 import { AuthService }                   from '../auth.service';
 import { KlassRadioBtnService }          from './service/klass-radiobtn.service';
@@ -39,6 +41,8 @@ import { ImageGridV2Component }          from '../widget/image-grid/image-grid-v
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
+import { DefaultOption }                 from '../widget/input/default/model/default-option';
+
 import { DefaultService }                from '../widget/input/default/service/default.service';
 import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.component';
 import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
@@ -161,6 +165,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   private klassPriceComponent: DefaultComponent;
   private klassTimeBeginComponent: DefaultComponent;
   private klassTimeEndComponent: DefaultComponent;
+  private klassDateEnrollmentComponent: DefaultComponent;
 
   @ViewChild(ImageGridV2Component)
   private imageGridComponent: ImageGridV2Component;
@@ -493,28 +498,85 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   } // end method
 
   // @ 가장 가까운 수업 시작일을 의미합니다.
-  private setKlassDateEnrollment() :void {
+  private setKlassDateEnrollmentView() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 시작");
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 시작");
 
     if(null == this.klassCopy) {
-      if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 중단 / this.klassCopy is not valid!");
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 중단 / this.klassCopy is not valid!");
       return;
     }
 
     if(null == this.butterflyComponent) {
-      if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 중단 / this.butterflyComponent is not valid!");
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 중단 / this.butterflyComponent is not valid!");
       return;
     }
 
-    let enrollmentDate:string = this.klassCopy.getEnrollmentDate();
-    if(isDebug) console.log("klass-detail / setKlassDateEnrollment / enrollmentDate : ",enrollmentDate);
+    let enrollmentDateStr:string = this.klassCopy.getEnrollmentDate();
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateStr : ",enrollmentDateStr);
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / this.butterflyComponent : ",this.butterflyComponent);
 
-    this.butterflyComponent.setText(enrollmentDate);
+    this.butterflyComponent.setText(enrollmentDateStr);
 
   }
+
+  // @ 가장 가까운 수업 시작일을 의미합니다.
+  private setKlassDateEnrollmentInput() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+
+    if(null == this.klassDateEnrollmentComponent) {
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 중단 / this.klassDateEnrollmentComponent is not valid!");
+      return;
+    }
+
+    let enrollmentDateStr:string = this.klassCopy.getEnrollmentDate();
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateStr : ",enrollmentDateStr);
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / this.butterflyComponent : ",this.butterflyComponent);
+
+    // 운영자가 선택할 수 있는 수업 시작 등록 날짜를 select box 리스트로 만듭니다.
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 운영자가 선택할 수 있는 수업 시작 등록 날짜를 select box 리스트로 만듭니다.");
+
+    let enrollmentDateList:KlassCalendarDay[] = this.klassCopy.getEnrollmentDateList();
+    let selectOptionList:DefaultOption[] = [];
+
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateList : ",enrollmentDateList);
+
+    for (var i = 0; i < enrollmentDateList.length; ++i) {
+
+      let enrollmentDate:KlassCalendarDay = enrollmentDateList[i];
+
+      let key:string = this.klassCopy.getEnrollmentDateStr(enrollmentDate);
+      let value:string = enrollmentDate.getYYYYMMDD();
+      let isFocus:boolean = (enrollmentDateStr === key)?true:false;
+
+      let defaultOption:DefaultOption = 
+      new DefaultOption(
+        // public key:string,
+        key,
+        // public value:string,
+        value,
+        // public isFocus:boolean
+        isFocus
+      );
+      if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / defaultOption : ",defaultOption);
+
+      selectOptionList.push(defaultOption);
+
+    }
+    if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / selectOptionList : ",selectOptionList);
+    this.klassDateEnrollmentComponent.setSelectOption(selectOptionList);
+
+  }  
 
   private onAfterReceivingKlass() :void {
 
@@ -557,7 +619,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.setKlassPrice();
     this.setKlassTimeBegin();
     this.setKlassTimeEnd();
-    this.setKlassDateEnrollment();
+    this.setKlassDateEnrollmentView();
+    this.setKlassDateEnrollmentInput();
 
     // set image-grid service
     let classBannerUrlArr:string[] = this.klassCopy.class_banner_url_arr;
@@ -897,8 +960,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -939,11 +1002,18 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.setKlassTimeEnd();
         }
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT)) {  
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT_VIEW)) {  
 
         if( null != myEvent.metaObj ) {
           this.butterflyComponent = myEvent.metaObj;
-          this.setKlassDateEnrollment();
+          this.setKlassDateEnrollmentView();
+        }
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT_INPUT)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.klassDateEnrollmentComponent = myEvent.metaObj;
+          this.setKlassDateEnrollmentInput();
         }
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
@@ -994,6 +1064,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
 
         this.updateKlassLevelDayTimeStation(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT_INPUT)) {  
+
+        this.updateKlassDateEnrollment(myEvent.value);
 
       } // end if
 
@@ -1272,6 +1346,37 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.updateClockTime(this.klassCopy.time_begin, this.klassCopy.time_end);
 
     if(isDebug) console.log("klass-detail / updateKlassTimeEnd / this.klassCopy : ",this.klassCopy);
+
+  }
+
+  private updateKlassDateEnrollment(klassDateEnrollment:string) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / klassDateEnrollment : ",klassDateEnrollment);
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+    if(null == this.klassDateEnrollmentComponent) {
+      if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / 중단 / this.klassDateEnrollmentComponent is not valid!");
+      return;
+    }
+
+    let dateEnrollmentStr:string = this.klassDateEnrollmentComponent.getKeyFromSelect(klassDateEnrollment);
+    if(null == dateEnrollmentStr || "" === dateEnrollmentStr) {
+      if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / 중단 / dateEnrollmentStr is not valid!");
+      return;
+    }
+
+    if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / dateEnrollmentStr : ",dateEnrollmentStr);
+
+    this.klassCopy.date_begin = klassDateEnrollment;
+    this.butterflyComponent.setText(dateEnrollmentStr);
+
+    if(isDebug) console.log("klass-detail / updateKlassDateEnrollment / this.klassCopy.date_begin : ",this.klassCopy.date_begin);
 
   }
 

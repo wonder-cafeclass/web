@@ -334,7 +334,7 @@ export class HelperMyTime {
 		return true;
 	}
 
-	private getDoubleDigit(target_number:number):string{
+	public getDoubleDigit(target_number:number):string{
 		if(target_number < 10){
 			return "0" + target_number;
 		}

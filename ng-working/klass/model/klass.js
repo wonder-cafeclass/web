@@ -63,11 +63,11 @@ var Klass = (function () {
     Klass.prototype.updateBannerUrl = function () {
         this.class_banner_url = this.class_banner_url_arr.join(this.delimiter_banner);
     };
-    // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
-    Klass.prototype.getEnrollmentDate = function () {
+    Klass.prototype.getEnrollmentDateList = function () {
         if (null == this.klass_calendar_list || 0 == this.klass_calendar_list.length) {
-            return "";
+            return [];
         } // end if
+        var enrollmentDateList = [];
         for (var i = 0; i < this.klass_calendar_list.length; ++i) {
             var klassCalendar = this.klass_calendar_list[i];
             var klassCalDayList = klassCalendar.getDayList();
@@ -92,12 +92,27 @@ var Klass = (function () {
                     continue;
                 }
                 if (klassCalDay.isEnrollment) {
-                    return klassCalDay.month + "\uC6D4 " + klassCalDay.date + "\uC77C " + klassCalDay.dayKor + "\uC694\uC77C";
+                    enrollmentDateList.push(klassCalDay);
                 } // end if
             } // end for
         } // end for
-        return "";
+        return enrollmentDateList;
+    };
+    // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
+    Klass.prototype.getEnrollmentDate = function () {
+        var enrollmentDateList = this.getEnrollmentDateList();
+        if (null == enrollmentDateList || 0 == enrollmentDateList.length) {
+            return "";
+        } // end if
+        var enrollmentDate = enrollmentDateList[0];
+        return this.getEnrollmentDateStr(enrollmentDate);
     }; // end method
+    Klass.prototype.getEnrollmentDateStr = function (enrollmentDate) {
+        if (null == enrollmentDate) {
+            return "";
+        }
+        return enrollmentDate.month + "\uC6D4 " + enrollmentDate.date + "\uC77C " + enrollmentDate.dayKor + "\uC694\uC77C";
+    };
     Klass.prototype.setKlassCalendarList = function (klassCalendarJSONList) {
         // let isDebug:boolean = true;
         var isDebug = false;

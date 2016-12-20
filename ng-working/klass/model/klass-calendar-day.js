@@ -1,8 +1,10 @@
 "use strict";
 var my_is_1 = require('../../util/helper/my-is');
+var my_time_1 = require('../../util/helper/my-time');
 var KlassCalendarDay = (function () {
     function KlassCalendarDay() {
         this.myIs = new my_is_1.HelperMyIs();
+        this.myTime = new my_time_1.HelperMyTime();
     }
     KlassCalendarDay.prototype.setFromJSON = function (json) {
         if (null == json) {
@@ -78,6 +80,11 @@ var KlassCalendarDay = (function () {
             this.yyyy_mm_dd_DD = json["yyyy_mm_dd_DD"];
         }
         return this;
+    };
+    KlassCalendarDay.prototype.getYYYYMMDD = function () {
+        var month = this.myTime.getDoubleDigit(this.month);
+        var date = this.myTime.getDoubleDigit(this.date);
+        return this.year + "-" + month + "-" + date;
     };
     KlassCalendarDay.prototype.isSame = function (target) {
         return this.myIs.isSame(this, target);
