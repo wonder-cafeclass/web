@@ -10,7 +10,23 @@ export class HelperMyArray {
         this.myIs = new HelperMyIs();
     }
 
-    isValidArray(target:any[]):boolean {
+    copy(targetList:any[]):any[] {
+
+        let copyList:any[] = [];
+
+        for (var i = 0; i < targetList.length; ++i) {
+            let target = targetList[i];
+            copyList.push(target);
+        }
+
+        return copyList;
+
+    }
+
+    isNotOK(target:any[]):boolean {
+        return !this.isOK(target);
+    }
+    isOK(target:any[]):boolean {
 
         if(null == target || 0 == target.length) {
             return false;
@@ -19,6 +35,24 @@ export class HelperMyArray {
         return true;
 
     }
+    isNotStrArr(target:any[]):boolean {
+        return !this.isStrArr(target);
+    }
+    isStrArr(target:any[]):boolean {
+        let isStrArr:boolean = true;
+        if(this.isNotOK(target)) {
+            return false;
+        }
+
+        for (var i = 0; i < target.length; ++i) {
+            let element = target[i];
+            if(this.myIs.isNotString(element)) {
+                return false;
+            } // end if
+        } // end for
+
+        return true;
+    } // end method
 
 	hasNotStr(arrStr:string[], value:string):boolean {
 		return !this.hasStr(arrStr, value);

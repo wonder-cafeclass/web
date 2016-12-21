@@ -7,12 +7,39 @@ var HelperMyArray = (function () {
     function HelperMyArray() {
         this.myIs = new my_is_1.HelperMyIs();
     }
-    HelperMyArray.prototype.isValidArray = function (target) {
+    HelperMyArray.prototype.copy = function (targetList) {
+        var copyList = [];
+        for (var i = 0; i < targetList.length; ++i) {
+            var target = targetList[i];
+            copyList.push(target);
+        }
+        return copyList;
+    };
+    HelperMyArray.prototype.isNotOK = function (target) {
+        return !this.isOK(target);
+    };
+    HelperMyArray.prototype.isOK = function (target) {
         if (null == target || 0 == target.length) {
             return false;
         }
         return true;
     };
+    HelperMyArray.prototype.isNotStrArr = function (target) {
+        return !this.isStrArr(target);
+    };
+    HelperMyArray.prototype.isStrArr = function (target) {
+        var isStrArr = true;
+        if (this.isNotOK(target)) {
+            return false;
+        }
+        for (var i = 0; i < target.length; ++i) {
+            var element = target[i];
+            if (this.myIs.isNotString(element)) {
+                return false;
+            } // end if
+        } // end for
+        return true;
+    }; // end method
     HelperMyArray.prototype.hasNotStr = function (arrStr, value) {
         return !this.hasStr(arrStr, value);
     };

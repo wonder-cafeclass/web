@@ -21,8 +21,11 @@ var HelperMyIs = (function () {
         var getType = {};
         return (type == '[object Array]') ? true : false;
     };
-    HelperMyIs.prototype.isString = function (functionToCheck) {
-        var type = this.getType(functionToCheck);
+    HelperMyIs.prototype.isNotString = function (target) {
+        return !this.isString(target);
+    };
+    HelperMyIs.prototype.isString = function (target) {
+        var type = this.getType(target);
         if (null == type || "" === type) {
             false;
         }

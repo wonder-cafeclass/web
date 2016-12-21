@@ -585,7 +585,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   } 
 
-  // @ 주당 수업 횟수 데이터를 준비합니다. - wonder.jung
+  // @ 주당 수업 횟수 데이터를 준비합니다.
 
   // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
   private setKlassLevel() :void {
@@ -604,10 +604,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     if(isDebug) console.log("klass-detail / setKlassLevel / 시작");
 
-    let constMap:any = this.watchTower.getConstMap();
-    let classLevelList:string[] = constMap["class_level_list"];
-    let classLevelKorList:string[] = constMap["class_level_kor_list"];
-    // let classLevelImgUrlList:string[] = constMap["class_level_img_url_list"];
+    let classLevelList:string[] = this.watchTower.getMyConst().getListNoDefault("class_level_list");
+    let classLevelKorList:string[] = this.watchTower.getMyConst().getListNoDefault("class_level_kor_list");
+
+    if(isDebug) console.log("klass-detail / setKlassLevel / classLevelList : ",classLevelList);
+    if(isDebug) console.log("klass-detail / setKlassLevel / classLevelKorList : ",classLevelKorList);
   
     let klassLevel:string = this.klassCopy.level;
 
@@ -759,15 +760,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     let subwayStationImgList:any = 
     this.watchTower.getMyConst().getNestedChildListFromPrevParent("subway_station_img_list");
 
-    // TODO - 지하철역을 모두 보여주는 것도 가능해야 합니다.
-    // TODO - 지하철역 검색?
-
     let subwayStation:string = this.klassCopy.subway_station;
     let subwasStationImgPrev:string = this.klassCopy.subway_station_img;
     let subwasStationImgNext:string = "";
     // 선택된 역이 역 리스트에 있는지 확인합니다.
-    if( this.myArray.isValidArray(subwayStationKorList) && 
-        this.myArray.isValidArray(subwayStationImgList) && 
+    if( this.myArray.isOK(subwayStationKorList) && 
+        this.myArray.isOK(subwayStationImgList) && 
         this.myArray.hasNotStr(subwayStationList, subwayStation) ) {
 
       // 선택된 역이 없다면, 선택한 호선의 첫번째 역으로 임의 선택합니다. 이미지도 설정합니다.
@@ -778,49 +776,38 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     } // end if
     if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / subwayStation : ",subwayStation);
 
-    // 지하철 이미지 업데이트 
-
-    
-    let valueList:string[] = subwayStationList;
-    let keyList:string[] = subwayStationKorList;
-    // let classLevelImgUrlList:string[] = constMap["class_level_img_url_list"];
-  
-    let valueFromKlassCopy:string = subwayLine;
-
-    if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / valueList : ",valueList);
-
-    let selectOptionList:DefaultOption[] = [];
-    for (var i = 0; i < valueList.length; ++i) {
-
-      let keyFromList:string = keyList[i];
-      let valueFromList:string = valueList[i];
-
-      let key:string = keyFromList;
-      let value:string = valueFromList;
-      let isFocus:boolean = (valueFromList === valueFromKlassCopy)?true:false;
-
-      let defaultOption:DefaultOption = 
-      new DefaultOption(
-        // public key:string,
-        key,
-        // public value:string,
-        value,
-        // public isFocus:boolean
-        isFocus
-      );
-      if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / defaultOption : ",defaultOption);
-
-      selectOptionList.push(defaultOption);
-
-    }
-
+    let selectOptionList:DefaultOption[] = 
+    this.getDefaultOptionList(
+      // keyList:string[],
+      subwayStationKorList, 
+      // valueList:string[],
+      subwayStationList, 
+      // valueFocus:string
+      subwayLine
+    );
     if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / selectOptionList : ",selectOptionList);
+
     this.klassSubwayStationComponent.setSelectOption(selectOptionList);
 
-    // wonder.jung
-    // 지하철 역의 이미지를 업데이트 합니다.
-
   }
+  // wonder.jung
+  private getDefaultOptionList(keyList:string[],valueList:string[],valueFocus:string) :DefaultOption[] {
+
+    if(null == this.watchTower) {
+      return null;
+    }
+
+    return this.watchTower
+    .getMyConst()
+    .getDefaultOptionList(
+      // keyList:string[], 
+      keyList,
+      // valueList:string[],
+      valueList,
+      // valueFocus:string
+      valueFocus
+    );
+  } // end method
 
 
   // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
@@ -834,12 +821,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log("klass-detail / setKlassDays / 중단 / this.klassCopy is not valid!");
       return;
     }
-
     if(null == this.klassDaysComponent) {
       if(isDebug) console.log("klass-detail / setKlassDays / 중단 / this.klassDaysComponent is not valid!");
       return;
     }
-
     if(isDebug) console.log("klass-detail / setKlassDays / this.klassDaysComponent : ",this.klassDaysComponent);    
 
     // 컴포넌트가 준비되었습니다.
@@ -848,41 +833,24 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     let days:string = this.klassCopy.days;
     let daysList:string[] = this.klassCopy.days_list;
 
-    let daysSelectedMap:any = {};
-    for(var key in daysList) {
-      daysSelectedMap[daysList[key]] = {};
-    } // for end
     if(isDebug) console.log("klass-detail / setKlassDays / days : ",days);
     if(isDebug) console.log("klass-detail / setKlassDays / daysList : ",daysList);
-    if(isDebug) console.log("klass-detail / setKlassDays / daysSelectedMap : ",daysSelectedMap);
 
-    let constMap:any = this.watchTower.getConstMap();
-    let classDaysList:string[] = constMap["class_days_list"];
-    let classDaysKorList:string[] = constMap["class_days_kor_list"];
+    let selectOptionList:DefaultOption[] = 
+    this.watchTower
+    .getMyConst()
+    .getDefaultOptionListWithKeyValueFocus(
+      // nameKeyList:string, 
+      "class_days_kor_list", 
+      // nameValueList:string,
+      "class_days_list", 
+      // valueFocus:string
+      daysList
+    );
+    if(isDebug) console.log("klass-detail / setKlassDays / selectOptionList : ",selectOptionList);
+    this.klassDaysComponent.setCheckOption([selectOptionList]);
 
-    let optionList:DefaultOption[] = [];
-    for (var i = 1; i < classDaysList.length; ++i) {
-      // 기본값을 제외한 다른 모든 값을 사용.
-      let value:string = classDaysList[i];
-      let key:string = classDaysKorList[i];
-
-      let option:DefaultOption = 
-      new DefaultOption(
-        // public key:string,
-        key,
-        // public value:string,
-        value,
-        // public isFocus:boolean
-        (null != daysSelectedMap[value])?true:false
-      );
-
-      optionList.push(option);
-    } // end for
-    if(isDebug) console.log("klass-detail / setKlassDays / optionList : ",optionList);
-
-    this.klassDaysComponent.setCheckOption([optionList]);
-
-  } 
+  } // end method
 
   private getSubwayStationImg(subwayLine:string, subwayStation:string) :string {
 
@@ -935,24 +903,46 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
+  private getLevelImage(klassLevel:string):string {
+
+    return this.watchTower
+    .getMyConst()
+    .getValue(
+      // srcKey:string, 
+      "class_level_list",
+      // srcValue:string, 
+      klassLevel,
+      // targetKey:string
+      "class_level_img_url_list"
+    );
+  }
+
   private setSelectileImageTable() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setSelectileImageTable / 시작");
 
+    // 레벨 이미지 설정하기
+    let levelImg:string = 
+    this.klassCopy.level_img_url =
+    this.getLevelImage(this.klassCopy.level);
+    if(isDebug) console.log("klass-detail / setSelectileImageTable / levelImg : ",levelImg);
+
     // 지하철 역 이미지 설정하기. - 시작
     let subwayStationImg:string = 
+    this.klassCopy.subway_station_img =
     this.getSubwayStationImg(
       this.klassCopy.subway_line, 
       this.klassCopy.subway_station
     );
     if(isDebug) console.log("klass-detail / setSelectileImageTable / subwayStationImg : ",subwayStationImg);
 
+    // TODO - 시간 이미지 설정하기
     this.selectileImageTable = 
     [
       [
-        this.klassCopy.level_img_url,
+        levelImg,
         subwayStationImg,
         this.klassCopy.time_begin_img_url
       ]
@@ -1605,7 +1595,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
-  private updateKlassLevelDayTimeStation(klassSelectile:any) :void { // wonder.jung
+  private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
@@ -1840,10 +1830,21 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassLevel / 시작");
 
+    if(this.klassCopy.level === klassLevel) {
+      if(isDebug) console.log("klass-detail / updateKlassLevel / 중단 / 같은 레벨입니다.");
+      return;
+    }
+
     if(isDebug) console.log("klass-detail / updateKlassLevel / klassLevel : ",klassLevel);
 
-    // wonder.jung
+    this.klassCopy.level = klassLevel;
+    let levelImagePrev:string = this.klassCopy.level_img_url;
+    let levelImageNext:string = this.klassCopy.level_img_url = this.getLevelImage(klassLevel);
 
+    if(isDebug) console.log("klass-detail / updateKlassLevel / levelImagePrev : ",levelImagePrev);
+    if(isDebug) console.log("klass-detail / updateKlassLevel / levelImageNext : ",levelImageNext);
+
+    this.replaceSubwayStationImage(levelImagePrev, levelImageNext);
 
   }
 
@@ -1854,8 +1855,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / klassSubwayLine : ",klassSubwayLine);
-
-    // wonder.jung
 
     let constMap:any = this.watchTower.getConstMap();
     let subwayLineList:string[] = constMap["subway_line_list"];
@@ -1898,8 +1897,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       this.klassCopy.subway_line,
       this.klassCopy.subway_station
     );
-
-    // wonder.jung
 
     // 이미지를 교체합니다.
     if(isDebug) console.log("klass-detail / updateKlassSubwayStation / subwayImagePrev : ",subwayImagePrev);

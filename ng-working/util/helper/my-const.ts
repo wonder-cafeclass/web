@@ -1,7 +1,8 @@
 import { HelperMyIs } 		from './my-is';
 import { HelperMyArray } 	from './my-array';
 import { HelperMyTime } 	from './my-time';
-import { MyPropPicker } 	from '../model/my-prop-picker';
+import { MyPropPicker }     from '../model/my-prop-picker';
+import { DefaultOption }    from '../../widget/input/default/model/default-option';
 /*
 *	@ Desc : 서버에서 전달 받은 json 객체의 데이터를 검색, 조회하는 헬퍼 
 */
@@ -26,18 +27,44 @@ export class HelperMyConst {
     }
 
     private getList(key:string):any {
+
     	if(null == key || "" === key) {
     		return null;
     	} // end if
-
 
     	let list:any = this.constJSON[key];
     	if(null == list || 0 === list.length) {
     		return null;
     	} // end if
 
-    	return list;
+    	return this.myArray.copy(list);
     }
+
+    getListNoDefault(key:string):string[] {
+    	let list:string[] = this.getList(key);
+
+    	// 첫번째 기본값을 버린 리스트를 가져옵니다.
+    	list.shift();
+		return list;
+    }
+
+    getValue(srcKey:string, srcValue:string, targetKey:string) {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("my-const / getValue / 시작");
+
+    	let srcList:string[] = this.getList(srcKey);
+    	let targetList:string[] = this.getList(targetKey);
+
+    	if(isDebug) console.log("my-const / getValue / srcList : ",srcList);
+    	if(isDebug) console.log("my-const / getValue / targetList : ",targetList);
+
+    	let result:string = this.myArray.getValueFromLists(srcValue, srcList, targetList);
+
+    	return result;
+    }
+
 
     // @ Desc : 키 리스트에서 기본값을 가져옵니다.
     getDefault(key:string):string {
@@ -212,6 +239,7 @@ export class HelperMyConst {
     		return false;
     	} // end if
     	let list = this.constJSON[key];
+        list = this.myArray.copy(list);
     	if(null == list || 0 === list.length) {
     		return false;
     	} // end if
@@ -246,6 +274,154 @@ export class HelperMyConst {
     	if(isDebug) console.log(`my-const / has / valueList : `,valueList);
 
     	return this.myArray.hasStr(valueList, value);
+    }
+
+    // @ 체크박스 처럼 여러가지 선택이 가능한 경우.
+    getDefaultOptionListWithFocusList(keyList:string[], valueList:string[], valueFocusList:string[]):DefaultOption[] {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("my-const / getDefaultOptionList / 시작");
+
+        let defaultOptionList:DefaultOption[] = this.getDefaultOptionList(keyList, valueList, "");
+
+        if(this.myArray.isNotStrArr(valueFocusList)) {
+            return defaultOptionList;
+        }
+
+        // focus map
+        let valueMap = this.getValueMap(valueFocusList);
+
+        for (var i = 0; i < defaultOptionList.length; ++i) {
+            let option:DefaultOption = defaultOptionList[i];
+            if(null == option) {
+                continue;
+            } // end if
+            if(null != valueMap[option.value]) {
+                option.isFocus = true;
+            } else {
+                option.isFocus = false;
+            }
+        } // end for
+
+        return defaultOptionList;
+    } // end method.
+
+    getValueMap(valueList:string[]):any {
+        if(this.myArray.isNotStrArr(valueList)) {
+            return {};
+        }
+
+        let valueMap = {};
+        for (var i = 0; i < valueList.length; ++i) {
+            let value:string = valueList[i];
+            valueMap[value] = {};
+        }
+
+        return valueMap;
+    }
+
+    getDefaultOptionList(keyList:string[], valueList:string[], valueFocus:string):DefaultOption[] {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("my-const / getDefaultOptionList / 시작");
+
+        if(this.myArray.isNotStrArr(keyList)) {
+            if(isDebug) console.log("my-const / getDefaultOptionList / 중단 / this.myArray.isNotStrArr(keyList)");
+            return;   
+        }
+        if(this.myArray.isNotStrArr(valueList)) {
+            if(isDebug) console.log("my-const / getDefaultOptionList / 중단 / this.myArray.isNotStrArr(valueList)");
+            return;   
+        }
+        if(keyList.length !== valueList.length) {
+            if(isDebug) console.log("my-const / getDefaultOptionList / 중단 / keyList.length !== valueList.length");
+            return;
+        }
+
+        let selectOptionList:DefaultOption[] = [];
+        for (var i = 0; i < keyList.length; ++i) {
+
+            let key:string = keyList[i];
+            let value:string = valueList[i];
+            let isFocus:boolean = (value === valueFocus)?true:false;
+
+            let defaultOption:DefaultOption = 
+            new DefaultOption(
+            // public key:string,
+            key,
+            // public value:string,
+            value,
+            // public isFocus:boolean
+            isFocus
+            );
+            if(isDebug) console.log("my-const / setKlassLevel / defaultOption : ",defaultOption);
+
+            selectOptionList.push(defaultOption);
+        } // end for
+
+        return selectOptionList;
+    }
+
+    getDefaultOptionListWithKeyValueFocus(nameKeyList:string, nameValueList:string, nameFocusList[]:string):DefaultOption[] {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("my-const / getDefaultOptionListWithKeyValueFocus / 시작");
+
+        if(this.hasNotList(nameKeyList)) {
+            if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValueFocus / this.hasNotList(nameKeyList : ${nameKeyList})`);
+            return;
+        }
+        if(this.hasNotList(nameValueList)) {
+            if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValueFocus / this.hasNotList(nameKeyList : ${nameValueList})`);
+            return;
+        }
+
+        let keyList:string[] = this.getListNoDefault(nameKeyList);
+        let valueList:string[] = this.getListNoDefault(nameValueList);
+
+        let defaultOptionList:DefaultOption[] = 
+        this.getDefaultOptionListWithFocusList(
+            keyList, 
+            valueList, 
+            nameFocusList
+        );
+
+        if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValueFocus / defaultOptionList : `,defaultOptionList);
+       
+        return defaultOptionList;
+    }    
+
+
+    getDefaultOptionListWithKeyValue(nameKeyList:string, nameValueList:string, nameFocus:string):DefaultOption[] {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-const / getDefaultOptionListWithKeyValue / 시작");
+
+        if(this.hasNotList(nameKeyList)) {
+            if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValue / this.hasNotList(nameKeyList : ${nameKeyList})`);
+            return;
+        }
+        if(this.hasNotList(nameValueList)) {
+            if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValue / this.hasNotList(nameKeyList : ${nameValueList})`);
+            return;
+        }
+
+        let keyList:string[] = this.getListNoDefault(nameKeyList);
+        let valueList:string[] = this.getListNoDefault(nameValueList);
+
+        if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValue / keyList : `,keyList);
+        if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValue / valueList : `,valueList);
+
+        let defaultOptionList:DefaultOption[] = this.getDefaultOptionList(keyList, valueList, nameFocus);
+
+        if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValue / defaultOptionList : `,defaultOptionList);
+       
+
+        return defaultOptionList;
     }
 
 

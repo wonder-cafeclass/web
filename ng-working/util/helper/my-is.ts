@@ -27,9 +27,12 @@ export class HelperMyIs {
 		return (type == '[object Array]')?true:false;
 	}	
 
-	isString(functionToCheck:any) :boolean {
+	isNotString(target:any) :boolean {
+		return !this.isString(target);
+	}
+	isString(target:any) :boolean {
 
-		let type:string = this.getType(functionToCheck);
+		let type:string = this.getType(target);
 		if(null == type || "" === type) {
 			false;
 		}
