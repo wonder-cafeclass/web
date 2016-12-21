@@ -164,6 +164,7 @@
 
           <!-- CLASS LEVEL ADMIN INIT -->
           <li 
+          *ngIf="isTeacher"
           class="list-group-item col-next">
             <widget-input-default
             [isNoSpace]="true"
@@ -175,6 +176,7 @@
 
           <!-- CLASS SUBWAYSTATION ADMIN INIT -->
           <li 
+          *ngIf="isTeacher"
           class="list-group-item col-next">
 
 <table class="table my-ck-style">
@@ -213,6 +215,7 @@
 
           <!-- CLASS DAYS ADMIN INIT -->
           <li 
+          *ngIf="isTeacher"
           class="list-group-item col-next">
             <widget-input-default
             [isNoSpace]="true"
