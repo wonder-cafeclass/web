@@ -978,9 +978,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.setSelectileImageTable();
 
+    // REMOVE ME
+    /*
     if(null != this.klassFilterTileComponent) {
       this.updateKlassSelectile();
     }
+    */
 
     // set selectile admin
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ",this.klassFilterTileComponent);
@@ -1534,6 +1537,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   } // end method
 
+  // REMOVE ME
+  /*
   private updateKlassSelectile() :void {
 
     // let isDebug:boolean = true;
@@ -1556,21 +1561,25 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     if(isDebug) console.log("klass-detail / updateKlassSelectile / this.klass : ", this.klass);
 
+    // REFACTOR ME
     let klassLevel:KlassLevel = this.klassService.getKlassLevel(constMap, this.klass.level);
     if(null == klassLevel) {
       if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassLevel is not valid!");
       return;
     }
+    // REFACTOR ME
     let klassStation:KlassStation = this.klassService.getKlassStation(constMap, this.klass.venue_subway_station);
     if(null == klassStation) {
       if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassStation is not valid!");
       return;
     }
+    // REFACTOR ME
     let klassDay:KlassDay = this.klassService.getKlassDay(constMap, this.klass.days);
     if(null == klassDay) {
       if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassDay is not valid!");
       return;
     }
+    // REFACTOR ME
     let klassTime:KlassTime = this.klassService.getKlassTime(constMap, this.klass.time_begin);
     if(null == klassTime) {
       if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassTime is not valid!");
@@ -1594,6 +1603,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
 
   }
+  */
 
   private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
 

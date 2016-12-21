@@ -571,6 +571,8 @@ export class KlassService {
 
   } // end method
 
+  // REMOVE ME
+  /*
   getKlassLevel(constMap:any, key:string):KlassLevel {
 
     // let isDebug:boolean = true;
@@ -918,5 +920,7 @@ export class KlassService {
 
     return klassTime;
   } // end method
+
+  */
 
 } // end class

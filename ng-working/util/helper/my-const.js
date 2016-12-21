@@ -293,8 +293,7 @@ var HelperMyConst = (function () {
         } // end for
         return selectOptionList;
     };
-    HelperMyConst.prototype.getDefaultOptionListWithKeyValueFocus = function (nameKeyList, nameValueList, nameFocusList, string) {
-        if (nameFocusList === void 0) { nameFocusList = []; }
+    HelperMyConst.prototype.getDefaultOptionListWithKeyValueFocus = function (nameKeyList, nameValueList, nameFocusList) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -315,7 +314,7 @@ var HelperMyConst = (function () {
         if (isDebug)
             console.log("my-const / getDefaultOptionListWithKeyValueFocus / defaultOptionList : ", defaultOptionList);
         return defaultOptionList;
-    };
+    }; // end method
     HelperMyConst.prototype.getDefaultOptionListWithKeyValue = function (nameKeyList, nameValueList, nameFocus) {
         // let isDebug:boolean = true;
         var isDebug = false;

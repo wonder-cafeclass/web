@@ -349,12 +349,12 @@ export class HelperMyConst {
 
             let defaultOption:DefaultOption = 
             new DefaultOption(
-            // public key:string,
-            key,
-            // public value:string,
-            value,
-            // public isFocus:boolean
-            isFocus
+                // public key:string,
+                key,
+                // public value:string,
+                value,
+                // public isFocus:boolean
+                isFocus
             );
             if(isDebug) console.log("my-const / setKlassLevel / defaultOption : ",defaultOption);
 
@@ -364,7 +364,7 @@ export class HelperMyConst {
         return selectOptionList;
     }
 
-    getDefaultOptionListWithKeyValueFocus(nameKeyList:string, nameValueList:string, nameFocusList[]:string):DefaultOption[] {
+    getDefaultOptionListWithKeyValueFocus(nameKeyList:string, nameValueList:string, nameFocusList:string[]):DefaultOption[] {
 
         let isDebug:boolean = true;
         // let isDebug:boolean = false;
@@ -392,8 +392,7 @@ export class HelperMyConst {
         if(isDebug) console.log(`my-const / getDefaultOptionListWithKeyValueFocus / defaultOptionList : `,defaultOptionList);
        
         return defaultOptionList;
-    }    
-
+    } // end method
 
     getDefaultOptionListWithKeyValue(nameKeyList:string, nameValueList:string, nameFocus:string):DefaultOption[] {
 

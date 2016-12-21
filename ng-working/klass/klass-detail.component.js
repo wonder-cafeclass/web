@@ -697,9 +697,12 @@ var KlassDetailComponent = (function () {
             this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
         }
         this.setSelectileImageTable();
-        if (null != this.klassFilterTileComponent) {
-            this.updateKlassSelectile();
+        // REMOVE ME
+        /*
+        if(null != this.klassFilterTileComponent) {
+          this.updateKlassSelectile();
         }
+        */
         // set selectile admin
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ", this.klassFilterTileComponent);
@@ -1138,71 +1141,73 @@ var KlassDetailComponent = (function () {
             } // end if      
         } // end if
     }; // end method
-    KlassDetailComponent.prototype.updateKlassSelectile = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / 시작");
-        if (null == this.klassCopy) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / this.klassCopy is not valid!");
-            return;
-        }
-        if (null == this.klassFilterTileComponent) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / this.klassFilterTileComponent is not valid!");
-            return;
-        }
-        var constMap = this.watchTower.getConstMap();
-        if (null == constMap) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / constMap is not valid!");
-            return;
-        }
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / this.klass : ", this.klass);
-        var klassLevel = this.klassService.getKlassLevel(constMap, this.klass.level);
-        if (null == klassLevel) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / klassLevel is not valid!");
-            return;
-        }
-        var klassStation = this.klassService.getKlassStation(constMap, this.klass.venue_subway_station);
-        if (null == klassStation) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / klassStation is not valid!");
-            return;
-        }
-        var klassDay = this.klassService.getKlassDay(constMap, this.klass.days);
-        if (null == klassDay) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / klassDay is not valid!");
-            return;
-        }
-        var klassTime = this.klassService.getKlassTime(constMap, this.klass.time_begin);
-        if (null == klassTime) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSelectile / 중단 / klassTime is not valid!");
-            return;
-        }
-        this.klassFilterTileComponent.updateShowingSelectilesAll(
-        // klassLevel:KlassLevel, 
-        klassLevel, 
-        // klassStation:KlassStation, 
-        klassStation, 
-        // klassDay:KlassDay, 
-        klassDay, 
+    // REMOVE ME
+    /*
+    private updateKlassSelectile() :void {
+  
+      // let isDebug:boolean = true;
+      let isDebug:boolean = false;
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / 시작");
+  
+      if(null == this.klassCopy) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassCopy is not valid!");
+        return;
+      }
+      if(null == this.klassFilterTileComponent) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassFilterTileComponent is not valid!");
+        return;
+      }
+      let constMap:any = this.watchTower.getConstMap();
+      if(null == constMap) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / constMap is not valid!");
+        return;
+      }
+  
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / this.klass : ", this.klass);
+  
+      // REFACTOR ME
+      let klassLevel:KlassLevel = this.klassService.getKlassLevel(constMap, this.klass.level);
+      if(null == klassLevel) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassLevel is not valid!");
+        return;
+      }
+      // REFACTOR ME
+      let klassStation:KlassStation = this.klassService.getKlassStation(constMap, this.klass.venue_subway_station);
+      if(null == klassStation) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassStation is not valid!");
+        return;
+      }
+      // REFACTOR ME
+      let klassDay:KlassDay = this.klassService.getKlassDay(constMap, this.klass.days);
+      if(null == klassDay) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassDay is not valid!");
+        return;
+      }
+      // REFACTOR ME
+      let klassTime:KlassTime = this.klassService.getKlassTime(constMap, this.klass.time_begin);
+      if(null == klassTime) {
+        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassTime is not valid!");
+        return;
+      }
+  
+      this.klassFilterTileComponent.updateShowingSelectilesAll(
+        // klassLevel:KlassLevel,
+        klassLevel,
+        // klassStation:KlassStation,
+        klassStation,
+        // klassDay:KlassDay,
+        klassDay,
         // klassTime:KlassTime
-        klassTime);
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / klassLevel : ", klassLevel);
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / klassStation : ", klassStation);
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / klassDay : ", klassDay);
-        if (isDebug)
-            console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
-    };
+        klassTime
+      );
+  
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassLevel : ", klassLevel);
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassStation : ", klassStation);
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassDay : ", klassDay);
+      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
+  
+    }
+    */
     KlassDetailComponent.prototype.updateKlassLevelDayTimeStation = function (klassSelectile) {
         // let isDebug:boolean = true;
         var isDebug = false;
