@@ -162,7 +162,7 @@
           -->
           <!-- FILTERS ADMIN DONE -->
 
-          <!-- CLASS DAYS ADMIN INIT -->
+          <!-- CLASS LEVEL ADMIN INIT -->
           <li 
           class="list-group-item col-next">
             <widget-input-default
@@ -171,7 +171,57 @@
             (emitter)="onChangedFromChild($event)">
             </widget-input-default>
           </li>
-          <!-- CLASS DAYS ADMIN DONE -->          
+          <!-- CLASS LEVEL ADMIN DONE --> 
+
+          <!-- CLASS SUBWAYSTATION ADMIN INIT -->
+          <li 
+          class="list-group-item col-next">
+
+<table class="table my-ck-style">
+  <tbody> 
+    <tr> 
+      <td class="my-ck-style" style="padding-right:15px;">
+
+        <!-- <div> -->
+          <widget-input-default
+          [width]="185"
+          [isNoSpace]="true"
+          [meta]="defaultMetaList[6]"
+          (emitter)="onChangedFromChild($event)">
+          </widget-input-default>
+        <!-- </div> -->
+
+      </td>
+      <td class="my-ck-style">
+      
+        <!-- <div> -->
+          <widget-input-default
+          [width]="185"
+          [isNoSpace]="true"
+          [meta]="defaultMetaList[7]"
+          (emitter)="onChangedFromChild($event)">
+          </widget-input-default>
+        <!-- </div> -->
+
+      </td>      
+    </tr>
+  </tbody>
+</table>          
+
+          </li>
+          <!-- CLASS SUBWAYSTATION ADMIN DONE --> 
+
+          <!-- CLASS DAYS ADMIN INIT -->
+          <li 
+          class="list-group-item col-next">
+            <widget-input-default
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[8]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- CLASS DAYS ADMIN DONE --> 
+
 
           <!-- COURSE TIME INIT -->
           <li class="list-group-item col-next" style="height: 97px;">

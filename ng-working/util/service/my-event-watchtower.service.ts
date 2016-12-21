@@ -3,6 +3,8 @@ import { Subject }    			from 'rxjs/Subject';
 
 import { User }    				from '../../users/model/user';
 import { Teacher }    			from '../../teachers/model/teacher';
+
+import { HelperMyConst }    			from '../../util/helper/my-const';
 /*
 *	@ Desc : 부모와 자식 객체 간의 - 모듈 단위로 부모, 자식 관계라도 상관없음. - 이벤트를 주고 받을수 있는 shared service 객체
 */
@@ -52,6 +54,13 @@ export class MyEventWatchTowerService {
 	isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
 
 
+	private myConst:HelperMyConst;
+
+	constructor() {
+		this.myConst = new HelperMyConst();
+	}
+
+
 	// Service message commands
 	// @ Required for view
 	announceIsAdmin(isAdmin: boolean) {
@@ -91,6 +100,8 @@ export class MyEventWatchTowerService {
 		this.constMap = constMap;
 		this.dirtyWordList = dirtyWordList;
 		this.apiKey = apiKey;
+
+		this.myConst.setConstJSON(this.constMap);
 
 		this.myCheckerServicePackReadySource.next(true);
 
@@ -239,6 +250,9 @@ export class MyEventWatchTowerService {
 	getConstMap() :string {
 		return this.constMap;
 	}	
+	getMyConst():HelperMyConst {
+		return this.myConst;
+	}
 	getDirtyWordList() :string {
 		return this.dirtyWordList;
 	}	

@@ -185,58 +185,217 @@
 		],
 
 
+
+		"deprecated_subways:":[],
 		"class_venue_subway_station_list":[
 			"everywhere",
+
 			"jamsil",
 			"sincheon",
 			"seolleung",
 			"samseong",
 			"seongsu",
+
 			"bangi",
 			"gaerong",
 			"ogeum",
+
 			"seokchon",
 			"songpa"
 		],
 		"class_venue_subway_station_eng_list":[
 			"Everywhere",
+
 			"Jamsil",
 			"Sincheon",
 			"Seolleung",
 			"Samseong",
 			"Seongsu",
+
 			"Bangi",
 			"Gaerong",
 			"Ogeum",
+
 			"Seokchon",
 			"Songpa"
 		],
 		"class_venue_subway_station_kor_list":[
 			"모든 장소",
+
 			"잠실역",
 			"신천역",
 			"선릉역",
 			"삼성역",
 			"성수역",
+
 			"방이역",
 			"개롱역",
 			"오금역",
+
 			"석촌역",
 			"송파역"
 		],
 		"class_venue_subway_station_img_url_list":[
 			"assets/images/subway/everywhere.svg",
+
 			"assets/images/subway/line_2_jamsil.svg",
 			"assets/images/subway/line_2_sincheon.svg",
 			"assets/images/subway/line_2_seolleung.svg",
 			"assets/images/subway/line_2_samseong.svg",
 			"assets/images/subway/line_2_seongsu.svg",
+
 			"assets/images/subway/line_5_bangi.svg",
 			"assets/images/subway/line_5_gaerong.svg",
 			"assets/images/subway/line_5_ogeum.svg",
+
 			"assets/images/subway/line_8_seokchon.svg",
 			"assets/images/subway/line_8_songpa.svg"
 		],
+
+
+
+		"recommended_subways:":[],
+		"subway_line_list":[
+			"Everywhere",
+			"line1",
+			"line2",
+			"line3",
+			"line4",
+			"line5",
+			"line6",
+			"line7",
+			"line8",
+			"line9"
+		],		
+		"subway_line_kor_list":[
+			"모든노선",
+			"1호선",
+			"2호선",
+			"3호선",
+			"4호선",
+			"5호선",
+			"6호선",
+			"7호선",
+			"8호선",
+			"9호선"
+		],
+		"subway_station_list":[
+			[
+				"everywhere"
+			],
+			[
+				"seoul"
+			],
+			[
+				"jamsil",
+				"sincheon",
+				"seolleung",
+				"samseong",
+				"seongsu"
+			],
+			[],
+			[],
+			[
+				"bangi",
+				"gaerong",
+				"ogeum"
+			],
+			[],
+			[],
+			[
+				"seokchon",
+				"songpa"
+			],
+			[]
+		],
+		"subway_station_eng_list":[
+			[
+				"Everywhere"
+			],
+			[
+				"Seoul"
+			],
+			[
+				"Jamsil",
+				"Sincheon",
+				"Seolleung",
+				"Samseong",
+				"Seongsu"
+			],
+			[],
+			[],
+			[
+				"Bangi",
+				"Gaerong",
+				"Ogeum"
+			],
+			[],
+			[],
+			[
+				"Seokchon",
+				"Songpa"
+			],
+			[]
+		],	
+		"subway_station_kor_list":[
+			[
+				"모든 장소"
+			],
+			[
+				"서울역"
+			],
+			[
+				"잠실역",
+				"신천역",
+				"선릉역",
+				"삼성역",
+				"성수역"
+			],
+			[],
+			[],
+			[
+				"방이역",
+				"개롱역",
+				"오금역"
+			],
+			[],
+			[],
+			[
+				"석촌역",
+				"송파역"
+			],
+			[]
+		],
+		"subway_station_img_list":[
+			[
+				"assets/images/subway/everywhere.svg"
+			],
+			[
+				"assets/images/subway/line_2_jamsil.svg"
+			],
+			[
+				"assets/images/subway/line_2_jamsil.svg",
+				"assets/images/subway/line_2_sincheon.svg",
+				"assets/images/subway/line_2_seolleung.svg",
+				"assets/images/subway/line_2_samseong.svg",
+				"assets/images/subway/line_2_seongsu.svg"
+			],
+			[],
+			[],
+			[
+				"assets/images/subway/line_5_bangi.svg",
+				"assets/images/subway/line_5_gaerong.svg",
+				"assets/images/subway/line_5_ogeum.svg"
+			],
+			[],
+			[],
+			[
+				"assets/images/subway/line_8_seokchon.svg",
+				"assets/images/subway/line_8_songpa.svg"
+			],
+			[]
+		],					
+
 		
 
 		"class_venue_cafe_list":[

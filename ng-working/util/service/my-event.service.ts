@@ -121,8 +121,16 @@ export class MyEventService {
     KEY_KLASS_DAYS:string="KEY_KLASS_DAYS";                     // 수업 - 수업이 있는 요일
     KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
     KEY_KLASS_BANNER_VIEW:string="KEY_KLASS_BANNER_VIEW";                 // 수업 - 배너 이미지
-    KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";                 // 수업 - 배너 이미지
-    KEY_KLASS_SELECTILE_VIEW:string="KEY_KLASS_SELECTILE_VIEW";           // 수업 - 장소, 레벨, 요일, 시간
+    // 수업 - 배너 이미지
+    KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";
+    // 수업 - 레벨 이미지
+    KEY_KLASS_LEVEL:string="KEY_KLASS_LEVEL";
+    // 수업 - 지하철 노선
+    KEY_KLASS_VENUE_SUBWAY_LINE:string="KEY_KLASS_VENUE_SUBWAY_LINE";
+    // 수업 - 지하철 노선
+    KEY_KLASS_VENUE_SUBWAY_STATION:string="KEY_KLASS_VENUE_SUBWAY_STATION";
+    // 수업 - 장소, 레벨, 요일, 시간
+    KEY_KLASS_SELECTILE_VIEW:string="KEY_KLASS_SELECTILE_VIEW";           
     KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";           // 수업 - 장소, 레벨, 요일, 시간
 
     private uniqueIdx:number=0;
@@ -618,6 +626,42 @@ export class MyEventService {
             this.defaultType.TYPE_SELECT
             ),
             new DefaultMeta( // 5
+            // public title:string
+            "수업 레벨",
+            // public placeholder:string
+            "수업 레벨을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_LEVEL,
+            // public checkerKey:string
+            "klass_level",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+            new DefaultMeta( // 6
+            // public title:string
+            "수업 장소 - 지하철 노선",
+            // public placeholder:string
+            "수업 장소 - 지하철 노선을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_VENUE_SUBWAY_LINE,
+            // public checkerKey:string
+            "klass_day",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),            
+            new DefaultMeta( // 7
+            // public title:string
+            "수업 장소 - 지하철 역",
+            // public placeholder:string
+            "수업 장소 - 지하철 역을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_VENUE_SUBWAY_STATION,
+            // public checkerKey:string
+            "klass_day",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+            new DefaultMeta( // 8
             // public title:string
             "수업 요일",
             // public placeholder:string

@@ -82,16 +82,25 @@ class KlassCourse {
 
         // 수업장소 - 화면에 표시될 이름 / @ Deprecated
         public $venue;
-        // 수업장소 - 지하철 역 / @ Deprecated
-        public $venue_subway_station;
-        // 수업장소 이미지 - 지하철 역 / @ Deprecated
-        public $venue_subway_station_img_url;
         // 수업장소 - 카페 / @ Deprecated
         public $venue_cafe;
         // 수업장소 이미지 - 카페 / @ Deprecated
         public $venue_cafe_logo_img_url;
+
+
         // 수업장소링크 / @ Deprecated
         public $venue_map_link;
+        // 수업장소 - 지하철 역 / @ Deprecated
+        public $venue_subway_station;
+        // 수업장소 이미지 - 지하철 역 / @ Deprecated
+        public $venue_subway_station_img_url;
+
+        // 수업장소 - 지하철 노선
+        public $subway_line;
+        // 수업장소 - 지하철 역
+        public $subway_station;
+        // 수업장소 - 지하철 역 이미지
+        public $subway_station_img;
 
         // 수업장소 - 이름
         public $venue_title;

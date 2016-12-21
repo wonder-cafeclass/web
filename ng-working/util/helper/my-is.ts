@@ -27,6 +27,61 @@ export class HelperMyIs {
 		return (type == '[object Array]')?true:false;
 	}	
 
+	isString(functionToCheck:any) :boolean {
+
+		let type:string = this.getType(functionToCheck);
+		if(null == type || "" === type) {
+			false;
+		}
+
+		var getType = {};
+		return (type == '[object String]')?true:false;
+	}
+
+	isArrayList(target:any) :boolean {
+
+		if(null == target) {
+			return false;
+		}
+
+		let isArray:boolean = this.isArray(target);
+		if(!isArray) {
+			return false;
+		}
+
+		// 모든 인자가 array 이어야 합니다.
+		for (var i = 0; i < target.length; ++i) {
+			let element = target[i];
+			if(!this.isArray(element)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	isStringList(target:any) :boolean {
+
+		if(null == target) {
+			return false;
+		}
+
+		let isArray:boolean = this.isArray(target);
+		if(!isArray) {
+			return false;
+		}
+
+		// 모든 인자가 array 이어야 합니다.
+		for (var i = 0; i < target.length; ++i) {
+			let element = target[i];
+			if(!this.isString(element)) {
+				return false;
+			}
+		}
+
+		return true;
+	}	
+
 	getType(anyToCheck:any) :string {
 
 		var getType = {};

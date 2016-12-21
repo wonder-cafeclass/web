@@ -1,5 +1,6 @@
 <div 	*ngIf="isShowTitle" 
 		[ngClass]="{'no-l':isNoSpace,'no-t':isNoSpace}"
+		[style.width]="widthStr"
 		class="btn-box text-left info">
 	<label class="title">{{meta.title}}</label>
 </div>
@@ -149,6 +150,7 @@
 
 
 
+
 	<!-- CHECK BOX / checkOptionTable -->
 	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_CHECKBOX">
 
@@ -161,7 +163,7 @@
 								<input 
 								#checkbox
 								[checked]="option.isFocus"
-								(change)="onCheck($event, $event.target.value, checkbox.checked)"
+								(change)="onCheck($event, $event.target.value, checkbox.checked, checkbox)"
 								type="checkbox" 
 								name={{option.key}} 
 								value={{option.value}}>{{option.key}}

@@ -10,6 +10,16 @@ export class HelperMyArray {
         this.myIs = new HelperMyIs();
     }
 
+    isValidArray(target:any[]):boolean {
+
+        if(null == target || 0 == target.length) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 	hasNotStr(arrStr:string[], value:string):boolean {
 		return !this.hasStr(arrStr, value);
 	}
@@ -79,6 +89,31 @@ export class HelperMyArray {
 
 		return arrStrNext;
 	}
+    replaceStr(arrStr:string[], value:string, newValue:string):string[] {
+
+        if(null == value || "" == value) {
+            return arrStr;
+        } else if(null == newValue || "" == newValue) {
+            return arrStr;
+        } else if(null == arrStr || 0 == arrStr.length) {
+            return arrStr;
+        } else if(this.hasNotStr(arrStr, value)) {
+            return arrStr;    
+        }
+
+        let arrStrNext:string[] = [];
+        for (var i = 0; i < arrStr.length; ++i) {
+            let valueFromList:string = arrStr[i];
+            if(valueFromList === value) {
+                arrStrNext.push(newValue);
+            } else {
+                arrStrNext.push(valueFromList);
+            }
+
+        }
+
+        return arrStrNext;
+    }    
 	addStrUnique(arrStr:string[], value:string):string[] {
 
         if(null == value || "" == value) {
@@ -132,4 +167,42 @@ export class HelperMyArray {
 
         return "";
     }
+
+    getListFromLists(key:string, srcList:string[], targetList:any[]):string[] {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-array / getListFromLists / 시작");
+
+
+        if(null == key || "" === key) {
+            if(isDebug) console.log("my-array / getListFromLists / 중단 / key is not valid!");
+            return [];
+        }
+        if(null == srcList || 0 === srcList.length) {
+            if(isDebug) console.log("my-array / getListFromLists / 중단 / srcList is not valid!");
+            return [];
+        }
+        if(null == targetList || 0 === targetList.length) {
+            if(isDebug) console.log("my-array / getListFromLists / 중단 / targetList is not valid!");
+            return [];
+        }
+        if(srcList.length !== targetList.length) {
+            if(isDebug) console.log("my-array / getListFromLists / 중단 / srcList.length !== targetList.length");
+            return [];
+        }
+        if(this.hasNotStr(srcList, key)) {
+            if(isDebug) console.log("my-array / getListFromLists / 중단 / this.hasNotStr(srcList, key)");
+            return [];
+        }
+
+        for (var i = 0; i < srcList.length; ++i) {
+            let keyFromList:string = srcList[i];
+            if(keyFromList === key) {
+                return targetList[i]; 
+            }
+        }
+
+        return [];
+    }    
 }

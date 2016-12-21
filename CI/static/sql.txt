@@ -115,6 +115,9 @@ CREATE TABLE `klass` (
   `week_max` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 최대 수강 week 수 ex) 4 - 4주',
   `days` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "tue" COMMENT '수업요일 (mon/월),(wed/화),(tue/수),(thu/목),(fri/금),(sat/토),(sun/일); ex) mon|wed - 월,화 주 2회 수업',
   `class_per_week` int(1) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '주당 수업 일수 ex) 2 - 주 2일 수업',
+
+  `subway_line` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 지하철 노선 - 지하철역; ex) 2호선',
+  `subway_station` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 지하철 역 - 지하철역; ex) 송파역',
   
   `venue` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업장소; 서비스에 노출되는 이름을 의미합니다. ex) 송파역-스타벅스 송파사거리점',
   `venue_subway_station` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 - 지하철역; ex) 송파역',

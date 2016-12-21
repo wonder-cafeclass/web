@@ -1029,6 +1029,25 @@ class Klass extends MY_REST_Controller {
             'class_times_img_url_list'
         );    
     }
+    private function get_subway_line_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_line_list'
+        );
+    }
+    private function get_subway_station_default()
+    {
+        $subway_station_list = 
+        $this->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_station_list'
+        );
+
+        return $subway_station_list[0];
+    }    
     private function get_venue_subway_station_default()
     {
         return $this->my_paramchecker->get_const_from_list(
@@ -1072,9 +1091,16 @@ class Klass extends MY_REST_Controller {
         $klass_course->time_begin_img_url = 
         $this->get_time_begin_img_default();
 
+        $klass_course->subway_line = 
+        $this->get_subway_line_default();
+        $klass_course->subway_station = 
+        $this->get_subway_station_default();
+
         $klass_course->venue_subway_station = 
         $this->get_venue_subway_station_default();
         $klass_course->venue_subway_station_img_url = 
+        $this->get_venue_subway_station_img_default();
+        $klass_course->subway_station_img = 
         $this->get_venue_subway_station_img_default();
 
         return $klass_course;

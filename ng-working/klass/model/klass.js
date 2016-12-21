@@ -11,6 +11,7 @@ var Klass = (function () {
         this.helperMyIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    // @ Desc : 수업이 있는 요일을 추가합니다.
     Klass.prototype.addDay = function (day, imgUrl) {
         if (null == day || "" === day) {
             return;
@@ -27,6 +28,7 @@ var Klass = (function () {
         this.days_img_url_list.push(imgUrl);
         this.days_img_url = this.days_img_url_list.join(this.delimiter_banner);
     };
+    // @ Desc : 수업이 있는 요일을 뺍니다.
     Klass.prototype.removeDay = function (day, imgUrl) {
         if (null == day || "" === day) {
             return;

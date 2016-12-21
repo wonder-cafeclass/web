@@ -193,7 +193,7 @@ var DefaultComponent = (function () {
         }
     };
     DefaultComponent.prototype.setSelectOption = function (selectOptionList) {
-        if (null == selectOptionList || 0 == selectOptionList.length) {
+        if (null == selectOptionList) {
             return;
         }
         this.selectOptionList = selectOptionList;
@@ -371,8 +371,8 @@ var DefaultComponent = (function () {
         }
     }; // end method
     DefaultComponent.prototype.onCheck = function (event, selectedValue, isChecked) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("default / onCheck / 시작");
         if (isDebug)
@@ -381,7 +381,6 @@ var DefaultComponent = (function () {
             console.log("default / onCheck / isChecked : ", isChecked);
         var selectedOption = this.getCheckOptionFromTable(selectedValue);
         selectedOption.isFocus = isChecked;
-        // private emitEventOnChangeWithMeta(value:string, metaObj:any) :void {
         this.emitEventOnChangeWithMeta(
         // value:string
         selectedValue, 

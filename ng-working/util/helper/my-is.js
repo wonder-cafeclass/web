@@ -21,6 +21,48 @@ var HelperMyIs = (function () {
         var getType = {};
         return (type == '[object Array]') ? true : false;
     };
+    HelperMyIs.prototype.isString = function (functionToCheck) {
+        var type = this.getType(functionToCheck);
+        if (null == type || "" === type) {
+            false;
+        }
+        var getType = {};
+        return (type == '[object String]') ? true : false;
+    };
+    HelperMyIs.prototype.isArrayList = function (target) {
+        if (null == target) {
+            return false;
+        }
+        var isArray = this.isArray(target);
+        if (!isArray) {
+            return false;
+        }
+        // 모든 인자가 array 이어야 합니다.
+        for (var i = 0; i < target.length; ++i) {
+            var element = target[i];
+            if (!this.isArray(element)) {
+                return false;
+            }
+        }
+        return true;
+    };
+    HelperMyIs.prototype.isStringList = function (target) {
+        if (null == target) {
+            return false;
+        }
+        var isArray = this.isArray(target);
+        if (!isArray) {
+            return false;
+        }
+        // 모든 인자가 array 이어야 합니다.
+        for (var i = 0; i < target.length; ++i) {
+            var element = target[i];
+            if (!this.isString(element)) {
+                return false;
+            }
+        }
+        return true;
+    };
     HelperMyIs.prototype.getType = function (anyToCheck) {
         var getType = {};
         if (null == anyToCheck) {

@@ -52,11 +52,18 @@ export class Klass {
     public greeting: string;
 
     public venue: string;
-    public venue_subway_station: string;
-    public venue_subway_station_img_url: string;
     public venue_cafe: string;
     public venue_cafe_logo_img_url: string;
     public venue_map_link: string;
+
+    // @ Deprecated
+    public venue_subway_station: string;
+    public venue_subway_station_img_url: string;    
+
+    // @ Recommended
+    public subway_line: string;
+    public subway_station: string;
+    public subway_station_img: string;
 
     public venue_title: string;
     public venue_telephone: string;
@@ -96,7 +103,7 @@ export class Klass {
         this.helperMyIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
     }
-
+    // @ Desc : 수업이 있는 요일을 추가합니다.
     addDay(day:string, imgUrl:string) :void {
 
         if(null == day || "" === day) {
@@ -116,6 +123,7 @@ export class Klass {
         this.days_img_url_list.push(imgUrl);
         this.days_img_url = this.days_img_url_list.join(this.delimiter_banner);
     }
+    // @ Desc : 수업이 있는 요일을 뺍니다.
     removeDay(day:string, imgUrl:string) :void {
 
         if(null == day || "" === day) {

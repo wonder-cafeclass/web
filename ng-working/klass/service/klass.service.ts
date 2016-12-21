@@ -483,10 +483,9 @@ export class KlassService {
     }
     // class_per_week, / Warning! 이름다름
     klass.class_day_per_week = klassJSON.class_per_week;
+
     // venue,
     klass.venue = klassJSON.venue;
-    // venue_subway_station,
-    klass.venue_subway_station = klassJSON.venue_subway_station;
     // venue_cafe,
     klass.venue_cafe = klassJSON.venue_cafe;
     // venue_map_link,
@@ -503,6 +502,25 @@ export class KlassService {
     klass.venue_latitude = klassJSON.venue_latitude;
     // venue_longitude,
     klass.venue_longitude = klassJSON.venue_longitude;
+
+
+    // @ Deprecated
+    // venue_subway_station,
+    klass.venue_subway_station = klassJSON.venue_subway_station;
+    // venue_subway_station_img_url,
+    klass.venue_subway_station_img_url = klassJSON.venue_subway_station_img_url;
+
+    // @ Recommended
+    if(null != klassJSON.subway_line) {
+      klass.subway_line = klassJSON.subway_line;
+    }
+    if(null != klassJSON.subway_station) {
+      klass.subway_station = klassJSON.subway_station;
+    }
+    if(null != klassJSON.subway_station_img) {
+      klass.subway_station_img = klassJSON.subway_station_img;
+    }
+
     // staturlService,
     klass.class_status = klassJSON.status;
     // enrollment_interval_week,
@@ -537,8 +555,6 @@ export class KlassService {
     }
     // time_begin_img_url,
     klass.time_begin_img_url = klassJSON.time_begin_img_url;
-    // venue_subway_station_img_url,
-    klass.venue_subway_station_img_url = klassJSON.venue_subway_station_img_url;
 
     // calendar_table_linear // @ Deprecated
     // klass.calendar_table_linear = klassJSON.calendar_table_linear;

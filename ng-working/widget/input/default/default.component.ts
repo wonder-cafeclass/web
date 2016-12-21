@@ -225,7 +225,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   setSelectOption(selectOptionList:DefaultOption[]) :void {
 
-    if(null == selectOptionList || 0 == selectOptionList.length) {
+    if(null == selectOptionList) {
       return;
     }
 
@@ -440,8 +440,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   onCheck(event, selectedValue, isChecked:boolean) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("default / onCheck / 시작");
     if(isDebug) console.log("default / onCheck / selectedValue : ",selectedValue);
     if(isDebug) console.log("default / onCheck / isChecked : ",isChecked);
@@ -449,15 +449,13 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     let selectedOption:DefaultOption = this.getCheckOptionFromTable(selectedValue);
     selectedOption.isFocus = isChecked;
 
-    // private emitEventOnChangeWithMeta(value:string, metaObj:any) :void {
-
     this.emitEventOnChangeWithMeta(
       // value:string
       selectedValue,
       // metaObj:any  
       selectedOption    
     );
-    
+
   }
 
   getCheckOptionFromTable(value:string):DefaultOption {
