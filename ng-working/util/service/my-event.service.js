@@ -119,7 +119,14 @@ var MyEventService = (function () {
         this.KEY_KLASS_VENUE_SUBWAY_STATION = "KEY_KLASS_VENUE_SUBWAY_STATION";
         // 수업 - 장소, 레벨, 요일, 시간
         this.KEY_KLASS_SELECTILE_VIEW = "KEY_KLASS_SELECTILE_VIEW";
-        this.KEY_KLASS_SELECTILE = "KEY_KLASS_SELECTILE"; // 수업 - 장소, 레벨, 요일, 시간
+        // 수업 - 장소, 레벨, 요일, 시간
+        this.KEY_KLASS_SELECTILE = "KEY_KLASS_SELECTILE";
+        // 수업 - 수업 상세 내용 리스트
+        this.KEY_KLASS_DETAIL_NAV_LIST = "KEY_KLASS_DETAIL_NAV_LIST";
+        // 수업 - 수업 상세 내용 - 지도(네이버)
+        this.KEY_KLASS_DETAIL_NAV_VENUE_MAP = "KEY_KLASS_DETAIL_NAV_VENUE_MAP";
+        // 수업 - 수업 선생님 리스트
+        this.KEY_KLASS_TEACHER_LIST = "KEY_KLASS_TEACHER_LIST";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();
@@ -379,6 +386,31 @@ var MyEventService = (function () {
             } // end if
         } // end if        
     }; // end method
+    /*
+    public getEventOnReady(eventKey:string, component) :void {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("default / emitEventOnReady / 시작");
+
+        let myEventOnChange:MyEvent =
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_READY,
+          // public key:string
+          this.meta.eventKey,
+          // public value:string
+          "",
+          // public metaObj:any
+          component,
+          // public myChecker:MyChecker
+          this.myCheckerService.getFreePassChecker()
+        );
+
+        if(isDebug) console.log("default / emitEventOnReady / Done!");
+
+    }
+    */
     MyEventService.prototype.getDefaultMetaListMyInfo = function () {
         var defaultMetaList = [
             new default_meta_1.DefaultMeta(

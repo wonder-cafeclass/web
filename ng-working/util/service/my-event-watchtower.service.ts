@@ -4,7 +4,12 @@ import { Subject }    			from 'rxjs/Subject';
 import { User }    				from '../../users/model/user';
 import { Teacher }    			from '../../teachers/model/teacher';
 
-import { HelperMyConst }    			from '../../util/helper/my-const';
+import { HelperMyConst }		from '../../util/helper/my-const';
+
+import { MyEventService }		from './my-event.service';
+import { MyCheckerService }		from './my-checker.service';
+import { MyEvent }				from '../model/my-event';
+import { MyChecker }			from '../model/my-checker';
 /*
 *	@ Desc : 부모와 자식 객체 간의 - 모듈 단위로 부모, 자식 관계라도 상관없음. - 이벤트를 주고 받을수 있는 shared service 객체
 */
@@ -24,6 +29,9 @@ export class MyEventWatchTowerService {
 	private errorMsgArr:string[];
 	private contentHeight:number;
 	private isLockedBottomFooterFlexible:boolean = false;
+	private myEventService:MyEventService;
+	private myCheckerService:MyCheckerService;
+	private isEventPackReady:boolean = false;
 
 	// Observable sources
 	// @ Required for view
@@ -37,8 +45,9 @@ export class MyEventWatchTowerService {
 	private errorMsgArrSource = new Subject<string[]>();
 	private contentHeightSource = new Subject<number>();
 	private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
-
-
+	private myEventServiceSource = new Subject<MyEventService>();
+	private myCheckerServiceSource = new Subject<MyCheckerService>();
+	private isEventPackReadySource = new Subject<boolean>();
 
 	// Observable streams
 	// @ Required for view
@@ -52,7 +61,9 @@ export class MyEventWatchTowerService {
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 	contentHeight$ = this.contentHeightSource.asObservable();
 	isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
-
+	myEventService$ = this.myEventServiceSource.asObservable();
+	myCheckerService$ = this.myCheckerServiceSource.asObservable();
+	isEventPackReady$ = this.isEventPackReadySource.asObservable();
 
 	private myConst:HelperMyConst;
 
@@ -213,6 +224,38 @@ export class MyEventWatchTowerService {
 		this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
 	}	
 
+	announceMyEventService(myEventService: MyEventService) {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log("m-e-w / announceMyEventService / init");
+
+		this.myEventService = myEventService;
+		this.myEventServiceSource.next(myEventService);
+
+		if(null != this.myCheckerService) {
+			if(isDebug) console.log("m-e-w / announceMyEventService / next");
+			this.isEventPackReady = true;
+			this.isEventPackReadySource.next(true);
+		} // end if
+	}
+	announceMyCheckerService(myCheckerService: MyCheckerService) {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log("m-e-w / announceMyCheckerService / init");
+
+		this.myCheckerService = myCheckerService;
+		this.myCheckerServiceSource.next(myCheckerService);
+
+		if(null != this.myEventService) {
+			if(isDebug) console.log("m-e-w / announceMyCheckerService / next");
+			this.isEventPackReady = true;
+			this.isEventPackReadySource.next(true);
+		} // end if
+	}
+
+
 
 
 	getLoginUser() :User {
@@ -244,6 +287,9 @@ export class MyEventWatchTowerService {
 	getIsViewPackReady() :boolean {
 		return this.isViewPackReady;
 	}
+	getIsEventPackReady() :boolean {
+		return this.isEventPackReady;
+	}	
 	getCheckerMap() :string {
 		return this.checkerMap;
 	}	
@@ -259,4 +305,109 @@ export class MyEventWatchTowerService {
 	getApiKey() :string {
 		return this.apiKey;
 	}
+	getMyEventService() :MyEventService {
+		return this.myEventService;
+	}
+	getMyCheckerService() :MyCheckerService {
+		return this.myCheckerService;
+	}
+
+	// EVENT SECTION
+	getEventOnReady(eventKey:string, component) :MyEvent {
+
+		if(null == this.myEventService) {
+			return null;
+		}
+		if(null == this.myCheckerService) {
+			return null;
+		}
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("m-e-w / getEventOnReady / 시작");
+
+	    let myEventOnReady:MyEvent =
+	    this.myEventService.getMyEvent(
+	      // public eventName:string
+	      this.myEventService.ON_READY,
+	      // public key:string
+	      eventKey,
+	      // public value:string
+	      "",
+	      // public metaObj:any
+	      component,
+	      // public myChecker:MyChecker
+	      this.myCheckerService.getFreePassChecker()
+	    );
+
+	    if(isDebug) console.log("m-e-w / getEventOnReady / myEventOnReady : ",myEventOnReady);
+
+		return myEventOnReady;
+	}
+	getEventOnChange(eventKey:string, value:string, myChecker:MyChecker) :MyEvent {
+
+		if(null == this.myEventService) {
+			return null;
+		}
+		if(null == this.myCheckerService) {
+			return null;
+		}
+		if(null == myChecker) {
+			return null;
+		}
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnReady / 시작");
+
+	    let myEventOnChange:MyEvent =
+	    this.myEventService.getMyEvent(
+	      // public eventName:string
+	      this.myEventService.ON_READY,
+	      // public key:string
+	      eventKey,
+	      // public value:string
+	      value,
+	      // public metaObj:any
+	      null,
+	      // public myChecker:MyChecker
+	      myChecker
+	    );
+
+		return myEventOnChange;
+	}
+
+	getEventOnChangeMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+
+		if(null == this.myEventService) {
+			return null;
+		}
+		if(null == this.myCheckerService) {
+			return null;
+		}
+		if(null == myChecker) {
+			return null;
+		}
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnReady / 시작");
+
+	    let myEventOnChange:MyEvent =
+	    this.myEventService.getMyEvent(
+	      // public eventName:string
+	      this.myEventService.ON_READY,
+	      // public key:string
+	      eventKey,
+	      // public value:string
+	      value,
+	      // public metaObj:any
+	      meta,
+	      // public myChecker:MyChecker
+	      myChecker
+	    );
+
+		return myEventOnChange;
+	}	
+
 }

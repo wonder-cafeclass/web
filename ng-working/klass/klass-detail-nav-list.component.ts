@@ -5,19 +5,26 @@ import {  Component,
           Output, 
           EventEmitter,
           Input }                     from '@angular/core';
+
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
 
-import { MyEventService }             from '../util/service/my-event.service';
 import { MyEvent }                    from '../util/model/my-event';
-
-import { MyCheckerService }           from '../util/service/my-checker.service';
 import { MyChecker }                  from '../util/model/my-checker';
+import { MyEventWatchTowerService }   from '../util/service/my-event-watchtower.service';
+import { MyEventService }             from '../util/service/my-event.service';
+import { MyCheckerService }           from '../util/service/my-checker.service';
+
+import { HelperMyIs }                 from '../util/helper/my-is';
+import { HelperMyTime }               from '../util/helper/my-time';
+import { HelperMyArray }              from '../util/helper/my-array';
 
 import { ImageService }               from '../util/image.service';
-import { KlassColorService }          from './service/klass-color.service';
-import { KlassCommentService }          from './service/klass-comment.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
 import { Comment }                    from '../widget/comment/model/comment';
+
+import { KlassColorService }          from './service/klass-color.service';
+import { KlassCommentService }        from './service/klass-comment.service';
+import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
 
 import { Klass }                      from './model/klass';
 import { KlassTeacher }               from './model/klass-teacher';
@@ -97,13 +104,27 @@ export class KlassDetailNavListComponent implements OnInit {
 
   @Output() emitter = new EventEmitter<any>();
 
+  private myIs:HelperMyIs;
+  private myArray:HelperMyArray;
+
   constructor(  private klassColorService:KlassColorService, 
                 private klassCommentService:KlassCommentService,
+                private watchTower:MyEventWatchTowerService,
                 public myEventService:MyEventService, 
                 private myCheckerService:MyCheckerService, 
-                public imageService: ImageService) {}
+                private radiobtnService:KlassRadioBtnService,
+                public imageService: ImageService) {
+
+    this.myIs = new HelperMyIs();
+    this.myArray = new HelperMyArray();
+
+  }
 
   ngOnInit(): void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / constructor / init");
 
     // WIDTH
     if(0 < this.cageWidth) {
@@ -112,14 +133,105 @@ export class KlassDetailNavListComponent implements OnInit {
       this.cageWidthStr="100%";
     } // end if
 
-    // COLOR
-    this.colorWhite = this.klassColorService.white;
-    this.colorOrange = this.klassColorService.orange;
-    this.colorGray = this.klassColorService.gray;
+    this.subscribeEventPack();
+    
+  }
 
-    // KLASS FEATURE
-    if(null == this.klassFeatureList || 0 == this.klassFeatureList.length) {
-      this.klassFeatureList = 
+  private subscribeEventPack() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / subscribeEventPack / init");
+
+    let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
+    if(isDebug) console.log("k-d-n-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+
+    if(this.watchTower.getIsEventPackReady()) {
+      // 1. 이미 EventPack 로딩이 완료된 경우
+
+      // 부모 객체에게 component가 준비된 것을 알립니다.
+      this.emitEventOnReady();
+
+    } else {
+      // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+      this.watchTower.isEventPackReady$.subscribe(
+        (isEventPackReady:boolean) => {
+
+        if(isDebug) console.log("k-d-n-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+
+        // 이벤트 관련 정보가 준비되었습니다.
+
+        // 부모 객체에게 component가 준비된 것을 알립니다.
+        this.emitEventOnReady();
+
+      }); // end subscribe
+
+    } // end if
+
+  } // end method
+
+
+  private emitEventOnReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEventOnReady / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEventOnReady:MyEvent = 
+    this.watchTower.getEventOnReady(
+      // eventKey:string, 
+      this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_LIST,
+      // component
+      this
+    );
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / myEventOnReady : ",myEventOnReady);
+
+    this.emitter.emit(myEventOnReady);
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / Done!");
+
+  }   
+
+  public setKlass(klass:Klass) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setKlass / init");
+
+    if(null == klass) {
+      return;
+    }
+
+    if(isDebug) console.log("k-d-n-l / setKlass / klass : ",klass);
+
+    this.klass = klass;
+
+    // klass의 정보가 들어온 시점에 레이아웃 정보를 설정합니다.
+    this.init();
+
+  }
+
+  private setKlassFeature() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setKlassFeature / init");    
+
+    if(null == this.klass) {
+      if(isDebug) console.log("k-d-n-l / setKlassFeature / 중단 / this.klass is not valid!");
+      return;
+    }
+
+    let featureList:string[] = this.klass.getFeatureList();
+    if(null == featureList || 0 == featureList.length) {
+      // 설정된 값이 없다면 기본 설정 값을 넣어줍니다.
+      featureList = 
       [
         "(예시) 해외 여행시 다양한 상황에서 필요한 영어 표현들을 연습",
         "(예시) 초급 분들도 영어로 묻고 답하는데 어려움 없도록 코칭",
@@ -127,82 +239,169 @@ export class KlassDetailNavListComponent implements OnInit {
       ];
     }
 
-    this.myEventListForKlassFeature=[];
-    for (var i = 0; i < this.klassFeatureList.length; ++i) {
-      let klassFeature:string = this.klassFeatureList[i];
+    this.updateKlassFeature(featureList);
 
-      let myEventKlassFeature = 
-      new MyEvent(
-        // public id:string
-        this.myEventService.getUniqueIdx(),
-        // public eventName:string
-        this.myEventService.ANY,
-        // public key:string
-        this.myEventService.KLASS_FEATURE,
-        // public value:string
-        klassFeature,
-        // public metaObj:any
-        {klassId:+this.klass.id},
-        // public myChecker:MyChecker
-        this.myCheckerService.getTitleChecker()
-      );
+  } // end method
+  private updateKlassFeature(featureList:string[]) :void {
 
-      this.myEventListForKlassFeature.push(myEventKlassFeature);
-    } // end for
+    let myEventKlassFeatureList:MyEvent[] = [];
+    if(this.myArray.isOK(featureList)) {
 
+      for (var i = 0; i < featureList.length; ++i) {
 
+        let klassFeature:string = featureList[i];
+        let myEventKlassFeature = 
+        new MyEvent(
+          // public id:string
+          this.myEventService.getUniqueIdx(),
+          // public eventName:string
+          this.myEventService.ANY,
+          // public key:string
+          this.myEventService.KLASS_FEATURE,
+          // public value:string
+          klassFeature,
+          // public metaObj:any
+          {klassId:+this.klass.id},
+          // public myChecker:MyChecker
+          this.myCheckerService.getTitleChecker()
+        );
 
-    // KLASS TARGET
-    if(null == this.klassTargetList || 0 == this.klassTargetList.length) {
-      // this.klassFeature = '(예시) 해외 여행시 다양한 상황에서 필요한 영어 표현들을 연습|(예시) 초급 분들도 영어로 묻고 답하는데 어려움 없도록 코칭|(예시) 자신감을 심어주는 클래스';
-      this.klassTargetList = 
+        myEventKlassFeatureList.push(myEventKlassFeature);
+      } // end for      
+
+    } // end if
+
+    this.myEventListForKlassFeature = myEventKlassFeatureList;
+
+  } // end method  
+
+  private setKlassTarget() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setKlassTarget / init");    
+
+    if(null == this.klass) {
+      if(isDebug) console.log("k-d-n-l / setKlassTarget / 중단 / this.klass is not valid!");
+      return;
+    }
+
+    let targetList:string[] = this.klass.getFeatureList();
+    if(null == targetList || 0 == targetList.length) {
+      targetList = 
       [
         "(예시) 1. 여행가서 당황하지 않을 만큼 영어 회화 연습하고 싶은 분들",
         "(예시) 2. 여행 상황별로 충분히 연습해 자신감을 갖고 싶은 분들"
       ];
+    }  
+    
+    this.updateKlassTarget(targetList);
+
+  } // end method
+  private updateKlassTarget(targetList:string[]) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / updateKlassTarget / init");    
+
+    let myEventKlassTargetList:MyEvent[] = [];
+    if(this.myArray.isOK(targetList)) {
+      
+      for (var i = 0; i < targetList.length; ++i) {
+
+        let klassTarget:string = targetList[i];
+
+        let myEventKlassTarget = 
+        new MyEvent(
+          // public id:string
+          this.myEventService.getUniqueIdx(),
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KLASS_TARGET,
+          // public value:string
+          klassTarget,
+          // public metaObj:any
+          {klassId:+this.klass.id},
+          // public myChecker:MyChecker
+          this.myCheckerService.getTitleChecker()
+        );
+
+        myEventKlassTargetList.push(myEventKlassTarget);
+      } // end for      
+
+    } // end if
+
+    this.myEventListForKlassTarget = myEventKlassTargetList;
+
+  } // end method
+
+  private setKlassSchedule() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setKlassSchedule / init");    
+
+    let klassSchedule:string = this.klass.schedule;
+
+    if(null === klassSchedule || "" === klassSchedule) {
+      klassSchedule = '<p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)1. Small talk &amp; 지난 시간 배운 표현 복습 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)2. Brainstorming – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)3. Key word 익히기 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)4. key expression – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)5. Break – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)6. Practice + Roleplay – <span style="color: rgb(255, 170, 0);">30분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)7. Q&amp;A, feedback + closing – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><br></p>';
     }
 
+    this.klassSchedule = klassSchedule;
 
-    this.myEventListForKlassTarget=[];
-    for (var i = 0; i < this.klassTargetList.length; ++i) {
+  } // end method
 
-      let klassTarget:string = this.klassTargetList[i];
-
-      let myEventKlassTarget = 
-      new MyEvent(
-        // public id:string
-        this.myEventService.getUniqueIdx(),
-        // public eventName:string
-        this.myEventService.ON_CHANGE,
-        // public key:string
-        this.myEventService.KLASS_TARGET,
-        // public value:string
-        klassTarget,
-        // public metaObj:any
-        {klassId:+this.klass.id},
-        // public myChecker:MyChecker
-        this.myCheckerService.getTitleChecker()
-      );
-
-      this.myEventListForKlassTarget.push(myEventKlassTarget);
-    } // end for
-
-    // KLASS SCHEDULE
-    if(null === this.klassSchedule || "" === this.klassSchedule) {
-      this.klassSchedule = '<p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)1. Small talk &amp; 지난 시간 배운 표현 복습 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)2. Brainstorming – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)3. Key word 익히기 – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)4. key expression – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)5. Break – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)6. Practice + Roleplay – <span style="color: rgb(255, 170, 0);">30분</span></span></font></p><p><font color="#ff0000"><br></font></p><p><font color="#ff0000"><span style="font-family: 나눔고딕, NanumGothic; font-size: 12pt; color: rgb(99, 99, 99);">(예시)7. Q&amp;A, feedback + closing – <span style="color: rgb(255, 170, 0);">10분</span></span></font></p><p><br></p>';
-    }
-
-    this.overwriteKlassCopies();
-
-    // IMAGES
+  private setImages() :void {
     this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
     this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
     this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
+  }
 
-    // 수업 강사님 정보 가져오기
+  private setTeacher() :void {
     if(null != this.klass.teacher) {
       this.klassTeacher = this.klass.teacher;
+    } // end if
+  }
+
+
+
+
+  private init() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / init / init");    
+
+    if(null == this.klass) {
+      if(isDebug) console.log("k-d-n-l / init / 중단 / this.klass is not valid!");
+      return;
     }
+
+    if(isDebug) console.log("k-d-n-l / init / this.klass : ",this.klass);
+
+    // COLOR
+    this.colorWhite = this.klassColorService.white;
+    this.colorOrange = this.klassColorService.orange;
+    this.colorGray = this.klassColorService.gray;
+
+    // KLASS FEATURE
+    this.setKlassFeature();
+
+    // KLASS TARGET
+    this.setKlassTarget();
+
+    // KLASS SCHEDULE
+    this.setKlassSchedule();
+
+    // 
+    this.overwriteKlassCopies();
+
+    // IMAGES
+    this.setImages();
+
+    // 수업 강사님 정보 가져오기
+    this.setTeacher();
 
     // 수업 리뷰 가져오기
     if(null != this.klass.review_list) {
@@ -248,7 +447,17 @@ export class KlassDetailNavListComponent implements OnInit {
       this.klass,
       // myChecker:MyChecker
       this.myCheckerService.getCommentChecker()
-    );    
+    );
+
+    // Nav Tab 설정
+    this.radiobtnOptionListNavTabs = 
+    this.radiobtnService.getNavTabsKlassInfo(
+      // klass:Klass, 
+      this.klass,
+      // keyFocus:string
+      this.watchTower.getMyEventService().KLASS_DESC
+    );
+    if(isDebug) console.log("k-d-n-l / init / this.radiobtnOptionListNavTabs : ",this.radiobtnOptionListNavTabs);
 
   }
 

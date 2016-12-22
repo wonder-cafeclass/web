@@ -13,6 +13,7 @@ var router_1 = require('@angular/router');
 var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./service/klass.service');
 var url_service_1 = require('../util/url.service');
+var klass_1 = require('./model/klass');
 var klass_level_1 = require('./model/klass-level');
 var klass_station_1 = require('./model/klass-station');
 var klass_day_1 = require('./model/klass-day');
@@ -227,7 +228,9 @@ var KlassListComponent = (function () {
                 if (isTeacher) {
                     // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
                     var newKlassJSONList = myResponse.getDataProp("new_klass");
-                    var newKlass = _this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+                    // REMOVE ME
+                    // let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+                    var newKlass = new klass_1.Klass().setJSON(newKlassJSONList[0]);
                     if (isDebug)
                         console.log("klass-list / getKlassList / newKlass : ", newKlass);
                     klassList.unshift(newKlass);

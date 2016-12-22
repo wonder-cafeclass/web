@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var klass_1 = require('./model/klass');
 var auth_service_1 = require('../auth.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
@@ -25,6 +26,7 @@ var default_service_1 = require('../widget/input/default/service/default.service
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
+var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
@@ -253,7 +255,7 @@ var KlassDetailComponent = (function () {
                 if (isDebug)
                     console.log("klass-detail / getParams / subscribe / klassJSON : ", klassJSON);
                 if (null != klassJSON) {
-                    _this.klass = _this.klassService.getKlassFromJSON(klassJSON);
+                    _this.klass = new klass_1.Klass().setJSON(klassJSON);
                     _this.onAfterReceivingKlass();
                 } // end if
             }
@@ -554,6 +556,25 @@ var KlassDetailComponent = (function () {
         // valueFocus:string
         valueFocus);
     }; // end method
+    KlassDetailComponent.prototype.setKlassDetailNavList = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassDetailNavList / 시작");
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDetailNavList / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (null == this.klassDetailNavListComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDays / 중단 / this.klassDetailNavListComponent is not valid!");
+            return;
+        }
+        if (isDebug)
+            console.log("klass-detail / setKlassDays / this.klassDetailNavListComponent : ", this.klassDetailNavListComponent);
+        this.klassDetailNavListComponent.setKlass(this.klassCopy);
+    };
     // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
     KlassDetailComponent.prototype.setKlassDays = function () {
         // let isDebug:boolean = true;
@@ -697,12 +718,6 @@ var KlassDetailComponent = (function () {
             this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
         }
         this.setSelectileImageTable();
-        // REMOVE ME
-        /*
-        if(null != this.klassFilterTileComponent) {
-          this.updateKlassSelectile();
-        }
-        */
         // set selectile admin
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ", this.klassFilterTileComponent);
@@ -722,8 +737,7 @@ var KlassDetailComponent = (function () {
                 this.imageTableBannerListService.push([classBannerUrl]);
             } // end for
         } // end if
-        if (isDebug)
-            console.log("klass-detail / onAfterReceivingKlass / this.imageTableBannerListService : ", this.imageTableBannerListService);
+        // 수업 정보 리스트에게 klass 정보를 전달합니다.
     };
     KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {
         // Set image uploader props
@@ -1075,6 +1089,12 @@ var KlassDetailComponent = (function () {
                     this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
                 } // end if
             }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_LIST)) {
+                if (null != myEvent.metaObj) {
+                    this.klassDetailNavListComponent = myEvent.metaObj;
+                    this.setKlassDetailNavList();
+                } // end if
+            }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER_VIEW)) {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE_VIEW)) {
@@ -1141,73 +1161,6 @@ var KlassDetailComponent = (function () {
             } // end if      
         } // end if
     }; // end method
-    // REMOVE ME
-    /*
-    private updateKlassSelectile() :void {
-  
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 시작");
-  
-      if(null == this.klassCopy) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassCopy is not valid!");
-        return;
-      }
-      if(null == this.klassFilterTileComponent) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassFilterTileComponent is not valid!");
-        return;
-      }
-      let constMap:any = this.watchTower.getConstMap();
-      if(null == constMap) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / constMap is not valid!");
-        return;
-      }
-  
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / this.klass : ", this.klass);
-  
-      // REFACTOR ME
-      let klassLevel:KlassLevel = this.klassService.getKlassLevel(constMap, this.klass.level);
-      if(null == klassLevel) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassLevel is not valid!");
-        return;
-      }
-      // REFACTOR ME
-      let klassStation:KlassStation = this.klassService.getKlassStation(constMap, this.klass.venue_subway_station);
-      if(null == klassStation) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassStation is not valid!");
-        return;
-      }
-      // REFACTOR ME
-      let klassDay:KlassDay = this.klassService.getKlassDay(constMap, this.klass.days);
-      if(null == klassDay) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassDay is not valid!");
-        return;
-      }
-      // REFACTOR ME
-      let klassTime:KlassTime = this.klassService.getKlassTime(constMap, this.klass.time_begin);
-      if(null == klassTime) {
-        if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassTime is not valid!");
-        return;
-      }
-  
-      this.klassFilterTileComponent.updateShowingSelectilesAll(
-        // klassLevel:KlassLevel,
-        klassLevel,
-        // klassStation:KlassStation,
-        klassStation,
-        // klassDay:KlassDay,
-        klassDay,
-        // klassTime:KlassTime
-        klassTime
-      );
-  
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassLevel : ", klassLevel);
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassStation : ", klassStation);
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassDay : ", klassDay);
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
-  
-    }
-    */
     KlassDetailComponent.prototype.updateKlassLevelDayTimeStation = function (klassSelectile) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -1761,6 +1714,10 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(butterfly_component_1.ButterflyComponent), 
         __metadata('design:type', butterfly_component_1.ButterflyComponent)
     ], KlassDetailComponent.prototype, "butterflyComponent", void 0);
+    __decorate([
+        core_1.ViewChild(klass_detail_nav_list_component_1.KlassDetailNavListComponent), 
+        __metadata('design:type', klass_detail_nav_list_component_1.KlassDetailNavListComponent)
+    ], KlassDetailComponent.prototype, "klassDetailNavListComponent", void 0);
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

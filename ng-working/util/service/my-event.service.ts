@@ -130,8 +130,15 @@ export class MyEventService {
     // 수업 - 지하철 노선
     KEY_KLASS_VENUE_SUBWAY_STATION:string="KEY_KLASS_VENUE_SUBWAY_STATION";
     // 수업 - 장소, 레벨, 요일, 시간
-    KEY_KLASS_SELECTILE_VIEW:string="KEY_KLASS_SELECTILE_VIEW";           
-    KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";           // 수업 - 장소, 레벨, 요일, 시간
+    KEY_KLASS_SELECTILE_VIEW:string="KEY_KLASS_SELECTILE_VIEW";
+    // 수업 - 장소, 레벨, 요일, 시간
+    KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";
+    // 수업 - 수업 상세 내용 리스트
+    KEY_KLASS_DETAIL_NAV_LIST:string="KEY_KLASS_DETAIL_NAV_LIST";
+    // 수업 - 수업 상세 내용 - 지도(네이버)
+    KEY_KLASS_DETAIL_NAV_VENUE_MAP:string="KEY_KLASS_DETAIL_NAV_VENUE_MAP";
+    // 수업 - 수업 선생님 리스트
+    KEY_KLASS_TEACHER_LIST:string="KEY_KLASS_TEACHER_LIST";
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;
@@ -446,6 +453,32 @@ export class MyEventService {
         } // end if        
 
     } // end method
+
+    /*
+    public getEventOnReady(eventKey:string, component) :void {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("default / emitEventOnReady / 시작");
+
+        let myEventOnChange:MyEvent =
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_READY,
+          // public key:string
+          this.meta.eventKey,
+          // public value:string
+          "",
+          // public metaObj:any
+          component,
+          // public myChecker:MyChecker
+          this.myCheckerService.getFreePassChecker()
+        );
+
+        if(isDebug) console.log("default / emitEventOnReady / Done!");
+
+    }
+    */
 
     public getDefaultMetaListMyInfo() :DefaultMeta[] {
 

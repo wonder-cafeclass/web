@@ -196,6 +196,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   @ViewChild(ButterflyComponent)
   private butterflyComponent: ButterflyComponent;
 
+  @ViewChild(KlassDetailNavListComponent)
+  private klassDetailNavListComponent: KlassDetailNavListComponent;
+
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
   [
@@ -436,8 +439,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         if(isDebug) console.log("klass-detail / getParams / subscribe / klassJSON : ",klassJSON);
         if(null != klassJSON) {
 
-          this.klass = this.klassService.getKlassFromJSON(klassJSON);
-
+          this.klass = new Klass().setJSON(klassJSON);
           this.onAfterReceivingKlass();
 
         } // end if
@@ -809,6 +811,26 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     );
   } // end method
 
+  private setKlassDetailNavList() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassDetailNavList / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassDetailNavList / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+    if(null == this.klassDetailNavListComponent) {
+      if(isDebug) console.log("klass-detail / setKlassDays / 중단 / this.klassDetailNavListComponent is not valid!");
+      return;
+    }
+    if(isDebug) console.log("klass-detail / setKlassDays / this.klassDetailNavListComponent : ",this.klassDetailNavListComponent);    
+
+    this.klassDetailNavListComponent.setKlass(this.klassCopy);
+
+  }
+
 
   // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
   private setKlassDays() :void {
@@ -978,13 +1000,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.setSelectileImageTable();
 
-    // REMOVE ME
-    /*
-    if(null != this.klassFilterTileComponent) {
-      this.updateKlassSelectile();
-    }
-    */
-
     // set selectile admin
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ",this.klassFilterTileComponent);
 
@@ -1006,7 +1021,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } // end for
     } // end if
 
-    if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.imageTableBannerListService : ",this.imageTableBannerListService);
+    // 수업 정보 리스트에게 klass 정보를 전달합니다.
+    
+
   }
 
   private setKlassBannerImageUploader():void {
@@ -1427,6 +1444,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
         } // end if
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_LIST)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.klassDetailNavListComponent = myEvent.metaObj;
+          this.setKlassDetailNavList();
+        } // end if
+
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER_VIEW)) {  
 
         // Do something...
@@ -1536,74 +1560,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     } // end if
 
   } // end method
-
-  // REMOVE ME
-  /*
-  private updateKlassSelectile() :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / 시작");
-
-    if(null == this.klassCopy) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassCopy is not valid!");
-      return;
-    }
-    if(null == this.klassFilterTileComponent) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / this.klassFilterTileComponent is not valid!");
-      return;
-    }
-    let constMap:any = this.watchTower.getConstMap();
-    if(null == constMap) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / constMap is not valid!");
-      return;
-    }
-
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / this.klass : ", this.klass);
-
-    // REFACTOR ME
-    let klassLevel:KlassLevel = this.klassService.getKlassLevel(constMap, this.klass.level);
-    if(null == klassLevel) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassLevel is not valid!");
-      return;
-    }
-    // REFACTOR ME
-    let klassStation:KlassStation = this.klassService.getKlassStation(constMap, this.klass.venue_subway_station);
-    if(null == klassStation) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassStation is not valid!");
-      return;
-    }
-    // REFACTOR ME
-    let klassDay:KlassDay = this.klassService.getKlassDay(constMap, this.klass.days);
-    if(null == klassDay) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassDay is not valid!");
-      return;
-    }
-    // REFACTOR ME
-    let klassTime:KlassTime = this.klassService.getKlassTime(constMap, this.klass.time_begin);
-    if(null == klassTime) {
-      if(isDebug) console.log("klass-detail / updateKlassSelectile / 중단 / klassTime is not valid!");
-      return;
-    }
-
-    this.klassFilterTileComponent.updateShowingSelectilesAll(
-      // klassLevel:KlassLevel, 
-      klassLevel, 
-      // klassStation:KlassStation, 
-      klassStation,
-      // klassDay:KlassDay, 
-      klassDay,
-      // klassTime:KlassTime
-      klassTime
-    );
-
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / klassLevel : ", klassLevel);
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / klassStation : ", klassStation);
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / klassDay : ", klassDay);
-    if(isDebug) console.log("klass-detail / updateKlassSelectile / klassTime : ", klassTime);
-
-  }
-  */
 
   private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
 

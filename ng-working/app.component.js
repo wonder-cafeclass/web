@@ -17,17 +17,18 @@ var user_service_1 = require('./users/service/user.service');
 var teacher_service_1 = require('./teachers/service/teacher.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
+var my_event_service_1 = require('./util/service/my-event.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
-        // Do something...
+    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, route, router) {
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
         this.teacherService = teacherService;
         this.imageService = imageService;
         this.watchTower = watchTower;
+        this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.myLoggerService = myLoggerService;
         this.route = route;
@@ -35,6 +36,12 @@ var AppComponent = (function () {
         this.isAdmin = false;
         this.toggleTopMenu = true;
         this.errorMsgArr = [];
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("app-root / constructor / 시작");
+        this.watchTower.announceMyEventService(this.myEventService);
+        this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
@@ -251,7 +258,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());

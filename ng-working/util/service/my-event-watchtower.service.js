@@ -21,6 +21,7 @@ var MyEventWatchTowerService = (function () {
         this.apiKey = "";
         this.isViewPackReady = false;
         this.isLockedBottomFooterFlexible = false;
+        this.isEventPackReady = false;
         // Observable sources
         // @ Required for view
         this.isAdminSource = new Subject_1.Subject();
@@ -33,6 +34,9 @@ var MyEventWatchTowerService = (function () {
         this.errorMsgArrSource = new Subject_1.Subject();
         this.contentHeightSource = new Subject_1.Subject();
         this.isLockedBottomFooterFlexibleSource = new Subject_1.Subject();
+        this.myEventServiceSource = new Subject_1.Subject();
+        this.myCheckerServiceSource = new Subject_1.Subject();
+        this.isEventPackReadySource = new Subject_1.Subject();
         // Observable streams
         // @ Required for view
         this.isAdmin$ = this.isAdminSource.asObservable();
@@ -45,6 +49,9 @@ var MyEventWatchTowerService = (function () {
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.contentHeight$ = this.contentHeightSource.asObservable();
         this.isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
+        this.myEventService$ = this.myEventServiceSource.asObservable();
+        this.myCheckerService$ = this.myCheckerServiceSource.asObservable();
+        this.isEventPackReady$ = this.isEventPackReadySource.asObservable();
         this.myConst = new my_const_1.HelperMyConst();
     }
     // Service message commands
@@ -185,6 +192,34 @@ var MyEventWatchTowerService = (function () {
         this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
         this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
     };
+    MyEventWatchTowerService.prototype.announceMyEventService = function (myEventService) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("m-e-w / announceMyEventService / init");
+        this.myEventService = myEventService;
+        this.myEventServiceSource.next(myEventService);
+        if (null != this.myCheckerService) {
+            if (isDebug)
+                console.log("m-e-w / announceMyEventService / next");
+            this.isEventPackReady = true;
+            this.isEventPackReadySource.next(true);
+        } // end if
+    };
+    MyEventWatchTowerService.prototype.announceMyCheckerService = function (myCheckerService) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("m-e-w / announceMyCheckerService / init");
+        this.myCheckerService = myCheckerService;
+        this.myCheckerServiceSource.next(myCheckerService);
+        if (null != this.myEventService) {
+            if (isDebug)
+                console.log("m-e-w / announceMyCheckerService / next");
+            this.isEventPackReady = true;
+            this.isEventPackReadySource.next(true);
+        } // end if
+    };
     MyEventWatchTowerService.prototype.getLoginUser = function () {
         return this.loginUser;
     };
@@ -212,6 +247,9 @@ var MyEventWatchTowerService = (function () {
     MyEventWatchTowerService.prototype.getIsViewPackReady = function () {
         return this.isViewPackReady;
     };
+    MyEventWatchTowerService.prototype.getIsEventPackReady = function () {
+        return this.isEventPackReady;
+    };
     MyEventWatchTowerService.prototype.getCheckerMap = function () {
         return this.checkerMap;
     };
@@ -226,6 +264,93 @@ var MyEventWatchTowerService = (function () {
     };
     MyEventWatchTowerService.prototype.getApiKey = function () {
         return this.apiKey;
+    };
+    MyEventWatchTowerService.prototype.getMyEventService = function () {
+        return this.myEventService;
+    };
+    MyEventWatchTowerService.prototype.getMyCheckerService = function () {
+        return this.myCheckerService;
+    };
+    // EVENT SECTION
+    MyEventWatchTowerService.prototype.getEventOnReady = function (eventKey, component) {
+        if (null == this.myEventService) {
+            return null;
+        }
+        if (null == this.myCheckerService) {
+            return null;
+        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("m-e-w / getEventOnReady / 시작");
+        var myEventOnReady = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        component, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        if (isDebug)
+            console.log("m-e-w / getEventOnReady / myEventOnReady : ", myEventOnReady);
+        return myEventOnReady;
+    };
+    MyEventWatchTowerService.prototype.getEventOnChange = function (eventKey, value, myChecker) {
+        if (null == this.myEventService) {
+            return null;
+        }
+        if (null == this.myCheckerService) {
+            return null;
+        }
+        if (null == myChecker) {
+            return null;
+        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnReady / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        myChecker);
+        return myEventOnChange;
+    };
+    MyEventWatchTowerService.prototype.getEventOnChangeMeta = function (eventKey, value, myChecker, meta) {
+        if (null == this.myEventService) {
+            return null;
+        }
+        if (null == this.myCheckerService) {
+            return null;
+        }
+        if (null == myChecker) {
+            return null;
+        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnReady / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        meta, 
+        // public myChecker:MyChecker
+        myChecker);
+        return myEventOnChange;
     };
     MyEventWatchTowerService = __decorate([
         core_1.Injectable(), 

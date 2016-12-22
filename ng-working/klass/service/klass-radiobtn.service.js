@@ -168,7 +168,10 @@ var KlassRadioBtnService = (function () {
     /*
     *    @ Desc : 수업 상세 정보에 대한 Nav tabs에 들어갈 radiobtn 정보들
     */
-    KlassRadioBtnService.prototype.getNavTabsKlassInfo = function (klass, valueFocus) {
+    KlassRadioBtnService.prototype.getNavTabsKlassInfo = function (klass, keyFocus) {
+        if (null == klass) {
+            return null;
+        }
         // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
         var optionList = [
             new radiobtn_option_1.RadioBtnOption(
@@ -292,10 +295,10 @@ var KlassRadioBtnService = (function () {
             null) // end MyEvent
             )
         ]; // end array
-        if (null != valueFocus && "" != valueFocus) {
+        if (null != keyFocus && "" != keyFocus) {
             for (var i = 0; i < optionList.length; ++i) {
                 var option = optionList[i];
-                if (option.key === valueFocus) {
+                if (option.key === keyFocus) {
                     option.isFocus = true;
                     optionList[i] = option;
                 }

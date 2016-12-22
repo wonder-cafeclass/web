@@ -191,7 +191,11 @@ export class KlassRadioBtnService {
     /*
     *    @ Desc : 수업 상세 정보에 대한 Nav tabs에 들어갈 radiobtn 정보들
     */
-    getNavTabsKlassInfo(klass:Klass, valueFocus:string) :RadioBtnOption[] {
+    getNavTabsKlassInfo(klass:Klass, keyFocus:string) :RadioBtnOption[] {
+
+      if(null == klass) {
+        return null;
+      }
 
         // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
         let optionList:RadioBtnOption[] = [
@@ -330,11 +334,11 @@ export class KlassRadioBtnService {
         ]; // end array
 
 
-        if(null != valueFocus && "" != valueFocus) {
+        if(null != keyFocus && "" != keyFocus) {
             for (var i = 0; i < optionList.length; ++i) {
                 let option:RadioBtnOption = optionList[i];
 
-                if(option.key === valueFocus) {
+                if(option.key === keyFocus) {
                     option.isFocus = true;    
                     optionList[i] = option;
                 }

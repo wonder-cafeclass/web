@@ -277,7 +277,11 @@ export class KlassListComponent implements OnInit, AfterViewInit {
         if(isTeacher) {
           // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
           let newKlassJSONList = myResponse.getDataProp("new_klass");
-          let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+
+          // REMOVE ME
+          // let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
+
+          let newKlass:Klass = new Klass().setJSON(newKlassJSONList[0]);
 
           if(isDebug) console.log("klass-list / getKlassList / newKlass : ",newKlass);
 

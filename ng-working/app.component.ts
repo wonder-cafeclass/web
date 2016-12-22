@@ -13,6 +13,7 @@ import { UserService }         		from './users/service/user.service';
 import { TeacherService }         	from './teachers/service/teacher.service';
 import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
 import { MyCheckerService }     	from './util/service/my-checker.service';
+import { MyEventService }     		from './util/service/my-event.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
 
 import { MyResponse }               from './util/model/my-response';
@@ -35,12 +36,18 @@ export class AppComponent implements OnInit, AfterViewChecked {
 					private teacherService:TeacherService,
 					public imageService:ImageService,
 					private watchTower:MyEventWatchTowerService,
+					private myEventService:MyEventService,
 					private myCheckerService:MyCheckerService,
 					private myLoggerService:MyLoggerService,
 					private route:ActivatedRoute,
 					public router:Router) {
 
-		// Do something...
+		let isDebug:boolean = true;
+		// let isDebug:boolean = false;
+		if(isDebug) console.log("app-root / constructor / 시작");
+
+		this.watchTower.announceMyEventService(this.myEventService);
+		this.watchTower.announceMyCheckerService(this.myCheckerService);
 
 	}
 
