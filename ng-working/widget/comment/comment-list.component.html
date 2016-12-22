@@ -75,6 +75,40 @@
 	<li class="list-group-item" 
 		style="padding:5px;">
 
+		<!-- 별점 표시 영역 INIT -->
+		<div
+		*ngIf="hasEvaluation"
+		class="eval">
+			<span 
+			#star1
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 1)"
+			(mouseout)="onOutStar($event, star1, star2, star3, star4, star5)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star2
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 2)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star3
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 3)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star4
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 4)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star5
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 5)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span>{{evaluation}}</span>
+		</div>
+		<!-- 별점 표시 영역 DONE -->
+
 		<div 	*ngIf="isShowNewCommentInput" 
 				class="input-group">
 			<textarea 	#taNewComment

@@ -435,6 +435,64 @@ export class KlassDetailNavListComponent implements OnInit {
         this.klass.review_list
       );
     } // end if
+
+    // MyEvent for Review
+    this.myEventForReview = 
+    this.myEventService.getMyEvent(
+      // eventName:string
+      this.myEventService.ANY,
+      // key:string
+      this.myEventService.KEY_COMMENT_REVIEW,
+      // value:string
+      "",
+      // metaObj:any
+      this.klass,
+      // myChecker:MyChecker
+      this.myCheckerService.getCommentChecker()
+    );    
+
+  } // end method
+
+  private setQuestion() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setQuestion / init");
+
+    if(null != this.klass.question_list) {
+      this.questionCommentList = 
+      this.klassCommentService.getQuestionCommentList(
+        this.klass.question_list
+      );
+    } // end if
+
+    // MyEvent for Question
+    this.myEventForQuestion = 
+    this.myEventService.getMyEvent(
+      // eventName:string
+      this.myEventService.ANY,
+      // key:string
+      this.myEventService.KEY_COMMENT_QUESTION,
+      // value:string
+      "",
+      // metaObj:any
+      this.klass,
+      // myChecker:MyChecker
+      this.myCheckerService.getCommentChecker()
+    );
+
+  } // end method
+
+  private setNavTabs():void {
+
+    this.radiobtnOptionListNavTabs = 
+    this.radiobtnService.getNavTabsKlassInfo(
+      // klass:Klass, 
+      this.klass,
+      // keyFocus:string
+      this.watchTower.getMyEventService().KLASS_DESC
+    );
+
   }
 
   private init() :void {
@@ -464,10 +522,10 @@ export class KlassDetailNavListComponent implements OnInit {
     // KLASS SCHEDULE
     this.setKlassSchedule();
 
-    // 
+    // 수업 특징, 대상, 일정에 대한 정보를 백업합니다.
     this.overwriteKlassCopies();
 
-    // IMAGES
+    // 뷰에 사용되는 이미지 설정
     this.setImages();
 
     // 수업 강사님 정보 가져오기
@@ -477,52 +535,10 @@ export class KlassDetailNavListComponent implements OnInit {
     this.setReview();
 
     // 수업 질문 가져오기
-    if(null != this.klass.question_list) {
-      this.questionCommentList = 
-      this.klassCommentService.getQuestionCommentList(
-        this.klass.question_list
-      );
-    }
-
-    // MyEvent for Review
-    this.myEventForReview = 
-    this.myEventService.getMyEvent(
-      // eventName:string
-      this.myEventService.ANY,
-      // key:string
-      this.myEventService.KEY_COMMENT_REVIEW,
-      // value:string
-      "",
-      // metaObj:any
-      this.klass,
-      // myChecker:MyChecker
-      this.myCheckerService.getCommentChecker()
-    );
-
-    // MyEvent for Question
-    this.myEventForQuestion = 
-    this.myEventService.getMyEvent(
-      // eventName:string
-      this.myEventService.ANY,
-      // key:string
-      this.myEventService.KEY_COMMENT_QUESTION,
-      // value:string
-      "",
-      // metaObj:any
-      this.klass,
-      // myChecker:MyChecker
-      this.myCheckerService.getCommentChecker()
-    );
+    this.setQuestion();
 
     // Nav Tab 설정
-    this.radiobtnOptionListNavTabs = 
-    this.radiobtnService.getNavTabsKlassInfo(
-      // klass:Klass, 
-      this.klass,
-      // keyFocus:string
-      this.watchTower.getMyEventService().KLASS_DESC
-    );
-    if(isDebug) console.log("k-d-n-l / init / this.radiobtnOptionListNavTabs : ",this.radiobtnOptionListNavTabs);
+    this.setNavTabs();
 
   }
 

@@ -107,13 +107,6 @@
                                         (emitter)="onChangedFromInputRow($event)">
               </klass-venue-search-list>
             </li>
-            <!--
-            <li   #klassVenue
-                  class="list-group-item klass-info"
-                  [ngClass]="{'focus':isFocusKlassVenue}">
-                  <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
-            </li>
-            -->
 
             <!-- 선생님 관련 소개 정보 데이터 예시 -->
             <!-- 
@@ -134,15 +127,14 @@
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
-              <!--
-              <review-list [isAdmin]="isAdmin"
+              <comment-list [isAdmin]="isAdmin"
+                            [hasEvaluation]="true"
                             [myEvent]="myEventForReview"
                             [placeholderInput]="'수업을 받고 난 뒤의 느낌은 어떠셨나요?'"
                             [placeholderReply]="'어떤 답글을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"
-                            [reviewList]="reviewCommentList">
-              </review-list>
-              -->
+                            [commentList]="reviewCommentList">
+              </comment-list>
             </li>
             <li   #studentQuestion
                   class="list-group-item klass-info"

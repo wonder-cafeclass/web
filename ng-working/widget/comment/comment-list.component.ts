@@ -18,7 +18,7 @@ import { HelperMyIs }                  from '../../util/helper/my-is';
 import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
 
-import { User }                        from '../../user/model/user';
+import { User }                        from '../../users/model/user';
 
 import { Comment }                     from './model/comment';
 import { CommentService }              from './service/comment.service';
@@ -41,6 +41,7 @@ import { CommentService }              from './service/comment.service';
 export class CommentListComponent implements OnInit {
 
   @Input() isAdmin:boolean=false;
+  @Input() hasEvaluation:boolean=false; // @ 유저평가 - 별점여부
   @Input() commentList:Comment[];
   @Input() eventKey:string;
   @Input() myEvent:MyEvent; // @ Deprecated
@@ -462,6 +463,7 @@ export class CommentListComponent implements OnInit {
   }
 
   onBlurReply(event, taNewReply, replyContainer) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
@@ -472,6 +474,54 @@ export class CommentListComponent implements OnInit {
     }
 
     console.log("comment.component / onBlurReply / text : ",text);
-  }    
+  } 
+
+  private starScore:number=0;
+  private evaluationList:string[] = ["별로에요","나쁘지않아요","들을만해요","괜찮아요","최고에요!"];
+  evaluation:string="별점을 매겨주세요";
+  onOverStar(event, star1, star2, star3, star4, star5, score:number) :void {
+
+    event.stopPropagation();
+    event.preventDefault();    
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onOverStar / init");
+
+    let starList = [star1, star2, star3, star4, star5];
+    let evaluationList = [star1, star2, star3, star4, star5];
+    for (var i = 0; i < starList.length; ++i) {
+      if(i< score) {
+        starList[i].className="glyphicon glyphicon-star";
+      } else {
+        starList[i].className="glyphicon glyphicon-star-empty";
+      } // end if
+
+    } // end for
+
+    // 별점 등록!
+    this.starScore=score;
+    this.evaluation=this.evaluationList[(score - 1)];
+  }
+
+  onOutStar(event, star1, star2, star3, star4, star5) :void {
+
+    event.stopPropagation();
+    event.preventDefault();    
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onOutStar / init");
+
+    let starList = [star1, star2, star3, star4, star5];
+    for (var i = 0; i < starList.length; ++i) {
+      starList[i].className="glyphicon glyphicon-star-empty";
+    } // end for
+
+    // 별점 등록!
+    this.starScore=0;
+    this.evaluation="별점을 매겨주세요";
+
+  } // end method
 
 }

@@ -34,11 +34,15 @@ var CommentListComponent = (function () {
         this.commentService = commentService;
         this.imageService = imageService;
         this.isAdmin = false;
+        this.hasEvaluation = false; // @ 유저평가 - 별점여부
         this.cageWidth = -1;
         this.cageHeight = -1;
         this.isShowNewCommentInput = true;
         this.loginUser = null;
         this.emitter = new core_1.EventEmitter();
+        this.starScore = 0;
+        this.evaluationList = ["별로에요", "나쁘지않아요", "들을만해요", "괜찮아요", "최고에요!"];
+        this.evaluation = "별점을 매겨주세요";
     }
     CommentListComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -357,11 +361,52 @@ var CommentListComponent = (function () {
         }
         console.log("comment.component / onBlurReply / text : ", text);
     };
+    CommentListComponent.prototype.onOverStar = function (event, star1, star2, star3, star4, star5, score) {
+        event.stopPropagation();
+        event.preventDefault();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("comment-list / onOverStar / init");
+        var starList = [star1, star2, star3, star4, star5];
+        var evaluationList = [star1, star2, star3, star4, star5];
+        for (var i = 0; i < starList.length; ++i) {
+            if (i < score) {
+                starList[i].className = "glyphicon glyphicon-star";
+            }
+            else {
+                starList[i].className = "glyphicon glyphicon-star-empty";
+            } // end if
+        } // end for
+        // 별점 등록!
+        this.starScore = score;
+        this.evaluation = this.evaluationList[(score - 1)];
+    };
+    CommentListComponent.prototype.onOutStar = function (event, star1, star2, star3, star4, star5) {
+        event.stopPropagation();
+        event.preventDefault();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("comment-list / onOutStar / init");
+        var starList = [star1, star2, star3, star4, star5];
+        for (var i = 0; i < starList.length; ++i) {
+            starList[i].className = "glyphicon glyphicon-star-empty";
+        } // end for
+        // 별점 등록!
+        this.starScore = 0;
+        this.evaluation = "별점을 매겨주세요";
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
     ], CommentListComponent.prototype, "isAdmin", void 0);
     __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], CommentListComponent.prototype, "hasEvaluation", void 0);
+    __decorate([
+        // @ 유저평가 - 별점여부
         core_1.Input(), 
         __metadata('design:type', Array)
     ], CommentListComponent.prototype, "commentList", void 0);
