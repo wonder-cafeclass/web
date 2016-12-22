@@ -14,9 +14,15 @@ var UrlService = (function () {
     function UrlService(pl) {
         this.pl = pl;
         this.baseHref = pl.getBaseHrefFromDOM();
+        this.href = window.location.href;
         this.hostname = window.location.hostname;
         this.appBaseUrl = "http://" + this.hostname + this.baseHref;
+        var target = this.appBaseUrl + "#";
+        this.appViewUrl = this.href.replace(target, "");
     }
+    UrlService.prototype.getAppViewUrl = function () {
+        return this.appViewUrl;
+    };
     UrlService.prototype.get = function (urlFragment) {
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.
         if (0 < urlFragment.length && 0 === urlFragment.indexOf("/")) {

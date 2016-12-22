@@ -35,6 +35,7 @@ var MyEventService = (function () {
         this.ON_PREVIEW = "ON_PREVIEW";
         this.ON_UNPREVIEW = "ON_UNPREVIEW";
         this.ON_DONE = "ON_DONE";
+        this.ON_LOGIN_REQUIRED = "ON_LOGIN_REQUIRED";
         // SPECIFIC ATTR
         this.KLASS_WEEK_MAX = "KLASS_WEEK_MAX";
         this.KLASS_ENROLMENT_INTERVAL = "KLASS_ENROLMENT_INTERVAL";
@@ -127,6 +128,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_DETAIL_NAV_VENUE_MAP = "KEY_KLASS_DETAIL_NAV_VENUE_MAP";
         // 수업 - 수업 선생님 리스트
         this.KEY_KLASS_TEACHER_LIST = "KEY_KLASS_TEACHER_LIST";
+        // 수업 - 수업 관련 질문 리스트
+        this.KEY_KLASS_QUESTION_LIST = "KEY_KLASS_QUESTION_LIST";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

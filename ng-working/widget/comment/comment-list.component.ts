@@ -4,12 +4,22 @@ import {  Component,
           EventEmitter,
           Input }                      from '@angular/core';
 
-import { MyEventService }              from '../../util/service/my-event.service';
-import { MyEvent }                     from '../../util/model/my-event';
-import { MyCheckerService }            from '../../util/service/my-checker.service';
-import { MyChecker }                   from '../../util/model/my-checker';
 import { ImageService }                from '../../util/image.service';
+
+import { MyEvent }                     from '../../util/model/my-event';
 import { MyButton }                    from '../../util/model/my-button';
+import { MyChecker }                   from '../../util/model/my-checker';
+
+import { MyEventService }              from '../../util/service/my-event.service';
+import { MyCheckerService }            from '../../util/service/my-checker.service';
+import { MyEventWatchTowerService }    from '../../util/service/my-event-watchtower.service';
+
+import { HelperMyIs }                  from '../../util/helper/my-is';
+import { HelperMyTime }                from '../../util/helper/my-time';
+import { HelperMyArray }               from '../../util/helper/my-array';
+
+import { User }                        from '../../user/model/user';
+
 import { Comment }                     from './model/comment';
 import { CommentService }              from './service/comment.service';
 
@@ -32,7 +42,8 @@ export class CommentListComponent implements OnInit {
 
   @Input() isAdmin:boolean=false;
   @Input() commentList:Comment[];
-  @Input() myEvent:MyEvent;
+  @Input() eventKey:string;
+  @Input() myEvent:MyEvent; // @ Deprecated
   @Input() cageWidth:number=-1;
   cageWidthStr:string;
   @Input() cageHeight:number=-1;
@@ -42,19 +53,130 @@ export class CommentListComponent implements OnInit {
   @Input() placeholderReply:string;
 
   isShowNewCommentInput:boolean=true;
+  loginUser:User=null;
 
   @Output() emitter = new EventEmitter<any>();
 
+  private myIs:HelperMyIs;
+  private myTime:HelperMyTime;
+  private myArray:HelperMyArray;  
+
   constructor(  private myEventService:MyEventService, 
                 private myCheckerService:MyCheckerService,
+                private watchTower:MyEventWatchTowerService,
                 private commentService:CommentService,
                 private imageService:ImageService) {}
 
   ngOnInit(): void {
 
-    console.log("comment.component / ngOnInit / commentList : ",this.commentList);
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / ngOnInit / init");
+
+    this.myIs = new HelperMyIs();
+    this.myTime = new HelperMyTime();
+    this.myArray = new HelperMyArray();
+
+    this.subscribeEventPack();
 
   }
+
+  setLoginUser(loginUser:User) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / setLoginUser / init");
+
+    if(isDebug) console.log("comment-list / setLoginUser / loginUser : ",loginUser);
+
+    this.loginUser = loginUser;
+
+  } // end method
+
+  private subscribeEventPack() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / subscribeEventPack / init");
+
+    let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
+    if(isDebug) console.log("comment-list / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+
+    if(this.watchTower.getIsEventPackReady()) {
+      // 1. 이미 EventPack 로딩이 완료된 경우
+
+      // 부모 객체에게 component가 준비된 것을 알립니다.
+      this.emitEventOnReady();
+
+    } else {
+      // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+      this.watchTower.isEventPackReady$.subscribe(
+        (isEventPackReady:boolean) => {
+
+        if(isDebug) console.log("comment-list / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+
+        // 이벤트 관련 정보가 준비되었습니다.
+
+        // 부모 객체에게 component가 준비된 것을 알립니다.
+        this.emitEventOnReady();
+
+      }); // end subscribe
+
+    } // end if
+
+  } // end method 
+  
+  private emitEventOnReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEventOnReady / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEventOnReady:MyEvent = 
+    this.watchTower.getEventOnReady(
+      // eventKey:string, 
+      this.eventKey,
+      // component
+      this
+    );
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / myEventOnReady : ",myEventOnReady);
+
+    this.emitter.emit(myEventOnReady);
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnReady / Done!");
+
+  } 
+
+  private emitEventOnLoginRequired() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEventOnReady:MyEvent = 
+    this.watchTower.getEventOnLoginRequired(
+      // eventKey:string, 
+      this.eventKey
+    );
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / myEventOnReady : ",myEventOnReady);
+
+    this.emitter.emit(myEventOnReady);
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / Done!");
+
+  }     
 
   onClickAddComment(event, replyContainer, replyBtn) :void {
     event.stopPropagation();
@@ -77,7 +199,28 @@ export class CommentListComponent implements OnInit {
     }
   }
 
+  onFocusTextarea(event, taNewComment) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onFocusTextarea / init");
+
+    if(null == this.loginUser) {
+      if(isDebug) console.log("comment-list / onFocusTextarea / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
+
+      // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
+      this.emitEventOnLoginRequired();
+
+      return;
+    } // end if
+
+  }
+
   onClickTextarea(event, taNewComment) :void {
+
     event.stopPropagation();
     event.preventDefault();
 
@@ -103,7 +246,44 @@ export class CommentListComponent implements OnInit {
     console.log("comment.component / onBlurTextarea / text : ",text);
   }
 
+  private getNewComment(text:string, metaObj):Comment {
+
+    if(null == text || "" === text) {
+      return null;
+    }
+    if(null == this.loginUser) {
+      return null;
+    }
+
+    let dateUpdated:string = 
+    this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
+    let dateUpdatedHumanReadable:string = 
+    this.myTime.getNow_H_YYYY_MM_DD_HH_MM_SS();
+
+    let newComment = 
+    this.commentService.getNewComment(
+        // public comment:string
+        text,
+        // public writer:string
+        this.loginUser.nickname,
+        // public thumbnail_url:string
+        this.loginUser.thumbnail,
+        // public dateUpdated:string
+        dateUpdated,
+        // public dateUpdatedHumanReadable:string
+        dateUpdatedHumanReadable,
+        // public metaObj:any
+        metaObj
+    );    
+
+    return newComment;
+  }
+
   onClickPostNewComment(event, textarea) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / init");
 
     // 새로운 댓글 쓰기가 완료되었을 때, 호출됩니다.
 
@@ -136,28 +316,12 @@ export class CommentListComponent implements OnInit {
       return;
     }    
 
-    console.log("comment-list / onClickPostNewComment / text : ",text);
+    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / text : ",text);
 
     // 뷰의 화면에 새로운 댓글을 추가합니다.
-    let dummyNickname = "Dummy";
-    let dummyThumbnail = this.imageService.get(this.imageService.userDummy);
-    let dummyDateUpdated = "201-11-14 13:40:32";
-    let dummyDateUpdatedHumanReadable = "2016년 11월 14일 오후 1:40:32";
-    let newComment = 
-    this.commentService.getNewComment(
-        // public comment:string
-        text,
-        // public writer:string
-        dummyNickname,
-        // public thumbnail_url:string
-        dummyThumbnail,
-        // public dateUpdated:string
-        dummyDateUpdated,
-        // public dateUpdatedHumanReadable:string
-        dummyDateUpdatedHumanReadable,
-        // public metaObj:any
-        this.myEvent.metaObj
-    );
+    // 로그인한 유저의 섬네일, 이름을 표시합니다.
+
+    let newComment:Comment = this.getNewComment(text, null);
 
     if(null == this.commentList) {
       this.commentList = [];
@@ -171,6 +335,8 @@ export class CommentListComponent implements OnInit {
     newMyEvent.metaObj = this.myEvent.metaObj;
     this.emitter.emit(newMyEvent);
 
+    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / emit");
+
     // 답글쓰기 창의 내용을 초기화합니다.
     textarea.value = this.placeholderReply;
 
@@ -180,22 +346,31 @@ export class CommentListComponent implements OnInit {
 
     // 댓글의 답글쓰기를 완료했을 때, 호출됩니다.
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / onClickPostReply / init");
+
     event.stopPropagation();
     event.preventDefault();
 
     if(null == textarea) {
+      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / textarea is not valid!");
       return;
     }
     if(null == replyContainer) {
+      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / replyContainer is not valid!");
       return;
     }
     if(null == replyBtn) {
+      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / replyBtn is not valid!");
       return;
     }
-    if(null == parentComment || null == parentComment.metaObj) {
+    if(null == parentComment) {
+      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / parentComment is not valid!");
       return;
     }
     if(null == this.myEvent || null == this.myEvent.myChecker) {
+      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / this.myEvent is not valid!");
       return;
     }
 
@@ -222,30 +397,12 @@ export class CommentListComponent implements OnInit {
       return;
     }
 
-
     // 답글달기 버튼 갱신
     replyBtn.innerHTML = "답글달기";
 
-    // 뷰의 화면에 새로운 댓글을 추가합니다.
-    let dummyNickname = "Dummy";
-    let dummyThumbnail = this.imageService.get(this.imageService.userDummy);
-    let dummyDateUpdated = "201-11-14 13:40:32";
-    let dummyDateUpdatedHumanReadable = "2016년 11월 14일 오후 1:40:32";
-    let newComment = 
-    this.commentService.getNewComment(
-        // public comment:string
-        text,
-        // public writer:string
-        dummyNickname,
-        // public thumbnail_url:string
-        dummyThumbnail,
-        // public dateUpdated:string
-        dummyDateUpdated,
-        // public dateUpdatedHumanReadable:string
-        dummyDateUpdatedHumanReadable,
-        // public metaObj:any
-        parentComment
-    ); 
+    let newComment:Comment = this.getNewComment(text, parentComment);
+
+    if(isDebug) console.log("k-d-n-l / onClickPostReply / newComment : ",newComment);
 
     if(null == parentComment.childCommentList) {
       parentComment.childCommentList = [];
@@ -270,7 +427,28 @@ export class CommentListComponent implements OnInit {
     this.isShowNewCommentInput = true;
   }
 
+  onFocusReply(event, taNewReply, replyContainer) :void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onFocusReply / init");
+
+    if(null == this.loginUser) {
+      if(isDebug) console.log("comment-list / onFocusReply / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
+
+      // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
+      this.emitEventOnLoginRequired();
+
+      return;
+    } // end if
+
+  }
+
   onClickReply(event, taNewReply, replyContainer) :void {
+
     event.stopPropagation();
     event.preventDefault();
 

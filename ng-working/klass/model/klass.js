@@ -1,5 +1,7 @@
 "use strict";
 var klass_teacher_1 = require('./klass-teacher');
+var klass_review_1 = require('./klass-review');
+var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
 var klass_calendar_1 = require('./klass-calendar');
 var my_array_1 = require('../../util/helper/my-array');
@@ -7,9 +9,84 @@ var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
 var Klass = (function () {
     function Klass() {
+        this.id = -1;
+        this.teacher = null;
+        this.review_list = [];
+        this.question_list = [];
+        this.teacher_id = -1;
+        this.teacher_resume = "";
+        this.teacher_greeting = "";
+        this.title = "";
+        this.desc = "";
+        this.feature = "";
+        this.target = "";
+        this.schedule = "";
+        this.date_begin = "";
+        this.time_begin = "";
+        this.time_begin_img_url = "";
+        this.time_duration_minutes = -1;
+        this.time_end = "";
+        this.level = "";
+        this.level_eng = "";
+        this.level_kor = "";
+        this.level_img_url = "";
+        this.week_min = -1;
+        this.week_max = -1;
+        this.week_list = [];
+        this.weekly_price_list = [];
+        this.month_min = -1;
+        this.month_max = -1;
+        this.days = "";
+        this.days_list = [];
+        this.days_img_url = "";
+        this.days_img_url_list = [];
+        this.days_eng = "";
+        this.days_kor = "";
+        this.class_day_per_week = -1; // 주 n회 수업
+        this.resume = "";
+        this.greeting = "";
+        this.venue = "";
+        this.venue_cafe = "";
+        this.venue_cafe_logo_img_url = "";
+        this.venue_map_link = "";
+        // @ Deprecated
+        this.venue_subway_station = "";
+        this.venue_subway_station_img_url = "";
+        // @ Recommended
+        this.subway_line = "";
+        this.subway_station = "";
+        this.subway_station_img = "";
+        this.venue_title = "";
+        this.venue_telephone = "";
+        this.venue_address = "";
+        this.venue_road_address = "";
+        this.venue_latitude = "";
+        this.venue_longitude = "";
+        this.search_tag = "";
+        this.price = -1;
+        this.price_list = [];
+        this.klass_price_list = [];
+        this.price_list_width_discount = [];
+        this.discount = "";
+        this.discount_arr = [];
+        this.price_with_format = "";
+        this.class_status = "";
+        this.enrollment_interval_week = -1;
+        this.class_banner_url = "";
+        this.class_banner_url_arr = [];
+        this.class_poster_url = "";
+        this.class_poster_url_loadable = "";
+        this.calendar_table_linear = null;
+        this.calendar_table_monthly = null;
+        this.klass_calendar_list = null;
+        this.date_created = "";
+        this.date_updated = "";
         this.delimiter = "|||";
+        this.myArray = null;
+        this.myIs = null;
+        this.myTime = null;
         this.myArray = new my_array_1.HelperMyArray();
-        this.helperMyIs = new my_is_1.HelperMyIs();
+        this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
     // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
@@ -244,60 +321,8 @@ var Klass = (function () {
         if (isDebug)
             console.log("klass / setKlassCalendarList / klassCalendarList : ", klassCalendarList);
     };
-    // REMOVE ME
-    /*
-    private getFirstClassDateFormat() :string {
-
-        let firstClassDate:Calendar = this.getFirstClassDate(this);
-        let firstClassDateFormatStr:string = "";
-        if(firstClassDate) {
-          firstClassDateFormatStr = `${firstClassDate.month}월 ${firstClassDate.date}일 ${firstClassDate.dayKor}요일`;
-        }
-
-        return firstClassDateFormatStr;
-    }
-    private getFirstClassDate(klass:Klass) :Calendar {
-
-        let calendar_table_monthly = klass.calendar_table_monthly;
-        for (var i = 0; i < calendar_table_monthly.length; ++i) {
-            let calendar_table = calendar_table_monthly[i];
-            // console.log("calendar_table : ",calendar_table);
-            for (var j = 0; j < calendar_table.length; ++j) {
-                let week = calendar_table[j];
-                // console.log("week : ",week);
-                for (var k = 0; k < week.length; ++k) {
-                    let date:Calendar = week[k];
-                    // console.log("date : ",date);
-
-                    if(null === date) {
-                    continue;
-                    }
-                    if(date.isExpired) {
-                    continue;
-                    }
-                    if(!date.hasKlass) {
-                    continue;
-                    }
-
-                    if(4 == +klass.enrollment_interval_week && !date.isEnrollment4weeks) {
-                    continue;
-                    } else if(2 == +klass.enrollment_interval_week && !date.isEnrollment2weeks) {
-                    continue;
-                    } else if(1 == +klass.enrollment_interval_week && !date.isEnrollmentWeek) {
-                    continue;
-                    }
-
-                    // 첫 수업을 찾았습니다.
-                    return date;
-                }
-            }
-        }
-
-        return null;
-    }
-    */
     Klass.prototype.copy = function () {
-        return this.helperMyIs.copy(
+        return this.myIs.copy(
         // src:any
         this, 
         // copy:any
@@ -307,149 +332,77 @@ var Klass = (function () {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
-            console.log("klass / setJSON / 시작");
+            console.log("klass / setJSON / init");
         if (isDebug)
             console.log("klass / setJSON / json : ", json);
-        // id,
-        this.id = -1;
-        if (null != json.id) {
-            this.id = +json.id;
-        }
-        // review - TODO
-        // comment - TODO
+        var klass = this._setJSON(json);
+        if (isDebug)
+            console.log("klass / setJSON / klass : ", klass);
         // teacher
-        if (null != json["teacher"]) {
-            this.teacher = new klass_teacher_1.KlassTeacher().setJSON(json["teacher"]);
+        if (null != klass.teacher) {
+            klass.teacher = new klass_teacher_1.KlassTeacher().setJSON(klass.teacher);
         }
-        // teacher_id,
-        this.teacher_id = -1;
-        if (null != json.teacher_id) {
-            this.teacher_id = +json.teacher_id;
-        }
-        // teacher_resume,
-        this.teacher_resume = json.teacher_resume;
-        // teacher_greeting,
-        this.teacher_greeting = json.teacher_greeting;
-        // title,
-        this.title = json.title;
-        // desc,
-        this.desc = json.desc;
-        // feature,
-        this.feature = json.feature;
-        // target,
-        this.target = json.target;
-        // schedule,
-        this.schedule = json.schedule;
-        // date_begin,
-        this.date_begin = json.date_begin;
-        // time_begin,
-        this.time_begin = json.time_begin;
-        // time_duration_minutes,
-        this.time_duration_minutes = parseInt(json.time_duration_minutes);
-        // time_end,
-        this.time_end = json.time_end;
-        if (null == this.time_end ||
-            "" === this.time_end) {
-            if (null != this.time_begin &&
-                "" != this.time_begin &&
-                !isNaN(this.time_duration_minutes)) {
+        // review_list
+        var klassReviewList = [];
+        for (var i = 0; i < klass.review_list.length; ++i) {
+            var reviewJSON = klass.review_list[i];
+            if (null == reviewJSON) {
+                continue;
+            }
+            var klassReview = new klass_review_1.KlassReview().setJSON(reviewJSON);
+            klassReviewList.push(klassReview);
+        } // end for
+        klass.review_list = klassReviewList;
+        // question_list
+        var klassQuestionList = [];
+        for (var i = 0; i < klass.question_list.length; ++i) {
+            var questionJSON = klass.question_list[i];
+            if (null == questionJSON) {
+                continue;
+            }
+            var klassQuestion = new klass_question_1.KlassQuestion().setJSON(questionJSON);
+            klassQuestionList.push(klassQuestion);
+        } // end for
+        klass.question_list = klassQuestionList;
+        // time_end
+        if (null == klass.time_end ||
+            "" === klass.time_end) {
+            if (null != klass.time_begin &&
+                "" != klass.time_begin &&
+                !isNaN(klass.time_duration_minutes)) {
                 // 끝나는 시간이 없고, 시작 시간과 진행 시간 정보가 있다면 계산해서 넣어준다.
-                this.time_end = this.myTime.addMinutesHHMM(this.time_begin, this.time_duration_minutes);
+                klass.time_end = klass.myTime.addMinutesHHMM(klass.time_begin, klass.time_duration_minutes);
             } // end if
-        } // end if
-        // level,
-        this.level = json.level;
-        // week_min,
-        this.week_min = json.week_min;
-        // week_max,
-        this.week_max = json.week_max;
+        } // end if  
         // days,
-        this.days = json.days;
-        if (null != this.days && "" != this.days) {
-            this.days_list = this.days.split(this.delimiter);
+        if (null != klass.days && "" != klass.days) {
+            klass.days_list = klass.days.split(klass.delimiter);
         }
-        // class_per_week, / Warning! 이름다름
-        this.class_day_per_week = json.class_per_week;
-        // venue,
-        this.venue = json.venue;
-        // venue_cafe,
-        this.venue_cafe = json.venue_cafe;
-        // venue_map_link,
-        this.venue_map_link = json.venue_map_link;
-        // venue_title,
-        this.venue_title = json.venue_title;
-        // venue_telephone,
-        this.venue_telephone = json.venue_telephone;
-        // venue_address,
-        this.venue_address = json.venue_address;
-        // venue_road_address,
-        this.venue_road_address = json.venue_road_address;
-        // venue_latitude,
-        this.venue_latitude = json.venue_latitude;
-        // venue_longitude,
-        this.venue_longitude = json.venue_longitude;
-        // @ Deprecated
-        // venue_subway_station,
-        this.venue_subway_station = json.venue_subway_station;
-        // venue_subway_station_img_url,
-        this.venue_subway_station_img_url = json.venue_subway_station_img_url;
-        // @ Recommended
-        if (null != json.subway_line) {
-            this.subway_line = json.subway_line;
-        }
-        if (null != json.subway_station) {
-            this.subway_station = json.subway_station;
-        }
-        if (null != json.subway_station_img) {
-            this.subway_station_img = json.subway_station_img;
-        }
-        // staturlService,
-        this.class_status = json.status;
-        // enrollment_interval_week,
-        this.enrollment_interval_week = json.enrollment_interval_week;
-        // tags,
-        this.search_tag = json.tags;
-        // price,
-        this.price = json.price;
-        // discount,
-        this.discount = json.discount;
-        // class_poster_url,
-        this.class_poster_url = json.class_poster_url;
-        // class_poster_url_loadable,
-        this.class_poster_url_loadable = json.class_poster_url_loadable;
-        // class_banner_url,
-        this.class_banner_url = json.class_banner_url;
         // class_banner_url_arr,
-        if (null != json.class_banner_url && "" != json.class_banner_url) {
-            this.class_banner_url_arr = json.class_banner_url.split("|||");
+        if (null != klass.class_banner_url && "" != klass.class_banner_url) {
+            klass.class_banner_url_arr = klass.class_banner_url.split("|||");
         }
         else {
-            this.class_banner_url_arr = [];
+            klass.class_banner_url_arr = [];
         }
-        // level_img_url,
-        this.level_img_url = json.level_img_url;
-        // days_img_url,
-        this.days_img_url = json.days_img_url;
         // days_img_url_list
-        if (null != json.days_img_url && "" != json.days_img_url) {
-            this.days_img_url_list = json.days_img_url.split("|||");
+        if (null != klass.days_img_url && "" != klass.days_img_url) {
+            klass.days_img_url_list = klass.days_img_url.split("|||");
         }
         else {
-            this.days_img_url_list = [];
+            klass.days_img_url_list = [];
         }
-        // time_begin_img_url,
-        this.time_begin_img_url = json.time_begin_img_url;
-        // calendar_table_linear // @ Deprecated
-        // this.calendar_table_linear = json.calendar_table_linear;
         // calendar_table_monthly
-        this.calendar_table_monthly = json.calendar_table_monthly;
-        this.setKlassCalendarList(json.calendar_table_monthly);
-        // date_created,
-        this.date_created = json.date_created;
-        // date_updated
-        this.date_updated = json.date_updated;
-        return this;
-    }; // end method    
+        klass.setKlassCalendarList(klass.calendar_table_monthly);
+        return klass;
+    }; // end method
+    Klass.prototype._setJSON = function (json) {
+        return this.myIs.copyFromJSON(
+        // target:any,
+        this, 
+        // json
+        json);
+    }; // end method
     return Klass;
 }());
 exports.Klass = Klass;

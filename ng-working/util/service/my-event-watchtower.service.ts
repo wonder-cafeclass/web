@@ -376,7 +376,6 @@ export class MyEventWatchTowerService {
 
 		return myEventOnChange;
 	}
-
 	getEventOnChangeMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
 
 		if(null == this.myEventService) {
@@ -408,6 +407,37 @@ export class MyEventWatchTowerService {
 	    );
 
 		return myEventOnChange;
+	}
+	getEventOnLoginRequired(eventKey:string) :MyEvent {
+
+		if(null == this.myEventService) {
+			return null;
+		}
+		if(null == this.myCheckerService) {
+			return null;
+		}
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("m-e-w / getEventOnReady / 시작");
+
+	    let myEventOnReady:MyEvent =
+	    this.myEventService.getMyEvent(
+	      // public eventName:string
+	      this.myEventService.ON_LOGIN_REQUIRED,
+	      // public key:string
+	      eventKey,
+	      // public value:string
+	      "",
+	      // public metaObj:any
+	      null,
+	      // public myChecker:MyChecker
+	      this.myCheckerService.getFreePassChecker()
+	    );
+
+	    if(isDebug) console.log("m-e-w / getEventOnReady / myEventOnReady : ",myEventOnReady);
+
+		return myEventOnReady;
 	}	
 
 }

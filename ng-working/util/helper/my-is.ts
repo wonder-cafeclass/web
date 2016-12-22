@@ -41,6 +41,20 @@ export class HelperMyIs {
 		return (type == '[object String]')?true:false;
 	}
 
+	isNotNumber(target:any) :boolean {
+		return !this.isString(target);
+	}
+	isNumber(target:any) :boolean {
+
+		let type:string = this.getType(target);
+		if(null == type || "" === type) {
+			false;
+		}
+
+		var getType = {};
+		return (type == '[object Number]')?true:false;
+	}
+
 	isArrayList(target:any) :boolean {
 
 		if(null == target) {
@@ -117,6 +131,53 @@ export class HelperMyIs {
 		
 	} // end method
 
+	copyFromJSON(target:any, json) :any {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("klass / copyFromJSON / init");
+
+		if(null == target) {
+			if(isDebug) console.log("klass / copyFromJSON / 중단 / target is not valid!");
+			return target;
+		} // end if
+
+		if(null == json) {
+			if(isDebug) console.log("klass / copyFromJSON / 중단 / json is not valid!");
+			return target;
+		} // end if
+
+        for(var key in target) {
+
+            if(this.isFunction(target[key])) {
+                // 함수는 복사하지 않습니다.
+                continue;
+            }
+
+        	if(isDebug) console.log("klass / copyFromJSON / key : ",key);
+        	// For Debug
+        	let type:string = this.getType(target[key]);
+
+        	if(isDebug) console.log("klass / copyFromJSON / type : ",type);
+
+            if(null == json[key]) {
+            	// null은 복사하지 않습니다.
+            	continue;
+            }
+
+            if(this.isNumber(target[key])) {
+            	target[key] = parseInt(json[key]);
+            } else {
+            	target[key] = json[key];	
+            }
+
+        } // end for
+
+        return target;
+
+	}
+
+	// @ Desc : 객체의 모든 변수의 값이 동일한지 확인합니다.
 	isSame(src:any, target:any) :boolean {
 
 		if(null == src || null == target) {
@@ -140,6 +201,7 @@ export class HelperMyIs {
 
 	}
 
+	// @ Desc : 특정 변수가 동일한지 확인합니다.
 	isSharing(key:string, src:any, target:any) :boolean {
 
 		if(null == src || null == target) {

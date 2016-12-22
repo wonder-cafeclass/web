@@ -17,8 +17,10 @@ export class HelperMyTime {
 	private DATE_TYPE_HH_MM_ROUND:number=4;
 	/*20121211010203*/ 
 	private DATE_TYPE_YYYYMMDDHHMMSS:number=5;	
+	/* 2012-12-11 01:02:03 */
+	private DATE_TYPE_YYYY_MM_DD_HH_MM_SS:number=6;
 	/* 2012년 12월 11일 01:02:03 */
-	private DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=6;
+	private DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
 
 	private getTimeFormatHHMM(target:Date):string {
 		
@@ -199,6 +201,50 @@ export class HelperMyTime {
 		}
 
 		return this.getDate(date_str, this.DATE_TYPE_HH_MM);
+
+	}
+
+	public getNow_YYYY_MM_DD_HH_MM_SS():string {
+		return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+	}
+
+	public getNow_H_YYYY_MM_DD_HH_MM_SS():string {
+		return this.getNow(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
+	}
+
+	private getNow(input_date_format_type:number):string {
+
+		if(null == input_date_format_type) {
+			return null;
+		}
+
+		let now:Date = new Date();
+
+		if(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+
+			let year = now.getFullYear();
+			let month = this.getDoubleDigit(now.getMonth() + 1);
+			let days = this.getDoubleDigit(now.getDate());
+			let hours = this.getDoubleDigit(now.getHours());
+			let minutes = this.getDoubleDigit(now.getMinutes());
+			let seconds = this.getDoubleDigit(now.getSeconds());
+
+			// 2012-12-11 01:02:03
+			return `${year}-${month}-${days} ${hours}:${minutes}:${seconds}`;
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+
+			let year = now.getFullYear();
+			let month = now.getMonth() + 1;
+			let days = now.getDate();
+			let hours = this.getDoubleDigit(now.getHours());
+			let minutes = this.getDoubleDigit(now.getMinutes());
+			let seconds = this.getDoubleDigit(now.getSeconds());
+
+			// 2012년 12월 11일 01:02:03
+			return `${year}년 ${month}월 ${days}일 ${hours}:${minutes}:${seconds}`;
+
+		} // end if
 
 	}
 

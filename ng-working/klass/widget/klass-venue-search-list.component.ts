@@ -87,8 +87,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / ngOnInit / init");
 
     this.initLayout();
@@ -126,8 +126,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initIFrame(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / constructor / init");
 
     // set function reference out of app. ( ex)iframe )
@@ -141,8 +141,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initLayout() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / initLayout / init");
 
     if(0 < this.cageWidth) {
@@ -253,8 +253,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private subscribeEventPack() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
@@ -287,8 +287,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / emitEventOnReady / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -314,8 +314,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private emitEventOnChangeMeta(value:string, meta:any) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {

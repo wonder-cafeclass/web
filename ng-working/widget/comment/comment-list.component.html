@@ -51,6 +51,7 @@
 						<div class="input-group">
 							<textarea 	#taNewReply
 										rows="2"
+										(focus)="onFocusReply($event, taNewReply, replyContainer)"
 										(click)="onClickReply($event, taNewReply, replyContainer)"
 										(blur)="onBlurReply($event, taNewReply, replyContainer)"
 										class="form-control input-text">{{placeholderReply}}</textarea>
@@ -78,6 +79,7 @@
 				class="input-group">
 			<textarea 	#taNewComment
 						rows="2"
+						(focus)="onFocusTextarea($event, taNewComment)"
 						(click)="onClickTextarea($event, taNewComment)"
 						(blur)="onBlurTextarea($event, taNewComment)"
 						class="form-control input-text">{{placeholderInput}}</textarea>

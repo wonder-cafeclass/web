@@ -32,6 +32,17 @@ var HelperMyIs = (function () {
         var getType = {};
         return (type == '[object String]') ? true : false;
     };
+    HelperMyIs.prototype.isNotNumber = function (target) {
+        return !this.isString(target);
+    };
+    HelperMyIs.prototype.isNumber = function (target) {
+        var type = this.getType(target);
+        if (null == type || "" === type) {
+            false;
+        }
+        var getType = {};
+        return (type == '[object Number]') ? true : false;
+    };
     HelperMyIs.prototype.isArrayList = function (target) {
         if (null == target) {
             return false;
@@ -86,6 +97,46 @@ var HelperMyIs = (function () {
         } // end for
         return copy;
     }; // end method
+    HelperMyIs.prototype.copyFromJSON = function (target, json) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass / copyFromJSON / init");
+        if (null == target) {
+            if (isDebug)
+                console.log("klass / copyFromJSON / 중단 / target is not valid!");
+            return target;
+        } // end if
+        if (null == json) {
+            if (isDebug)
+                console.log("klass / copyFromJSON / 중단 / json is not valid!");
+            return target;
+        } // end if
+        for (var key in target) {
+            if (this.isFunction(target[key])) {
+                // 함수는 복사하지 않습니다.
+                continue;
+            }
+            if (isDebug)
+                console.log("klass / copyFromJSON / key : ", key);
+            // For Debug
+            var type = this.getType(target[key]);
+            if (isDebug)
+                console.log("klass / copyFromJSON / type : ", type);
+            if (null == json[key]) {
+                // null은 복사하지 않습니다.
+                continue;
+            }
+            if (this.isNumber(target[key])) {
+                target[key] = parseInt(json[key]);
+            }
+            else {
+                target[key] = json[key];
+            }
+        } // end for
+        return target;
+    };
+    // @ Desc : 객체의 모든 변수의 값이 동일한지 확인합니다.
     HelperMyIs.prototype.isSame = function (src, target) {
         if (null == src || null == target) {
             return false;
@@ -100,6 +151,7 @@ var HelperMyIs = (function () {
         } // end for
         return true;
     };
+    // @ Desc : 특정 변수가 동일한지 확인합니다.
     HelperMyIs.prototype.isSharing = function (key, src, target) {
         if (null == src || null == target) {
             return false;

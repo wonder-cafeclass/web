@@ -9,10 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_service_1 = require('../../util/service/my-event.service');
-var my_event_1 = require('../../util/model/my-event');
-var my_checker_service_1 = require('../../util/service/my-checker.service');
 var image_service_1 = require('../../util/image.service');
+var my_event_1 = require('../../util/model/my-event');
+var my_event_service_1 = require('../../util/service/my-event.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_is_1 = require('../../util/helper/my-is');
+var my_time_1 = require('../../util/helper/my-time');
+var my_array_1 = require('../../util/helper/my-array');
 var comment_service_1 = require('./service/comment.service');
 /*
 *
@@ -23,19 +27,102 @@ var comment_service_1 = require('./service/comment.service');
 *
 */
 var CommentListComponent = (function () {
-    function CommentListComponent(myEventService, myCheckerService, commentService, imageService) {
+    function CommentListComponent(myEventService, myCheckerService, watchTower, commentService, imageService) {
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
+        this.watchTower = watchTower;
         this.commentService = commentService;
         this.imageService = imageService;
         this.isAdmin = false;
         this.cageWidth = -1;
         this.cageHeight = -1;
         this.isShowNewCommentInput = true;
+        this.loginUser = null;
         this.emitter = new core_1.EventEmitter();
     }
     CommentListComponent.prototype.ngOnInit = function () {
-        console.log("comment.component / ngOnInit / commentList : ", this.commentList);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("comment-list / ngOnInit / init");
+        this.myIs = new my_is_1.HelperMyIs();
+        this.myTime = new my_time_1.HelperMyTime();
+        this.myArray = new my_array_1.HelperMyArray();
+        this.subscribeEventPack();
+    };
+    CommentListComponent.prototype.setLoginUser = function (loginUser) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("comment-list / setLoginUser / init");
+        if (isDebug)
+            console.log("comment-list / setLoginUser / loginUser : ", loginUser);
+        this.loginUser = loginUser;
+    }; // end method
+    CommentListComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("comment-list / subscribeEventPack / init");
+        var isEventPackReady = this.watchTower.getIsEventPackReady();
+        if (isDebug)
+            console.log("comment-list / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+        if (this.watchTower.getIsEventPackReady()) {
+            // 1. 이미 EventPack 로딩이 완료된 경우
+            // 부모 객체에게 component가 준비된 것을 알립니다.
+            this.emitEventOnReady();
+        }
+        else {
+            // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+            this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
+                if (isDebug)
+                    console.log("comment-list / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                // 이벤트 관련 정보가 준비되었습니다.
+                // 부모 객체에게 component가 준비된 것을 알립니다.
+                _this.emitEventOnReady();
+            }); // end subscribe
+        } // end if
+    }; // end method 
+    CommentListComponent.prototype.emitEventOnReady = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnReady / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEventOnReady / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnReady = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.eventKey, 
+        // component
+        this);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnReady / myEventOnReady : ", myEventOnReady);
+        this.emitter.emit(myEventOnReady);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnReady / Done!");
+    };
+    CommentListComponent.prototype.emitEventOnLoginRequired = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnLoginRequired / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEventOnLoginRequired / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnReady = this.watchTower.getEventOnLoginRequired(
+        // eventKey:string, 
+        this.eventKey);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnLoginRequired / myEventOnReady : ", myEventOnReady);
+        this.emitter.emit(myEventOnReady);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnLoginRequired / Done!");
     };
     CommentListComponent.prototype.onClickAddComment = function (event, replyContainer, replyBtn) {
         event.stopPropagation();
@@ -57,6 +144,21 @@ var CommentListComponent = (function () {
             replyBtn.innerHTML = "답글달기";
         }
     };
+    CommentListComponent.prototype.onFocusTextarea = function (event, taNewComment) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("comment-list / onFocusTextarea / init");
+        if (null == this.loginUser) {
+            if (isDebug)
+                console.log("comment-list / onFocusTextarea / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
+            // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
+            this.emitEventOnLoginRequired();
+            return;
+        } // end if
+    };
     CommentListComponent.prototype.onClickTextarea = function (event, taNewComment) {
         event.stopPropagation();
         event.preventDefault();
@@ -75,7 +177,35 @@ var CommentListComponent = (function () {
         }
         console.log("comment.component / onBlurTextarea / text : ", text);
     };
+    CommentListComponent.prototype.getNewComment = function (text, metaObj) {
+        if (null == text || "" === text) {
+            return null;
+        }
+        if (null == this.loginUser) {
+            return null;
+        }
+        var dateUpdated = this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
+        var dateUpdatedHumanReadable = this.myTime.getNow_H_YYYY_MM_DD_HH_MM_SS();
+        var newComment = this.commentService.getNewComment(
+        // public comment:string
+        text, 
+        // public writer:string
+        this.loginUser.nickname, 
+        // public thumbnail_url:string
+        this.loginUser.thumbnail, 
+        // public dateUpdated:string
+        dateUpdated, 
+        // public dateUpdatedHumanReadable:string
+        dateUpdatedHumanReadable, 
+        // public metaObj:any
+        metaObj);
+        return newComment;
+    };
     CommentListComponent.prototype.onClickPostNewComment = function (event, textarea) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostNewComment / init");
         // 새로운 댓글 쓰기가 완료되었을 때, 호출됩니다.
         event.stopPropagation();
         event.preventDefault();
@@ -99,25 +229,11 @@ var CommentListComponent = (function () {
             textarea.focus();
             return;
         }
-        console.log("comment-list / onClickPostNewComment / text : ", text);
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostNewComment / text : ", text);
         // 뷰의 화면에 새로운 댓글을 추가합니다.
-        var dummyNickname = "Dummy";
-        var dummyThumbnail = this.imageService.get(this.imageService.userDummy);
-        var dummyDateUpdated = "201-11-14 13:40:32";
-        var dummyDateUpdatedHumanReadable = "2016년 11월 14일 오후 1:40:32";
-        var newComment = this.commentService.getNewComment(
-        // public comment:string
-        text, 
-        // public writer:string
-        dummyNickname, 
-        // public thumbnail_url:string
-        dummyThumbnail, 
-        // public dateUpdated:string
-        dummyDateUpdated, 
-        // public dateUpdatedHumanReadable:string
-        dummyDateUpdatedHumanReadable, 
-        // public metaObj:any
-        this.myEvent.metaObj);
+        // 로그인한 유저의 섬네일, 이름을 표시합니다.
+        var newComment = this.getNewComment(text, null);
         if (null == this.commentList) {
             this.commentList = [];
         }
@@ -128,26 +244,42 @@ var CommentListComponent = (function () {
         newMyEvent.value = text;
         newMyEvent.metaObj = this.myEvent.metaObj;
         this.emitter.emit(newMyEvent);
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostNewComment / emit");
         // 답글쓰기 창의 내용을 초기화합니다.
         textarea.value = this.placeholderReply;
     };
     CommentListComponent.prototype.onClickPostReply = function (event, textarea, replyContainer, replyBtn, parentComment) {
         // 댓글의 답글쓰기를 완료했을 때, 호출됩니다.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostReply / init");
         event.stopPropagation();
         event.preventDefault();
         if (null == textarea) {
+            if (isDebug)
+                console.log("k-d-n-l / onClickPostReply / 중단 / textarea is not valid!");
             return;
         }
         if (null == replyContainer) {
+            if (isDebug)
+                console.log("k-d-n-l / onClickPostReply / 중단 / replyContainer is not valid!");
             return;
         }
         if (null == replyBtn) {
+            if (isDebug)
+                console.log("k-d-n-l / onClickPostReply / 중단 / replyBtn is not valid!");
             return;
         }
-        if (null == parentComment || null == parentComment.metaObj) {
+        if (null == parentComment) {
+            if (isDebug)
+                console.log("k-d-n-l / onClickPostReply / 중단 / parentComment is not valid!");
             return;
         }
         if (null == this.myEvent || null == this.myEvent.myChecker) {
+            if (isDebug)
+                console.log("k-d-n-l / onClickPostReply / 중단 / this.myEvent is not valid!");
             return;
         }
         // 입력한 내용이 없거나 플레이스홀더와 같다면 중단합니다.
@@ -170,24 +302,9 @@ var CommentListComponent = (function () {
         }
         // 답글달기 버튼 갱신
         replyBtn.innerHTML = "답글달기";
-        // 뷰의 화면에 새로운 댓글을 추가합니다.
-        var dummyNickname = "Dummy";
-        var dummyThumbnail = this.imageService.get(this.imageService.userDummy);
-        var dummyDateUpdated = "201-11-14 13:40:32";
-        var dummyDateUpdatedHumanReadable = "2016년 11월 14일 오후 1:40:32";
-        var newComment = this.commentService.getNewComment(
-        // public comment:string
-        text, 
-        // public writer:string
-        dummyNickname, 
-        // public thumbnail_url:string
-        dummyThumbnail, 
-        // public dateUpdated:string
-        dummyDateUpdated, 
-        // public dateUpdatedHumanReadable:string
-        dummyDateUpdatedHumanReadable, 
-        // public metaObj:any
-        parentComment);
+        var newComment = this.getNewComment(text, parentComment);
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostReply / newComment : ", newComment);
         if (null == parentComment.childCommentList) {
             parentComment.childCommentList = [];
         }
@@ -206,6 +323,21 @@ var CommentListComponent = (function () {
         }
         // 새로운 댓글 쓰기 창을 활성화합니다.
         this.isShowNewCommentInput = true;
+    };
+    CommentListComponent.prototype.onFocusReply = function (event, taNewReply, replyContainer) {
+        event.stopPropagation();
+        event.preventDefault();
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("comment-list / onFocusReply / init");
+        if (null == this.loginUser) {
+            if (isDebug)
+                console.log("comment-list / onFocusReply / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
+            // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
+            this.emitEventOnLoginRequired();
+            return;
+        } // end if
     };
     CommentListComponent.prototype.onClickReply = function (event, taNewReply, replyContainer) {
         event.stopPropagation();
@@ -235,9 +367,14 @@ var CommentListComponent = (function () {
     ], CommentListComponent.prototype, "commentList", void 0);
     __decorate([
         core_1.Input(), 
+        __metadata('design:type', String)
+    ], CommentListComponent.prototype, "eventKey", void 0);
+    __decorate([
+        core_1.Input(), 
         __metadata('design:type', my_event_1.MyEvent)
     ], CommentListComponent.prototype, "myEvent", void 0);
     __decorate([
+        // @ Deprecated
         core_1.Input(), 
         __metadata('design:type', Number)
     ], CommentListComponent.prototype, "cageWidth", void 0);
@@ -264,7 +401,7 @@ var CommentListComponent = (function () {
             templateUrl: 'comment-list.component.html',
             styleUrls: ['comment-list.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, comment_service_1.CommentService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, comment_service_1.CommentService, image_service_1.ImageService])
     ], CommentListComponent);
     return CommentListComponent;
 }());

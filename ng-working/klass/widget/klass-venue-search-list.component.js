@@ -43,8 +43,8 @@ var KlassVenueSearchListComponent = (function () {
         this.initIFrame();
     }
     KlassVenueSearchListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / ngOnInit / init");
         this.initLayout();
@@ -73,8 +73,8 @@ var KlassVenueSearchListComponent = (function () {
     };
     KlassVenueSearchListComponent.prototype.initIFrame = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / constructor / init");
         // set function reference out of app. ( ex)iframe )
@@ -85,8 +85,8 @@ var KlassVenueSearchListComponent = (function () {
         };
     };
     KlassVenueSearchListComponent.prototype.initLayout = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / initLayout / init");
         if (0 < this.cageWidth) {
@@ -174,8 +174,8 @@ var KlassVenueSearchListComponent = (function () {
     }; // end method 
     KlassVenueSearchListComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
@@ -198,8 +198,8 @@ var KlassVenueSearchListComponent = (function () {
         } // end if
     }; // end method
     KlassVenueSearchListComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / emitEventOnReady / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -219,8 +219,8 @@ var KlassVenueSearchListComponent = (function () {
             console.log("k-v-s-l / emitEventOnReady / Done!");
     };
     KlassVenueSearchListComponent.prototype.emitEventOnChangeMeta = function (value, meta) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / emitEventOnChangeMeta / init");
         if (!this.watchTower.getIsEventPackReady()) {

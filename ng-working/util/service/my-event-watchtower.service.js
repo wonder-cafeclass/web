@@ -352,6 +352,32 @@ var MyEventWatchTowerService = (function () {
         myChecker);
         return myEventOnChange;
     };
+    MyEventWatchTowerService.prototype.getEventOnLoginRequired = function (eventKey) {
+        if (null == this.myEventService) {
+            return null;
+        }
+        if (null == this.myCheckerService) {
+            return null;
+        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("m-e-w / getEventOnReady / 시작");
+        var myEventOnReady = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_LOGIN_REQUIRED, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        if (isDebug)
+            console.log("m-e-w / getEventOnReady / myEventOnReady : ", myEventOnReady);
+        return myEventOnReady;
+    };
     MyEventWatchTowerService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [])

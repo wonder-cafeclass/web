@@ -15,8 +15,10 @@ var HelperMyTime = (function () {
         this.DATE_TYPE_HH_MM_ROUND = 4;
         /*20121211010203*/
         this.DATE_TYPE_YYYYMMDDHHMMSS = 5;
+        /* 2012-12-11 01:02:03 */
+        this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS = 6;
         /* 2012년 12월 11일 01:02:03 */
-        this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS = 6;
+        this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS = 7;
     }
     HelperMyTime.prototype.getTimeFormatHHMM = function (target) {
         if (null == target) {
@@ -174,6 +176,38 @@ var HelperMyTime = (function () {
             return null;
         }
         return this.getDate(date_str, this.DATE_TYPE_HH_MM);
+    };
+    HelperMyTime.prototype.getNow_YYYY_MM_DD_HH_MM_SS = function () {
+        return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+    };
+    HelperMyTime.prototype.getNow_H_YYYY_MM_DD_HH_MM_SS = function () {
+        return this.getNow(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
+    };
+    HelperMyTime.prototype.getNow = function (input_date_format_type) {
+        if (null == input_date_format_type) {
+            return null;
+        }
+        var now = new Date();
+        if (this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+            var year = now.getFullYear();
+            var month = this.getDoubleDigit(now.getMonth() + 1);
+            var days = this.getDoubleDigit(now.getDate());
+            var hours = this.getDoubleDigit(now.getHours());
+            var minutes = this.getDoubleDigit(now.getMinutes());
+            var seconds = this.getDoubleDigit(now.getSeconds());
+            // 2012-12-11 01:02:03
+            return year + "-" + month + "-" + days + " " + hours + ":" + minutes + ":" + seconds;
+        }
+        else if (this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var days = now.getDate();
+            var hours = this.getDoubleDigit(now.getHours());
+            var minutes = this.getDoubleDigit(now.getMinutes());
+            var seconds = this.getDoubleDigit(now.getSeconds());
+            // 2012년 12월 11일 01:02:03
+            return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C " + hours + ":" + minutes + ":" + seconds;
+        } // end if
     };
     HelperMyTime.prototype.getDate = function (date_str, input_date_format_type) {
         if (null == date_str || "" == date_str) {

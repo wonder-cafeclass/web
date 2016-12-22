@@ -135,28 +135,27 @@
                   [ngClass]="{'focus':isFocusStudentReview}">
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
               <!--
-              <comment-list [isAdmin]="isAdmin"
+              <review-list [isAdmin]="isAdmin"
                             [myEvent]="myEventForReview"
                             [placeholderInput]="'수업을 받고 난 뒤의 느낌은 어떠셨나요?'"
                             [placeholderReply]="'어떤 답글을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"
-                            [commentList]="reviewCommentList">
-              </comment-list>
+                            [reviewList]="reviewCommentList">
+              </review-list>
               -->
             </li>
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
-              <!--
               <comment-list [isAdmin]="isAdmin"
                             [myEvent]="myEventForQuestion"
-                            [placeholderInput]="'더 알고 싶은 것이 았다면 무엇이든 물어보세요.'"
+                            [eventKey]="myEventService.KEY_KLASS_QUESTION_LIST"
+                            [placeholderInput]="'더 알고 싶은 것이 있다면 무엇이든 물어보세요.'"
                             [placeholderReply]="'어떤 답변을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"
                             [commentList]="questionCommentList">
               </comment-list>
-              -->
             </li>
             <li   #caution
                   class="list-group-item klass-info"

@@ -214,12 +214,20 @@ class Klass extends MY_REST_Controller {
         {
             $klass->review_list = $this->my_sql->select_klass_review_list($klass->id);
         }
+        if(empty($klass->review_list))
+        {
+            $klass->review_list = [];   
+        }
 
         // 수업의 문의를 가져옵니다.
         // $question_list = null;
         if(0 < $klass->id)
         {
             $klass->question_list = $this->my_sql->select_klass_question_list($klass->id);
+        }
+        if(empty($klass->question_list))
+        {
+            $klass->question_list = [];   
         }
 
         // 조회 결과를 가져옵니다.

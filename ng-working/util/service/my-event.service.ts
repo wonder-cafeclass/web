@@ -31,6 +31,7 @@ export class MyEventService {
     ON_PREVIEW:string="ON_PREVIEW";
     ON_UNPREVIEW:string="ON_UNPREVIEW";
     ON_DONE:string="ON_DONE";
+    ON_LOGIN_REQUIRED:string="ON_LOGIN_REQUIRED";
 
     // SPECIFIC ATTR
     KLASS_WEEK_MAX:string="KLASS_WEEK_MAX";
@@ -139,6 +140,8 @@ export class MyEventService {
     KEY_KLASS_DETAIL_NAV_VENUE_MAP:string="KEY_KLASS_DETAIL_NAV_VENUE_MAP";
     // 수업 - 수업 선생님 리스트
     KEY_KLASS_TEACHER_LIST:string="KEY_KLASS_TEACHER_LIST";
+    // 수업 - 수업 관련 질문 리스트
+    KEY_KLASS_QUESTION_LIST:string="KEY_KLASS_QUESTION_LIST";
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

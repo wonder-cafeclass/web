@@ -15,20 +15,23 @@ var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_is_1 = require('../util/helper/my-is');
 var my_array_1 = require('../util/helper/my-array');
+var url_service_1 = require('../util/url.service');
 var image_service_1 = require('../util/image.service');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var comment_list_component_1 = require('../widget/comment/comment-list.component');
 var klass_color_service_1 = require('./service/klass-color.service');
 var klass_comment_service_1 = require('./service/klass-comment.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_1 = require('./model/klass');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService, klassCommentService, watchTower, myEventService, myCheckerService, radiobtnService, imageService) {
+    function KlassDetailNavListComponent(klassColorService, klassCommentService, watchTower, myEventService, myCheckerService, radiobtnService, urlService, imageService) {
         this.klassColorService = klassColorService;
         this.klassCommentService = klassCommentService;
         this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.radiobtnService = radiobtnService;
+        this.urlService = urlService;
         this.imageService = imageService;
         this.isAdmin = false;
         this.cageWidth = -1;
@@ -51,10 +54,10 @@ var KlassDetailNavListComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
     }
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
-            console.log("k-d-n-l / constructor / init");
+            console.log("k-d-n-l / ngOnInit / init");
         // WIDTH
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -63,11 +66,48 @@ var KlassDetailNavListComponent = (function () {
             this.cageWidthStr = "100%";
         } // end if
         this.subscribeEventPack();
+        this.subscribeLoginUser();
     };
-    KlassDetailNavListComponent.prototype.subscribeEventPack = function () {
+    KlassDetailNavListComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / subscribeLoginUser / init");
+        this.loginUser = this.watchTower.getLoginUser();
+        if (isDebug)
+            console.log("k-d-n-l / subscribeLoginUser / this.loginUser : ", this.loginUser);
+        if (null != this.loginUser) {
+            // 로그인 유저 정보가 필요한 컴포넌트들에게 로그인 정보를 전달!
+            this.tossLoginUser();
+            return;
+        } // end if
+        // 로그인 유저 정보를 가져오지 못했습니다. watchTowerd에서 전달해주기를 기다립니다.
+        this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
+            if (isDebug)
+                console.log("k-d-n-l / subscribeLoginUser / loginUser : ", loginUser);
+            // 이벤트 관련 정보가 준비되었습니다.
+            _this.loginUser = loginUser;
+            // 로그인 유저 정보가 필요한 컴포넌트들에게 로그인 정보를 전달!
+            _this.tossLoginUser();
+        }); // end subscribe
+    }; // end method
+    KlassDetailNavListComponent.prototype.tossLoginUser = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / tossLoginUser / init");
+        if (null == this.loginUser) {
+            return;
+        }
+        if (null != this.questionListComponent) {
+            this.questionListComponent.setLoginUser(this.loginUser);
+        }
+    };
+    KlassDetailNavListComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
@@ -90,8 +130,8 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     }; // end method
     KlassDetailNavListComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / emitEventOnReady / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -111,8 +151,8 @@ var KlassDetailNavListComponent = (function () {
             console.log("k-d-n-l / emitEventOnReady / Done!");
     };
     KlassDetailNavListComponent.prototype.setKlass = function (klass) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / setKlass / init");
         if (null == klass) {
@@ -125,8 +165,8 @@ var KlassDetailNavListComponent = (function () {
         this.init();
     };
     KlassDetailNavListComponent.prototype.setKlassFeature = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / setKlassFeature / init");
         if (null == this.klass) {
@@ -170,8 +210,8 @@ var KlassDetailNavListComponent = (function () {
         this.myEventListForKlassFeature = myEventKlassFeatureList;
     }; // end method  
     KlassDetailNavListComponent.prototype.setKlassTarget = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / setKlassTarget / init");
         if (null == this.klass) {
@@ -190,8 +230,8 @@ var KlassDetailNavListComponent = (function () {
         this.updateKlassTarget(targetList);
     }; // end method
     KlassDetailNavListComponent.prototype.updateKlassTarget = function (targetList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / updateKlassTarget / init");
         var myEventKlassTargetList = [];
@@ -217,8 +257,8 @@ var KlassDetailNavListComponent = (function () {
         this.myEventListForKlassTarget = myEventKlassTargetList;
     }; // end method
     KlassDetailNavListComponent.prototype.setKlassSchedule = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / setKlassSchedule / init");
         var klassSchedule = this.klass.schedule;
@@ -237,9 +277,19 @@ var KlassDetailNavListComponent = (function () {
             this.klassTeacher = this.klass.teacher;
         } // end if
     };
-    KlassDetailNavListComponent.prototype.init = function () {
+    KlassDetailNavListComponent.prototype.setReview = function () {
         var isDebug = true;
         // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / setReview / init");
+        if (null != this.klass.review_list) {
+            this.reviewCommentList =
+                this.klassCommentService.getReviewCommentList(this.klass.review_list);
+        } // end if
+    };
+    KlassDetailNavListComponent.prototype.init = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / init / init");
         if (null == this.klass) {
@@ -266,10 +316,7 @@ var KlassDetailNavListComponent = (function () {
         // 수업 강사님 정보 가져오기
         this.setTeacher();
         // 수업 리뷰 가져오기
-        if (null != this.klass.review_list) {
-            this.reviewCommentList =
-                this.klassCommentService.getReviewCommentList(this.klass.review_list);
-        }
+        this.setReview();
         // 수업 질문 가져오기
         if (null != this.klass.question_list) {
             this.questionCommentList =
@@ -339,12 +386,64 @@ var KlassDetailNavListComponent = (function () {
         }
         return eventValues;
     };
-    KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
-        // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
-        if (null == myEvent || null == myEvent.key || "" == myEvent.key) {
+    KlassDetailNavListComponent.prototype.setQuestionList = function () {
+        if (null == this.loginUser) {
             return;
         }
-        if (this.myEventService.ON_CHANGE === myEvent.eventName) {
+        if (null == this.questionListComponent) {
+            return;
+        }
+        this.questionListComponent.setLoginUser(this.loginUser);
+    };
+    // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
+    KlassDetailNavListComponent.prototype.goLogin = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / goLogin / init");
+        var appViewUrl = this.urlService.getAppViewUrl();
+        if (isDebug)
+            console.log("k-d-n-l / goLogin / appViewUrl : ", appViewUrl);
+        var req_url = this.urlService.get("#/login?redirect=" + appViewUrl);
+        if (isDebug)
+            console.log("k-d-n-l / goLogin / req_url : ", req_url);
+        window.location.href = req_url;
+    };
+    KlassDetailNavListComponent.prototype.addQuestion = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / addQuestion / init");
+    }; // end if
+    KlassDetailNavListComponent.prototype.addQuestionReply = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / addQuestionReply / init");
+    };
+    KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
+        // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / onChangedFromInputRow / init");
+        if (isDebug)
+            console.log("k-d-n-l / onChangedFromInputRow / myEvent : ", myEvent);
+        if (null == myEvent || null == myEvent.key || "" == myEvent.key) {
+            return;
+        } // end if
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+                if (null != myEvent.metaObj) {
+                    this.questionListComponent = myEvent.metaObj;
+                    this.setQuestionList();
+                } // end if
+            } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_LOGIN_REQUIRED)) {
+            this.goLogin();
+        }
+        else if (this.myEventService.ON_CHANGE === myEvent.eventName) {
             if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 this.myEventListForKlassFeature =
                     this.myEventService.setEventValue(myEvent, this.myEventListForKlassFeature);
@@ -357,12 +456,14 @@ var KlassDetailNavListComponent = (function () {
                 this.klassSchedule = myEvent.value;
             }
         }
-        else if (this.myEventService.ON_ADD_COMMENT === myEvent.eventName) {
-            if (this.myEventService.KEY_COMMENT === myEvent.key) {
+        else if (myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
+            if (myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
+                this.addQuestion();
             }
         }
-        else if (this.myEventService.ON_ADD_COMMENT_REPLY === myEvent.eventName) {
-            if (this.myEventService.KEY_COMMENT === myEvent.key) {
+        else if (myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT_REPLY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
+                this.addQuestionReply();
             }
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -388,7 +489,6 @@ var KlassDetailNavListComponent = (function () {
             } // end if
         }
         else if (this.myEventService.ON_SAVE === myEvent.eventName) {
-            // wonder.jung
             var hasChanged = false;
             if (this.myEventService.KLASS_FEATURE === myEvent.key) {
                 hasChanged = this.hasChangedFeature();
@@ -550,6 +650,10 @@ var KlassDetailNavListComponent = (function () {
         __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
     ], KlassDetailNavListComponent.prototype, "seComponent", void 0);
     __decorate([
+        core_1.ViewChild(comment_list_component_1.CommentListComponent), 
+        __metadata('design:type', comment_list_component_1.CommentListComponent)
+    ], KlassDetailNavListComponent.prototype, "questionListComponent", void 0);
+    __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
     ], KlassDetailNavListComponent.prototype, "radiobtnOptionListNavTabs", void 0);
@@ -597,7 +701,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, url_service_1.UrlService, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

@@ -18,9 +18,12 @@ import { HelperMyIs }                 from '../util/helper/my-is';
 import { HelperMyTime }               from '../util/helper/my-time';
 import { HelperMyArray }              from '../util/helper/my-array';
 
+import { UrlService }                 from '../util/url.service';
+
 import { ImageService }               from '../util/image.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
 import { Comment }                    from '../widget/comment/model/comment';
+import { CommentListComponent }       from '../widget/comment/comment-list.component';
 
 import { KlassColorService }          from './service/klass-color.service';
 import { KlassCommentService }        from './service/klass-comment.service';
@@ -28,6 +31,8 @@ import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
 
 import { Klass }                      from './model/klass';
 import { KlassTeacher }               from './model/klass-teacher';
+
+import { User }                       from '../user/model/user';
 
 @Component({
   moduleId: module.id,
@@ -40,9 +45,14 @@ export class KlassDetailNavListComponent implements OnInit {
   @ViewChild(SmartEditorComponent)
   private seComponent: SmartEditorComponent;  
 
+  @ViewChild(CommentListComponent)
+  private questionListComponent: CommentListComponent;  
+
+
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
   klassTeacher:KlassTeacher;
+  loginUser:User;
 
   @Input() klassFeature:string; // @ Deprecated
   @Input() klassFeatureList:string[];
@@ -113,6 +123,7 @@ export class KlassDetailNavListComponent implements OnInit {
                 public myEventService:MyEventService, 
                 private myCheckerService:MyCheckerService, 
                 private radiobtnService:KlassRadioBtnService,
+                private urlService:UrlService,
                 public imageService: ImageService) {
 
     this.myIs = new HelperMyIs();
@@ -122,9 +133,9 @@ export class KlassDetailNavListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / constructor / init");
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / ngOnInit / init");
 
     // WIDTH
     if(0 < this.cageWidth) {
@@ -134,13 +145,62 @@ export class KlassDetailNavListComponent implements OnInit {
     } // end if
 
     this.subscribeEventPack();
+
+    this.subscribeLoginUser();
     
+  }
+
+  private subscribeLoginUser() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / subscribeLoginUser / init");
+
+    this.loginUser = this.watchTower.getLoginUser();
+    if(isDebug) console.log("k-d-n-l / subscribeLoginUser / this.loginUser : ",this.loginUser);
+
+    if(null != this.loginUser) {
+      // 로그인 유저 정보가 필요한 컴포넌트들에게 로그인 정보를 전달!
+      this.tossLoginUser();
+      return;
+    } // end if
+
+    // 로그인 유저 정보를 가져오지 못했습니다. watchTowerd에서 전달해주기를 기다립니다.
+    this.watchTower.loginAnnounced$.subscribe(
+      (loginUser:User) => {
+
+      if(isDebug) console.log("k-d-n-l / subscribeLoginUser / loginUser : ",loginUser);
+
+      // 이벤트 관련 정보가 준비되었습니다.
+      this.loginUser = loginUser;
+
+      // 로그인 유저 정보가 필요한 컴포넌트들에게 로그인 정보를 전달!
+      this.tossLoginUser();
+
+    }); // end subscribe
+
+  } // end method
+
+  private tossLoginUser() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / tossLoginUser / init");
+
+    if(null == this.loginUser) {
+      return;
+    }
+
+    if(null != this.questionListComponent) {
+      this.questionListComponent.setLoginUser(this.loginUser);
+    }
+
   }
 
   private subscribeEventPack() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
@@ -170,11 +230,10 @@ export class KlassDetailNavListComponent implements OnInit {
 
   } // end method
 
-
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / emitEventOnReady / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -200,8 +259,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   public setKlass(klass:Klass) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setKlass / init");
 
     if(null == klass) {
@@ -219,8 +278,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setKlassFeature() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setKlassFeature / init");    
 
     if(null == this.klass) {
@@ -277,8 +336,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setKlassTarget() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setKlassTarget / init");    
 
     if(null == this.klass) {
@@ -300,8 +359,8 @@ export class KlassDetailNavListComponent implements OnInit {
   } // end method
   private updateKlassTarget(targetList:string[]) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / updateKlassTarget / init");    
 
     let myEventKlassTargetList:MyEvent[] = [];
@@ -338,8 +397,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setKlassSchedule() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setKlassSchedule / init");    
 
     let klassSchedule:string = this.klass.schedule;
@@ -364,13 +423,24 @@ export class KlassDetailNavListComponent implements OnInit {
     } // end if
   }
 
-
-
-
-  private init() :void {
+  private setReview() :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setReview / init");
+
+    if(null != this.klass.review_list) {
+      this.reviewCommentList = 
+      this.klassCommentService.getReviewCommentList(
+        this.klass.review_list
+      );
+    } // end if
+  }
+
+  private init() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / init / init");    
 
     if(null == this.klass) {
@@ -404,12 +474,7 @@ export class KlassDetailNavListComponent implements OnInit {
     this.setTeacher();
 
     // 수업 리뷰 가져오기
-    if(null != this.klass.review_list) {
-      this.reviewCommentList = 
-      this.klassCommentService.getReviewCommentList(
-        this.klass.review_list
-      );
-    }
+    this.setReview();
 
     // 수업 질문 가져오기
     if(null != this.klass.question_list) {
@@ -496,14 +561,81 @@ export class KlassDetailNavListComponent implements OnInit {
     return eventValues;
   }
 
-  onChangedFromInputRow(myEvent:MyEvent) :void{
-    // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
+  private setQuestionList():void {
 
-    if(null == myEvent || null == myEvent.key || "" == myEvent.key) {
+    if(null == this.loginUser) {
+      return;
+    }
+    if(null == this.questionListComponent) {
       return;
     }
 
-    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    this.questionListComponent.setLoginUser(this.loginUser);
+
+  }
+
+  // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
+  private goLogin():void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / goLogin / init");
+
+    let appViewUrl:string = this.urlService.getAppViewUrl();
+    if(isDebug) console.log("k-d-n-l / goLogin / appViewUrl : ",appViewUrl);
+
+    let req_url = this.urlService.get(`#/login?redirect=${appViewUrl}`);
+    if(isDebug) console.log("k-d-n-l / goLogin / req_url : ",req_url);
+
+    window.location.href = req_url;
+  }
+
+  private addQuestion() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / addQuestion / init");
+
+  } // end if
+
+  private addQuestionReply() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / addQuestionReply / init");
+
+    
+  }
+
+
+  onChangedFromInputRow(myEvent:MyEvent) :void{
+    // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / init");
+    if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / myEvent : ",myEvent);
+
+    if(null == myEvent || null == myEvent.key || "" == myEvent.key) {
+      return;
+    } // end if
+
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.questionListComponent = myEvent.metaObj; 
+          this.setQuestionList();
+        } // end if
+
+      } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_LOGIN_REQUIRED)) {
+
+      this.goLogin();
+
+    } else if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
 
@@ -525,19 +657,18 @@ export class KlassDetailNavListComponent implements OnInit {
 
         this.klassSchedule = myEvent.value;
 
+      }  
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
+        this.addQuestion();
       }
 
-    } else if(this.myEventService.ON_ADD_COMMENT === myEvent.eventName) {
+    } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT_REPLY)) {
 
-      if(this.myEventService.KEY_COMMENT === myEvent.key) {
-
-
-      }      
-
-    } else if(this.myEventService.ON_ADD_COMMENT_REPLY === myEvent.eventName) {
-
-      if(this.myEventService.KEY_COMMENT === myEvent.key) {
-
+      if(myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
+        this.addQuestionReply();
       }
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -572,7 +703,6 @@ export class KlassDetailNavListComponent implements OnInit {
 
     } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
 
-      // wonder.jung
       let hasChanged:boolean = false;
       if(this.myEventService.KLASS_FEATURE === myEvent.key) {
         hasChanged = this.hasChangedFeature();
