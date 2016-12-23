@@ -112,8 +112,10 @@
     </li>
 
 	<!-- comment input / INIT -->
-	<li class="list-group-item" 
-		style="padding:5px;">
+	<li 
+	*ngIf="!isInputDisabled"
+	class="list-group-item" 
+	style="padding:5px;">
 
 		<!-- 별점 표시 영역 INIT -->
 		<div

@@ -35,6 +35,7 @@ var CommentListComponent = (function () {
         this.commentService = commentService;
         this.imageService = imageService;
         this.isAdmin = false;
+        this.isInputDisabled = false;
         this.hasEvaluation = false; // @ 유저평가 - 별점여부
         this.cageWidth = -1;
         this.cageHeight = -1;
@@ -603,6 +604,10 @@ var CommentListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Boolean)
     ], CommentListComponent.prototype, "isAdmin", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], CommentListComponent.prototype, "isInputDisabled", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)

@@ -41,6 +41,7 @@ import { CommentService }              from './service/comment.service';
 export class CommentListComponent implements OnInit {
 
   @Input() isAdmin:boolean=false;
+  @Input() isInputDisabled:boolean=false;
   @Input() hasEvaluation:boolean=false; // @ 유저평가 - 별점여부
   @Input() commentList:Comment[];
   @Input() eventKey:string;

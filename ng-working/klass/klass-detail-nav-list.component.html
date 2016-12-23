@@ -128,6 +128,7 @@
                   [ngClass]="{'focus':isFocusStudentReview}">
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
               <comment-list [isAdmin]="isAdmin"
+                            [isInputDisabled]="loginUser.isTeacher()"
                             [hasEvaluation]="true"
                             [myEvent]="myEventForReview"
                             [eventKey]="myEventService.KEY_KLASS_REVIEW_LIST"
@@ -142,6 +143,7 @@
                   [ngClass]="{'focus':isFocusStudentQuestion}">
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
               <comment-list [isAdmin]="isAdmin"
+                            [isInputDisabled]="loginUser.isTeacher()"
                             [myEvent]="myEventForQuestion"
                             [eventKey]="myEventService.KEY_KLASS_QUESTION_LIST"
                             [placeholderInput]="'더 알고 싶은 것이 있다면 무엇이든 물어보세요.'"
