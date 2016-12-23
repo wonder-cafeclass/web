@@ -52,6 +52,8 @@ export class KlassDetailNavListComponent implements OnInit {
   @ViewChild(CommentListComponent)
   private questionListComponent: CommentListComponent;  
 
+  @ViewChild(CommentListComponent)
+  private reviewListComponent: CommentListComponent;  
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
@@ -67,7 +69,6 @@ export class KlassDetailNavListComponent implements OnInit {
 
   @Input() isAdmin:boolean=false;
   @Input() cageWidth:number=-1;
-
 
   cageWidthStr:string;
   colorWhite:string;
@@ -470,6 +471,8 @@ export class KlassDetailNavListComponent implements OnInit {
       this.klassCommentService.getQuestionCommentList(
         this.klass.question_list
       );
+
+      if(isDebug) console.log("k-d-n-l / setQuestion / this.questionCommentList : ",this.questionCommentList);
     } // end if
 
     // MyEvent for Question
@@ -596,6 +599,19 @@ export class KlassDetailNavListComponent implements OnInit {
 
   }
 
+  private setReviewList():void {
+
+    if(null == this.loginUser) {
+      return;
+    }
+    if(null == this.reviewListComponent) {
+      return;
+    }
+
+    this.reviewListComponent.setLoginUser(this.loginUser);
+
+  }  
+
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {
 
@@ -611,6 +627,115 @@ export class KlassDetailNavListComponent implements OnInit {
 
     window.location.href = req_url;
   }
+
+  private addReview(newComment:Comment) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / addReview / init");
+
+    if(isDebug) console.log("k-d-n-l / addReview / newComment : ",newComment);
+
+    // DB UPDATE!
+    this.klassService.addKlassReview(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // review:string,
+      newComment.comment,
+      // star:number
+      newComment.star
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addReview / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("review_list")) {
+
+        // wonder.jung
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+
+        /*
+        if(null != this.reviewListComponent) {
+          this.reviewListComponent.updateComment(newComment);
+        }
+        */
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addReview / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service     
+
+  } // end if
+
+  private addReviewReply(newComment:Comment) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / addReviewReply / init");
+
+    if(isDebug) console.log("k-d-n-l / addReviewReply / newComment : ",newComment);
+
+    /*
+    // DB UPDATE!
+    this.klassService.addKlassQuestionReply(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // parentId:number,
+      +newComment.parentId,
+      // question:string
+      newComment.comment
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("k-d-n-l / addReviewReply / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+
+        // Do something..
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addReviewReply / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service  
+    */   
+
+    
+  }  
 
   private addQuestion(newComment:Comment) :void {
 
@@ -668,6 +793,45 @@ export class KlassDetailNavListComponent implements OnInit {
 
     if(isDebug) console.log("k-d-n-l / addQuestionReply / newComment : ",newComment);
 
+    // DB UPDATE!
+    this.klassService.addKlassQuestionReply(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // parentId:number,
+      +newComment.parentId,
+      // question:string
+      newComment.comment
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("k-d-n-l / addQuestionReply / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+
+        // Do something..
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service     
+
     
   }
 
@@ -691,6 +855,13 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.questionListComponent = myEvent.metaObj; 
           this.setQuestionList();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.reviewListComponent = myEvent.metaObj; 
+          this.setReviewList();
         } // end if
 
       } // end if
@@ -734,7 +905,17 @@ export class KlassDetailNavListComponent implements OnInit {
         if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
 
         this.addQuestion(newComment);
-      }
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
+
+        // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+        // metaObj로 받는 comment 객체
+
+        let newComment:Comment = new Comment().setJSON(myEvent.metaObj);
+        if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
+
+        this.addReview(newComment);
+      }      
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT_REPLY)) {
 
@@ -747,6 +928,16 @@ export class KlassDetailNavListComponent implements OnInit {
         if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
 
         this.addQuestionReply(newComment);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
+
+        // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+        // metaObj로 받는 comment 객체        
+
+        let newComment:Comment = new Comment().setJSON(myEvent.metaObj);
+        if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
+
+        this.addReviewReply(newComment);
       }
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {

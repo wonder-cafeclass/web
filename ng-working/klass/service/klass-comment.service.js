@@ -23,6 +23,8 @@ var KlassCommentService = (function () {
             var reviewComment = new comment_1.Comment().set(
             // id:number, 
             review.id, 
+            // parentId:number, 
+            review.parent_id, 
             // comment:string, 
             review.comment, 
             // writerId:number, 
@@ -32,7 +34,9 @@ var KlassCommentService = (function () {
             // thumbnail:string, 
             review.thumbnail, 
             // dateUpdated:string
-            review.date_updated);
+            review.date_updated, 
+            // star:number, 
+            review.star);
             var child_comment_list = review.child_review_list;
             var childReviewCommentList = [];
             if (null != child_comment_list && 0 < child_comment_list.length) {
@@ -41,6 +45,8 @@ var KlassCommentService = (function () {
                     var childReviewComment = new comment_1.Comment().set(
                     // id:number, 
                     childReview.id, 
+                    // parentId:number, 
+                    childReview.parent_id, 
                     // comment:string, 
                     childReview.comment, 
                     // writerId:number, 
@@ -50,7 +56,9 @@ var KlassCommentService = (function () {
                     // thumbnail:string, 
                     childReview.thumbnail, 
                     // dateUpdated:string
-                    childReview.date_updated);
+                    childReview.date_updated, 
+                    // star:number, 
+                    -1);
                     childReviewCommentList.push(childReviewComment);
                 } // end inner for
                 reviewComment.childCommentList = childReviewCommentList;
@@ -60,12 +68,18 @@ var KlassCommentService = (function () {
         return reviewCommentList;
     }; // end method  
     KlassCommentService.prototype.getQuestionCommentList = function (klassQuestionList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-comment.service / getQuestionCommentList / init");
         var questionCommentList = [];
         for (var i = 0; i < klassQuestionList.length; ++i) {
             var question = klassQuestionList[i];
             var questionComment = new comment_1.Comment().set(
             // id:number, 
             question.id, 
+            // parentId:number, 
+            question.parent_id, 
             // comment:string, 
             question.comment, 
             // writerId:number, 
@@ -75,15 +89,27 @@ var KlassCommentService = (function () {
             // thumbnail:string, 
             question.thumbnail, 
             // dateUpdated:string
-            question.date_updated);
+            question.date_updated, 
+            // star:number
+            -1);
+            if (isDebug)
+                console.log("klass-comment.service / getQuestionCommentList / question : ", question);
+            if (isDebug)
+                console.log("klass-comment.service / getQuestionCommentList / questionComment : ", questionComment);
             var child_comment_list = question.child_question_list;
+            if (isDebug)
+                console.log("klass-comment.service / getQuestionCommentList / child_comment_list : ", child_comment_list);
             var childQuestionCommentList = [];
             if (null != child_comment_list && 0 < child_comment_list.length) {
                 for (var j = 0; j < child_comment_list.length; ++j) {
                     var childQuestion = child_comment_list[j];
+                    if (isDebug)
+                        console.log("klass-comment.service / getQuestionCommentList / childQuestion : ", childQuestion);
                     var childQuestionComment = new comment_1.Comment().set(
                     // id:number, 
                     childQuestion.id, 
+                    // parentId:number, 
+                    childQuestion.parent_id, 
                     // comment:string, 
                     childQuestion.comment, 
                     // writerId:number, 
@@ -93,9 +119,15 @@ var KlassCommentService = (function () {
                     // thumbnail:string, 
                     childQuestion.thumbnail, 
                     // dateUpdated:string
-                    childQuestion.date_updated);
+                    childQuestion.date_updated, 
+                    // star:number
+                    -1);
+                    if (isDebug)
+                        console.log("klass-comment.service / getQuestionCommentList / childQuestionComment : ", childQuestionComment);
                     childQuestionCommentList.push(childQuestionComment);
                 } // end inner for
+                if (isDebug)
+                    console.log("klass-comment.service / getQuestionCommentList / childQuestionCommentList : ", childQuestionCommentList);
                 questionComment.childCommentList = childQuestionCommentList;
             } // end if
             questionCommentList.push(questionComment);

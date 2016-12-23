@@ -43,8 +43,8 @@ export class KlassService {
   private addKlassQuestionUrl = '/CI/index.php/api/klass/addquestion';
   private addKlassQuestionReplyUrl = '/CI/index.php/api/klass/addquestionreply';
 
-  private addKlassReviewUrl = '/CI/index.php/api/klass/addquestion';
-  private addKlassReviewReplyUrl = '/CI/index.php/api/klass/addquestionreply';
+  private addKlassReviewUrl = '/CI/index.php/api/klass/addreview';
+  private addKlassReviewReplyUrl = '/CI/index.php/api/klass/addreviewreply';
 
   private baseHref = "";
 
@@ -61,6 +61,39 @@ export class KlassService {
     this.myArray = new HelperMyArray();
     this.myTime = new HelperMyTime();
   }
+
+  addKlassReview(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    review:string,
+    star:number
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
+    if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
+    if(isDebug) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / addKlassQuestion / review : ",review);
+    if(isDebug) console.log("klass.service / addKlassQuestion / star : ",star);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassReviewUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_review:review,
+      klass_review_star:star
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
 
   addKlassQuestion(    
     apiKey:string, 
@@ -90,7 +123,40 @@ export class KlassService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
-  }   
+  }
+
+  addKlassQuestionReply(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    parentId:number,
+    question:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / 시작");
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / userId : ",userId);
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / parentId : ",parentId);
+    if(isDebug) console.log("klass.service / addKlassQuestionReply / question : ",question);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassQuestionReplyUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_question_parent_id:parentId,
+      klass_question:question
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }     
 
   updateKlassTitle(    
     apiKey:string, 

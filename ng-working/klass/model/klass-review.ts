@@ -13,6 +13,7 @@ export class KlassReview {
         public thumbnail_url:string=""; // @ Deprecated
         public parent_id:number=-1;
         public comment:string="";
+        public star:number=-1;
         public date_created:string="";
         public date_updated:string="";
         public date_updated_human_readable:string="";
@@ -43,8 +44,8 @@ export class KlassReview {
 
         setJSON(json):KlassReview {
 
-                let isDebug:boolean = true;
-                // let isDebug:boolean = false;
+                // let isDebug:boolean = true;
+                let isDebug:boolean = false;
                 if(isDebug) console.log("klass-review / setJSON / init");
 
                 let klassReview:KlassReview = this._setJSON(json);
@@ -52,6 +53,16 @@ export class KlassReview {
                 if(isDebug) console.log("klass-review / setJSON / klassReview : ",klassReview);
 
                 // 추가 작업이 필요한 데이터들을 여기서 다룹니다.
+                if(null != json.child_review_list && 0 < json.child_review_list.length) {
+                        let child_review_list:KlassReview[]=[];
+                        for (var i = 0; i < json.child_review_list.length; ++i) {
+                                let child_review_json = json.child_review_list[i];
+                                let childKlassReview:KlassReview = new KlassReview().setJSON(child_review_json);
+                                child_review_list.push(childKlassReview);
+                        }
+
+                        klassReview.child_review_list = child_review_list;
+                } // end if
 
                 return klassReview;
 

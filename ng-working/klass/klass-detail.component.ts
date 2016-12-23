@@ -646,8 +646,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassSubwayLine() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
     if(null == this.klassCopy) {
       if(isDebug) console.log("klass-detail / setKlassSubwayLine / 중단 / this.klassCopy is not valid!");
@@ -705,8 +705,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassSubwayStation() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
     if(null == this.klassCopy) {
       if(isDebug) console.log("klass-detail / setKlassSubwayStation / 중단 / this.klassCopy is not valid!");
@@ -733,8 +733,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
   private updateSelectOptionSubwayStations(subwayLine:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / 시작");
 
     if(null == subwayLine || "" === subwayLine) {
@@ -813,8 +813,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassDetailNavList() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setKlassDetailNavList / 시작");
 
     if(null == this.klassCopy) {
@@ -980,8 +980,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private onAfterReceivingKlass() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klass : ",this.klass);
 

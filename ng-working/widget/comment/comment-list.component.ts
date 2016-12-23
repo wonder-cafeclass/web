@@ -307,7 +307,7 @@ export class CommentListComponent implements OnInit {
     console.log("comment.component / onBlurTextarea / text : ",text);
   }
 
-  private getNewComment(text:string, metaObj):Comment {
+  private getNewComment(parentId:number, text:string, star:number, metaObj):Comment {
 
     if(null == text || "" === text) {
       return null;
@@ -319,6 +319,8 @@ export class CommentListComponent implements OnInit {
     let newComment:Comment = new Comment().setNew(
       // id:number, 
       -1,
+      // parentId:number, 
+      parentId,
       // comment:string, 
       text,
       // writerId:number
@@ -326,7 +328,9 @@ export class CommentListComponent implements OnInit {
       // writer:string, 
       this.loginUser.nickname,
       // thumbnail:string
-      this.loginUser.thumbnail
+      this.loginUser.thumbnail,
+      // writerId:number
+      star
     );
 
     return newComment;
@@ -374,7 +378,7 @@ export class CommentListComponent implements OnInit {
     // 뷰의 화면에 새로운 댓글을 추가합니다.
     // 로그인한 유저의 섬네일, 이름을 표시합니다.
 
-    let newComment:Comment = this.getNewComment(text, null);
+    let newComment:Comment = this.getNewComment(-1, text, this.starScore, null);
 
     if(isDebug) console.log("k-d-n-l / onClickPostNewComment / newComment : ",newComment);
 
@@ -388,6 +392,7 @@ export class CommentListComponent implements OnInit {
 
     // 답글쓰기 창의 내용을 초기화합니다.
     textarea.value = this.placeholderReply;
+    this.starScore = 0;
 
   } 
 
@@ -449,7 +454,7 @@ export class CommentListComponent implements OnInit {
     // 답글달기 버튼 갱신
     replyBtn.innerHTML = "답글달기";
 
-    let newComment:Comment = this.getNewComment(text, parentComment);
+    let newComment:Comment = this.getNewComment(parentComment.id, text, this.starScore, parentComment);
 
     if(isDebug) console.log("k-d-n-l / onClickPostReply / newComment : ",newComment);
 
@@ -463,6 +468,7 @@ export class CommentListComponent implements OnInit {
 
     // 답글쓰기 창의 내용을 초기화합니다.
     textarea.value = this.placeholderReply;
+    this.starScore = 0;
 
     // 답글쓰기 창을 닫습니다.
     if(null != replyContainer) {
@@ -567,5 +573,18 @@ export class CommentListComponent implements OnInit {
     this.evaluation="별점을 매겨주세요";
 
   } // end method
+
+  // @ Desc : DB 업데이트 완료! 해당 comment를 업데이트해줍니다.
+  updateComment(comment:Comment) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / updateComment / init");
+    if(isDebug) console.log("k-d-n-l / updateComment / comment : ",comment);
+
+    
+
+
+  }
 
 }

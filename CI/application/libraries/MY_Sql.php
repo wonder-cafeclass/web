@@ -1438,13 +1438,13 @@ class MY_Sql
         // 수업의 문의를 가져옵니다.
         $question_list = null;
         // 1. 부모 문의를 먼저 가져옵니다.(최신순)
-        if(0 < $klass->id)
+        if(0 < $klass_id)
         {
             $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
             $this->CI->db->from('question');
             $this->CI->db->join('user', 'question.user_id = user.id');
-            $this->CI->db->where('question.klass_id', $klass->id);
-            $this->CI->db->where('question.parent_id=', 0);
+            $this->CI->db->where('question.klass_id', $klass_id);
+            $this->CI->db->where('question.parent_id < ', 1);
             $this->CI->db->order_by('question.id', 'DESC');
             $query = $this->CI->db->get();
 
@@ -1546,7 +1546,7 @@ class MY_Sql
         $this->CI->db->from('review');
         $this->CI->db->join('user', 'review.user_id = user.id');
         $this->CI->db->where('review.klass_id', $klass_id);
-        $this->CI->db->where('review.parent_id=', 0);
+        $this->CI->db->where('review.parent_id < ', 1);
         $this->CI->db->order_by('review.id', 'DESC');
         $query = $this->CI->db->get();
         $review_list = $this->add_klass_review_extra_info($query);
@@ -1586,10 +1586,6 @@ class MY_Sql
     }
     private function add_klass_review_extra_info($query=null)
     {
-        if($this->is_not_ok()) {
-            return;
-        }
-
         if(is_null($query)) {
             return;
         }
@@ -1603,6 +1599,7 @@ class MY_Sql
                 $row->parent_id = intval($row->parent_id);
                 $row->klass_id = intval($row->klass_id);
                 $row->user_id = intval($row->user_id);
+                $row->star = intval($row->star);
 
                 if(empty($row->thumbnail))
                 {
@@ -1896,6 +1893,7 @@ class MY_Sql
         );
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $klass_id);
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $sql = $this->CI->db->set($data)->get_compiled_update('klass');
         $this->log_query(
             // $user_id=-1
@@ -1910,6 +1908,149 @@ class MY_Sql
         $this->CI->db->where('id', $klass_id);
         $this->CI->db->update('klass', $data);
     } 
+
+
+
+    // @ Desc : 클래스의 리뷰를 추가한다.
+    public function add_klass_review($user_id=-1, $klass_id=-1, $klass_review="", $klass_review_star=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review", $klass_review))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_star", $klass_review_star))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => -1,
+            'comment' => $klass_review,
+            'star' => $klass_review_star
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('review', $data);
+    }    
+
+
+    // @ Desc : 클래스의 질문을 추가한다.
+    public function add_klass_question($user_id=-1, $klass_id=-1, $klass_question="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question", $klass_question))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => -1,
+            'comment' => $klass_question
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('question', $data);
+    }
+    // @ Desc : 클래스의 질문의 답글을 추가한다.
+    public function add_klass_question_reply($user_id=-1, $klass_id=-1, $klass_question_parent_id=-1, $klass_question_reply="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_parent_id", $klass_question_parent_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question", $klass_question_reply))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => $klass_question_parent_id,
+            'comment' => $klass_question_reply
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('question', $data);
+    }        
 
 
     // @ Desc : 클래스의 포스터 정보를 가져옵니다.

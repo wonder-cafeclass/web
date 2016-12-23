@@ -821,16 +821,16 @@ class MY_ParamChecker {
                 );
                 $result = $output["result"];
                 $extracted_value = $output["extracted_value"];
-                if(empty($extracted_value)) {
+                if(0 != $extracted_value && empty($extracted_value)) {
                     return $result;
                 }
 
                 $value_int = intval($value);
 
     			$greater_than_equal_to = intval($extracted_value);
-    			if($greater_than_equal_to < 0) 
+    			if($greater_than_equal_to < -1) 
     			{
-		    		$result["message"]="\$greater_than_equal_to < 0";
+		    		$result["message"]="\$greater_than_equal_to < -1";
 		    		return $result;
     			}
     			else if(self::$mysql_int_max < $greater_than_equal_to) 

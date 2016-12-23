@@ -130,6 +130,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_TEACHER_LIST = "KEY_KLASS_TEACHER_LIST";
         // 수업 - 수업 관련 질문 리스트
         this.KEY_KLASS_QUESTION_LIST = "KEY_KLASS_QUESTION_LIST";
+        // 수업 - 수업 관련 리뷰 리스트
+        this.KEY_KLASS_REVIEW_LIST = "KEY_KLASS_REVIEW_LIST";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

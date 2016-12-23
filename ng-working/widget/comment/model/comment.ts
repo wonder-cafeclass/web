@@ -5,6 +5,7 @@ import { HelperMyTime }             from '../../../util/helper/my-time';
 export class Comment {
 
 	public id:number=-1;
+	public parentId:number=-1;
 	public comment:string="";
     public writer:string="";
 	public writerId:number=-1;
@@ -36,7 +37,7 @@ export class Comment {
 
 	}
 
-	setNew(id:number, comment:string, writerId:number, writer:string, thumbnail:string):Comment {
+	setNew(id:number, parentId:number, comment:string, writerId:number, writer:string, thumbnail:string, star:number):Comment {
 
         let isDebug:boolean = true;
         // let isDebug:boolean = false;
@@ -44,10 +45,12 @@ export class Comment {
 
 
 		this.id = id;
+		this.parentId = parentId;
 		this.comment = comment;
 		this.writerId = writerId;
 		this.writer = writer;
 		this.thumbnail = thumbnail;
+		this.star = star;
 
 	    this.dateUpdated = 
 	    this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
@@ -66,13 +69,15 @@ export class Comment {
 
 	}
 
-	set(id:number, comment:string, writerId:number, writer:string, thumbnail:string, dateUpdated:string):Comment {
+	set(id:number, parentId:number, comment:string, writerId:number, writer:string, thumbnail:string, dateUpdated:string, star:number):Comment {
 
 		this.id = id;
+		this.parentId = parentId;
 		this.comment = comment;
 		this.writerId = writerId;
 		this.writer = writer;
 		this.thumbnail = thumbnail;
+		this.star = star;
 
 	    this.dateUpdated = dateUpdated;
 

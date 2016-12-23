@@ -142,6 +142,8 @@ export class MyEventService {
     KEY_KLASS_TEACHER_LIST:string="KEY_KLASS_TEACHER_LIST";
     // 수업 - 수업 관련 질문 리스트
     KEY_KLASS_QUESTION_LIST:string="KEY_KLASS_QUESTION_LIST";
+    // 수업 - 수업 관련 리뷰 리스트
+    KEY_KLASS_REVIEW_LIST:string="KEY_KLASS_REVIEW_LIST";
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

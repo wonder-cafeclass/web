@@ -323,8 +323,8 @@ export class HelperMyConst {
 
     getDefaultOptionList(keyList:string[], valueList:string[], valueFocus:string):DefaultOption[] {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("my-const / getDefaultOptionList / 시작");
 
         if(this.myArray.isNotStrArr(keyList)) {
@@ -366,8 +366,8 @@ export class HelperMyConst {
 
     getDefaultOptionListWithKeyValueFocus(nameKeyList:string, nameValueList:string, nameFocusList:string[]):DefaultOption[] {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("my-const / getDefaultOptionListWithKeyValueFocus / 시작");
 
         if(this.hasNotList(nameKeyList)) {

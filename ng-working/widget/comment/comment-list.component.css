@@ -34,3 +34,13 @@ div.eval {
     -ms-user-select: none;
     user-select: none;
 }
+span.writer {
+    color: #777;
+    float: left;
+    padding-right: 5px;    
+}
+div.star {
+    color: #777;
+    position: absolute;
+    margin-left: 40px;    
+}

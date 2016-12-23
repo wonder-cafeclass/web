@@ -230,7 +230,7 @@ var CommentListComponent = (function () {
         }
         console.log("comment.component / onBlurTextarea / text : ", text);
     };
-    CommentListComponent.prototype.getNewComment = function (text, metaObj) {
+    CommentListComponent.prototype.getNewComment = function (parentId, text, star, metaObj) {
         if (null == text || "" === text) {
             return null;
         }
@@ -240,6 +240,8 @@ var CommentListComponent = (function () {
         var newComment = new comment_1.Comment().setNew(
         // id:number, 
         -1, 
+        // parentId:number, 
+        parentId, 
         // comment:string, 
         text, 
         // writerId:number
@@ -247,7 +249,9 @@ var CommentListComponent = (function () {
         // writer:string, 
         this.loginUser.nickname, 
         // thumbnail:string
-        this.loginUser.thumbnail);
+        this.loginUser.thumbnail, 
+        // writerId:number
+        star);
         return newComment;
     };
     CommentListComponent.prototype.onClickPostNewComment = function (event, textarea) {
@@ -282,7 +286,7 @@ var CommentListComponent = (function () {
             console.log("k-d-n-l / onClickPostNewComment / text : ", text);
         // 뷰의 화면에 새로운 댓글을 추가합니다.
         // 로그인한 유저의 섬네일, 이름을 표시합니다.
-        var newComment = this.getNewComment(text, null);
+        var newComment = this.getNewComment(-1, text, this.starScore, null);
         if (isDebug)
             console.log("k-d-n-l / onClickPostNewComment / newComment : ", newComment);
         if (null == this.commentList) {
@@ -293,6 +297,7 @@ var CommentListComponent = (function () {
         this.emitEventOnAddCommentMeta(newComment);
         // 답글쓰기 창의 내용을 초기화합니다.
         textarea.value = this.placeholderReply;
+        this.starScore = 0;
     };
     CommentListComponent.prototype.onClickPostReply = function (event, textarea, replyContainer, replyBtn, parentComment) {
         // 댓글의 답글쓰기를 완료했을 때, 호출됩니다.
@@ -347,7 +352,7 @@ var CommentListComponent = (function () {
         }
         // 답글달기 버튼 갱신
         replyBtn.innerHTML = "답글달기";
-        var newComment = this.getNewComment(text, parentComment);
+        var newComment = this.getNewComment(parentComment.id, text, this.starScore, parentComment);
         if (isDebug)
             console.log("k-d-n-l / onClickPostReply / newComment : ", newComment);
         if (null == parentComment.childCommentList) {
@@ -358,6 +363,7 @@ var CommentListComponent = (function () {
         this.emitEventOnAddCommentReplyMeta(newComment);
         // 답글쓰기 창의 내용을 초기화합니다.
         textarea.value = this.placeholderReply;
+        this.starScore = 0;
         // 답글쓰기 창을 닫습니다.
         if (null != replyContainer) {
             replyContainer.style.display = "none";
@@ -434,6 +440,15 @@ var CommentListComponent = (function () {
         this.starScore = 0;
         this.evaluation = "별점을 매겨주세요";
     }; // end method
+    // @ Desc : DB 업데이트 완료! 해당 comment를 업데이트해줍니다.
+    CommentListComponent.prototype.updateComment = function (comment) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / updateComment / init");
+        if (isDebug)
+            console.log("k-d-n-l / updateComment / comment : ", comment);
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)

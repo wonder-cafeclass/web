@@ -421,8 +421,8 @@ var KlassDetailComponent = (function () {
         this.klassLevelComponent.setSelectOption(selectOptionList);
     };
     KlassDetailComponent.prototype.setKlassSubwayLine = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (null == this.klassCopy) {
             if (isDebug)
                 console.log("klass-detail / setKlassSubwayLine / 중단 / this.klassCopy is not valid!");
@@ -469,8 +469,8 @@ var KlassDetailComponent = (function () {
         this.klassSubwayLineComponent.setSelectOption(selectOptionList);
     };
     KlassDetailComponent.prototype.setKlassSubwayStation = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (null == this.klassCopy) {
             if (isDebug)
                 console.log("klass-detail / setKlassSubwayStation / 중단 / this.klassCopy is not valid!");
@@ -496,8 +496,8 @@ var KlassDetailComponent = (function () {
         this.updateSelectOptionSubwayStations(subwayLine);
     };
     KlassDetailComponent.prototype.updateSelectOptionSubwayStations = function (subwayLine) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateSelectOptionSubwayStations / 시작");
         if (null == subwayLine || "" === subwayLine) {
@@ -557,8 +557,8 @@ var KlassDetailComponent = (function () {
         valueFocus);
     }; // end method
     KlassDetailComponent.prototype.setKlassDetailNavList = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setKlassDetailNavList / 시작");
         if (null == this.klassCopy) {
@@ -701,8 +701,8 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end method
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
         if (isDebug)

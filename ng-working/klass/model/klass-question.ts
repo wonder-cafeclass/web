@@ -43,15 +43,27 @@ export class KlassQuestion {
 
         setJSON(json):KlassQuestion {
 
-                let isDebug:boolean = true;
-                // let isDebug:boolean = false;
+                // let isDebug:boolean = true;
+                let isDebug:boolean = false;
+
                 if(isDebug) console.log("klass-question / setJSON / init");
+                if(isDebug) console.log("klass-question / setJSON / json : ",json);
 
                 let klassQuestion:KlassQuestion = this._setJSON(json);
 
                 if(isDebug) console.log("klass-question / setJSON / klassQuestion : ",klassQuestion);
                 
                 // 추가 작업이 필요한 데이터들을 여기서 다룹니다.
+                if(null != json.child_question_list && 0 < json.child_question_list.length) {
+                        let child_question_list:KlassQuestion[]=[];
+                        for (var i = 0; i < json.child_question_list.length; ++i) {
+                                let child_question_json = json.child_question_list[i];
+                                let childKlassQuestion:KlassQuestion = new KlassQuestion().setJSON(child_question_json);
+                                child_question_list.push(childKlassQuestion);
+                        }
+
+                        klassQuestion.child_question_list = child_question_list;
+                }
 
                 return klassQuestion;
 

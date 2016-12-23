@@ -130,6 +130,7 @@
               <comment-list [isAdmin]="isAdmin"
                             [hasEvaluation]="true"
                             [myEvent]="myEventForReview"
+                            [eventKey]="myEventService.KEY_KLASS_REVIEW_LIST"
                             [placeholderInput]="'수업을 받고 난 뒤의 느낌은 어떠셨나요?'"
                             [placeholderReply]="'어떤 답글을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"

@@ -5,6 +5,7 @@ var my_time_1 = require('../../../util/helper/my-time');
 var Comment = (function () {
     function Comment() {
         this.id = -1;
+        this.parentId = -1;
         this.comment = "";
         this.writer = "";
         this.writerId = -1;
@@ -25,16 +26,18 @@ var Comment = (function () {
         if (isDebug)
             console.log("comment / setJSON / this.uniqueId : ", this.uniqueId);
     }
-    Comment.prototype.setNew = function (id, comment, writerId, writer, thumbnail) {
+    Comment.prototype.setNew = function (id, parentId, comment, writerId, writer, thumbnail, star) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("comment / setNew / init");
         this.id = id;
+        this.parentId = parentId;
         this.comment = comment;
         this.writerId = writerId;
         this.writer = writer;
         this.thumbnail = thumbnail;
+        this.star = star;
         this.dateUpdated =
             this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
         this.dateUpdatedHumanReadable =
@@ -47,12 +50,14 @@ var Comment = (function () {
             this.myTime.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
         return this;
     };
-    Comment.prototype.set = function (id, comment, writerId, writer, thumbnail, dateUpdated) {
+    Comment.prototype.set = function (id, parentId, comment, writerId, writer, thumbnail, dateUpdated, star) {
         this.id = id;
+        this.parentId = parentId;
         this.comment = comment;
         this.writerId = writerId;
         this.writer = writer;
         this.thumbnail = thumbnail;
+        this.star = star;
         this.dateUpdated = dateUpdated;
         this.dateUpdatedHumanReadable =
             this.myTime.convert(

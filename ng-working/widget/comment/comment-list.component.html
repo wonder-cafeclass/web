@@ -10,7 +10,33 @@
 				</a>
             </div>
             <div class="media-body">
-            	<span style="color:#777">{{comment.writer}}</span>
+            	<span class="writer">{{comment.writer}}</span>
+
+				<!-- 별점 표시 영역 INIT -->
+				<div *ngIf="hasEvaluation" class="star">
+					<span 
+					[ngClass]="{'glyphicon-star':0 < comment.star,'glyphicon-star-empty':comment.star < 1}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':1 < comment.star,'glyphicon-star-empty':comment.star < 2}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':2 < comment.star,'glyphicon-star-empty':comment.star < 3}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':3 < comment.star,'glyphicon-star-empty':comment.star < 4}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':4 < comment.star,'glyphicon-star-empty':comment.star < 5}"
+					class="glyphicon">
+					</span>
+				</div>
+				<!-- 별점 표시 영역 DONE -->
+
             	<span style="color:#9d9d9d;float:right;">
             		<small>{{comment.dateUpdatedHumanReadable}}</small>
             	</span><br/>

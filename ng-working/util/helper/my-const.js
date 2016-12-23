@@ -256,8 +256,8 @@ var HelperMyConst = (function () {
         return valueMap;
     };
     HelperMyConst.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-const / getDefaultOptionList / 시작");
         if (this.myArray.isNotStrArr(keyList)) {
@@ -294,8 +294,8 @@ var HelperMyConst = (function () {
         return selectOptionList;
     };
     HelperMyConst.prototype.getDefaultOptionListWithKeyValueFocus = function (nameKeyList, nameValueList, nameFocusList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-const / getDefaultOptionListWithKeyValueFocus / 시작");
         if (this.hasNotList(nameKeyList)) {

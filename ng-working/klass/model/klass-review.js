@@ -13,6 +13,7 @@ var KlassReview = (function () {
         this.thumbnail_url = ""; // @ Deprecated
         this.parent_id = -1;
         this.comment = "";
+        this.star = -1;
         this.date_created = "";
         this.date_updated = "";
         this.date_updated_human_readable = "";
@@ -29,14 +30,23 @@ var KlassReview = (function () {
         new KlassReview());
     }; // end method
     KlassReview.prototype.setJSON = function (json) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-review / setJSON / init");
         var klassReview = this._setJSON(json);
         if (isDebug)
             console.log("klass-review / setJSON / klassReview : ", klassReview);
         // 추가 작업이 필요한 데이터들을 여기서 다룹니다.
+        if (null != json.child_review_list && 0 < json.child_review_list.length) {
+            var child_review_list = [];
+            for (var i = 0; i < json.child_review_list.length; ++i) {
+                var child_review_json = json.child_review_list[i];
+                var childKlassReview = new KlassReview().setJSON(child_review_json);
+                child_review_list.push(childKlassReview);
+            }
+            klassReview.child_review_list = child_review_list;
+        } // end if
         return klassReview;
     }; // end method
     KlassReview.prototype._setJSON = function (json) {

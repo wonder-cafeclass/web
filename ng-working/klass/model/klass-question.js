@@ -29,14 +29,25 @@ var KlassQuestion = (function () {
         new KlassQuestion());
     }; // end method
     KlassQuestion.prototype.setJSON = function (json) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-question / setJSON / init");
+        if (isDebug)
+            console.log("klass-question / setJSON / json : ", json);
         var klassQuestion = this._setJSON(json);
         if (isDebug)
             console.log("klass-question / setJSON / klassQuestion : ", klassQuestion);
         // 추가 작업이 필요한 데이터들을 여기서 다룹니다.
+        if (null != json.child_question_list && 0 < json.child_question_list.length) {
+            var child_question_list = [];
+            for (var i = 0; i < json.child_question_list.length; ++i) {
+                var child_question_json = json.child_question_list[i];
+                var childKlassQuestion = new KlassQuestion().setJSON(child_question_json);
+                child_question_list.push(childKlassQuestion);
+            }
+            klassQuestion.child_question_list = child_question_list;
+        }
         return klassQuestion;
     }; // end method
     KlassQuestion.prototype._setJSON = function (json) {
