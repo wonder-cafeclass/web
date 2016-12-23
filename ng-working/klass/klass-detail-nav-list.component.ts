@@ -8,31 +8,35 @@ import {  Component,
 
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
 
+import { UrlService }                 from '../util/url.service';
+import { ImageService }               from '../util/image.service';
+
 import { MyEvent }                    from '../util/model/my-event';
 import { MyChecker }                  from '../util/model/my-checker';
+import { MyResponse }                 from '../util/model/my-response';
+
 import { MyEventWatchTowerService }   from '../util/service/my-event-watchtower.service';
 import { MyEventService }             from '../util/service/my-event.service';
 import { MyCheckerService }           from '../util/service/my-checker.service';
+import { MyLoggerService }            from '../util/service/my-logger.service';
 
 import { HelperMyIs }                 from '../util/helper/my-is';
 import { HelperMyTime }               from '../util/helper/my-time';
 import { HelperMyArray }              from '../util/helper/my-array';
 
-import { UrlService }                 from '../util/url.service';
-
-import { ImageService }               from '../util/image.service';
 import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
 import { Comment }                    from '../widget/comment/model/comment';
 import { CommentListComponent }       from '../widget/comment/comment-list.component';
 
-import { KlassColorService }          from './service/klass-color.service';
-import { KlassCommentService }        from './service/klass-comment.service';
-import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
-
 import { Klass }                      from './model/klass';
 import { KlassTeacher }               from './model/klass-teacher';
 
-import { User }                       from '../user/model/user';
+import { KlassColorService }          from './service/klass-color.service';
+import { KlassCommentService }        from './service/klass-comment.service';
+import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
+import { KlassService }               from './service/klass.service';
+
+import { User }                       from '../users/model/user';
 
 @Component({
   moduleId: module.id,
@@ -119,10 +123,12 @@ export class KlassDetailNavListComponent implements OnInit {
 
   constructor(  private klassColorService:KlassColorService, 
                 private klassCommentService:KlassCommentService,
+                private klassService:KlassService,
                 private watchTower:MyEventWatchTowerService,
                 public myEventService:MyEventService, 
                 private myCheckerService:MyCheckerService, 
                 private radiobtnService:KlassRadioBtnService,
+                private myLoggerService:MyLoggerService,
                 private urlService:UrlService,
                 public imageService: ImageService) {
 
@@ -606,19 +612,61 @@ export class KlassDetailNavListComponent implements OnInit {
     window.location.href = req_url;
   }
 
-  private addQuestion() :void {
+  private addQuestion(newComment:Comment) :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addQuestion / init");
 
+    if(isDebug) console.log("k-d-n-l / addQuestion / newComment : ",newComment);
+
+    // DB UPDATE!
+    this.klassService.addKlassQuestion(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // question:string
+      newComment.comment
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addQuestion / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+
+        // Do something..
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service     
+
+
   } // end if
 
-  private addQuestionReply() :void {
+  private addQuestionReply(newComment:Comment) :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addQuestionReply / init");
+
+    if(isDebug) console.log("k-d-n-l / addQuestionReply / newComment : ",newComment);
 
     
   }
@@ -677,14 +725,28 @@ export class KlassDetailNavListComponent implements OnInit {
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
-        this.addQuestion();
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+
+        // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+        // metaObj로 받는 comment 객체
+
+        let newComment:Comment = new Comment().setJSON(myEvent.metaObj);
+        if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
+
+        this.addQuestion(newComment);
       }
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT_REPLY)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
-        this.addQuestionReply();
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+
+        // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+        // metaObj로 받는 comment 객체        
+
+        let newComment:Comment = new Comment().setJSON(myEvent.metaObj);
+        if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / newComment : ",newComment);
+
+        this.addQuestionReply(newComment);
       }
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {

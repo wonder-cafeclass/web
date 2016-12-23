@@ -154,6 +154,66 @@ export class CommentListComponent implements OnInit {
 
   } 
 
+  private emitEventOnAddCommentMeta(comment:Comment) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEventOnChangeMeta / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEventOnAddComment:MyEvent = 
+    this.watchTower.getEventOnAddCommentMeta(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      comment.comment,
+      // myChecker:MyChecker, 
+      this.myEvent.myChecker,
+      // meta:any
+      comment
+    );
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentMeta / myEventOnAddComment : ",myEventOnAddComment);
+
+    this.emitter.emit(myEventOnAddComment);
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentMeta / Done!");
+
+  } 
+
+  private emitEventOnAddCommentReplyMeta(comment:Comment) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEventOnAddCommentReply:MyEvent = 
+    this.watchTower.getEventOnAddCommentReplyMeta(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      comment.comment,
+      // myChecker:MyChecker, 
+      this.myEvent.myChecker,
+      // meta:any
+      comment
+    );
+
+    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / myEventOnAddCommentReply : ",myEventOnAddCommentReply);
+
+    this.emitter.emit(myEventOnAddCommentReply);
+
+  }     
+
   private emitEventOnLoginRequired() :void {
 
     // let isDebug:boolean = true;
@@ -256,26 +316,18 @@ export class CommentListComponent implements OnInit {
       return null;
     }
 
-    let dateUpdated:string = 
-    this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
-    let dateUpdatedHumanReadable:string = 
-    this.myTime.getNow_H_YYYY_MM_DD_HH_MM_SS();
-
-    let newComment = 
-    this.commentService.getNewComment(
-        // public comment:string
-        text,
-        // public writer:string
-        this.loginUser.nickname,
-        // public thumbnail_url:string
-        this.loginUser.thumbnail,
-        // public dateUpdated:string
-        dateUpdated,
-        // public dateUpdatedHumanReadable:string
-        dateUpdatedHumanReadable,
-        // public metaObj:any
-        metaObj
-    );    
+    let newComment:Comment = new Comment().setNew(
+      // id:number, 
+      -1,
+      // comment:string, 
+      text,
+      // writerId:number
+      this.loginUser.id,
+      // writer:string, 
+      this.loginUser.nickname,
+      // thumbnail:string
+      this.loginUser.thumbnail
+    );
 
     return newComment;
   }
@@ -324,19 +376,15 @@ export class CommentListComponent implements OnInit {
 
     let newComment:Comment = this.getNewComment(text, null);
 
+    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / newComment : ",newComment);
+
     if(null == this.commentList) {
       this.commentList = [];
     }
     this.commentList.push(newComment);
 
-    // 부모에게 새로운 댓글이 추가된 것을 전달합니다. commentList
-    let newMyEvent:MyEvent = this.myEvent.copy();
-    newMyEvent.eventName = this.myEventService.ON_ADD_COMMENT;
-    newMyEvent.value = text;
-    newMyEvent.metaObj = this.myEvent.metaObj;
-    this.emitter.emit(newMyEvent);
-
-    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / emit");
+    // 부모에게 새로운 댓글이 추가된 것을 전달합니다.
+    this.emitEventOnAddCommentMeta(newComment);
 
     // 답글쓰기 창의 내용을 초기화합니다.
     textarea.value = this.placeholderReply;
@@ -411,11 +459,7 @@ export class CommentListComponent implements OnInit {
     parentComment.childCommentList.push(newComment);
 
     // 부모에게 새로운 댓글이 추가된 것을 전달합니다. commentList
-    let newMyEvent:MyEvent = this.myEvent.copy();
-    newMyEvent.eventName = this.myEventService.ON_ADD_COMMENT_REPLY;
-    newMyEvent.value = text;
-    newMyEvent.metaObj = newComment;
-    this.emitter.emit(newMyEvent);
+    this.emitEventOnAddCommentReplyMeta(newComment);
 
     // 답글쓰기 창의 내용을 초기화합니다.
     textarea.value = this.placeholderReply;

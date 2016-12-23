@@ -358,7 +358,7 @@ export class MyEventWatchTowerService {
 
 	    // let isDebug:boolean = true;
 	    let isDebug:boolean = false;
-	    if(isDebug) console.log("my-event-watchtower / getEventOnReady / 시작");
+	    if(isDebug) console.log("my-event-watchtower / getEventOnChange / 시작");
 
 	    let myEventOnChange:MyEvent =
 	    this.myEventService.getMyEvent(
@@ -376,7 +376,7 @@ export class MyEventWatchTowerService {
 
 		return myEventOnChange;
 	}
-	getEventOnChangeMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+	getEventWithMeta(eventName:string, eventKey:string, value:string, myChecker:MyChecker, meta:any):MyEvent {
 
 		if(null == this.myEventService) {
 			return null;
@@ -390,12 +390,12 @@ export class MyEventWatchTowerService {
 
 	    // let isDebug:boolean = true;
 	    let isDebug:boolean = false;
-	    if(isDebug) console.log("my-event-watchtower / getEventOnReady / 시작");
+	    if(isDebug) console.log("my-event-watchtower / getEventWithMeta / 시작");
 
-	    let myEventOnChange:MyEvent =
+	    let myEvent:MyEvent =
 	    this.myEventService.getMyEvent(
 	      // public eventName:string
-	      this.myEventService.ON_READY,
+	      eventName,
 	      // public key:string
 	      eventKey,
 	      // public value:string
@@ -406,8 +406,66 @@ export class MyEventWatchTowerService {
 	      myChecker
 	    );
 
-		return myEventOnChange;
+		return myEvent;		
+
 	}
+	getEventOnChangeMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+
+		return this.getEventWithMeta(
+			// eventName:string, 
+			this.myEventService.ON_CHANGE,
+			// eventKey:string, 
+			eventKey,
+			// value:string, 
+			value,
+			// myChecker:MyChecker, 
+			myChecker,
+			// meta:any
+			meta
+		);
+	}
+	getEventOnAddCommentMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");
+
+		return this.getEventWithMeta(
+			// eventName:string, 
+			this.myEventService.ON_ADD_COMMENT,
+			// eventKey:string, 
+			eventKey,
+			// value:string, 
+			value,
+			// myChecker:MyChecker, 
+			myChecker,
+			// meta:any
+			meta
+		);
+	}
+	getEventOnAddCommentReplyMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnAddCommentReplyMeta / 시작");
+
+		return this.getEventWithMeta(
+			// eventName:string, 
+			this.myEventService.ON_ADD_COMMENT_REPLY,
+			// eventKey:string, 
+			eventKey,
+			// value:string, 
+			value,
+			// myChecker:MyChecker, 
+			myChecker,
+			// meta:any
+			meta
+		);
+	}		
 	getEventOnLoginRequired(eventKey:string) :MyEvent {
 
 		if(null == this.myEventService) {
@@ -419,7 +477,7 @@ export class MyEventWatchTowerService {
 
 	    // let isDebug:boolean = true;
 	    let isDebug:boolean = false;
-	    if(isDebug) console.log("m-e-w / getEventOnReady / 시작");
+	    if(isDebug) console.log("m-e-w / getEventOnLoginRequired / 시작");
 
 	    let myEventOnReady:MyEvent =
 	    this.myEventService.getMyEvent(
@@ -435,7 +493,7 @@ export class MyEventWatchTowerService {
 	      this.myCheckerService.getFreePassChecker()
 	    );
 
-	    if(isDebug) console.log("m-e-w / getEventOnReady / myEventOnReady : ",myEventOnReady);
+	    if(isDebug) console.log("m-e-w / getEventOnLoginRequired / myEventOnReady : ",myEventOnReady);
 
 		return myEventOnReady;
 	}	

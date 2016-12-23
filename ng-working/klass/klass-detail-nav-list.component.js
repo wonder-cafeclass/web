@@ -9,28 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var url_service_1 = require('../util/url.service');
+var image_service_1 = require('../util/image.service');
 var my_event_1 = require('../util/model/my-event');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_is_1 = require('../util/helper/my-is');
 var my_array_1 = require('../util/helper/my-array');
-var url_service_1 = require('../util/url.service');
-var image_service_1 = require('../util/image.service');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
+var comment_1 = require('../widget/comment/model/comment');
 var comment_list_component_1 = require('../widget/comment/comment-list.component');
+var klass_1 = require('./model/klass');
 var klass_color_service_1 = require('./service/klass-color.service');
 var klass_comment_service_1 = require('./service/klass-comment.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
-var klass_1 = require('./model/klass');
+var klass_service_1 = require('./service/klass.service');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService, klassCommentService, watchTower, myEventService, myCheckerService, radiobtnService, urlService, imageService) {
+    function KlassDetailNavListComponent(klassColorService, klassCommentService, klassService, watchTower, myEventService, myCheckerService, radiobtnService, myLoggerService, urlService, imageService) {
         this.klassColorService = klassColorService;
         this.klassCommentService = klassCommentService;
+        this.klassService = klassService;
         this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.radiobtnService = radiobtnService;
+        this.myLoggerService = myLoggerService;
         this.urlService = urlService;
         this.imageService = imageService;
         this.isAdmin = false;
@@ -417,17 +422,51 @@ var KlassDetailNavListComponent = (function () {
             console.log("k-d-n-l / goLogin / req_url : ", req_url);
         window.location.href = req_url;
     };
-    KlassDetailNavListComponent.prototype.addQuestion = function () {
+    KlassDetailNavListComponent.prototype.addQuestion = function (newComment) {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / addQuestion / init");
+        if (isDebug)
+            console.log("k-d-n-l / addQuestion / newComment : ", newComment);
+        // DB UPDATE!
+        this.klassService.addKlassQuestion(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userId:number,
+        +this.loginUser.id, 
+        // klassId:number,
+        +this.klass.id, 
+        // question:string
+        newComment.comment).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("klass-detail / addQuestion / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "klass-detail-nav-list / addQuestion / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / comment : " + newComment.comment); // end logger      
+            } // end if
+        }); // end service     
     }; // end if
-    KlassDetailNavListComponent.prototype.addQuestionReply = function () {
+    KlassDetailNavListComponent.prototype.addQuestionReply = function (newComment) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / addQuestionReply / init");
+        if (isDebug)
+            console.log("k-d-n-l / addQuestionReply / newComment : ", newComment);
     };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
@@ -465,13 +504,23 @@ var KlassDetailNavListComponent = (function () {
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
-            if (myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
-                this.addQuestion();
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+                // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+                // metaObj로 받는 comment 객체
+                var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
+                if (isDebug)
+                    console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
+                this.addQuestion(newComment);
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT_REPLY)) {
-            if (myEvent.hasKey(this.myEventService.KEY_COMMENT_QUESTION)) {
-                this.addQuestionReply();
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+                // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
+                // metaObj로 받는 comment 객체        
+                var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
+                if (isDebug)
+                    console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
+                this.addQuestionReply(newComment);
             }
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -709,7 +758,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, url_service_1.UrlService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, klass_service_1.KlassService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, my_logger_service_1.MyLoggerService, url_service_1.UrlService, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

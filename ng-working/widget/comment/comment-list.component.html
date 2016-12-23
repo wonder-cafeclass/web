@@ -6,7 +6,7 @@
           <div class="media">
             <div class="media-left">
 				<a href="#">
-					<img src={{comment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+					<img src={{comment.thumbnail}} alt="..." class="img-circle profile" style="width:50px;">
 				</a>
             </div>
             <div class="media-body">
@@ -28,7 +28,7 @@
 					<div class="divider"></div>
 					<div class="media-left">
 						<a href="#">
-							<img src={{childComment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+							<img src={{childComment.thumbnail}} alt="..." class="img-circle profile" style="width:50px;">
 						</a>
 					</div>
 					<div class="media-body">
@@ -44,7 +44,7 @@
 
 
         		<!-- child comment input / INIT -->
-				<div class="media child" #replyContainer style="margin-top: 11px;display:none;">
+				<div class="media child" #replyContainer style="margin-top: 21px;display:none;">
 					<div class="divider"></div>
 					<!-- <div class="media-left"> -->
 					<div class="media-body">

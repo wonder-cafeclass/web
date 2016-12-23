@@ -8,19 +8,23 @@ export class HelperMyTime {
 	constructor() {}
 
 	/*2012-12-11*/
-	private DATE_TYPE_YYYY_MM_DD:number=1;	
+	public DATE_TYPE_YYYY_MM_DD:number=1;	
 	/*01:02*/
-	private DATE_TYPE_HH_MM:number=2;	
+	public DATE_TYPE_HH_MM:number=2;	
 	/*01:02*/
-	private DATE_TYPE_MM_SS:number=3;	
+	public DATE_TYPE_MM_SS:number=3;	
 	// TODO /*01:02 --> 01:00 // 01:52 --> 02:00 // 01:00,01:15,01:30,01:45,02:00 으로 반환*/
-	private DATE_TYPE_HH_MM_ROUND:number=4;
+	public DATE_TYPE_HH_MM_ROUND:number=4;
 	/*20121211010203*/ 
-	private DATE_TYPE_YYYYMMDDHHMMSS:number=5;	
+	public DATE_TYPE_YYYYMMDDHHMMSS:number=5;	
 	/* 2012-12-11 01:02:03 */
-	private DATE_TYPE_YYYY_MM_DD_HH_MM_SS:number=6;
+	public DATE_TYPE_YYYY_MM_DD_HH_MM_SS:number=6;
 	/* 2012년 12월 11일 01:02:03 */
-	private DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
+	public DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
+
+	public getUniqueId():number {
+		return Math.round(window.performance.now() * 100);
+	}
 
 	private getTimeFormatHHMM(target:Date):string {
 		
@@ -220,35 +224,69 @@ export class HelperMyTime {
 
 		let now:Date = new Date();
 
+		return this.getDateFommattedStr(now, input_date_format_type);
+
+	}
+
+	public convert(date_str:string, input_date_format_type:number, output_date_format_type:number):string {
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log("my-time / convert / 시작");
+
+		let dateInput:Date = null;
+
+		if(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+			dateInput = this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+		}
+
+		if(null == dateInput) {
+			return "";			
+		}
+
+		if(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
+			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);	
+		}
+
+		return "";
+	}
+
+	private getDateFommattedStr(date:Date, input_date_format_type:number):string {
+
 		if(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
 
-			let year = now.getFullYear();
-			let month = this.getDoubleDigit(now.getMonth() + 1);
-			let days = this.getDoubleDigit(now.getDate());
-			let hours = this.getDoubleDigit(now.getHours());
-			let minutes = this.getDoubleDigit(now.getMinutes());
-			let seconds = this.getDoubleDigit(now.getSeconds());
+			let year = date.getFullYear();
+			let month = this.getDoubleDigit(date.getMonth() + 1);
+			let days = this.getDoubleDigit(date.getDate());
+			let hours = this.getDoubleDigit(date.getHours());
+			let minutes = this.getDoubleDigit(date.getMinutes());
+			let seconds = this.getDoubleDigit(date.getSeconds());
 
 			// 2012-12-11 01:02:03
 			return `${year}-${month}-${days} ${hours}:${minutes}:${seconds}`;
 
 		} else if(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
 
-			let year = now.getFullYear();
-			let month = now.getMonth() + 1;
-			let days = now.getDate();
-			let hours = this.getDoubleDigit(now.getHours());
-			let minutes = this.getDoubleDigit(now.getMinutes());
-			let seconds = this.getDoubleDigit(now.getSeconds());
+			let year = date.getFullYear();
+			let month = date.getMonth() + 1;
+			let days = date.getDate();
+			let hours = this.getDoubleDigit(date.getHours());
+			let minutes = this.getDoubleDigit(date.getMinutes());
+			let seconds = this.getDoubleDigit(date.getSeconds());
 
 			// 2012년 12월 11일 01:02:03
 			return `${year}년 ${month}월 ${days}일 ${hours}:${minutes}:${seconds}`;
 
 		} // end if
 
+		return "";
 	}
 
 	private getDate(date_str:string, input_date_format_type:number):Date{
+
+	    let isDebug:boolean = true;
+	    // let isDebug:boolean = false;
+	    if(isDebug) console.log("my-time / getDate / 시작");
 		
 		if(null == date_str || "" == date_str) {
 			return null;
@@ -281,6 +319,25 @@ export class HelperMyTime {
 			let days:number = parseInt(date_arr[2]);
 
 			return new Date(year, month, days, 0, 0, 0, 0);
+
+		} else if(input_date_format_type == this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS){
+
+			// EX ) "2012-11-22 11:22:33"
+
+			var res = date_str.match(/[0-9]{2,4}/g);
+
+			if(null == res || 6 != res.length) {
+				return null;
+			}
+
+			let year:number = parseInt(res[0]);
+			let month:number = parseInt(res[1])-1; // month starts with 0, january.d
+			let day:number = parseInt(res[2]);
+			let hour:number = parseInt(res[3]);
+			let minute:number = parseInt(res[4]);
+			let second:number = parseInt(res[5]);
+
+			return new Date(year, month, day, hour, minute, second);
 
 		} else if(input_date_format_type == this.DATE_TYPE_YYYYMMDDHHMMSS){
 

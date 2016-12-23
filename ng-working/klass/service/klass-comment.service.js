@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var comment_service_1 = require('../../widget/comment/service/comment.service');
+var comment_1 = require('../../widget/comment/model/comment');
 var KlassCommentService = (function () {
     // 카페 클래스에서 댓글 객체를 만들기 위한 로직을 관리하는 클래스.
     function KlassCommentService(commentService) {
@@ -19,37 +20,37 @@ var KlassCommentService = (function () {
         var reviewCommentList = [];
         for (var i = 0; i < klassReviewList.length; ++i) {
             var review = klassReviewList[i];
-            var reviewComment = this.commentService.getNewComment(
-            // public comment:string
+            var reviewComment = new comment_1.Comment().set(
+            // id:number, 
+            review.id, 
+            // comment:string, 
             review.comment, 
-            // public writer:string
-            review.nickname, 
-            // public thumbnail_url:string
-            review.thumbnail_url, 
-            // public dateUpdated:string
-            review.date_updated, 
-            // public dateUpdatedHumanReadable:string
-            review.date_updated_human_readable, 
-            // public metaObj:any
-            review);
+            // writerId:number, 
+            review.user_id, 
+            // writer:string, 
+            review.name, 
+            // thumbnail:string, 
+            review.thumbnail, 
+            // dateUpdated:string
+            review.date_updated);
             var child_comment_list = review.child_review_list;
             var childReviewCommentList = [];
             if (null != child_comment_list && 0 < child_comment_list.length) {
                 for (var j = 0; j < child_comment_list.length; ++j) {
                     var childReview = child_comment_list[j];
-                    var childReviewComment = this.commentService.getNewComment(
-                    // public comment:string
+                    var childReviewComment = new comment_1.Comment().set(
+                    // id:number, 
+                    childReview.id, 
+                    // comment:string, 
                     childReview.comment, 
-                    // public writer:string
-                    childReview.nickname, 
-                    // public thumbnail_url:string
-                    childReview.thumbnail_url, 
-                    // public dateUpdated:string
-                    childReview.date_updated, 
-                    // public dateUpdatedHumanReadable:string
-                    childReview.date_updated_human_readable, 
-                    // public metaObj:any
-                    childReview);
+                    // writerId:number, 
+                    childReview.user_id, 
+                    // writer:string, 
+                    childReview.name, 
+                    // thumbnail:string, 
+                    childReview.thumbnail, 
+                    // dateUpdated:string
+                    childReview.date_updated);
                     childReviewCommentList.push(childReviewComment);
                 } // end inner for
                 reviewComment.childCommentList = childReviewCommentList;
@@ -57,50 +58,50 @@ var KlassCommentService = (function () {
             reviewCommentList.push(reviewComment);
         } // end outer for        
         return reviewCommentList;
-    };
+    }; // end method  
     KlassCommentService.prototype.getQuestionCommentList = function (klassQuestionList) {
         var questionCommentList = [];
         for (var i = 0; i < klassQuestionList.length; ++i) {
             var question = klassQuestionList[i];
-            var questionComment = this.commentService.getNewComment(
-            // public comment:string
+            var questionComment = new comment_1.Comment().set(
+            // id:number, 
+            question.id, 
+            // comment:string, 
             question.comment, 
-            // public writer:string
-            question.nickname, 
-            // public thumbnail_url:string
-            question.thumbnail_url, 
-            // public dateUpdated:string
-            question.date_updated, 
-            // public dateUpdatedHumanReadable:string
-            question.date_updated_human_readable, 
-            // public metaObj:any
-            question);
+            // writerId:number, 
+            question.user_id, 
+            // writer:string, 
+            question.name, 
+            // thumbnail:string, 
+            question.thumbnail, 
+            // dateUpdated:string
+            question.date_updated);
             var child_comment_list = question.child_question_list;
-            var childReviewCommentList = [];
+            var childQuestionCommentList = [];
             if (null != child_comment_list && 0 < child_comment_list.length) {
                 for (var j = 0; j < child_comment_list.length; ++j) {
-                    var childReview = child_comment_list[j];
-                    var childReviewComment = this.commentService.getNewComment(
-                    // public comment:string
-                    childReview.comment, 
-                    // public writer:string
-                    childReview.nickname, 
-                    // public thumbnail_url:string
-                    childReview.thumbnail_url, 
-                    // public dateUpdated:string
-                    childReview.date_updated, 
-                    // public dateUpdatedHumanReadable:string
-                    childReview.date_updated_human_readable, 
-                    // public metaObj:any
-                    childReview);
-                    childReviewCommentList.push(childReviewComment);
+                    var childQuestion = child_comment_list[j];
+                    var childQuestionComment = new comment_1.Comment().set(
+                    // id:number, 
+                    childQuestion.id, 
+                    // comment:string, 
+                    childQuestion.comment, 
+                    // writerId:number, 
+                    childQuestion.user_id, 
+                    // writer:string, 
+                    childQuestion.name, 
+                    // thumbnail:string, 
+                    childQuestion.thumbnail, 
+                    // dateUpdated:string
+                    childQuestion.date_updated);
+                    childQuestionCommentList.push(childQuestionComment);
                 } // end inner for
-                questionComment.childCommentList = childReviewCommentList;
+                questionComment.childCommentList = childQuestionCommentList;
             } // end if
             questionCommentList.push(questionComment);
         } // end outer for        
         return questionCommentList;
-    };
+    }; // end method
     KlassCommentService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [comment_service_1.CommentService])

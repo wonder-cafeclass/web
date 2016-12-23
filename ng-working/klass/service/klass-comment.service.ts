@@ -17,21 +17,20 @@ export class KlassCommentService {
         for (var i = 0; i < klassReviewList.length; ++i) {
             let review = klassReviewList[i];
             let reviewComment =
-            this.commentService.getNewComment(
-                // public comment:string
+            new Comment().set(
+                // id:number, 
+                review.id,
+                // comment:string, 
                 review.comment,
-                // public writer:string
-                review.nickname,
-                // public thumbnail_url:string
-                review.thumbnail_url,
-                // public dateUpdated:string
-                review.date_updated,
-                // public dateUpdatedHumanReadable:string
-                review.date_updated_human_readable,
-                // public metaObj:any
-                review
-            ); 
-
+                // writerId:number, 
+                review.user_id,
+                // writer:string, 
+                review.name,
+                // thumbnail:string, 
+                review.thumbnail,
+                // dateUpdated:string
+                review.date_updated
+            );
 
             let child_comment_list = review.child_review_list;
             let childReviewCommentList:Comment[] = [];
@@ -40,19 +39,19 @@ export class KlassCommentService {
                 for (var j = 0; j < child_comment_list.length; ++j) {
                     let childReview = child_comment_list[j];
                     let childReviewComment = 
-                    this.commentService.getNewComment(
-                        // public comment:string
+                    new Comment().set(
+                        // id:number, 
+                        childReview.id,
+                        // comment:string, 
                         childReview.comment,
-                        // public writer:string
-                        childReview.nickname,
-                        // public thumbnail_url:string
-                        childReview.thumbnail_url,
-                        // public dateUpdated:string
-                        childReview.date_updated,
-                        // public dateUpdatedHumanReadable:string
-                        childReview.date_updated_human_readable,
-                        // public metaObj:any
-                        childReview
+                        // writerId:number, 
+                        childReview.user_id,
+                        // writer:string, 
+                        childReview.name,
+                        // thumbnail:string, 
+                        childReview.thumbnail,
+                        // dateUpdated:string
+                        childReview.date_updated
                     );
 
                     childReviewCommentList.push(childReviewComment);
@@ -65,7 +64,7 @@ export class KlassCommentService {
         } // end outer for        
 
         return reviewCommentList;
-    }
+    } // end method  
 
     getQuestionCommentList(klassQuestionList:KlassQuestion[]) :Comment[] {
 
@@ -73,55 +72,54 @@ export class KlassCommentService {
         for (var i = 0; i < klassQuestionList.length; ++i) {
             let question = klassQuestionList[i];
             let questionComment =
-            this.commentService.getNewComment(
-                // public comment:string
+            new Comment().set(
+                // id:number, 
+                question.id,
+                // comment:string, 
                 question.comment,
-                // public writer:string
-                question.nickname,
-                // public thumbnail_url:string
-                question.thumbnail_url,
-                // public dateUpdated:string
-                question.date_updated,
-                // public dateUpdatedHumanReadable:string
-                question.date_updated_human_readable,
-                // public metaObj:any
-                question
-            ); 
-
+                // writerId:number, 
+                question.user_id,
+                // writer:string, 
+                question.name,
+                // thumbnail:string, 
+                question.thumbnail,
+                // dateUpdated:string
+                question.date_updated
+            );
 
             let child_comment_list = question.child_question_list;
-            let childReviewCommentList:Comment[] = [];
+            let childQuestionCommentList:Comment[] = [];
             if(null != child_comment_list && 0 < child_comment_list.length) {
 
                 for (var j = 0; j < child_comment_list.length; ++j) {
-                    let childReview = child_comment_list[j];
-                    let childReviewComment = 
-                    this.commentService.getNewComment(
-                        // public comment:string
-                        childReview.comment,
-                        // public writer:string
-                        childReview.nickname,
-                        // public thumbnail_url:string
-                        childReview.thumbnail_url,
-                        // public dateUpdated:string
-                        childReview.date_updated,
-                        // public dateUpdatedHumanReadable:string
-                        childReview.date_updated_human_readable,
-                        // public metaObj:any
-                        childReview
+                    let childQuestion = child_comment_list[j];
+                    let childQuestionComment = 
+                    new Comment().set(
+                        // id:number, 
+                        childQuestion.id,
+                        // comment:string, 
+                        childQuestion.comment,
+                        // writerId:number, 
+                        childQuestion.user_id,
+                        // writer:string, 
+                        childQuestion.name,
+                        // thumbnail:string, 
+                        childQuestion.thumbnail,
+                        // dateUpdated:string
+                        childQuestion.date_updated
                     );
 
-                    childReviewCommentList.push(childReviewComment);
+                    childQuestionCommentList.push(childQuestionComment);
                 } // end inner for
 
-                questionComment.childCommentList = childReviewCommentList;
+                questionComment.childCommentList = childQuestionCommentList;
             } // end if
 
             questionCommentList.push(questionComment);
         } // end outer for        
 
         return questionCommentList;
-    }    
 
+    } // end method
 
 }

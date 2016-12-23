@@ -39,9 +39,13 @@ export class KlassService {
 
   private addKlassPosterUrl = '/CI/index.php/api/klass/addposter';
   private updateKlassBannerUrl = '/CI/index.php/api/klass/updatebanner';
-  // private addKlassBannerUrl = '/CI/index.php/api/klass/addbanner';
-  // private removeKlassBannerUrl = '/CI/index.php/api/klass/removebanner';
-// /assets/images/class/banner
+
+  private addKlassQuestionUrl = '/CI/index.php/api/klass/addquestion';
+  private addKlassQuestionReplyUrl = '/CI/index.php/api/klass/addquestionreply';
+
+  private addKlassReviewUrl = '/CI/index.php/api/klass/addquestion';
+  private addKlassReviewReplyUrl = '/CI/index.php/api/klass/addquestionreply';
+
   private baseHref = "";
 
   private myExtractor:MyExtractor;
@@ -57,6 +61,36 @@ export class KlassService {
     this.myArray = new HelperMyArray();
     this.myTime = new HelperMyTime();
   }
+
+  addKlassQuestion(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    question:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
+    if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
+    if(isDebug) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / addKlassQuestion / question : ",question);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassQuestionUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_question:question
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }   
 
   updateKlassTitle(    
     apiKey:string, 

@@ -311,7 +311,7 @@ var MyEventWatchTowerService = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("my-event-watchtower / getEventOnReady / 시작");
+            console.log("my-event-watchtower / getEventOnChange / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_READY, 
@@ -325,7 +325,7 @@ var MyEventWatchTowerService = (function () {
         myChecker);
         return myEventOnChange;
     };
-    MyEventWatchTowerService.prototype.getEventOnChangeMeta = function (eventKey, value, myChecker, meta) {
+    MyEventWatchTowerService.prototype.getEventWithMeta = function (eventName, eventKey, value, myChecker, meta) {
         if (null == this.myEventService) {
             return null;
         }
@@ -338,10 +338,10 @@ var MyEventWatchTowerService = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("my-event-watchtower / getEventOnReady / 시작");
-        var myEventOnChange = this.myEventService.getMyEvent(
+            console.log("my-event-watchtower / getEventWithMeta / 시작");
+        var myEvent = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_READY, 
+        eventName, 
         // public key:string
         eventKey, 
         // public value:string
@@ -350,7 +350,58 @@ var MyEventWatchTowerService = (function () {
         meta, 
         // public myChecker:MyChecker
         myChecker);
-        return myEventOnChange;
+        return myEvent;
+    };
+    MyEventWatchTowerService.prototype.getEventOnChangeMeta = function (eventKey, value, myChecker, meta) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_CHANGE, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        myChecker, 
+        // meta:any
+        meta);
+    };
+    MyEventWatchTowerService.prototype.getEventOnAddCommentMeta = function (eventKey, value, myChecker, meta) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_ADD_COMMENT, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        myChecker, 
+        // meta:any
+        meta);
+    };
+    MyEventWatchTowerService.prototype.getEventOnAddCommentReplyMeta = function (eventKey, value, myChecker, meta) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnAddCommentReplyMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_ADD_COMMENT_REPLY, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        myChecker, 
+        // meta:any
+        meta);
     };
     MyEventWatchTowerService.prototype.getEventOnLoginRequired = function (eventKey) {
         if (null == this.myEventService) {
@@ -362,7 +413,7 @@ var MyEventWatchTowerService = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("m-e-w / getEventOnReady / 시작");
+            console.log("m-e-w / getEventOnLoginRequired / 시작");
         var myEventOnReady = this.myEventService.getMyEvent(
         // public eventName:string
         this.myEventService.ON_LOGIN_REQUIRED, 
@@ -375,7 +426,7 @@ var MyEventWatchTowerService = (function () {
         // public myChecker:MyChecker
         this.myCheckerService.getFreePassChecker());
         if (isDebug)
-            console.log("m-e-w / getEventOnReady / myEventOnReady : ", myEventOnReady);
+            console.log("m-e-w / getEventOnLoginRequired / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
     };
     MyEventWatchTowerService = __decorate([

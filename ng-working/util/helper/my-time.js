@@ -20,6 +20,9 @@ var HelperMyTime = (function () {
         /* 2012년 12월 11일 01:02:03 */
         this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS = 7;
     }
+    HelperMyTime.prototype.getUniqueId = function () {
+        return Math.round(window.performance.now() * 100);
+    };
     HelperMyTime.prototype.getTimeFormatHHMM = function (target) {
         if (null == target) {
             return "";
@@ -188,28 +191,53 @@ var HelperMyTime = (function () {
             return null;
         }
         var now = new Date();
+        return this.getDateFommattedStr(now, input_date_format_type);
+    };
+    HelperMyTime.prototype.convert = function (date_str, input_date_format_type, output_date_format_type) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-time / convert / 시작");
+        var dateInput = null;
         if (this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
-            var year = now.getFullYear();
-            var month = this.getDoubleDigit(now.getMonth() + 1);
-            var days = this.getDoubleDigit(now.getDate());
-            var hours = this.getDoubleDigit(now.getHours());
-            var minutes = this.getDoubleDigit(now.getMinutes());
-            var seconds = this.getDoubleDigit(now.getSeconds());
+            dateInput = this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+        }
+        if (null == dateInput) {
+            return "";
+        }
+        if (this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
+            return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
+        }
+        return "";
+    };
+    HelperMyTime.prototype.getDateFommattedStr = function (date, input_date_format_type) {
+        if (this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+            var year = date.getFullYear();
+            var month = this.getDoubleDigit(date.getMonth() + 1);
+            var days = this.getDoubleDigit(date.getDate());
+            var hours = this.getDoubleDigit(date.getHours());
+            var minutes = this.getDoubleDigit(date.getMinutes());
+            var seconds = this.getDoubleDigit(date.getSeconds());
             // 2012-12-11 01:02:03
             return year + "-" + month + "-" + days + " " + hours + ":" + minutes + ":" + seconds;
         }
         else if (this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
-            var year = now.getFullYear();
-            var month = now.getMonth() + 1;
-            var days = now.getDate();
-            var hours = this.getDoubleDigit(now.getHours());
-            var minutes = this.getDoubleDigit(now.getMinutes());
-            var seconds = this.getDoubleDigit(now.getSeconds());
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var days = date.getDate();
+            var hours = this.getDoubleDigit(date.getHours());
+            var minutes = this.getDoubleDigit(date.getMinutes());
+            var seconds = this.getDoubleDigit(date.getSeconds());
             // 2012년 12월 11일 01:02:03
             return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C " + hours + ":" + minutes + ":" + seconds;
         } // end if
+        return "";
     };
     HelperMyTime.prototype.getDate = function (date_str, input_date_format_type) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("my-time / getDate / 시작");
         if (null == date_str || "" == date_str) {
             return null;
         }
@@ -234,6 +262,20 @@ var HelperMyTime = (function () {
             // ['2012','03','04'] --> 4
             var days = parseInt(date_arr[2]);
             return new Date(year, month, days, 0, 0, 0, 0);
+        }
+        else if (input_date_format_type == this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS) {
+            // EX ) "2012-11-22 11:22:33"
+            var res = date_str.match(/[0-9]{2,4}/g);
+            if (null == res || 6 != res.length) {
+                return null;
+            }
+            var year = parseInt(res[0]);
+            var month = parseInt(res[1]) - 1; // month starts with 0, january.d
+            var day = parseInt(res[2]);
+            var hour = parseInt(res[3]);
+            var minute = parseInt(res[4]);
+            var second = parseInt(res[5]);
+            return new Date(year, month, day, hour, minute, second);
         }
         else if (input_date_format_type == this.DATE_TYPE_YYYYMMDDHHMMSS) {
             if (date_str.length == 8) {

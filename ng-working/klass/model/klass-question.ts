@@ -22,7 +22,7 @@ export class KlassQuestion {
         private delimiter:string="|||";
         private myArray:HelperMyArray;
         private myIs:HelperMyIs;
-        private myTime:HelperMyTime;        
+        private myTime:HelperMyTime;
 
         constructor() {
                 this.myArray = new HelperMyArray();

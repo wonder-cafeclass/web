@@ -17,6 +17,7 @@ var my_event_watchtower_service_1 = require('../../util/service/my-event-watchto
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
 var my_array_1 = require('../../util/helper/my-array');
+var comment_1 = require('./model/comment');
 var comment_service_1 = require('./service/comment.service');
 /*
 *
@@ -109,6 +110,54 @@ var CommentListComponent = (function () {
         if (isDebug)
             console.log("k-d-n-l / emitEventOnReady / Done!");
     };
+    CommentListComponent.prototype.emitEventOnAddCommentMeta = function (comment) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnChangeMeta / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnAddComment = this.watchTower.getEventOnAddCommentMeta(
+        // eventKey:string, 
+        this.eventKey, 
+        // value:string, 
+        comment.comment, 
+        // myChecker:MyChecker, 
+        this.myEvent.myChecker, 
+        // meta:any
+        comment);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnAddCommentMeta / myEventOnAddComment : ", myEventOnAddComment);
+        this.emitter.emit(myEventOnAddComment);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnAddCommentMeta / Done!");
+    };
+    CommentListComponent.prototype.emitEventOnAddCommentReplyMeta = function (comment) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnAddCommentReply = this.watchTower.getEventOnAddCommentReplyMeta(
+        // eventKey:string, 
+        this.eventKey, 
+        // value:string, 
+        comment.comment, 
+        // myChecker:MyChecker, 
+        this.myEvent.myChecker, 
+        // meta:any
+        comment);
+        if (isDebug)
+            console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / myEventOnAddCommentReply : ", myEventOnAddCommentReply);
+        this.emitter.emit(myEventOnAddCommentReply);
+    };
     CommentListComponent.prototype.emitEventOnLoginRequired = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -188,21 +237,17 @@ var CommentListComponent = (function () {
         if (null == this.loginUser) {
             return null;
         }
-        var dateUpdated = this.myTime.getNow_YYYY_MM_DD_HH_MM_SS();
-        var dateUpdatedHumanReadable = this.myTime.getNow_H_YYYY_MM_DD_HH_MM_SS();
-        var newComment = this.commentService.getNewComment(
-        // public comment:string
+        var newComment = new comment_1.Comment().setNew(
+        // id:number, 
+        -1, 
+        // comment:string, 
         text, 
-        // public writer:string
+        // writerId:number
+        this.loginUser.id, 
+        // writer:string, 
         this.loginUser.nickname, 
-        // public thumbnail_url:string
-        this.loginUser.thumbnail, 
-        // public dateUpdated:string
-        dateUpdated, 
-        // public dateUpdatedHumanReadable:string
-        dateUpdatedHumanReadable, 
-        // public metaObj:any
-        metaObj);
+        // thumbnail:string
+        this.loginUser.thumbnail);
         return newComment;
     };
     CommentListComponent.prototype.onClickPostNewComment = function (event, textarea) {
@@ -238,18 +283,14 @@ var CommentListComponent = (function () {
         // 뷰의 화면에 새로운 댓글을 추가합니다.
         // 로그인한 유저의 섬네일, 이름을 표시합니다.
         var newComment = this.getNewComment(text, null);
+        if (isDebug)
+            console.log("k-d-n-l / onClickPostNewComment / newComment : ", newComment);
         if (null == this.commentList) {
             this.commentList = [];
         }
         this.commentList.push(newComment);
-        // 부모에게 새로운 댓글이 추가된 것을 전달합니다. commentList
-        var newMyEvent = this.myEvent.copy();
-        newMyEvent.eventName = this.myEventService.ON_ADD_COMMENT;
-        newMyEvent.value = text;
-        newMyEvent.metaObj = this.myEvent.metaObj;
-        this.emitter.emit(newMyEvent);
-        if (isDebug)
-            console.log("k-d-n-l / onClickPostNewComment / emit");
+        // 부모에게 새로운 댓글이 추가된 것을 전달합니다.
+        this.emitEventOnAddCommentMeta(newComment);
         // 답글쓰기 창의 내용을 초기화합니다.
         textarea.value = this.placeholderReply;
     };
@@ -314,11 +355,7 @@ var CommentListComponent = (function () {
         }
         parentComment.childCommentList.push(newComment);
         // 부모에게 새로운 댓글이 추가된 것을 전달합니다. commentList
-        var newMyEvent = this.myEvent.copy();
-        newMyEvent.eventName = this.myEventService.ON_ADD_COMMENT_REPLY;
-        newMyEvent.value = text;
-        newMyEvent.metaObj = newComment;
-        this.emitter.emit(newMyEvent);
+        this.emitEventOnAddCommentReplyMeta(newComment);
         // 답글쓰기 창의 내용을 초기화합니다.
         textarea.value = this.placeholderReply;
         // 답글쓰기 창을 닫습니다.
