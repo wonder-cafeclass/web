@@ -93,7 +93,42 @@ export class KlassService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
-  }  
+  } 
+
+  // addKlassReviewReply 
+
+  addKlassReviewReply(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    parentId:number,
+    reply:string
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / addKlassReviewReply / 시작");
+    if(isDebug) console.log("klass.service / addKlassReviewReply / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / addKlassReviewReply / userId : ",userId);
+    if(isDebug) console.log("klass.service / addKlassReviewReply / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / addKlassReviewReply / parentId : ",parentId);
+    if(isDebug) console.log("klass.service / addKlassReviewReply / reply : ",reply);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassReviewReplyUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_review_parent_id:parentId,
+      klass_review:reply
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }   
 
   addKlassQuestion(    
     apiKey:string, 
@@ -520,163 +555,5 @@ export class KlassService {
 
     return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi,"").replace(/[\/]+/gi,"");
   }
-  
-  // REMOVE ME
-  /*
-  getKlassFromJSON(klassJSON): Klass {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlassFromJSON / 시작");
-
-    let klass:Klass = new Klass();
-
-    if(isDebug) console.log("klass.service / getKlassFromJSON / klassJSON : ",klassJSON);
-
-    // id,
-    klass.id = -1;
-    if(null != klassJSON.id) {
-      klass.id = +klassJSON.id;
-    }
-    // teacher_id,
-    klass.teacher_id = -1;
-    if(null != klassJSON.teacher_id) {
-      klass.teacher_id = +klassJSON.teacher_id;
-    }
-    // teacher_resume,
-    klass.teacher_resume = klassJSON.teacher_resume;
-    // teacher_greeting,
-    klass.teacher_greeting = klassJSON.teacher_greeting;
-    // title,
-    klass.title = klassJSON.title;
-    // desc,
-    klass.desc = klassJSON.desc;
-    // feature,
-    klass.feature = klassJSON.feature;
-    // target,
-    klass.target = klassJSON.target;
-    // schedule,
-    klass.schedule = klassJSON.schedule;
-    // date_begin,
-    klass.date_begin = klassJSON.date_begin;
-    // time_begin,
-    klass.time_begin = klassJSON.time_begin;
-    // time_duration_minutes,
-    klass.time_duration_minutes = parseInt(klassJSON.time_duration_minutes);
-    // time_end,
-    klass.time_end = klassJSON.time_end;
-    if( null == klass.time_end || 
-        "" === klass.time_end) {
-      if( null != klass.time_begin && 
-          "" != klass.time_begin && 
-          !isNaN(klass.time_duration_minutes) ) {
-
-        // 끝나는 시간이 없고, 시작 시간과 진행 시간 정보가 있다면 계산해서 넣어준다.
-        klass.time_end = this.myTime.addMinutesHHMM(klass.time_begin, klass.time_duration_minutes);
-
-      } // end if
-    } // end if
-
-    // level,
-    klass.level = klassJSON.level;
-    // week_min,
-    klass.week_min = klassJSON.week_min;
-    // week_max,
-    klass.week_max = klassJSON.week_max;
-    // days,
-    klass.days = klassJSON.days;
-    if( null != klass.days && "" != klass.days ) {
-      klass.days_list = klass.days.split("|||");
-    }
-    // class_per_week, / Warning! 이름다름
-    klass.class_day_per_week = klassJSON.class_per_week;
-
-    // venue,
-    klass.venue = klassJSON.venue;
-    // venue_cafe,
-    klass.venue_cafe = klassJSON.venue_cafe;
-    // venue_map_link,
-    klass.venue_map_link = klassJSON.venue_map_link;
-    // venue_title,
-    klass.venue_title = klassJSON.venue_title;
-    // venue_telephone,
-    klass.venue_telephone = klassJSON.venue_telephone;
-    // venue_address,
-    klass.venue_address = klassJSON.venue_address;
-    // venue_road_address,
-    klass.venue_road_address = klassJSON.venue_road_address;
-    // venue_latitude,
-    klass.venue_latitude = klassJSON.venue_latitude;
-    // venue_longitude,
-    klass.venue_longitude = klassJSON.venue_longitude;
-
-
-    // @ Deprecated
-    // venue_subway_station,
-    klass.venue_subway_station = klassJSON.venue_subway_station;
-    // venue_subway_station_img_url,
-    klass.venue_subway_station_img_url = klassJSON.venue_subway_station_img_url;
-
-    // @ Recommended
-    if(null != klassJSON.subway_line) {
-      klass.subway_line = klassJSON.subway_line;
-    }
-    if(null != klassJSON.subway_station) {
-      klass.subway_station = klassJSON.subway_station;
-    }
-    if(null != klassJSON.subway_station_img) {
-      klass.subway_station_img = klassJSON.subway_station_img;
-    }
-
-    // staturlService,
-    klass.class_status = klassJSON.status;
-    // enrollment_interval_week,
-    klass.enrollment_interval_week = klassJSON.enrollment_interval_week;
-    // tags,
-    klass.search_tag = klassJSON.tags;
-    // price,
-    klass.price = klassJSON.price;
-    // discount,
-    klass.discount = klassJSON.discount;
-    // class_poster_url,
-    klass.class_poster_url = klassJSON.class_poster_url;
-    // class_poster_url_loadable,
-    klass.class_poster_url_loadable = klassJSON.class_poster_url_loadable;
-    // class_banner_url,
-    klass.class_banner_url = klassJSON.class_banner_url;
-    // class_banner_url_arr,
-    if(null != klassJSON.class_banner_url && "" != klassJSON.class_banner_url) {
-      klass.class_banner_url_arr = klassJSON.class_banner_url.split("|||");
-    } else {
-      klass.class_banner_url_arr = [];
-    }
-    // level_img_url,
-    klass.level_img_url = klassJSON.level_img_url;
-    // days_img_url,
-    klass.days_img_url = klassJSON.days_img_url;
-    // days_img_url_list
-    if(null != klassJSON.days_img_url && "" != klassJSON.days_img_url) {
-      klass.days_img_url_list = klassJSON.days_img_url.split("|||");
-    } else {
-      klass.days_img_url_list = [];
-    }
-    // time_begin_img_url,
-    klass.time_begin_img_url = klassJSON.time_begin_img_url;
-
-    // calendar_table_linear // @ Deprecated
-    // klass.calendar_table_linear = klassJSON.calendar_table_linear;
-    // calendar_table_monthly
-    klass.calendar_table_monthly = klassJSON.calendar_table_monthly;
-    klass.setKlassCalendarList(klassJSON.calendar_table_monthly);
-
-    // date_created,
-    klass.date_created = klassJSON.date_created;
-    // date_updated
-    klass.date_updated = klassJSON.date_updated;
-
-    return klass;
-
-  } // end method
-  */
 
 } // end class

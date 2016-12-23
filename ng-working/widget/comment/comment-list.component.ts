@@ -92,7 +92,24 @@ export class CommentListComponent implements OnInit {
 
     this.loginUser = loginUser;
 
+    this.checkMine(+this.loginUser.id);
+
   } // end method
+
+  // @ Desc : 작성한 글이 자신의 것인지 확인한다.
+  checkMine(writerId:number):void {
+
+    if(!(0 < writerId)) {
+      return;
+    }
+
+    let commentMap = this.getCommentMap();
+    for(var key in commentMap) {
+      let comment:Comment = commentMap[key];
+      comment.checkMine(writerId);
+    }
+
+  }
 
   private subscribeEventPack() :void {
 
@@ -131,10 +148,10 @@ export class CommentListComponent implements OnInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / emitEventOnReady / init");
+    if(isDebug) console.log("comment-list / emitEventOnReady / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-d-n-l / emitEventOnReady / 중단 / EventPack is not valid!");    
+      if(isDebug) console.log("comment-list / emitEventOnReady / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -146,22 +163,51 @@ export class CommentListComponent implements OnInit {
       this
     );
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnReady / myEventOnReady : ",myEventOnReady);
+    if(isDebug) console.log("comment-list / emitEventOnReady / myEventOnReady : ",myEventOnReady);
 
     this.emitter.emit(myEventOnReady);
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnReady / Done!");
+    if(isDebug) console.log("comment-list / emitEventOnReady / Done!");
 
   } 
+
+  private emitEventOnRemove(commentId:number) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / emitEventOnRemove / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("comment-list / emitEventOnRemove / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    let myEvent:MyEvent = 
+    this.watchTower.getEventOnRemove(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      "" + commentId,
+      // myChecker:MyChecker, 
+      this.myEvent.myChecker
+    );
+
+    if(isDebug) console.log("comment-list / emitEventOnRemove / myEvent : ",myEvent);
+
+    this.emitter.emit(myEvent);
+
+    if(isDebug) console.log("comment-list / emitEventOnRemove / Done!");    
+
+  } // end method
 
   private emitEventOnAddCommentMeta(comment:Comment) :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / emitEventOnChangeMeta / init");
+    if(isDebug) console.log("comment-list / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-d-n-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");    
+      if(isDebug) console.log("comment-list / emitEventOnChangeMeta / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -177,11 +223,11 @@ export class CommentListComponent implements OnInit {
       comment
     );
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentMeta / myEventOnAddComment : ",myEventOnAddComment);
+    if(isDebug) console.log("comment-list / emitEventOnAddCommentMeta / myEventOnAddComment : ",myEventOnAddComment);
 
     this.emitter.emit(myEventOnAddComment);
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentMeta / Done!");
+    if(isDebug) console.log("comment-list / emitEventOnAddCommentMeta / Done!");
 
   } 
 
@@ -189,10 +235,10 @@ export class CommentListComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / init");
+    if(isDebug) console.log("comment-list / emitEventOnAddCommentReplyMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / 중단 / EventPack is not valid!");    
+      if(isDebug) console.log("comment-list / emitEventOnAddCommentReplyMeta / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -208,20 +254,27 @@ export class CommentListComponent implements OnInit {
       comment
     );
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnAddCommentReplyMeta / myEventOnAddCommentReply : ",myEventOnAddCommentReply);
+    if(isDebug) console.log("comment-list / emitEventOnAddCommentReplyMeta / myEventOnAddCommentReply : ",myEventOnAddCommentReply);
 
     this.emitter.emit(myEventOnAddCommentReply);
 
   }     
 
+  private isLogin():boolean {
+    if(null != this.loginUser) {
+      return true;
+    }
+    this.emitEventOnLoginRequired();
+    return false;
+  }
   private emitEventOnLoginRequired() :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / init");
+    if(isDebug) console.log("comment-list / emitEventOnLoginRequired / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / 중단 / EventPack is not valid!");    
+      if(isDebug) console.log("comment-list / emitEventOnLoginRequired / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -231,17 +284,26 @@ export class CommentListComponent implements OnInit {
       this.eventKey
     );
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / myEventOnReady : ",myEventOnReady);
+    if(isDebug) console.log("comment-list / emitEventOnLoginRequired / myEventOnReady : ",myEventOnReady);
 
     this.emitter.emit(myEventOnReady);
 
-    if(isDebug) console.log("k-d-n-l / emitEventOnLoginRequired / Done!");
+    if(isDebug) console.log("comment-list / emitEventOnLoginRequired / Done!");
 
   }     
 
   onClickAddComment(event, replyContainer, replyBtn) :void {
+
     event.stopPropagation();
     event.preventDefault();
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onClickAddComment / init");
+
+    if(!this.isLogin()) {
+      return;
+    }
 
     // Toggle input
     if("none" === replyContainer.style.display) {
@@ -269,14 +331,9 @@ export class CommentListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onFocusTextarea / init");
 
-    if(null == this.loginUser) {
-      if(isDebug) console.log("comment-list / onFocusTextarea / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
-
-      // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
-      this.emitEventOnLoginRequired();
-
+    if(!this.isLogin()) {
       return;
-    } // end if
+    }
 
   }
 
@@ -340,7 +397,11 @@ export class CommentListComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / init");
+    if(isDebug) console.log("comment-list / onClickPostNewComment / init");
+
+    if(!this.isLogin()) {
+      return;
+    }
 
     // 새로운 댓글 쓰기가 완료되었을 때, 호출됩니다.
 
@@ -373,14 +434,14 @@ export class CommentListComponent implements OnInit {
       return;
     }    
 
-    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / text : ",text);
+    if(isDebug) console.log("comment-list / onClickPostNewComment / text : ",text);
 
     // 뷰의 화면에 새로운 댓글을 추가합니다.
     // 로그인한 유저의 섬네일, 이름을 표시합니다.
 
     let newComment:Comment = this.getNewComment(-1, text, this.starScore, null);
 
-    if(isDebug) console.log("k-d-n-l / onClickPostNewComment / newComment : ",newComment);
+    if(isDebug) console.log("comment-list / onClickPostNewComment / newComment : ",newComment);
 
     if(null == this.commentList) {
       this.commentList = [];
@@ -394,6 +455,9 @@ export class CommentListComponent implements OnInit {
     textarea.value = this.placeholderReply;
     this.starScore = 0;
 
+    // 별점 초기화
+    this.offStars();
+
   } 
 
   onClickPostReply(event, textarea, replyContainer, replyBtn, parentComment:Comment) :void {
@@ -402,29 +466,33 @@ export class CommentListComponent implements OnInit {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / onClickPostReply / init");
+    if(isDebug) console.log("comment-list / onClickPostReply / init");
 
     event.stopPropagation();
     event.preventDefault();
 
+    if(!this.isLogin()) {
+      return;
+    }
+
     if(null == textarea) {
-      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / textarea is not valid!");
+      if(isDebug) console.log("comment-list / onClickPostReply / 중단 / textarea is not valid!");
       return;
     }
     if(null == replyContainer) {
-      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / replyContainer is not valid!");
+      if(isDebug) console.log("comment-list / onClickPostReply / 중단 / replyContainer is not valid!");
       return;
     }
     if(null == replyBtn) {
-      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / replyBtn is not valid!");
+      if(isDebug) console.log("comment-list / onClickPostReply / 중단 / replyBtn is not valid!");
       return;
     }
     if(null == parentComment) {
-      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / parentComment is not valid!");
+      if(isDebug) console.log("comment-list / onClickPostReply / 중단 / parentComment is not valid!");
       return;
     }
     if(null == this.myEvent || null == this.myEvent.myChecker) {
-      if(isDebug) console.log("k-d-n-l / onClickPostReply / 중단 / this.myEvent is not valid!");
+      if(isDebug) console.log("comment-list / onClickPostReply / 중단 / this.myEvent is not valid!");
       return;
     }
 
@@ -456,7 +524,7 @@ export class CommentListComponent implements OnInit {
 
     let newComment:Comment = this.getNewComment(parentComment.id, text, this.starScore, parentComment);
 
-    if(isDebug) console.log("k-d-n-l / onClickPostReply / newComment : ",newComment);
+    if(isDebug) console.log("comment-list / onClickPostReply / newComment : ",newComment);
 
     if(null == parentComment.childCommentList) {
       parentComment.childCommentList = [];
@@ -487,15 +555,9 @@ export class CommentListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onFocusReply / init");
 
-    if(null == this.loginUser) {
-      if(isDebug) console.log("comment-list / onFocusReply / 로그인을 하지 않은 경우라면, 로그인 창으로 보냅니다.");
-
-      // 로그인 유저 정보가 없습니다. 로그인 필요 이벤트 발송!
-      this.emitEventOnLoginRequired();
-
+    if(!this.isLogin()) {
       return;
-    } // end if
-
+    }
   }
 
   onClickReply(event, taNewReply, replyContainer) :void {
@@ -503,13 +565,20 @@ export class CommentListComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onClickReply / init");
+
+    if(!this.isLogin()) {
+      return;
+    }
+
     let text = taNewReply.value;
 
     if(null != text && this.placeholderReply === text) {
       taNewReply.value = "";
     }
 
-    console.log("comment.component / onClickReply / text : ",text);
   }
 
   onBlurReply(event, taNewReply, replyContainer) :void {
@@ -527,7 +596,9 @@ export class CommentListComponent implements OnInit {
   } 
 
   private starScore:number=0;
+  private starList:any[];
   private evaluationList:string[] = ["별로에요","나쁘지않아요","들을만해요","괜찮아요","최고에요!"];
+  private evaluationDefault:string="별점을 매겨주세요";
   evaluation:string="별점을 매겨주세요";
   onOverStar(event, star1, star2, star3, star4, star5, score:number) :void {
 
@@ -538,13 +609,14 @@ export class CommentListComponent implements OnInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onOverStar / init");
 
-    let starList = [star1, star2, star3, star4, star5];
-    let evaluationList = [star1, star2, star3, star4, star5];
-    for (var i = 0; i < starList.length; ++i) {
+    if(null == this.starList) {
+      this.starList = [star1, star2, star3, star4, star5];
+    }
+    for (var i = 0; i < this.starList.length; ++i) {
       if(i< score) {
-        starList[i].className="glyphicon glyphicon-star";
+        this.starList[i].className="glyphicon glyphicon-star";
       } else {
-        starList[i].className="glyphicon glyphicon-star-empty";
+        this.starList[i].className="glyphicon glyphicon-star-empty";
       } // end if
 
     } // end for
@@ -554,6 +626,22 @@ export class CommentListComponent implements OnInit {
     this.evaluation=this.evaluationList[(score - 1)];
   }
 
+  // @ Desc : 모든 별점을 끕니다.
+  offStars():void {
+
+    if(null == this.starList || 0 === this.starList.length) {
+      return;
+    } // end if
+
+    for (var i = 0; i < this.starList.length; ++i) {
+      this.starList[i].className="glyphicon glyphicon-star-empty";
+    } // end for
+
+    // 별점 메시지 초기화
+    this.evaluation = this.evaluationDefault;
+
+  }
+  
   onOutStar(event, star1, star2, star3, star4, star5) :void {
 
     event.stopPropagation();
@@ -563,9 +651,11 @@ export class CommentListComponent implements OnInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onOutStar / init");
 
-    let starList = [star1, star2, star3, star4, star5];
-    for (var i = 0; i < starList.length; ++i) {
-      starList[i].className="glyphicon glyphicon-star-empty";
+    if(null == this.starList) {
+      this.starList = [star1, star2, star3, star4, star5];
+    }
+    for (var i = 0; i < this.starList.length; ++i) {
+      this.starList[i].className="glyphicon glyphicon-star-empty";
     } // end for
 
     // 별점 등록!
@@ -574,16 +664,120 @@ export class CommentListComponent implements OnInit {
 
   } // end method
 
+  // @ Desc : uniqueId를 키로 하는 comment 맵을 만듭니다.
+  getCommentMap() :any {
+
+    let map:any = {};
+
+    if(null == this.commentList || 0 ===  this.commentList.length) {
+      return map;
+    }
+
+    for (var i = 0; i < this.commentList.length; ++i) {
+      let comment:Comment = this.commentList[i];
+      map[comment.uniqueId] = comment;
+
+      let childCommentList = comment.childCommentList;
+      if(null != childCommentList && 0 < childCommentList.length) {
+
+        for (var j = 0; j < childCommentList.length; ++j) {
+          let childComment:Comment = childCommentList[j];
+          map[childComment.uniqueId] = childComment;          
+        } // end for
+
+      } // end if
+
+    } // end for
+
+    return map;
+
+  }
+
   // @ Desc : DB 업데이트 완료! 해당 comment를 업데이트해줍니다.
   updateComment(comment:Comment) :void {
 
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / updateComment / init");
-    if(isDebug) console.log("k-d-n-l / updateComment / comment : ",comment);
+    if(isDebug) console.log("comment-list / updateComment / init");
+    if(isDebug) console.log("comment-list / updateComment / comment : ",comment);
 
-    
+    // 1. 받은 comment를 리스트에서 검색합니다.
+    let commentMap:any = this.getCommentMap();
+    let commentFromMap:Comment = commentMap[comment.uniqueId];
 
+    if(isDebug) console.log("comment-list / updateComment / commentMap : ",commentMap);
+    if(isDebug) console.log("comment-list / updateComment / commentFromMap : ",commentFromMap);
+
+    if(null != commentFromMap) {
+      commentFromMap.id = comment.id;
+    } // end if
+
+  }
+
+  private removeCommentFromCommentList(uniqueId:number):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / removeCommentFromCommentList / init");
+    if(isDebug) console.log("comment-list / removeCommentFromCommentList / uniqueId : ",uniqueId);
+
+
+    if(null == this.commentList || 0 === this.commentList.length) {
+      return;
+    }
+    if(null == uniqueId || !(0 < uniqueId)) {
+      return;
+    }
+
+    let commentListNext:Comment[] = [];
+    for (var i = 0; i < this.commentList.length; ++i) {
+      let comment:Comment = this.commentList[i];
+      comment.childCommentList;
+
+      if(+comment.uniqueId === uniqueId){
+        // 삭제함
+        continue;
+      } // end if
+
+      let childCommentListNext:Comment[] = [];
+      if( null != comment.childCommentList && 
+          0 < comment.childCommentList.length) {
+
+        for (var j = 0; j < comment.childCommentList.length; ++j) {
+          let childComment:Comment = comment.childCommentList[j];
+
+          if(+childComment.uniqueId === uniqueId){
+            // 삭제함
+            continue;
+          } // end if
+
+          childCommentListNext.push(childComment);
+
+        } // end for
+
+      } // end if
+
+      comment.childCommentList = childCommentListNext;
+      commentListNext.push(comment);
+
+    } // end for
+
+    if(isDebug) console.log("comment-list / removeCommentFromCommentList / commentListNext : ",commentListNext);
+
+    this.commentList = commentListNext;
+
+  } // end method
+
+  onClickRemoveComment(event, commentToRemove:Comment):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("comment-list / onClickRemoveComment / init");
+    if(isDebug) console.log("comment-list / onClickRemoveComment / commentToRemove : ",commentToRemove);
+
+    // 1. 화면에 표시된 리스트에서 삭제 대상 comment를 제외한 배열을 만듭니다.
+    this.removeCommentFromCommentList(commentToRemove.uniqueId);
+    this.emitEventOnRemove(commentToRemove.id);
 
   }
 

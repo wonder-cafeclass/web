@@ -30,6 +30,8 @@ import { CommentListComponent }       from '../widget/comment/comment-list.compo
 
 import { Klass }                      from './model/klass';
 import { KlassTeacher }               from './model/klass-teacher';
+import { KlassQuestion }              from './model/klass-question';
+import { KlassReview }                from './model/klass-review';
 
 import { KlassColorService }          from './service/klass-color.service';
 import { KlassCommentService }        from './service/klass-comment.service';
@@ -200,6 +202,10 @@ export class KlassDetailNavListComponent implements OnInit {
 
     if(null != this.questionListComponent) {
       this.questionListComponent.setLoginUser(this.loginUser);
+    }
+
+    if(null != this.reviewListComponent) {
+      this.reviewListComponent.setLoginUser(this.loginUser);
     }
 
   }
@@ -436,12 +442,19 @@ export class KlassDetailNavListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setReview / init");
 
-    if(null != this.klass.review_list) {
-      this.reviewCommentList = 
-      this.klassCommentService.getReviewCommentList(
-        this.klass.review_list
-      );
-    } // end if
+    let loginUserId:number = -1;
+    if(null != this.loginUser) {
+      loginUserId = +this.loginUser.id;
+    }
+    if(null == this.klass.review_list) {
+      return;
+    }
+
+    this.reviewCommentList = 
+    this.klassCommentService.getReviewCommentList(
+      this.klass.review_list,
+      loginUserId
+    );
 
     // MyEvent for Review
     this.myEventForReview = 
@@ -466,14 +479,19 @@ export class KlassDetailNavListComponent implements OnInit {
     // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setQuestion / init");
 
-    if(null != this.klass.question_list) {
-      this.questionCommentList = 
-      this.klassCommentService.getQuestionCommentList(
-        this.klass.question_list
-      );
+    let loginUserId:number = -1;
+    if(null != this.loginUser) {
+      loginUserId = +this.loginUser.id;
+    }
+    if(null == this.klass.question_list) {
+      return;
+    }
 
-      if(isDebug) console.log("k-d-n-l / setQuestion / this.questionCommentList : ",this.questionCommentList);
-    } // end if
+    this.questionCommentList = 
+    this.klassCommentService.getQuestionCommentList(
+      this.klass.question_list,
+      loginUserId
+    );
 
     // MyEvent for Question
     this.myEventForQuestion = 
@@ -628,6 +646,66 @@ export class KlassDetailNavListComponent implements OnInit {
     window.location.href = req_url;
   }
 
+  private removeReview(reviewId:number) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / removeReview / init");
+
+    if(isDebug) console.log("k-d-n-l / removeReview / reviewId : ",reviewId);
+
+/*
+    // DB UPDATE!
+    this.klassService.addKlassReview(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // review:string,
+      newComment.comment,
+      // star:number
+      newComment.star
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addReview / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
+
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        let klassReviewJSON:any = myResponse.getDataProp("klass_review");
+        let klassReview:KlassReview = null;
+        if(null != klassReviewJSON) {
+          klassReview = new KlassReview().setJSON(klassReviewJSON);
+        }
+        if(null != klassReview) {
+          newComment.id = klassReview.id;
+        }
+        this.reviewListComponent.updateComment(newComment);
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addReview / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service     
+*/
+  }  
+
   private addReview(newComment:Comment) :void {
 
     let isDebug:boolean = true;
@@ -652,17 +730,19 @@ export class KlassDetailNavListComponent implements OnInit {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(isDebug) console.log("klass-detail / addReview / myResponse : ",myResponse);
-      if(myResponse.isSuccess() && myResponse.hasDataProp("review_list")) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
 
-        // wonder.jung
         // 리뷰가 등록되었습니다.  
         // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
-
-        /*
-        if(null != this.reviewListComponent) {
-          this.reviewListComponent.updateComment(newComment);
+        let klassReviewJSON:any = myResponse.getDataProp("klass_review");
+        let klassReview:KlassReview = null;
+        if(null != klassReviewJSON) {
+          klassReview = new KlassReview().setJSON(klassReviewJSON);
         }
-        */
+        if(null != klassReview) {
+          newComment.id = klassReview.id;
+        }
+        this.reviewListComponent.updateComment(newComment);
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -690,12 +770,10 @@ export class KlassDetailNavListComponent implements OnInit {
     let isDebug:boolean = true;
     // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addReviewReply / init");
-
     if(isDebug) console.log("k-d-n-l / addReviewReply / newComment : ",newComment);
 
-    /*
     // DB UPDATE!
-    this.klassService.addKlassQuestionReply(
+    this.klassService.addKlassReviewReply(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number,
@@ -710,9 +788,19 @@ export class KlassDetailNavListComponent implements OnInit {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(isDebug) console.log("k-d-n-l / addReviewReply / myResponse : ",myResponse);
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
 
-        // Do something..
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        let klassReviewJSON:any = myResponse.getDataProp("klass_review");
+        let klassReview:KlassReview = null;
+        if(null != klassReviewJSON) {
+          klassReview = new KlassReview().setJSON(klassReviewJSON);
+        }
+        if(null != klassReview) {
+          newComment.id = klassReview.id;
+        }
+        this.reviewListComponent.updateComment(newComment);
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -731,11 +819,68 @@ export class KlassDetailNavListComponent implements OnInit {
 
       } // end if
 
-    }) // end service  
-    */   
-
+    }) // end service
     
   }  
+
+  private removeQuestion(questionId:number) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / removeQuestion / init");
+
+    if(isDebug) console.log("k-d-n-l / removeQuestion / questionId : ",questionId);
+
+    /*
+    // DB UPDATE!
+    this.klassService.addKlassQuestion(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // klassId:number,
+      +this.klass.id,
+      // question:string
+      newComment.comment
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(isDebug) console.log("klass-detail / addQuestion / myResponse : ",myResponse);
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
+
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        let klassQuestionJSON:any = myResponse.getDataProp("klass_question");
+        let klassQuestion:KlassQuestion = null;
+        if(null != klassQuestionJSON) {
+          klassQuestion = new KlassQuestion().setJSON(klassQuestionJSON);
+        }
+        if(null != klassQuestion) {
+          newComment.id = klassQuestion.id;
+        }
+        this.questionListComponent.updateComment(newComment);
+
+      } else if(myResponse.isFailed() && null != myResponse.error) {  
+
+        this.watchTower.announceErrorMsgArr([myResponse.error]);
+
+      } else {
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `klass-detail-nav-list / addQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service     
+    */
+
+  }
 
   private addQuestion(newComment:Comment) :void {
 
@@ -759,9 +904,19 @@ export class KlassDetailNavListComponent implements OnInit {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(isDebug) console.log("klass-detail / addQuestion / myResponse : ",myResponse);
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
 
-        // Do something..
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        let klassQuestionJSON:any = myResponse.getDataProp("klass_question");
+        let klassQuestion:KlassQuestion = null;
+        if(null != klassQuestionJSON) {
+          klassQuestion = new KlassQuestion().setJSON(klassQuestionJSON);
+        }
+        if(null != klassQuestion) {
+          newComment.id = klassQuestion.id;
+        }
+        this.questionListComponent.updateComment(newComment);
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -809,9 +964,19 @@ export class KlassDetailNavListComponent implements OnInit {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(isDebug) console.log("k-d-n-l / addQuestionReply / myResponse : ",myResponse);
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
 
-        // Do something..
+        // 리뷰가 등록되었습니다.  
+        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        let klassQuestionJSON:any = myResponse.getDataProp("klass_question");
+        let klassQuestion:KlassQuestion = null;
+        if(null != klassQuestionJSON) {
+          klassQuestion = new KlassQuestion().setJSON(klassQuestionJSON);
+        }
+        if(null != klassQuestion) {
+          newComment.id = klassQuestion.id;
+        }
+        this.questionListComponent.updateComment(newComment);
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -956,17 +1121,27 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
       // 열을 지웁니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+      if(myEvent.hasKey(this.myEventService.KLASS_FEATURE)) {
+
         this.klassFeature = this.klass.feature = myEvent.value;
 
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassFeature);
         this.myEventListForKlassFeature = nextEventList;
 
-      } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KLASS_TARGET)) {
+
         this.klassTarget = this.klass.target = myEvent.value;
 
         let nextEventList:MyEvent[] = this.removeMyEventFromList(myEvent, this.myEventListForKlassTarget);
         this.myEventListForKlassTarget = nextEventList;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+
+        this.removeQuestion(parseInt(myEvent.value));
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
+
+        this.removeReview(parseInt(myEvent.value));
 
       } // end if
 

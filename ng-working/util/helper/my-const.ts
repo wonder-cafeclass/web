@@ -50,8 +50,8 @@ export class HelperMyConst {
 
     getValue(srcKey:string, srcValue:string, targetKey:string) {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("my-const / getValue / 시작");
 
     	let srcList:string[] = this.getList(srcKey);

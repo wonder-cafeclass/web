@@ -298,6 +298,33 @@ var MyEventWatchTowerService = (function () {
             console.log("m-e-w / getEventOnReady / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
     };
+    MyEventWatchTowerService.prototype.getEventOnRemove = function (eventKey, value, myChecker) {
+        if (null == this.myEventService) {
+            return null;
+        }
+        if (null == this.myCheckerService) {
+            return null;
+        }
+        if (null == myChecker) {
+            return null;
+        }
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("my-event-watchtower / getEventOnChange / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_REMOVE_ROW, 
+        // public key:string
+        eventKey, 
+        // public value:string
+        value, 
+        // public metaObj:any
+        null, 
+        // public myChecker:MyChecker
+        myChecker);
+        return myEventOnChange;
+    };
     MyEventWatchTowerService.prototype.getEventOnChange = function (eventKey, value, myChecker) {
         if (null == this.myEventService) {
             return null;

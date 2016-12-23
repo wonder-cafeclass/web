@@ -63,8 +63,8 @@ export class KlassTeacherComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-teacher / ngOnInit / init");
 
     if(0 < this.cageWidth) {
@@ -87,8 +87,8 @@ export class KlassTeacherComponent implements OnInit {
 
   private subscribeEventPack() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-teacher / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
@@ -120,8 +120,8 @@ export class KlassTeacherComponent implements OnInit {
   
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-teacher / emitEventOnReady / 시작");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -147,8 +147,8 @@ export class KlassTeacherComponent implements OnInit {
 
   init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-teacher / init / 시작");
     if(isDebug) console.log("klass-teacher / init / this.klassTeacher : ",this.klassTeacher);
 

@@ -344,6 +344,38 @@ export class MyEventWatchTowerService {
 
 		return myEventOnReady;
 	}
+	getEventOnRemove(eventKey:string, value:string, myChecker:MyChecker) :MyEvent {
+
+		if(null == this.myEventService) {
+			return null;
+		}
+		if(null == this.myCheckerService) {
+			return null;
+		}
+		if(null == myChecker) {
+			return null;
+		}
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log("my-event-watchtower / getEventOnChange / 시작");
+
+	    let myEventOnChange:MyEvent =
+	    this.myEventService.getMyEvent(
+	      // public eventName:string
+	      this.myEventService.ON_REMOVE_ROW,
+	      // public key:string
+	      eventKey,
+	      // public value:string
+	      value,
+	      // public metaObj:any
+	      null,
+	      // public myChecker:MyChecker
+	      myChecker
+	    );
+
+		return myEventOnChange;
+	}	
 	getEventOnChange(eventKey:string, value:string, myChecker:MyChecker) :MyEvent {
 
 		if(null == this.myEventService) {

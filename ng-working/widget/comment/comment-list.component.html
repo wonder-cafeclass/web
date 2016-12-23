@@ -42,11 +42,18 @@
             	</span><br/>
             	<span>{{comment.comment}}</span>
 
-            	<button 	type="button" 
-            				#replyBtn
-            				class="btn btn-default btn-xs pull-right" 
-            				(click)="onClickAddComment($event, replyContainer, replyBtn)"
-            				style="margin-top:5px;width:80px;">답글달기</button>
+            	<button 	
+            	type="button" 
+				#replyBtn
+				class="btn btn-default btn-xs pull-right right" 
+				(click)="onClickAddComment($event, replyContainer, replyBtn)">답글달기</button>
+
+            	<button
+            	*ngIf="comment.isMine"
+				type="button" 
+				class="btn btn-default btn-xs pull-right left" 
+				(click)="onClickRemoveComment($event, comment)">지우기</button>
+
 
         		<!-- child comment list / INIT -->
 				<div 	*ngFor="let childComment of comment.childCommentList" 
@@ -63,6 +70,13 @@
 							<small>{{childComment.dateUpdatedHumanReadable}}</small>
 						</span><br/>
 						<span>{{childComment.comment}}</span>
+
+		            	<button
+		            	*ngIf="comment.isMine"
+						type="button" 
+						class="btn btn-default btn-xs pull-right right" 
+						(click)="onClickRemoveComment($event, childComment)">지우기</button>
+
 					</div>
 				</div>
         		<!-- child comment list / DONE -->

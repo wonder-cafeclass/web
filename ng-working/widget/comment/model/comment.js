@@ -12,6 +12,7 @@ var Comment = (function () {
         this.thumbnail = "";
         this.dateUpdated = "";
         this.dateUpdatedHumanReadable = "";
+        this.isMine = false;
         this.star = -1;
         this.childCommentList = null;
         this.uniqueId = -1; // DB 업데이트 이후에 저장된 데이터를 덮어쓰기 대상을 찾기 위해 쓰임.
@@ -26,6 +27,17 @@ var Comment = (function () {
         if (isDebug)
             console.log("comment / setJSON / this.uniqueId : ", this.uniqueId);
     }
+    // @ desc : writerId 자신이 쓴 글인지 여부를 확인한다.
+    Comment.prototype.checkMine = function (writerId) {
+        if (null == writerId) {
+            return;
+        }
+        if (this.writerId == writerId) {
+            this.isMine = true;
+            return;
+        }
+        this.isMine = false;
+    };
     Comment.prototype.setNew = function (id, parentId, comment, writerId, writer, thumbnail, star) {
         var isDebug = true;
         // let isDebug:boolean = false;

@@ -1542,7 +1542,7 @@ class MY_Sql
         // 수업의 리뷰를 가져옵니다.
         $review_list = null;
         // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
-        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
         $this->CI->db->from('review');
         $this->CI->db->join('user', 'review.user_id = user.id');
         $this->CI->db->where('review.klass_id', $klass_id);
@@ -1553,6 +1553,66 @@ class MY_Sql
 
         return $review_list;
     }
+    public function select_klass_review_last($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.klass_id', $klass_id);
+        $this->CI->db->where('review.user_id', $user_id);
+        $this->CI->db->order_by('review.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        if(empty($review_list)) {
+            return null;
+        }
+
+        return $review_list[0];
+    }  
+    public function select_klass_question_last($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        // 수업의 문의를 가져옵니다.
+        $question_list = null;
+        $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+        $this->CI->db->from('question');
+        $this->CI->db->join('user', 'question.user_id = user.id');
+        $this->CI->db->where('question.klass_id', $klass_id);
+        $this->CI->db->where('question.user_id', $user_id);
+        $this->CI->db->order_by('question.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $question_list = $this->add_klass_question_extra_info($query);
+
+        if(empty($question_list)) {
+            return null;
+        }
+
+        return $question_list[0];
+    }    
+      
     private function select_klass_children_review_comment_list($review_list)
     {
         if(empty($review_list)) 
@@ -1958,7 +2018,54 @@ class MY_Sql
         // QUERY EXECUTION
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('review', $data);
-    }    
+    }
+    // @ Desc : 클래스의 리뷰의 답글을 추가한다.
+    public function add_klass_review_reply($user_id=-1, $klass_id=-1, $klass_review_parent_id=-1, $klass_reply="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_parent_id", $klass_review_parent_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review", $klass_reply))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => $klass_review_parent_id,
+            'comment' => $klass_reply
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('review', $data);
+    }        
 
 
     // @ Desc : 클래스의 질문을 추가한다.

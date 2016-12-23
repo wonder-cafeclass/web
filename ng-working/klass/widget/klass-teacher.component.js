@@ -32,8 +32,8 @@ var KlassTeacherComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
     }
     KlassTeacherComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-teacher / ngOnInit / init");
         if (0 < this.cageWidth) {
@@ -53,8 +53,8 @@ var KlassTeacherComponent = (function () {
     };
     KlassTeacherComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-teacher / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
@@ -77,8 +77,8 @@ var KlassTeacherComponent = (function () {
         } // end if
     }; // end method 
     KlassTeacherComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-teacher / emitEventOnReady / 시작");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -98,8 +98,8 @@ var KlassTeacherComponent = (function () {
             console.log("klass-teacher / emitEventOnReady / Done!");
     };
     KlassTeacherComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-teacher / init / 시작");
         if (isDebug)

@@ -44,3 +44,12 @@ div.star {
     position: absolute;
     margin-left: 40px;    
 }
+button.right {
+    margin-top:5px;
+    width:80px;
+}
+button.left {
+    margin-right:5px;
+    margin-top:5px;
+    width:80px;
+}

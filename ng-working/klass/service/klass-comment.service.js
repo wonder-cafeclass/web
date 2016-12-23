@@ -10,55 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var comment_service_1 = require('../../widget/comment/service/comment.service');
-var comment_1 = require('../../widget/comment/model/comment');
 var KlassCommentService = (function () {
     // 카페 클래스에서 댓글 객체를 만들기 위한 로직을 관리하는 클래스.
     function KlassCommentService(commentService) {
         this.commentService = commentService;
     }
-    KlassCommentService.prototype.getReviewCommentList = function (klassReviewList) {
+    KlassCommentService.prototype.getReviewCommentList = function (klassReviewList, loginUserId) {
         var reviewCommentList = [];
         for (var i = 0; i < klassReviewList.length; ++i) {
             var review = klassReviewList[i];
-            var reviewComment = new comment_1.Comment().set(
-            // id:number, 
-            review.id, 
-            // parentId:number, 
-            review.parent_id, 
-            // comment:string, 
-            review.comment, 
-            // writerId:number, 
-            review.user_id, 
-            // writer:string, 
-            review.name, 
-            // thumbnail:string, 
-            review.thumbnail, 
-            // dateUpdated:string
-            review.date_updated, 
-            // star:number, 
-            review.star);
+            var reviewComment = review.getComment();
+            reviewComment.checkMine(loginUserId);
             var child_comment_list = review.child_review_list;
             var childReviewCommentList = [];
             if (null != child_comment_list && 0 < child_comment_list.length) {
                 for (var j = 0; j < child_comment_list.length; ++j) {
                     var childReview = child_comment_list[j];
-                    var childReviewComment = new comment_1.Comment().set(
-                    // id:number, 
-                    childReview.id, 
-                    // parentId:number, 
-                    childReview.parent_id, 
-                    // comment:string, 
-                    childReview.comment, 
-                    // writerId:number, 
-                    childReview.user_id, 
-                    // writer:string, 
-                    childReview.name, 
-                    // thumbnail:string, 
-                    childReview.thumbnail, 
-                    // dateUpdated:string
-                    childReview.date_updated, 
-                    // star:number, 
-                    -1);
+                    var childReviewComment = childReview.getComment();
+                    childReviewComment.checkMine(loginUserId);
                     childReviewCommentList.push(childReviewComment);
                 } // end inner for
                 reviewComment.childCommentList = childReviewCommentList;
@@ -67,7 +36,7 @@ var KlassCommentService = (function () {
         } // end outer for        
         return reviewCommentList;
     }; // end method  
-    KlassCommentService.prototype.getQuestionCommentList = function (klassQuestionList) {
+    KlassCommentService.prototype.getQuestionCommentList = function (klassQuestionList, loginUserId) {
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
@@ -75,23 +44,8 @@ var KlassCommentService = (function () {
         var questionCommentList = [];
         for (var i = 0; i < klassQuestionList.length; ++i) {
             var question = klassQuestionList[i];
-            var questionComment = new comment_1.Comment().set(
-            // id:number, 
-            question.id, 
-            // parentId:number, 
-            question.parent_id, 
-            // comment:string, 
-            question.comment, 
-            // writerId:number, 
-            question.user_id, 
-            // writer:string, 
-            question.name, 
-            // thumbnail:string, 
-            question.thumbnail, 
-            // dateUpdated:string
-            question.date_updated, 
-            // star:number
-            -1);
+            var questionComment = question.getComment();
+            questionComment.checkMine(loginUserId);
             if (isDebug)
                 console.log("klass-comment.service / getQuestionCommentList / question : ", question);
             if (isDebug)
@@ -105,23 +59,8 @@ var KlassCommentService = (function () {
                     var childQuestion = child_comment_list[j];
                     if (isDebug)
                         console.log("klass-comment.service / getQuestionCommentList / childQuestion : ", childQuestion);
-                    var childQuestionComment = new comment_1.Comment().set(
-                    // id:number, 
-                    childQuestion.id, 
-                    // parentId:number, 
-                    childQuestion.parent_id, 
-                    // comment:string, 
-                    childQuestion.comment, 
-                    // writerId:number, 
-                    childQuestion.user_id, 
-                    // writer:string, 
-                    childQuestion.name, 
-                    // thumbnail:string, 
-                    childQuestion.thumbnail, 
-                    // dateUpdated:string
-                    childQuestion.date_updated, 
-                    // star:number
-                    -1);
+                    var childQuestionComment = childQuestion.getComment();
+                    childQuestionComment.checkMine(loginUserId);
                     if (isDebug)
                         console.log("klass-comment.service / getQuestionCommentList / childQuestionComment : ", childQuestionComment);
                     childQuestionCommentList.push(childQuestionComment);

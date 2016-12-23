@@ -1,6 +1,7 @@
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
 import { HelperMyTime }             from '../../util/helper/my-time';
+import { Comment }                  from '../../widget/comment/model/comment';
 
 export class KlassQuestion {
 
@@ -28,6 +29,27 @@ export class KlassQuestion {
                 this.myArray = new HelperMyArray();
                 this.myIs = new HelperMyIs();
                 this.myTime = new HelperMyTime();
+        }
+
+        getComment():Comment {
+            return new Comment().set(
+                // id:number, 
+                this.id,
+                // parentId:number, 
+                this.parent_id,
+                // comment:string, 
+                this.comment,
+                // writerId:number, 
+                this.user_id,
+                // writer:string, 
+                this.name,
+                // thumbnail:string, 
+                this.thumbnail,
+                // dateUpdated:string
+                this.date_updated,
+                // star:number, 
+                -1
+            );                
         }
 
         copy():KlassQuestion {

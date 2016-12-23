@@ -13,6 +13,7 @@ export class Comment {
     public dateUpdated:string="";
     public dateUpdatedHumanReadable:string="";
 
+    public isMine:boolean=false;
 	public star:number=-1;
 	public childCommentList:Comment[]=null;
 
@@ -20,7 +21,7 @@ export class Comment {
     private myIs:HelperMyIs;
     private myTime:HelperMyTime;
 
-    private uniqueId:number=-1; // DB 업데이트 이후에 저장된 데이터를 덮어쓰기 대상을 찾기 위해 쓰임.
+    public uniqueId:number=-1; // DB 업데이트 이후에 저장된 데이터를 덮어쓰기 대상을 찾기 위해 쓰임.
 
 	constructor() {
 
@@ -35,6 +36,21 @@ export class Comment {
         if(isDebug) console.log("comment / setJSON / init");
         if(isDebug) console.log("comment / setJSON / this.uniqueId : ",this.uniqueId);
 
+	}
+
+	// @ desc : writerId 자신이 쓴 글인지 여부를 확인한다.
+	checkMine(writerId:number):void {
+
+		if(null == writerId) {
+			return;
+		}
+
+		if(this.writerId == writerId) {
+			this.isMine = true;	
+			return;
+		}
+
+		this.isMine = false;
 	}
 
 	setNew(id:number, parentId:number, comment:string, writerId:number, writer:string, thumbnail:string, star:number):Comment {

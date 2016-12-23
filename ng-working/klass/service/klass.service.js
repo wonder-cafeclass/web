@@ -72,6 +72,36 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
+    // addKlassReviewReply 
+    KlassService.prototype.addKlassReviewReply = function (apiKey, userId, klassId, parentId, reply) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / 시작");
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / userId : ", userId);
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / klassId : ", klassId);
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / parentId : ", parentId);
+        if (isDebug)
+            console.log("klass.service / addKlassReviewReply / reply : ", reply);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.addKlassReviewReplyUrl);
+        var params = {
+            user_id: userId,
+            klass_id: klassId,
+            klass_review_parent_id: parentId,
+            klass_review: reply
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     KlassService.prototype.addKlassQuestion = function (apiKey, userId, klassId, question) {
         var isDebug = true;
         // let isDebug:boolean = false;

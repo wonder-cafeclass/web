@@ -22,6 +22,8 @@ var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.comp
 var comment_1 = require('../widget/comment/model/comment');
 var comment_list_component_1 = require('../widget/comment/comment-list.component');
 var klass_1 = require('./model/klass');
+var klass_question_1 = require('./model/klass-question');
+var klass_review_1 = require('./model/klass-review');
 var klass_color_service_1 = require('./service/klass-color.service');
 var klass_comment_service_1 = require('./service/klass-comment.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
@@ -107,6 +109,9 @@ var KlassDetailNavListComponent = (function () {
         }
         if (null != this.questionListComponent) {
             this.questionListComponent.setLoginUser(this.loginUser);
+        }
+        if (null != this.reviewListComponent) {
+            this.reviewListComponent.setLoginUser(this.loginUser);
         }
     };
     KlassDetailNavListComponent.prototype.subscribeEventPack = function () {
@@ -287,10 +292,15 @@ var KlassDetailNavListComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / setReview / init");
-        if (null != this.klass.review_list) {
-            this.reviewCommentList =
-                this.klassCommentService.getReviewCommentList(this.klass.review_list);
-        } // end if
+        var loginUserId = -1;
+        if (null != this.loginUser) {
+            loginUserId = +this.loginUser.id;
+        }
+        if (null == this.klass.review_list) {
+            return;
+        }
+        this.reviewCommentList =
+            this.klassCommentService.getReviewCommentList(this.klass.review_list, loginUserId);
         // MyEvent for Review
         this.myEventForReview =
             this.myEventService.getMyEvent(
@@ -310,12 +320,15 @@ var KlassDetailNavListComponent = (function () {
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / setQuestion / init");
-        if (null != this.klass.question_list) {
-            this.questionCommentList =
-                this.klassCommentService.getQuestionCommentList(this.klass.question_list);
-            if (isDebug)
-                console.log("k-d-n-l / setQuestion / this.questionCommentList : ", this.questionCommentList);
-        } // end if
+        var loginUserId = -1;
+        if (null != this.loginUser) {
+            loginUserId = +this.loginUser.id;
+        }
+        if (null == this.klass.question_list) {
+            return;
+        }
+        this.questionCommentList =
+            this.klassCommentService.getQuestionCommentList(this.klass.question_list, loginUserId);
         // MyEvent for Question
         this.myEventForQuestion =
             this.myEventService.getMyEvent(
@@ -433,6 +446,64 @@ var KlassDetailNavListComponent = (function () {
             console.log("k-d-n-l / goLogin / req_url : ", req_url);
         window.location.href = req_url;
     };
+    KlassDetailNavListComponent.prototype.removeReview = function (reviewId) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / removeReview / init");
+        if (isDebug)
+            console.log("k-d-n-l / removeReview / reviewId : ", reviewId);
+        /*
+            // DB UPDATE!
+            this.klassService.addKlassReview(
+              // apiKey:string,
+              this.watchTower.getApiKey(),
+              // userId:number,
+              +this.loginUser.id,
+              // klassId:number,
+              +this.klass.id,
+              // review:string,
+              newComment.comment,
+              // star:number
+              newComment.star
+            ).then((myResponse:MyResponse) => {
+        
+              // 로그 등록 결과를 확인해볼 수 있습니다.
+              if(isDebug) console.log("klass-detail / addReview / myResponse : ",myResponse);
+              if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
+        
+                // 리뷰가 등록되었습니다.
+                // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+                let klassReviewJSON:any = myResponse.getDataProp("klass_review");
+                let klassReview:KlassReview = null;
+                if(null != klassReviewJSON) {
+                  klassReview = new KlassReview().setJSON(klassReviewJSON);
+                }
+                if(null != klassReview) {
+                  newComment.id = klassReview.id;
+                }
+                this.reviewListComponent.updateComment(newComment);
+        
+              } else if(myResponse.isFailed() && null != myResponse.error) {
+        
+                this.watchTower.announceErrorMsgArr([myResponse.error]);
+        
+              } else {
+                // 에러 로그 등록
+                this.myLoggerService.logError(
+                  // apiKey:string
+                  this.watchTower.getApiKey(),
+                  // errorType:string
+                  this.myLoggerService.errorAPIFailed,
+                  // errorMsg:string
+                  `klass-detail-nav-list / addReview / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+                ); // end logger
+        
+              } // end if
+        
+            }) // end service
+        */
+    };
     KlassDetailNavListComponent.prototype.addReview = function (newComment) {
         var _this = this;
         var isDebug = true;
@@ -456,7 +527,18 @@ var KlassDetailNavListComponent = (function () {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
                 console.log("klass-detail / addReview / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("review_list")) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
+                // 리뷰가 등록되었습니다.  
+                // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+                var klassReviewJSON = myResponse.getDataProp("klass_review");
+                var klassReview = null;
+                if (null != klassReviewJSON) {
+                    klassReview = new klass_review_1.KlassReview().setJSON(klassReviewJSON);
+                }
+                if (null != klassReview) {
+                    newComment.id = klassReview.id;
+                }
+                _this.reviewListComponent.updateComment(newComment);
             }
             else if (myResponse.isFailed() && null != myResponse.error) {
                 _this.watchTower.announceErrorMsgArr([myResponse.error]);
@@ -474,32 +556,91 @@ var KlassDetailNavListComponent = (function () {
         }); // end service     
     }; // end if
     KlassDetailNavListComponent.prototype.addReviewReply = function (newComment) {
+        var _this = this;
         var isDebug = true;
         // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / addReviewReply / init");
         if (isDebug)
             console.log("k-d-n-l / addReviewReply / newComment : ", newComment);
+        // DB UPDATE!
+        this.klassService.addKlassReviewReply(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userId:number,
+        +this.loginUser.id, 
+        // klassId:number,
+        +this.klass.id, 
+        // parentId:number,
+        +newComment.parentId, 
+        // question:string
+        newComment.comment).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("k-d-n-l / addReviewReply / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
+                // 리뷰가 등록되었습니다.  
+                // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+                var klassReviewJSON = myResponse.getDataProp("klass_review");
+                var klassReview = null;
+                if (null != klassReviewJSON) {
+                    klassReview = new klass_review_1.KlassReview().setJSON(klassReviewJSON);
+                }
+                if (null != klassReview) {
+                    newComment.id = klassReview.id;
+                }
+                _this.reviewListComponent.updateComment(newComment);
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "klass-detail-nav-list / addReviewReply / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klass.id + " / comment : " + newComment.comment); // end logger      
+            } // end if
+        }); // end service
+    };
+    KlassDetailNavListComponent.prototype.removeQuestion = function (questionId) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("k-d-n-l / removeQuestion / init");
+        if (isDebug)
+            console.log("k-d-n-l / removeQuestion / questionId : ", questionId);
         /*
         // DB UPDATE!
-        this.klassService.addKlassQuestionReply(
+        this.klassService.addKlassQuestion(
           // apiKey:string,
           this.watchTower.getApiKey(),
           // userId:number,
           +this.loginUser.id,
           // klassId:number,
           +this.klass.id,
-          // parentId:number,
-          +newComment.parentId,
           // question:string
           newComment.comment
         ).then((myResponse:MyResponse) => {
     
           // 로그 등록 결과를 확인해볼 수 있습니다.
-          if(isDebug) console.log("k-d-n-l / addReviewReply / myResponse : ",myResponse);
-          if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+          if(isDebug) console.log("klass-detail / addQuestion / myResponse : ",myResponse);
+          if(myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
     
-            // Do something..
+            // 리뷰가 등록되었습니다.
+            // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+            let klassQuestionJSON:any = myResponse.getDataProp("klass_question");
+            let klassQuestion:KlassQuestion = null;
+            if(null != klassQuestionJSON) {
+              klassQuestion = new KlassQuestion().setJSON(klassQuestionJSON);
+            }
+            if(null != klassQuestion) {
+              newComment.id = klassQuestion.id;
+            }
+            this.questionListComponent.updateComment(newComment);
     
           } else if(myResponse.isFailed() && null != myResponse.error) {
     
@@ -513,7 +654,7 @@ var KlassDetailNavListComponent = (function () {
               // errorType:string
               this.myLoggerService.errorAPIFailed,
               // errorMsg:string
-              `klass-detail-nav-list / addReviewReply / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+              `klass-detail-nav-list / addQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
             ); // end logger
     
           } // end if
@@ -542,7 +683,18 @@ var KlassDetailNavListComponent = (function () {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
                 console.log("klass-detail / addQuestion / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
+                // 리뷰가 등록되었습니다.  
+                // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+                var klassQuestionJSON = myResponse.getDataProp("klass_question");
+                var klassQuestion = null;
+                if (null != klassQuestionJSON) {
+                    klassQuestion = new klass_question_1.KlassQuestion().setJSON(klassQuestionJSON);
+                }
+                if (null != klassQuestion) {
+                    newComment.id = klassQuestion.id;
+                }
+                _this.questionListComponent.updateComment(newComment);
             }
             else if (myResponse.isFailed() && null != myResponse.error) {
                 _this.watchTower.announceErrorMsgArr([myResponse.error]);
@@ -582,7 +734,18 @@ var KlassDetailNavListComponent = (function () {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (isDebug)
                 console.log("k-d-n-l / addQuestionReply / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
+                // 리뷰가 등록되었습니다.  
+                // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+                var klassQuestionJSON = myResponse.getDataProp("klass_question");
+                var klassQuestion = null;
+                if (null != klassQuestionJSON) {
+                    klassQuestion = new klass_question_1.KlassQuestion().setJSON(klassQuestionJSON);
+                }
+                if (null != klassQuestion) {
+                    newComment.id = klassQuestion.id;
+                }
+                _this.questionListComponent.updateComment(newComment);
             }
             else if (myResponse.isFailed() && null != myResponse.error) {
                 _this.watchTower.announceErrorMsgArr([myResponse.error]);
@@ -687,15 +850,21 @@ var KlassDetailNavListComponent = (function () {
         }
         else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
             // 열을 지웁니다.
-            if (this.myEventService.KLASS_FEATURE === myEvent.key) {
+            if (myEvent.hasKey(this.myEventService.KLASS_FEATURE)) {
                 this.klassFeature = this.klass.feature = myEvent.value;
                 var nextEventList = this.removeMyEventFromList(myEvent, this.myEventListForKlassFeature);
                 this.myEventListForKlassFeature = nextEventList;
             }
-            else if (this.myEventService.KLASS_TARGET === myEvent.key) {
+            else if (myEvent.hasKey(this.myEventService.KLASS_TARGET)) {
                 this.klassTarget = this.klass.target = myEvent.value;
                 var nextEventList = this.removeMyEventFromList(myEvent, this.myEventListForKlassTarget);
                 this.myEventListForKlassTarget = nextEventList;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_QUESTION_LIST)) {
+                this.removeQuestion(parseInt(myEvent.value));
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
+                this.removeReview(parseInt(myEvent.value));
             } // end if
         }
         else if (this.myEventService.ON_SAVE === myEvent.eventName) {

@@ -2,6 +2,7 @@
 var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
+var comment_1 = require('../../widget/comment/model/comment');
 var KlassReview = (function () {
     function KlassReview() {
         this.id = -1;
@@ -22,6 +23,25 @@ var KlassReview = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    KlassReview.prototype.getComment = function () {
+        return new comment_1.Comment().set(
+        // id:number, 
+        this.id, 
+        // parentId:number, 
+        this.parent_id, 
+        // comment:string, 
+        this.comment, 
+        // writerId:number, 
+        this.user_id, 
+        // writer:string, 
+        this.name, 
+        // thumbnail:string, 
+        this.thumbnail, 
+        // dateUpdated:string
+        this.date_updated, 
+        // star:number, 
+        this.star);
+    };
     KlassReview.prototype.copy = function () {
         return this.myIs.copy(
         // src:any

@@ -34,8 +34,8 @@ var HelperMyConst = (function () {
         return list;
     };
     HelperMyConst.prototype.getValue = function (srcKey, srcValue, targetKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-const / getValue / 시작");
         var srcList = this.getList(srcKey);
