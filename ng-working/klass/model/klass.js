@@ -8,6 +8,7 @@ var klass_venue_1 = require('./klass-venue');
 var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
+var my_format_1 = require('../../util/helper/my-format');
 var Klass = (function () {
     function Klass() {
         this.id = -1;
@@ -91,10 +92,47 @@ var Klass = (function () {
         this.myArray = null;
         this.myIs = null;
         this.myTime = null;
+        this.myFormat = null;
         this.myArray = new my_array_1.HelperMyArray();
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
+        this.myFormat = new my_format_1.HelperMyFormat();
     }
+    // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
+    Klass.prototype.getCommision = function () {
+        if (!(0 < this.price)) {
+            return -1;
+        }
+        /*
+        5만9천원까지 20 %
+        6만원 부터 10만원 25%
+        10만원초과 30%
+        */
+        if (0 < this.price && this.price <= 59000) {
+            return 20;
+        }
+        else if (60000 <= this.price && this.price <= 100000) {
+            return 25;
+        }
+        else if (100000 < this.price) {
+            return 30;
+        }
+        return -1;
+    };
+    Klass.prototype.getPayment = function () {
+        var commission = this.getCommision();
+        if (commission < 0) {
+            return -1;
+        }
+        return this.price * ((100 - commission) / 100);
+    };
+    Klass.prototype.getPaymentStr = function () {
+        var payment = this.getPayment();
+        if (0 < payment) {
+            return this.myFormat.numberWithCommas(payment);
+        } // end if
+        return "";
+    };
     // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
     Klass.prototype.getFeatureList = function () {
         if (null == this.feature || "" === this.feature) {

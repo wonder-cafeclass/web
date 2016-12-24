@@ -728,6 +728,7 @@ var KlassDetailComponent = (function () {
         this.setKlassDateEnrollmentView();
         this.setKlassDateEnrollmentInput();
         this.setKlassDays();
+        this.setKlassPriceDesc();
         // set image-grid service
         var classBannerUrlArr = this.klassCopy.class_banner_url_arr;
         if (null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
@@ -1033,6 +1034,12 @@ var KlassDetailComponent = (function () {
                     this.setKlassPrice();
                 }
             }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_VIEW)) {
+                if (null != myEvent.metaObj) {
+                    this.priceTagHComponent = myEvent.metaObj;
+                    this.setKlassPriceDesc();
+                }
+            }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {
                 if (null != myEvent.metaObj) {
                     this.klassTimeBeginComponent = myEvent.metaObj;
@@ -1239,8 +1246,8 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end if
     KlassDetailComponent.prototype.updateKlassPrice = function (klassPrice) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / updateKlassPrice / 시작");
         if (isDebug)
@@ -1250,6 +1257,46 @@ var KlassDetailComponent = (function () {
         }
         this.klassCopy.price = parseInt(klassPrice);
         this.priceTagHComponent.setPrice(this.klassCopy.price);
+        this.setKlassPriceDesc();
+    };
+    // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
+    KlassDetailComponent.prototype.setKlassPriceDesc = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassPriceDesc / 시작");
+        if (null == this.loginUser) {
+            if (isDebug)
+                console.log("klass-detail / setKlassPriceDesc / 중단 / this.loginUser is not valid!");
+            return;
+        }
+        if (!this.loginUser.isTeacher()) {
+            if (isDebug)
+                console.log("klass-detail / setKlassPriceDesc / 중단 / this.loginUser is not teacher!");
+            return;
+        }
+        if (null == this.priceTagHComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassPriceDesc / 중단 / this.priceTagHComponent is not valid!");
+            return;
+        }
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassPriceDesc / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (isDebug)
+            console.log("klass-detail / setKlassPriceDesc / 선생님이라면 가격의 수수료를 노출합니다.");
+        var commision = this.klassCopy.getCommision();
+        var paymentStr = this.klassCopy.getPaymentStr();
+        var klassPriceDesc = "\uC2E4\uC218\uB839\uC561 : \u20A9" + paymentStr + " (\uC218\uC218\uB8CC : " + commision + "%)";
+        if (isDebug)
+            console.log("klass-detail / setKlassPriceDesc / commision : ", commision);
+        if (isDebug)
+            console.log("klass-detail / setKlassPriceDesc / paymentStr : ", paymentStr);
+        if (isDebug)
+            console.log("klass-detail / setKlassPriceDesc / klassPriceDesc : ", klassPriceDesc);
+        this.priceTagHComponent.setPriceDesc(klassPriceDesc);
     };
     KlassDetailComponent.prototype.updateKlassTimeBegin = function (klassTimeBegin) {
         // let isDebug:boolean = true;

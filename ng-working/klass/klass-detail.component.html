@@ -98,20 +98,25 @@
 
           <!-- PRICE INIT -->
           <li class="list-group-item col-next first">
-            <pricetag-h [title]="pricePerWeekFormat"
-                        [fontSizeTitle]="40"
-                        [paddingTitle]="5"
+            <pricetag-h 
+            [title]="pricePerWeekFormat"
+            [fontSizeTitle]="40"
+            [paddingTitle]="5"
 
-                        [price]="klassCopy.price"
-                        [fontSizePrice]="25"
-                        [paddingTopPrice]="15"
-  
-                        [desc]="pricetagDesc"
-                        [fontSizeDesc]="14"
-                        [paddingDesc]="5"
+            [price]="klassCopy.price"
+            [fontSizePrice]="25"
+            [paddingTopPrice]="15"
 
-                        [currency]="priceTagCurrency"
-                        [color]="priceTagColor"></pricetag-h>
+            [desc]="pricetagDesc"
+            [fontSizeDesc]="14"
+            [paddingDesc]="5"
+            
+            [currency]="priceTagCurrency"
+            [color]="priceTagColor"
+            
+            [eventKey]="myEventService.KEY_KLASS_PRICE_VIEW"
+            (emitter)="onChangedFromChild($event)">
+            </pricetag-h>
           </li>
           <!-- PRICE DONE -->
 
@@ -125,7 +130,7 @@
             [isNoSpace]="true"
             [isDisabled]="false"
             [meta]="defaultMetaList[1]"
-            [numUnit]="5000"
+            [numUnit]="1000"
             (emitter)="onChangedFromChild($event)">
             </widget-input-default>
           </li>

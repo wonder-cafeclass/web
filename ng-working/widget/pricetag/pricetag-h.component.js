@@ -9,8 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var PriceTagHComponent = (function () {
-    function PriceTagHComponent() {
+    function PriceTagHComponent(myCheckerService, myEventService, watchTower) {
+        this.myCheckerService = myCheckerService;
+        this.myEventService = myEventService;
+        this.watchTower = watchTower;
         this.fontSizeTitle = 12;
         this.paddingTitle = 10;
         this.fontSizeDesc = 12;
@@ -19,6 +25,7 @@ var PriceTagHComponent = (function () {
         this.paddingTopPrice = 10;
         this.cageWidth = -1;
         this.cageWidthStr = "";
+        this.emitter = new core_1.EventEmitter();
     }
     PriceTagHComponent.prototype.ngOnInit = function () {
         this.priceWithFormat = this.numberWithCommas(this.price);
@@ -28,6 +35,28 @@ var PriceTagHComponent = (function () {
         else {
             this.cageWidthStr = "100%";
         }
+        // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
+        this.emitEventOnReady();
+    };
+    PriceTagHComponent.prototype.emitEventOnReady = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("pricetag-h / emitEventOnReady / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        this.eventKey, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        this, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("pricetag-h / emitEventOnReady / Done!");
     };
     PriceTagHComponent.prototype.setPrice = function (price) {
         // let isDebug:boolean = true;
@@ -39,6 +68,16 @@ var PriceTagHComponent = (function () {
         this.priceWithFormat = this.numberWithCommas(price);
         if (isDebug)
             console.log("pricetag-h / setPrice / this.priceWithFormat : ", this.priceWithFormat);
+    };
+    // @ Desc : 가격 밑에 보여지는 설명 ex) 수수료등.
+    PriceTagHComponent.prototype.setPriceDesc = function (priceDesc) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("pricetag-h / setPrice / 시작");
+        if (isDebug)
+            console.log("pricetag-h / setPrice / priceDesc : ", priceDesc);
+        this.priceDesc = priceDesc;
     };
     PriceTagHComponent.prototype.numberWithCommas = function (x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -91,6 +130,14 @@ var PriceTagHComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], PriceTagHComponent.prototype, "color", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], PriceTagHComponent.prototype, "eventKey", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], PriceTagHComponent.prototype, "emitter", void 0);
     PriceTagHComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -98,7 +145,7 @@ var PriceTagHComponent = (function () {
             templateUrl: 'pricetag-h.component.html',
             styleUrls: ['pricetag-h.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService])
     ], PriceTagHComponent);
     return PriceTagHComponent;
 }());

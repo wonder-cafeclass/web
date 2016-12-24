@@ -102,6 +102,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
         this.KEY_KLASS_TITLE = "KEY_KLASS_TITLE"; // 수업 - 수업 이름
         this.KEY_KLASS_PRICE = "KEY_KLASS_PRICE"; // 수업 - 수업 가격
+        this.KEY_KLASS_PRICE_VIEW = "KEY_KLASS_PRICE_VIEW"; // 수업 - 수업 가격 뷰
         this.KEY_KLASS_TIME_BEGIN = "KEY_KLASS_TIME_BEGIN"; // 수업 - 수업 시작 시간
         this.KEY_KLASS_TIME_END = "KEY_KLASS_TIME_END"; // 수업 - 수업 종료 시간
         this.KEY_KLASS_DATE_ENROLLMENT = "KEY_KLASS_DATE_ENROLLMENT"; // 수업 - 등록 가능한 수업 시작일

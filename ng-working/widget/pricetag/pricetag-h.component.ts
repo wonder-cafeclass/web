@@ -1,4 +1,16 @@
-import { Component, OnInit, Input }   from '@angular/core';
+import { Component, 
+         OnInit, 
+         Output,
+         EventEmitter,
+         Input }                    from '@angular/core';
+
+import { MyCheckerService }         from '../../util/service/my-checker.service';
+import { MyChecker }                from '../../util/model/my-checker';
+import { MyEventService }           from '../../util/service/my-event.service';
+import { MyEvent }                  from '../../util/model/my-event';
+
+import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
+
 
 @Component({
   moduleId: module.id,
@@ -25,9 +37,16 @@ export class PriceTagHComponent implements OnInit {
   @Input() currency:string;
   @Input() color:string;
 
-  priceWithFormat:string;
+  @Input() eventKey:string;
 
-  constructor() {}
+  @Output() emitter = new EventEmitter<MyEvent>();
+
+  priceWithFormat:string;
+  priceDesc:string;
+
+  constructor(  private myCheckerService:MyCheckerService,
+                private myEventService:MyEventService,
+                private watchTower:MyEventWatchTowerService ) {}
 
   ngOnInit(): void {
     this.priceWithFormat = this.numberWithCommas(this.price);
@@ -38,7 +57,35 @@ export class PriceTagHComponent implements OnInit {
       this.cageWidthStr="100%";
     }
 
+    // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
+    this.emitEventOnReady();
+
   }
+
+  private emitEventOnReady() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("pricetag-h / emitEventOnReady / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_READY,
+      // public key:string
+      this.eventKey,
+      // public value:string
+      "",
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      this.myCheckerService.getFreePassChecker()
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("pricetag-h / emitEventOnReady / Done!");
+
+  }   
 
   setPrice(price:number): void {
 
@@ -50,6 +97,17 @@ export class PriceTagHComponent implements OnInit {
     this.priceWithFormat = this.numberWithCommas(price);
 
     if(isDebug) console.log("pricetag-h / setPrice / this.priceWithFormat : ",this.priceWithFormat);
+  }
+
+  // @ Desc : 가격 밑에 보여지는 설명 ex) 수수료등.
+  setPriceDesc(priceDesc:string):void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("pricetag-h / setPrice / 시작");
+    if(isDebug) console.log("pricetag-h / setPrice / priceDesc : ",priceDesc);
+
+    this.priceDesc = priceDesc;
   }
 
   private numberWithCommas(x) :string{

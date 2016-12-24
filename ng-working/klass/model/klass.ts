@@ -9,6 +9,7 @@ import { KlassVenue }               from './klass-venue';
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
 import { HelperMyTime }             from '../../util/helper/my-time';
+import { HelperMyFormat }           from '../../util/helper/my-format';
 
 export class Klass {
 
@@ -104,11 +105,57 @@ export class Klass {
     private myArray:HelperMyArray=null;
     private myIs:HelperMyIs=null;
     private myTime:HelperMyTime=null;
+    private myFormat:HelperMyFormat=null;
 
     constructor() {
         this.myArray = new HelperMyArray();
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
+        this.myFormat = new HelperMyFormat();
+    }
+
+    // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
+    getCommision() :number {
+
+        if(!(0 < this.price)) {
+            return -1;
+        }
+
+        /*
+        5만9천원까지 20 % 
+        6만원 부터 10만원 25%
+        10만원초과 30%
+        */
+
+        if(0 < this.price && this.price <= 59000) {
+            return 20;
+        } else if(60000 <= this.price && this.price <= 100000) {
+            return 25;
+        } else if(100000 < this.price) {
+            return 30;
+        }
+
+        return -1;
+    }
+    getPayment() :number {
+
+        let commission:number = this.getCommision();
+
+        if(commission < 0) {
+            return -1;
+        }
+
+        return this.price * ((100 - commission)/100);
+
+    }
+    getPaymentStr() :string {
+        let payment:number = this.getPayment();
+
+        if(0 < payment) {
+            return this.myFormat.numberWithCommas(payment);
+        } // end if
+
+        return "";
     }
 
     // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
