@@ -104,8 +104,8 @@ var InputsBtnsRowsComponent = (function () {
         return inputTextList;
     };
     InputsBtnsRowsComponent.prototype.onChangeFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("inputs-btns-rows / onChangeFromChild / init");
         if (isDebug)
@@ -118,6 +118,9 @@ var InputsBtnsRowsComponent = (function () {
             this.myEventList = this.myEventService.setEventValue(myEvent, this.myEventList);
             var hasChanged = this.hasChanged();
             this.isDisabledSave = (hasChanged) ? false : true;
+            // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+            var inputTextList = this.getInputTextList();
+            myEvent.metaObj = inputTextList;
             this.emitter.emit(myEvent);
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {

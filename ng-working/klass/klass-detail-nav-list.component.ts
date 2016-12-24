@@ -342,6 +342,22 @@ export class KlassDetailNavListComponent implements OnInit {
   } // end method
   private updateKlassFeature(featureList:string[]) :void {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / updateKlassFeature / init");
+
+    // 3개 열 고정 노출입니다. 모자라다면 채워서 노출합니다.
+    if(this.myArray.isNotOK(featureList)) {
+      featureList = [];
+    }
+    let lengthFixed:number = 3;
+    let lengthNeeded:number = lengthFixed - featureList.length;
+    if(0 < lengthNeeded) {
+      for (var i = (lengthFixed - lengthNeeded); i < lengthFixed; ++i) {
+        featureList.push("수업 특징을 입력해주세요."); 
+      } // end for
+    } // end if
+
     let myEventKlassFeatureList:MyEvent[] = [];
     if(this.myArray.isOK(featureList)) {
 
@@ -355,7 +371,7 @@ export class KlassDetailNavListComponent implements OnInit {
           // public eventName:string
           this.myEventService.ANY,
           // public key:string
-          this.myEventService.KLASS_FEATURE,
+          this.myEventService.KEY_KLASS_FEATURE_LIST,
           // public value:string
           klassFeature,
           // public metaObj:any
@@ -1040,8 +1056,8 @@ export class KlassDetailNavListComponent implements OnInit {
   onChangedFromInputRow(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / init");
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / myEvent : ",myEvent);
 
@@ -1082,13 +1098,16 @@ export class KlassDetailNavListComponent implements OnInit {
 
     } else if(this.myEventService.ON_CHANGE === myEvent.eventName) {
 
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+      if(this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key) {
 
         this.myEventListForKlassFeature =
         this.myEventService.setEventValue(
           myEvent, 
           this.myEventListForKlassFeature
         );
+
+        // 부모 객체에 전달합니다.
+        this.emitEvent(myEvent);
 
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
 
@@ -1098,9 +1117,15 @@ export class KlassDetailNavListComponent implements OnInit {
           this.myEventListForKlassTarget
         );
 
+        // 부모 객체에 전달합니다.
+        this.emitEvent(myEvent);
+
       } else if(this.myEventService.KLASS_SCHEDULE=== myEvent.key) {
 
         this.klassSchedule = myEvent.value;
+
+        // 부모 객체에 전달합니다.
+        this.emitter.emit(myEvent);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
 
@@ -1157,7 +1182,7 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
 
       // 열이 추가되었습니다.
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+      if(this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key) {
 
         let klassFeatureNext:string = this.getEventValues(this.myEventListForKlassFeature);
 
@@ -1180,7 +1205,7 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
       // 열을 지웁니다.
-      if(myEvent.hasKey(this.myEventService.KLASS_FEATURE)) {
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {
 
         this.klassFeature = this.klass.feature = myEvent.value;
 
@@ -1217,7 +1242,7 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
 
       let hasChanged:boolean = false;
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+      if(this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key) {
         hasChanged = this.hasChangedFeature();
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         hasChanged = this.hasChangedTarget();
@@ -1233,7 +1258,7 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
 
       // 입력창을 닫습니다.
-      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
+      if( this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key || 
           this.myEventService.KLASS_TARGET === myEvent.key ||
           this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         this.shutdownKlassInfos();
@@ -1242,7 +1267,7 @@ export class KlassDetailNavListComponent implements OnInit {
     } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
 
       // 입력창을 닫습니다.
-      if( this.myEventService.KLASS_FEATURE === myEvent.key || 
+      if( this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key || 
           this.myEventService.KLASS_TARGET === myEvent.key ||
           this.myEventService.KLASS_SCHEDULE === myEvent.key) {
         this.shutdownKlassInfos();
@@ -1250,7 +1275,7 @@ export class KlassDetailNavListComponent implements OnInit {
 
       // 데이터가 변경되었는지 확인합니다.
       let hasChanged:boolean = false;
-      if(this.myEventService.KLASS_FEATURE === myEvent.key) {
+      if(this.myEventService.KEY_KLASS_FEATURE_LIST === myEvent.key) {
         hasChanged = this.hasChangedFeature();
       } else if(this.myEventService.KLASS_TARGET === myEvent.key) {
         hasChanged = this.hasChangedTarget();

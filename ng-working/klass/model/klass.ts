@@ -21,12 +21,16 @@ export class Klass {
 
     public teacher_id:number=-1;
     public teacher_resume:string="";
+    public teacher_resume_list:string[]=[];
     public teacher_greeting:string="";
+    public teacher_greeting_list:string[]=[];
 
     public title: string="";
     public desc: string="";
     public feature: string="";
+    public feature_list: string[]=[];
     public target: string="";
+    public target_list: string[]=[];
     public schedule: string="";
     public date_begin: string="";
     public time_begin: string="";
@@ -105,6 +109,46 @@ export class Klass {
         this.myArray = new HelperMyArray();
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
+    }
+
+    setFeatureList(featureList:string[]) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setFeatureList / init");
+
+        if(this.myArray.isNotOK(featureList)) {
+            if(isDebug) console.log("klass / setFeatureList / 중단 / featureList is not valid!");
+        } // end if
+
+        this.feature_list = featureList;
+        this.feature = featureList.join(this.delimiter);
+
+    } // end method
+
+    setTargetList(targetList:string[]) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setTargetList / init");
+
+        if(this.myArray.isNotOK(targetList)) {
+            if(isDebug) console.log("klass / setTargetList / 중단 / targetList is not valid!");
+        } // end if
+
+        this.target_list = targetList;
+        this.target = targetList.join(this.delimiter);
+
+    } // end method 
+    
+    setSchedule(schedule:string) :void { 
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setSchedule / init");
+
+        this.schedule = schedule;
+
     }
 
     setTeacherResumeList(resumeList:string[]) :void {
@@ -478,6 +522,8 @@ export class Klass {
 
         if(isDebug) console.log("klass / setJSON / klass : ",klass);
 
+        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+
         // teacher
         if(null != klass.teacher) {
             klass.teacher = new KlassTeacher().setJSON(klass.teacher);
@@ -508,6 +554,16 @@ export class Klass {
             klassQuestionList.push(klassQuestion);
         } // end for
         klass.question_list = klassQuestionList;
+
+        // teacher - resume
+        if(null != klass.teacher_resume && "" != klass.teacher_resume) {
+            klass.teacher_resume_list = klass.teacher_resume.split(this.delimiter);
+        } // end if
+
+        // teacher - greeting
+        if(null != klass.teacher_greeting && "" != klass.teacher_greeting) {
+            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
+        } // end if
 
         // time_end
         if( null == klass.time_end || 

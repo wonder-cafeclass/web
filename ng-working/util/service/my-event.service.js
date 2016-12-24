@@ -136,6 +136,12 @@ var MyEventService = (function () {
         this.KEY_KLASS_TEACHER_RESUME_LIST = "KEY_KLASS_TEACHER_RESUME_LIST";
         // 수업 - 선생님 - 인사말 리스트
         this.KEY_KLASS_TEACHER_GREETING_LIST = "KEY_KLASS_TEACHER_GREETING_LIST";
+        // 수업 - 수업 특징 리스트
+        this.KEY_KLASS_FEATURE_LIST = "KEY_KLASS_FEATURE_LIST";
+        // 수업 - 수업 대상 리스트
+        this.KEY_KLASS_TARGET_LIST = "KEY_KLASS_TARGET_LIST";
+        // 수업 - 수업 일정
+        this.KEY_KLASS_SCHEDULE = "KEY_KLASS_SCHEDULE";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

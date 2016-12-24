@@ -1352,8 +1352,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1527,6 +1527,18 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_VENUE_SUBWAY_STATION)) {  
 
         this.updateKlassSubwayStation(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {  
+
+        this.updateKlassFeatureList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
+
+        this.updateKlassTargetList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SCHEDULE)) {
+
+        this.updateKlassSchedule(myEvent.value);
 
       } // end if
 
@@ -1905,6 +1917,42 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.selectileImageTable[0] = this.myArray.replaceStr(this.selectileImageTable[0], subwayImagePrev, subwayImageNext);
   }
+
+  private updateKlassFeatureList(featureList:string[]) :void {  
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassFeatureList / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassFeatureList / featureList : ",featureList);
+
+    this.klassCopy.setFeatureList(featureList);
+
+  }
+
+  private updateKlassTargetList(targetList:string[]) :void {  
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassTargetList / 시작");
+
+    if(isDebug) console.log("klass-detail / updateKlassTargetList / targetList : ",targetList);
+
+    this.klassCopy.setTargetList(targetList);
+
+  }
+
+  private updateKlassSchedule(schedule:string) :void {  
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassSchedule / 시작");
+
+    if(isDebug) console.log("klass-detail / updateKlassSchedule / schedule : ",schedule);
+
+    this.klassCopy.setSchedule(schedule);
+
+  }
+
 
   private updateKlassDateEnrollment(klassDateEnrollment:string) :void {
 

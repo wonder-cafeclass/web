@@ -148,6 +148,12 @@ export class MyEventService {
     KEY_KLASS_TEACHER_RESUME_LIST:string="KEY_KLASS_TEACHER_RESUME_LIST";
     // 수업 - 선생님 - 인사말 리스트
     KEY_KLASS_TEACHER_GREETING_LIST:string="KEY_KLASS_TEACHER_GREETING_LIST";
+    // 수업 - 수업 특징 리스트
+    KEY_KLASS_FEATURE_LIST:string="KEY_KLASS_FEATURE_LIST";
+    // 수업 - 수업 대상 리스트
+    KEY_KLASS_TARGET_LIST:string="KEY_KLASS_TARGET_LIST";
+    // 수업 - 수업 일정
+    KEY_KLASS_SCHEDULE:string="KEY_KLASS_SCHEDULE";
 
 
 

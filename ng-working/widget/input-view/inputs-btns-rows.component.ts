@@ -177,6 +177,11 @@ export class InputsBtnsRowsComponent implements OnInit {
 
       let hasChanged:boolean = this.hasChanged();
       this.isDisabledSave = (hasChanged)?false:true;
+
+      // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+      let inputTextList:string[] = this.getInputTextList();
+      myEvent.metaObj = inputTextList;
+
       this.emitter.emit(myEvent);
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {

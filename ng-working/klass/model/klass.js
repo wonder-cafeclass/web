@@ -17,11 +17,15 @@ var Klass = (function () {
         this.klassVenue = null;
         this.teacher_id = -1;
         this.teacher_resume = "";
+        this.teacher_resume_list = [];
         this.teacher_greeting = "";
+        this.teacher_greeting_list = [];
         this.title = "";
         this.desc = "";
         this.feature = "";
+        this.feature_list = [];
         this.target = "";
+        this.target_list = [];
         this.schedule = "";
         this.date_begin = "";
         this.time_begin = "";
@@ -91,6 +95,37 @@ var Klass = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    Klass.prototype.setFeatureList = function (featureList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setFeatureList / init");
+        if (this.myArray.isNotOK(featureList)) {
+            if (isDebug)
+                console.log("klass / setFeatureList / 중단 / featureList is not valid!");
+        } // end if
+        this.feature_list = featureList;
+        this.feature = featureList.join(this.delimiter);
+    }; // end method
+    Klass.prototype.setTargetList = function (targetList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setTargetList / init");
+        if (this.myArray.isNotOK(targetList)) {
+            if (isDebug)
+                console.log("klass / setTargetList / 중단 / targetList is not valid!");
+        } // end if
+        this.target_list = targetList;
+        this.target = targetList.join(this.delimiter);
+    }; // end method 
+    Klass.prototype.setSchedule = function (schedule) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setSchedule / init");
+        this.schedule = schedule;
+    };
     Klass.prototype.setTeacherResumeList = function (resumeList) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -398,6 +433,7 @@ var Klass = (function () {
         var klass = this._setJSON(json);
         if (isDebug)
             console.log("klass / setJSON / klass : ", klass);
+        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         // teacher
         if (null != klass.teacher) {
             klass.teacher = new klass_teacher_1.KlassTeacher().setJSON(klass.teacher);
@@ -424,6 +460,14 @@ var Klass = (function () {
             klassQuestionList.push(klassQuestion);
         } // end for
         klass.question_list = klassQuestionList;
+        // teacher - resume
+        if (null != klass.teacher_resume && "" != klass.teacher_resume) {
+            klass.teacher_resume_list = klass.teacher_resume.split(this.delimiter);
+        } // end if
+        // teacher - greeting
+        if (null != klass.teacher_greeting && "" != klass.teacher_greeting) {
+            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
+        } // end if
         // time_end
         if (null == klass.time_end ||
             "" === klass.time_end) {
