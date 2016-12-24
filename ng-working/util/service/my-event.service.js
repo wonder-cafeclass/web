@@ -105,6 +105,7 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE_VIEW = "KEY_KLASS_PRICE_VIEW"; // 수업 - 수업 가격 뷰
         this.KEY_KLASS_TIME_BEGIN = "KEY_KLASS_TIME_BEGIN"; // 수업 - 수업 시작 시간
         this.KEY_KLASS_TIME_END = "KEY_KLASS_TIME_END"; // 수업 - 수업 종료 시간
+        this.KEY_KLASS_WEEKS = "KEY_KLASS_WEEKS"; // 수업 - 수업 기간 (몇주?)
         this.KEY_KLASS_DATE_ENROLLMENT = "KEY_KLASS_DATE_ENROLLMENT"; // 수업 - 등록 가능한 수업 시작일
         this.KEY_KLASS_DATE_ENROLLMENT_VIEW = "KEY_KLASS_DATE_ENROLLMENT_VIEW"; // 수업 - 등록 가능한 수업 시작일
         this.KEY_KLASS_DATE_ENROLLMENT_INPUT = "KEY_KLASS_DATE_ENROLLMENT_INPUT"; // 수업 - 등록 가능한 수업 시작일
@@ -625,7 +626,18 @@ var MyEventService = (function () {
             // public checkerKey:string
             "klass_day", 
             // public type:string
-            this.defaultType.TYPE_CHECKBOX)
+            this.defaultType.TYPE_CHECKBOX),
+            new default_meta_1.DefaultMeta(// 9
+            // public title:string
+            "수업 기간", 
+            // public placeholder:string
+            "수업 기간 - 2주/4주/8주/10주/12주", 
+            // public eventKey:string
+            this.KEY_KLASS_WEEKS, 
+            // public checkerKey:string
+            "klass_week", 
+            // public type:string
+            this.defaultType.TYPE_SELECT),
         ];
         return defaultMetaList;
     };

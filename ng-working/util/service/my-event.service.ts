@@ -117,6 +117,7 @@ export class MyEventService {
     KEY_KLASS_PRICE_VIEW:string="KEY_KLASS_PRICE_VIEW";         // 수업 - 수업 가격 뷰
     KEY_KLASS_TIME_BEGIN:string="KEY_KLASS_TIME_BEGIN";         // 수업 - 수업 시작 시간
     KEY_KLASS_TIME_END:string="KEY_KLASS_TIME_END";             // 수업 - 수업 종료 시간
+    KEY_KLASS_WEEKS:string="KEY_KLASS_WEEKS";                   // 수업 - 수업 기간 (몇주?)
     KEY_KLASS_DATE_ENROLLMENT:string="KEY_KLASS_DATE_ENROLLMENT";              // 수업 - 등록 가능한 수업 시작일
     KEY_KLASS_DATE_ENROLLMENT_VIEW:string="KEY_KLASS_DATE_ENROLLMENT_VIEW";    // 수업 - 등록 가능한 수업 시작일
     KEY_KLASS_DATE_ENROLLMENT_INPUT:string="KEY_KLASS_DATE_ENROLLMENT_INPUT";  // 수업 - 등록 가능한 수업 시작일
@@ -723,7 +724,20 @@ export class MyEventService {
             "klass_day",
             // public type:string
             this.defaultType.TYPE_CHECKBOX
-            )            
+            ),
+            new DefaultMeta( // 9
+            // public title:string
+            "수업 기간",
+            // public placeholder:string
+            "수업 기간 - 2주/4주/8주/10주/12주",
+            // public eventKey:string
+            this.KEY_KLASS_WEEKS,
+            // public checkerKey:string
+            "klass_week",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+
         ];
         
         return defaultMetaList;

@@ -26,7 +26,7 @@ export class HelperMyConst {
     	this.constJSON = constJSON;
     }
 
-    private getList(key:string):any {
+    getList(key:string):any {
 
     	if(null == key || "" === key) {
     		return null;

@@ -111,6 +111,7 @@ CREATE TABLE `klass` (
   `time_duration_minutes` int(4) COLLATE utf8_bin NOT NULL COMMENT '수업시간 분으로 표시(minutes)ex) 120',
   `time_end` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '수업종료시간 ex) 21:00',
   `level` char(1) COLLATE utf8_bin NOT NULL DEFAULT "B" COMMENT '수업레벨 B(Beginner/왕초급),E(Elementary/초급),P(Pre-intermediate/초중급),I(Intermediate/중급),U(Upper-intermediate/중상급),A(Advanced/상급)',
+  `week` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 week 수 ex) 2 - 2주',
   `week_min` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 최소 수강 week 수 ex) 2 - 2주',
   `week_max` int(4) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '수업 최대 수강 week 수 ex) 4 - 4주',
   `days` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "tue" COMMENT '수업요일 (mon/월),(wed/화),(tue/수),(thu/목),(fri/금),(sat/토),(sun/일); ex) mon|wed - 월,화 주 2회 수업',

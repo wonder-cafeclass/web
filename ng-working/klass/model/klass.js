@@ -37,6 +37,7 @@ var Klass = (function () {
         this.level_eng = "";
         this.level_kor = "";
         this.level_img_url = "";
+        this.week = -1;
         this.week_min = -1;
         this.week_max = -1;
         this.week_list = [];
@@ -124,7 +125,7 @@ var Klass = (function () {
         if (commission < 0) {
             return -1;
         }
-        return this.price * ((100 - commission) / 100);
+        return Math.round(this.price * ((100 - commission) / 100));
     };
     Klass.prototype.getPaymentStr = function () {
         var payment = this.getPayment();

@@ -85,7 +85,23 @@ export class PriceTagHComponent implements OnInit {
 
     if(isDebug) console.log("pricetag-h / emitEventOnReady / Done!");
 
-  }   
+  } 
+
+  setTitle(title:string): void {
+    // title
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("pricetag-h / setTitle / 시작");
+
+    if(null == title || "" === title) {
+      if(isDebug) console.log("pricetag-h / setTitle / 중단 / title is not valid!");
+      return;
+    }
+
+    this.title = title;
+
+  }  
 
   setPrice(price:number): void {
 

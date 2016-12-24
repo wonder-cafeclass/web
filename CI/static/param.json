@@ -60,6 +60,8 @@
 		"klass_time_hhmm":"is_str|||regex_match_include[/^([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
 		"klass_time":"is_str|||matches[class_times_list]|||exclude[class_times_list|0]",
 		"klass_time_range":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[24]",
+
+		"klass_week":"is_str|||matches[class_weeks_list]",
 		"klass_week_min":"is_number|||is_natural_no_zero",
 		"klass_week_max":"is_number|||is_natural_no_zero",
 		"klass_days":"is_str|||min_length[1]",
@@ -121,6 +123,9 @@
 		"user_permission_list":["U","T","A"],
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
+
+		"class_weeks_list":["2","4","8","10","12"],
+		"class_weeks_kor_list":["2주","4주","8주","10주","12주"],
 
 		"class_review_status_list":["A","N"],
 		"class_review_status_desc_list":["정상","삭제"],

@@ -39,7 +39,7 @@ import { InputViewUpdown }               from '../widget/input-view/model/input-
 import { Calendar }                      from '../widget/calendar/model/calendar';
 import { DialogService }                 from '../widget/dialog.service';
 import { ImageGridV2Component }          from '../widget/image-grid/image-grid-v2.component';
-import { ImageGridComponent }          from '../widget/image-grid/image-grid.component';
+import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
@@ -175,6 +175,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   private klassSubwayLineComponent: DefaultComponent;
   private klassSubwayStationComponent: DefaultComponent;
   private klassDaysComponent: DefaultComponent;
+  private klassWeeksComponent: DefaultComponent;
 
   @ViewChild(ImageGridV2Component)
   private bannerComponent: ImageGridV2Component;
@@ -465,6 +466,85 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log("klass-detail / getParams / subscribe / this.klass : ",this.klass);
 
     }); // end route    
+
+  }
+
+  private setKlassWeeks() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassWeeks / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassWeeks / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+    if(null == this.klassWeeksComponent) {
+      if(isDebug) console.log("klass-detail / setKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+      return;
+    }
+
+    // wonder.jung
+    let classWeeksList:any = 
+    this.watchTower.getMyConst().getList("class_weeks_list");
+
+    let classWeeksKorList:any = 
+    this.watchTower.getMyConst().getList("class_weeks_kor_list");
+
+    let week:string = "" + this.klassCopy.week;
+    if(!(0 < this.klassCopy.week)) {
+      week = classWeeksList[0];
+      this.klassCopy.week = +week;
+    } // end if
+    let weekKor:string =
+    this.myArray.getValueFromLists(
+      // key:string, 
+      week,
+      // srcList:string[], 
+      classWeeksList,
+      // targetList:string[]
+      classWeeksKorList
+    );
+
+    let selectOptionList:DefaultOption[] = 
+    this.getDefaultOptionList(
+      // keyList:string[],
+      classWeeksKorList, 
+      // valueList:string[],
+      classWeeksList, 
+      // valueFocus:string
+      week
+    );
+
+    if(isDebug) console.log("klass-detail / setKlassWeeks / selectOptionList : ",selectOptionList);
+    if(isDebug) console.log("klass-detail / setKlassWeeks / week : ",week);
+    if(isDebug) console.log("klass-detail / setKlassWeeks / weekKor : ",weekKor);
+
+    this.klassWeeksComponent.setSelectOption(selectOptionList);
+
+    this.priceTagHComponent.setTitle(weekKor);
+
+  }
+
+  private updateKlassWeeks(klassWeeks:number) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassWeeks / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassWeeks / klassWeeks : ",klassWeeks);
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / updateKlassWeeks / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+    if(null == this.klassWeeksComponent) {
+      if(isDebug) console.log("klass-detail / updateKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+      return;
+    }   
+    
+    this.klassCopy.week = klassWeeks;
+
+    this.setKlassWeeks(); 
 
   }
 
@@ -1006,6 +1086,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // set default-input: klass price
     this.setKlassPrice();
+    this.setKlassWeeks();
     this.setKlassTimeBegin();
     this.setKlassTimeEnd();
     this.setKlassDateEnrollmentView();
@@ -1353,8 +1434,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1379,6 +1460,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         if( null != myEvent.metaObj ) {
           this.klassPriceComponent = myEvent.metaObj;
           this.setKlassPrice();
+        }
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.klassWeeksComponent = myEvent.metaObj;
+          this.setKlassWeeks();
         }
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_VIEW)) {
@@ -1499,6 +1587,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
 
         this.updateKlassPrice(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {
+
+        this.updateKlassWeeks(+myEvent.value);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 

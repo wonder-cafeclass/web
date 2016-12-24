@@ -42,10 +42,13 @@ export class Klass {
     public level_eng: string="";
     public level_kor: string="";
     public level_img_url: string="";
+
+    public week: number=-1;
     public week_min: number=-1;
     public week_max: number=-1;
     public week_list: string[]=[];
     public weekly_price_list: any[]=[];
+
     public month_min: number=-1;
     public month_max: number=-1;
     public days: string="";
@@ -144,8 +147,8 @@ export class Klass {
         if(commission < 0) {
             return -1;
         }
-
-        return this.price * ((100 - commission)/100);
+        
+        return Math.round(this.price * ((100 - commission)/100));
 
     }
     getPaymentStr() :string {

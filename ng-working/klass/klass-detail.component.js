@@ -276,6 +276,72 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / getParams / subscribe / this.klass : ", _this.klass);
         }); // end route    
     };
+    KlassDetailComponent.prototype.setKlassWeeks = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassWeeks / 시작");
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassWeeks / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (null == this.klassWeeksComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+            return;
+        }
+        // wonder.jung
+        var classWeeksList = this.watchTower.getMyConst().getList("class_weeks_list");
+        var classWeeksKorList = this.watchTower.getMyConst().getList("class_weeks_kor_list");
+        var week = "" + this.klassCopy.week;
+        if (!(0 < this.klassCopy.week)) {
+            week = classWeeksList[0];
+            this.klassCopy.week = +week;
+        } // end if
+        var weekKor = this.myArray.getValueFromLists(
+        // key:string, 
+        week, 
+        // srcList:string[], 
+        classWeeksList, 
+        // targetList:string[]
+        classWeeksKorList);
+        var selectOptionList = this.getDefaultOptionList(
+        // keyList:string[],
+        classWeeksKorList, 
+        // valueList:string[],
+        classWeeksList, 
+        // valueFocus:string
+        week);
+        if (isDebug)
+            console.log("klass-detail / setKlassWeeks / selectOptionList : ", selectOptionList);
+        if (isDebug)
+            console.log("klass-detail / setKlassWeeks / week : ", week);
+        if (isDebug)
+            console.log("klass-detail / setKlassWeeks / weekKor : ", weekKor);
+        this.klassWeeksComponent.setSelectOption(selectOptionList);
+        this.priceTagHComponent.setTitle(weekKor);
+    };
+    KlassDetailComponent.prototype.updateKlassWeeks = function (klassWeeks) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassWeeks / 시작");
+        if (isDebug)
+            console.log("klass-detail / updateKlassWeeks / klassWeeks : ", klassWeeks);
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassWeeks / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (null == this.klassWeeksComponent) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+            return;
+        }
+        this.klassCopy.week = klassWeeks;
+        this.setKlassWeeks();
+    };
     KlassDetailComponent.prototype.setKlassPrice = function () {
         if (null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
             return;
@@ -723,6 +789,7 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ", this.klassFilterTileComponent);
         // set default-input: klass price
         this.setKlassPrice();
+        this.setKlassWeeks();
         this.setKlassTimeBegin();
         this.setKlassTimeEnd();
         this.setKlassDateEnrollmentView();
@@ -1007,8 +1074,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1032,6 +1099,12 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.klassPriceComponent = myEvent.metaObj;
                     this.setKlassPrice();
+                }
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {
+                if (null != myEvent.metaObj) {
+                    this.klassWeeksComponent = myEvent.metaObj;
+                    this.setKlassWeeks();
                 }
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_VIEW)) {
@@ -1121,6 +1194,9 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
                 this.updateKlassPrice(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {
+                this.updateKlassWeeks(+myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.updateKlassBanners(myEvent.value);

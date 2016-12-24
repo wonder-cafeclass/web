@@ -96,7 +96,7 @@
         <!-- Second Column -->
         <ul class="list-group col-md-4" style="padding-right: 0px;">
 
-          <!-- PRICE INIT -->
+          <!-- WEEKS & PRICE INIT -->
           <li class="list-group-item col-next first">
             <pricetag-h 
             [title]="pricePerWeekFormat"
@@ -118,7 +118,21 @@
             (emitter)="onChangedFromChild($event)">
             </pricetag-h>
           </li>
-          <!-- PRICE DONE -->
+          <!-- WEEKS & PRICE DONE -->
+
+          <!-- WEEKS ADMIN INIT -->
+          <!-- Default Input : Number -->
+          <li 
+          *ngIf="isTeacher" 
+          class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[9]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- WEEKS ADMIN DONE -->          
 
           <!-- PRICE ADMIN INIT -->
           <!-- Default Input : Number -->
@@ -149,23 +163,6 @@
             </div>
           </li>
           <!-- FILTERS DONE -->
-  
-          <!-- FILTERS ADMIN INIT -->
-          <!-- REMOVE ME
-          <li 
-          *ngIf="isTeacher"
-          class="list-group-item col-next">
-            <div class="box-selectile">
-              <div class="pin-selectile">
-                <klass-filter-tile
-                [elementWidth]="60"
-                (emitter)="onChangedFromChild($event)">
-                </klass-filter-tile>
-              </div>
-            </div>
-          </li>
-          -->
-          <!-- FILTERS ADMIN DONE -->
 
           <!-- CLASS LEVEL ADMIN INIT -->
           <li 
