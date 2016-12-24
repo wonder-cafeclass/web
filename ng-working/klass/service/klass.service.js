@@ -318,8 +318,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.searchKlassVenue = function (q) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / searchKlassVenue / 시작");
         if (isDebug)

@@ -1006,8 +1006,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1499,8 +1499,8 @@ var KlassDetailComponent = (function () {
         this.clockBoardComponent.setClockTimeBeginEnd(hhmmBeing, hhmmEnd);
     }; // end method
     KlassDetailComponent.prototype.updateKlassVenue = function (klassVenue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassVenue / 시작");
         if (isDebug)

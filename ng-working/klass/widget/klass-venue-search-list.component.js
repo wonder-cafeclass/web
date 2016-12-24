@@ -118,8 +118,8 @@ var KlassVenueSearchListComponent = (function () {
     };
     // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
     KlassVenueSearchListComponent.prototype.setVenue = function (klassVenue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / setVenue / init");
         if (null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
@@ -163,8 +163,8 @@ var KlassVenueSearchListComponent = (function () {
     }; // end method  
     KlassVenueSearchListComponent.prototype.initVenueSearch = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / initVenueSearch / init");
         this.klassVenues =
@@ -239,8 +239,8 @@ var KlassVenueSearchListComponent = (function () {
             console.log("k-v-s-l / emitEventOnReady / Done!");
     };
     KlassVenueSearchListComponent.prototype.emitEventOnChangeMeta = function (value, meta) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-v-s-l / emitEventOnChangeMeta / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -296,8 +296,8 @@ var KlassVenueSearchListComponent = (function () {
     };
     KlassVenueSearchListComponent.prototype.onClickKlassVenue = function (klassVenue) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-venue-search-list / onClickKlassVenue / 시작");
         if (isDebug)

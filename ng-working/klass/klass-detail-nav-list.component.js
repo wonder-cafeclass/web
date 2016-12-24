@@ -751,8 +751,8 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("k-d-n-l / onChangedFromInputRow / init");
         if (isDebug)

@@ -160,8 +160,8 @@ export class InputsBtnsRowsComponent implements OnInit {
 
   onChangeFromChild(myEvent:MyEvent) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("inputs-btns-rows / onChangeFromChild / init");
 
     if(isDebug) console.log("inputs-btns-rows / onChangeFromChild / myEvent : ",myEvent);

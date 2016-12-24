@@ -92,8 +92,8 @@ var Klass = (function () {
         this.myTime = new my_time_1.HelperMyTime();
     }
     Klass.prototype.setTeacherResumeList = function (resumeList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setTeacherResumeList / init");
         if (this.myArray.isNotOK(resumeList)) {
@@ -103,8 +103,8 @@ var Klass = (function () {
         this.teacher_resume = resumeList.join(this.delimiter);
     }; // end method
     Klass.prototype.setTeacherGreetingList = function (greetingList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setTeacherGreetingList / init");
         if (this.myArray.isNotOK(greetingList)) {
@@ -115,8 +115,8 @@ var Klass = (function () {
     }; // end method
     // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
     Klass.prototype.setKlassVenue = function (klassVenue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setKlassVenue / init");
         if (null == klassVenue) {

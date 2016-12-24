@@ -109,8 +109,8 @@ export class Klass {
 
     setTeacherResumeList(resumeList:string[]) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setTeacherResumeList / init");
 
         if(this.myArray.isNotOK(resumeList)) {
@@ -123,8 +123,8 @@ export class Klass {
 
     setTeacherGreetingList(greetingList:string[]) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setTeacherGreetingList / init");
 
         if(this.myArray.isNotOK(greetingList)) {
@@ -138,8 +138,8 @@ export class Klass {
     // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
     setKlassVenue(klassVenue:KlassVenue) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setKlassVenue / init");
 
         if(null == klassVenue) {

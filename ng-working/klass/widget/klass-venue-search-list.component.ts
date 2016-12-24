@@ -181,8 +181,8 @@ export class KlassVenueSearchListComponent implements OnInit {
   // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
   setVenue(klassVenue:KlassVenue) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / setVenue / init");
 
     if(null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
@@ -259,8 +259,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initVenueSearch():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / initVenueSearch / init");
 
     this.klassVenues = 
@@ -356,8 +356,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private emitEventOnChangeMeta(value:string, meta:any) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -427,8 +427,8 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
   onClickKlassVenue(klassVenue:KlassVenue) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
     if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ",klassVenue);
 

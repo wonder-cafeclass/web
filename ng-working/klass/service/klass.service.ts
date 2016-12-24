@@ -379,8 +379,8 @@ export class KlassService {
 
   searchKlassVenue (q:string): Observable<KlassVenue[]> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / searchKlassVenue / 시작");
     if(isDebug) console.log("klass.service / searchKlassVenue / q : ",q);
 
