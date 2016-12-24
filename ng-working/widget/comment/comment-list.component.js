@@ -58,8 +58,8 @@ var CommentListComponent = (function () {
         this.subscribeEventPack();
     };
     CommentListComponent.prototype.setLoginUser = function (loginUser) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / setLoginUser / init");
         if (isDebug)
@@ -125,8 +125,8 @@ var CommentListComponent = (function () {
             console.log("comment-list / emitEventOnReady / Done!");
     };
     CommentListComponent.prototype.emitEventOnRemove = function (commentId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / emitEventOnRemove / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -148,8 +148,8 @@ var CommentListComponent = (function () {
             console.log("comment-list / emitEventOnRemove / Done!");
     }; // end method
     CommentListComponent.prototype.emitEventOnAddCommentMeta = function (comment) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / emitEventOnChangeMeta / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -173,8 +173,8 @@ var CommentListComponent = (function () {
             console.log("comment-list / emitEventOnAddCommentMeta / Done!");
     };
     CommentListComponent.prototype.emitEventOnAddCommentReplyMeta = function (comment) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / emitEventOnAddCommentReplyMeta / init");
         if (!this.watchTower.getIsEventPackReady()) {
@@ -224,8 +224,8 @@ var CommentListComponent = (function () {
     CommentListComponent.prototype.onClickAddComment = function (event, replyContainer, replyBtn) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onClickAddComment / init");
         if (!this.isLogin()) {
@@ -251,8 +251,8 @@ var CommentListComponent = (function () {
     CommentListComponent.prototype.onFocusTextarea = function (event, taNewComment) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onFocusTextarea / init");
         if (!this.isLogin()) {
@@ -302,8 +302,8 @@ var CommentListComponent = (function () {
         return newComment;
     };
     CommentListComponent.prototype.onClickPostNewComment = function (event, textarea) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onClickPostNewComment / init");
         if (!this.isLogin()) {
@@ -353,8 +353,8 @@ var CommentListComponent = (function () {
     };
     CommentListComponent.prototype.onClickPostReply = function (event, textarea, replyContainer, replyBtn, parentComment) {
         // 댓글의 답글쓰기를 완료했을 때, 호출됩니다.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onClickPostReply / init");
         event.stopPropagation();
@@ -429,8 +429,8 @@ var CommentListComponent = (function () {
     CommentListComponent.prototype.onFocusReply = function (event, taNewReply, replyContainer) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onFocusReply / init");
         if (!this.isLogin()) {
@@ -440,8 +440,8 @@ var CommentListComponent = (function () {
     CommentListComponent.prototype.onClickReply = function (event, taNewReply, replyContainer) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onClickReply / init");
         if (!this.isLogin()) {
@@ -532,8 +532,8 @@ var CommentListComponent = (function () {
     };
     // @ Desc : DB 업데이트 완료! 해당 comment를 업데이트해줍니다.
     CommentListComponent.prototype.updateComment = function (comment) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / updateComment / init");
         if (isDebug)
@@ -550,8 +550,8 @@ var CommentListComponent = (function () {
         } // end if
     };
     CommentListComponent.prototype.removeCommentFromCommentList = function (uniqueId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / removeCommentFromCommentList / init");
         if (isDebug)
@@ -590,8 +590,8 @@ var CommentListComponent = (function () {
         this.commentList = commentListNext;
     }; // end method
     CommentListComponent.prototype.onClickRemoveComment = function (event, commentToRemove) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment-list / onClickRemoveComment / init");
         if (isDebug)

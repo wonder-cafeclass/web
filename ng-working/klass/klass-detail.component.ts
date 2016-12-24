@@ -592,8 +592,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
   private setKlassLevel() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
 
     if(null == this.klassCopy) {
       if(isDebug) console.log("klass-detail / setKlassLevel / 중단 / this.klassCopy is not valid!");
@@ -941,8 +941,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setSelectileImageTable() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setSelectileImageTable / 시작");
 
     // 레벨 이미지 설정하기
@@ -980,8 +980,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private onAfterReceivingKlass() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klass : ",this.klass);
 
@@ -1351,8 +1351,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1744,8 +1744,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassDays(metaObj:any) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassDays / 시작");
     if(isDebug) console.log("klass-detail / updateKlassDays / metaObj : ",metaObj);
 
@@ -1792,8 +1792,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassLevel(klassLevel:string) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassLevel / 시작");
 
     if(this.klassCopy.level === klassLevel) {
@@ -1816,8 +1816,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassSubwayLine(klassSubwayLine:string) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / klassSubwayLine : ",klassSubwayLine);
@@ -1835,8 +1835,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassSubwayStation(klassSubwayStation:string) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassSubwayStation / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassSubwayStation / klassSubwayStation : ",klassSubwayStation);
@@ -1872,8 +1872,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
   private replaceSubwayStationImage(subwayImagePrev:string, subwayImageNext:string) :void{
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / replaceSubwayStationImage / 시작");
     if(isDebug) console.log("klass-detail / replaceSubwayStationImage / subwayImagePrev : ",subwayImagePrev);
     if(isDebug) console.log("klass-detail / replaceSubwayStationImage / subwayImageNext : ",subwayImageNext);

@@ -85,8 +85,8 @@ export class CommentListComponent implements OnInit {
 
   setLoginUser(loginUser:User) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / setLoginUser / init");
 
     if(isDebug) console.log("comment-list / setLoginUser / loginUser : ",loginUser);
@@ -174,8 +174,8 @@ export class CommentListComponent implements OnInit {
 
   private emitEventOnRemove(commentId:number) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / emitEventOnRemove / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -203,8 +203,8 @@ export class CommentListComponent implements OnInit {
 
   private emitEventOnAddCommentMeta(comment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -234,8 +234,8 @@ export class CommentListComponent implements OnInit {
 
   private emitEventOnAddCommentReplyMeta(comment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / emitEventOnAddCommentReplyMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -298,8 +298,8 @@ export class CommentListComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onClickAddComment / init");
 
     if(!this.isLogin()) {
@@ -328,8 +328,8 @@ export class CommentListComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onFocusTextarea / init");
 
     if(!this.isLogin()) {
@@ -396,8 +396,8 @@ export class CommentListComponent implements OnInit {
 
   onClickPostNewComment(event, textarea) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onClickPostNewComment / init");
 
     if(!this.isLogin()) {
@@ -465,8 +465,8 @@ export class CommentListComponent implements OnInit {
 
     // 댓글의 답글쓰기를 완료했을 때, 호출됩니다.
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onClickPostReply / init");
 
     event.stopPropagation();
@@ -552,8 +552,8 @@ export class CommentListComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onFocusReply / init");
 
     if(!this.isLogin()) {
@@ -566,8 +566,8 @@ export class CommentListComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onClickReply / init");
 
     if(!this.isLogin()) {
@@ -697,8 +697,8 @@ export class CommentListComponent implements OnInit {
   // @ Desc : DB 업데이트 완료! 해당 comment를 업데이트해줍니다.
   updateComment(comment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / updateComment / init");
     if(isDebug) console.log("comment-list / updateComment / comment : ",comment);
 
@@ -717,8 +717,8 @@ export class CommentListComponent implements OnInit {
 
   private removeCommentFromCommentList(uniqueId:number):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / removeCommentFromCommentList / init");
     if(isDebug) console.log("comment-list / removeCommentFromCommentList / uniqueId : ",uniqueId);
 
@@ -771,8 +771,8 @@ export class CommentListComponent implements OnInit {
 
   onClickRemoveComment(event, commentToRemove:Comment):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("comment-list / onClickRemoveComment / init");
     if(isDebug) console.log("comment-list / onClickRemoveComment / commentToRemove : ",commentToRemove);
 

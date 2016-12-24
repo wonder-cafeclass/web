@@ -226,8 +226,8 @@ export class MyEventWatchTowerService {
 
 	announceMyEventService(myEventService: MyEventService) {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("m-e-w / announceMyEventService / init");
 
 		this.myEventService = myEventService;
@@ -241,8 +241,8 @@ export class MyEventWatchTowerService {
 	}
 	announceMyCheckerService(myCheckerService: MyCheckerService) {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("m-e-w / announceMyCheckerService / init");
 
 		this.myCheckerService = myCheckerService;

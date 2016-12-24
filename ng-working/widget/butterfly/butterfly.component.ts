@@ -41,8 +41,8 @@ export class ButterflyComponent implements OnInit {
   ngOnInit(): void {
     // Do something.
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("butterfly / ngOnInit / 시작");
     
 
@@ -67,8 +67,8 @@ export class ButterflyComponent implements OnInit {
 
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("butterfly / emitEventOnReady / 시작");
 
     let myEventOnChange:MyEvent =

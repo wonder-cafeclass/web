@@ -193,8 +193,8 @@ var MyEventWatchTowerService = (function () {
         this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
     };
     MyEventWatchTowerService.prototype.announceMyEventService = function (myEventService) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("m-e-w / announceMyEventService / init");
         this.myEventService = myEventService;
@@ -207,8 +207,8 @@ var MyEventWatchTowerService = (function () {
         } // end if
     };
     MyEventWatchTowerService.prototype.announceMyCheckerService = function (myCheckerService) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("m-e-w / announceMyCheckerService / init");
         this.myCheckerService = myCheckerService;

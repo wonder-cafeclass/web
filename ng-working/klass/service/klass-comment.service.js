@@ -37,8 +37,8 @@ var KlassCommentService = (function () {
         return reviewCommentList;
     }; // end method  
     KlassCommentService.prototype.getQuestionCommentList = function (klassQuestionList, loginUserId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-comment.service / getQuestionCommentList / init");
         var questionCommentList = [];

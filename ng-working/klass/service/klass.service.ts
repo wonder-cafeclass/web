@@ -71,8 +71,8 @@ export class KlassService {
     reviewId:number
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / removeKlassReview / 시작");
     if(isDebug) console.log("klass.service / removeKlassReview / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / removeKlassReview / userId : ",userId);
@@ -102,8 +102,8 @@ export class KlassService {
     star:number
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
     if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
@@ -135,8 +135,8 @@ export class KlassService {
     reply:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassReviewReply / 시작");
     if(isDebug) console.log("klass.service / addKlassReviewReply / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassReviewReply / userId : ",userId);
@@ -167,8 +167,8 @@ export class KlassService {
     questionId:number
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / removeKlassQuestion / 시작");
     if(isDebug) console.log("klass.service / removeKlassQuestion / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / removeKlassQuestion / userId : ",userId);
@@ -197,8 +197,8 @@ export class KlassService {
     question:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
     if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
@@ -228,8 +228,8 @@ export class KlassService {
     question:string
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / addKlassQuestionReply / 시작");
     if(isDebug) console.log("klass.service / addKlassQuestionReply / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / addKlassQuestionReply / userId : ",userId);

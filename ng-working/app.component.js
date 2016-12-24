@@ -36,8 +36,8 @@ var AppComponent = (function () {
         this.isAdmin = false;
         this.toggleTopMenu = true;
         this.errorMsgArr = [];
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / constructor / 시작");
         this.watchTower.announceMyEventService(this.myEventService);

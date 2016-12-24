@@ -25,8 +25,8 @@ var ButterflyComponent = (function () {
     }
     ButterflyComponent.prototype.ngOnInit = function () {
         // Do something.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("butterfly / ngOnInit / 시작");
         if (0 < this.cageWidth) {
@@ -44,8 +44,8 @@ var ButterflyComponent = (function () {
         this.text = text;
     };
     ButterflyComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("butterfly / emitEventOnReady / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(

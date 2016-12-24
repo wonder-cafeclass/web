@@ -329,8 +329,8 @@ var Klass = (function () {
         new Klass());
     }; // end method
     Klass.prototype.setJSON = function (json) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setJSON / init");
         if (isDebug)

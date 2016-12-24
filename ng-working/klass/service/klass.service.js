@@ -46,8 +46,8 @@ var KlassService = (function () {
         this.myTime = new my_time_1.HelperMyTime();
     }
     KlassService.prototype.removeKlassReview = function (apiKey, userId, klassId, reviewId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / removeKlassReview / 시작");
         if (isDebug)
@@ -72,8 +72,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassReview = function (apiKey, userId, klassId, review, star) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassQuestion / 시작");
         if (isDebug)
@@ -101,8 +101,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassReviewReply = function (apiKey, userId, klassId, parentId, reply) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassReviewReply / 시작");
         if (isDebug)
@@ -130,8 +130,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.removeKlassQuestion = function (apiKey, userId, klassId, questionId) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / removeKlassQuestion / 시작");
         if (isDebug)
@@ -156,8 +156,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassQuestion = function (apiKey, userId, klassId, question) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassQuestion / 시작");
         if (isDebug)
@@ -182,8 +182,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassQuestionReply = function (apiKey, userId, klassId, parentId, question) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / addKlassQuestionReply / 시작");
         if (isDebug)

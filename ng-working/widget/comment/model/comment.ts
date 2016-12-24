@@ -55,8 +55,8 @@ export class Comment {
 
 	setNew(id:number, parentId:number, comment:string, writerId:number, writer:string, thumbnail:string, star:number):Comment {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("comment / setNew / init");
 
 
@@ -124,8 +124,8 @@ export class Comment {
 
     setJSON(json):Comment {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("comment / setJSON / init");
 
         let comment:Comment = this._setJSON(json);

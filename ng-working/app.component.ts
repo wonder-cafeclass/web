@@ -42,8 +42,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 					private route:ActivatedRoute,
 					public router:Router) {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("app-root / constructor / 시작");
 
 		this.watchTower.announceMyEventService(this.myEventService);

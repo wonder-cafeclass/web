@@ -39,8 +39,8 @@ var Comment = (function () {
         this.isMine = false;
     };
     Comment.prototype.setNew = function (id, parentId, comment, writerId, writer, thumbnail, star) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment / setNew / init");
         this.id = id;
@@ -89,8 +89,8 @@ var Comment = (function () {
         new Comment());
     }; // end method
     Comment.prototype.setJSON = function (json) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("comment / setJSON / init");
         var comment = this._setJSON(json);

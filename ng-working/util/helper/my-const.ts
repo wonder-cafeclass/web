@@ -279,8 +279,8 @@ export class HelperMyConst {
     // @ 체크박스 처럼 여러가지 선택이 가능한 경우.
     getDefaultOptionListWithFocusList(keyList:string[], valueList:string[], valueFocusList:string[]):DefaultOption[] {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("my-const / getDefaultOptionList / 시작");
 
         let defaultOptionList:DefaultOption[] = this.getDefaultOptionList(keyList, valueList, "");

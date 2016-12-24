@@ -161,8 +161,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private subscribeLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / subscribeLoginUser / init");
 
     this.loginUser = this.watchTower.getLoginUser();
@@ -192,8 +192,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private tossLoginUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / tossLoginUser / init");
 
     if(null == this.loginUser) {
@@ -438,8 +438,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setReview() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setReview / init");
 
     let loginUserId:number = -1;
@@ -475,8 +475,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setQuestion() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setQuestion / init");
 
     let loginUserId:number = -1;
@@ -633,8 +633,8 @@ export class KlassDetailNavListComponent implements OnInit {
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / goLogin / init");
 
     let appViewUrl:string = this.urlService.getAppViewUrl();
@@ -648,8 +648,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private removeReview(reviewId:number) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / removeReview / init");
 
     if(isDebug) console.log("k-d-n-l / removeReview / reviewId : ",reviewId);
@@ -707,8 +707,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private addReview(newComment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addReview / init");
 
     if(isDebug) console.log("k-d-n-l / addReview / newComment : ",newComment);
@@ -766,8 +766,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private addReviewReply(newComment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addReviewReply / init");
     if(isDebug) console.log("k-d-n-l / addReviewReply / newComment : ",newComment);
 
@@ -824,8 +824,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private removeQuestion(questionId:number) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / removeQuestion / init");
 
     if(isDebug) console.log("k-d-n-l / removeQuestion / questionId : ",questionId);
@@ -883,8 +883,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private addQuestion(newComment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addQuestion / init");
 
     if(isDebug) console.log("k-d-n-l / addQuestion / newComment : ",newComment);
@@ -941,8 +941,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private addQuestionReply(newComment:Comment) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / addQuestionReply / init");
 
     if(isDebug) console.log("k-d-n-l / addQuestionReply / newComment : ",newComment);
@@ -1003,8 +1003,8 @@ export class KlassDetailNavListComponent implements OnInit {
   onChangedFromInputRow(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / init");
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / myEvent : ",myEvent);
 

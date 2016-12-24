@@ -145,8 +145,8 @@ export class ImageGridComponent implements OnInit, AfterViewInit {
 
   removeImage(imageUrl:string): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("image-grid / removeImage / 시작");
     if(isDebug) console.log("image-grid / removeImage / imageUrl : ",imageUrl);
 

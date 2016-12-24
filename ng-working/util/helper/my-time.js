@@ -194,8 +194,8 @@ var HelperMyTime = (function () {
         return this.getDateFommattedStr(now, input_date_format_type);
     };
     HelperMyTime.prototype.convert = function (date_str, input_date_format_type, output_date_format_type) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-time / convert / 시작");
         var dateInput = null;
@@ -234,8 +234,8 @@ var HelperMyTime = (function () {
         return "";
     };
     HelperMyTime.prototype.getDate = function (date_str, input_date_format_type) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-time / getDate / 시작");
         if (null == date_str || "" == date_str) {

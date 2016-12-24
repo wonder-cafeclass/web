@@ -230,8 +230,8 @@ export class HelperMyTime {
 
 	public convert(date_str:string, input_date_format_type:number, output_date_format_type:number):string {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-time / convert / 시작");
 
 		let dateInput:Date = null;
@@ -284,8 +284,8 @@ export class HelperMyTime {
 
 	private getDate(date_str:string, input_date_format_type:number):Date{
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-time / getDate / 시작");
 		
 		if(null == date_str || "" == date_str) {

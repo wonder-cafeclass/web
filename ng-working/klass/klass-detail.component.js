@@ -377,8 +377,8 @@ var KlassDetailComponent = (function () {
     // @ 주당 수업 횟수 데이터를 준비합니다.
     // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
     KlassDetailComponent.prototype.setKlassLevel = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (null == this.klassCopy) {
             if (isDebug)
                 console.log("klass-detail / setKlassLevel / 중단 / this.klassCopy is not valid!");
@@ -670,8 +670,8 @@ var KlassDetailComponent = (function () {
         "class_level_img_url_list");
     };
     KlassDetailComponent.prototype.setSelectileImageTable = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setSelectileImageTable / 시작");
         // 레벨 이미지 설정하기
@@ -701,8 +701,8 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end method
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
         if (isDebug)
@@ -1006,8 +1006,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1328,8 +1328,8 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / updateKlassTimeEnd / this.klassCopy : ", this.klassCopy);
     };
     KlassDetailComponent.prototype.updateKlassDays = function (metaObj) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassDays / 시작");
         if (isDebug)
@@ -1369,8 +1369,8 @@ var KlassDetailComponent = (function () {
         } // end if
     };
     KlassDetailComponent.prototype.updateKlassLevel = function (klassLevel) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassLevel / 시작");
         if (this.klassCopy.level === klassLevel) {
@@ -1390,8 +1390,8 @@ var KlassDetailComponent = (function () {
         this.replaceSubwayStationImage(levelImagePrev, levelImageNext);
     };
     KlassDetailComponent.prototype.updateKlassSubwayLine = function (klassSubwayLine) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassSubwayLine / 시작");
         if (isDebug)
@@ -1404,8 +1404,8 @@ var KlassDetailComponent = (function () {
         this.updateSelectOptionSubwayStations(klassSubwayLine);
     };
     KlassDetailComponent.prototype.updateKlassSubwayStation = function (klassSubwayStation) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassSubwayStation / 시작");
         if (isDebug)
@@ -1435,8 +1435,8 @@ var KlassDetailComponent = (function () {
         this.replaceSubwayStationImage(subwayImagePrev, subwayImageNext);
     };
     KlassDetailComponent.prototype.replaceSubwayStationImage = function (subwayImagePrev, subwayImageNext) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / replaceSubwayStationImage / 시작");
         if (isDebug)

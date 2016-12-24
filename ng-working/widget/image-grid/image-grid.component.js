@@ -114,8 +114,8 @@ var ImageGridComponent = (function () {
         } // end for
     }; // end method
     ImageGridComponent.prototype.removeImage = function (imageUrl) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("image-grid / removeImage / 시작");
         if (isDebug)

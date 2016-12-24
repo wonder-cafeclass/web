@@ -393,8 +393,8 @@ export class Klass {
 
     setJSON(json):Klass {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setJSON / init");
 
         if(isDebug) console.log("klass / setJSON / json : ",json);

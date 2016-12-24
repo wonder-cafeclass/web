@@ -46,8 +46,8 @@ export class KlassCommentService {
 
     getQuestionCommentList(klassQuestionList:KlassQuestion[], loginUserId:number) :Comment[] {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass-comment.service / getQuestionCommentList / init");
 
         let questionCommentList:Comment[] = [];

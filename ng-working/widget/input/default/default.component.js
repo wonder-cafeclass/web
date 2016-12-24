@@ -371,8 +371,8 @@ var DefaultComponent = (function () {
         }
     }; // end method
     DefaultComponent.prototype.onCheck = function (event, selectedValue, isChecked) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onCheck / 시작");
         if (isDebug)
@@ -415,8 +415,8 @@ var DefaultComponent = (function () {
         return null;
     }; // end method
     DefaultComponent.prototype.onSelect = function (event, selectedValue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / onSelect / 시작");
         if (isDebug)
@@ -439,8 +439,8 @@ var DefaultComponent = (function () {
         }
     }; // end method 
     DefaultComponent.prototype.getKeyFromSelect = function (value) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / getKeyFromSelect / 시작");
         if (isDebug)

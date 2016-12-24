@@ -440,8 +440,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   onCheck(event, selectedValue, isChecked:boolean) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onCheck / 시작");
     if(isDebug) console.log("default / onCheck / selectedValue : ",selectedValue);
     if(isDebug) console.log("default / onCheck / isChecked : ",isChecked);
@@ -494,8 +494,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   onSelect(event, selectedValue) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / onSelect / 시작");
     if(isDebug) console.log("default / onSelect / selectedValue : ",selectedValue);
 
@@ -523,8 +523,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
   getKeyFromSelect(value:string) :string {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / getKeyFromSelect / 시작");
     if(isDebug) console.log("default / getKeyFromSelect / value : ",value);
 

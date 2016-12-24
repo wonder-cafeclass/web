@@ -220,8 +220,8 @@ var HelperMyConst = (function () {
     };
     // @ 체크박스 처럼 여러가지 선택이 가능한 경우.
     HelperMyConst.prototype.getDefaultOptionListWithFocusList = function (keyList, valueList, valueFocusList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-const / getDefaultOptionList / 시작");
         var defaultOptionList = this.getDefaultOptionList(keyList, valueList, "");
