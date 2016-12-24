@@ -1440,11 +1440,12 @@ class MY_Sql
         // 1. 부모 문의를 먼저 가져옵니다.(최신순)
         if(0 < $klass_id)
         {
-            $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->CI->db->select('question.id, question.klass_id, question.user_id, question.status, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
             $this->CI->db->from('question');
             $this->CI->db->join('user', 'question.user_id = user.id');
             $this->CI->db->where('question.klass_id', $klass_id);
             $this->CI->db->where('question.parent_id < ', 1);
+            $this->CI->db->where('question.status', 'A');
             $this->CI->db->order_by('question.id', 'DESC');
             $query = $this->CI->db->get();
 
@@ -1475,6 +1476,7 @@ class MY_Sql
             $this->CI->db->from('question');
             $this->CI->db->join('user', 'question.user_id = user.id');
             $this->CI->db->where('question.parent_id', $question_id);
+            $this->CI->db->where('question.status', 'A');
             $this->CI->db->order_by('question.id', 'DESC');
             $query = $this->CI->db->get();
 
@@ -1547,6 +1549,7 @@ class MY_Sql
         $this->CI->db->join('user', 'review.user_id = user.id');
         $this->CI->db->where('review.klass_id', $klass_id);
         $this->CI->db->where('review.parent_id < ', 1);
+        $this->CI->db->where('review.status',"A");
         $this->CI->db->order_by('review.id', 'DESC');
         $query = $this->CI->db->get();
         $review_list = $this->add_klass_review_extra_info($query);
@@ -1567,7 +1570,7 @@ class MY_Sql
         // 수업의 리뷰를 가져옵니다.
         $review_list = null;
         // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
-        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, review.status, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
         $this->CI->db->from('review');
         $this->CI->db->join('user', 'review.user_id = user.id');
         $this->CI->db->where('review.klass_id', $klass_id);
@@ -1582,7 +1585,31 @@ class MY_Sql
         }
 
         return $review_list[0];
-    }  
+    } 
+
+    public function select_klass_review_by_id($klass_review_id=-1)
+    {
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, review.status, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.id', $klass_review_id);
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        if(empty($review_list)) {
+            return null;
+        }
+
+        return $review_list[0];
+    }      
     public function select_klass_question_last($klass_id=-1, $user_id=-1)
     {
         if($this->is_not_ok("klass_id", $klass_id))
@@ -1611,7 +1638,31 @@ class MY_Sql
         }
 
         return $question_list[0];
-    }    
+    } 
+
+    public function select_klass_question_by_id($klass_question_id=-1)
+    {
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $question_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('question.id, question.klass_id, question.user_id, question.status, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+        $this->CI->db->from('question');
+        $this->CI->db->join('user', 'question.user_id = user.id');
+        $this->CI->db->where('question.id', $klass_question_id);
+        $query = $this->CI->db->get();
+        $question_list = $this->add_klass_question_extra_info($query);
+
+        if(empty($question_list)) {
+            return null;
+        }
+
+        return $question_list[0];
+    } 
       
     private function select_klass_children_review_comment_list($review_list)
     {
@@ -1636,6 +1687,7 @@ class MY_Sql
             $this->CI->db->from('review');
             $this->CI->db->join('user', 'review.user_id = user.id');
             $this->CI->db->where('review.parent_id', $review_id);
+            $this->CI->db->where('review.status', 'A');
             $this->CI->db->order_by('review.id', 'DESC');
             $query = $this->CI->db->get();
 
@@ -1969,7 +2021,77 @@ class MY_Sql
         $this->CI->db->update('klass', $data);
     } 
 
+    public function remove_klass_review($user_id=-1, $klass_id=-1, $klass_review_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
 
+        $this->update_klass_review_status($user_id, $klass_id, $klass_review_id, "N");
+    }
+
+    // @ Desc : 클래스의 상태를 변경한다.
+    private function update_klass_review_status($user_id=-1, $klass_id=-1, $klass_review_id=-1, $klass_review_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_status", $klass_review_status))
+        {
+            return;
+        }
+
+        $data = array(
+            'status' => $klass_review_status,
+        );
+
+        // QUERY Logging
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_review_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY Execution
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_review_id);
+        $this->CI->db->update('review', $data);
+
+    }
 
     // @ Desc : 클래스의 리뷰를 추가한다.
     public function add_klass_review($user_id=-1, $klass_id=-1, $klass_review="", $klass_review_star=-1)
@@ -2067,6 +2189,78 @@ class MY_Sql
         $this->CI->db->insert('review', $data);
     }        
 
+
+    public function remove_klass_question($user_id=-1, $klass_id=-1, $klass_question_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+
+        $this->update_klass_question_status($user_id, $klass_id, $klass_question_id, "N");
+    }
+
+    // @ Desc : 클래스의 상태를 변경한다.
+    private function update_klass_question_status($user_id=-1, $klass_id=-1, $klass_question_id=-1, $klass_question_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_status", $klass_question_status))
+        {
+            return;
+        }
+
+        $data = array(
+            'status' => $klass_question_status,
+        );
+
+        // QUERY Logging
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_question_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY Execution
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_question_id);
+        $this->CI->db->update('question', $data);
+
+    }
 
     // @ Desc : 클래스의 질문을 추가한다.
     public function add_klass_question($user_id=-1, $klass_id=-1, $klass_question="")

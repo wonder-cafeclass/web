@@ -654,25 +654,23 @@ export class KlassDetailNavListComponent implements OnInit {
 
     if(isDebug) console.log("k-d-n-l / removeReview / reviewId : ",reviewId);
 
-/*
     // DB UPDATE!
-    this.klassService.addKlassReview(
+    this.klassService.removeKlassReview(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number,
       +this.loginUser.id,
       // klassId:number,
       +this.klass.id,
-      // review:string,
-      newComment.comment,
-      // star:number
-      newComment.star
+      // reviewId:number
+      reviewId
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / addReview / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / removeReview / myResponse : ",myResponse);
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
-
+        
+        /*
         // 리뷰가 등록되었습니다.  
         // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
         let klassReviewJSON:any = myResponse.getDataProp("klass_review");
@@ -684,6 +682,7 @@ export class KlassDetailNavListComponent implements OnInit {
           newComment.id = klassReview.id;
         }
         this.reviewListComponent.updateComment(newComment);
+        */
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -697,13 +696,13 @@ export class KlassDetailNavListComponent implements OnInit {
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail-nav-list / addReview / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+          `klass-detail-nav-list / removeReview / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / reviewId : ${reviewId}`
         ); // end logger      
 
       } // end if
 
     }) // end service     
-*/
+
   }  
 
   private addReview(newComment:Comment) :void {
@@ -831,25 +830,25 @@ export class KlassDetailNavListComponent implements OnInit {
 
     if(isDebug) console.log("k-d-n-l / removeQuestion / questionId : ",questionId);
 
-    /*
     // DB UPDATE!
-    this.klassService.addKlassQuestion(
+    this.klassService.removeKlassQuestion(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number,
       +this.loginUser.id,
       // klassId:number,
       +this.klass.id,
-      // question:string
-      newComment.comment
+      // questionId:number
+      questionId
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / addQuestion / myResponse : ",myResponse);
+      if(isDebug) console.log("klass-detail / removeQuestion / myResponse : ",myResponse);
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
 
         // 리뷰가 등록되었습니다.  
         // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
+        /*
         let klassQuestionJSON:any = myResponse.getDataProp("klass_question");
         let klassQuestion:KlassQuestion = null;
         if(null != klassQuestionJSON) {
@@ -859,6 +858,7 @@ export class KlassDetailNavListComponent implements OnInit {
           newComment.id = klassQuestion.id;
         }
         this.questionListComponent.updateComment(newComment);
+        */
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -872,13 +872,12 @@ export class KlassDetailNavListComponent implements OnInit {
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          `klass-detail-nav-list / addQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / comment : ${newComment.comment}`
+          `klass-detail-nav-list / removeQuestion / user_id : ${this.loginUser.id} / klass_id : ${this.klass.id} / questionId : ${questionId}`
         ); // end logger      
 
       } // end if
 
     }) // end service     
-    */
 
   }
 

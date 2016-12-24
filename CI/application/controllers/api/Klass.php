@@ -509,6 +509,115 @@ class Klass extends MY_REST_Controller {
         } // end if
     } 
 
+    // @ Desc : 수업 리뷰를 삭제합니다. 물리적인 삭제가 아닌 리뷰 상태를 비활성(N)으로 바꿉니다.
+    public function removereview_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_review_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review_id",
+            // $key_filter=""
+            "klass_review_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_review_id"=>$klass_review_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->remove_klass_review(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_review_id=-1
+                $klass_review_id
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $removed_klass_review = 
+            $this->my_sql->select_klass_review_by_id(
+                // $klass_review_id=-1, 
+                $klass_review_id
+            );
+            $output["removed_klass_review"] = $removed_klass_review;
+
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addquestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
     public function addreview_post() 
     {
         if($this->is_not_ok()) {
@@ -750,6 +859,117 @@ class Klass extends MY_REST_Controller {
         } // end if
     }    
 
+
+
+    // @ Desc : 수업 문의를 삭제합니다. 물리적인 삭제가 아닌 문의 상태를 비활성(N)으로 바꿉니다.
+    public function removequestion_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_question_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_question_id",
+            // $key_filter=""
+            "klass_question_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_question_id"=>$klass_question_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->remove_klass_question(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_question_id=-1
+                $klass_question_id
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $removed_klass_question = 
+            $this->my_sql->select_klass_question_by_id(
+                // $klass_question_id=-1, 
+                $klass_question_id
+            );
+            $output["removed_klass_question"] = $removed_klass_question;
+
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "removequestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
     public function addquestion_post() 
     {
         if($this->is_not_ok()) {

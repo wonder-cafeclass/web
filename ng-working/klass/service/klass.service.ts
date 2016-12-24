@@ -42,9 +42,11 @@ export class KlassService {
 
   private addKlassQuestionUrl = '/CI/index.php/api/klass/addquestion';
   private addKlassQuestionReplyUrl = '/CI/index.php/api/klass/addquestionreply';
+  private removeKlassQuestionUrl = '/CI/index.php/api/klass/removequestion';
 
   private addKlassReviewUrl = '/CI/index.php/api/klass/addreview';
   private addKlassReviewReplyUrl = '/CI/index.php/api/klass/addreviewreply';
+  private removeKlassReviewUrl = '/CI/index.php/api/klass/removereview';
 
   private baseHref = "";
 
@@ -61,6 +63,36 @@ export class KlassService {
     this.myArray = new HelperMyArray();
     this.myTime = new HelperMyTime();
   }
+
+  removeKlassReview(    
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    reviewId:number
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / removeKlassReview / 시작");
+    if(isDebug) console.log("klass.service / removeKlassReview / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / removeKlassReview / userId : ",userId);
+    if(isDebug) console.log("klass.service / removeKlassReview / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / removeKlassReview / reviewId : ",reviewId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.removeKlassReviewUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_review_id:reviewId
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
 
   addKlassReview(    
     apiKey:string, 
@@ -95,8 +127,6 @@ export class KlassService {
                 .catch(this.myExtractor.handleError);
   } 
 
-  // addKlassReviewReply 
-
   addKlassReviewReply(    
     apiKey:string, 
     userId:number,
@@ -128,7 +158,37 @@ export class KlassService {
                 .toPromise()
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
-  }   
+  } 
+
+  removeKlassQuestion(
+    apiKey:string, 
+    userId:number,
+    klassId:number,
+    questionId:number
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / removeKlassQuestion / 시작");
+    if(isDebug) console.log("klass.service / removeKlassQuestion / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / removeKlassQuestion / userId : ",userId);
+    if(isDebug) console.log("klass.service / removeKlassQuestion / klassId : ",klassId);
+    if(isDebug) console.log("klass.service / removeKlassQuestion / questionId : ",questionId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.removeKlassQuestionUrl);
+
+    let params = {
+      user_id:userId,
+      klass_id:klassId,
+      klass_question_id:questionId
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }     
 
   addKlassQuestion(    
     apiKey:string, 
