@@ -61,7 +61,7 @@
                 </li>
                 <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
                     class="list-group-item admin">
-                  <inputs-btns-rows [key]="myEventService.KLASS_TARGET"
+                  <inputs-btns-rows [key]="myEventService.KEY_KLASS_TARGET_LIST"
                                     [rowType]="'removable'"
                                     [maxRowCnt]="5"
                                     [myEventList]="myEventListForKlassTarget"
@@ -86,7 +86,7 @@
                   <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
                               [cageHeight]="350"
                               [cageWidth]="754"
-                              [key]="myEventService.KLASS_SCHEDULE"
+                              [key]="myEventService.KEY_KLASS_SCHEDULE"
                               (emitter)="onChangedFromInputRow($event)"
                               [SEinnerHTML]="klassSchedule">
                   </input-row>                        

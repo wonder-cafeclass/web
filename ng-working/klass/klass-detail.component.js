@@ -1171,6 +1171,9 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.addKlassBanner(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
+                this.updateKlassTargetList(myEvent.metaObj);
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
@@ -1182,7 +1185,15 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.removeKlassBanner(myEvent.value);
-            } // end if      
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
+                this.updateKlassTargetList(myEvent.metaObj);
+            } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SHUTDOWN_N_ROLLBACK)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_SCHEDULE)) {
+                this.updateKlassSchedule(myEvent.value);
+            } // end if
         } // end if
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / this.klassCopy : ", this.klassCopy);
@@ -1498,6 +1509,8 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / updateKlassSchedule / 시작");
         if (isDebug)
             console.log("klass-detail / updateKlassSchedule / schedule : ", schedule);
+        // 가장 마지막에 추가되는 불필요한 태그를 삭제합니다.
+        schedule = schedule.replace(/\<p\>\<br\>\<\/p\>$/gi, "");
         this.klassCopy.setSchedule(schedule);
     };
     KlassDetailComponent.prototype.updateKlassDateEnrollment = function (klassDateEnrollment) {

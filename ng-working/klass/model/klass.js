@@ -95,6 +95,13 @@ var Klass = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
+    Klass.prototype.getFeatureList = function () {
+        if (null == this.feature || "" === this.feature) {
+            return [];
+        }
+        return this.feature.split(this.delimiter);
+    };
     Klass.prototype.setFeatureList = function (featureList) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -107,6 +114,13 @@ var Klass = (function () {
         this.feature_list = featureList;
         this.feature = featureList.join(this.delimiter);
     }; // end method
+    // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
+    Klass.prototype.getTargetList = function () {
+        if (null == this.target || "" === this.target) {
+            return [];
+        }
+        return this.target.split(this.delimiter);
+    };
     Klass.prototype.setTargetList = function (targetList) {
         var isDebug = true;
         // let isDebug:boolean = false;
@@ -183,20 +197,6 @@ var Klass = (function () {
                 +this.venue_longitude);
         } // end if
         return this.klassVenue;
-    };
-    // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
-    Klass.prototype.getTargetList = function () {
-        if (null == this.target || "" === this.target) {
-            return [];
-        }
-        return this.target.split(this.delimiter);
-    };
-    // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
-    Klass.prototype.getFeatureList = function () {
-        if (null == this.feature || "" === this.feature) {
-            return [];
-        }
-        return this.feature.split(this.delimiter);
     };
     /*
     // @ Desc : 수업의 특징을 1열 추가합니다.

@@ -20,6 +20,7 @@ var radiobtn_linear_component_1 = require('../radiobtn/radiobtn-linear.component
 var klass_color_service_1 = require('../../klass/service/klass-color.service');
 var my_ruler_service_1 = require('../../util/service/my-ruler.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_1 = require('../../util/model/my-event');
 /*
 *
@@ -31,9 +32,10 @@ var my_event_1 = require('../../util/model/my-event');
 *
 */
 var InputRowComponent = (function () {
-    function InputRowComponent(klassColorService, myEventService, myRulerService) {
+    function InputRowComponent(klassColorService, myEventService, myCheckerService, myRulerService) {
         this.klassColorService = klassColorService;
         this.myEventService = myEventService;
+        this.myCheckerService = myCheckerService;
         this.myRulerService = myRulerService;
         this.key = "";
         this.title = "";
@@ -95,7 +97,7 @@ var InputRowComponent = (function () {
                 // public metaObj:any
                 null, 
                 // public myChecker:MyChecker
-                null);
+                this.myCheckerService.getFreePassChecker());
                 this.emitter.emit(myEventReturn);
             } // end if
         } // end if
@@ -134,7 +136,7 @@ var InputRowComponent = (function () {
                 // public metaObj:any
                 null, 
                 // public myChecker:MyChecker
-                null);
+                this.myCheckerService.getFreePassChecker());
         }
         else {
             // 저장하지 않습니다. 이전 값으로 돌려놓습니다.
@@ -147,11 +149,11 @@ var InputRowComponent = (function () {
                     // public key:string
                     this.key, 
                     // public value:string
-                    "", 
+                    HTMLPrev, 
                     // public metaObj:any
                     null, 
                     // public myChecker:MyChecker
-                    null);
+                    this.myCheckerService.getFreePassChecker());
             }
             else if (null != this.singleInputViewComponent) {
                 var myEventFromSI = this.singleInputViewComponent.getMyEvent();
@@ -166,7 +168,7 @@ var InputRowComponent = (function () {
                     // public metaObj:any
                     null, 
                     // public myChecker:MyChecker
-                    null);
+                    this.myCheckerService.getFreePassChecker());
             }
         }
         this.emitter.emit(myEventReturn);
@@ -202,7 +204,7 @@ var InputRowComponent = (function () {
         // public metaObj:any
         null, 
         // public myChecker:MyChecker
-        null);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventReturn);
     };
     InputRowComponent.prototype.onClickPreview = function (event) {
@@ -219,7 +221,7 @@ var InputRowComponent = (function () {
         // public metaObj:any
         null, 
         // public myChecker:MyChecker
-        null);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventReturn);
     };
     InputRowComponent.prototype.save = function () {
@@ -241,7 +243,7 @@ var InputRowComponent = (function () {
         // public metaObj:any
         null, 
         // public myChecker:MyChecker
-        null);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventReturn);
         this.overwriteSEinnerHTML();
         this.isDisabledSave = true;
@@ -329,7 +331,7 @@ var InputRowComponent = (function () {
             templateUrl: 'input-row.component.html',
             styleUrls: ['input-row.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_ruler_service_1.MyRulerService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_ruler_service_1.MyRulerService])
     ], InputRowComponent);
     return InputRowComponent;
 }());

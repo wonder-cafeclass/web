@@ -111,6 +111,16 @@ export class Klass {
         this.myTime = new HelperMyTime();
     }
 
+    // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
+    getFeatureList() :string[] {
+
+        if(null == this.feature || "" === this.feature) {
+            return [];            
+        }
+
+        return this.feature.split(this.delimiter);
+    }    
+
     setFeatureList(featureList:string[]) :void {
 
         let isDebug:boolean = true;
@@ -125,6 +135,16 @@ export class Klass {
         this.feature = featureList.join(this.delimiter);
 
     } // end method
+
+    // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
+    getTargetList() :string[] {
+
+        if(null == this.target || "" === this.target) {
+            return [];            
+        }
+
+        return this.target.split(this.delimiter);
+    }
 
     setTargetList(targetList:string[]) :void {
 
@@ -224,25 +244,7 @@ export class Klass {
         return this.klassVenue;
     }
 
-    // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
-    getTargetList() :string[] {
 
-        if(null == this.target || "" === this.target) {
-            return [];            
-        }
-
-        return this.target.split(this.delimiter);
-    }
-
-    // @ Desc : 수업의 특징을 배열 형태로 반환합니다.
-    getFeatureList() :string[] {
-
-        if(null == this.feature || "" === this.feature) {
-            return [];            
-        }
-
-        return this.feature.split(this.delimiter);
-    }
     /*
     // @ Desc : 수업의 특징을 1열 추가합니다.
     addFeature(feature:string):void {
