@@ -1006,8 +1006,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1485,8 +1485,8 @@ var KlassDetailComponent = (function () {
         this.selectileImageTable[0] = this.myArray.replaceStr(this.selectileImageTable[0], subwayImagePrev, subwayImageNext);
     };
     KlassDetailComponent.prototype.updateKlassFeatureList = function (featureList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassFeatureList / 시작");
         if (isDebug)
@@ -1494,8 +1494,8 @@ var KlassDetailComponent = (function () {
         this.klassCopy.setFeatureList(featureList);
     };
     KlassDetailComponent.prototype.updateKlassTargetList = function (targetList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassTargetList / 시작");
         if (isDebug)
@@ -1503,8 +1503,8 @@ var KlassDetailComponent = (function () {
         this.klassCopy.setTargetList(targetList);
     };
     KlassDetailComponent.prototype.updateKlassSchedule = function (schedule) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassSchedule / 시작");
         if (isDebug)

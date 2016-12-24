@@ -1352,8 +1352,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1936,8 +1936,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassFeatureList(featureList:string[]) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassFeatureList / 시작");
     if(isDebug) console.log("klass-detail / updateKlassFeatureList / featureList : ",featureList);
 
@@ -1947,8 +1947,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassTargetList(targetList:string[]) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassTargetList / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassTargetList / targetList : ",targetList);
@@ -1959,8 +1959,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassSchedule(schedule:string) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassSchedule / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassSchedule / schedule : ",schedule);

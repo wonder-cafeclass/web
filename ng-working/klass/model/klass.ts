@@ -123,8 +123,8 @@ export class Klass {
 
     setFeatureList(featureList:string[]) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setFeatureList / init");
 
         if(this.myArray.isNotOK(featureList)) {
@@ -148,8 +148,8 @@ export class Klass {
 
     setTargetList(targetList:string[]) :void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setTargetList / init");
 
         if(this.myArray.isNotOK(targetList)) {
@@ -163,8 +163,8 @@ export class Klass {
     
     setSchedule(schedule:string) :void { 
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setSchedule / init");
 
         this.schedule = schedule;

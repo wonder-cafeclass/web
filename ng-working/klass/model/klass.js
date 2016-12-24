@@ -103,8 +103,8 @@ var Klass = (function () {
         return this.feature.split(this.delimiter);
     };
     Klass.prototype.setFeatureList = function (featureList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setFeatureList / init");
         if (this.myArray.isNotOK(featureList)) {
@@ -122,8 +122,8 @@ var Klass = (function () {
         return this.target.split(this.delimiter);
     };
     Klass.prototype.setTargetList = function (targetList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setTargetList / init");
         if (this.myArray.isNotOK(targetList)) {
@@ -134,8 +134,8 @@ var Klass = (function () {
         this.target = targetList.join(this.delimiter);
     }; // end method 
     Klass.prototype.setSchedule = function (schedule) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setSchedule / init");
         this.schedule = schedule;
