@@ -108,7 +108,7 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
 
   private getDefaultVenue():KlassVenue {
-    return new KlassVenue(
+    return new KlassVenue().set(
       // public title:string
       "&lt;b&gt;스타벅스&lt;/b&gt; 갤러리아팰리스점",
       // public telephone:string
@@ -178,6 +178,24 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   }
 
+  // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
+  setVenue(klassVenue:KlassVenue) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-v-s-l / setVenue / init");
+
+    if(null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
+      if(isDebug) console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
+      return;
+    }
+
+    this.klassVenuesNaverMap = klassVenue;
+
+    if(isDebug) console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ",this.klassVenuesNaverMap);
+
+  }
+
   private initIFrameAfterOnInit() :void {
     // Javascript, ifarme 통신 
     // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
@@ -204,20 +222,32 @@ export class KlassVenueSearchListComponent implements OnInit {
       
       // iframe을 시작합니다.
       // 부모 객체에게 Ready Event 발송 
+      let myEvent:MyEvent = 
+      this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_VENUE_MAP,
+        // component
+        this
+      );
+      this.emitter.emit(myEvent);
+
+      // REMOVE ME
+      /*
       let myEventReady:MyEvent =
       this.myEventService.getMyEvent(
           // public eventName:string
           this.myEventService.ON_READY,
           // public key:string
-          this.myEventService.KEY_SEARCH_LIST,
+          this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP,
           // public value:string
           "",
           // public metaObj:any
-          null,
+          this,
           // public myChecker:MyChecker
-          null    
+          this.watchTower.getMyCheckerService().getFreePassChecker(),
       );
-      this.emitter.emit(myEventReady);
+      this.emitter.emit(myEvent);
+      */
 
     } else if("update" === myEvent.key) {
 
@@ -229,11 +259,23 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initVenueSearch():void {
 
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("k-v-s-l / initVenueSearch / init");
+
     this.klassVenues = 
     this.searchTermsNaverLocal
     .debounceTime(300)        // wait for 300ms pause in events
     .distinctUntilChanged()   // ignore if next search term is same as previous
     .switchMap(term => {
+
+      if(isDebug) console.log("k-v-s-l / initVenueSearch / switchMap / term : ",term);
+
+      if(null == term || "" === term || term.length < 3) {
+        // 유효하지 않은 검색어는 중단합니다.
+        // 2글자 이상이어야 합니다.
+        return Observable.of<KlassVenue[]>([]);
+      }
 
       // 새로운 입력이 들어온다면 검색 결과리스트를 노출합니다.
       this.isHideKlassVenue = false;
@@ -314,8 +356,8 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private emitEventOnChangeMeta(value:string, meta:any) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
@@ -385,9 +427,10 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
   onClickKlassVenue(klassVenue:KlassVenue) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
+    if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ",klassVenue);
 
     this.klassVenuesNaverMap = klassVenue;
 
@@ -397,6 +440,8 @@ export class KlassVenueSearchListComponent implements OnInit {
     ).then((myReponse:MyResponse) => {
 
       if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ",myReponse);
+
+      klassVenue = this.klassService.setLatLon(myReponse.data, klassVenue);
 
       this.klassVenuesNaverMap.latitude = klassVenue.latitude;
       this.klassVenuesNaverMap.longitude = klassVenue.longitude;
@@ -414,15 +459,13 @@ export class KlassVenueSearchListComponent implements OnInit {
         // 결과 라스트는 화면에서 가립니다.
         this.isHideKlassVenue = true;
 
-        // DB UPDATE!
-        console.log("DB UPDATE!");
-
         this.emitEventOnChangeMeta(
           // value:string, 
           klassVenue.title,
           // meta:any
           klassVenue
         );
+        
       }
     });
   }

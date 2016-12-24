@@ -1006,8 +1006,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1108,6 +1108,9 @@ var KlassDetailComponent = (function () {
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
                 this.updateKlassTitle(myEvent.value, false);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+                this.updateKlassVenue(myEvent.metaObj);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
                 this.updateKlassPrice(myEvent.value);
@@ -1479,6 +1482,23 @@ var KlassDetailComponent = (function () {
         // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
         this.clockBoardComponent.setClockTimeBeginEnd(hhmmBeing, hhmmEnd);
     }; // end method
+    KlassDetailComponent.prototype.updateKlassVenue = function (klassVenue) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassVenue / 시작");
+        if (isDebug)
+            console.log("klass-detail / updateKlassVenue / klassVenue : ", klassVenue);
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassVenue / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        // Klass 객체에 수업 장소 관련 데이터를 저장합니다.
+        this.klassCopy.setKlassVenue(klassVenue);
+        if (isDebug)
+            console.log("klass-detail / updateKlassVenue / this.klassCopy : ", this.klassCopy);
+    };
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
         var _this = this;
         // let isDebug:boolean = true;

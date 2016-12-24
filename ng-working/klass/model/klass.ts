@@ -5,6 +5,7 @@ import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
 import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
+import { KlassVenue }               from './klass-venue';
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
 import { HelperMyTime }             from '../../util/helper/my-time';
@@ -16,6 +17,7 @@ export class Klass {
     public teacher:KlassTeacher=null;
     public review_list:KlassReview[]=[];
     public question_list:KlassQuestion[]=[];
+    public klassVenue:KlassVenue=null;
 
     public teacher_id:number=-1;
     public teacher_resume:string="";
@@ -103,6 +105,51 @@ export class Klass {
         this.myArray = new HelperMyArray();
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
+    }
+
+    // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
+    setKlassVenue(klassVenue:KlassVenue) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setKlassVenue / init");
+
+        if(null == klassVenue) {
+            return;
+        } // end if
+  
+        this.klassVenue = klassVenue;
+
+        this.venue_title = klassVenue.title;
+        this.venue_telephone = klassVenue.telephone;
+        this.venue_address = klassVenue.address;
+        this.venue_road_address = klassVenue.roadAddress;
+        this.venue_latitude = ""+klassVenue.latitude;
+        this.venue_longitude = ""+klassVenue.longitude;
+
+    }
+
+    getKlassVenue() :KlassVenue {
+
+        if(null == this.klassVenue) {
+            this.klassVenue = 
+            new KlassVenue().set(
+                // title:string,
+                this.venue_title,
+                // telephone:string,
+                this.venue_telephone,
+                // address:string,
+                this.venue_address,
+                // roadAddress:string,
+                this.venue_road_address,
+                // latitude:number,
+                +this.venue_latitude,
+                // longitude:number
+                +this.venue_longitude
+            );
+        } // end if
+        
+        return this.klassVenue;
     }
 
     // @ Desc : 수업의 대상을 배열 형태로 반환합니다.

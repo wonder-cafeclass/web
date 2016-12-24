@@ -28,6 +28,7 @@ var klass_color_service_1 = require('./service/klass-color.service');
 var klass_comment_service_1 = require('./service/klass-comment.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_service_1 = require('./service/klass.service');
+var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
 var KlassDetailNavListComponent = (function () {
     function KlassDetailNavListComponent(klassColorService, klassCommentService, klassService, watchTower, myEventService, myCheckerService, radiobtnService, myLoggerService, urlService, imageService) {
         this.klassColorService = klassColorService;
@@ -159,6 +160,23 @@ var KlassDetailNavListComponent = (function () {
         this.emitter.emit(myEventOnReady);
         if (isDebug)
             console.log("k-d-n-l / emitEventOnReady / Done!");
+    };
+    KlassDetailNavListComponent.prototype.emitEvent = function (myEvent) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-d-n-l / emitEvent / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEvent / 중단 / EventPack is not valid!");
+            return;
+        }
+        if (null == myEvent) {
+            if (isDebug)
+                console.log("k-d-n-l / emitEvent / 중단 / myEvent is not valid!");
+            return;
+        }
+        this.emitter.emit(myEvent);
     };
     KlassDetailNavListComponent.prototype.setKlass = function (klass) {
         // let isDebug:boolean = true;
@@ -415,22 +433,29 @@ var KlassDetailNavListComponent = (function () {
         return eventValues;
     };
     KlassDetailNavListComponent.prototype.setQuestionList = function () {
-        if (null == this.loginUser) {
-            return;
-        }
         if (null == this.questionListComponent) {
             return;
         }
         this.questionListComponent.setLoginUser(this.loginUser);
     };
     KlassDetailNavListComponent.prototype.setReviewList = function () {
-        if (null == this.loginUser) {
-            return;
-        }
         if (null == this.reviewListComponent) {
             return;
         }
         this.reviewListComponent.setLoginUser(this.loginUser);
+    };
+    KlassDetailNavListComponent.prototype.setVenueSearch = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-d-n-l / goLogin / init");
+        if (null == this.klass) {
+            return;
+        }
+        if (null == this.venueSearchComponent) {
+            return;
+        }
+        this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
     };
     // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
     KlassDetailNavListComponent.prototype.goLogin = function () {
@@ -726,8 +751,8 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / onChangedFromInputRow / init");
         if (isDebug)
@@ -747,6 +772,14 @@ var KlassDetailNavListComponent = (function () {
                     this.reviewListComponent = myEvent.metaObj;
                     this.setReviewList();
                 } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+                // wonder.jung
+                if (null != myEvent.metaObj) {
+                    // 네이버 맵 장소 검색 컴포넌트가 준비됨.
+                    this.venueSearchComponent = myEvent.metaObj;
+                    this.setVenueSearch();
+                } // end if
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_LOGIN_REQUIRED)) {
@@ -763,6 +796,9 @@ var KlassDetailNavListComponent = (function () {
             }
             else if (this.myEventService.KLASS_SCHEDULE === myEvent.key) {
                 this.klassSchedule = myEvent.value;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+                this.emitEvent(myEvent);
             }
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
@@ -998,6 +1034,10 @@ var KlassDetailNavListComponent = (function () {
         core_1.ViewChild(comment_list_component_1.CommentListComponent), 
         __metadata('design:type', comment_list_component_1.CommentListComponent)
     ], KlassDetailNavListComponent.prototype, "reviewListComponent", void 0);
+    __decorate([
+        core_1.ViewChild(klass_venue_search_list_component_1.KlassVenueSearchListComponent), 
+        __metadata('design:type', klass_venue_search_list_component_1.KlassVenueSearchListComponent)
+    ], KlassDetailNavListComponent.prototype, "venueSearchComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)

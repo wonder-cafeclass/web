@@ -379,8 +379,8 @@ export class KlassService {
 
   searchKlassVenue (q:string): Observable<KlassVenue[]> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / searchKlassVenue / 시작");
     if(isDebug) console.log("klass.service / searchKlassVenue / q : ",q);
 
@@ -419,7 +419,28 @@ export class KlassService {
       }
     }
 
-    return result as KlassVenue[];
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / getKlassVenue / 시작");
+    if(isDebug) console.log("klass.service / getKlassVenue / result : ",result);
+
+    // json 정보를 KlassVenue 정보로 바꿉니다.
+    let klassVenueList:KlassVenue[] = [];
+    if(null != result && 0 < result.length) {
+      for (var i = 0; i < result.length; ++i) {
+        let klassVenueJSON = result[i];
+        if(null == klassVenueJSON || "" === klassVenueJSON["address"]) {
+          continue;
+        } // end if
+
+        let klassVenue:KlassVenue = new KlassVenue().setJSON(klassVenueJSON);
+        klassVenueList.push(klassVenue);
+      } // end for
+    } // end if
+
+    if(isDebug) console.log("klass.service / getKlassVenue / klassVenueList : ",klassVenueList);
+
+    return klassVenueList;
   }
 
   searchKlassMap (q:string): Promise<MyResponse> {
@@ -440,31 +461,13 @@ export class KlassService {
               .then(this.myExtractor.extractData)
               .catch(this.myExtractor.handleError);
   }
-  public getKlassVenueEmpty() :KlassVenue {
-    let klassVenue:KlassVenue = 
-    new KlassVenue(
-      // public title:string
-      "",
-      // public telephone:string
-      "",
-      // public address:string
-      "",
-      // public roadAddress:string
-      "",
-      // public latitude:number
-      0,
-      // public longitude:number
-      0
-    );
 
-    return klassVenue;     
-  }
-  private getLatLon(r:Response)  :KlassVenue {
+  public setLatLon(json, klassVenue:KlassVenue)  :KlassVenue {
 
-    let responseJson = r.json();
-    let klassVenue:KlassVenue = this.getKlassVenueEmpty();
-
-    if(!responseJson.success) {
+    if(null == json) {
+      return klassVenue;
+    }
+    if(null == klassVenue) {
       return klassVenue;
     }
 
@@ -474,15 +477,14 @@ export class KlassService {
     // 경도 / longitude / point.x
     // * 경도 값의 범위 : +180.000000(East)동경 180도 ~ -180.000000(West)서경 180도 [그리니치 천문대 기준 0도]                          
     let longitude:number = null;
-    if( null != responseJson && 
-        null != responseJson.data && 
-        null != responseJson.data.result && 
-        null != responseJson.data.result[0] && 
-        null != responseJson.data.result[0].x &&
-        null != responseJson.data.result[0].y  ) {
+    if( null != json && 
+        null != json.result && 
+        null != json.result[0] && 
+        null != json.result[0].x &&
+        null != json.result[0].y  ) {
 
-        longitude = parseFloat(responseJson.data.result[0].x);
-        latitude = parseFloat(responseJson.data.result[0].y);
+        longitude = parseFloat(json.result[0].x);
+        latitude = parseFloat(json.result[0].y);
     }
 
     if(null != longitude) {

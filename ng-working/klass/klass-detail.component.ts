@@ -26,6 +26,7 @@ import { KlassTime }                     from './model/klass-time';
 import { KlassPrice }                    from './model/klass-price';
 import { KlassCalendar }                 from './model/klass-calendar';
 import { KlassCalendarDay }              from './model/klass-calendar-day';
+import { KlassVenue }                    from './model/klass-venue';
 
 import { AuthService }                   from '../auth.service';
 import { KlassRadioBtnService }          from './service/klass-radiobtn.service';
@@ -1351,8 +1352,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1482,6 +1483,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
 
         this.updateKlassTitle(myEvent.value, false);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+
+        this.updateKlassVenue(myEvent.metaObj);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
 
@@ -1916,6 +1921,26 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
     this.clockBoardComponent.setClockTimeBeginEnd(hhmmBeing, hhmmEnd);
   } // end method
+
+  private updateKlassVenue(klassVenue:KlassVenue) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassVenue / 시작");
+
+    if(isDebug) console.log("klass-detail / updateKlassVenue / klassVenue : ",klassVenue);
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / updateKlassVenue / 중단 / this.klassCopy is not valid!");      
+      return;
+    }
+
+    // Klass 객체에 수업 장소 관련 데이터를 저장합니다.
+    this.klassCopy.setKlassVenue(klassVenue);
+    
+    if(isDebug) console.log("klass-detail / updateKlassVenue / this.klassCopy : ",this.klassCopy);
+
+  }
 
   private updateKlassTitle(klassTitle:string, isDBUpdate:boolean) :void {
 

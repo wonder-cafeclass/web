@@ -4,6 +4,7 @@ var klass_review_1 = require('./klass-review');
 var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
 var klass_calendar_1 = require('./klass-calendar');
+var klass_venue_1 = require('./klass-venue');
 var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
@@ -13,6 +14,7 @@ var Klass = (function () {
         this.teacher = null;
         this.review_list = [];
         this.question_list = [];
+        this.klassVenue = null;
         this.teacher_id = -1;
         this.teacher_resume = "";
         this.teacher_greeting = "";
@@ -89,6 +91,42 @@ var Klass = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
+    Klass.prototype.setKlassVenue = function (klassVenue) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setKlassVenue / init");
+        if (null == klassVenue) {
+            return;
+        } // end if
+        this.klassVenue = klassVenue;
+        this.venue_title = klassVenue.title;
+        this.venue_telephone = klassVenue.telephone;
+        this.venue_address = klassVenue.address;
+        this.venue_road_address = klassVenue.roadAddress;
+        this.venue_latitude = "" + klassVenue.latitude;
+        this.venue_longitude = "" + klassVenue.longitude;
+    };
+    Klass.prototype.getKlassVenue = function () {
+        if (null == this.klassVenue) {
+            this.klassVenue =
+                new klass_venue_1.KlassVenue().set(
+                // title:string,
+                this.venue_title, 
+                // telephone:string,
+                this.venue_telephone, 
+                // address:string,
+                this.venue_address, 
+                // roadAddress:string,
+                this.venue_road_address, 
+                // latitude:number,
+                +this.venue_latitude, 
+                // longitude:number
+                +this.venue_longitude);
+        } // end if
+        return this.klassVenue;
+    };
     // @ Desc : 수업의 대상을 배열 형태로 반환합니다.
     Klass.prototype.getTargetList = function () {
         if (null == this.target || "" === this.target) {

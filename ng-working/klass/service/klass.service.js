@@ -318,8 +318,8 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.searchKlassVenue = function (q) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass.service / searchKlassVenue / 시작");
         if (isDebug)
@@ -353,7 +353,27 @@ var KlassService = (function () {
                 return [];
             }
         }
-        return result;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass.service / getKlassVenue / 시작");
+        if (isDebug)
+            console.log("klass.service / getKlassVenue / result : ", result);
+        // json 정보를 KlassVenue 정보로 바꿉니다.
+        var klassVenueList = [];
+        if (null != result && 0 < result.length) {
+            for (var i = 0; i < result.length; ++i) {
+                var klassVenueJSON = result[i];
+                if (null == klassVenueJSON || "" === klassVenueJSON["address"]) {
+                    continue;
+                } // end if
+                var klassVenue = new klass_venue_1.KlassVenue().setJSON(klassVenueJSON);
+                klassVenueList.push(klassVenue);
+            } // end for
+        } // end if
+        if (isDebug)
+            console.log("klass.service / getKlassVenue / klassVenueList : ", klassVenueList);
+        return klassVenueList;
     };
     KlassService.prototype.searchKlassMap = function (q) {
         // let isDebug:boolean = true;
@@ -372,26 +392,11 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.getKlassVenueEmpty = function () {
-        var klassVenue = new klass_venue_1.KlassVenue(
-        // public title:string
-        "", 
-        // public telephone:string
-        "", 
-        // public address:string
-        "", 
-        // public roadAddress:string
-        "", 
-        // public latitude:number
-        0, 
-        // public longitude:number
-        0);
-        return klassVenue;
-    };
-    KlassService.prototype.getLatLon = function (r) {
-        var responseJson = r.json();
-        var klassVenue = this.getKlassVenueEmpty();
-        if (!responseJson.success) {
+    KlassService.prototype.setLatLon = function (json, klassVenue) {
+        if (null == json) {
+            return klassVenue;
+        }
+        if (null == klassVenue) {
             return klassVenue;
         }
         // 위도 / latitude / point.y
@@ -400,14 +405,13 @@ var KlassService = (function () {
         // 경도 / longitude / point.x
         // * 경도 값의 범위 : +180.000000(East)동경 180도 ~ -180.000000(West)서경 180도 [그리니치 천문대 기준 0도]                          
         var longitude = null;
-        if (null != responseJson &&
-            null != responseJson.data &&
-            null != responseJson.data.result &&
-            null != responseJson.data.result[0] &&
-            null != responseJson.data.result[0].x &&
-            null != responseJson.data.result[0].y) {
-            longitude = parseFloat(responseJson.data.result[0].x);
-            latitude = parseFloat(responseJson.data.result[0].y);
+        if (null != json &&
+            null != json.result &&
+            null != json.result[0] &&
+            null != json.result[0].x &&
+            null != json.result[0].y) {
+            longitude = parseFloat(json.result[0].x);
+            latitude = parseFloat(json.result[0].y);
         }
         if (null != longitude) {
             klassVenue.longitude = longitude;

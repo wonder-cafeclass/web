@@ -32,11 +32,14 @@ import { Klass }                      from './model/klass';
 import { KlassTeacher }               from './model/klass-teacher';
 import { KlassQuestion }              from './model/klass-question';
 import { KlassReview }                from './model/klass-review';
+import { KlassVenue }                 from './model/klass-venue';
 
 import { KlassColorService }          from './service/klass-color.service';
 import { KlassCommentService }        from './service/klass-comment.service';
 import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
 import { KlassService }               from './service/klass.service';
+
+import { KlassVenueSearchListComponent }  from './widget/klass-venue-search-list.component';
 
 import { User }                       from '../users/model/user';
 
@@ -56,6 +59,9 @@ export class KlassDetailNavListComponent implements OnInit {
 
   @ViewChild(CommentListComponent)
   private reviewListComponent: CommentListComponent;  
+
+  @ViewChild(KlassVenueSearchListComponent)
+  private venueSearchComponent: KlassVenueSearchListComponent;
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
@@ -268,7 +274,27 @@ export class KlassDetailNavListComponent implements OnInit {
 
     if(isDebug) console.log("k-d-n-l / emitEventOnReady / Done!");
 
-  }   
+  } 
+
+  private emitEvent(myEvent:MyEvent) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / emitEvent / init");
+
+    if(!this.watchTower.getIsEventPackReady()) {
+      if(isDebug) console.log("k-d-n-l / emitEvent / 중단 / EventPack is not valid!");    
+      return;
+    }
+
+    if(null == myEvent) {
+      if(isDebug) console.log("k-d-n-l / emitEvent / 중단 / myEvent is not valid!");    
+      return;
+    }
+
+    this.emitter.emit(myEvent);
+
+  }     
 
   public setKlass(klass:Klass) :void {
 
@@ -606,9 +632,6 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setQuestionList():void {
 
-    if(null == this.loginUser) {
-      return;
-    }
     if(null == this.questionListComponent) {
       return;
     }
@@ -619,16 +642,30 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setReviewList():void {
 
-    if(null == this.loginUser) {
-      return;
-    }
     if(null == this.reviewListComponent) {
       return;
     }
 
     this.reviewListComponent.setLoginUser(this.loginUser);
 
-  }  
+  } 
+
+  private setVenueSearch():void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / goLogin / init");
+
+    if(null == this.klass) {
+      return;
+    }
+    if(null == this.venueSearchComponent) {
+      return;
+    }
+
+    this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+
+  } 
 
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {
@@ -1003,8 +1040,8 @@ export class KlassDetailNavListComponent implements OnInit {
   onChangedFromInputRow(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / init");
     if(isDebug) console.log("k-d-n-l / onChangedFromInputRow / myEvent : ",myEvent);
 
@@ -1026,6 +1063,15 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.reviewListComponent = myEvent.metaObj; 
           this.setReviewList();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+
+        // wonder.jung
+        if(  null != myEvent.metaObj ) {
+          // 네이버 맵 장소 검색 컴포넌트가 준비됨.
+          this.venueSearchComponent = myEvent.metaObj;
+          this.setVenueSearch();
         } // end if
 
       } // end if
@@ -1055,6 +1101,10 @@ export class KlassDetailNavListComponent implements OnInit {
       } else if(this.myEventService.KLASS_SCHEDULE=== myEvent.key) {
 
         this.klassSchedule = myEvent.value;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
+
+        this.emitEvent(myEvent);
 
       }  
 
