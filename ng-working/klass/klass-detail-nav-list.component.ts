@@ -1165,7 +1165,17 @@ export class KlassDetailNavListComponent implements OnInit {
 
         let klassFeatureTarget:string = this.getEventValues(this.myEventListForKlassTarget);
 
-      }
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 부모에게 변경된 내역을 전파
+        this.emitter.emit(myEvent);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 부모에게 변경된 내역을 전파
+        this.emitter.emit(myEvent);
+
+      } // end if
 
     } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
@@ -1191,6 +1201,16 @@ export class KlassDetailNavListComponent implements OnInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
 
         this.removeReview(parseInt(myEvent.value));
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 부모에게 변경된 내역을 전파
+        this.emitter.emit(myEvent);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 부모에게 변경된 내역을 전파
+        this.emitter.emit(myEvent);
 
       } // end if
 

@@ -93,7 +93,12 @@ export class CommentListComponent implements OnInit {
 
     this.loginUser = loginUser;
 
-    this.checkMine(+this.loginUser.id);
+    let loginUserId:number = -1;
+    if(null != this.loginUser) {
+      loginUserId = +this.loginUser.id;
+    } // end if
+
+    this.checkMine(loginUserId);
 
   } // end method
 

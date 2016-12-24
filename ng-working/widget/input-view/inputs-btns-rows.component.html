@@ -32,22 +32,6 @@
 
   </li>
 
-
-  <!-- 열의 갯수가 이벤트 리스트의 갯수로 표시. 유저가 수정할 수 있음. -->
-  <!-- 
-  <li   *ngIf="rowType=='removalbe'"
-        *ngFor="let myBtn of myRemovableBtnList; let i = index"
-        class="list-group-item compact" [ngClass]="{'first':i === 0}">
-    <input-btns-row [type]="'removable'"
-                    [myEventKeyEnterCallback]="myBtn.myEvent"
-                    [myButton]="myBtn"
-                    [inputText]="myBtn.myEvent.value"
-                    (emitter)="onChangeFromChild($event)">
-    </input-btns-row>    
-  </li>
-  -->
-
-
   <!-- 열을 추가하는 입력을 받는 창 -->
   <li *ngIf="myRemovableBtnList.length < maxRowCnt" 
       class="list-group-item compact body">    

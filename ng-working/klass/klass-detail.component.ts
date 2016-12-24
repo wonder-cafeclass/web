@@ -1530,6 +1530,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       } // end if
 
+    
     } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TITLE)) {
@@ -1548,7 +1549,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        this.klassCopy.setTeacherResumeList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        this.klassCopy.setTeacherGreetingList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         this.addKlassBanner(myEvent.value);
 
@@ -1556,13 +1565,24 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        this.klassCopy.setTeacherResumeList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        this.klassCopy.setTeacherGreetingList(myEvent.metaObj);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         this.removeKlassBanner(myEvent.value);
 
       } // end if      
 
     } // end if
+
+    if(isDebug) console.log("klass-detail / onChangedFromChild / this.klassCopy : ",this.klassCopy);
+    if(isDebug) console.log("klass-detail / onChangedFromChild / Done");
 
   } // end method
 

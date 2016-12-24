@@ -120,7 +120,8 @@
               <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
               <klass-teacher  [isAdmin]="isAdmin"
                               [klassTeacher]="klassTeacher" 
-                              [klassId]="klass.id">
+                              [klassId]="klass.id"
+                              (emitter)="onChangedFromInputRow($event)">
               </klass-teacher>
             </li>
             <li   #studentReview

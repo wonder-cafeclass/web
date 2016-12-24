@@ -13,7 +13,8 @@
 		style="padding:5px;"> 
 	<input 	#inputText 
 			[(ngModel)]="innerText"
-			(ngModelChange)="onChange($event, inputText)"
+			(blur)="onBlur($event, inputText.value, inputText)"
+			(ngModelChange)="onChange(inputText.value, inputText)"
 			class="form-control" 
 			placeholder={{placeholder}}>
 </div>
@@ -22,7 +23,8 @@
 	<input 	#inputText 
 			[(ngModel)]="innerText"
 			(keyup.enter)="onKeyEnter($event, inputText.value)"
-			(ngModelChange)="onChange($event, inputText)"
+			(blur)="onBlur($event, inputText.value, inputText)"
+			(ngModelChange)="onChange(inputText.value, inputText)"
 			class="form-control" 
 			placeholder={{placeholder}}>
 	<div class="input-group-btn">

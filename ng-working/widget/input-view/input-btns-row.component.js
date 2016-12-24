@@ -47,9 +47,15 @@ var InputBtnsRowComponent = (function () {
         null);
         this.emitter.emit(myEventReady);
     };
-    InputBtnsRowComponent.prototype.onChange = function (value, inputTextEl) {
-        // wonder.jung / 문자열의 길이 및 유효성 검증을 해야함.
-        console.log("input-btns-row / onChange / this.myEventKeyEnterCallback : ", this.myEventKeyEnterCallback);
+    InputBtnsRowComponent.prototype.onBlur = function (event, value, inputTextEl) {
+        event.stopPropagation();
+        event.preventDefault();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("input-btns-row / onBlur / init");
+        if (isDebug)
+            console.log("input-btns-row / onBlur / this.myEventKeyEnterCallback : ", this.myEventKeyEnterCallback);
         var myChecker = null;
         var myEventCopy = null;
         if (null != this.myEventKeyEnterCallback) {
@@ -66,15 +72,53 @@ var InputBtnsRowComponent = (function () {
                 return;
             }
             var history_1 = this.myCheckerService.getLastHistory();
-            // console.log(">>> onChange / history : ",history);
+            if (isDebug)
+                console.log("input-btns-row / onBlur / history : ", history_1);
             // 유효한 문자열이 아닙니다.
             // 유저에게 알립니다.
             var msg = myEventCopy.myChecker.msg;
             if (null != msg && "" != msg) {
                 alert(msg);
-                inputTextEl.focus();
             } // end if
         }
+    };
+    InputBtnsRowComponent.prototype.onChange = function (value, inputTextEl) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("input-btns-row / onChange / init");
+        if (isDebug)
+            console.log("input-btns-row / onChange / this.myEventKeyEnterCallback : ", this.myEventKeyEnterCallback);
+        /*
+        let myChecker:MyChecker = null;
+        let myEventCopy:MyEvent = null;
+        if(null != this.myEventKeyEnterCallback) {
+          myEventCopy = this.myEventKeyEnterCallback.copy();
+          myEventCopy.eventName = this.myEventService.ON_CHANGE;
+          myEventCopy.value = value;
+          myChecker = myEventCopy.myChecker;
+        }
+    
+        // input field의 역할이 어떤 것인지 모르므로 부모에게 change 이벤트 및 input field의 값을 전달합니다.
+        if(null != myChecker && null != myEventCopy) {
+          let isOK = this.myCheckerService.isOK(myChecker, value);
+          if(isOK) {
+            this.emitter.emit(myEventCopy);
+            return;
+          }
+    
+          let history = this.myCheckerService.getLastHistory();
+          // console.log(">>> onChange / history : ",history);
+    
+          // 유효한 문자열이 아닙니다.
+          // 유저에게 알립니다.
+          let msg:string = myEventCopy.myChecker.msg;
+          if(null != msg && "" != msg) {
+            alert(msg);
+            inputTextEl.focus();
+          } // end if
+        }
+        */
     };
     InputBtnsRowComponent.prototype.callbackSave = function (value, myEventCallback) {
         if (null == myEventCallback) {

@@ -173,7 +173,7 @@ export class KlassTeacherComponent implements OnInit {
         // public eventName:string
         this.myEventService.ANY,
         // public key:string
-        this.myEventService.TEACHER_RESUME,
+        this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST,
         // public value:string
         resume,
         // public metaObj:any
@@ -204,7 +204,7 @@ export class KlassTeacherComponent implements OnInit {
         // public eventName:string
         this.myEventService.ANY,
         // public key:string
-        this.myEventService.TEACHER_GREETING,
+        this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST,
         // public value:string
         greeting,
         // public metaObj:any
@@ -244,10 +244,123 @@ export class KlassTeacherComponent implements OnInit {
       return;
     }
 
-    if(this.myEventService.TEACHER_RESUME === myEvent.key) {
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+
+      } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 변경되었습니다. 부모 객체에게 전달합니다.
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 변경되었습니다. 부모 객체에게 전달합니다.
+
+      } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 추가되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 추가되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
+
+      } // end if      
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 삭제되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
+
+        // 삭제된 데이터로 업데이트.
+        if(null != myEvent.parentEventList) {
+          this.myEventListForTeacherResume = myEvent.parentEventList;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 삭제되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
+
+        // 삭제된 데이터로 업데이트.
+        if(null != myEvent.parentEventList) {
+          this.myEventListForTeacherGreeting = myEvent.parentEventList;
+        } // end if
+
+      } // end if       
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_SAVE)) {
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_SHUTDOWN)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 사용자가 저장 이후, 창을 닫았습니다.
+        this.isShowResume = false;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 사용자가 저장 이후, 창을 닫았습니다.
+        this.isShowGreeting = false;
+
+      } // end if      
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_SHUTDOWN_N_ROLLBACK)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        // 사용자가 저장하지 않고, 창을 닫았습니다.
+        this.isShowResume = false;
+
+        // 이전 데이터롤 롤백.
+        if(null != myEvent.parentEventList) {
+          this.myEventListForTeacherResume = myEvent.parentEventList;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+
+        // 사용자가 저장하지 않고, 창을 닫았습니다.
+        this.isShowGreeting = false;
+
+        // 이전 데이터롤 롤백.
+        if(null != myEvent.parentEventList) {
+          this.myEventListForTeacherGreeting = myEvent.parentEventList;
+        } // end if
+
+      } // end if      
+
+    } // end if
+
+    // REFACTOR ME / REMOVE ME
+    /*
+    if(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST === myEvent.key) {
 
       if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+
         // Do something...
+
+      } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+
+        // 열이 추가되었습니다. 부모 객체에게 전달합니다.
+
+
       } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
 
         if(null != myEvent.parentEventList) {
@@ -272,7 +385,7 @@ export class KlassTeacherComponent implements OnInit {
 
       }
 
-    } else if(this.myEventService.TEACHER_GREETING === myEvent.key) {
+    } else if(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST === myEvent.key) {
 
       if(this.myEventService.ON_CHANGE === myEvent.eventName) {
         // Do something...
@@ -298,7 +411,11 @@ export class KlassTeacherComponent implements OnInit {
         }
         this.isShowGreeting = false;
 
-      }
-    }
-  }
-}
+      } // end if
+
+    } // end if
+    */
+
+  } // end method
+
+} // end class

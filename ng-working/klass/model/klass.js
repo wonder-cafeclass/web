@@ -45,8 +45,8 @@ var Klass = (function () {
         this.days_eng = "";
         this.days_kor = "";
         this.class_day_per_week = -1; // 주 n회 수업
-        this.resume = "";
-        this.greeting = "";
+        this.resume = ""; // @ Deprecated
+        this.greeting = ""; // @ Deprecated
         this.venue = "";
         this.venue_cafe = "";
         this.venue_cafe_logo_img_url = "";
@@ -91,6 +91,28 @@ var Klass = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    Klass.prototype.setTeacherResumeList = function (resumeList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setTeacherResumeList / init");
+        if (this.myArray.isNotOK(resumeList)) {
+            if (isDebug)
+                console.log("klass / setTeacherResumeList / 중단 / resumeList is not valid!");
+        } // end if
+        this.teacher_resume = resumeList.join(this.delimiter);
+    }; // end method
+    Klass.prototype.setTeacherGreetingList = function (greetingList) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / setTeacherGreetingList / init");
+        if (this.myArray.isNotOK(greetingList)) {
+            if (isDebug)
+                console.log("klass / setTeacherGreetingList / 중단 / greetingList is not valid!");
+        } // end if
+        this.teacher_greeting = greetingList.join(this.delimiter);
+    }; // end method
     // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
     Klass.prototype.setKlassVenue = function (klassVenue) {
         var isDebug = true;

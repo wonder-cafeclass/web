@@ -51,8 +51,8 @@ export class Klass {
     public days_kor: string="";
     public class_day_per_week: number=-1; // 주 n회 수업
 
-    public resume: string="";
-    public greeting: string="";
+    public resume: string="";      // @ Deprecated
+    public greeting: string="";    // @ Deprecated
 
     public venue: string="";
     public venue_cafe: string="";
@@ -106,6 +106,34 @@ export class Klass {
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
     }
+
+    setTeacherResumeList(resumeList:string[]) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setTeacherResumeList / init");
+
+        if(this.myArray.isNotOK(resumeList)) {
+            if(isDebug) console.log("klass / setTeacherResumeList / 중단 / resumeList is not valid!");
+        } // end if
+
+        this.teacher_resume = resumeList.join(this.delimiter);
+
+    } // end method
+
+    setTeacherGreetingList(greetingList:string[]) :void {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setTeacherGreetingList / init");
+
+        if(this.myArray.isNotOK(greetingList)) {
+            if(isDebug) console.log("klass / setTeacherGreetingList / 중단 / greetingList is not valid!");
+        } // end if
+
+        this.teacher_greeting = greetingList.join(this.delimiter);
+
+    } // end method
 
     // @ Desc : 네이버 맵에서 검색한 수업 장소 데이터를 저장합니다. klass 내의 venue관련 데이터도 함께 업데이트합니다.
     setKlassVenue(klassVenue:KlassVenue) :void {

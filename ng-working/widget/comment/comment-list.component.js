@@ -65,7 +65,11 @@ var CommentListComponent = (function () {
         if (isDebug)
             console.log("comment-list / setLoginUser / loginUser : ", loginUser);
         this.loginUser = loginUser;
-        this.checkMine(+this.loginUser.id);
+        var loginUserId = -1;
+        if (null != this.loginUser) {
+            loginUserId = +this.loginUser.id;
+        } // end if
+        this.checkMine(loginUserId);
     }; // end method
     // @ Desc : 작성한 글이 자신의 것인지 확인한다.
     CommentListComponent.prototype.checkMine = function (writerId) {
