@@ -1688,7 +1688,6 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / updateKlassVenue / this.klassCopy : ", this.klassCopy);
     };
     KlassDetailComponent.prototype.updateKlassTitle = function (klassTitle, isDBUpdate) {
-        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -1700,79 +1699,108 @@ var KlassDetailComponent = (function () {
         if (null == klassTitle || "" == klassTitle) {
             return;
         }
+        if (null == this.klassCopy) {
+            return;
+        }
+        // @ Deprecated
         this.klassTitle = klassTitle;
-        if (isDBUpdate) {
-            this.klassService.updateKlassTitle(
-            // apiKey:string, 
-            this.watchTower.getApiKey(), 
+        this.klassCopy.title = klassTitle;
+        // REMOVE ME
+        /*
+        if(isDBUpdate) {
+    
+          this.klassService.updateKlassTitle(
+            // apiKey:string,
+            this.watchTower.getApiKey(),
             // userId:number,
-            +this.loginUser.id, 
+            +this.loginUser.id,
             // klassId:number,
-            +this.klassCopy.id, 
+            +this.klassCopy.id,
             // klassTitle:string
-            klassTitle).then(function (myResponse) {
-                // 로그 등록 결과를 확인해볼 수 있습니다.
-                if (isDebug)
-                    console.log("klass-detail / updateKlassTitle / myResponse : ", myResponse);
-                if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
-                }
-                else if (myResponse.isFailed() && null != myResponse.error) {
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                }
-                else {
-                    // 에러 로그 등록
-                    _this.myLoggerService.logError(
-                    // apiKey:string
-                    _this.watchTower.getApiKey(), 
-                    // errorType:string
-                    _this.myLoggerService.errorAPIFailed, 
-                    // errorMsg:string
-                    "klass-detail / updateKlassTitle / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klassCopy.id + " / klassTitle : " + klassTitle); // end logger      
-                } // end if
-            }); // end service 
+            klassTitle
+          ).then((myResponse:MyResponse) => {
+    
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if(isDebug) console.log("klass-detail / updateKlassTitle / myResponse : ",myResponse);
+            if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+    
+              // Do something..
+    
+            } else if(myResponse.isFailed() && null != myResponse.error) {
+    
+              this.watchTower.announceErrorMsgArr([myResponse.error]);
+    
+            } else {
+              // 에러 로그 등록
+              this.myLoggerService.logError(
+                // apiKey:string
+                this.watchTower.getApiKey(),
+                // errorType:string
+                this.myLoggerService.errorAPIFailed,
+                // errorMsg:string
+                `klass-detail / updateKlassTitle / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / klassTitle : ${klassTitle}`
+              ); // end logger
+    
+            } // end if
+    
+          }) // end service
+    
         } // end if
+        */
     }; // end method
     KlassDetailComponent.prototype.addKlassPoster = function (posterUrl) {
-        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("klass-detail / addKlassPoster / 시작");
+        if (null == this.klassCopy) {
+            return;
+        }
+        this.klassCopy.class_poster_url = posterUrl;
+        // REMOVE ME
+        /*
         this.klassService.addKlassPoster(
-        // apiKey:string, 
-        this.watchTower.getApiKey(), 
-        // userId:number,
-        +this.loginUser.id, 
-        // klassId:number,
-        +this.klassCopy.id, 
-        // klassPoster:string
-        posterUrl).then(function (myResponse) {
-            // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
-                console.log("klass-detail / addKlassPoster / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
-                var klassPosterUrl = myResponse.getDataProp("klass_poster");
-                if (null != klassPosterUrl && "" != klassPosterUrl) {
-                    klassPosterUrl = _this.imgUploaderImagePathKlassPoster + "/" + klassPosterUrl;
-                    _this.imgUploaderImageUrlKlassPoster = klassPosterUrl;
-                }
-                if (isDebug)
-                    console.log("klass-detail / addKlassPoster / klassPosterUrl : ", klassPosterUrl);
+          // apiKey:string,
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // klassId:number,
+          +this.klassCopy.id,
+          // klassPoster:string
+          posterUrl
+        ).then((myResponse:MyResponse) => {
+          // 로그 등록 결과를 확인해볼 수 있습니다.
+          if(isDebug) console.log("klass-detail / addKlassPoster / myResponse : ",myResponse);
+          if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
+    
+            let klassPosterUrl:string = myResponse.getDataProp("klass_poster");
+    
+            if(null != klassPosterUrl && "" != klassPosterUrl) {
+              klassPosterUrl = `${this.imgUploaderImagePathKlassPoster}/${klassPosterUrl}`;
+              this.imgUploaderImageUrlKlassPoster = klassPosterUrl;
             }
-            else if (myResponse.isFailed() && null != myResponse.error) {
-                _this.watchTower.announceErrorMsgArr([myResponse.error]);
-            }
-            else {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.watchTower.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errorMsg:string
-                "klass-detail / addKlassPoster / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klassCopy.id + " / posterUrl : " + posterUrl); // end logger      
-            } // end if
-        }); // end service    
+    
+            if(isDebug) console.log("klass-detail / addKlassPoster / klassPosterUrl : ",klassPosterUrl);
+    
+          } else if(myResponse.isFailed() && null != myResponse.error) {
+    
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+    
+          } else {
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `klass-detail / addKlassPoster / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / posterUrl : ${posterUrl}`
+            ); // end logger
+    
+          } // end if
+    
+        }) // end service
+        */
     };
     KlassDetailComponent.prototype.addKlassBanner = function (imgUrlToAdd) {
         // let isDebug:boolean = true;
@@ -1846,7 +1874,6 @@ var KlassDetailComponent = (function () {
         this.updateKlassBanners(classBannerUrlNext);
     }; // end method
     KlassDetailComponent.prototype.updateKlassBanners = function (classBannerUrlNext) {
-        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -1858,34 +1885,49 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / updateKlassBanners / 중단 / classBannerUrlNext is not valid!");
             return;
         }
+        if (null == this.klassCopy) {
+            return;
+        }
+        this.klassCopy.class_poster_url = classBannerUrlNext;
+        // REMOVE ME
+        /*
         this.klassService.updateKlassBanner(
-        // apiKey:string, 
-        this.watchTower.getApiKey(), 
-        // userId:number,
-        +this.loginUser.id, 
-        // klassId:number,
-        +this.klassCopy.id, 
-        // klassBanners:string
-        classBannerUrlNext).then(function (myResponse) {
-            // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
-                console.log("klass-detail / updateKlassBanner / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
-            }
-            else if (myResponse.isFailed() && null != myResponse.error) {
-                _this.watchTower.announceErrorMsgArr([myResponse.error]);
-            }
-            else {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.watchTower.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errorMsg:string
-                "klass-detail / updateKlassBanner / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klassCopy.id + " / banner_url : " + classBannerUrlNext); // end logger      
-            } // end if
+          // apiKey:string,
+          this.watchTower.getApiKey(),
+          // userId:number,
+          +this.loginUser.id,
+          // klassId:number,
+          +this.klassCopy.id,
+          // klassBanners:string
+          classBannerUrlNext
+        ).then((myResponse:MyResponse) => {
+          // 로그 등록 결과를 확인해볼 수 있습니다.
+          if(isDebug) console.log("klass-detail / updateKlassBanner / myResponse : ",myResponse);
+    
+          if(myResponse.isSuccess()) {
+    
+            // TODO - 가져온 klass 객체의 banner list를 업데이트 해야 합니다.
+    
+          } else if(myResponse.isFailed() && null != myResponse.error) {
+    
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+    
+          } else {
+    
+            // 에러 로그 등록
+            this.myLoggerService.logError(
+              // apiKey:string
+              this.watchTower.getApiKey(),
+              // errorType:string
+              this.myLoggerService.errorAPIFailed,
+              // errorMsg:string
+              `klass-detail / updateKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / banner_url : ${classBannerUrlNext}`
+            ); // end logger
+    
+          } // end if
+          
         }); // end service
+        */
     }; // end method
     // Admin Section
     KlassDetailComponent.prototype.showSEKlassFeature = function () {

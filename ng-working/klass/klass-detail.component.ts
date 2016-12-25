@@ -2180,8 +2180,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       return;
     }
 
-    this.klassTitle = klassTitle;
+    if(null == this.klassCopy) {
+      return;
+    }
 
+    // @ Deprecated
+    this.klassTitle = klassTitle;
+    this.klassCopy.title = klassTitle;
+
+    // REMOVE ME
+    /*
     if(isDBUpdate) {
 
       this.klassService.updateKlassTitle(
@@ -2221,6 +2229,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       }) // end service 
 
     } // end if
+    */
 
   } // end method
 
@@ -2233,6 +2242,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / addKlassPoster / 시작");
 
+    if(null == this.klassCopy) {
+      return;
+    }
+    this.klassCopy.class_poster_url = posterUrl;
+
+    // REMOVE ME
+    /*
     this.klassService.addKlassPoster(
       // apiKey:string, 
       this.watchTower.getApiKey(),
@@ -2273,7 +2289,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       } // end if
 
-    }) // end service    
+    }) // end service 
+    */   
 
   }
 
@@ -2360,6 +2377,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       return;
     }
 
+    if(null == this.klassCopy) {
+      return;
+    }
+
+    this.klassCopy.class_poster_url = classBannerUrlNext;
+
+    // REMOVE ME
+    /*
     this.klassService.updateKlassBanner(
       // apiKey:string, 
       this.watchTower.getApiKey(),
@@ -2396,6 +2421,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } // end if
       
     }); // end service
+    */
 
   } // end method
 
