@@ -143,7 +143,6 @@ class Klass extends MY_REST_Controller {
         if($is_ok) {
 
             // 새로 입력하는 수업 관련 기본 정보를 돌려줍니다.
-            // wonder.jung
             // 수업 - 새로운 klass 정보를 가져옵니다.
             $new_klass = $this->get_klass_course_new_class();
 
@@ -329,7 +328,6 @@ class Klass extends MY_REST_Controller {
             return;
         }
 
-        // wonder.jung
         $user_id = 
         $this->my_paramchecker->post(
             // $key=""
@@ -410,6 +408,369 @@ class Klass extends MY_REST_Controller {
             );             
         }
     }
+
+    // @ 수업을 업데이트합니다.
+    public function update_post()
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        // wonder.jung
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $teacher_resume = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_resume",
+            // $key_filter=""
+            "teacher_resume"
+        );
+        $teacher_greeting = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_greeting",
+            // $key_filter=""
+            "teacher_greeting"
+        ); 
+        $klass_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_title",
+            // $key_filter=""
+            "klass_title"
+        ); 
+        $klass_desc = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_desc",
+            // $key_filter=""
+            "klass_desc"
+        ); 
+        $klass_feature = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_feature",
+            // $key_filter=""
+            "klass_feature"
+        ); 
+        $klass_target = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_target",
+            // $key_filter=""
+            "klass_target"
+        );
+        $klass_schedule = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_schedule",
+            // $key_filter=""
+            "klass_schedule"
+        );
+        $klass_date_begin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_date_begin",
+            // $key_filter=""
+            "klass_date_begin"
+        );
+        $klass_time_begin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_begin",
+            // $key_filter=""
+            "klass_time_hhmm"
+        );
+        $klass_time_end = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_end",
+            // $key_filter=""
+            "klass_time_hhmm"
+        );
+        $klass_time_duration_minutes = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_duration_minutes",
+            // $key_filter=""
+            "klass_time_duration_minutes"
+        );
+        $klass_level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_level",
+            // $key_filter=""
+            "klass_level"
+        );
+        $klass_week = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_week",
+            // $key_filter=""
+            "klass_week"
+        );
+        $klass_days = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_days",
+            // $key_filter=""
+            "klass_days"
+        );
+        $klass_venue_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_title",
+            // $key_filter=""
+            "klass_venue_title"
+        );
+        $klass_venue_telephone = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_telephone",
+            // $key_filter=""
+            "klass_venue_telephone"
+        );
+        $klass_venue_address = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_address",
+            // $key_filter=""
+            "klass_venue_address"
+        );
+        $klass_venue_road_address = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_road_address",
+            // $key_filter=""
+            "klass_venue_road_address"
+        );
+        $klass_venue_latitude = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_latitude",
+            // $key_filter=""
+            "klass_venue_latitude"
+        );
+        $klass_venue_longitude = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_longitude",
+            // $key_filter=""
+            "klass_venue_longitude"
+        );
+        $klass_subway_line = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_line",
+            // $key_filter=""
+            "klass_subway_line"
+        );
+        $klass_subway_station = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_station",
+            // $key_filter=""
+            "klass_subway_station"
+        );
+        $klass_price = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_price",
+            // $key_filter=""
+            "klass_price"
+        );        
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );      
+        // @ Optional  
+        $klass_poster_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_poster_url",
+            // $key_filter=""
+            "klass_poster_url",
+            // $is_no_record=false
+            true
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "teacher_id"=>$teacher_id,
+            "klass_id"=>$klass_id,
+            "teacher_id"=>$teacher_id,
+            "teacher_resume"=>$teacher_resume,
+            "teacher_greeting"=>$teacher_greeting,
+            "klass_title"=>$klass_title,
+            "klass_feature"=>$klass_feature,
+            "klass_target"=>$klass_target,
+            "klass_schedule"=>$klass_schedule,
+            "klass_date_begin"=>$klass_date_begin,
+            "klass_time_begin"=>$klass_time_begin,
+            "klass_time_end"=>$klass_time_end,
+            "klass_time_duration_minutes"=>$klass_time_duration_minutes,
+            "klass_level"=>$klass_level,
+            "klass_week"=>$klass_week,
+            "klass_days"=>$klass_days,
+            "klass_venue_title"=>$klass_venue_title,
+            "klass_venue_telephone"=>$klass_venue_telephone,
+            "klass_venue_address"=>$klass_venue_address,
+            "klass_venue_road_address"=>$klass_venue_road_address,
+            "klass_venue_latitude"=>$klass_venue_latitude,
+            "klass_venue_longitude"=>$klass_venue_longitude,
+            "klass_subway_line"=>$klass_subway_line,
+            "klass_subway_station"=>$klass_subway_station,
+            "klass_price"=>$klass_price,
+            "klass_banner_url"=>$klass_banner_url,
+            "klass_poster_url"=>$klass_poster_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+
+        if($is_ok) 
+        {
+            // wonder.jung
+            $this->my_sql->update_klass(
+                // $klass_id=-1,
+                $klass_id,
+                // $user_id=-1,
+                $user_id,
+                // $teacher_id=-1
+                $teacher_id,
+                // $teacher_resume=""
+                $teacher_resume,
+                // $teacher_greeting=""
+                $teacher_greeting,
+                // $title=""
+                $klass_title,
+                // $feature=""
+                $klass_feature,
+                // $target=""
+                $klass_target,
+                // $schedule=""
+                $klass_schedule,
+                // $date_begin=""
+                $klass_date_begin,
+                // $time_begin=""
+                $klass_time_begin,
+                // $time_end=""
+                $klass_time_end,
+                // $time_duration_minutes=-1
+                $klass_time_duration_minutes,
+                // $level=""
+                $klass_level,
+                // $week=-1
+                $klass_week,
+                // $days=""
+                $klass_days,
+                // $venue_title=""
+                $klass_venue_title,
+                // $venue_telephone=""
+                $klass_venue_telephone,
+                // $venue_address=""
+                $klass_venue_address,
+                // $venue_road_address=""
+                $klass_venue_road_address,
+                // $venue_latitude=""
+                $klass_venue_latitude,
+                // $venue_longitude=""
+                $klass_venue_longitude,
+                // $subway_line=""
+                $klass_subway_line,
+                // $subway_station=""
+                $klass_subway_station,
+                // $banner_url=""
+                $klass_banner_url,
+                // $poster_url=""
+                $klass_poster_url,
+                // $price=-1
+                $klass_price
+            );
+
+            // 쿼리 가져오기
+            $queries = array();
+            array_push($queries, $this->my_sql->get_last_query());
+            $output["queries"] = $queries;
+
+            $klass = $this->my_sql->select_klass($klass_id);
+            $output["klass"] = $klass;
+            
+            $this->respond_200($output);
+        }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "update_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );             
+        }
+    }    
 
     public function updatetitle_post() 
     {
@@ -1506,7 +1867,6 @@ class Klass extends MY_REST_Controller {
             return;
         }
 
-        // wonder.jung
         $user_id = 
         $this->my_paramchecker->post(
             // $key=""

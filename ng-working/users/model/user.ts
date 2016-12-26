@@ -50,6 +50,13 @@ export class User {
 		}
 		this.teacher = teacher;
 	}
+	getTeacherId():number {
+		if(!this.isTeacher()) {
+			return -1;
+		}
+
+		return +this.teacher.id;
+	}
 
 	// Common Properties - INIT
 	isNotSameName(name:string) :boolean {

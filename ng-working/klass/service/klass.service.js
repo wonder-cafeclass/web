@@ -23,6 +23,7 @@ var KlassService = (function () {
         this.urlService = urlService;
         this.klassesUrl = '/CI/index.php/api/klass/list';
         this.klassUrl = '/CI/index.php/api/klass/course';
+        this.klassUpdateUrl = '/CI/index.php/api/klass/update';
         this.klassNewUrl = '/CI/index.php/api/klass/coursenew';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
         this.klassSearchUrl = '/CI/index.php/api/klass/search';
@@ -45,6 +46,55 @@ var KlassService = (function () {
         this.myArray = new my_array_1.HelperMyArray();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    KlassService.prototype.updateKlass = function (apiKey, userId, teacherId, klass) {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass.service / updateKlass / 시작");
+        if (isDebug)
+            console.log("klass.service / updateKlass / apiKey : ", apiKey);
+        if (isDebug)
+            console.log("klass.service / updateKlass / userId : ", userId);
+        if (isDebug)
+            console.log("klass.service / updateKlass / klass : ", klass);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.klassUpdateUrl);
+        var params = {
+            user_id: userId,
+            teacher_id: teacherId,
+            klass_id: klass.id,
+            teacher_resume: klass.teacher_resume,
+            teacher_greeting: klass.teacher_greeting,
+            klass_title: klass.title,
+            klass_desc: klass.desc,
+            klass_feature: klass.feature,
+            klass_target: klass.target,
+            klass_schedule: klass.schedule,
+            klass_date_begin: klass.date_begin,
+            klass_time_begin: klass.time_begin,
+            klass_time_end: klass.time_end,
+            klass_time_duration_minutes: klass.time_duration_minutes,
+            klass_level: klass.level,
+            klass_week: klass.week,
+            klass_days: klass.days,
+            klass_venue_title: klass.venue_title,
+            klass_venue_telephone: klass.venue_telephone,
+            klass_venue_address: klass.venue_address,
+            klass_venue_road_address: klass.venue_road_address,
+            klass_venue_latitude: klass.venue_latitude,
+            klass_venue_longitude: klass.venue_longitude,
+            klass_subway_line: klass.subway_line,
+            klass_subway_station: klass.subway_station,
+            klass_price: klass.price,
+            klass_banner_url: klass.class_banner_url,
+            klass_poster_url: klass.class_poster_url
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     KlassService.prototype.removeKlassReview = function (apiKey, userId, klassId, reviewId) {
         // let isDebug:boolean = true;
         var isDebug = false;

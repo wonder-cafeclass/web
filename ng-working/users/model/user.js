@@ -43,6 +43,12 @@ var User = (function () {
         }
         this.teacher = teacher;
     };
+    User.prototype.getTeacherId = function () {
+        if (!this.isTeacher()) {
+            return -1;
+        }
+        return +this.teacher.id;
+    };
     // Common Properties - INIT
     User.prototype.isNotSameName = function (name) {
         return !this.isSameName(name);

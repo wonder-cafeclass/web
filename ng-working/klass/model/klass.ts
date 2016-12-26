@@ -427,6 +427,12 @@ export class Klass {
     // @ Deprecated
     getEnrollmentDateList():KlassCalendarDay[] {
 
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / getEnrollmentDateList / 시작");
+
+        if(isDebug) console.log("klass / getEnrollmentDateList / this.klass_calendar_list : ",this.klass_calendar_list);
+
         if(null == this.klass_calendar_list || 0 == this.klass_calendar_list.length) {
             return [];
         } // end if
@@ -466,6 +472,8 @@ export class Klass {
 
         } // end for
 
+        if(isDebug) console.log("klass / getEnrollmentDateList / enrollmentDateList : ",enrollmentDateList);
+
         return enrollmentDateList;
     }
 
@@ -494,8 +502,8 @@ export class Klass {
 
     setKlassCalendarList(klassCalendarJSONList:any[]):void {
 
-        // let isDebug:boolean = true;
-        let isDebug:boolean = false;
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
         if(isDebug) console.log("klass / setKlassCalendarList / init");
 
         if(null == klassCalendarJSONList || 0 == klassCalendarJSONList.length) {
@@ -565,8 +573,8 @@ export class Klass {
 
     setJSON(json):Klass {
 
-        // let isDebug:boolean = true;
-        let isDebug:boolean = false;
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
         if(isDebug) console.log("klass / setJSON / init");
 
         if(isDebug) console.log("klass / setJSON / json : ",json);
@@ -576,6 +584,11 @@ export class Klass {
         if(isDebug) console.log("klass / setJSON / klass : ",klass);
 
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+
+        // days
+        if(null != klass.days_list && 0 < klass.days_list.length) {
+            // wonder.jung
+        }
 
         // teacher
         if(null != klass.teacher) {

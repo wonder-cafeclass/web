@@ -57,6 +57,8 @@ class KlassCourse {
         public $level_kor;
         // 난이도 이미지
         public $level_img_url;
+        // 수업 주 단위
+        public $week;
         // 수업최소 주 단위
         public $week_min;
         // 수업최장 주 단위
@@ -149,6 +151,8 @@ class KlassCourse {
         public $calendar_table_linear;
         // 클래스 캘린더 리스트 (Monthly) - Calendar[][][]
         public $calendar_table_monthly;
+
+        private $delimiter="|||";
 
         public function time_begin_img_url($const_map=null, $my_path=null)
         {
@@ -365,16 +369,33 @@ class KlassCourse {
                 }
                 $class_days = $this->days;
 
+                // wonder.jung
+                $days_list = $this->days_list = explode($this->delimiter, $this->days);
+                $days_map = [];
+                for ($i=0; $i < count($days_list); $i++) 
+                {
+                        $day = $days_list[$i];
+                        $days_map[$day] = $day;
+                } // end for
+
                 $class_days_list = $const_map->{"class_days_list"};
                 
                 $selected_idx_arr = array();
                 for ($i=0; $i < count($class_days_list); $i++) 
                 {
                         $cur_class_days = $class_days_list[$i];
+                        if(!empty($days_map[$cur_class_days])) 
+                        {
+                                array_push($selected_idx_arr, $i);
+                        }
+
+                        // Legacy
+                        /*
                         if (strpos($class_days, $cur_class_days) !== false) 
                         {
                                 array_push($selected_idx_arr, $i);
                         }
+                        */
                 }
                 $class_days_eng_list = $const_map->{"class_days_eng_list"};
                 $class_days_kor_list = $const_map->{"class_days_kor_list"};
@@ -388,25 +409,20 @@ class KlassCourse {
                         if(empty($this->days_eng)) {
                                 $this->days_eng = $class_days_eng_list[$selected_idx];
                         } else {
-                                $this->days_eng .= "|".$class_days_eng_list[$selected_idx];
+                                $this->days_eng .= $this->delimiter . "" . $class_days_eng_list[$selected_idx];
                         }
                         if(empty($this->days_kor)) {
                                 $this->days_kor = $class_days_kor_list[$selected_idx];
                         } else {
-                                $this->days_kor .= "|".$class_days_kor_list[$selected_idx];
+                                $this->days_kor .= $this->delimiter . "" . $class_days_kor_list[$selected_idx];
                         }
                         if(empty($this->days_img_url)) {
                                 $this->days_img_url = $class_days_img_url_list[$selected_idx];
                         } else {
-                                $this->days_img_url .= "|".$class_days_img_url_list[$selected_idx];
+                                $this->days_img_url .= $this->delimiter . "" . $class_days_img_url_list[$selected_idx];
                         }
-                }
+                } // end for
 
-                // 이미지가 여러개일 경우의 문제있음.
-                if(!empty($this->days_img_url))
-                {
-                        $this->days_img_url = $my_path->get($this->days_img_url);
-                }
         }  
 
         public function venue_subway_station_img_url($const_map=null, $my_path=null)

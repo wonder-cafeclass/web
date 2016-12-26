@@ -1856,11 +1856,11 @@ class MY_Sql
         }
         if($this->is_not_ok("klass_feature", $feature))
         {
-            $feature = "수업 특징을 입력해주세요";
+            $feature = "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요";
         }
         if($this->is_not_ok("klass_target", $target))
         {
-            $target = "수업 대상을 입력해주세요";
+            $target = "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요";
         }
         if($this->is_not_ok("klass_schedule", $schedule))
         {
@@ -1905,8 +1905,6 @@ class MY_Sql
             $price = $this->get_klass_price_default();
         }
 
-        // wonder.jung
-
         $data = array(
             'teacher_id' => $teacher_id,
             'teacher_resume' => $teacher_resume,
@@ -1943,6 +1941,168 @@ class MY_Sql
         $this->CI->db->insert('klass', $data);        
 
     } // end method
+
+    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1)
+    {
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $teacher_resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $teacher_greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_title", $title))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_feature", $feature))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_target", $target))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_schedule", $schedule))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_date_begin", $date_begin))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_time_hhmm", $time_begin))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_time_hhmm", $time_end))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_level", $level))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_week", $week))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_days", $days))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_price", $price))
+        {
+            return;
+        }
+
+        if($this->is_not_ok("klass_venue_title", $venue_title))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_address", $venue_address))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_road_address", $venue_road_address))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_latitude", $venue_latitude))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_longitude", $venue_longitude))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_subway_line", $subway_line))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_subway_station", $subway_station))
+        {
+            return;
+        }        
+        if($this->is_not_ok("klass_banner_url", $banner_url))
+        {
+            $klass_banner_url = "";
+        }        
+        if($this->is_not_ok("klass_poster_url", $poster_url))
+        {
+            return;
+        }
+
+        $data = array(
+            'teacher_resume' => $teacher_resume,
+            'teacher_greeting' => $teacher_greeting,
+            'title' => $title,
+            'feature' => $feature,
+            'target' => $target,
+            'schedule' => $schedule,
+            'date_begin' => $date_begin,
+            'time_begin' => $time_begin,
+            'time_end' => $time_end,
+            'time_duration_minutes' => $time_duration_minutes,
+            'level' => $level,
+            'week' => $week,
+            'days' => $days,
+            'price' => $price,
+
+            'venue_title' => $venue_title,
+            'venue_telephone' => $venue_telephone,
+            'venue_address' => $venue_address,
+            'venue_road_address' => $venue_road_address,
+            'venue_latitude' => $venue_latitude,
+            'venue_longitude' => $venue_longitude,
+
+            'subway_line' => $subway_line,
+            'subway_station' => $subway_station,
+
+            'class_banner_url' => $banner_url,
+            'class_poster_url' => $poster_url
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->update('klass', $data);
+
+    } // end method    
 
 
     // @ Desc : 클래스의 타이틀을 가져옵니다.
@@ -2650,8 +2810,6 @@ class MY_Sql
             return;
         }
 
-        // wonder.jung
-
         $this->CI->db->where('teacher_id', $teacher_id);
         $this->CI->db->order_by('id', 'DESC');
         $this->CI->db->limit(1);
@@ -2690,6 +2848,8 @@ class MY_Sql
             $row->price_with_format();
             $row->set_klass_price_list();
             $row->weeks_to_months();
+
+            // wonder.jung
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");

@@ -15,7 +15,6 @@ var auth_service_1 = require('../auth.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
 var klass_service_1 = require('./service/klass.service');
-var input_view_updown_1 = require('../widget/input-view/model/input-view-updown');
 var dialog_service_1 = require('../widget/dialog.service');
 var image_grid_v2_component_1 = require('../widget/image-grid/image-grid-v2.component');
 var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
@@ -27,7 +26,7 @@ var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
 var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
-var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
+// import { KlassFilterTileComponent }      from './klass-filter-tile.component';
 var image_service_1 = require('../util/image.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
@@ -76,7 +75,8 @@ var KlassDetailComponent = (function () {
         this.isTeacher = false;
         // 운영자가 보게되는 배너 이미지 템플릿 리스트
         this.imageTableBannerList = [
-            ["assets/images/class/banner/drinks.png"],
+            ["assets/images/class/banner/drinks_x.png"],
+            ["assets/images/class/banner/drinks_o.png"],
             ["assets/images/class/banner/help.png"]
         ];
         // 사용자가 보게되는 배너 이미지 리스트
@@ -422,7 +422,6 @@ var KlassDetailComponent = (function () {
         var selectOptionList = [];
         if (isDebug)
             console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateList : ", enrollmentDateList);
-        // wonder.jung
         // 시작 날짜가 지정되지 않았다면, 가장 가까운 날짜를 지정해줍니다.
         // 해당 날짜가 등록 날짜 안에 있어야 합니다. 없다면 기본값.
         var hasValidEnrollmentDate = false;
@@ -435,7 +434,7 @@ var KlassDetailComponent = (function () {
         } // end for
         if (isDebug)
             console.log("klass-detail / setKlassDateEnrollmentView / hasValidEnrollmentDate : ", hasValidEnrollmentDate);
-        if (!hasValidEnrollmentDate) {
+        if (!hasValidEnrollmentDate && this.myArray.isOK(enrollmentDateList)) {
             var enrollmentDate = enrollmentDateList[0];
             this.klass.date_begin = this.klassCopy.date_begin = enrollmentDate.getYYYYMMDD();
         } // end if
@@ -611,8 +610,8 @@ var KlassDetailComponent = (function () {
             this.myArray.isOK(subwayStationImgList) &&
             this.myArray.hasNotStr(subwayStationList, subwayStation)) {
             // 선택된 역이 없다면, 선택한 호선의 첫번째 역으로 임의 선택합니다. 이미지도 설정합니다.
-            this.klass.subway_station = this.klassCopy.subway_station = subwayStation = subwayStationList[0];
-            this.klass.subway_station_img = this.klassCopy.subway_station_img = subwasStationImgNext = subwayStation = subwayStationImgList[0];
+            this.klassCopy.subway_station = this.klass.subway_station = subwayStation = subwayStationList[0];
+            this.klassCopy.subway_station_img = this.klass.subway_station_img = subwasStationImgNext = subwayStation = subwayStationImgList[0];
             this.replaceSubwayStationImage(subwasStationImgPrev, subwasStationImgNext);
         } // end if
         if (isDebug)
@@ -623,12 +622,11 @@ var KlassDetailComponent = (function () {
         // valueList:string[],
         subwayStationList, 
         // valueFocus:string
-        subwayLine);
+        this.klassCopy.subway_station);
         if (isDebug)
             console.log("klass-detail / updateSelectOptionSubwayStations / selectOptionList : ", selectOptionList);
         this.klassSubwayStationComponent.setSelectOption(selectOptionList);
     };
-    // wonder.jung
     KlassDetailComponent.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
         if (null == this.watchTower) {
             return [];
@@ -787,13 +785,40 @@ var KlassDetailComponent = (function () {
             } // end for
         } // end if
     }; // end method
+    KlassDetailComponent.prototype.setDaysImg = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setDaysImg / 시작");
+        var days_list = this.klass.days_list;
+        var days_img_url_list = [];
+        for (var i = 0; i < days_list.length; ++i) {
+            var day = days_list[i];
+            var day_img_url = this.watchTower
+                .getMyConst()
+                .getValue(
+            // srcKey:string, 
+            "class_days_list", 
+            // srcValue:string, 
+            day, 
+            // targetKey:string
+            "class_days_img_url_list");
+            days_img_url_list.push(day_img_url);
+        } // end for   
+        if (isDebug)
+            console.log("klass-detail / setDaysImg / days_img_url_list : ", days_img_url_list);
+        this.klass.days_img_url_list = days_img_url_list;
+    };
     KlassDetailComponent.prototype.onAfterReceivingKlass = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / 시작");
         if (isDebug)
             console.log("klass-detail / onAfterReceivingKlass / this.klass : ", this.klass);
+        // 수업 정보를 받은 뒤에, 요일 이미지 정보를 업데이트합니다.
+        // wonder.jung
+        this.setDaysImg();
         // 저장 이전의 모든 데이터는 복사본에서 가져와 사용합니다.
         // 저장 이후에 복사본의 데이터를 원본으로 백업합니다.
         this.klassCopy = this.klass.copy();
@@ -805,9 +830,6 @@ var KlassDetailComponent = (function () {
             this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
         }
         this.setSelectileImageTable();
-        // set selectile admin
-        if (isDebug)
-            console.log("klass-detail / onAfterReceivingKlass / this.klassFilterTileComponent : ", this.klassFilterTileComponent);
         // set default-input: klass price
         this.setKlassPrice();
         this.setKlassWeeks();
@@ -899,145 +921,6 @@ var KlassDetailComponent = (function () {
       return null;
     }
     */
-    KlassDetailComponent.prototype.initAdmin = function () {
-        this.watchTowerImgUrl = this.imageService.get(this.imageService.watchTowerUrl);
-        this.watchTowerWhiteImgUrl = this.imageService.get(this.imageService.watchTowerWhiteUrl);
-        // 수강단위 기간 - (4주/8주/12주)
-        this.radiobtnOptionListCourseDuration =
-            this.radiobtnService.getKlassEnrolmentWeeks(this.klass);
-        // 수강신청 가능 기간
-        var optionList = this.radiobtnService.getKlassEnrolmentInterval(this.klass, "" + this.klassCopy.enrollment_interval_week);
-        this.radiobtnOptionListEnrollment = optionList;
-        var fontSizeTitle = 16;
-        var fontSizeText = 12;
-        var color = "#f0f";
-        this.klassTitleUpdown =
-            new input_view_updown_1.InputViewUpdown(
-            // public title:string
-            "강의 제목", 
-            // public fontSizeTitle:number
-            fontSizeTitle, 
-            // public fontSizeText:number
-            fontSizeText, 
-            // public type:string
-            "title", 
-            // public color:string
-            color, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public key:string
-            this.myEventService.KLASS_TITLE, 
-            // public value:string
-            this.klassCopy.title, 
-            // public metaObj:any
-            this.klass, 
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()));
-        this.klassDescUpdown =
-            new input_view_updown_1.InputViewUpdown(
-            // public title:string
-            "강의 설명", 
-            // public fontSizeTitle:number
-            fontSizeTitle, 
-            // public fontSizeText:number
-            fontSizeText, 
-            // public type:string
-            "title", 
-            // public color:string
-            color, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public key:string
-            this.myEventService.KLASS_DESC, 
-            // public value:string
-            this.klassCopy.desc, 
-            // public metaObj:any
-            this.klass, 
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()));
-        // 수업 시작 시간  
-        this.klassTimeBeginUpdown =
-            new input_view_updown_1.InputViewUpdown(
-            // public title:string
-            "수업 시작 시간", 
-            // public fontSizeTitle:number
-            fontSizeTitle, 
-            // public fontSizeText:number
-            fontSizeText, 
-            // public type:string
-            "price", 
-            // public color:string
-            color, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public key:string
-            this.myEventService.KLASS_TIME_BEGIN, 
-            // public value:string
-            this.klassCopy.time_begin, 
-            // public metaObj:any
-            this.klass, 
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()));
-        //   
-        this.klassTimeEndUpdown =
-            new input_view_updown_1.InputViewUpdown(
-            // public title:string
-            "수업 종료 시간", 
-            // public fontSizeTitle:number
-            fontSizeTitle, 
-            // public fontSizeText:number
-            fontSizeText, 
-            // public type:string
-            "price", 
-            // public color:string
-            color, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public key:string
-            this.myEventService.KLASS_TIME_END, 
-            // public value:string
-            this.klassCopy.time_end, 
-            // public metaObj:any
-            this.klass, 
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()));
-        // 수강 금액
-        this.klassPriceUpdown =
-            new input_view_updown_1.InputViewUpdown(
-            // public title:string
-            "수강 금액", 
-            // public fontSizeTitle:number
-            fontSizeTitle, 
-            // public fontSizeText:number
-            fontSizeText, 
-            // public type:string
-            "price", 
-            // public color:string
-            color, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ANY, 
-            // public key:string
-            this.myEventService.KLASS_WEEK_MAX, 
-            // public value:string
-            "" + this.klassCopy.price, 
-            // public metaObj:any
-            this.klass, 
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()));
-        // 운영자 지정 - 수업 요일 
-        // days_list
-        this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
-    };
     KlassDetailComponent.prototype.cancel = function () {
         this.gotoKlassList();
     };
@@ -1203,8 +1086,6 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.selectTileViewComponent = myEvent.metaObj;
                 } // end if
-            }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
             } // end if      
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
@@ -1987,11 +1868,216 @@ var KlassDetailComponent = (function () {
         }); // end service
         */
     }; // end method
+    // @ Desc : 수업 저장 항목이 모두 이상이 없는지 확인합니다. 이상이 있다면 해당 컴포넌트에 메시지를 표시합니다.
+    KlassDetailComponent.prototype.isNotOKKlass = function () {
+        return !this.isOKKlass();
+    };
+    KlassDetailComponent.prototype.isOKKlass = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / isOKKlass / 시작");
+        // 입력 관련 모든 컴포넌트를 가져옴.
+        // this.klassCopy의 정보를 검사.
+        if (null == this.klassTitleComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTitleComponent is not valid!");
+            return false;
+        }
+        if (this.klassTitleComponent.hasNotDone()) {
+            var value = this.klassTitleComponent.getInput();
+            var history_1 = this.klassTitleComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTitleComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTitleComponent.hasNotDone() / history : ", history_1);
+            return false;
+        }
+        if (null == this.klassPriceComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent is not valid!");
+            return false;
+        }
+        if (this.klassPriceComponent.hasNotDone()) {
+            var value = this.klassPriceComponent.getInput();
+            var history_2 = this.klassPriceComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent.hasNotDone() / history : ", history_2);
+            return false;
+        }
+        if (null == this.klassTimeBeginComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent is not valid!");
+            return false;
+        }
+        if (this.klassTimeBeginComponent.hasNotDone()) {
+            var value = this.klassTimeBeginComponent.getInput();
+            var history_3 = this.klassTimeBeginComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent.hasNotDone() / history : ", history_3);
+            return false;
+        }
+        if (null == this.klassTimeEndComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent is not valid!");
+            return false;
+        }
+        if (this.klassTimeEndComponent.hasNotDone()) {
+            var value = this.klassTimeEndComponent.getInput();
+            var history_4 = this.klassTimeEndComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent.hasNotDone() / history : ", history_4);
+            return false;
+        }
+        if (null == this.klassDateEnrollmentComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent is not valid!");
+            return false;
+        }
+        if (this.klassDateEnrollmentComponent.hasNotDone()) {
+            var value = this.klassDateEnrollmentComponent.getInput();
+            var history_5 = this.klassDateEnrollmentComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent.hasNotDone() / history : ", history_5);
+            return false;
+        }
+        if (null == this.klassLevelComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent is not valid!");
+            return false;
+        }
+        if (this.klassLevelComponent.hasNotDone()) {
+            var value = this.klassLevelComponent.getInput();
+            var history_6 = this.klassLevelComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent.hasNotDone() / " + value);
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent.hasNotDone() / history : ", history_6);
+            return false;
+        }
+        if (null == this.klassSubwayLineComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayLineComponent is not valid!");
+            return false;
+        }
+        if (this.klassSubwayLineComponent.hasNotDone()) {
+            var value = this.klassSubwayLineComponent.getInput();
+            var history_7 = this.klassSubwayLineComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayLineComponent.hasNotDone() / " + value);
+            return false;
+        }
+        if (null == this.klassSubwayStationComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayStationComponent is not valid!");
+            return false;
+        }
+        if (this.klassSubwayStationComponent.hasNotDone()) {
+            var value = this.klassSubwayStationComponent.getInput();
+            var history_8 = this.klassSubwayStationComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayStationComponent.hasNotDone() / " + value);
+            return false;
+        }
+        if (null == this.klassDaysComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDaysComponent is not valid!");
+            return false;
+        }
+        if (this.klassDaysComponent.hasNotDone()) {
+            var value = this.klassDaysComponent.getInput();
+            var history_9 = this.klassDaysComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDaysComponent.hasNotDone() / " + value);
+            return false;
+        }
+        if (null == this.klassWeeksComponent) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassWeeksComponent is not valid!");
+            return false;
+        }
+        if (this.klassWeeksComponent.hasNotDone()) {
+            var value = this.klassWeeksComponent.getInput();
+            var history_10 = this.klassWeeksComponent.getHistory();
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassWeeksComponent.hasNotDone() / " + value);
+            return false;
+        } // end if
+        if (null == this.klassCopy.klassVenue ||
+            null == this.klassCopy.venue_address ||
+            "" == this.klassCopy.venue_address) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassCopy.klassVenue is not valid!");
+            alert("지도에서 수업 장소를 확인해주세요.");
+            return false;
+        }
+        if (isDebug)
+            console.log("klass-detail / isOKKlass / All is OK");
+        return true;
+    };
     KlassDetailComponent.prototype.onClickSave = function (event) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var _this = this;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onClickSave / 시작");
+        // 1. 변경되었는지 다시 한번 확인합니다.
+        var hasChanged = this.klassCopy.isNotSame(this.klass);
+        if (!hasChanged) {
+            if (isDebug)
+                console.log("klass-detail / onClickSave / 중단 / 변경된 사항이 없습니다.");
+            return;
+        } // end if
+        if (this.isNotOKKlass()) {
+            if (isDebug)
+                console.log("klass-detail / onClickSave / 중단 / this.isNotOKKlass()");
+            return;
+        } // end if
+        if (!this.loginUser.isTeacher()) {
+            if (isDebug)
+                console.log("klass-detail / onClickSave / 중단 / !this.loginUser.isTeacher()");
+            return;
+        }
+        // 2. DB Update!
+        this.klassService.updateKlass(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userId:number,
+        +this.loginUser.id, 
+        // teacherId:number,
+        this.loginUser.getTeacherId(), 
+        // klass:Klass
+        this.klassCopy).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (isDebug)
+                console.log("klass-detail / onClickSave / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
+                // 저장 완료! 초기화!
+                _this.klass = _this.klassCopy.copy();
+                _this.isSaveBtnDisabled = true;
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
+            }
+            else {
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "klass-detail / updateKlass / user_id : " + _this.loginUser.id + " / klass_id : " + _this.klassCopy.id); // end logger      
+            } // end if
+        }); // end service
     }; // end method
     KlassDetailComponent.prototype.updateSaveBtnStatus = function () {
         var isDebug = true;
@@ -2023,10 +2109,6 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(pricetag_h_component_1.PriceTagHComponent), 
         __metadata('design:type', pricetag_h_component_1.PriceTagHComponent)
     ], KlassDetailComponent.prototype, "priceTagHComponent", void 0);
-    __decorate([
-        core_1.ViewChild(klass_filter_tile_component_1.KlassFilterTileComponent), 
-        __metadata('design:type', klass_filter_tile_component_1.KlassFilterTileComponent)
-    ], KlassDetailComponent.prototype, "klassFilterTileComponent", void 0);
     __decorate([
         core_1.ViewChild(clock_board_component_1.ClockBoardComponent), 
         __metadata('design:type', clock_board_component_1.ClockBoardComponent)

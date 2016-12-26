@@ -353,6 +353,12 @@ var Klass = (function () {
     };
     // @ Deprecated
     Klass.prototype.getEnrollmentDateList = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass / getEnrollmentDateList / 시작");
+        if (isDebug)
+            console.log("klass / getEnrollmentDateList / this.klass_calendar_list : ", this.klass_calendar_list);
         if (null == this.klass_calendar_list || 0 == this.klass_calendar_list.length) {
             return [];
         } // end if
@@ -385,6 +391,8 @@ var Klass = (function () {
                 } // end if
             } // end for
         } // end for
+        if (isDebug)
+            console.log("klass / getEnrollmentDateList / enrollmentDateList : ", enrollmentDateList);
         return enrollmentDateList;
     };
     // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
@@ -403,8 +411,8 @@ var Klass = (function () {
         return enrollmentDate.month + "\uC6D4 " + enrollmentDate.date + "\uC77C " + enrollmentDate.dayKor + "\uC694\uC77C";
     };
     Klass.prototype.setKlassCalendarList = function (klassCalendarJSONList) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass / setKlassCalendarList / init");
         if (null == klassCalendarJSONList || 0 == klassCalendarJSONList.length) {
@@ -464,8 +472,8 @@ var Klass = (function () {
         new Klass());
     }; // end method
     Klass.prototype.setJSON = function (json) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass / setJSON / init");
         if (isDebug)
@@ -474,6 +482,9 @@ var Klass = (function () {
         if (isDebug)
             console.log("klass / setJSON / klass : ", klass);
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        // days
+        if (null != klass.days_list && 0 < klass.days_list.length) {
+        }
         // teacher
         if (null != klass.teacher) {
             klass.teacher = new klass_teacher_1.KlassTeacher().setJSON(klass.teacher);

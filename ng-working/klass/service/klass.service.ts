@@ -27,6 +27,7 @@ export class KlassService {
 
   private klassesUrl = '/CI/index.php/api/klass/list';
   private klassUrl = '/CI/index.php/api/klass/course';
+  private klassUpdateUrl = '/CI/index.php/api/klass/update';
   private klassNewUrl = '/CI/index.php/api/klass/coursenew';
   private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
   private klassSearchUrl = '/CI/index.php/api/klass/search';
@@ -63,6 +64,61 @@ export class KlassService {
     this.myArray = new HelperMyArray();
     this.myTime = new HelperMyTime();
   }
+
+  updateKlass(    
+    apiKey:string, 
+    userId:number,
+    teacherId:number,
+    klass:Klass
+  ): Promise<MyResponse> {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass.service / updateKlass / 시작");
+    if(isDebug) console.log("klass.service / updateKlass / apiKey : ",apiKey);
+    if(isDebug) console.log("klass.service / updateKlass / userId : ",userId);
+    if(isDebug) console.log("klass.service / updateKlass / klass : ",klass);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.klassUpdateUrl);
+
+    let params = {
+      user_id:userId,
+      teacher_id:teacherId,
+      klass_id:klass.id,
+      teacher_resume:klass.teacher_resume,
+      teacher_greeting:klass.teacher_greeting,
+      klass_title:klass.title,
+      klass_desc:klass.desc,
+      klass_feature:klass.feature,
+      klass_target:klass.target,
+      klass_schedule:klass.schedule,
+      klass_date_begin:klass.date_begin,
+      klass_time_begin:klass.time_begin,
+      klass_time_end:klass.time_end,
+      klass_time_duration_minutes:klass.time_duration_minutes,
+      klass_level:klass.level,
+      klass_week:klass.week,
+      klass_days:klass.days,
+      klass_venue_title:klass.venue_title,
+      klass_venue_telephone:klass.venue_telephone,
+      klass_venue_address:klass.venue_address,
+      klass_venue_road_address:klass.venue_road_address,
+      klass_venue_latitude:klass.venue_latitude,
+      klass_venue_longitude:klass.venue_longitude,
+      klass_subway_line:klass.subway_line,
+      klass_subway_station:klass.subway_station,
+      klass_price:klass.price,
+      klass_banner_url:klass.class_banner_url,
+      klass_poster_url:klass.class_poster_url
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }  
 
   removeKlassReview(    
     apiKey:string, 

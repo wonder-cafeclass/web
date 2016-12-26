@@ -248,7 +248,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   public getInput() :string {
     return this.ngModelInput;
   }  
-  // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
+  // @ Desc : 사용자가 입력한 값이 문제 없는지 확인합니다.
+  private lastHistory:any=null;
   public hasNotDone() :boolean {
     return !this.hasDone();
   }
@@ -259,15 +260,54 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("default / hasDone / 시작");
     if(isDebug) console.log("default / hasDone / this.inputStrPrev : ",this.inputStrPrev);
     if(isDebug) console.log("default / hasDone / this.ngModelInput : ",this.ngModelInput);
+    if(isDebug) console.log("default / hasDone / this.meta : ",this.meta);
 
-    let isOK:boolean = this.isOK(this.inputStrPrev);
+    let input:string = this.inputStrPrev;
+    if(null == input || "" === input) {
+      input = this.inputStrPrev = this.ngModelInput;
+    } // end if
+    let isOK:boolean = this.isOK(input);
+
+    if(this.defaultType.TYPE_SELECT == this.meta.type) {
+
+      let optionSelected:DefaultOption = this.getSelectedDefaultOption();
+      if(isDebug) console.log("default / hasDone / optionSelected : ",optionSelected);
+      if(null != optionSelected) {
+        input = optionSelected.value;  
+        if(isDebug) console.log("default / hasDone / input : ",input);
+      } // end if
+
+      isOK = this.isOK(input);
+
+    } else if(this.defaultType.TYPE_CHECKBOX == this.meta.type) {
+
+      // wonder.jung
+      let optionListChecked:DefaultOption[] = this.getCheckedDefaultOptionList();
+      if(isDebug) console.log("default / hasDone / optionListChecked : ",optionListChecked);
+      for (var i = 0; i < optionListChecked.length; ++i) {
+        let optionChecked:DefaultOption = optionListChecked[i];
+
+        input = optionChecked.value;
+        isOK = this.isOK(input);
+
+        if(!isOK) {
+          break;
+        } // end if
+      } // end for
+
+    } // end if
+
+    if(isDebug) console.log("default / hasDone / input : ",input);
 
     if(!isOK) {
-      let history = this.myCheckerService.getLastHistory();
-      if(isDebug) console.log("default / hasDone / history : ",history);
+      this.lastHistory = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("default / hasDone / this.lastHistory : ",this.lastHistory);
     }
 
     return isOK;
+  }
+  public getHistory():any {
+    return this.lastHistory;
   }
 
   onClick(event, element) :void {
@@ -374,8 +414,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("default / updateInputHHMM / 시작");
     if(isDebug) console.log("default / updateInputHHMM / minutesChanged : ",minutesChanged);
-
-    // wonder.jung
 
     let nextHHMM:string = this.myTime.addMinutesHHMM(this.ngModelInput, minutesChanged);
 
@@ -520,6 +558,68 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     }
 
   } // end method 
+
+  getSelectedDefaultOption() :DefaultOption {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / getSelectedDefaultOption / 시작");
+
+    if( null == this.selectOptionList || 0 === this.selectOptionList.length ) {
+      return null;
+    } // end if
+
+    for (var i = 0; i < this.selectOptionList.length; ++i) {
+      let defaultOption:DefaultOption = this.selectOptionList[i];
+      if(null == defaultOption) {
+        continue;
+      } // end if
+
+      if(defaultOption.isFocus) {
+        return defaultOption;
+      } // end if
+
+    } // end for
+
+    return null;
+  }
+
+  getCheckedDefaultOptionList() :DefaultOption[] {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("default / getCheckedDefaultOptionList / 시작");
+
+    if( null == this.checkOptionTable || 0 === this.checkOptionTable.length ) {
+      return null;
+    } // end if
+
+    if(isDebug) console.log("default / getCheckedDefaultOptionList / this.checkOptionTable : ",this.checkOptionTable);
+
+    // wonder.jung
+    let checkedOptionList:DefaultOption[] = [];
+    for (var i = 0; i < this.checkOptionTable.length; ++i) {
+      let row:DefaultOption[] = this.checkOptionTable[i];
+      if(null == row) {
+        continue;
+      }
+
+      for (var j = 0; j < row.length; ++j) {
+        let option:DefaultOption = row[j];
+        if(null == option) {
+          continue;
+        }
+
+        if(isDebug) console.log("default / getCheckedDefaultOptionList / option : ",option);
+
+        if(option.isFocus) {
+          checkedOptionList.push(option);
+        } // end if
+      } // end for
+    } // end for
+
+    return checkedOptionList;
+  }  
 
   getKeyFromSelect(value:string) :string {
 
@@ -849,8 +949,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     event.stopPropagation();
     event.preventDefault();    
-
-    // wonder.jung
 
     // 1. 숫자 입력
 

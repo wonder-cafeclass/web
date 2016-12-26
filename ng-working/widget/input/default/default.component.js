@@ -34,6 +34,8 @@ var DefaultComponent = (function () {
         this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
         this.minutesUnit = -1; // 시간 변경시 최소 변경 분 단위.
         this.widthStr = "";
+        // @ Desc : 사용자가 입력한 값이 문제 없는지 확인합니다.
+        this.lastHistory = null;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -211,7 +213,6 @@ var DefaultComponent = (function () {
     DefaultComponent.prototype.getInput = function () {
         return this.ngModelInput;
     };
-    // @ Desc : 이메일이 제대로 입력되었는지 확인합니다.
     DefaultComponent.prototype.hasNotDone = function () {
         return !this.hasDone();
     };
@@ -224,13 +225,49 @@ var DefaultComponent = (function () {
             console.log("default / hasDone / this.inputStrPrev : ", this.inputStrPrev);
         if (isDebug)
             console.log("default / hasDone / this.ngModelInput : ", this.ngModelInput);
-        var isOK = this.isOK(this.inputStrPrev);
-        if (!isOK) {
-            var history_3 = this.myCheckerService.getLastHistory();
+        if (isDebug)
+            console.log("default / hasDone / this.meta : ", this.meta);
+        var input = this.inputStrPrev;
+        if (null == input || "" === input) {
+            input = this.inputStrPrev = this.ngModelInput;
+        } // end if
+        var isOK = this.isOK(input);
+        if (this.defaultType.TYPE_SELECT == this.meta.type) {
+            var optionSelected = this.getSelectedDefaultOption();
             if (isDebug)
-                console.log("default / hasDone / history : ", history_3);
+                console.log("default / hasDone / optionSelected : ", optionSelected);
+            if (null != optionSelected) {
+                input = optionSelected.value;
+                if (isDebug)
+                    console.log("default / hasDone / input : ", input);
+            } // end if
+            isOK = this.isOK(input);
+        }
+        else if (this.defaultType.TYPE_CHECKBOX == this.meta.type) {
+            // wonder.jung
+            var optionListChecked = this.getCheckedDefaultOptionList();
+            if (isDebug)
+                console.log("default / hasDone / optionListChecked : ", optionListChecked);
+            for (var i = 0; i < optionListChecked.length; ++i) {
+                var optionChecked = optionListChecked[i];
+                input = optionChecked.value;
+                isOK = this.isOK(input);
+                if (!isOK) {
+                    break;
+                } // end if
+            } // end for
+        } // end if
+        if (isDebug)
+            console.log("default / hasDone / input : ", input);
+        if (!isOK) {
+            this.lastHistory = this.myCheckerService.getLastHistory();
+            if (isDebug)
+                console.log("default / hasDone / this.lastHistory : ", this.lastHistory);
         }
         return isOK;
+    };
+    DefaultComponent.prototype.getHistory = function () {
+        return this.lastHistory;
     };
     DefaultComponent.prototype.onClick = function (event, element) {
         event.stopPropagation();
@@ -318,7 +355,6 @@ var DefaultComponent = (function () {
             console.log("default / updateInputHHMM / 시작");
         if (isDebug)
             console.log("default / updateInputHHMM / minutesChanged : ", minutesChanged);
-        // wonder.jung
         var nextHHMM = this.myTime.addMinutesHHMM(this.ngModelInput, minutesChanged);
         var error = null;
         if (!this.isOK(nextHHMM)) {
@@ -438,6 +474,56 @@ var DefaultComponent = (function () {
         else {
         }
     }; // end method 
+    DefaultComponent.prototype.getSelectedDefaultOption = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("default / getSelectedDefaultOption / 시작");
+        if (null == this.selectOptionList || 0 === this.selectOptionList.length) {
+            return null;
+        } // end if
+        for (var i = 0; i < this.selectOptionList.length; ++i) {
+            var defaultOption = this.selectOptionList[i];
+            if (null == defaultOption) {
+                continue;
+            } // end if
+            if (defaultOption.isFocus) {
+                return defaultOption;
+            } // end if
+        } // end for
+        return null;
+    };
+    DefaultComponent.prototype.getCheckedDefaultOptionList = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("default / getCheckedDefaultOptionList / 시작");
+        if (null == this.checkOptionTable || 0 === this.checkOptionTable.length) {
+            return null;
+        } // end if
+        if (isDebug)
+            console.log("default / getCheckedDefaultOptionList / this.checkOptionTable : ", this.checkOptionTable);
+        // wonder.jung
+        var checkedOptionList = [];
+        for (var i = 0; i < this.checkOptionTable.length; ++i) {
+            var row = this.checkOptionTable[i];
+            if (null == row) {
+                continue;
+            }
+            for (var j = 0; j < row.length; ++j) {
+                var option = row[j];
+                if (null == option) {
+                    continue;
+                }
+                if (isDebug)
+                    console.log("default / getCheckedDefaultOptionList / option : ", option);
+                if (option.isFocus) {
+                    checkedOptionList.push(option);
+                } // end if
+            } // end for
+        } // end for
+        return checkedOptionList;
+    };
     DefaultComponent.prototype.getKeyFromSelect = function (value) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -645,30 +731,30 @@ var DefaultComponent = (function () {
         var isNotOK = this.isNotOK(input);
         if (isNotOK) {
             // 원인을 찾아봅니다.
-            var history_4 = this.myCheckerService.getLastHistory();
-            if (null != history_4 &&
-                null != history_4.key &&
-                null != history_4.msg) {
+            var history_3 = this.myCheckerService.getLastHistory();
+            if (null != history_3 &&
+                null != history_3.key &&
+                null != history_3.msg) {
                 // 문제가 있습니다!
                 // 문제 원인 별로 처리해줍니다.
-                if ("max" === history_4.key) {
+                if ("max" === history_3.key) {
                     // 최대 문자 갯수보다 많은 경우.
                     if (isDebug)
                         console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우.");
-                    this.showTooltipFailWarning(history_4.msg, false);
+                    this.showTooltipFailWarning(history_3.msg, false);
                     // 넘는 문자열은 지웁니다.
-                    this.inputStrPrev = input = input.slice(0, history_4.value);
+                    this.inputStrPrev = input = input.slice(0, history_3.value);
                     if (isDebug)
-                        console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ", history_4);
+                        console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ", history_3);
                 }
-                else if ("min" === history_4.key) {
+                else if ("min" === history_3.key) {
                     // 최소 문자 갯수보다 적은 경우.
                     if (isDebug)
                         console.log("default / onCheckInputValid / 최소 문자 갯수보다 적은 경우.");
                     if (isBlur) {
                         // Blur 모드에서는 사용자가 입력을 완료했다고 판단합니다
                         // 그러므로 최소 글자수보다 작으면 경고를 표시해야 합니다.
-                        this.showTooltipFailWarning(history_4.msg, false);
+                        this.showTooltipFailWarning(history_3.msg, false);
                     }
                     else {
                         // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
@@ -679,7 +765,7 @@ var DefaultComponent = (function () {
                 // 모든 예외 사항에 대해 부모 객체에 전달합니다.
                 var metaObj = {
                     view: this,
-                    history: history_4
+                    history: history_3
                 };
                 if (isDebug)
                     console.log("default / onCheckInputValid / 모든 예외 사항에 대해 부모 객체에 전달합니다.");
@@ -719,7 +805,6 @@ var DefaultComponent = (function () {
             console.log("default / onKeyup / init");
         event.stopPropagation();
         event.preventDefault();
-        // wonder.jung
         // 1. 숫자 입력
         // 2. 문자 입력 
         var inputStr = elementInput.value;
