@@ -1,4 +1,27 @@
 <div *ngIf="klass" class="container">
+
+  <!-- Save Button Row Init -->
+  <div *ngIf="isTeacher" class="row">
+    <div class="col-md-2" style="padding:0px;"></div>
+    <div class="col-md-8 cc-div-col" style="padding:0px;">
+
+      <ul class="list-group">
+        <li class="list-group-item" style="padding: 0px;">
+
+          <button   
+          (click)="onClickSave($event)"
+          [disabled]="isSaveBtnDisabled"
+          type="button" 
+          class="btn btn-orange save">저장하기
+          </button>
+
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-md-2" style="padding:0px;"></div>
+  </div>
+  <!-- Save Button Row Done -->
   
   <!-- First Row -->
   <div class="row">
@@ -298,19 +321,6 @@
           </li>
           <!-- FIRST KLASS DATE ADMIN DONE -->
           
-          <!-- KLASS VENUE INIT -->
-          <!--
-          <li class="list-group-item col-next">
-            <butterfly  [title]="'수업 장소'"
-                        [fontSizeTitle]="16"
-                        [paddingTitle]="7"
-                        [text]="'투썸플레이스 잠실역점'"
-                        [fontSizeText]="18"
-                        [paddingText]="5"
-                        [color]="priceTagColor"></butterfly>          
-          </li>
-          <!-- KLASS VENUE DONE -->
-          
           <li class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
@@ -339,4 +349,28 @@
     <div class="col-md-2" style="padding:0px;"></div>
   </div>
   <!-- SECOND ROW DONE -->
+
+  <!-- Save Button Row Init -->
+  <div *ngIf="isTeacher" class="row">
+    <div class="col-md-2" style="padding:0px;"></div>
+    <div class="col-md-8 cc-div-col" style="padding:0px;">
+
+      <ul class="list-group">
+        <li class="list-group-item" style="padding: 0px;">
+
+          <button   
+          (click)="onClickSave($event)"
+          [disabled]="isSaveBtnDisabled"
+          type="button" 
+          class="btn btn-orange save">저장하기
+          </button>
+
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-md-2" style="padding:0px;"></div>
+  </div>
+  <!-- Save Button Row Done -->
+
 </div>

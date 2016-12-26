@@ -46,11 +46,11 @@ export class Klass {
     public week: number=-1;
     public week_min: number=-1;
     public week_max: number=-1;
-    public week_list: string[]=[];
-    public weekly_price_list: any[]=[];
+    // public week_list: string[]=[]; // @ Deprecated / REMOVE ME
+    // public weekly_price_list: any[]=[]; // @ Deprecated / REMOVE ME
 
-    public month_min: number=-1;
-    public month_max: number=-1;
+    // public month_min: number=-1; // @ Deprecated / REMOVE ME
+    // public month_max: number=-1; // @ Deprecated / REMOVE ME
     public days: string="";
     public days_list: string[]=[];
     public days_img_url: string="";
@@ -59,17 +59,17 @@ export class Klass {
     public days_kor: string="";
     public class_day_per_week: number=-1; // 주 n회 수업
 
-    public resume: string="";      // @ Deprecated
-    public greeting: string="";    // @ Deprecated
+    // public resume: string="";      // @ Deprecated
+    // public greeting: string="";    // @ Deprecated
 
     public venue: string="";
-    public venue_cafe: string="";
-    public venue_cafe_logo_img_url: string="";
-    public venue_map_link: string="";
+    // public venue_cafe: string="";                 // @ Deprecated / REMOVE ME
+    // public venue_cafe_logo_img_url: string="";    // @ Deprecated / REMOVE ME
+    // public venue_map_link: string="";             // @ Deprecated / REMOVE ME
 
     // @ Deprecated
-    public venue_subway_station: string="";
-    public venue_subway_station_img_url: string="";
+    // public venue_subway_station: string="";            // @ Deprecated / REMOVE ME
+    // public venue_subway_station_img_url: string="";    // @ Deprecated / REMOVE ME
 
     // @ Recommended
     public subway_line: string="";
@@ -85,14 +85,14 @@ export class Klass {
 
     public search_tag: string="";
     public price: number=-1;
-    public price_list: string[]=[];
-    public klass_price_list: KlassPrice[]=[];
-    public price_list_width_discount: number[]=[];
-    public discount:string="";
-    public discount_arr:number[]=[];
+    // public price_list: string[]=[];                    // @ Deprecated / REMOVE ME
+    // public klass_price_list: KlassPrice[]=[];          // @ Deprecated / REMOVE ME
+    // public price_list_width_discount: number[]=[];     // @ Deprecated / REMOVE ME
+    // public discount:string="";                         // @ Deprecated / REMOVE ME
+    // public discount_arr:number[]=[];                   // @ Deprecated / REMOVE ME
     public price_with_format: string="";
     public class_status: string="";
-    public enrollment_interval_week:number=-1;
+    public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
     public class_banner_url:string="";
     public class_banner_url_arr:string[]=[];
     public class_poster_url:string="";
@@ -424,6 +424,7 @@ export class Klass {
         this.class_banner_url = this.class_banner_url_arr.join(this.delimiter);
     }
 
+    // @ Deprecated
     getEnrollmentDateList():KlassCalendarDay[] {
 
         if(null == this.klass_calendar_list || 0 == this.klass_calendar_list.length) {
@@ -668,5 +669,155 @@ export class Klass {
         );
 
     } // end method
+
+    public isNotSame(target:Klass):boolean {
+        return !this.isSame(target);
+    }
+
+    // @ Desc : 다른 Klass 객체와 데이터를 비교, 동일한지 확인합니다.
+    public isSame(target:Klass):boolean {
+
+        let isDebug:boolean = true;
+        // let isDebug:boolean = false;
+        if(isDebug) console.log("klass / isSame / 시작");
+
+        if(null == target) {
+            if(isDebug) console.log("klass / isSame / target is not valid!");
+            return false;
+        }
+        if(this.id != target.id) {
+            if(isDebug) console.log(`klass / isSame / id has been changed! / this.id:${this.id} != target.id:${target.id}`);
+            return false;
+        }
+
+        if(this.teacher_id != target.teacher_id) {
+            if(isDebug) console.log(`klass / isSame / teacher_id has been changed! / this.teacher_id:${this.teacher_id} != target.teacher_id:${target.teacher_id}`);
+            return false;
+        }
+        if(this.teacher_resume != target.teacher_resume) {
+            if(isDebug) console.log(`klass / isSame / teacher_resume has been changed! / this.teacher_resume:${this.teacher_resume} != target.teacher_resume:${target.teacher_resume}`);
+            return false;
+        }
+        if(this.teacher_greeting != target.teacher_greeting) {
+            if(isDebug) console.log(`klass / isSame / teacher_greeting has been changed! / this.teacher_greeting:${this.teacher_greeting} != target.teacher_greeting:${target.teacher_greeting}`);
+            return false;
+        }
+
+        if(this.title != target.title) {
+            if(isDebug) console.log(`klass / isSame / title has been changed! / this.title:${this.title} != target.title:${target.title}`);
+            return false;
+        }
+        if(this.desc != target.desc) {
+            if(isDebug) console.log(`klass / isSame / desc has been changed! / this.desc:${this.desc} != target.desc:${target.desc}`);
+            return false;
+        }
+        if(this.feature != target.feature) {
+            if(isDebug) console.log(`klass / isSame / feature has been changed! / this.feature:${this.feature} != target.feature:${target.feature}`);
+            return false;
+        }
+        if(this.target != target.target) {
+            if(isDebug) console.log(`klass / isSame / target has been changed! / this.target:${this.target} != target.target:${target.target}`);
+            return false;
+        }
+        if(this.schedule != target.schedule) {
+            if(isDebug) console.log(`klass / isSame / schedule has been changed! / this.schedule:${this.schedule} != target.schedule:${target.schedule}`);
+            return false;
+        }
+        if(this.date_begin != target.date_begin) {
+            if(isDebug) console.log(`klass / isSame / date_begin has been changed! / this.date_begin:${this.date_begin} != target.date_begin:${target.date_begin}`);
+            return false;
+        }
+        if(this.time_begin != target.time_begin) {
+            if(isDebug) console.log(`klass / isSame / time_begin has been changed! / this.time_begin:${this.time_begin} != target.time_begin:${target.time_begin}`);
+            return false;
+        }
+        if(this.time_end != target.time_end) {
+            if(isDebug) console.log(`klass / isSame / time_end has been changed! / this.time_end:${this.time_end} != target.time_end:${target.time_end}`);
+            return false;
+        }
+        if(this.time_duration_minutes != target.time_duration_minutes) {
+            if(isDebug) console.log(`klass / isSame / time_duration_minutes has been changed! / this.time_duration_minutes:${this.time_duration_minutes} != target.time_duration_minutes:${target.time_duration_minutes}`);
+            return false;
+        }
+        if(this.level != target.level) {
+            if(isDebug) console.log(`klass / isSame / level has been changed! / this.level:${this.level} != target.level:${target.level}`);
+            return false;
+        }
+        if(this.week != target.week) {
+            if(isDebug) console.log(`klass / isSame / week has been changed! / this.week:${this.week} != target.week:${target.week}`);
+            return false;
+        }
+        if(this.days != target.days) {
+            if(isDebug) console.log(`klass / isSame / days has been changed! / this.days:${this.days} != target.days:${target.days}`);
+            return false;
+        }
+        if(this.venue != target.venue) {
+            if(isDebug) console.log(`klass / isSame / venue has been changed! / this.venue:${this.venue} != target.venue:${target.venue}`);
+            return false;
+        }
+
+        if(this.venue_title != target.venue_title) {
+            if(isDebug) console.log(`klass / isSame / venue_title has been changed! / this.venue_title:${this.venue_title} != target.venue_title:${target.venue_title}`);
+            return false;
+        }
+        if(this.venue_telephone != target.venue_telephone) {
+            if(isDebug) console.log(`klass / isSame / venue_telephone has been changed! / this.venue_telephone:${this.venue_telephone} != target.venue_telephone:${target.venue_telephone}`);
+            return false;
+        }
+        if(this.venue_address != target.venue_address) {
+            if(isDebug) console.log(`klass / isSame / venue_address has been changed! / this.venue_address:${this.venue_address} != target.venue_address:${target.venue_address}`);
+            return false;
+        }
+        if(this.venue_road_address != target.venue_road_address) {
+            if(isDebug) console.log(`klass / isSame / venue_road_address has been changed! / this.venue_road_address:${this.venue_road_address} != target.venue_road_address:${target.venue_road_address}`);
+            return false;
+        }
+        if(this.venue_latitude != target.venue_latitude) {
+            if(isDebug) console.log(`klass / isSame / venue_latitude has been changed! / this.venue_latitude:${this.venue_latitude} != target.venue_latitude:${target.venue_latitude}`);
+            return false;
+        }
+        if(this.venue_longitude != target.venue_longitude) {
+            if(isDebug) console.log(`klass / isSame / venue_longitude has been changed! / this.venue_longitude:${this.venue_longitude} != target.venue_longitude:${target.venue_longitude}`);
+            return false;
+        }        
+
+        if(this.subway_line != target.subway_line) {
+            if(isDebug) console.log(`klass / isSame / subway_line has been changed! / this.subway_line:${this.subway_line} != target.subway_line:${target.subway_line}`);
+            return false;
+        }
+        if(this.subway_station != target.subway_station) {
+            if(isDebug) console.log(`klass / isSame / subway_station has been changed! / this.subway_station:${this.subway_station} != target.subway_station:${target.subway_station}`);
+            return false;
+        }
+
+        if(this.price != target.price) {
+            if(isDebug) console.log(`klass / isSame / price has been changed! / this.price:${this.price} != target.price:${target.price}`);
+            return false;
+        }
+        if(this.class_status != target.class_status) {
+            if(isDebug) console.log(`klass / isSame / class_status has been changed! / this.class_status:${this.class_status} != target.class_status:${target.class_status}`);
+            return false;
+        }
+
+        if(this.class_banner_url != target.class_banner_url) {
+            if(isDebug) console.log(`klass / isSame / class_banner_url has been changed! / this.class_banner_url:${this.class_banner_url} != target.class_banner_url:${target.class_banner_url}`);
+            return false;
+        }
+        if(this.class_poster_url != target.class_poster_url) {
+            if(isDebug) console.log(`klass / isSame / class_poster_url has been changed! / this.class_poster_url:${this.class_poster_url} != target.class_poster_url:${target.class_poster_url}`);
+            return false;
+        }
+
+        if(this.date_created != target.date_created) {
+            if(isDebug) console.log(`klass / isSame / date_created has been changed! / this.date_created:${this.date_created} != target.date_created:${target.date_created}`);
+            return false;
+        }
+        if(this.date_updated != target.date_updated) {
+            if(isDebug) console.log(`klass / isSame / date_updated has been changed! / this.date_updated:${this.date_updated} != target.date_updated:${target.date_updated}`);
+            return false;
+        }
+
+        return true;
+    }
 
 }

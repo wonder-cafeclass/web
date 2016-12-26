@@ -256,6 +256,7 @@ var HelperMyConst = (function () {
         return valueMap;
     };
     HelperMyConst.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
+        var selectOptionList = [];
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -263,19 +264,18 @@ var HelperMyConst = (function () {
         if (this.myArray.isNotStrArr(keyList)) {
             if (isDebug)
                 console.log("my-const / getDefaultOptionList / 중단 / this.myArray.isNotStrArr(keyList)");
-            return;
+            return selectOptionList;
         }
         if (this.myArray.isNotStrArr(valueList)) {
             if (isDebug)
                 console.log("my-const / getDefaultOptionList / 중단 / this.myArray.isNotStrArr(valueList)");
-            return;
+            return selectOptionList;
         }
         if (keyList.length !== valueList.length) {
             if (isDebug)
                 console.log("my-const / getDefaultOptionList / 중단 / keyList.length !== valueList.length");
-            return;
-        }
-        var selectOptionList = [];
+            return selectOptionList;
+        } // end if
         for (var i = 0; i < keyList.length; ++i) {
             var key = keyList[i];
             var value = valueList[i];

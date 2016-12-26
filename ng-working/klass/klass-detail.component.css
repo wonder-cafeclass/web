@@ -105,3 +105,14 @@ td.my-ck-style {
     padding: 0px;
     margin: 0px;  
 }
+.btn-orange {
+  color: #fff;
+  background-color: #e85c41;
+  border-color: #e85c41;
+}
+button.save {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  margin: 10px;
+}

@@ -83,6 +83,7 @@ var KlassDetailComponent = (function () {
         this.imageTableBannerListService = [];
         this.klassTimeMinutesMin = 60;
         this.klassTimeMinutesMax = 180;
+        this.isSaveBtnDisabled = true;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -277,8 +278,8 @@ var KlassDetailComponent = (function () {
         }); // end route    
     };
     KlassDetailComponent.prototype.setKlassWeeks = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setKlassWeeks / 시작");
         if (null == this.klassCopy) {
@@ -291,13 +292,13 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / setKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
             return;
         }
-        // wonder.jung
         var classWeeksList = this.watchTower.getMyConst().getList("class_weeks_list");
         var classWeeksKorList = this.watchTower.getMyConst().getList("class_weeks_kor_list");
         var week = "" + this.klassCopy.week;
         if (!(0 < this.klassCopy.week)) {
             week = classWeeksList[0];
-            this.klassCopy.week = +week;
+            // 초기 값은 원본에도 업데이트합니다.
+            this.klass.week = this.klassCopy.week = +week;
         } // end if
         var weekKor = this.myArray.getValueFromLists(
         // key:string, 
@@ -323,8 +324,8 @@ var KlassDetailComponent = (function () {
         this.priceTagHComponent.setTitle(weekKor);
     };
     KlassDetailComponent.prototype.updateKlassWeeks = function (klassWeeks) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateKlassWeeks / 시작");
         if (isDebug)
@@ -341,6 +342,7 @@ var KlassDetailComponent = (function () {
         }
         this.klassCopy.week = klassWeeks;
         this.setKlassWeeks();
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.setKlassPrice = function () {
         if (null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
@@ -394,8 +396,8 @@ var KlassDetailComponent = (function () {
     };
     // @ 가장 가까운 수업 시작일을 의미합니다.
     KlassDetailComponent.prototype.setKlassDateEnrollmentInput = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / setKlassDateEnrollmentView / 시작");
         if (null == this.klassCopy) {
@@ -420,6 +422,23 @@ var KlassDetailComponent = (function () {
         var selectOptionList = [];
         if (isDebug)
             console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateList : ", enrollmentDateList);
+        // wonder.jung
+        // 시작 날짜가 지정되지 않았다면, 가장 가까운 날짜를 지정해줍니다.
+        // 해당 날짜가 등록 날짜 안에 있어야 합니다. 없다면 기본값.
+        var hasValidEnrollmentDate = false;
+        for (var i = 0; i < enrollmentDateList.length; ++i) {
+            var enrollmentDate = enrollmentDateList[i];
+            if (enrollmentDate.getYYYYMMDD() === this.klassCopy.date_begin) {
+                hasValidEnrollmentDate = true;
+                break;
+            } // end if
+        } // end for
+        if (isDebug)
+            console.log("klass-detail / setKlassDateEnrollmentView / hasValidEnrollmentDate : ", hasValidEnrollmentDate);
+        if (!hasValidEnrollmentDate) {
+            var enrollmentDate = enrollmentDateList[0];
+            this.klass.date_begin = this.klassCopy.date_begin = enrollmentDate.getYYYYMMDD();
+        } // end if
         for (var i = 0; i < enrollmentDateList.length; ++i) {
             var enrollmentDate = enrollmentDateList[i];
             var key = this.klassCopy.getEnrollmentDateStr(enrollmentDate);
@@ -510,7 +529,7 @@ var KlassDetailComponent = (function () {
         if (null == valueFromKlassCopy || "" == valueFromKlassCopy) {
             // 선택된 역이 없다면, 2호선으로 임의 선택합니다.
             valueFromKlassCopy = subwayLineList[2];
-            this.klassCopy.subway_line = valueFromKlassCopy;
+            this.klass.subway_line = this.klassCopy.subway_line = valueFromKlassCopy;
         } // end if    
         var selectOptionList = [];
         for (var i = 1; i < valueList.length; ++i) {
@@ -562,8 +581,8 @@ var KlassDetailComponent = (function () {
         this.updateSelectOptionSubwayStations(subwayLine);
     };
     KlassDetailComponent.prototype.updateSelectOptionSubwayStations = function (subwayLine) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / updateSelectOptionSubwayStations / 시작");
         if (null == subwayLine || "" === subwayLine) {
@@ -580,6 +599,8 @@ var KlassDetailComponent = (function () {
         subwayLine, 
         // childKey:string
         "subway_station_list");
+        if (isDebug)
+            console.log("klass-detail / updateSelectOptionSubwayStations / subwayStationList : ", subwayStationList);
         var subwayStationKorList = this.watchTower.getMyConst().getNestedChildListFromPrevParent("subway_station_kor_list");
         var subwayStationImgList = this.watchTower.getMyConst().getNestedChildListFromPrevParent("subway_station_img_list");
         var subwayStation = this.klassCopy.subway_station;
@@ -590,8 +611,8 @@ var KlassDetailComponent = (function () {
             this.myArray.isOK(subwayStationImgList) &&
             this.myArray.hasNotStr(subwayStationList, subwayStation)) {
             // 선택된 역이 없다면, 선택한 호선의 첫번째 역으로 임의 선택합니다. 이미지도 설정합니다.
-            this.klassCopy.subway_station = subwayStation = subwayStationList[0];
-            this.klassCopy.subway_station_img = subwasStationImgNext = subwayStation = subwayStationImgList[0];
+            this.klass.subway_station = this.klassCopy.subway_station = subwayStation = subwayStationList[0];
+            this.klass.subway_station_img = this.klassCopy.subway_station_img = subwasStationImgNext = subwayStation = subwayStationImgList[0];
             this.replaceSubwayStationImage(subwasStationImgPrev, subwasStationImgNext);
         } // end if
         if (isDebug)
@@ -610,7 +631,7 @@ var KlassDetailComponent = (function () {
     // wonder.jung
     KlassDetailComponent.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
         if (null == this.watchTower) {
-            return null;
+            return [];
         }
         return this.watchTower
             .getMyConst()
@@ -792,10 +813,11 @@ var KlassDetailComponent = (function () {
         this.setKlassWeeks();
         this.setKlassTimeBegin();
         this.setKlassTimeEnd();
-        this.setKlassDateEnrollmentView();
-        this.setKlassDateEnrollmentInput();
         this.setKlassDays();
         this.setKlassPriceDesc();
+        // @ Deprecated
+        this.setKlassDateEnrollmentView();
+        this.setKlassDateEnrollmentInput();
         // set image-grid service
         var classBannerUrlArr = this.klassCopy.class_banner_url_arr;
         if (null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
@@ -1074,8 +1096,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1248,9 +1270,11 @@ var KlassDetailComponent = (function () {
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
                 this.klassCopy.setTeacherResumeList(myEvent.metaObj);
+                this.updateSaveBtnStatus();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
                 this.klassCopy.setTeacherGreetingList(myEvent.metaObj);
+                this.updateSaveBtnStatus();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.addKlassBanner(myEvent.value);
@@ -1262,9 +1286,11 @@ var KlassDetailComponent = (function () {
         else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
                 this.klassCopy.setTeacherResumeList(myEvent.metaObj);
+                this.updateSaveBtnStatus();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
                 this.klassCopy.setTeacherGreetingList(myEvent.metaObj);
+                this.updateSaveBtnStatus();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.removeKlassBanner(myEvent.value);
@@ -1310,8 +1336,6 @@ var KlassDetailComponent = (function () {
         if (null != klassStation) {
             if (isDebug)
                 console.log("klass-detail / updateKlassLevelDayTimeStation / klassStation : ", klassStation);
-            this.klassCopy.venue_subway_station = klassStation.key;
-            this.klassCopy.venue_subway_station_img_url = klassStation.img_url;
         } // end if
         var klassTime = klassSelectile.time;
         if (null != klassTime) {
@@ -1320,6 +1344,7 @@ var KlassDetailComponent = (function () {
             this.klassCopy.time_begin = klassTime.hh_mm;
             this.klassCopy.time_begin_img_url = klassTime.img_url;
         } // end if
+        this.updateSaveBtnStatus();
     }; // end if
     KlassDetailComponent.prototype.updateKlassPrice = function (klassPrice) {
         var isDebug = true;
@@ -1334,6 +1359,7 @@ var KlassDetailComponent = (function () {
         this.klassCopy.price = parseInt(klassPrice);
         this.priceTagHComponent.setPrice(this.klassCopy.price);
         this.setKlassPriceDesc();
+        this.updateSaveBtnStatus();
     };
     // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
     KlassDetailComponent.prototype.setKlassPriceDesc = function () {
@@ -1430,6 +1456,7 @@ var KlassDetailComponent = (function () {
             this.klassCopy.setTimeBegin(klassTimeBegin);
         }
         this.updateClockTime(this.klassCopy.time_begin, this.klassCopy.time_end);
+        this.updateSaveBtnStatus();
         if (isDebug)
             console.log("klass-detail / updateKlassTimeBegin / this.klassCopy : ", this.klassCopy);
     }; // end method
@@ -1486,6 +1513,7 @@ var KlassDetailComponent = (function () {
             this.klassCopy.setTimeEnd(klassTimeEnd);
         }
         this.updateClockTime(this.klassCopy.time_begin, this.klassCopy.time_end);
+        this.updateSaveBtnStatus();
         if (isDebug)
             console.log("klass-detail / updateKlassTimeEnd / this.klassCopy : ", this.klassCopy);
     };
@@ -1529,6 +1557,7 @@ var KlassDetailComponent = (function () {
             // 데이터를 삭제합니다.
             this.klassCopy.removeDay(selectedValue, daysImgUrl);
         } // end if
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.updateKlassLevel = function (klassLevel) {
         // let isDebug:boolean = true;
@@ -1550,10 +1579,11 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / updateKlassLevel / levelImageNext : ", levelImageNext);
         this.replaceSubwayStationImage(levelImagePrev, levelImageNext);
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.updateKlassSubwayLine = function (klassSubwayLine) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / updateKlassSubwayLine / 시작");
         if (isDebug)
@@ -1564,6 +1594,7 @@ var KlassDetailComponent = (function () {
         this.klassCopy.subway_line = klassSubwayLine;
         // 변경된 지하철 호선에 맞게 역의 선택 리스트를 옮겨줍니다.
         this.updateSelectOptionSubwayStations(klassSubwayLine);
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.updateKlassSubwayStation = function (klassSubwayStation) {
         // let isDebug:boolean = true;
@@ -1577,11 +1608,13 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / updateKlassSubwayStation / 중단 / this.klassCopy is not valid!");
             return;
         }
-        if (this.klassCopy.subway_station === klassSubwayStation) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassSubwayStation / 중단 / 동일한 지하철 역을 선택했습니다.");
-            return;
+        // REMOVE ME
+        /*
+        if(this.klassCopy.subway_station === klassSubwayStation) {
+          if(isDebug) console.log("klass-detail / updateKlassSubwayStation / 중단 / 동일한 지하철 역을 선택했습니다.");
+          return;
         }
+        */
         // 새로운 지하철 역 정보로 교체!
         this.klassCopy.subway_station = klassSubwayStation;
         // 이전 이미지를 가져옵니다.
@@ -1595,6 +1628,7 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / updateKlassSubwayStation / subwayImageNext : ", subwayImageNext);
         this.replaceSubwayStationImage(subwayImagePrev, subwayImageNext);
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.replaceSubwayStationImage = function (subwayImagePrev, subwayImageNext) {
         // let isDebug:boolean = true;
@@ -1615,6 +1649,7 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / updateKlassFeatureList / featureList : ", featureList);
         this.klassCopy.setFeatureList(featureList);
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.updateKlassTargetList = function (targetList) {
         // let isDebug:boolean = true;
@@ -1624,6 +1659,7 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / updateKlassTargetList / targetList : ", targetList);
         this.klassCopy.setTargetList(targetList);
+        this.updateSaveBtnStatus();
     };
     KlassDetailComponent.prototype.updateKlassSchedule = function (schedule) {
         // let isDebug:boolean = true;
@@ -1635,6 +1671,23 @@ var KlassDetailComponent = (function () {
         // 가장 마지막에 추가되는 불필요한 태그를 삭제합니다.
         schedule = schedule.replace(/\<p\>\<br\>\<\/p\>$/gi, "");
         this.klassCopy.setSchedule(schedule);
+        this.updateSaveBtnStatus();
+    };
+    KlassDetailComponent.prototype.setKlassDateEnrollment = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassDateEnrollment / 시작");
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDateEnrollment / 중단 / this.klassCopy is not valid!");
+            return;
+        }
+        if (null == this.klassDateEnrollmentComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassDateEnrollment / 중단 / this.klassDateEnrollmentComponent is not valid!");
+            return;
+        }
     };
     KlassDetailComponent.prototype.updateKlassDateEnrollment = function (klassDateEnrollment) {
         // let isDebug:boolean = true;
@@ -1663,6 +1716,7 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / updateKlassDateEnrollment / dateEnrollmentStr : ", dateEnrollmentStr);
         this.klassCopy.date_begin = klassDateEnrollment;
         this.butterflyComponent.setText(dateEnrollmentStr);
+        this.updateSaveBtnStatus();
         if (isDebug)
             console.log("klass-detail / updateKlassDateEnrollment / this.klassCopy.date_begin : ", this.klassCopy.date_begin);
     };
@@ -1684,6 +1738,7 @@ var KlassDetailComponent = (function () {
         }
         // Klass 객체에 수업 장소 관련 데이터를 저장합니다.
         this.klassCopy.setKlassVenue(klassVenue);
+        this.updateSaveBtnStatus();
         if (isDebug)
             console.log("klass-detail / updateKlassVenue / this.klassCopy : ", this.klassCopy);
     };
@@ -1702,9 +1757,9 @@ var KlassDetailComponent = (function () {
         if (null == this.klassCopy) {
             return;
         }
-        // @ Deprecated
-        this.klassTitle = klassTitle;
+        this.klassTitle = klassTitle; // @ Deprecated
         this.klassCopy.title = klassTitle;
+        this.updateSaveBtnStatus();
         // REMOVE ME
         /*
         if(isDBUpdate) {
@@ -1757,6 +1812,7 @@ var KlassDetailComponent = (function () {
             return;
         }
         this.klassCopy.class_poster_url = posterUrl;
+        this.updateSaveBtnStatus();
         // REMOVE ME
         /*
         this.klassService.addKlassPoster(
@@ -1872,6 +1928,7 @@ var KlassDetailComponent = (function () {
             return;
         } // end if
         this.updateKlassBanners(classBannerUrlNext);
+        this.updateSaveBtnStatus();
     }; // end method
     KlassDetailComponent.prototype.updateKlassBanners = function (classBannerUrlNext) {
         // let isDebug:boolean = true;
@@ -1889,6 +1946,7 @@ var KlassDetailComponent = (function () {
             return;
         }
         this.klassCopy.class_poster_url = classBannerUrlNext;
+        this.updateSaveBtnStatus();
         // REMOVE ME
         /*
         this.klassService.updateKlassBanner(
@@ -1929,8 +1987,21 @@ var KlassDetailComponent = (function () {
         }); // end service
         */
     }; // end method
-    // Admin Section
-    KlassDetailComponent.prototype.showSEKlassFeature = function () {
+    KlassDetailComponent.prototype.onClickSave = function (event) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / onClickSave / 시작");
+    }; // end method
+    KlassDetailComponent.prototype.updateSaveBtnStatus = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / updateSaveBtnStatus / 시작");
+        var hasChanged = this.klassCopy.isNotSame(this.klass);
+        if (isDebug)
+            console.log("klass-detail / updateSaveBtnStatus / hasChanged : ", hasChanged);
+        this.isSaveBtnDisabled = !hasChanged;
     };
     __decorate([
         core_1.ViewChildren(default_component_1.DefaultComponent), 
