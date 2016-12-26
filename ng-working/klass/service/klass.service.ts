@@ -72,8 +72,8 @@ export class KlassService {
     klass:Klass
   ): Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass.service / updateKlass / 시작");
     if(isDebug) console.log("klass.service / updateKlass / apiKey : ",apiKey);
     if(isDebug) console.log("klass.service / updateKlass / userId : ",userId);

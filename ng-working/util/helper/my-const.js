@@ -33,6 +33,22 @@ var HelperMyConst = (function () {
         list.shift();
         return list;
     };
+    HelperMyConst.prototype.getValueWithIdx = function (targetKey, targetIdx) {
+        if (null == targetKey || "" === targetKey) {
+            return "";
+        }
+        if (!(0 < targetIdx)) {
+            return "";
+        }
+        var list = this.getList(targetKey);
+        if (this.myArray.isNotOK(list)) {
+            return "";
+        }
+        if ((list.length - 1) < targetIdx) {
+            return "";
+        }
+        return list[targetIdx];
+    };
     HelperMyConst.prototype.getValue = function (srcKey, srcValue, targetKey) {
         // let isDebug:boolean = true;
         var isDebug = false;

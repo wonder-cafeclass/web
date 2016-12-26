@@ -47,8 +47,8 @@ var KlassService = (function () {
         this.myTime = new my_time_1.HelperMyTime();
     }
     KlassService.prototype.updateKlass = function (apiKey, userId, teacherId, klass) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass.service / updateKlass / 시작");
         if (isDebug)

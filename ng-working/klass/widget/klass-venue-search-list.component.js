@@ -127,7 +127,7 @@ var KlassVenueSearchListComponent = (function () {
                 console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
             return;
         }
-        this.klassVenuesNaverMap = klassVenue;
+        this.klassVenue = this.klassVenuesNaverMap = klassVenue;
         if (isDebug)
             console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ", this.klassVenuesNaverMap);
     };

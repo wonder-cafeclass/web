@@ -427,8 +427,8 @@ export class Klass {
     // @ Deprecated
     getEnrollmentDateList():KlassCalendarDay[] {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / getEnrollmentDateList / 시작");
 
         if(isDebug) console.log("klass / getEnrollmentDateList / this.klass_calendar_list : ",this.klass_calendar_list);
@@ -502,8 +502,8 @@ export class Klass {
 
     setKlassCalendarList(klassCalendarJSONList:any[]):void {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setKlassCalendarList / init");
 
         if(null == klassCalendarJSONList || 0 == klassCalendarJSONList.length) {
@@ -573,8 +573,8 @@ export class Klass {
 
     setJSON(json):Klass {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / setJSON / init");
 
         if(isDebug) console.log("klass / setJSON / json : ",json);
@@ -690,8 +690,8 @@ export class Klass {
     // @ Desc : 다른 Klass 객체와 데이터를 비교, 동일한지 확인합니다.
     public isSame(target:Klass):boolean {
 
-        let isDebug:boolean = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
         if(isDebug) console.log("klass / isSame / 시작");
 
         if(null == target) {

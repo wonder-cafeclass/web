@@ -51,7 +51,7 @@ import { ClockBoardComponent }           from '../widget/clock/clock-board.compo
 import { ButterflyComponent }            from '../widget/butterfly/butterfly.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
-// import { KlassFilterTileComponent }      from './klass-filter-tile.component';
+import { KlassPriceCalculatorComponent } from './widget/klass-price-calculator.component';
 
 import { ImageService }                  from '../util/image.service';
 import { MyEventService }                from '../util/service/my-event.service';
@@ -97,9 +97,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   klassTitle:string;
 
-  // klassCalendarTableLinear:Calendar[][];
-  // klassCalendarTableMonthly:Calendar[][][];
-
   editTitle: string; // Deprecated
 
   priceTagCurrency:string="₩";
@@ -109,16 +106,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   pricePerWeekFormat:string="4주";
   pricetagDesc:string;
 
+  // @ Deprecated
   selectileImageTable:string[][];
   selectileImageHeight:number=60;
   selectileImageWidth:number=60;
   selectileCageWidth:number=60;
 
+  // @ Deprecated
   miniCalHeight:number=60;
   miniCalWidth:number=60;
   miniCalCageWidth:number=60;
-
-  
 
   watchTowerImgUrl:string;
   watchTowerWhiteImgUrl:string;
@@ -140,23 +137,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   imgUploaderImagePathKlassPoster:string="";
   imgUploaderImageUrlKlassPoster:string="";
   imgUploaderEventKeyKlassPoster:string="";
-
-  // REMOVE ME
-  // DronList
-  // dronListKey:string;
-  // dronListTitle:string;
-  // dronListSEinnerHTML:string;
-  // dronListMyEventSingleInput:MyEvent;
-
-  // REMOVE ME
-  // klassPriceUpdown:InputViewUpdown;
-  // klassTimeBeginUpdown:InputViewUpdown;
-  // klassTimeEndUpdown:InputViewUpdown;
-  // klassTitleUpdown:InputViewUpdown;
-  // klassDescUpdown:InputViewUpdown;
-
-  // firstClassDate:Calendar;
-  // firstClassDateFormatStr:string;
 
   loginUser:User;
   loginTeacher:Teacher;
@@ -202,6 +182,10 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   @ViewChild(KlassDetailNavListComponent)
   private klassDetailNavListComponent: KlassDetailNavListComponent;
+
+  @ViewChild(KlassPriceCalculatorComponent)
+  private priceCalculator: KlassPriceCalculatorComponent;
+
 
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
@@ -622,8 +606,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   // @ 가장 가까운 수업 시작일을 의미합니다.
   private setKlassDateEnrollmentInput() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setKlassDateEnrollmentView / 시작");
 
     if(null == this.klassCopy) {
@@ -841,8 +825,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
   private updateSelectOptionSubwayStations(subwayLine:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateSelectOptionSubwayStations / 시작");
 
     if(null == subwayLine || "" === subwayLine) {
@@ -921,6 +905,27 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       valueFocus
     );
   } // end method
+
+  private setPriceCalculator() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setPriceCalculator / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassDetailNavList / 중단 / this.klassCopy is not valid!");
+      return;
+    }
+    if(null == this.priceCalculator) {
+      if(isDebug) console.log("klass-detail / setKlassDays / 중단 / this.priceCalculator is not valid!");
+      return;
+    }
+
+    this.priceCalculator.setPrice(this.klassCopy.price);
+
+    // this.priceCalculator;
+
+  }
 
   private setKlassDetailNavList() :void {
 
@@ -1071,7 +1076,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     );
     if(isDebug) console.log("klass-detail / setSelectileImageTable / subwayStationImg : ",subwayStationImg);
 
-    // TODO - 시간 이미지 설정하기
     this.selectileImageTable = 
     [
       [
@@ -1091,8 +1095,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setDaysImg() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setDaysImg / 시작");
 
     let days_list:string[] = this.klass.days_list;
@@ -1123,13 +1127,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private onAfterReceivingKlass() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / 시작");
     if(isDebug) console.log("klass-detail / onAfterReceivingKlass / this.klass : ",this.klass);
 
     // 수업 정보를 받은 뒤에, 요일 이미지 정보를 업데이트합니다.
-    // wonder.jung
     this.setDaysImg();
 
     // 저장 이전의 모든 데이터는 복사본에서 가져와 사용합니다.
@@ -1464,7 +1467,14 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.selectTileViewComponent = myEvent.metaObj;
         } // end if
 
-      } // end if      
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {  
+
+        if( null != myEvent.metaObj ) { // wonder.jung
+          this.priceCalculator = myEvent.metaObj;
+          this.setPriceCalculator();
+        } // end if
+
+      } // end if  
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
@@ -1496,10 +1506,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
         this.updateKlassTimeEnd(myEvent.value);
 
+/*
+// REMOVE ME
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
 
         this.updateKlassLevelDayTimeStation(myEvent.metaObj);
-
+*/
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT_INPUT)) {  
 
         this.updateKlassDateEnrollment(myEvent.value);
@@ -1609,54 +1621,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   } // end method
 
-  private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / 시작");
-    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassSelectile : ",klassSelectile);
-
-    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / this.klassCopy : ",this.klassCopy);
-
-    let klassDay:KlassDay = klassSelectile.day;
-    if(null != klassDay) {
-      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassDay : ",klassDay);
-
-      this.klassCopy.days = klassDay.key;
-      this.klassCopy.days_img_url = klassDay.img_url;
-    } // end if
-    let klassLevel:KlassLevel = klassSelectile.level;
-    if(null != klassLevel) {
-      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassLevel : ",klassLevel);
-
-      this.klassCopy.level = klassLevel.key;
-      this.klassCopy.level_img_url = klassLevel.img_url;
-    } // end if
-    let klassStation:KlassStation = klassSelectile.station;
-    if(null != klassStation) {
-      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassStation : ",klassStation);
-
-      // REMOVE ME
-      // this.klassCopy.venue_subway_station = klassStation.key;
-      // this.klassCopy.venue_subway_station_img_url = klassStation.img_url;
-
-    } // end if
-    let klassTime:KlassTime = klassSelectile.time;
-    if(null != klassTime) {
-      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassTime : ",klassTime); 
-
-      this.klassCopy.time_begin = klassTime.hh_mm;
-      this.klassCopy.time_begin_img_url = klassTime.img_url;
-    } // end if
-
-    this.updateSaveBtnStatus();
-
-  } // end if
 
   private updateKlassPrice(klassPrice:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassPrice / 시작");
     if(isDebug) console.log("klass-detail / updateKlassPrice / klassPrice : ",klassPrice);
 
@@ -1675,8 +1644,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
   private setKlassPriceDesc() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setKlassPriceDesc / 시작");
 
     if(null == this.loginUser) {
@@ -1918,8 +1887,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private updateKlassSubwayLine(klassSubwayLine:string) :void {  
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / 시작");
 
     if(isDebug) console.log("klass-detail / updateKlassSubwayLine / klassSubwayLine : ",klassSubwayLine);
@@ -2035,8 +2004,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setKlassDateEnrollment() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setKlassDateEnrollment / 시작");
 
     if(null == this.klassCopy) {
@@ -2087,9 +2056,85 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
-  private updateClockTime(hhmmBeing:string, hhmmEnd:string) {
+  private getTimeImage(hhmmBegin:string):string {
+
+    // selectile의 시간 이미지를 업데이트합니다.
+    let hours:number = this.myTime.getHoursFromHHMM(hhmmBegin);
+
+    let targetIdx:number = -1;
+    if(6 <= hours && hours < 12) 
+    {       
+      // 오전
+      targetIdx = 1;
+    } 
+    else if(12 <= hours && hours < 14) 
+    {
+      // 점심
+      targetIdx = 2;
+    }
+    else if(14 <= hours && hours < 18) 
+    {
+      // 오후
+      targetIdx = 3;
+    }
+    else if(18 <= hours && hours < 20) 
+    {
+      // 저녁
+      targetIdx = 4;
+    }
+    else 
+    {
+      targetIdx = 0;
+    } 
+
+    return this.watchTower
+    .getMyConst()
+    .getValueWithIdx(
+      // targetKey:string, 
+      "class_times_img_url_list",
+      // targetIdx:number,
+      targetIdx
+    );
+  }
+
+  private replaceTimeImage(timeImagePrev:string, timeImageNext:string) :void{
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / replaceTimeImage / 시작");
+
+    if(null == timeImagePrev || "" === timeImagePrev ){
+      if(isDebug) console.log("klass-detail / replaceTimeImage / 중단 / timeImagePrev is not valid!");
+      return;
+    } // end if
+    if(null == timeImageNext || "" === timeImageNext ){
+      if(isDebug) console.log("klass-detail / replaceTimeImage / 중단 / timeImageNext is not valid!");
+      return;
+    } // end if
+
+    if(isDebug) console.log("klass-detail / replaceSubwayStationImage / timeImagePrev : ",timeImagePrev);
+    if(isDebug) console.log("klass-detail / replaceSubwayStationImage / timeImageNext : ",timeImageNext);
+
+    this.selectileImageTable[0] = this.myArray.replaceStr(this.selectileImageTable[0], timeImagePrev, timeImageNext);
+  } // end method
+
+  private updateClockTime(hhmmBegin:string, hhmmEnd:string) {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateClockTime / 시작");
+
     // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
-    this.clockBoardComponent.setClockTimeBeginEnd(hhmmBeing, hhmmEnd);
+    this.clockBoardComponent.setClockTimeBeginEnd(hhmmBegin, hhmmEnd);
+
+    let timeImgNext:string = this.getTimeImage(hhmmBegin);
+    if(isDebug) console.log("klass-detail / updateClockTime / timeImgNext : ",timeImgNext);
+
+    this.replaceTimeImage(this.klassCopy.time_begin_img_url, timeImgNext);
+    this.klassCopy.time_begin_img_url = timeImgNext;
+
+    this.updateSaveBtnStatus();
+
   } // end method
 
   private updateKlassVenue(klassVenue:KlassVenue) :void {
@@ -2135,49 +2180,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     this.updateSaveBtnStatus();
 
-    // REMOVE ME
-    /*
-    if(isDBUpdate) {
-
-      this.klassService.updateKlassTitle(
-        // apiKey:string, 
-        this.watchTower.getApiKey(),
-        // userId:number,
-        +this.loginUser.id,
-        // klassId:number,
-        +this.klassCopy.id,
-        // klassTitle:string
-        klassTitle      
-      ).then((myResponse:MyResponse) => {
-
-        // 로그 등록 결과를 확인해볼 수 있습니다.
-        if(isDebug) console.log("klass-detail / updateKlassTitle / myResponse : ",myResponse);
-        if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
-
-          // Do something..
-
-        } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-          this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-        } else {
-          // 에러 로그 등록
-          this.myLoggerService.logError(
-            // apiKey:string
-            this.watchTower.getApiKey(),
-            // errorType:string
-            this.myLoggerService.errorAPIFailed,
-            // errorMsg:string
-            `klass-detail / updateKlassTitle / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / klassTitle : ${klassTitle}`
-          ); // end logger      
-
-        } // end if
-
-      }) // end service 
-
-    } // end if
-    */
-
   } // end method
 
 
@@ -2195,51 +2197,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.klassCopy.class_poster_url = posterUrl;
 
     this.updateSaveBtnStatus();
-
-    // REMOVE ME
-    /*
-    this.klassService.addKlassPoster(
-      // apiKey:string, 
-      this.watchTower.getApiKey(),
-      // userId:number,
-      +this.loginUser.id,
-      // klassId:number,
-      +this.klassCopy.id,
-      // klassPoster:string
-      posterUrl
-    ).then((myResponse:MyResponse) => {
-      // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / addKlassPoster / myResponse : ",myResponse);
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_poster")) {
-
-        let klassPosterUrl:string = myResponse.getDataProp("klass_poster");
-
-        if(null != klassPosterUrl && "" != klassPosterUrl) {
-          klassPosterUrl = `${this.imgUploaderImagePathKlassPoster}/${klassPosterUrl}`;
-          this.imgUploaderImageUrlKlassPoster = klassPosterUrl;
-        }
-
-        if(isDebug) console.log("klass-detail / addKlassPoster / klassPosterUrl : ",klassPosterUrl);
-
-      } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-        this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-      } else {
-        // 에러 로그 등록
-        this.myLoggerService.logError(
-          // apiKey:string
-          this.watchTower.getApiKey(),
-          // errorType:string
-          this.myLoggerService.errorAPIFailed,
-          // errorMsg:string
-          `klass-detail / addKlassPoster / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / posterUrl : ${posterUrl}`
-        ); // end logger      
-
-      } // end if
-
-    }) // end service 
-    */   
 
   }
 
@@ -2333,49 +2290,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       return;
     }
 
-    this.klassCopy.class_poster_url = classBannerUrlNext;
-
+    this.klassCopy.class_banner_url = classBannerUrlNext;
+    // wonder.jung
     this.updateSaveBtnStatus();
-
-    // REMOVE ME
-    /*
-    this.klassService.updateKlassBanner(
-      // apiKey:string, 
-      this.watchTower.getApiKey(),
-      // userId:number,
-      +this.loginUser.id,
-      // klassId:number,
-      +this.klassCopy.id,
-      // klassBanners:string
-      classBannerUrlNext
-    ).then((myResponse:MyResponse) => {
-      // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-detail / updateKlassBanner / myResponse : ",myResponse);
-
-      if(myResponse.isSuccess()) {
-
-        // TODO - 가져온 klass 객체의 banner list를 업데이트 해야 합니다.
-
-      } else if(myResponse.isFailed() && null != myResponse.error) {  
-
-        this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-      } else {
-
-        // 에러 로그 등록
-        this.myLoggerService.logError(
-          // apiKey:string
-          this.watchTower.getApiKey(),
-          // errorType:string
-          this.myLoggerService.errorAPIFailed,
-          // errorMsg:string
-          `klass-detail / updateKlassBanner / user_id : ${this.loginUser.id} / klass_id : ${this.klassCopy.id} / banner_url : ${classBannerUrlNext}`
-        ); // end logger      
-
-      } // end if
-      
-    }); // end service
-    */
 
   } // end method
 
@@ -2386,8 +2303,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   }
   isOKKlass() :boolean {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / isOKKlass / 시작");
 
     // 입력 관련 모든 컴포넌트를 가져옴.
@@ -2514,8 +2431,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onClickSave(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onClickSave / 시작");
 
     // 1. 변경되었는지 다시 한번 확인합니다.
@@ -2579,8 +2496,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   updateSaveBtnStatus() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateSaveBtnStatus / 시작");
 
     let hasChanged:boolean = this.klassCopy.isNotSame(this.klass);
@@ -2754,5 +2671,52 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.checkboxOptionListKlassDay = this.checkboxService.getKlassDays(this.klass);
   }
   */  
+
+  /*
+  private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / 시작");
+    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassSelectile : ",klassSelectile);
+
+    if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / this.klassCopy : ",this.klassCopy);
+
+    let klassDay:KlassDay = klassSelectile.day;
+    if(null != klassDay) {
+      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassDay : ",klassDay);
+
+      this.klassCopy.days = klassDay.key;
+      this.klassCopy.days_img_url = klassDay.img_url;
+    } // end if
+    let klassLevel:KlassLevel = klassSelectile.level;
+    if(null != klassLevel) {
+      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassLevel : ",klassLevel);
+
+      this.klassCopy.level = klassLevel.key;
+      this.klassCopy.level_img_url = klassLevel.img_url;
+    } // end if
+    let klassStation:KlassStation = klassSelectile.station;
+    if(null != klassStation) {
+      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassStation : ",klassStation);
+
+      // REMOVE ME
+      // this.klassCopy.venue_subway_station = klassStation.key;
+      // this.klassCopy.venue_subway_station_img_url = klassStation.img_url;
+
+    } // end if
+    let klassTime:KlassTime = klassSelectile.time;
+    if(null != klassTime) {
+      if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassTime : ",klassTime); 
+
+      this.klassCopy.time_begin = klassTime.hh_mm;
+      this.klassCopy.time_begin_img_url = klassTime.img_url;
+    } // end if
+
+    this.updateSaveBtnStatus();
+
+  } // end if
+  */
+
 
 } // end class

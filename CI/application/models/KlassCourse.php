@@ -337,6 +337,67 @@ class KlassCourse {
 
         }
 
+        public function is_class_day($day="")
+        {
+                if(empty($day)) 
+                {
+                        return false;
+                }
+
+                $days_list = $this->get_days_list();
+                if(empty($days_list))
+                {
+                        return false;
+                }
+
+                for ($i=0; $i < count($days_list); $i++) 
+                {
+                        $day_from_list = $days_list[$i];
+                        $day_from_list = strtolower($day_from_list);
+
+                        $strpos = strpos(strtolower($day), $day_from_list);
+                        if(-1 < $strpos) 
+                        {
+                                return true;
+                        } // end if
+                } // end for
+
+                return false;
+        }
+
+        private function get_days_list()
+        {
+                if(!empty($this->days_list)) 
+                {
+                        return $this->days_list;
+                }
+
+                if(!empty($this->days))
+                {
+                        $this->days_list = explode($this->delimiter, $this->days);
+                }
+
+                return $this->days_list;
+        }
+
+        // @ Desc : 수업 요일 검색을 위한 맵 객체를 만들어 반환합니다.
+        public function get_days_map()
+        {
+                if(empty($this->days_list)) 
+                {
+                        $days_list = $this->days_list = explode($this->delimiter, $this->days);
+                }
+                $days_map = [];
+                for ($i=0; $i < count($days_list); $i++) 
+                {
+                        $day = $days_list[$i];
+                        $day = strtolower($day);
+                        $days_map[$day] = $day;
+                } // end for
+
+                return $days_map;
+        }
+
         public function days_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -371,12 +432,7 @@ class KlassCourse {
 
                 // wonder.jung
                 $days_list = $this->days_list = explode($this->delimiter, $this->days);
-                $days_map = [];
-                for ($i=0; $i < count($days_list); $i++) 
-                {
-                        $day = $days_list[$i];
-                        $days_map[$day] = $day;
-                } // end for
+                $days_map = $this->get_days_map();
 
                 $class_days_list = $const_map->{"class_days_list"};
                 
@@ -387,16 +443,8 @@ class KlassCourse {
                         if(!empty($days_map[$cur_class_days])) 
                         {
                                 array_push($selected_idx_arr, $i);
-                        }
-
-                        // Legacy
-                        /*
-                        if (strpos($class_days, $cur_class_days) !== false) 
-                        {
-                                array_push($selected_idx_arr, $i);
-                        }
-                        */
-                }
+                        } // end if
+                } // end for
                 $class_days_eng_list = $const_map->{"class_days_eng_list"};
                 $class_days_kor_list = $const_map->{"class_days_kor_list"};
                 $class_days_img_url_list = $const_map->{"class_days_img_url_list"};

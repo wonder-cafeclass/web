@@ -146,6 +146,9 @@ class MY_KlassCalendar {
         {
             $date_end = $calendar_list[count($calendar_list) - 1];
         }
+
+        // $days_list = $klass_course->days_list;
+        $days_map = $klass_course->get_days_map();
         
         for ($i=0; $i < count($calendar_list); $i++) 
         {
@@ -182,21 +185,11 @@ class MY_KlassCalendar {
                 $klassCalendar->isLastDay = true;
             }
 
-            // wonder.jung
-            // $days = $klass_course->days;
-            // $days_list = 
-            // if(!empty($days))
-
-            $strpos = strpos(strtolower($cal_date), strtolower($klass_course->days));
-            $is_klass_day = false;
-            if(-1 < $strpos) 
-            {
-                // 수업이 있는 날짜입니다.
-                $is_klass_day = true;
-            }
-            $strpos = -1;
+            // 수업이 있는 요일 검사.
+            $is_klass_day = $klass_course->is_class_day($day);
 
             // 수업 시작 날짜 이전인지 검사.
+            $strpos = -1;
             if(strtotime($klass_course->date_begin) <= strtotime($cal_date_yyyy_mm_dd)) 
             {
                 $has_class_began = true;

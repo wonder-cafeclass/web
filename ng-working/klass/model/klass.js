@@ -353,8 +353,8 @@ var Klass = (function () {
     };
     // @ Deprecated
     Klass.prototype.getEnrollmentDateList = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / getEnrollmentDateList / 시작");
         if (isDebug)
@@ -411,8 +411,8 @@ var Klass = (function () {
         return enrollmentDate.month + "\uC6D4 " + enrollmentDate.date + "\uC77C " + enrollmentDate.dayKor + "\uC694\uC77C";
     };
     Klass.prototype.setKlassCalendarList = function (klassCalendarJSONList) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setKlassCalendarList / init");
         if (null == klassCalendarJSONList || 0 == klassCalendarJSONList.length) {
@@ -472,8 +472,8 @@ var Klass = (function () {
         new Klass());
     }; // end method
     Klass.prototype.setJSON = function (json) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / setJSON / init");
         if (isDebug)
@@ -563,8 +563,8 @@ var Klass = (function () {
     };
     // @ Desc : 다른 Klass 객체와 데이터를 비교, 동일한지 확인합니다.
     Klass.prototype.isSame = function (target) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass / isSame / 시작");
         if (null == target) {

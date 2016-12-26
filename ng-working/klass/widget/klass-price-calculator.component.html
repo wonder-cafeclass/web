@@ -1,0 +1,54 @@
+<div>
+	<div class="title"><h4>수업료 계산기</h4></div>
+	<div style="margin-bottom: 5px;">
+		<!-- 1. 1인당 강의료 -->
+	    <widget-input-default
+	    [isNoSpace]="true"
+	    [numUnit]="1000"
+	    [meta]="defaultMetaList[0]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>
+	</div>
+	<div>
+		<!-- 2. 수수료 -->
+	    <widget-input-default
+	    [isDisabled]="true"
+	    [isNoSpace]="true"
+	    [ngModelInput]="commissionStr"
+	    [meta]="defaultMetaList[1]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div>
+		<!-- 3. 1인당 강사 지급액 -->
+	    <widget-input-default
+	    [isDisabled]="true"
+	    [isNoSpace]="true"
+	    [ngModelInput]="paymentForTeacherStr"
+	    [meta]="defaultMetaList[2]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div style="margin-bottom: 5px;">
+		<!-- 4. 수업 학생수 -->
+	    <widget-input-default
+	    [isNoSpace]="true"
+	    [numUnit]="1"
+	    [meta]="defaultMetaList[3]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div>
+		<!-- 5. 합계 -->
+	    <widget-input-default
+	    [isDisabled]="true"
+	    [isNoSpace]="true"
+	    [ngModelInput]="totalStr"
+	    [meta]="defaultMetaList[4]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div class="desc"><small>최소 강의 비용은 10,000원 입니다.</small></div>
+	<div class="desc"><small>강의 비용은 4주 수업에 대한 비용입니다.</small></div>
+	<div class="desc"><small>강의 비용은 최소 천원 단위로 책정해주세요.</small></div>
+</div>

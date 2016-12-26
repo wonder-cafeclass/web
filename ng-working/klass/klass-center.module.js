@@ -23,15 +23,16 @@ var my_checker_service_1 = require('../util/service/my-checker.service');
 var image_service_1 = require('../util/image.service');
 var comment_service_1 = require('../widget/comment/service/comment.service');
 var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
-var klass_center_component_1 = require('./klass-center.component');
 var klass_list_component_1 = require('./klass-list.component');
-var klass_center_home_component_1 = require('./klass-center-home.component');
-var klass_detail_component_1 = require('./klass-detail.component');
-var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
-var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
 var klass_center_routing_1 = require('./klass-center.routing');
-var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
+var klass_center_component_1 = require('./klass-center.component');
+var klass_detail_component_1 = require('./klass-detail.component');
+var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
+var klass_center_home_component_1 = require('./klass-center-home.component');
+var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_teacher_component_1 = require('./widget/klass-teacher.component');
+var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
+var klass_price_calculator_component_1 = require('./widget/klass-price-calculator.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
 var clock_component_1 = require('../widget/clock/clock.component');
@@ -76,6 +77,7 @@ var KlassCenterModule = (function () {
                 klass_filter_tile_component_1.KlassFilterTileComponent,
                 klass_venue_search_list_component_1.KlassVenueSearchListComponent,
                 klass_teacher_component_1.KlassTeacherComponent,
+                klass_price_calculator_component_1.KlassPriceCalculatorComponent,
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,

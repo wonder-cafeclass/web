@@ -78,9 +78,16 @@
 		"klass_subway_station":"is_str|||min_length[3]|||max_length[64]",
 
 		"klass_class_per_week":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[7]",
+
 		"klass_price":"is_number|||is_natural_no_zero|||greater_than_equal_to[45000]|||less_than_equal_to[1000000]",
+		"klass_price_calc_commission_str":"is_str|||regex_match_include[/^[0-9]+%$/]",
+		"klass_price_calc_payment_str":"is_str|||regex_match_include[/^₩[0-9,]+$/]",
+		"klass_price_calc_student_number":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
+		
 		"klass_banner_url":"is_str",
 		"klass_poster_url":"is_str|||regex_match_include[/(jpg|png)$/]",
+
+		"klass_student_number":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
 
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
@@ -136,8 +143,8 @@
 		"user_permission_eng_list":["User","Teacher","Admin"],
 		"user_permission_kor_list":["사용자","강사","운영자"],
 
-		"class_weeks_list":["2","4","8","10","12"],
-		"class_weeks_kor_list":["2주","4주","8주","10주","12주"],
+		"class_weeks_list":["4","8","12"],
+		"class_weeks_kor_list":["4주","8주","12주"],
 
 		"class_review_status_list":["A","N"],
 		"class_review_status_desc_list":["정상","삭제"],

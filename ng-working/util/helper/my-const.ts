@@ -48,6 +48,26 @@ export class HelperMyConst {
 		return list;
     }
 
+    getValueWithIdx(targetKey:string, targetIdx:number):string {
+        if(null == targetKey || "" === targetKey) {
+            return "";
+        }
+        if(!(0 < targetIdx)) {
+            return "";
+        }
+
+        let list:any = this.getList(targetKey);
+        if(this.myArray.isNotOK(list)) {
+            return "";
+        }
+
+        if((list.length - 1)< targetIdx) {
+            return "";
+        }
+
+        return list[targetIdx];
+    }
+
     getValue(srcKey:string, srcValue:string, targetKey:string) {
 
         // let isDebug:boolean = true;

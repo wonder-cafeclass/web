@@ -174,6 +174,13 @@ var HelperMyTime = (function () {
         target.setTime(target.getTime() + (minutes * 60 * 1000));
         return target;
     };
+    HelperMyTime.prototype.getHoursFromHHMM = function (date_str) {
+        var date = this.getDateFromHHMM(date_str);
+        if (null == date) {
+            return -1;
+        }
+        return date.getHours();
+    };
     HelperMyTime.prototype.getDateFromHHMM = function (date_str) {
         if (null == date_str || "" == date_str) {
             return null;

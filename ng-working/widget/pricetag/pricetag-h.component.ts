@@ -64,8 +64,8 @@ export class PriceTagHComponent implements OnInit {
 
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("pricetag-h / emitEventOnReady / 시작");
 
     let myEventOnChange:MyEvent =
@@ -90,8 +90,8 @@ export class PriceTagHComponent implements OnInit {
   setTitle(title:string): void {
     // title
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("pricetag-h / setTitle / 시작");
 
     if(null == title || "" === title) {
@@ -118,8 +118,8 @@ export class PriceTagHComponent implements OnInit {
   // @ Desc : 가격 밑에 보여지는 설명 ex) 수수료등.
   setPriceDesc(priceDesc:string):void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("pricetag-h / setPrice / 시작");
     if(isDebug) console.log("pricetag-h / setPrice / priceDesc : ",priceDesc);
 

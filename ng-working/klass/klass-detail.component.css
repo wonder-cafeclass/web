@@ -116,3 +116,8 @@ button.save {
   border-radius: 5px;
   margin: 10px;
 }
+div.price-calc {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

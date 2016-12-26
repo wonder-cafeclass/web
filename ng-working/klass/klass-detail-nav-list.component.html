@@ -117,17 +117,23 @@
                   class="list-group-item klass-info"
                   style="padding:0px;"
                   [ngClass]="{'focus':isFocusTutorDesc}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
-              <klass-teacher  [isAdmin]="isAdmin"
-                              [klassTeacher]="klassTeacher" 
-                              [klassId]="klass.id"
-                              (emitter)="onChangedFromInputRow($event)">
-              </klass-teacher>
+              -->
+              <div style="padding: 5px;">
+                <klass-teacher  [isAdmin]="isAdmin"
+                                [klassTeacher]="klassTeacher" 
+                                [klassId]="klass.id"
+                                (emitter)="onChangedFromInputRow($event)">
+                </klass-teacher>
+              </div>
             </li>
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
+              -->
               <comment-list [isAdmin]="isAdmin"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [hasEvaluation]="true"
@@ -142,7 +148,9 @@
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
+              -->
               <comment-list [isAdmin]="isAdmin"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [myEvent]="myEventForQuestion"

@@ -198,6 +198,16 @@ export class HelperMyTime {
 
 	}
 
+	public getHoursFromHHMM(date_str:string):number {
+		let date:Date = this.getDateFromHHMM(date_str);
+
+		if(null == date) {
+			return -1;
+		}
+
+		return date.getHours();
+	}
+
 	private getDateFromHHMM(date_str:string):Date {
 
 		if(null == date_str || "" == date_str) {

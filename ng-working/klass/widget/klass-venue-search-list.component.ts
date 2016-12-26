@@ -190,7 +190,7 @@ export class KlassVenueSearchListComponent implements OnInit {
       return;
     }
 
-    this.klassVenuesNaverMap = klassVenue;
+    this.klassVenue = this.klassVenuesNaverMap = klassVenue;
 
     if(isDebug) console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ",this.klassVenuesNaverMap);
 

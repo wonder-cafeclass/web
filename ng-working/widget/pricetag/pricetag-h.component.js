@@ -39,8 +39,8 @@ var PriceTagHComponent = (function () {
         this.emitEventOnReady();
     };
     PriceTagHComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("pricetag-h / emitEventOnReady / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
@@ -60,8 +60,8 @@ var PriceTagHComponent = (function () {
     };
     PriceTagHComponent.prototype.setTitle = function (title) {
         // title
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("pricetag-h / setTitle / 시작");
         if (null == title || "" === title) {
@@ -84,8 +84,8 @@ var PriceTagHComponent = (function () {
     };
     // @ Desc : 가격 밑에 보여지는 설명 ex) 수수료등.
     PriceTagHComponent.prototype.setPriceDesc = function (priceDesc) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("pricetag-h / setPrice / 시작");
         if (isDebug)

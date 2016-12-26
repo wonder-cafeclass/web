@@ -144,6 +144,18 @@ var MyEventService = (function () {
         this.KEY_KLASS_TARGET_LIST = "KEY_KLASS_TARGET_LIST";
         // 수업 - 수업 일정
         this.KEY_KLASS_SCHEDULE = "KEY_KLASS_SCHEDULE";
+        // 수업료 계산기 - 1인당 강의료
+        this.KEY_KLASS_PRICE_CALC = "KEY_KLASS_PRICE_CALC";
+        // 수업료 계산기 - 1인당 강의료
+        this.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT = "KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT";
+        // 수업료 계산기 - 수수료
+        this.KEY_KLASS_PRICE_CALC_COMMISSION = "KEY_KLASS_PRICE_CALC_COMMISSION";
+        // 수업료 계산기 - 1인당 강사 지급액
+        this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER = "KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER";
+        // 수업료 계산기 - 수업 학생수
+        this.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER = "KEY_KLASS_PRICE_CALC_STUDENT_NUMBER";
+        // 수업료 계산기 - 합계
+        this.KEY_KLASS_PRICE_CALC_TOTAL = "KEY_KLASS_PRICE_CALC_TOTAL";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();
@@ -638,6 +650,66 @@ var MyEventService = (function () {
             "klass_week", 
             // public type:string
             this.defaultType.TYPE_SELECT),
+        ];
+        return defaultMetaList;
+    };
+    MyEventService.prototype.getDefaultMetaListKlassPriceCalculator = function () {
+        var defaultMetaList = [
+            new default_meta_1.DefaultMeta(// 0
+            // public title:string
+            "1인당 강의료", 
+            // public placeholder:string
+            "1인당 강의료를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT, 
+            // public checkerKey:string
+            "klass_price", 
+            // public type:string
+            this.defaultType.TYPE_NUMBER),
+            new default_meta_1.DefaultMeta(// 1
+            // public title:string
+            "수수료", 
+            // public placeholder:string
+            "수수료를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_COMMISSION, 
+            // public checkerKey:string
+            "klass_price_calc_commission_str", 
+            // public type:string
+            this.defaultType.TYPE_INPUT),
+            new default_meta_1.DefaultMeta(// 2
+            // public title:string
+            "1인당 강사 지급액", 
+            // public placeholder:string
+            "1인당 강사 지급액을 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER, 
+            // public checkerKey:string
+            "klass_price_calc_payment_str", 
+            // public type:string
+            this.defaultType.TYPE_INPUT),
+            new default_meta_1.DefaultMeta(// 3
+            // public title:string
+            "수업 학생수", 
+            // public placeholder:string
+            "수업 학생수를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER, 
+            // public checkerKey:string
+            "klass_price_calc_student_number", 
+            // public type:string
+            this.defaultType.TYPE_NUMBER),
+            new default_meta_1.DefaultMeta(// 4
+            // public title:string
+            "최종 전달 비용", 
+            // public placeholder:string
+            "합계를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_TOTAL, 
+            // public checkerKey:string
+            "klass_price_calc_payment_str", 
+            // public type:string
+            this.defaultType.TYPE_INPUT),
         ];
         return defaultMetaList;
     };
