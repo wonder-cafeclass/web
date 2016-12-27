@@ -63,6 +63,7 @@ import { MyResponse }                    from '../util/model/my-response';
 import { HelperMyTime }                  from '../util/helper/my-time';
 import { HelperMyArray }                 from '../util/helper/my-array';
 import { HelperMyIs }                    from '../util/helper/my-is';
+import { HelperMyFormat }                from '../util/helper/my-format';
 import { HelperMyConst }                 from '../util/helper/my-const';
 
 import { UserService }                   from '../users/service/user.service';
@@ -204,6 +205,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   private myTime:HelperMyTime;
   private myArray:HelperMyArray;
   private myIs:HelperMyIs;
+  private myFormat:HelperMyFormat;
 
   isSaveBtnDisabled:boolean = true;
 
@@ -235,6 +237,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     this.myTime = new HelperMyTime();
     this.myArray = new HelperMyArray();
     this.myIs = new HelperMyIs();
+    this.myFormat = new HelperMyFormat();
 
   }
 
@@ -468,8 +471,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log("klass-detail / setKlassWeeks / 중단 / this.klassCopy is not valid!");
       return;
     }
-    if(null == this.klassWeeksComponent) {
-      if(isDebug) console.log("klass-detail / setKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+    if(null == this.priceTagHComponent) {
+      if(isDebug) console.log("klass-detail / setKlassWeeks / 중단 / this.priceTagHComponent is not valid!");
       return;
     }
 
@@ -485,6 +488,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       // 초기 값은 원본에도 업데이트합니다.
       this.klass.week = this.klassCopy.week = +week;
     } // end if
+
+
     let weekKor:string =
     this.myArray.getValueFromLists(
       // key:string, 
@@ -494,26 +499,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       // targetList:string[]
       classWeeksKorList
     );
-
-    let selectOptionList:DefaultOption[] = 
-    this.getDefaultOptionList(
-      // keyList:string[],
-      classWeeksKorList, 
-      // valueList:string[],
-      classWeeksList, 
-      // valueFocus:string
-      week
-    );
-
-    if(isDebug) console.log("klass-detail / setKlassWeeks / selectOptionList : ",selectOptionList);
-    if(isDebug) console.log("klass-detail / setKlassWeeks / week : ",week);
-    if(isDebug) console.log("klass-detail / setKlassWeeks / weekKor : ",weekKor);
-
-    this.klassWeeksComponent.setSelectOption(selectOptionList);
-
     this.priceTagHComponent.setTitle(weekKor);
 
-  }
+  } // end method
 
   private updateKlassWeeks(klassWeeks:number) :void {
 
@@ -526,29 +514,33 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log("klass-detail / updateKlassWeeks / 중단 / this.klassCopy is not valid!");
       return;
     }
-    if(null == this.klassWeeksComponent) {
-      if(isDebug) console.log("klass-detail / updateKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
-      return;
-    }   
     
     this.klassCopy.week = klassWeeks;
 
-    this.setKlassWeeks(); 
-
+    this.setKlassWeeks();
     this.updateSaveBtnStatus();
 
-  }
+  } // end method
 
   private setKlassPrice() :void {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassPrice / 시작");
+
     if(null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
       return;
-    }
-    if(null == this.klassPriceComponent) {
-      return;
-    }
+    } // end if
 
-    this.klassPriceComponent.setInput(""+this.klassCopy.price);
+    if(null != this.priceTagHComponent) {
+      let priceForStudent:number = this.klassCopy.getPriceForStudent();
+      this.priceTagHComponent.setPrice(priceForStudent);
+    } // end if
+
+    // @ Deprecated
+    if(null != this.klassPriceComponent) {
+      this.klassPriceComponent.setInput(""+this.klassCopy.price);
+    } // end if
 
   } // end method
 
@@ -908,8 +900,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private setPriceCalculator() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setPriceCalculator / 시작");
 
     if(null == this.klassCopy) {
@@ -921,11 +913,19 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       return;
     }
 
-    this.priceCalculator.setPrice(this.klassCopy.price);
+    if(isDebug) console.log("klass-detail / setKlassDays / this.klassCopy.price : ",this.klassCopy.price);
+    if(isDebug) console.log("klass-detail / setKlassDays / this.klassCopy.student_cnt : ",this.klassCopy.student_cnt);
 
-    // this.priceCalculator;
+    this.priceCalculator.setPriceNStudentCnt(
+      // price:number, 
+      this.klassCopy.price,
+      // studentCnt:number
+      this.klassCopy.student_cnt
+    );
 
-  }
+    this.priceCalculator.setWeeks(this.klassCopy.week);
+
+  } // end method
 
   private setKlassDetailNavList() :void {
 
@@ -1134,6 +1134,7 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
     // 수업 정보를 받은 뒤에, 요일 이미지 정보를 업데이트합니다.
     this.setDaysImg();
+
 
     // 저장 이전의 모든 데이터는 복사본에서 가져와 사용합니다.
     // 저장 이후에 복사본의 데이터를 원본으로 백업합니다.
@@ -1382,7 +1383,9 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
         if( null != myEvent.metaObj ) {
           this.priceTagHComponent = myEvent.metaObj;
+          this.setKlassPrice();
           this.setKlassPriceDesc();
+          this.setKlassWeeks();
         }
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {  
@@ -1485,15 +1488,15 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
 
         this.updateKlassVenue(myEvent.metaObj);
-
+/*
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
 
-        this.updateKlassPrice(myEvent.value);
+        // this.updateKlassPrice(myEvent.value);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {
 
-        this.updateKlassWeeks(+myEvent.value);
-
+        // this.updateKlassWeeks(+myEvent.value);
+*/
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
 
         this.updateKlassBanners(myEvent.value);
@@ -1506,12 +1509,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
         this.updateKlassTimeEnd(myEvent.value);
 
-/*
-// REMOVE ME
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE)) {
-
-        this.updateKlassLevelDayTimeStation(myEvent.metaObj);
-*/
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DATE_ENROLLMENT_INPUT)) {  
 
         this.updateKlassDateEnrollment(myEvent.value);
@@ -1543,6 +1540,22 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SCHEDULE)) {
 
         this.updateKlassSchedule(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {
+
+        this.updateKlassPriceCalc(myEvent.metaObj);
+        // this.setKlassWeeks();
+
+// REMOVE ME
+/*
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT)) {
+
+        this.updateKlassPrice(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER)) {
+
+        this.updateKlassStudentCnt(myEvent.value);
+*/
 
       } // end if
 
@@ -1622,23 +1635,31 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   } // end method
 
 
-  private updateKlassPrice(klassPrice:string) :void {
+  private updateKlassPriceCalc(klassPriceCalc:any) :void {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / updateKlassPrice / 시작");
-    if(isDebug) console.log("klass-detail / updateKlassPrice / klassPrice : ",klassPrice);
+    if(isDebug) console.log("klass-detail / updateKlassPriceCalc / 시작");
 
-    if(null == klassPrice || "" == klassPrice) {
+    if(null == klassPriceCalc) {
       return;
     }
 
-    this.klassCopy.price = parseInt(klassPrice);
-    this.priceTagHComponent.setPrice(this.klassCopy.price);
+    if(isDebug) console.log("klass-detail / updateKlassPriceCalc / klassPriceCalc : ",klassPriceCalc);
+
+    this.klassCopy.week = parseInt(klassPriceCalc.weeks);
+    this.klassCopy.price = parseInt(klassPriceCalc.price);
+    this.klassCopy.student_cnt = parseInt(klassPriceCalc.studentCnt);
+
+    let studentPrice:number = this.klassCopy.getPriceForStudent();
+    if(isDebug) console.log("klass-detail / updateKlassPriceCalc / studentPrice : ",studentPrice);
+
+    this.priceTagHComponent.setPrice(studentPrice);
 
     this.setKlassPriceDesc();
-
     this.updateSaveBtnStatus();
+    this.updateKlassWeeks(this.klassCopy.week);
+
   }
 
   // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
@@ -1668,11 +1689,12 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / setKlassPriceDesc / 선생님이라면 가격의 수수료를 노출합니다.");
 
     let commision:number = this.klassCopy.getCommision();
-    let paymentStr:string = this.klassCopy.getPaymentStr();
-    let klassPriceDesc:string = `실수령액 : ₩${paymentStr} (수수료 : ${commision}%)`;
+
+    let paymentForTeacherStr:string = this.klassCopy.getPaymentForTeacherStr();
+    let klassPriceDesc:string = `실수령액 : ${paymentForTeacherStr} (수수료 : ${commision}%)`;
 
     if(isDebug) console.log("klass-detail / setKlassPriceDesc / commision : ",commision);
-    if(isDebug) console.log("klass-detail / setKlassPriceDesc / paymentStr : ",paymentStr);
+    if(isDebug) console.log("klass-detail / setKlassPriceDesc / paymentForTeacherStr : ",paymentForTeacherStr);
     if(isDebug) console.log("klass-detail / setKlassPriceDesc / klassPriceDesc : ",klassPriceDesc);
 
     this.priceTagHComponent.setPriceDesc(klassPriceDesc);
@@ -2002,6 +2024,23 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   }
 
+  private updateKlassStudentCnt(studentCnt:string) :void {  
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateKlassStudentCnt / 시작");
+
+    if(null == studentCnt || "" === studentCnt) {
+      if(isDebug) console.log("klass-detail / updateKlassStudentCnt / 중단 / studentCnt is not valid!");
+      return;
+    }
+
+    this.klassCopy.student_cnt = +studentCnt;
+
+    this.updateSaveBtnStatus();
+
+  } // end method
+
   private setKlassDateEnrollment() :void {
 
     // let isDebug:boolean = true;
@@ -2321,17 +2360,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassTitleComponent.hasNotDone() / history : `,history);
       return false;
     }
-    if(null == this.klassPriceComponent) {
-      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassPriceComponent is not valid!`);
-      return false;
-    }
-    if(this.klassPriceComponent.hasNotDone()) {
-      let value:string = this.klassPriceComponent.getInput();
-      let history:any = this.klassPriceComponent.getHistory();
-      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassPriceComponent.hasNotDone() / ${value}`);
-      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassPriceComponent.hasNotDone() / history : `,history);
-      return false;
-    }
     if(null == this.klassTimeBeginComponent) {
       if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassTimeBeginComponent is not valid!`);
       return false;
@@ -2406,21 +2434,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
       if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassDaysComponent.hasNotDone() / ${value}`);
       return false;
     }
-    if(null == this.klassWeeksComponent) {
-      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassWeeksComponent is not valid!`);
-      return false;
-    }
-    if(this.klassWeeksComponent.hasNotDone()) {
-      let value:string = this.klassWeeksComponent.getInput();
-      let history:any = this.klassWeeksComponent.getHistory();
-      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassWeeksComponent.hasNotDone() / ${value}`);
-      return false;
-    } // end if
     if( null == this.klassCopy.klassVenue || 
         null == this.klassCopy.venue_address || 
         "" == this.klassCopy.venue_address ) {
       if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassCopy.klassVenue is not valid!`);
       alert("지도에서 수업 장소를 확인해주세요.");
+      return false;
+    }
+    if( null == this.klassCopy.student_cnt || 
+        !(0 < this.klassCopy.student_cnt) ) {
+      if(isDebug) console.log(`klass-detail / isOKKlass / 중단 / this.klassCopy.klassVenue is not valid!`);
       return false;
     }
 
@@ -2675,8 +2698,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   /*
   private updateKlassLevelDayTimeStation(klassSelectile:any) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / 시작");
     if(isDebug) console.log("klass-detail / updateKlassLevelDayTimeStation / klassSelectile : ",klassSelectile);
 

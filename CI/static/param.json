@@ -79,9 +79,11 @@
 
 		"klass_class_per_week":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[7]",
 
+		"klass_student_cnt":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
+
 		"klass_price":"is_number|||is_natural_no_zero|||greater_than_equal_to[45000]|||less_than_equal_to[1000000]",
 		"klass_price_calc_commission_str":"is_str|||regex_match_include[/^[0-9]+%$/]",
-		"klass_price_calc_payment_str":"is_str|||regex_match_include[/^₩[0-9,]+$/]",
+		"klass_price_calc_payment_str":"is_str",
 		"klass_price_calc_student_number":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
 		
 		"klass_banner_url":"is_str",

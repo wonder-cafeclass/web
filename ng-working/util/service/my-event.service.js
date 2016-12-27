@@ -156,6 +156,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER = "KEY_KLASS_PRICE_CALC_STUDENT_NUMBER";
         // 수업료 계산기 - 합계
         this.KEY_KLASS_PRICE_CALC_TOTAL = "KEY_KLASS_PRICE_CALC_TOTAL";
+        // 수업료 계산기 - 수업 주수
+        this.KEY_KLASS_PRICE_CALC_WEEK = "KEY_KLASS_PRICE_CALC_WEEK";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();
@@ -657,9 +659,9 @@ var MyEventService = (function () {
         var defaultMetaList = [
             new default_meta_1.DefaultMeta(// 0
             // public title:string
-            "1인당 강의료", 
+            "4주당 1인당 강의료", 
             // public placeholder:string
-            "1인당 강의료를 입력해주세요", 
+            "4주당 1인당 강의료를 입력해주세요", 
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT, 
             // public checkerKey:string
@@ -679,9 +681,9 @@ var MyEventService = (function () {
             this.defaultType.TYPE_INPUT),
             new default_meta_1.DefaultMeta(// 2
             // public title:string
-            "1인당 강사 지급액", 
+            "4주당 1인당 강사 지급액", 
             // public placeholder:string
-            "1인당 강사 지급액을 입력해주세요", 
+            "4주당 1인당 강사 지급액을 입력해주세요", 
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER, 
             // public checkerKey:string
@@ -710,6 +712,17 @@ var MyEventService = (function () {
             "klass_price_calc_payment_str", 
             // public type:string
             this.defaultType.TYPE_INPUT),
+            new default_meta_1.DefaultMeta(// 5
+            // public title:string
+            "수업 주수", 
+            // public placeholder:string
+            "수업 주수를 입력해주세요", 
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_WEEK, 
+            // public checkerKey:string
+            "klass_week", 
+            // public type:string
+            this.defaultType.TYPE_SELECT),
         ];
         return defaultMetaList;
     };

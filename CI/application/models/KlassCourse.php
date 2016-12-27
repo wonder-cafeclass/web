@@ -119,7 +119,7 @@ class KlassCourse {
 
         // 검색태그
         public $search_tag;
-        // 가격
+        // 4주당 수업 가격
         public $price;
         // 가격 관련 KlassPrice List
         public $klass_price_list;
@@ -135,6 +135,10 @@ class KlassCourse {
         public $weekly_price_list;
         // 가격 - 포맷적용
         public $price_with_format;
+
+        // 수업에 참여할 수 있는 학생수
+        public $student_cnt;
+
         // 수업운영상태
         public $class_status;
         // 수업 신청 타입

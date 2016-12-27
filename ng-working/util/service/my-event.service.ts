@@ -169,6 +169,8 @@ export class MyEventService {
     KEY_KLASS_PRICE_CALC_STUDENT_NUMBER:string="KEY_KLASS_PRICE_CALC_STUDENT_NUMBER";
     // 수업료 계산기 - 합계
     KEY_KLASS_PRICE_CALC_TOTAL:string="KEY_KLASS_PRICE_CALC_TOTAL";
+    // 수업료 계산기 - 수업 주수
+    KEY_KLASS_PRICE_CALC_WEEK:string="KEY_KLASS_PRICE_CALC_WEEK";
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;
@@ -759,9 +761,9 @@ export class MyEventService {
         [
             new DefaultMeta( // 0
             // public title:string
-            "1인당 강의료",
+            "4주당 1인당 강의료",
             // public placeholder:string
-            "1인당 강의료를 입력해주세요",
+            "4주당 1인당 강의료를 입력해주세요",
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT,
             // public checkerKey:string
@@ -783,9 +785,9 @@ export class MyEventService {
             ),
             new DefaultMeta( // 2
             // public title:string
-            "1인당 강사 지급액",
+            "4주당 1인당 강사 지급액",
             // public placeholder:string
-            "1인당 강사 지급액을 입력해주세요",
+            "4주당 1인당 강사 지급액을 입력해주세요",
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER,
             // public checkerKey:string
@@ -816,6 +818,18 @@ export class MyEventService {
             "klass_price_calc_payment_str",
             // public type:string
             this.defaultType.TYPE_INPUT
+            ),
+            new DefaultMeta( // 5
+            // public title:string
+            "수업 주수",
+            // public placeholder:string
+            "수업 주수를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_WEEK,
+            // public checkerKey:string
+            "klass_week",
+            // public type:string
+            this.defaultType.TYPE_SELECT
             ),
         ];
     

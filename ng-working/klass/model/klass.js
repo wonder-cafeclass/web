@@ -78,6 +78,8 @@ var Klass = (function () {
         // public discount:string="";                         // @ Deprecated / REMOVE ME
         // public discount_arr:number[]=[];                   // @ Deprecated / REMOVE ME
         this.price_with_format = "";
+        // 수업 참여 학생수
+        this.student_cnt = -1;
         this.class_status = "";
         this.enrollment_interval_week = -1; // @ Deprecated / REMOVE ME
         this.class_banner_url = "";
@@ -120,6 +122,33 @@ var Klass = (function () {
         }
         return -1;
     };
+    Klass.prototype.getPriceForStudentStr = function () {
+        var priceForStudent = this.getPriceForStudent();
+        var priceForStudentStr = this.myFormat.numberWithCommas(priceForStudent);
+        return "\u20A9" + priceForStudentStr;
+    };
+    Klass.prototype.getPriceForStudent = function () {
+        if (null == this.week || !(0 < this.week && 0 == (this.week % 4))) {
+            return -1;
+        }
+        if (null == this.price || !(0 < this.price)) {
+            return -1;
+        }
+        var studentPrice = (this.week / 4) * this.price;
+        return studentPrice;
+    }; // end method
+    Klass.prototype.getPaymentForTeacherStr = function () {
+        if (null == this.week || !(0 < this.week && 0 == (this.week % 4))) {
+            return "";
+        } // end if
+        if (null == this.price || !(0 < this.price)) {
+            return "";
+        } // end if
+        var payment = this.getPayment();
+        var paymentOnWeeks = (this.week / 4) * payment;
+        var paymentOnWeeksStr = this.myFormat.numberWithCommas(paymentOnWeeks);
+        return "\u20A9" + paymentOnWeeksStr;
+    };
     Klass.prototype.getPayment = function () {
         var commission = this.getCommision();
         if (commission < 0) {
@@ -128,9 +157,20 @@ var Klass = (function () {
         return Math.round(this.price * ((100 - commission) / 100));
     };
     Klass.prototype.getPaymentStr = function () {
+        // 4주 단위 가격을 가져옵니다.
         var payment = this.getPayment();
-        if (0 < payment) {
-            return this.myFormat.numberWithCommas(payment);
+        var totalPayment = payment * (this.week / 4);
+        if (0 < totalPayment) {
+            return this.myFormat.numberWithCommas(totalPayment);
+        } // end if
+        return "";
+    };
+    Klass.prototype.getPaymentTotalStr = function () {
+        // 4주 단위 가격을 가져옵니다.
+        var payment = this.getPayment();
+        var totalPayment = payment * (this.week / 4) * this.student_cnt;
+        if (0 < totalPayment) {
+            return this.myFormat.numberWithCommas(totalPayment);
         } // end if
         return "";
     };
@@ -515,9 +555,21 @@ var Klass = (function () {
         if (null != klass.teacher_resume && "" != klass.teacher_resume) {
             klass.teacher_resume_list = klass.teacher_resume.split(this.delimiter);
         } // end if
+        if (null != klass.teacher_resume &&
+            "" != klass.teacher_resume &&
+            null != klass.teacher) {
+            klass.teacher.resume = klass.teacher_resume;
+            klass.teacher.resume_arr = klass.teacher_resume_list;
+        } // end if
         // teacher - greeting
         if (null != klass.teacher_greeting && "" != klass.teacher_greeting) {
             klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
+        } // end if
+        if (null != klass.teacher_greeting &&
+            "" != klass.teacher_greeting &&
+            null != klass.teacher) {
+            klass.teacher.greeting = klass.teacher_greeting;
+            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
         // time_end
         if (null == klass.time_end ||
@@ -700,6 +752,11 @@ var Klass = (function () {
         if (this.price != target.price) {
             if (isDebug)
                 console.log("klass / isSame / price has been changed! / this.price:" + this.price + " != target.price:" + target.price);
+            return false;
+        }
+        if (this.student_cnt != target.student_cnt) {
+            if (isDebug)
+                console.log("klass / isSame / student_cnt has been changed! / this.student_cnt:" + this.student_cnt + " != target.student_cnt:" + target.student_cnt);
             return false;
         }
         if (this.class_status != target.class_status) {

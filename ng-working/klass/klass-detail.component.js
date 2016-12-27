@@ -35,6 +35,7 @@ var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower
 var my_time_1 = require('../util/helper/my-time');
 var my_array_1 = require('../util/helper/my-array');
 var my_is_1 = require('../util/helper/my-is');
+var my_format_1 = require('../util/helper/my-format');
 var teacher_service_1 = require('../teachers/service/teacher.service');
 var KlassDetailComponent = (function () {
     function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
@@ -95,6 +96,7 @@ var KlassDetailComponent = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myArray = new my_array_1.HelperMyArray();
         this.myIs = new my_is_1.HelperMyIs();
+        this.myFormat = new my_format_1.HelperMyFormat();
     }
     KlassDetailComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -288,9 +290,9 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / setKlassWeeks / 중단 / this.klassCopy is not valid!");
             return;
         }
-        if (null == this.klassWeeksComponent) {
+        if (null == this.priceTagHComponent) {
             if (isDebug)
-                console.log("klass-detail / setKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
+                console.log("klass-detail / setKlassWeeks / 중단 / this.priceTagHComponent is not valid!");
             return;
         }
         var classWeeksList = this.watchTower.getMyConst().getList("class_weeks_list");
@@ -308,22 +310,8 @@ var KlassDetailComponent = (function () {
         classWeeksList, 
         // targetList:string[]
         classWeeksKorList);
-        var selectOptionList = this.getDefaultOptionList(
-        // keyList:string[],
-        classWeeksKorList, 
-        // valueList:string[],
-        classWeeksList, 
-        // valueFocus:string
-        week);
-        if (isDebug)
-            console.log("klass-detail / setKlassWeeks / selectOptionList : ", selectOptionList);
-        if (isDebug)
-            console.log("klass-detail / setKlassWeeks / week : ", week);
-        if (isDebug)
-            console.log("klass-detail / setKlassWeeks / weekKor : ", weekKor);
-        this.klassWeeksComponent.setSelectOption(selectOptionList);
         this.priceTagHComponent.setTitle(weekKor);
-    };
+    }; // end method
     KlassDetailComponent.prototype.updateKlassWeeks = function (klassWeeks) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -336,23 +324,26 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / updateKlassWeeks / 중단 / this.klassCopy is not valid!");
             return;
         }
-        if (null == this.klassWeeksComponent) {
-            if (isDebug)
-                console.log("klass-detail / updateKlassWeeks / 중단 / this.klassWeeksComponent is not valid!");
-            return;
-        }
         this.klassCopy.week = klassWeeks;
         this.setKlassWeeks();
         this.updateSaveBtnStatus();
-    };
+    }; // end method
     KlassDetailComponent.prototype.setKlassPrice = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassPrice / 시작");
         if (null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
             return;
-        }
-        if (null == this.klassPriceComponent) {
-            return;
-        }
-        this.klassPriceComponent.setInput("" + this.klassCopy.price);
+        } // end if
+        if (null != this.priceTagHComponent) {
+            var priceForStudent = this.klassCopy.getPriceForStudent();
+            this.priceTagHComponent.setPrice(priceForStudent);
+        } // end if
+        // @ Deprecated
+        if (null != this.klassPriceComponent) {
+            this.klassPriceComponent.setInput("" + this.klassCopy.price);
+        } // end if
     }; // end method
     KlassDetailComponent.prototype.setKlassTimeBegin = function () {
         if (null == this.klassCopy || null == this.klassCopy.time_begin || "" == this.klassCopy.time_begin) {
@@ -643,8 +634,8 @@ var KlassDetailComponent = (function () {
         valueFocus);
     }; // end method
     KlassDetailComponent.prototype.setPriceCalculator = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setPriceCalculator / 시작");
         if (null == this.klassCopy) {
@@ -657,9 +648,17 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / setKlassDays / 중단 / this.priceCalculator is not valid!");
             return;
         }
-        this.priceCalculator.setPrice(this.klassCopy.price);
-        // this.priceCalculator;
-    };
+        if (isDebug)
+            console.log("klass-detail / setKlassDays / this.klassCopy.price : ", this.klassCopy.price);
+        if (isDebug)
+            console.log("klass-detail / setKlassDays / this.klassCopy.student_cnt : ", this.klassCopy.student_cnt);
+        this.priceCalculator.setPriceNStudentCnt(
+        // price:number, 
+        this.klassCopy.price, 
+        // studentCnt:number
+        this.klassCopy.student_cnt);
+        this.priceCalculator.setWeeks(this.klassCopy.week);
+    }; // end method
     KlassDetailComponent.prototype.setKlassDetailNavList = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -1032,7 +1031,9 @@ var KlassDetailComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_VIEW)) {
                 if (null != myEvent.metaObj) {
                     this.priceTagHComponent = myEvent.metaObj;
+                    this.setKlassPrice();
                     this.setKlassPriceDesc();
+                    this.setKlassWeeks();
                 }
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_BEGIN)) {
@@ -1118,12 +1119,6 @@ var KlassDetailComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
                 this.updateKlassVenue(myEvent.metaObj);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE)) {
-                this.updateKlassPrice(myEvent.value);
-            }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_WEEKS)) {
-                this.updateKlassWeeks(+myEvent.value);
-            }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER)) {
                 this.updateKlassBanners(myEvent.value);
             }
@@ -1156,6 +1151,9 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SCHEDULE)) {
                 this.updateKlassSchedule(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {
+                this.updateKlassPriceCalc(myEvent.metaObj);
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
@@ -1210,20 +1208,26 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / Done");
     }; // end method
-    KlassDetailComponent.prototype.updateKlassPrice = function (klassPrice) {
+    KlassDetailComponent.prototype.updateKlassPriceCalc = function (klassPriceCalc) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("klass-detail / updateKlassPrice / 시작");
-        if (isDebug)
-            console.log("klass-detail / updateKlassPrice / klassPrice : ", klassPrice);
-        if (null == klassPrice || "" == klassPrice) {
+            console.log("klass-detail / updateKlassPriceCalc / 시작");
+        if (null == klassPriceCalc) {
             return;
         }
-        this.klassCopy.price = parseInt(klassPrice);
-        this.priceTagHComponent.setPrice(this.klassCopy.price);
+        if (isDebug)
+            console.log("klass-detail / updateKlassPriceCalc / klassPriceCalc : ", klassPriceCalc);
+        this.klassCopy.week = parseInt(klassPriceCalc.weeks);
+        this.klassCopy.price = parseInt(klassPriceCalc.price);
+        this.klassCopy.student_cnt = parseInt(klassPriceCalc.studentCnt);
+        var studentPrice = this.klassCopy.getPriceForStudent();
+        if (isDebug)
+            console.log("klass-detail / updateKlassPriceCalc / studentPrice : ", studentPrice);
+        this.priceTagHComponent.setPrice(studentPrice);
         this.setKlassPriceDesc();
         this.updateSaveBtnStatus();
+        this.updateKlassWeeks(this.klassCopy.week);
     };
     // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
     KlassDetailComponent.prototype.setKlassPriceDesc = function () {
@@ -1254,12 +1258,12 @@ var KlassDetailComponent = (function () {
         if (isDebug)
             console.log("klass-detail / setKlassPriceDesc / 선생님이라면 가격의 수수료를 노출합니다.");
         var commision = this.klassCopy.getCommision();
-        var paymentStr = this.klassCopy.getPaymentStr();
-        var klassPriceDesc = "\uC2E4\uC218\uB839\uC561 : \u20A9" + paymentStr + " (\uC218\uC218\uB8CC : " + commision + "%)";
+        var paymentForTeacherStr = this.klassCopy.getPaymentForTeacherStr();
+        var klassPriceDesc = "\uC2E4\uC218\uB839\uC561 : " + paymentForTeacherStr + " (\uC218\uC218\uB8CC : " + commision + "%)";
         if (isDebug)
             console.log("klass-detail / setKlassPriceDesc / commision : ", commision);
         if (isDebug)
-            console.log("klass-detail / setKlassPriceDesc / paymentStr : ", paymentStr);
+            console.log("klass-detail / setKlassPriceDesc / paymentForTeacherStr : ", paymentForTeacherStr);
         if (isDebug)
             console.log("klass-detail / setKlassPriceDesc / klassPriceDesc : ", klassPriceDesc);
         this.priceTagHComponent.setPriceDesc(klassPriceDesc);
@@ -1537,6 +1541,19 @@ var KlassDetailComponent = (function () {
         this.klassCopy.setSchedule(schedule);
         this.updateSaveBtnStatus();
     };
+    KlassDetailComponent.prototype.updateKlassStudentCnt = function (studentCnt) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-detail / updateKlassStudentCnt / 시작");
+        if (null == studentCnt || "" === studentCnt) {
+            if (isDebug)
+                console.log("klass-detail / updateKlassStudentCnt / 중단 / studentCnt is not valid!");
+            return;
+        }
+        this.klassCopy.student_cnt = +studentCnt;
+        this.updateSaveBtnStatus();
+    }; // end method
     KlassDetailComponent.prototype.setKlassDateEnrollment = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -1814,20 +1831,6 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTitleComponent.hasNotDone() / history : ", history_1);
             return false;
         }
-        if (null == this.klassPriceComponent) {
-            if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent is not valid!");
-            return false;
-        }
-        if (this.klassPriceComponent.hasNotDone()) {
-            var value = this.klassPriceComponent.getInput();
-            var history_2 = this.klassPriceComponent.getHistory();
-            if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent.hasNotDone() / " + value);
-            if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassPriceComponent.hasNotDone() / history : ", history_2);
-            return false;
-        }
         if (null == this.klassTimeBeginComponent) {
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent is not valid!");
@@ -1835,11 +1838,11 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassTimeBeginComponent.hasNotDone()) {
             var value = this.klassTimeBeginComponent.getInput();
-            var history_3 = this.klassTimeBeginComponent.getHistory();
+            var history_2 = this.klassTimeBeginComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent.hasNotDone() / " + value);
             if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent.hasNotDone() / history : ", history_3);
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeBeginComponent.hasNotDone() / history : ", history_2);
             return false;
         }
         if (null == this.klassTimeEndComponent) {
@@ -1849,11 +1852,11 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassTimeEndComponent.hasNotDone()) {
             var value = this.klassTimeEndComponent.getInput();
-            var history_4 = this.klassTimeEndComponent.getHistory();
+            var history_3 = this.klassTimeEndComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent.hasNotDone() / " + value);
             if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent.hasNotDone() / history : ", history_4);
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassTimeEndComponent.hasNotDone() / history : ", history_3);
             return false;
         }
         if (null == this.klassDateEnrollmentComponent) {
@@ -1863,11 +1866,11 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassDateEnrollmentComponent.hasNotDone()) {
             var value = this.klassDateEnrollmentComponent.getInput();
-            var history_5 = this.klassDateEnrollmentComponent.getHistory();
+            var history_4 = this.klassDateEnrollmentComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent.hasNotDone() / " + value);
             if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent.hasNotDone() / history : ", history_5);
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDateEnrollmentComponent.hasNotDone() / history : ", history_4);
             return false;
         }
         if (null == this.klassLevelComponent) {
@@ -1877,11 +1880,11 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassLevelComponent.hasNotDone()) {
             var value = this.klassLevelComponent.getInput();
-            var history_6 = this.klassLevelComponent.getHistory();
+            var history_5 = this.klassLevelComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent.hasNotDone() / " + value);
             if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent.hasNotDone() / history : ", history_6);
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassLevelComponent.hasNotDone() / history : ", history_5);
             return false;
         }
         if (null == this.klassSubwayLineComponent) {
@@ -1891,7 +1894,7 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassSubwayLineComponent.hasNotDone()) {
             var value = this.klassSubwayLineComponent.getInput();
-            var history_7 = this.klassSubwayLineComponent.getHistory();
+            var history_6 = this.klassSubwayLineComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayLineComponent.hasNotDone() / " + value);
             return false;
@@ -1903,7 +1906,7 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassSubwayStationComponent.hasNotDone()) {
             var value = this.klassSubwayStationComponent.getInput();
-            var history_8 = this.klassSubwayStationComponent.getHistory();
+            var history_7 = this.klassSubwayStationComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassSubwayStationComponent.hasNotDone() / " + value);
             return false;
@@ -1915,29 +1918,23 @@ var KlassDetailComponent = (function () {
         }
         if (this.klassDaysComponent.hasNotDone()) {
             var value = this.klassDaysComponent.getInput();
-            var history_9 = this.klassDaysComponent.getHistory();
+            var history_8 = this.klassDaysComponent.getHistory();
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassDaysComponent.hasNotDone() / " + value);
             return false;
         }
-        if (null == this.klassWeeksComponent) {
-            if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassWeeksComponent is not valid!");
-            return false;
-        }
-        if (this.klassWeeksComponent.hasNotDone()) {
-            var value = this.klassWeeksComponent.getInput();
-            var history_10 = this.klassWeeksComponent.getHistory();
-            if (isDebug)
-                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassWeeksComponent.hasNotDone() / " + value);
-            return false;
-        } // end if
         if (null == this.klassCopy.klassVenue ||
             null == this.klassCopy.venue_address ||
             "" == this.klassCopy.venue_address) {
             if (isDebug)
                 console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassCopy.klassVenue is not valid!");
             alert("지도에서 수업 장소를 확인해주세요.");
+            return false;
+        }
+        if (null == this.klassCopy.student_cnt ||
+            !(0 < this.klassCopy.student_cnt)) {
+            if (isDebug)
+                console.log("klass-detail / isOKKlass / \uC911\uB2E8 / this.klassCopy.klassVenue is not valid!");
             return false;
         }
         if (isDebug)

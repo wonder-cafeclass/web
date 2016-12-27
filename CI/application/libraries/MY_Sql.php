@@ -1942,7 +1942,7 @@ class MY_Sql
 
     } // end method
 
-    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1)
+    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
     {
 
         if($this->is_not_ready())
@@ -2013,6 +2013,10 @@ class MY_Sql
         {
             return;
         }
+        if($this->is_not_ok("klass_student_cnt", $student_cnt))
+        {
+            return;
+        }
 
         if($this->is_not_ok("klass_venue_title", $venue_title))
         {
@@ -2070,6 +2074,7 @@ class MY_Sql
             'week' => $week,
             'days' => $days,
             'price' => $price,
+            'student_cnt' => $student_cnt,
 
             'venue_title' => $venue_title,
             'venue_telephone' => $venue_telephone,
@@ -2861,6 +2866,15 @@ class MY_Sql
             {
                 $row->class_poster_url_loadable = $this->CI->my_path->get_loadable_url_class_poster($row->class_poster_url);   
             }
+
+            // Set number type
+            $row->id = intval($row->id);
+            $row->enrollment_interval_week = intval($row->enrollment_interval_week);
+            $row->student_cnt = intval($row->student_cnt);
+            $row->discount = intval($row->discount);
+            $row->teacher_id = intval($row->teacher_id);
+            $row->time_duration_minutes = intval($row->time_duration_minutes);
+            $row->week = intval($row->week);
 
             // 주당 수업 가격에 대해 계산한다.
             // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.

@@ -210,8 +210,8 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   }
   setInput(input:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("default / setInput / 시작");
     if(isDebug) console.log("default / setInput / input : ",input);
 
@@ -558,6 +558,20 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     }
 
   } // end method 
+
+  getSelectedValue() :string {
+    
+    let selectedOption:DefaultOption = this.getSelectedDefaultOption();
+
+    if( null == selectedOption || 
+        null == selectedOption.value || 
+        "" === selectedOption.value ) {
+      return "";
+    }
+
+    return selectedOption.value;
+
+  } // end method
 
   getSelectedDefaultOption() :DefaultOption {
 

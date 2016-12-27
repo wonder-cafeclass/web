@@ -177,8 +177,8 @@ var DefaultComponent = (function () {
         return "";
     };
     DefaultComponent.prototype.setInput = function (input) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("default / setInput / 시작");
         if (isDebug)
@@ -474,6 +474,15 @@ var DefaultComponent = (function () {
         else {
         }
     }; // end method 
+    DefaultComponent.prototype.getSelectedValue = function () {
+        var selectedOption = this.getSelectedDefaultOption();
+        if (null == selectedOption ||
+            null == selectedOption.value ||
+            "" === selectedOption.value) {
+            return "";
+        }
+        return selectedOption.value;
+    }; // end method
     DefaultComponent.prototype.getSelectedDefaultOption = function () {
         // let isDebug:boolean = true;
         var isDebug = false;

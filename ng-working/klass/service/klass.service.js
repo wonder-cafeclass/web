@@ -86,6 +86,7 @@ var KlassService = (function () {
             klass_venue_longitude: klass.venue_longitude,
             klass_subway_line: klass.subway_line,
             klass_subway_station: klass.subway_station,
+            klass_student_cnt: klass.student_cnt,
             klass_price: klass.price,
             klass_banner_url: klass.class_banner_url,
             klass_poster_url: klass.class_poster_url

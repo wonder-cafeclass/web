@@ -136,6 +136,7 @@ CREATE TABLE `klass` (
   `enrollment_interval_week` int(1) COLLATE utf8_bin NOT NULL DEFAULT 1 COMMENT '@ Deprecated 1:매주 등록 가능(당일 수업 시작 3시간 전까지),2:격주로 등록 가능, 4:월별 첫번째 주까지 등록 가능.',
   `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
   `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 0 COMMENT '월별 - 4주단위 수강료. 최대 천만원 단위까지 표시.',
+  `student_cnt` int(1) COLLATE utf8_bin NOT NULL DEFAULT 3 COMMENT '수업 참가 학생수. 기본값은 3명.',
   `discount` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "0" COMMENT '@ Deprecated 월별 수강료 할인. ex)1000|2000|3000 --> 4주 1000원 할인, 8주 2000원, 12주 3000원 할인.',
   `class_poster_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업을 안내하는 이미지 - 페이스북 광고에 사용되는 메인 이미지.',
   `class_banner_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업에 사용하는 배너 이미지 목록. ex) a.png|b.png|c.png - 형식으로 등록',

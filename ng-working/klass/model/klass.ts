@@ -91,6 +91,10 @@ export class Klass {
     // public discount:string="";                         // @ Deprecated / REMOVE ME
     // public discount_arr:number[]=[];                   // @ Deprecated / REMOVE ME
     public price_with_format: string="";
+
+    // 수업 참여 학생수
+    public student_cnt: number=-1;
+
     public class_status: string="";
     public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
     public class_banner_url:string="";
@@ -140,6 +144,41 @@ export class Klass {
 
         return -1;
     }
+    getPriceForStudentStr() :string {
+
+        let priceForStudent:number = this.getPriceForStudent();
+        let priceForStudentStr:string = this.myFormat.numberWithCommas(priceForStudent);
+
+        return `₩${priceForStudentStr}`;
+    }
+    getPriceForStudent() :number {
+
+        if(null == this.week || !(0 < this.week && 0 == (this.week%4))) {
+            return -1;
+        }
+        if(null == this.price || !(0 < this.price)) {
+            return -1;
+        }
+
+        let studentPrice:number = (this.week/4) * this.price;
+
+        return studentPrice;
+    } // end method
+    getPaymentForTeacherStr() :string {
+
+        if(null == this.week || !(0 < this.week && 0 == (this.week%4))) {
+            return "";
+        } // end if
+        if(null == this.price || !(0 < this.price)) {
+            return "";
+        } // end if
+
+        let payment:number = this.getPayment();
+        let paymentOnWeeks:number = (this.week/4) * payment;
+        let paymentOnWeeksStr:string = this.myFormat.numberWithCommas(paymentOnWeeks);
+
+        return `₩${paymentOnWeeksStr}`;
+    }
     getPayment() :number {
 
         let commission:number = this.getCommision();
@@ -152,10 +191,23 @@ export class Klass {
 
     }
     getPaymentStr() :string {
+        // 4주 단위 가격을 가져옵니다.
         let payment:number = this.getPayment();
+        let totalPayment:number = payment * (this.week / 4);
 
-        if(0 < payment) {
-            return this.myFormat.numberWithCommas(payment);
+        if(0 < totalPayment) {
+            return this.myFormat.numberWithCommas(totalPayment);
+        } // end if
+
+        return "";
+    }
+    getPaymentTotalStr() :string {
+        // 4주 단위 가격을 가져옵니다.
+        let payment:number = this.getPayment();
+        let totalPayment:number = payment * (this.week / 4) * this.student_cnt;
+
+        if(0 < totalPayment) {
+            return this.myFormat.numberWithCommas(totalPayment);
         } // end if
 
         return "";
@@ -625,10 +677,25 @@ export class Klass {
         if(null != klass.teacher_resume && "" != klass.teacher_resume) {
             klass.teacher_resume_list = klass.teacher_resume.split(this.delimiter);
         } // end if
+        if( null != klass.teacher_resume && 
+            "" != klass.teacher_resume &&
+            null != klass.teacher ) {
+
+            klass.teacher.resume = klass.teacher_resume;
+            klass.teacher.resume_arr = klass.teacher_resume_list;
+
+        } // end if
 
         // teacher - greeting
         if(null != klass.teacher_greeting && "" != klass.teacher_greeting) {
             klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
+        } // end if
+        if( null != klass.teacher_greeting && 
+            "" != klass.teacher_greeting &&
+            null != klass.teacher ) {
+
+            klass.teacher.greeting = klass.teacher_greeting;
+            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
 
         // time_end
@@ -805,6 +872,10 @@ export class Klass {
 
         if(this.price != target.price) {
             if(isDebug) console.log(`klass / isSame / price has been changed! / this.price:${this.price} != target.price:${target.price}`);
+            return false;
+        }
+        if(this.student_cnt != target.student_cnt) {
+            if(isDebug) console.log(`klass / isSame / student_cnt has been changed! / this.student_cnt:${this.student_cnt} != target.student_cnt:${target.student_cnt}`);
             return false;
         }
         if(this.class_status != target.class_status) {

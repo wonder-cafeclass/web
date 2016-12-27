@@ -39,11 +39,18 @@
 	    </widget-input-default>	
 	</div>
 	<div>
-		<!-- 5. 합계 -->
+		<!-- 5. 수업 주수 -->
+	    <widget-input-default
+	    [isNoSpace]="true"
+	    [meta]="defaultMetaList[5]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div>
+		<!-- 6. 합계 -->
 	    <widget-input-default
 	    [isDisabled]="true"
 	    [isNoSpace]="true"
-	    [ngModelInput]="totalStr"
 	    [meta]="defaultMetaList[4]"
 	    (emitter)="onChangedFromChild($event)">
 	    </widget-input-default>	

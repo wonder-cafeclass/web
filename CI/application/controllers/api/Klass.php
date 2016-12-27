@@ -625,6 +625,13 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "klass_price"
         );        
+        $klass_student_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_student_cnt",
+            // $key_filter=""
+            "klass_student_cnt"
+        );
         $klass_banner_url = 
         $this->my_paramchecker->post(
             // $key=""
@@ -672,6 +679,7 @@ class Klass extends MY_REST_Controller {
             "klass_subway_line"=>$klass_subway_line,
             "klass_subway_station"=>$klass_subway_station,
             "klass_price"=>$klass_price,
+            "klass_student_cnt"=>$klass_student_cnt,
             "klass_banner_url"=>$klass_banner_url,
             "klass_poster_url"=>$klass_poster_url
         ];
@@ -742,7 +750,9 @@ class Klass extends MY_REST_Controller {
                 // $poster_url=""
                 $klass_poster_url,
                 // $price=-1
-                $klass_price
+                $klass_price,
+                // $student_cnt
+                $klass_student_cnt
             );
 
             // 쿼리 가져오기
