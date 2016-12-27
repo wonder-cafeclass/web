@@ -19,6 +19,7 @@ var ImageService = (function () {
         this.noticeDrinksUrl = "assets/images/notice/drinks.png";
         this.cafeclassLogoUrl = "assets/images/cafeclass_logo_text_only.svg";
         this.watchTowerUrl = "assets/images/admin/watchtower.svg";
+        this.watchTowerGrayUrl = "assets/images/admin/watchtower_gray.svg";
         this.watchTowerWhiteUrl = "assets/images/admin/watchtower_white.svg";
         this.clock1hr00m00mUrl = "assets/images/clock/clock-1hr-00m-00m.svg";
         this.clock1hr00m30mUrl = "assets/images/clock/clock-1hr-00m-30m.svg";
@@ -48,8 +49,12 @@ var ImageService = (function () {
         this.classFeatureUrl = "assets/images/class/info/points.png";
         this.mapDummy = "assets/images/map_dummy.png";
         this.userDummy = "assets/images/user/user_anonymous_150x150.png";
+        this.pathKlassPoster = "assets/images/class/poster";
         this.loginBtnKakao = "assets/images/auth/login_kakao.png";
     }
+    ImageService.prototype.getPathKlassPoster = function (img) {
+        return this.pathKlassPoster + "/" + img;
+    };
     ImageService.prototype.get = function (imgUrl) {
         // url segment를 보낸 경우, 자신의 app base href를 확인, full request url을 만들어 준다.
         if (null === this.us) {

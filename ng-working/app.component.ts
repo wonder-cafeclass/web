@@ -305,4 +305,22 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		// 내정보로 이동합니다.
 	}
 
+	// 디버깅 모드로 전환하는 방법은 2가지
+	// 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
+	isDebugging:boolean=false;
+	onClickToggleDebugging(event) :void {
+		event.stopPropagation();
+		event.preventDefault();
+
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
+	    if(isDebug) console.log(`app-root / onClickToggleDebugging / 시작`);
+
+	    this.isDebugging = !this.watchTower.getIsDebugging();
+
+	    if(isDebug) console.log(`app-root / onClickToggleDebugging / this.isDebugging : ${this.isDebugging}`);
+
+	    this.watchTower.announceIsDebugging(this.isDebugging);
+	}
+
 }

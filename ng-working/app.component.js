@@ -36,6 +36,9 @@ var AppComponent = (function () {
         this.isAdmin = false;
         this.toggleTopMenu = true;
         this.errorMsgArr = [];
+        // 디버깅 모드로 전환하는 방법은 2가지
+        // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
+        this.isDebugging = false;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -250,6 +253,18 @@ var AppComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         // 내정보로 이동합니다.
+    };
+    AppComponent.prototype.onClickToggleDebugging = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / onClickToggleDebugging / \uC2DC\uC791");
+        this.isDebugging = !this.watchTower.getIsDebugging();
+        if (isDebug)
+            console.log("app-root / onClickToggleDebugging / this.isDebugging : " + this.isDebugging);
+        this.watchTower.announceIsDebugging(this.isDebugging);
     };
     AppComponent = __decorate([
         core_1.Component({

@@ -42,10 +42,11 @@ var KlassVenueSearchListComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
         this.initIFrame();
     }
+    KlassVenueSearchListComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     KlassVenueSearchListComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / ngOnInit / init");
         this.initLayout();
         this.initIFrameAfterOnInit();
@@ -73,9 +74,7 @@ var KlassVenueSearchListComponent = (function () {
     };
     KlassVenueSearchListComponent.prototype.initIFrame = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / constructor / init");
         // set function reference out of app. ( ex)iframe )
         window["angularMySL"] = {
@@ -85,9 +84,7 @@ var KlassVenueSearchListComponent = (function () {
         };
     };
     KlassVenueSearchListComponent.prototype.initLayout = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / initLayout / init");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -118,17 +115,15 @@ var KlassVenueSearchListComponent = (function () {
     };
     // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
     KlassVenueSearchListComponent.prototype.setVenue = function (klassVenue) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / setVenue / init");
         if (null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
             return;
         }
         this.klassVenue = this.klassVenuesNaverMap = klassVenue;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ", this.klassVenuesNaverMap);
     };
     KlassVenueSearchListComponent.prototype.initIFrameAfterOnInit = function () {
@@ -163,16 +158,14 @@ var KlassVenueSearchListComponent = (function () {
     }; // end method  
     KlassVenueSearchListComponent.prototype.initVenueSearch = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / initVenueSearch / init");
         this.klassVenues =
             this.searchTermsNaverLocal
                 .debounceTime(300) // wait for 300ms pause in events
                 .distinctUntilChanged() // ignore if next search term is same as previous
                 .switchMap(function (term) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("k-v-s-l / initVenueSearch / switchMap / term : ", term);
                 if (null == term || "" === term || term.length < 3) {
                     // 유효하지 않은 검색어는 중단합니다.
@@ -194,12 +187,10 @@ var KlassVenueSearchListComponent = (function () {
     }; // end method 
     KlassVenueSearchListComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
         if (this.watchTower.getIsEventPackReady()) {
             // 1. 이미 EventPack 로딩이 완료된 경우
@@ -209,7 +200,7 @@ var KlassVenueSearchListComponent = (function () {
         else {
             // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
             this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
                 // 이벤트 관련 정보가 준비되었습니다.
                 // 부모 객체에게 component가 준비된 것을 알립니다.
@@ -218,12 +209,10 @@ var KlassVenueSearchListComponent = (function () {
         } // end if
     }; // end method
     KlassVenueSearchListComponent.prototype.emitEventOnReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnReady / init");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-v-s-l / emitEventOnReady / 중단 / EventPack is not valid!");
             return;
         }
@@ -232,19 +221,17 @@ var KlassVenueSearchListComponent = (function () {
         this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_VENUE_MAP, 
         // component
         this);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnReady / myEventOnReady : ", myEventOnReady);
         this.emitter.emit(myEventOnReady);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnReady / Done!");
     };
     KlassVenueSearchListComponent.prototype.emitEventOnChangeMeta = function (value, meta) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnChangeMeta / init");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-v-s-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");
             return;
         }
@@ -257,10 +244,10 @@ var KlassVenueSearchListComponent = (function () {
         this.watchTower.getMyCheckerService().getFreePassChecker(), 
         // 
         meta);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnChangeMeta / myEventOnReady : ", myEventOnReady);
         this.emitter.emit(myEventOnReady);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-v-s-l / emitEventOnChangeMeta / Done!");
     };
     KlassVenueSearchListComponent.prototype.onChangeInputText = function (value) {
@@ -296,17 +283,15 @@ var KlassVenueSearchListComponent = (function () {
     };
     KlassVenueSearchListComponent.prototype.onClickKlassVenue = function (klassVenue) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-venue-search-list / onClickKlassVenue / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ", klassVenue);
         this.klassVenuesNaverMap = klassVenue;
         this.klassService.searchKlassMap(
         // q:string
         klassVenue.address).then(function (myReponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ", myReponse);
             klassVenue = _this.klassService.setLatLon(myReponse.data, klassVenue);
             _this.klassVenuesNaverMap.latitude = klassVenue.latitude;

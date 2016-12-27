@@ -24,6 +24,7 @@ export class MyEventWatchTowerService {
 	private apiKey:string = "";
 	private isViewPackReady:boolean = false;
 	// @ Optional for view
+	private isDebugging:boolean = false;
 	private loginUser:User;
 	private loginTeacher:Teacher;
 	private errorMsgArr:string[];
@@ -39,6 +40,7 @@ export class MyEventWatchTowerService {
 	private myCheckerServicePackReadySource = new Subject<boolean>();
 	private isViewPackReadySource = new Subject<boolean>();
 	// @ Optional for view
+	private isDebuggingSource = new Subject<boolean>();
 	private loginAnnouncedSource = new Subject<User>();
 	private loginTeacherAnnouncedSource = new Subject<Teacher>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
@@ -55,6 +57,7 @@ export class MyEventWatchTowerService {
 	myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
 	isViewPackReady$ = this.isViewPackReadySource.asObservable();
 	// @ Optional for view
+	isDebugging$ = this.isDebuggingSource.asObservable();
 	loginAnnounced$ = this.loginAnnouncedSource.asObservable();
 	loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
@@ -83,7 +86,7 @@ export class MyEventWatchTowerService {
 		this.isAdminSource.next(isAdmin);
 
 		this.announceIsViewPackReady();
-	}
+	}	
 	announceMyCheckerServiceReady(checkerMap: any, constMap: any, dirtyWordList: any, apiKey: string) {
 
 	    // let isDebug:boolean = true;
@@ -140,6 +143,10 @@ export class MyEventWatchTowerService {
 		this.isViewPackReadySource.next(true);
 	}
 	// @ Optional for view
+	announceIsDebugging(isDebugging: boolean) {
+		this.isDebugging = isDebugging;
+		this.isDebuggingSource.next(isDebugging);
+	}
 	announceLogin(loginUser: User) {
 
 	    // let isDebug:boolean = true;
@@ -266,6 +273,12 @@ export class MyEventWatchTowerService {
 	}
 	getIsAdmin() :boolean {
 		return this.isAdmin;
+	}
+	getIsDebugging() :boolean {
+		return this.isDebugging;
+	}
+	isDebug() :boolean {
+		return this.isDebugging;
 	}
 	getIsMyCheckerReady() :boolean {
 

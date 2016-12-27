@@ -46,16 +46,23 @@ var KlassService = (function () {
         this.myArray = new my_array_1.HelperMyArray();
         this.myTime = new my_time_1.HelperMyTime();
     }
+    KlassService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    KlassService.prototype.isDebug = function () {
+        if (null == this.watchTower) {
+            return false;
+        }
+        return this.watchTower.isDebug();
+    };
     KlassService.prototype.updateKlass = function (apiKey, userId, teacherId, klass) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlass / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlass / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlass / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlass / klass : ", klass);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -97,17 +104,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.removeKlassReview = function (apiKey, userId, klassId, reviewId) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassReview / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassReview / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassReview / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassReview / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassReview / reviewId : ", reviewId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -123,19 +128,17 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassReview = function (apiKey, userId, klassId, review, star) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / review : ", review);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / star : ", star);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -152,19 +155,17 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassReviewReply = function (apiKey, userId, klassId, parentId, reply) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / parentId : ", parentId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassReviewReply / reply : ", reply);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -181,17 +182,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.removeKlassQuestion = function (apiKey, userId, klassId, questionId) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassQuestion / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassQuestion / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassQuestion / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassQuestion / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / removeKlassQuestion / questionId : ", questionId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -207,17 +206,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassQuestion = function (apiKey, userId, klassId, question) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestion / question : ", question);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -233,19 +230,17 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassQuestionReply = function (apiKey, userId, klassId, parentId, question) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / parentId : ", parentId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassQuestionReply / question : ", question);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -262,17 +257,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.updateKlassTitle = function (apiKey, userId, klassId, klassTitle) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlassTitle / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlassTitle / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlassTitle / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlassTitle / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / updateKlassTitle / klassTitle : ", klassTitle);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -288,17 +281,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassPoster = function (apiKey, userId, klassId, klassPosterUrl) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassPoster / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassPoster / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassPoster / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassPoster / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassPoster / klassPosterUrl : ", klassPosterUrl);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -314,19 +305,17 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.addKlassEmpty = function (apiKey, userId, teacherId, teacherResume, teacherGreeting) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / teacherId : ", teacherId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / teacherResume : ", teacherResume);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassEmpty / teacherGreeting : ", teacherGreeting);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -343,17 +332,15 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.updateKlassBanner = function (apiKey, userId, klassId, klassBanners) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassBanner / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassBanner / apiKey : ", apiKey);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassBanner / userId : ", userId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassBanner / klassId : ", klassId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / addKlassBanner / klassBanners : ", klassBanners);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -369,16 +356,14 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.searchKlassVenue = function (q) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassVenue / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassVenue / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.urlService.get(this.klassVenueSearchLocalUrl);
         req_url = req_url + "?q=" + qEncoded;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassVenue / req_url : ", req_url);
         return this.http.get(req_url).map(this.getKlassVenue);
     };
@@ -404,12 +389,8 @@ var KlassService = (function () {
                 return [];
             }
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass.service / getKlassVenue / 시작");
-        if (isDebug)
-            console.log("klass.service / getKlassVenue / result : ", result);
+        // console.log("klass.service / getKlassVenue / 시작");
+        // console.log("klass.service / getKlassVenue / result : ",result);
         // json 정보를 KlassVenue 정보로 바꿉니다.
         var klassVenueList = [];
         if (null != result && 0 < result.length) {
@@ -422,21 +403,18 @@ var KlassService = (function () {
                 klassVenueList.push(klassVenue);
             } // end for
         } // end if
-        if (isDebug)
-            console.log("klass.service / getKlassVenue / klassVenueList : ", klassVenueList);
+        // console.log("klass.service / getKlassVenue / klassVenueList : ",klassVenueList);
         return klassVenueList;
     };
     KlassService.prototype.searchKlassMap = function (q) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassMap / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassMap / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.urlService.get(this.klassVenueSearchMapUrl);
         req_url = req_url + "?q=" + qEncoded;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassMap / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
@@ -473,24 +451,22 @@ var KlassService = (function () {
         return klassVenue;
     };
     KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / level : ", level);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / station : ", station);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / day : ", day);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / time : ", time);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / q : ", q);
         var qEncoded = encodeURIComponent(q);
         var req_url = this.urlService.get(this.klassSearchUrl);
         req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / searchKlassList / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
@@ -498,15 +474,13 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.getKlass = function (id) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlass / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlass / id : ", id);
         var req_url = this.urlService.get(this.klassUrl);
         req_url = req_url + "?id=" + id;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlass / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
@@ -514,12 +488,10 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.getKlasses = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlasses / 시작");
         var req_url = this.urlService.get(this.klassesUrl);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlasses / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()
@@ -527,12 +499,10 @@ var KlassService = (function () {
             .catch(this.myExtractor.handleError);
     }; // end getKlasses
     KlassService.prototype.getKlassSelectile = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlassSelectile / 시작");
         var req_url = this.urlService.get(this.klassSelectileUrl);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass.service / getKlassSelectile / req_url : ", req_url);
         return this.http.get(req_url)
             .toPromise()

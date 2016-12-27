@@ -4,10 +4,27 @@
 
 	    <!-- Brand and toggle get grouped for better mobile display / box-shadow: 0 0 2px rgba(6,8,8,0.15);-->
 	    <div class="navbar-header">
-	      <a class="navbar-brand cc-logo-anchor" href="#">
-	      	<img *ngIf="isAdmin===true" class="watchtower" src={{imageService.get(imageService.watchTowerUrl)}}>
-	      	<img class="cc-logo-image" alt="Brand" src="{{imageService.get(imageService.cafeclassLogoUrl)}}">
-	      </a>
+
+	      	<!-- 운영툴에서만 노출되는 아이콘 -->
+	      	<img 
+	      	*ngIf="isAdmin===true && isDebugging" 
+	      	(click)="onClickToggleDebugging($event)"
+	      	class="watchtower" 
+	      	src={{imageService.get(imageService.watchTowerUrl)}}>
+
+	      	<img 
+	      	*ngIf="isAdmin===true && !isDebugging" 
+	      	(click)="onClickToggleDebugging($event)"
+	      	class="watchtower" 
+	      	src={{imageService.get(imageService.watchTowerGrayUrl)}}>
+
+			<a class="navbar-brand cc-logo-anchor" href="#">
+
+				<img 
+				class="cc-logo-image" 
+				alt="Brand" 
+				src="{{imageService.get(imageService.cafeclassLogoUrl)}}">
+			</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->

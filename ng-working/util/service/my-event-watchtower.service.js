@@ -20,6 +20,8 @@ var MyEventWatchTowerService = (function () {
         this.isAdmin = false;
         this.apiKey = "";
         this.isViewPackReady = false;
+        // @ Optional for view
+        this.isDebugging = false;
         this.isLockedBottomFooterFlexible = false;
         this.isEventPackReady = false;
         // Observable sources
@@ -28,6 +30,7 @@ var MyEventWatchTowerService = (function () {
         this.myCheckerServicePackReadySource = new Subject_1.Subject();
         this.isViewPackReadySource = new Subject_1.Subject();
         // @ Optional for view
+        this.isDebuggingSource = new Subject_1.Subject();
         this.loginAnnouncedSource = new Subject_1.Subject();
         this.loginTeacherAnnouncedSource = new Subject_1.Subject();
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
@@ -43,6 +46,7 @@ var MyEventWatchTowerService = (function () {
         this.myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
         this.isViewPackReady$ = this.isViewPackReadySource.asObservable();
         // @ Optional for view
+        this.isDebugging$ = this.isDebuggingSource.asObservable();
         this.loginAnnounced$ = this.loginAnnouncedSource.asObservable();
         this.loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
@@ -116,6 +120,10 @@ var MyEventWatchTowerService = (function () {
         this.isViewPackReadySource.next(true);
     };
     // @ Optional for view
+    MyEventWatchTowerService.prototype.announceIsDebugging = function (isDebugging) {
+        this.isDebugging = isDebugging;
+        this.isDebuggingSource.next(isDebugging);
+    };
     MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -228,6 +236,12 @@ var MyEventWatchTowerService = (function () {
     };
     MyEventWatchTowerService.prototype.getIsAdmin = function () {
         return this.isAdmin;
+    };
+    MyEventWatchTowerService.prototype.getIsDebugging = function () {
+        return this.isDebugging;
+    };
+    MyEventWatchTowerService.prototype.isDebug = function () {
+        return this.isDebugging;
     };
     MyEventWatchTowerService.prototype.getIsMyCheckerReady = function () {
         if (null == this.getCheckerMap()) {

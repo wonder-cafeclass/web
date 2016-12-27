@@ -2,6 +2,8 @@ import { Component, OnInit, Input }   from '@angular/core';
 import { ImageService }               from '../../util/image.service';
 import { MyClockTime }                from '../../util/model/my-clock-time';
 
+import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
+
 @Component({
   moduleId: module.id,
   selector: 'simple-clock',
@@ -49,8 +51,13 @@ export class ClockComponent implements OnInit {
   rotate:number;
 
   constructor(
-    public imageService: ImageService
+    public imageService: ImageService,
+    private watchTower:MyEventWatchTowerService
   ) {}
+
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
 
   ngOnInit(): void {
 
@@ -89,12 +96,10 @@ export class ClockComponent implements OnInit {
 
   show(clockTimeBegin:MyClockTime, clockTimeEnd:MyClockTime) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("klass-detail / updateClockTime / 시작");
+    if(this.isDebug()) console.log("klass-detail / updateClockTime / 시작");
 
-    if(isDebug) console.log("klass-detail / updateClockTime / clockTimeBegin : ",clockTimeBegin);
-    if(isDebug) console.log("klass-detail / updateClockTime / clockTimeEnd : ",clockTimeEnd);
+    if(this.isDebug()) console.log("klass-detail / updateClockTime / clockTimeBegin : ",clockTimeBegin);
+    if(this.isDebug()) console.log("klass-detail / updateClockTime / clockTimeEnd : ",clockTimeEnd);
 
     if(null == clockTimeBegin || !(0 < clockTimeBegin.totalMinutes)) {
       return;
@@ -106,13 +111,13 @@ export class ClockComponent implements OnInit {
 
     let diffMinutes = clockTimeEnd.totalMinutes - clockTimeBegin.totalMinutes;
     if(0 < (diffMinutes%10)) {
-      console.log("Error / 10분 단위로 파라미터가 변경되어야 합니다.");
+      if(this.isDebug()) console.log("klass-detail / updateClockTime / 중단 / 10분 단위로 파라미터가 변경되어야 합니다.");
       return;
     }
     let diffHours = Math.floor(diffMinutes/60);
 
     if(!(1 <= diffHours) || !(diffHours <= 3)) {
-      console.log("Error / 최소 시간 범위는 1시간, 최대 시간 범위는 3시간입니다. / diffHours : ",diffHours);
+      if(this.isDebug()) console.log(`klass-detail / updateClockTime / 중단 / 최소 시간 범위는 1시간, 최대 시간 범위는 3시간입니다. / diffHours : ${diffHours}`);
       return;
     }
 
@@ -213,13 +218,6 @@ export class ClockComponent implements OnInit {
         }
       }
 
-    }
-
-    if(null == this.clockHoursUrl) {
-      console.log("!Error! / null == this.clockHoursUrl");
-    }
-    if(null == this.clockNoticeUrl) {
-      console.log("!Error! / null == this.clockNoticeUrl");
     }
 
     this.rotate = clockTimeBegin.hoursForRotate * 30;

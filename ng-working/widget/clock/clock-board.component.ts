@@ -69,11 +69,13 @@ export class ClockBoardComponent implements OnInit {
 
   } // end method
 
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("clock-board / ngOnInit / init");
+    if(this.isDebug()) console.log("clock-board / ngOnInit / init");
 
     this.asyncViewPack();
 
@@ -81,20 +83,18 @@ export class ClockBoardComponent implements OnInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("clock-board / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("clock-board / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("clock-board / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("clock-board / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("clock-board / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("clock-board / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -102,9 +102,7 @@ export class ClockBoardComponent implements OnInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("clock-board / init / 시작");
+    if(this.isDebug()) console.log("clock-board / init / 시작");
 
     // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
     this.emitEventOnReady();
@@ -114,27 +112,25 @@ export class ClockBoardComponent implements OnInit {
 
   setClockTimeBeginEnd(timeBegin:string, timeEnd:string) {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 시작"); 
+    if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / 시작"); 
 
-    if(isDebug) console.log("clock-board / setClockTimeBeginEnd / timeBegin : ",timeBegin);
-    if(isDebug) console.log("clock-board / setClockTimeBeginEnd / timeEnd : ",timeEnd);
+    if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / timeBegin : ",timeBegin);
+    if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / timeEnd : ",timeEnd);
 
     if(this.myTime.isNotHHMM(timeBegin)) {
-      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeBegin)");
+      if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeBegin)");
       return;
     }
     if(this.myTime.isNotHHMM(timeEnd)) {
-      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeEnd)");
+      if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeEnd)");
       return;
     }
     if(this.isNotSafeTimeRange(timeBegin, timeEnd)) {
-      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.klassTimeBegin is not valid!");
+      if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.klassTimeBegin is not valid!");
       return;
     } // end if
     if(null == this.clockComponent) {
-      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.clockComponent is not valid!");
+      if(this.isDebug()) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.clockComponent is not valid!");
       return;
     }
 
@@ -161,9 +157,7 @@ export class ClockBoardComponent implements OnInit {
 
   private emitEventOnReady() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("clock-board / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("clock-board / emitEventOnReady / 시작");
 
     let myEventOnChange:MyEvent =
     this.myEventService.getMyEvent(
@@ -180,7 +174,7 @@ export class ClockBoardComponent implements OnInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("clock-board / emitEventOnReady / Done!");
+    if(this.isDebug()) console.log("clock-board / emitEventOnReady / Done!");
 
   }    
 

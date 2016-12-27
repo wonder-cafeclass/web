@@ -807,7 +807,7 @@ export class MyEventService {
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER,
             // public checkerKey:string
-            "klass_price_calc_student_number",
+            "klass_student_cnt",
             // public type:string
             this.defaultType.TYPE_NUMBER
             ), 

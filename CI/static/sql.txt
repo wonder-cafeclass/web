@@ -120,11 +120,6 @@ CREATE TABLE `klass` (
   `subway_line` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 지하철 노선 - 지하철역; ex) 2호선',
   `subway_station` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 지하철 역 - 지하철역; ex) 송파역',
   
-  `venue` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업장소; 서비스에 노출되는 이름을 의미합니다. ex) 송파역-스타벅스 송파사거리점',
-  `venue_subway_station` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '@ Deprecated 수업이 진행되는 장소 - 지하철역; ex) 송파역',
-  `venue_cafe` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '@ Deprecated 수업이 진행되는 장소 - 카페; ex) 스타벅스',
-  `venue_map_link` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '@ Deprecated 수업이 진행되는 장소 맵링크 - 네이버맵 or 다음맵 링크; / Deprecated',
-
   `venue_title` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 이름',
   `venue_telephone` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 전화번호',
   `venue_address` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 주소 / 네이버 지역 검색 결과',
@@ -143,7 +138,7 @@ CREATE TABLE `klass` (
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `search` (`level`,`venue_subway_station`,`days`),
+  INDEX `search` (`level`,`subway_station`,`days`),
   KEY `teacher_id` (`teacher_id`),
   KEY `date_begin` (`date_begin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class';

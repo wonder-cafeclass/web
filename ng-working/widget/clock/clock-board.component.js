@@ -36,67 +36,62 @@ var ClockBoardComponent = (function () {
         this.dcLeftMargin = 40;
         this.myTime = new my_time_1.HelperMyTime();
     } // end method
+    ClockBoardComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     ClockBoardComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / ngOnInit / init");
         this.asyncViewPack();
     }; // end method
     ClockBoardComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("clock-board / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("clock-board / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
     }; // end method  
     ClockBoardComponent.prototype.init = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / init / 시작");
         // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
         this.emitEventOnReady();
         this.setClockTimeBeginEnd(this.klassTimeBegin, this.klassTimeEnd);
     }; // end method 
     ClockBoardComponent.prototype.setClockTimeBeginEnd = function (timeBegin, timeEnd) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / setClockTimeBeginEnd / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / setClockTimeBeginEnd / timeBegin : ", timeBegin);
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / setClockTimeBeginEnd / timeEnd : ", timeEnd);
         if (this.myTime.isNotHHMM(timeBegin)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeBegin)");
             return;
         }
         if (this.myTime.isNotHHMM(timeEnd)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("clock-board / setClockTimeBeginEnd / 중단 / isNotHHMM(timeEnd)");
             return;
         }
         if (this.isNotSafeTimeRange(timeBegin, timeEnd)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("clock-board / setClockTimeBeginEnd / 중단 / this.klassTimeBegin is not valid!");
             return;
         } // end if
         if (null == this.clockComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("clock-board / setClockTimeBeginEnd / 중단 / this.clockComponent is not valid!");
             return;
         }
@@ -117,9 +112,7 @@ var ClockBoardComponent = (function () {
         this.clockComponent.show(this.clockTimeBegin, this.clockTimeEnd);
     };
     ClockBoardComponent.prototype.emitEventOnReady = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / emitEventOnReady / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
@@ -133,7 +126,7 @@ var ClockBoardComponent = (function () {
         // public myChecker:MyChecker
         this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventOnChange);
-        if (isDebug)
+        if (this.isDebug())
             console.log("clock-board / emitEventOnReady / Done!");
     };
     ClockBoardComponent.prototype.isNotSafeTimeRange = function (hhmmBegin, hhmmEnd) {
