@@ -88,9 +88,10 @@ var UserDetailComponent = (function () {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, user_service_1.UserService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, (typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
     ], UserDetailComponent);
     return UserDetailComponent;
+    var _a;
 }());
 exports.UserDetailComponent = UserDetailComponent;
 /*

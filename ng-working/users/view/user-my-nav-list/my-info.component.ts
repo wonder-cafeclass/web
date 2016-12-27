@@ -164,7 +164,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     let userJSON = this.watchTower.getLoginUser();
     let loginUser:User = null;
     if(null != userJSON) {
-      loginUser = this.userService.getUserFromJSON(userJSON);
+      loginUser = new User().setJSON(userJSON);
     }
     if(null != loginUser) {
       this.loginUser = loginUser;

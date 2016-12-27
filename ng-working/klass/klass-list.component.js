@@ -22,6 +22,7 @@ var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var user_service_1 = require('../users/service/user.service');
+var user_1 = require('../users/model/user');
 var teacher_service_1 = require('../teachers/service/teacher.service');
 var KlassListComponent = (function () {
     function KlassListComponent(klassService, urlService, userService, teacherService, myLoggerService, watchTower, myCheckerService, route, router) {
@@ -95,7 +96,8 @@ var KlassListComponent = (function () {
             if (isDebug)
                 console.log("klass-list / subscribeLoginUser / loginUser : ", loginUser);
             // 로그인한 유저 정보가 들어왔습니다.
-            _this.loginUser = _this.userService.getUserFromJSON(loginUser);
+            _this.loginUser = new user_1.User().setJSON(loginUser);
+            ;
         });
     };
     KlassListComponent.prototype.subscribeLoginTeacher = function () {
@@ -137,7 +139,7 @@ var KlassListComponent = (function () {
         var userJSON = this.watchTower.getLoginUser();
         var loginUser = null;
         if (null != userJSON) {
-            loginUser = this.userService.getUserFromJSON(userJSON);
+            loginUser = new user_1.User().setJSON(userJSON);
         }
         if (null != loginUser) {
             this.loginUser = loginUser;

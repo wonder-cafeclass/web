@@ -21,6 +21,7 @@ var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var user_service_1 = require('../../../users/service/user.service');
+var user_1 = require('../../../users/model/user');
 var MyInfoComponent = (function () {
     function MyInfoComponent(myEventService, myLoggerService, myCheckerService, userService, watchTower, router) {
         this.myEventService = myEventService;
@@ -98,7 +99,7 @@ var MyInfoComponent = (function () {
         var userJSON = this.watchTower.getLoginUser();
         var loginUser = null;
         if (null != userJSON) {
-            loginUser = this.userService.getUserFromJSON(userJSON);
+            loginUser = new user_1.User().setJSON(userJSON);
         }
         if (null != loginUser) {
             this.loginUser = loginUser;

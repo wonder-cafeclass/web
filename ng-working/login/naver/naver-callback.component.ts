@@ -1,7 +1,6 @@
 import {  Component, 
           Input, 
           Output,
-          OnInit, 
           AfterViewInit,
           OnDestroy}                  from '@angular/core';
 import {  Subscription }              from 'rxjs';          
@@ -26,7 +25,7 @@ import { User }                       from '../../users/model/user';
   templateUrl: 'naver-callback.component.html',
   styleUrls: [ 'naver-callback.component.css' ]
 })
-export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NaverCallbackComponent implements AfterViewInit, OnDestroy {
 
   private code:string;
   private state:string;
@@ -53,21 +52,14 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   } // end function
 
-  ngOnInit(): void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / ngOnInit / init");
-
-  } // end function
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / ngAfterViewInit");
-
+    if(this.isDebug()) console.log("\nnaver-callback / ngAfterViewInit");
     this.asyncViewPack();
 
   }  
@@ -79,20 +71,18 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("\nnaver-callback / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("naver-callback / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("naver-callback / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("naver-callback / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("naver-callback / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe    
 
@@ -121,9 +111,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private logActionPage() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / logActionPage / 시작");
+    if(this.isDebug()) console.log("\nnaver-callback / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -133,26 +121,24 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
       this.myLoggerService.pageTypeLoginNaver
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("naver-callback / logActionPage / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("naver-callback / logActionPage / myResponse : ",myResponse);
     })
   }  
 
   private getQueryString() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / getQueryString / 시작");
+    if(this.isDebug()) console.log("\nnaver-callback / getQueryString / 시작");
 
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
 
-        if(isDebug) console.log("naver-callback / getQueryString / param : ",param);
+        if(this.isDebug()) console.log("naver-callback / getQueryString / param : ",param);
 
         this.code = param['code'];
         this.state = param['state'];
 
-        if(isDebug) console.log("naver-callback / getQueryString / this.code : ",this.code);
-        if(isDebug) console.log("naver-callback / getQueryString / this.state : ",this.state);
+        if(this.isDebug()) console.log("naver-callback / getQueryString / this.code : ",this.code);
+        if(this.isDebug()) console.log("naver-callback / getQueryString / this.state : ",this.state);
 
         if(  null != this.code && 
              "" != this.code && 
@@ -180,9 +166,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private getNaverState(state:string, code:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / getNaverState / init");
+    if(this.isDebug()) console.log("\nnaver-callback / getNaverState / init");
 
     if(null == state || "" == state) {
       return;
@@ -191,14 +175,14 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
 
-    if(isDebug) console.log("naver-callback / getState / state : ",state);
-    if(isDebug) console.log("naver-callback / getState / code : ",code);    
+    if(this.isDebug()) console.log("naver-callback / getState / state : ",state);
+    if(this.isDebug()) console.log("naver-callback / getState / code : ",code);    
 
     this.loginService
     .getNaverState(state)
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getState / getNaverState / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("naver-callback / getState / getNaverState / myResponse : ",myResponse);
 
       if( myResponse.isSuccess() ) {
         this.isValidState = myResponse.getDataProp("is_valid_state");
@@ -215,20 +199,20 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         return;
       }
 
-      if(isDebug) console.log("naver-callback / getState / getNaverState / this.isValidState : ",this.isValidState);
+      if(this.isDebug()) console.log("naver-callback / getState / getNaverState / this.isValidState : ",this.isValidState);
 
       // Session에 저장된 state와 비교합니다.
       if(this.isValidState) {
 
         // 1. state가 정상적일 경우, 다음 단계를 진행
-        if(isDebug) console.log("naver-callback / getNaverState / state가 정상적일 경우, 다음 단계를 진행");
+        if(this.isDebug()) console.log("naver-callback / getNaverState / state가 정상적일 경우, 다음 단계를 진행");
         this.getNaverAccess(code);
 
       } else {
 
         // 2. state가 다를 경우, 사용자에게 메시지 노출. '비정상적인 접근입니다.'. 메시지 확인 뒤, 로그인 홈으로 이동.
         // - 상황 정보를 로그로 남김. ex) '비정상 로그인 접근'
-        if(isDebug) console.log("naver-callback / getNaverState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
+        if(this.isDebug()) console.log("naver-callback / getNaverState / state가 다를 경우, 사용자에게 메시지 노출. 메시지 확인 뒤, 로그인 홈으로 이동");
 
         // 에러 로그 등록
         this.myLoggerService.logError(
@@ -247,9 +231,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // @ Desc : Naver REST API에 접근하기 위한 접근 토큰(Access Token)을 받아옵니다. 
   private getNaverAccess(code:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / getNaverAccess / init");
+    if(this.isDebug()) console.log("\nnaver-callback / getNaverAccess / init");
 
     if(null == code || "" == code) {
       return;
@@ -259,13 +241,13 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
     .getNaverAccess(code)
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getNaverAccess / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("naver-callback / getNaverAccess / myResponse : ",myResponse);
 
       let accessToken:string = myResponse.digDataProp(["result","access_token"]);
       let tokenType:string = myResponse.digDataProp(["result","token_type"]);
 
-      if(isDebug) console.log("naver-callback / getNaverAccess / accessToken : ",accessToken);
-      if(isDebug) console.log("naver-callback / getNaverAccess / tokenType : ",tokenType);
+      if(this.isDebug()) console.log("naver-callback / getNaverAccess / accessToken : ",accessToken);
+      if(this.isDebug()) console.log("naver-callback / getNaverAccess / tokenType : ",tokenType);
 
       if( myResponse.isSuccess() && 
           null != accessToken && 
@@ -275,7 +257,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
       } else {
 
-        if(isDebug) console.log("naver-callback / getNaverAccess / 에러 로그 등록");
+        if(this.isDebug()) console.log("naver-callback / getNaverAccess / 에러 로그 등록");
 
         if(null != myResponse.error && "" != myResponse.error) {
           // 에러 내용은 화면에 표시한다.
@@ -299,19 +281,17 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   // @ Desc : Naver REST API로 회원정보를 가져옵니다.
   private getNaverMe() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / getNaverMe / init");
+    if(this.isDebug()) console.log("\nnaver-callback / getNaverMe / init");
 
     this.loginService
     .getNaverMe()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / getNaverMe / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("naver-callback / getNaverMe / myResponse : ",myResponse);
 
       if(myResponse.isFailed() || null == myResponse.hasNotDataProp("naver_id")) {
         // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
-        if(isDebug) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
+        if(this.isDebug()) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
 
         if(null != myResponse.error && "" != myResponse.error) {
           // 에러 내용은 화면에 표시한다.
@@ -339,8 +319,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
       let user = myResponse.digDataProp(["me"]);
       let naverId = myResponse.digDataProp(["me","naver_id"]);
 
-      if(isDebug) console.log("naver-callback / getNaverMe / user : ",user);
-      if(isDebug) console.log("naver-callback / getNaverMe / naverId : ",naverId);
+      if(this.isDebug()) console.log("naver-callback / getNaverMe / user : ",user);
+      if(this.isDebug()) console.log("naver-callback / getNaverMe / naverId : ",naverId);
 
       if( myResponse.isSuccess() && 
           (null == user.gender ||
@@ -351,7 +331,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         // 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨. 
         // 하지만 추가 정보 필요. 
         // 회원 가입창으로 이동.
-        if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
+        if(this.isDebug()) console.log("naver-callback / 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
         this.router.navigate(['/login/signup/naver', naverId]);
           
       } else {
@@ -363,8 +343,8 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
 
         if(null != user) {
-          let loginUser:User = this.userService.getUserFromJSON(user);
-          if(isDebug) console.log(`naver-callback / getNaverMe / loginUser : `,loginUser);
+          let loginUser:User = new User().setJSON(user);
+          if(this.isDebug()) console.log(`naver-callback / getNaverMe / loginUser : `,loginUser);
 
           // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
           this.watchTower.announceLogin(loginUser);
@@ -374,7 +354,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
           .getTeacher(this.watchTower.getApiKey(), +user.id)
           .then((myResponse:MyResponse) => {
 
-            if(isDebug) console.log(`naver-callback / getTeacher / myResponse : `,myResponse);
+            if(this.isDebug()) console.log(`naver-callback / getTeacher / myResponse : `,myResponse);
 
             let teacherFromDB = myResponse.getDataProp("teacher");
             // 선생님 로그인 여부를 확인, 전파한다.
@@ -384,7 +364,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
         } // end if        
 
-        if(isDebug) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
+        if(this.isDebug()) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
 
         this.confirmUserNaver(naverId);
         
@@ -396,19 +376,17 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private confirmUserNaver(naverId:string) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("\nnaver-callback / confirmUserNaver / init");
+    if(this.isDebug()) console.log("\nnaver-callback / confirmUserNaver / init");
 
     this.userService
     .confirmUserNaver(this.myCheckerService.getAPIKey(), naverId)
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("naver-callback / confirmUserNaver / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("naver-callback / confirmUserNaver / myResponse : ",myResponse);
 
       if(myResponse.isFailed()) {
         // naver id로 쿠키 인증 실패. 홈으로 이동.
-        if(isDebug) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
+        if(this.isDebug()) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
         this.router.navigate([this.redirectUrl]);
 
         // 에러 로그 등록
@@ -432,7 +410,7 @@ export class NaverCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         redirectUrl = '/class-center';
       }
 
-      if(isDebug) console.log("naver-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
+      if(this.isDebug()) console.log("naver-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
       this.router.navigate([redirectUrl]);
       
     }); // end userService    

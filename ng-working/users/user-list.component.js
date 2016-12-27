@@ -34,9 +34,10 @@ var UserListComponent = (function () {
         core_1.Component({
             template: "\n    <h2>Users</h2>\n    <ul class=\"items\">\n      <li *ngFor=\"let user of users\"\n        [class.selected]=\"isSelected(user)\"\n        (click)=\"onSelect(user)\">\n        <span class=\"badge\">{{user.id}}</span> {{user.name}}\n      </li>\n    </ul>\n  "
         }), 
-        __metadata('design:paramtypes', [user_service_1.UserService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_1.ActivatedRoute, router_1.Router])
     ], UserListComponent);
     return UserListComponent;
+    var _a;
 }());
 exports.UserListComponent = UserListComponent;
 /*

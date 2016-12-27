@@ -126,7 +126,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("klass-list / subscribeLoginUser / loginUser : ",loginUser);
 
       // 로그인한 유저 정보가 들어왔습니다.
-      this.loginUser = this.userService.getUserFromJSON(loginUser);
+      this.loginUser = new User().setJSON(loginUser);;
 
     });
   }
@@ -174,7 +174,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     let userJSON = this.watchTower.getLoginUser();
     let loginUser:User = null;
     if(null != userJSON) {
-      loginUser = this.userService.getUserFromJSON(userJSON);
+      loginUser = new User().setJSON(userJSON);
     }
     if(null != loginUser) {
       this.loginUser = loginUser;

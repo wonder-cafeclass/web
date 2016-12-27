@@ -1,35 +1,113 @@
 import { HelperMobile } 	from '../../util/helper/mobile';
 import { HelperBirthday } 	from '../../util/helper/birthday';
+
+import { HelperMyIs } 	from '../../util/helper/my-is';
+
+
 import { Teacher } 			from '../../teachers/model/teacher';
 
 export class User {
-	constructor(
-		public id:number,
-		public nickname:string,
-		public name:string,
-		public gender:string,
-		public birthday:string, 
-		public thumbnail:string,
-		public status:string,
-		public permission:string,
-		public kakao_id:string,
-		public naver_id:string,
-		public facebook_id:string,
-		public google_id:string,
-		public mobile:string,
-		public email:string,
-		public date_created:string,
-		public date_updated:string
-	) {
+
+	public id:number=-1;
+	public nickname:string="";
+	public name:string="";
+	public gender:string="";
+	public birthday:string="";
+	public thumbnail:string="";
+	public status:string="";
+	public permission:string="";
+	public kakao_id:string="";
+	public naver_id:string="";
+	public facebook_id:string="";
+	public google_id:string="";
+	public mobile:string="";
+	public email:string="";
+	public date_created:string="";
+	public date_updated:string="";
+
+	private helperMobile:HelperMobile=null;
+	private helperBirthday:HelperBirthday=null;
+	private myIs:HelperMyIs=null;
+
+	constructor() {
 		// 휴대 전화번호를 관리하는 객체를 만듭니다.
 		this.helperMobile = new HelperMobile(this.mobile);
 		// 생일을 관리하는 객체를 만듭니다.
 		this.helperBirthday = new HelperBirthday(this.birthday);
+
+		this.myIs = new HelperMyIs();
 	}
 
 	public password:string;
 	private isAdmin:boolean=false;
 	private teacher:Teacher;
+
+	set(id:number,
+		nickname:string,
+		name:string,
+		gender:string,
+		birthday:string, 
+		thumbnail:string,
+		status:string,
+		permission:string,
+		kakao_id:string,
+		naver_id:string,
+		facebook_id:string,
+		google_id:string,
+		mobile:string,
+		email:string,
+		date_created:string,
+		date_updated:string	) {
+
+		this.id = id;
+		this.nickname = nickname;
+		this.name = name;
+		this.gender = gender;
+		this.birthday = birthday;
+		this.thumbnail = thumbnail;
+		this.status = status;
+		this.permission = permission;
+		this.kakao_id = kakao_id;
+		this.naver_id = naver_id;
+		this.facebook_id = facebook_id;
+		this.google_id = google_id;
+		this.mobile = mobile;
+		this.email = email;
+		this.date_created = date_created;
+		this.date_updated = date_updated;
+
+		return this;
+
+	} // end method
+
+    setJSON(json):User {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("klass / setJSON / init");
+        if(isDebug) console.log("klass / setJSON / json : ",json);
+
+        let user:User = this._setJSON(json);
+
+        if(isDebug) console.log("klass / setJSON / user : ",user);
+
+        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+
+        return user;
+
+    } // end method	
+
+
+    private _setJSON(json):User {
+
+        return this.myIs.copyFromJSON(
+            // target:any,
+            this,
+            // json
+            json
+        );
+
+    } // end method	
 
 	setIsAdmin(isAdmin:boolean) :void {
 		if(null == isAdmin) {
@@ -122,7 +200,7 @@ export class User {
 
 
 	// Mobile Methods - INIT
-	private helperMobile:HelperMobile;
+	
 	getMobileArr() :string[] {
 		return this.helperMobile.getMobileArr();
 	} 
@@ -172,7 +250,6 @@ export class User {
 
 
 	// Birthday Methods - INIT
-	private helperBirthday:HelperBirthday;
 	getBirthdayArr() :string[] {
 		return this.helperBirthday.getBirthdayArr();
 	}	
@@ -249,44 +326,18 @@ export class User {
 		this.date_created = userJSON["date_created"];
 		this.date_updated = userJSON["date_updated"];
 	
-	} 	  
+	} 	
 
-	copy() :User {
-		return new User(
-			// public id:number,
-			this.id,
-			// public nickname:string,
-			this.nickname,
-			// public name:string,
-			this.name,
-			// public gender:string,
-			this.gender,
-			// public birthday:string, 
-			this.birthday,
-			// public thumbnail:string,
-			this.thumbnail,
-			// public status:string,
-			this.status,
-			// public permission:string,
-			this.permission,
-			// public kakao_id:string,
-			this.kakao_id,
-			// public naver_id:string,
-			this.naver_id,
-			// public facebook_id:string,
-			this.facebook_id,
-			// public google_id:string,
-			this.google_id,
-			// public mobile:string,
-			this.mobile,
-			// public email:string,
-			this.email,
-			// public date_created:string,
-			this.date_created,
-			// public date_updated:string
-			this.date_updated
-		);
-	}
+	copy():User {
+
+        return this.myIs.copy(
+            // src:any
+            this, 
+            // copy:any
+            new User()
+        );
+
+    } // end method
 
 	// @ 사용자가 변경 가능한 값들을 기준으로 비교, 결과를 알려준다.
 	isNotSame(user:User) :boolean {

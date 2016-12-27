@@ -831,11 +831,6 @@ export class Klass {
             if(isDebug) console.log(`klass / isSame / days has been changed! / this.days:${this.days} != target.days:${target.days}`);
             return false;
         }
-        if(this.venue != target.venue) {
-            if(isDebug) console.log(`klass / isSame / venue has been changed! / this.venue:${this.venue} != target.venue:${target.venue}`);
-            return false;
-        }
-
         if(this.venue_title != target.venue_title) {
             if(isDebug) console.log(`klass / isSame / venue_title has been changed! / this.venue_title:${this.venue_title} != target.venue_title:${target.venue_title}`);
             return false;
