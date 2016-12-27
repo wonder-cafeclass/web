@@ -95,6 +95,7 @@ var KakaoCallbackComponent = (function () {
         this.getQueryString();
     }; // end init
     KakaoCallbackComponent.prototype.logActionPage = function () {
+        var _this = this;
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -106,10 +107,21 @@ var KakaoCallbackComponent = (function () {
         // pageType:string
         this.myLoggerService.pageTypeLoginKakao).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
-                console.log("kakao-callback / logActionPage / myResponse : ", myResponse);
-        });
-    };
+            if (myResponse.isFailed() && null != myResponse.error) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / logActionPage"); // end logger      
+            } // end if
+        }); // end service
+    }; // end method 
     KakaoCallbackComponent.prototype.getQueryString = function () {
         var _this = this;
         // let isDebug:boolean = true;
@@ -168,19 +180,21 @@ var KakaoCallbackComponent = (function () {
                     console.log("kakao-callback / getKakaoToken / \uC720\uC800 \uC571\uB4F1\uB85D\uC744 \uC9C4\uD589\uD569\uB2C8\uB2E4.");
                 _this.getKakaoSignUp(tokenType, accessToken);
             }
-            else {
-                if (isDebug)
-                    console.log("kakao-callback / getKakaoToken / \uC5D0\uB7EC \uB85C\uADF8 \uB4F1\uB85D");
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
                 _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
-                "kakao-callback / getKakaoToken / Failed! / kakaoCode : " + kakaoCode);
-            }
-        });
-    };
+                "kakao-callback / getUserByKakaoId / kakaoCode : " + kakaoCode); // end logger      
+            } // end if       
+        }); // end service
+    }; // end method
     // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
     KakaoCallbackComponent.prototype.getKakaoSignUp = function (kakaoTokenType, kakaoAccessToken) {
         var _this = this;
@@ -207,22 +221,21 @@ var KakaoCallbackComponent = (function () {
                     _this.getKakaoMe(kakaoTokenType, kakaoAccessToken);
                 }
             }
-            else {
-                if (isDebug)
-                    console.log("kakao-callback / getKakaoSignUp / 에러 로그 등록");
-                var errMsg = "kakao-callback / getKakaoSignUp / Failed! / kakaoTokenType : " + kakaoTokenType + " / kakaoAccessToken : " + kakaoAccessToken;
-                _this.logError(
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errMsg:string
-                errMsg);
-                if (null != myResponse.error && "" != myResponse.error) {
-                    // 에러 내용은 화면에 표시한다.
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 }
-            } // end if
-        });
-    };
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoSignUp / kakaoTokenType : " + kakaoTokenType + " / kakaoAccessToken : " + kakaoAccessToken); // end logger      
+            } // end if        
+        }); // end service
+    }; // end method
     KakaoCallbackComponent.prototype.logError = function (errorType, errMsg) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -272,11 +285,26 @@ var KakaoCallbackComponent = (function () {
                 _this.router.navigate(['/class-center']);
                 return;
             }
-            // 카카오 플랫폼에서의 로그인 성공!
-            if (isDebug)
-                console.log("kakao-callback / getKakaoMe / kakao_id : " + kakaoId);
-            // 카카오 아이디로 유저 정보를 가져옵니다.
-            _this.getUserByKakaoId("" + kakaoId);
+            else if (myResponse.isSuccess()) {
+                // 카카오 플랫폼에서의 로그인 성공!
+                if (isDebug)
+                    console.log("kakao-callback / getKakaoMe / kakao_id : " + kakaoId);
+                // 카카오 아이디로 유저 정보를 가져옵니다.
+                _this.getUserByKakaoId("" + kakaoId);
+            }
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getKakaoMe / kakaoTokenType : " + kakaoTokenType + " / kakaoAccessToken : " + kakaoAccessToken); // end logger      
+            } // end if
         }); // end service
     }; // end method 
     KakaoCallbackComponent.prototype.getUserByKakaoId = function (kakaoId) {
@@ -379,6 +407,19 @@ var KakaoCallbackComponent = (function () {
                         _this.router.navigate(['/class-center']);
                     }
                 }); // end userService
+            }
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
+                _this.myLoggerService.logError(
+                // apiKey:string
+                _this.watchTower.getApiKey(), 
+                // errorType:string
+                _this.myLoggerService.errorAPIFailed, 
+                // errorMsg:string
+                "kakao-callback / getUserByKakaoId / kakaoId : " + kakaoId); // end logger      
             } // end if
         }); // end service
     };

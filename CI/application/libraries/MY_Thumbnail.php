@@ -123,6 +123,22 @@ class MY_Thumbnail {
         }        
     }
 
+    private function addError($method_name="", $event="", $message="") 
+    {
+        $this->CI->my_error->add(
+            // $class_name=""
+            static::class,
+            // $method_name=""
+            $method_name,
+            // $event=""
+            $event,
+            // $message=""
+            $message,
+            // $extra=null
+            null
+        );
+    }
+
     public function is_not_ok() {
         return !$this->is_ok();
     }
@@ -614,10 +630,26 @@ class MY_Thumbnail {
     {
         if(empty($inner_image_uri))
         {
+            $this->addError(
+                // $method_name="", 
+                __FUNCTION__,
+                // $event="", 
+                MY_Error::$EVENT_PARAM_IS_EMPTY,
+                // $message=""
+                "User thumbnail resizing failed! / \$inner_image_uri is not valid!"
+            );
             return;
         }
         if(!is_writable($inner_image_uri))
         {
+            $this->addError(
+                // $method_name="", 
+                __FUNCTION__,
+                // $event="", 
+                MY_Error::$EVENT_FILE_WRITING_FAILED,
+                // $message=""
+                "User thumbnail resizing failed! / \$inner_image_uri is not writable!"
+            );            
             return;
         }
 
@@ -642,7 +674,15 @@ class MY_Thumbnail {
         else
         {
             // 섬네일 만들기에 실패했습니다.
-            // 기록합니다.
+            // Error Log를 기록합니다.
+            $this->addError(
+                // $method_name="", 
+                __FUNCTION__,
+                // $event="", 
+                MY_Error::$EVENT_FILE_WRITING_FAILED,
+                // $message=""
+                "User thumbnail resizing failed! / \$inner_image_uri : $inner_image_uri"
+            );            
         }
 
         // 임시 저장한 섬네일을 지웁니다.
@@ -661,6 +701,16 @@ class MY_Thumbnail {
 
         if(empty($temp_image_uri))
         {
+            // Error Log - wonder.jung
+            $this->addError(
+                // $method_name="", 
+                __FUNCTION__,
+                // $event="", 
+                MY_Error::$EVENT_DOWNLOAD_FAILED,
+                // $message=""
+                "User thumbnail downloading failed! / \$remote_image_url : $remote_image_url / \$temp_image_uri : $temp_image_uri"
+            );
+
             // 섬네일 다운로드에 실패했습니다.
             return "";
         }
@@ -668,39 +718,7 @@ class MY_Thumbnail {
         // 섬네일 다운로드에 성공!
         // 서비스 정책에 맞게 resize 합니다.
         // 유저 섬네일은 150x150.
-
         return $this->resize_user_thumbnail($temp_image_uri);
-
-        // REMOVE ME
-        /*
-        $file_name = $this->get_file_name_from_uri($temp_image_uri);
-        $file_path = $this->my_path->get_path_user_thumb(__FILE__) . "/" . $file_name;
-
-        $output = 
-        $this->resize(
-            // $src="", 
-            $temp_image_uri,
-            // $dest="", 
-            $file_path,
-            // $crop_size=-1
-            150
-        );
-
-        $thumbnail_url = "";
-        if(isset($output) && isset($output->success) && $output->success) 
-        {
-            $thumbnail_url = $file_name;
-        }
-        else
-        {
-            // 섬네일 만들기에 실패했습니다.
-            // 기록합니다.
-        }
-
-        // 임시 저장한 섬네일을 지웁니다.
-        $this->delete_thumbnail($temp_image_uri);
-        return $thumbnail_url;
-        */
 
     }
 

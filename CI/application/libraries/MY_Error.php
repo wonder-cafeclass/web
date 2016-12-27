@@ -8,6 +8,8 @@ class MY_Error
 	public static $EVENT_PARAM_IS_NOT_VALID="Param is not valid!";
 	public static $EVENT_DIR_PATH_IS_NOT_WRITABLE="Dir path is not writable!";
 	public static $EVENT_JSON_DECODING_IS_FAILED="JSON Decoding is failed!";
+	public static $EVENT_DOWNLOAD_FAILED="File downloading to server has been failed!";
+	public static $EVENT_FILE_WRITING_FAILED="File writing has been failed!";
 	public static $EVENT_UNKNOWN="Unknown error has been occured!";
 
     function __construct()
