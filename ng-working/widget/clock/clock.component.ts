@@ -89,11 +89,18 @@ export class ClockComponent implements OnInit {
 
   show(clockTimeBegin:MyClockTime, clockTimeEnd:MyClockTime) :void {
 
-    if(null === clockTimeBegin) {
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / updateClockTime / 시작");
+
+    if(isDebug) console.log("klass-detail / updateClockTime / clockTimeBegin : ",clockTimeBegin);
+    if(isDebug) console.log("klass-detail / updateClockTime / clockTimeEnd : ",clockTimeEnd);
+
+    if(null == clockTimeBegin || !(0 < clockTimeBegin.totalMinutes)) {
       return;
     }
 
-    if(null === clockTimeEnd) {
+    if(null == clockTimeEnd || !(0 < clockTimeEnd.totalMinutes)) {
       return;
     }
 

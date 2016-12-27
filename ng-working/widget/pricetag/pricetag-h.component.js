@@ -78,6 +78,11 @@ var PriceTagHComponent = (function () {
             console.log("pricetag-h / setPrice / 시작");
         if (isDebug)
             console.log("pricetag-h / setPrice / price : ", price);
+        if (null == price || !(0 < price)) {
+            if (isDebug)
+                console.log("pricetag-h / setPrice / 중단 / price is not valid!");
+            return;
+        }
         this.priceWithFormat = this.numberWithCommas(price);
         if (isDebug)
             console.log("pricetag-h / setPrice / this.priceWithFormat : ", this.priceWithFormat);
@@ -93,6 +98,9 @@ var PriceTagHComponent = (function () {
         this.priceDesc = priceDesc;
     };
     PriceTagHComponent.prototype.numberWithCommas = function (x) {
+        if (null == x || "" === x) {
+            return "";
+        }
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
     __decorate([

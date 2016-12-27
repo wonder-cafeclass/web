@@ -108,6 +108,9 @@ var KlassTeacherComponent = (function () {
         this.setGreeting();
     };
     KlassTeacherComponent.prototype.setResume = function () {
+        if (null == this.klassTeacher) {
+            return;
+        }
         // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
         var resumeArr = this.klassTeacher.getResumeArr();
         var myEventList = [];
@@ -131,6 +134,9 @@ var KlassTeacherComponent = (function () {
         this.myEventListForTeacherResume = myEventList;
     }; // end method
     KlassTeacherComponent.prototype.setGreeting = function () {
+        if (null == this.klassTeacher) {
+            return;
+        }
         // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
         var greetingArr = this.klassTeacher.getGreetingArr();
         var myEventList = [];

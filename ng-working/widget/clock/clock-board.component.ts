@@ -112,10 +112,18 @@ export class ClockBoardComponent implements OnInit {
 
   setClockTimeBeginEnd(hhmmBegin:string, hhmmEnd:string):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("clock-board / setClockTimeBeginEnd / init");
 
+    if(this.myTime.isNotHHMM(hhmmBegin)) {
+      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.myTime.isNotHHMM(hhmmBegin)");
+      return;
+    }
+    if(this.myTime.isNotHHMM(hhmmEnd)) {
+      if(isDebug) console.log("clock-board / setClockTimeBeginEnd / 중단 / this.myTime.isNotHHMM(hhmmEnd)");
+      return;
+    }
     if(this.isNotSafeTimeRange(hhmmBegin, hhmmEnd)) {
       return;
     }

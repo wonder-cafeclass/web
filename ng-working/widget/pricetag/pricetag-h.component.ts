@@ -110,6 +110,11 @@ export class PriceTagHComponent implements OnInit {
     if(isDebug) console.log("pricetag-h / setPrice / 시작");
     if(isDebug) console.log("pricetag-h / setPrice / price : ",price);
 
+    if(null == price || !(0 < price)) {
+      if(isDebug) console.log("pricetag-h / setPrice / 중단 / price is not valid!");
+      return;
+    }
+
     this.priceWithFormat = this.numberWithCommas(price);
 
     if(isDebug) console.log("pricetag-h / setPrice / this.priceWithFormat : ",this.priceWithFormat);
@@ -127,6 +132,11 @@ export class PriceTagHComponent implements OnInit {
   }
 
   private numberWithCommas(x) :string{
+
+    if(null == x || "" === x) {
+      return "";
+    }
+
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }

@@ -375,6 +375,9 @@ class Klass extends MY_REST_Controller {
             $is_ok = false;
         }
 
+        // TODO - 선생님이 수업을 연속으로 등록하는 것을 막기 위해서 가장 마지막으로 등록한 수업으로부터 3분이 지났는지 확인합니다.
+        // TODO - 건네받은 userid가 선생님이 맞는지 확인합니다.
+
         if($is_ok) 
         {
             $this->my_sql->add_klass(
@@ -390,6 +393,10 @@ class Klass extends MY_REST_Controller {
 
             $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
             $output["klass"] = $klass;
+
+            // 선생님이 수업을 추가한 것을 로그로 기록합니다.
+            // wonder.jung
+
             $this->respond_200($output);
         }
         else

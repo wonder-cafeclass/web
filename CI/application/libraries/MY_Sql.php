@@ -1871,9 +1871,10 @@ class MY_Sql
         {
             $date_begin = $this->get_klass_date_begin_default();
         }
-        if($this->is_not_ok("klass_time", $time_begin))
+        if($this->is_not_ok("klass_date_begin", $time_begin))
         {
             $time_begin = $this->get_klass_time_begin_default();
+            $time_end = $this->get_klass_time_end_default();
         }
         if($this->is_not_ok("klass_time_range", $time_duration_minutes))
         {
@@ -1916,14 +1917,18 @@ class MY_Sql
             'schedule' => $schedule,
             'date_begin' => $date_begin,
             'time_begin' => $time_begin,
+            'time_end' => $time_end,
             'time_duration_minutes' => $time_duration_minutes,
             'level' => $level,
+            'week' => 4,
             'week_min' => $week_min,
             'week_max' => $week_max,
             'days' => $days,
             'class_per_week' => $class_per_week,
             'price' => $price,
-            'class_banner_url' => "drinks.png|||help.png"
+            'student_cnt' => 3,
+            'class_banner_url' => "",
+            'class_poster_url' => ""
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.

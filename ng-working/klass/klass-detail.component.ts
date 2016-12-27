@@ -383,15 +383,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   private getParams() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / getParams / 시작");
 
+    let klassId:number = -1;
 
     this.route.params
     .switchMap((params: Params) => {
 
-      let klassId:number = +params['id'];
+      klassId = +params['id'];
 
       if(klassId === -100 && null == this.loginTeacher) {
 
@@ -417,32 +418,48 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
           this.loginTeacher.greeting
         );
 
+      } else {
+
+        // 기존 수업 가져오기
+        if(isDebug) console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ",klassId);
+        return this.klassService.getKlass(klassId);
+
       } // end if
 
-      // 기존 수업 가져오기
-      if(isDebug) console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ",klassId);
-      return this.klassService.getKlass(klassId);
     })
     .subscribe((myResponse: MyResponse) => {
 
       if(isDebug) console.log("klass-detail / getParams / subscribe / myResponse : ",myResponse);
 
-      if(myResponse.isSuccess()) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
 
         let klassJSON = myResponse.getDataProp("klass");
         if(isDebug) console.log("klass-detail / getParams / subscribe / klassJSON : ",klassJSON);
         if(null != klassJSON) {
-
           this.klass = new Klass().setJSON(klassJSON);
+        } // end if
+        if(isDebug) console.log("klass-detail / getParams / subscribe / this.klass : ",this.klass);
+        
+        if(klassId === -100) {
+          // 새로 만든 수업이라면, 
+          // 해당 url로 refresh를 하게되면 자동으로 수업이 생기므로 
+          // 이를 방지하기 위해 새로 만든 수업 id로 다시 페이지를 로딩해야 합니다.
+          let newKlassId:number = this.klass.id;
+          this.router.navigate([`/class-center/${newKlassId}`]);
+          return;
+
+        } else {
+          // 이미 이전에 등록된 수업입니다. 가져온 수업 정보를 화면에 노출합니다.
+          if(isDebug) console.log("klass-detail / getParams / subscribe / 이미 이전에 등록된 수업입니다.수업 정보를 화면에 노출합니다.");
           this.onAfterReceivingKlass();
 
         } // end if
 
-      } else if(myResponse.isFailed() && null != myResponse.error) {  
+      } else if(myResponse.isFailed()) {  
 
-        this.watchTower.announceErrorMsgArr([myResponse.error]);
-
-      } else {
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
 
         // 에러 로그 등록
         this.myLoggerService.logError(
@@ -528,7 +545,11 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / setKlassPrice / 시작");
 
-    if(null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
+    if( null == this.klass || 
+        null == this.klassCopy || 
+        null == this.klassCopy.price || 
+        !(0 < this.klassCopy.price)) {
+
       return;
     } // end if
 
@@ -1449,8 +1470,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
         if( null != myEvent.metaObj ) {
           this.bannerComponent = myEvent.metaObj;
         } // end if
-        if( null != this.klass && null != this.bannerComponent ) {
+        if( null != this.klass && 
+            null != this.bannerComponent && 
+            null != this.klassCopy && 
+            null != this.klassCopy.class_banner_url_arr) {
+
           this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
+        
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_LIST)) {  
@@ -2162,6 +2188,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / updateClockTime / 시작");
+
+    if(null == hhmmBegin || "" === hhmmBegin) {
+      return;
+    }
+    if(null == hhmmEnd || "" === hhmmEnd) {
+      return;
+    }
 
     // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
     this.clockBoardComponent.setClockTimeBeginEnd(hhmmBegin, hhmmEnd);
