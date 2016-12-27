@@ -9,11 +9,13 @@ import {  Router,
           ActivatedRoute }            from '@angular/router';
 import { LoginService }               from '../service/login.service';
 import { UserService }                from '../../users/service/user.service';
+import { TeacherService }             from '../../teachers/service/teacher.service';
 import { MyCheckerService }           from '../../util/service/my-checker.service';
 import { MyLoggerService }            from '../../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
 import { MyResponse }                 from '../../util/model/my-response';
+import { MyCookie }                   from '../../util/http/my-cookie';
 
 import { User }                       from '../../users/model/user';
 
@@ -36,15 +38,19 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
 
+  private myCookie:MyCookie;
+
   constructor(  public loginService: LoginService,
                 public myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private watchTower:MyEventWatchTowerService,
                 private userService:UserService,
+                private teacherService:TeacherService,
                 private activatedRoute: ActivatedRoute,
                 public router: Router) {
 
-    // Do something...
+    this.myCookie = new MyCookie();
+    
   } // end function
 
   ngOnInit(): void {
@@ -253,8 +259,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private getMe() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / getMe / init");
 
     this.loginService
@@ -300,7 +306,21 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
           // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
           this.watchTower.announceLogin(loginUser);
-        } // end if
+
+          // 선생님 등록이 되어있는 회원인지 확인.
+          this.teacherService
+          .getTeacher(this.watchTower.getApiKey(), +user.id)
+          .then((myResponse:MyResponse) => {
+
+            if(isDebug) console.log(`naver-callback / getTeacher / myResponse : `,myResponse);
+
+            let teacherFromDB = myResponse.getDataProp("teacher");
+            // 선생님 로그인 여부를 확인, 전파한다.
+            this.watchTower.announceLoginTeacher(teacherFromDB);
+
+          }); // end service
+
+        }
 
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
         this.confirmUserFacebook(facebookId);
@@ -308,7 +328,7 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       } else {
 
         // 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨. 
-        // 하지만 추가 정보 필요. 
+        // 하지만 추가 정보 필요.
         // 회원 가입창으로 이동.
         if(isDebug) console.log("facebook-callback / 페이스북 로그인은 성공. 페이스북 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
         this.router.navigate(['/login/signup/facebook', facebookId]);
@@ -321,8 +341,8 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
 
   private confirmUserFacebook(facebookId:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("facebook-callback / confirmUserFacebook / init");
     if(isDebug) console.log(`facebook-callback / confirmUserFacebook / facebookId : ${facebookId}`);
 
@@ -352,8 +372,13 @@ export class FacebookCallbackComponent implements OnInit, OnDestroy {
       // 쿠키 인증 성공!
       // 로그인 직전 페이지로 리다이렉트. 
       // 돌아갈 주소가 없다면, 홈으로 이동.
-      if(isDebug) console.log("facebook-callback / confirmUserFacebook / facebook id로 쿠키 인증 성공!. 로그인 직전 페이지로 리다이렉트.");
-      this.router.navigate([this.redirectUrl]);
+      let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+      if(null == redirectUrl || "" == redirectUrl) {
+        redirectUrl = '/class-center';
+      }
+
+      if(isDebug) console.log("facebook-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
+      this.router.navigate([redirectUrl]);
       
     }); // end userService    
 

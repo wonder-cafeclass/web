@@ -6,12 +6,22 @@ export class UrlService {
 
     private baseHref:string;
     private hostname:string;
+    private href:string;
     private appBaseUrl:string;
+    private appViewUrl:string;
 
     constructor(private pl:PlatformLocation) {
         this.baseHref = pl.getBaseHrefFromDOM();
+        this.href = window.location.href;
         this.hostname = window.location.hostname;
         this.appBaseUrl = `http://${ this.hostname }${ this.baseHref }`;
+
+        let target:string = `${this.appBaseUrl}#`;
+        this.appViewUrl = this.href.replace(target,"");
+    }
+
+    getAppViewUrl():string {
+        return this.appViewUrl;
     }
 
     get(urlFragment:string) :string{

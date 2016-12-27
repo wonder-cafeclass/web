@@ -101,6 +101,17 @@ class MY_Cookie
 
     } // end method
 
+    public function get_user_login_cookie()
+    {
+        $cookie = "";
+        if(isset($_COOKIE[$this->KEY_USER_LOGIN])) 
+        {
+            $cookie = $_COOKIE[$this->KEY_USER_LOGIN];
+        }
+        
+        return $cookie;
+    }
+
     public function get_user_login()
     {
     	if(!$this->isOK) 

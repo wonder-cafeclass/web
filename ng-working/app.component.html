@@ -11,19 +11,7 @@
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
-	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			
-			<!-- 메뉴 탭 -->
-			<!--
-			<ul class="nav navbar-nav">
-				<li class="active">
-					<a routerLink="/class-center" routerLinkActive="active">클래스</a>
-				</li>
-				<li *ngIf="isAdmin===true">
-					<a routerLink="/admin" routerLinkActive="active">운영자</a>
-				</li>
-			</ul>
-			-->
+	    <div class="collapse navbar-collapse">
 
 			<!-- 버튼 / 로그인,가입하기 -->
 			<ul *ngIf="!loginUser" class="nav navbar-nav navbar-right">
@@ -39,8 +27,11 @@
 
 			<!-- 유저 정보, 버튼 / 로그아웃  -->
 			<ul *ngIf="loginUser" class="nav navbar-nav navbar-right">
-				<!-- 우측 메뉴 탭 / 내정보 -->
-				<li>
+				<!-- 우측 메뉴 탭 / 내정보 / teacher/my-->
+				<li *ngIf="loginTeacher">
+					<a routerLink="/teacher/my" routerLinkActive="active">선생님 정보</a>
+				</li>
+				<li *ngIf="loginUser">
 					<a routerLink="/user/my" routerLinkActive="active">내정보</a>
 				</li>
 				<li>
@@ -69,7 +60,9 @@
 	<router-outlet></router-outlet>
 </section>
 
-<my-footer></my-footer>
+<div *ngIf="toggleTopMenu">
+	<my-footer></my-footer>
+</div>
 <!--
 <footer aria-label="Footer: Copyright, Privacy and Terms" class="copyright" role="contentinfo">FOOTER</footer>
 -->

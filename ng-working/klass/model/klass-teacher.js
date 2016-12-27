@@ -1,25 +1,71 @@
 "use strict";
 var KlassTeacher = (function () {
-    function KlassTeacher(id, user_id, nickname, name, gender, birthday, thumbnail, thumbnail_url, status, mobile, email, resume, resume_arr, greeting, greeting_arr, memo, date_created, date_updated) {
-        this.id = id;
-        this.user_id = user_id;
-        this.nickname = nickname;
-        this.name = name;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.thumbnail = thumbnail;
-        this.thumbnail_url = thumbnail_url;
-        this.status = status;
-        this.mobile = mobile;
-        this.email = email;
-        this.resume = resume;
-        this.resume_arr = resume_arr;
-        this.greeting = greeting;
-        this.greeting_arr = greeting_arr;
-        this.memo = memo;
-        this.date_created = date_created;
-        this.date_updated = date_updated;
+    function KlassTeacher() {
+        this.delimiter = "|||";
     }
+    KlassTeacher.prototype.getResumeArr = function () {
+        if (null == this.resume || "" === this.resume) {
+            return [];
+        }
+        return this.resume.split(this.delimiter);
+    };
+    KlassTeacher.prototype.getGreetingArr = function () {
+        if (null == this.greeting || "" === this.greeting) {
+            return [];
+        }
+        return this.greeting.split(this.delimiter);
+    };
+    KlassTeacher.prototype.setJSON = function (json) {
+        if (null == json) {
+            return this;
+        }
+        if (null != json["birthday"]) {
+            this.birthday = json["birthday"];
+        }
+        if (null != json["date_created"]) {
+            this.date_created = json["date_created"];
+        }
+        if (null != json["date_updated"]) {
+            this.date_updated = json["date_updated"];
+        }
+        if (null != json["email"]) {
+            this.email = json["email"];
+        }
+        if (null != json["gender"]) {
+            this.gender = json["gender"];
+        }
+        if (null != json["greeting"]) {
+            this.greeting = json["greeting"];
+        }
+        if (null != json["id"]) {
+            this.id = parseInt(json["id"]);
+        }
+        if (null != json["memo"]) {
+            this.memo = json["memo"];
+        }
+        if (null != json["mobile"]) {
+            this.mobile = json["mobile"];
+        }
+        if (null != json["name"]) {
+            this.name = json["name"];
+        }
+        if (null != json["nickname"]) {
+            this.nickname = json["nickname"];
+        }
+        if (null != json["resume"]) {
+            this.resume = json["resume"];
+        }
+        if (null != json["status"]) {
+            this.status = json["status"];
+        }
+        if (null != json["thumbnail"]) {
+            this.thumbnail = json["thumbnail"];
+        }
+        if (null != json["user_id"]) {
+            this.user_id = parseInt(json["user_id"]);
+        }
+        return this;
+    };
     return KlassTeacher;
 }());
 exports.KlassTeacher = KlassTeacher;

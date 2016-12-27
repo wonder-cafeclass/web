@@ -14,8 +14,12 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
 var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
+var default_service_1 = require('./input/default/service/default.service');
+var default_component_1 = require('./input/default/default.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
+var img_uploader_component_1 = require('./input/img-uploader/img-uploader.component');
+var hidden_uploader_component_1 = require('./input/img-uploader/hidden-uploader.component');
 var password_component_1 = require('./input/password/password.component');
 var password_single_component_1 = require('./input/password/password-single.component');
 var passwords_triplet_component_1 = require('./input/password/passwords-triplet.component');
@@ -24,6 +28,9 @@ var name_component_1 = require('./input/name/name.component');
 var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
+var tooltip_component_1 = require('./input/tooltip/tooltip.component');
+var image_entry_component_1 = require('./image-grid/image-entry.component');
+var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var footer_component_1 = require('./footer/footer.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
@@ -38,8 +45,13 @@ var WidgetModule = (function () {
             ],
             declarations: [
                 nav_tabs_component_1.NavTabsComponent,
+                default_component_1.DefaultComponent,
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
+                img_uploader_component_1.ImgUploaderComponent,
+                image_entry_component_1.ImageEntryComponent,
+                image_grid_v2_component_1.ImageGridV2Component,
+                hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
                 passwords_triplet_component_1.PasswordsTripletComponent,
@@ -48,6 +60,7 @@ var WidgetModule = (function () {
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                tooltip_component_1.TooltipComponent,
                 footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ],
@@ -55,8 +68,13 @@ var WidgetModule = (function () {
                 common_1.CommonModule,
                 forms_1.FormsModule,
                 nav_tabs_component_1.NavTabsComponent,
+                default_component_1.DefaultComponent,
                 email_component_1.EmailComponent,
                 profile_img_upload_component_1.ProfileImgUploadComponent,
+                img_uploader_component_1.ImgUploaderComponent,
+                image_entry_component_1.ImageEntryComponent,
+                image_grid_v2_component_1.ImageGridV2Component,
+                hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
                 passwords_triplet_component_1.PasswordsTripletComponent,
@@ -65,8 +83,12 @@ var WidgetModule = (function () {
                 gender_component_1.GenderComponent,
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
+                tooltip_component_1.TooltipComponent,
                 footer_component_1.FooterComponent,
                 safe_html_pipe_1.SafeHtmlPipe
+            ],
+            providers: [
+                default_service_1.DefaultService
             ]
         }), 
         __metadata('design:paramtypes', [])

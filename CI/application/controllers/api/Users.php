@@ -259,11 +259,9 @@ class Users extends MY_REST_Controller {
         $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
         {
-            $output["check_list"] = $check_list;
             $is_ok = false;
         }
         $$password_hashed = "";
@@ -441,9 +439,8 @@ class Users extends MY_REST_Controller {
         $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $output["check_list"] = $check_list;
             $is_ok = false;
@@ -630,9 +627,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed()) 
         {
             $is_ok = false;
         }
@@ -762,22 +757,40 @@ class Users extends MY_REST_Controller {
             // $key=""
             "birth_year",
             // $key_filter=""
-            "user_birth_year"
+            "user_birth_year",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_year)) 
+        {
+            $birth_year = "";
+        }
         $birth_month = 
         $this->my_paramchecker->post(
             // $key=""
             "birth_month",
             // $key_filter=""
-            "user_birth_month"
+            "user_birth_month",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_month)) 
+        {
+            $birth_month = "";
+        }
         $birth_day = 
         $this->my_paramchecker->post(
             // $key=""
             "birth_day",
             // $key_filter=""
-            "user_birth_day"
+            "user_birth_day",
+            // $is_no_record=false
+            true
         );
+        if(empty($birth_day)) 
+        {
+            $birth_day = "";
+        }
         $thumbnail = 
         $this->my_paramchecker->post(
             // $key=""
@@ -829,9 +842,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $is_ok = false;
         }
@@ -954,9 +965,7 @@ class Users extends MY_REST_Controller {
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
-        if( isset($check_list) && 
-            isset($check_list->fail) && 
-            (0 < count($check_list->fail))) 
+        if($this->my_paramchecker->has_check_list_failed())
         {
             $is_ok = false;
         }
@@ -1620,8 +1629,12 @@ class Users extends MY_REST_Controller {
             return;            
         }
 
+        $output["cookie_user_login_value"] = $this->my_cookie->get_user_login_cookie();
+
         $cookie_user_login = $this->my_cookie->get_user_login();
         $output["cookie_user_login"] = $cookie_user_login;
+
+        $output["last_query"] = $this->my_sql->get_last_query();
 
         $user_id = -1;
         if(isset($cookie_user_login) && isset($cookie_user_login->user_id)) 

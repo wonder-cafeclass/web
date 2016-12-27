@@ -1,12 +1,13 @@
 import {  Component, 
           OnInit, 
-          EventEmitter, 
+          EventEmitter,
+          Input, 
           Output }              from '@angular/core';
 import { Location }             from '@angular/common';
 
 import { Subject }              from 'rxjs/Subject';
 
-import { KlassService }         from './klass.service';
+import { KlassService }         from './service/klass.service';
 
 import { KlassLevel }           from './model/klass-level';
 import { KlassStation }         from './model/klass-station';
@@ -17,6 +18,12 @@ import { KlassSelectile }       from './model/klass-selectile';
 import { KlassSelectileRow }    from './model/klass-selectile-row';
 
 import { MyResponse }           from '../util/model/my-response';
+
+import { MyCheckerService }     from '../util/service/my-checker.service';
+import { MyChecker }            from '../util/model/my-checker';
+import { MyEventService }       from '../util/service/my-event.service';
+import { MyEvent }              from '../util/model/my-event';
+import { MyEventWatchTowerService } from '../util/service/my-event-watchtower.service';
 
 @Component({
   moduleId: module.id,
@@ -42,6 +49,8 @@ export class KlassFilterTileComponent implements OnInit {
   klassTimes: KlassTime[];
   klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
 
+  @Output() emitter = new EventEmitter<MyEvent>();
+
   // 검색을 가지고 있는 부모 컴포넌트에게 selectile의 값을 전달하기 위한 통신 이벤트객체
   @Output() emitOnChangedSelectile = new EventEmitter<any>();
 
@@ -53,7 +62,17 @@ export class KlassFilterTileComponent implements OnInit {
 
   stColCntPerRow:number = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
 
+  @Input() elementWidth:number=50;
+  elementWidthStr:string="";
+  rowWidthStr:string="";
+
+  private myChecker:MyChecker;
+  private constMap:any;
+
   constructor(
+    private myCheckerService:MyCheckerService,
+    private myEventService:MyEventService,
+    private watchTower:MyEventWatchTowerService,    
     private klassService: KlassService,
     private location: Location
   ) {}
@@ -77,16 +96,24 @@ export class KlassFilterTileComponent implements OnInit {
         this.setTime(myReponse.getDataProp("times"));
 
         this.showSelectile(null, null, -1);
+
+        // @ Recommended
+        this.emitEventOnReady();
+
+        if(isDebug) console.log("TEST - 001");
+
       } // end if
 
     }); // end service
 
+    // @ Deprecated
     this.emitOnInitKlassList.emit();
 
     var _self = this;
     this.klassSelectileSubject.subscribe(
       function (x) {
         _self.updateShowingSelectile(x);
+        if(isDebug) console.log("TEST - 002");
       },
       function (err) {
         // error report
@@ -97,7 +124,44 @@ export class KlassFilterTileComponent implements OnInit {
       }
     );
 
+    this.elementWidthStr="100%";
+    this.rowWidthStr="198px";
+    if(0  < this.elementWidth) {
+      this.elementWidthStr = this.elementWidth + "px";
+      let rowWidth:number = this.elementWidth * this.stColCntPerRow;
+      if(isDebug) console.log("klass-filter-tile / ngOnInit / rowWidth : ",rowWidth);
+      this.rowWidthStr = rowWidth + "px";
+    }
+
+    this.subscribeConstMap();
+
   }
+
+  private subscribeConstMap() {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-tile / subscribeConstMap / 시작");
+
+    this.constMap = this.watchTower.getConstMap();
+    if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / this.constMap : ",this.constMap);
+
+    // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+    // Subscribe login user
+    this.watchTower.isViewPackReady$.subscribe(
+      (isViewPackReady:boolean) => {
+
+      if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / isViewPackReady : ",isViewPackReady);
+    
+      // 뷰 패키징 정보가 도착!
+      this.constMap = this.watchTower.getConstMap();
+
+      if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / this.constMap : ",this.constMap);
+
+    }); // end subscribe    
+
+  }
+
   private setTime(times:any[]) {
 
     var nextObjList:KlassTime[] = [];
@@ -108,6 +172,7 @@ export class KlassFilterTileComponent implements OnInit {
         nextObj.key, 
         nextObj.name_eng, 
         nextObj.name_kor, 
+        nextObj.hh_mm,
         nextObj.img_url
       );
       nextObjList.push(klassTime);
@@ -268,6 +333,64 @@ export class KlassFilterTileComponent implements OnInit {
     }
     this.updateShowingSelectile(selectile);
   }
+  // REFACTOR ME - widget으로 옮겨져야 할 엘리먼트.
+  updateShowingSelectilesAll(klassLevel:KlassLevel, klassStation:KlassStation, klassDay:KlassDay, klassTime:KlassTime):void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 시작");
+
+    if(null == klassLevel){
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassLevel is not valid!");
+      return;
+    } 
+    if(null == klassStation){
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassStation is not valid!");
+      return;
+    } 
+    if(null == klassDay){
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassDay is not valid!");
+      return;
+    } 
+    if(null == klassTime){
+      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassTime is not valid!");
+      return;
+    } 
+
+    this.selectileTable;
+
+    // 선택된 필드들을 검색, 지정한다.
+    for (var i = 0; i < this.klassLevels.length; ++i) {
+      let klassLevelFromList:KlassLevel = this.klassLevels[i];
+      if(klassLevelFromList.isSharing("key", klassLevel)) {
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassLevelFromList : ",klassLevelFromList);
+        this.klassLevelSelected = klassLevelFromList;
+      }
+    } // end for
+    for (var i = 0; i < this.klassStations.length; ++i) {
+      let klassStationFromList:KlassStation = this.klassStations[i];
+      if(klassStationFromList.isSharing("key", klassStation)) {
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassStationFromList : ",klassStationFromList);
+        this.klassStationSelected = klassStationFromList;
+      }
+    } // end for
+    for (var i = 0; i < this.klassDays.length; ++i) {
+      let klassDayFromList:KlassDay = this.klassDays[i];
+      if(klassDayFromList.isSharing("key", klassDay)) {
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassDayFromList : ",klassDayFromList);
+        this.klassDaySelected = klassDayFromList;
+      }
+    } // end for
+    for (var i = 0; i < this.klassTimes.length; ++i) {
+      let klassTimeFromList:KlassTime = this.klassTimes[i];
+      if(klassTimeFromList.isSharing("key", klassTime)) {
+        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ",klassTimeFromList);
+        this.klassTimeSelected = klassTimeFromList;
+      }
+    } // end for
+
+    this.leaveTable();
+  }
   updateShowingSelectile(selectile) :void {
 
     if(null == selectile) {
@@ -278,28 +401,28 @@ export class KlassFilterTileComponent implements OnInit {
     let hasChanged = false;
     if(selectile instanceof KlassLevel) {
 
-      if(this.klassLevelSelected.key !== selectile.key) {
-        this.klassLevelSelected = selectile;  
+      if(null == this.klassLevelSelected || this.klassLevelSelected.key !== selectile.key) {
+        this.klassLevelSelected = selectile;
         hasChanged = true;
       }
       
     } else if(selectile instanceof KlassStation) {
 
-      if(this.klassStationSelected.key !== selectile.key) {
+      if(null == this.klassStationSelected || this.klassStationSelected.key !== selectile.key) {
         this.klassStationSelected = selectile;  
         hasChanged = true;
       }
 
     } else if(selectile instanceof KlassDay) {
 
-      if(this.klassDaySelected.key !== selectile.key) {
+      if(null == this.klassDaySelected || this.klassDaySelected.key !== selectile.key) {
         this.klassDaySelected = selectile;  
         hasChanged = true;
       }
 
     } else if(selectile instanceof KlassTime) {
 
-      if(this.klassTimeSelected.key !== selectile.key) {
+      if(null == this.klassTimeSelected || this.klassTimeSelected.key !== selectile.key) {
         this.klassTimeSelected = selectile;  
         hasChanged = true;
       }
@@ -317,7 +440,69 @@ export class KlassFilterTileComponent implements OnInit {
     // 변경된 selectile의 값을 전달한다.
     var selectileMap = this.getFocusedSelectiles();
     this.emitOnChangedSelectile.emit(selectileMap);
+    this.emitEventOnChange(
+     // value:string, 
+     "",
+     // metaObj:any   
+     selectileMap
+    );
   }
+  private emitEventOnChange(value:string, metaObj:any) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 시작");
+    if(null == value) {
+      if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 중단 / value is not valid!");
+      return;
+    }
+    if(null == metaObj) {
+      if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 중단 / metaObj is not valid!");
+      return;
+    }
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      this.myEventService.KEY_KLASS_SELECTILE,
+      // public value:string
+      value,
+      // public metaObj:any
+      metaObj,
+      // public myChecker:MyChecker
+      this.myCheckerService.getFreePassChecker()
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / Done!");
+
+  } 
+  private emitEventOnReady() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-tile / emitEventOnReady / 시작");
+
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_READY,
+      // public key:string
+      this.myEventService.KEY_KLASS_SELECTILE,
+      // public value:string
+      "",
+      // public metaObj:any
+      this,
+      // public myChecker:MyChecker
+      this.myCheckerService.getFreePassChecker()
+    );
+    this.emitter.emit(myEventOnChange);
+
+    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / Done!");
+
+  }    
   // emitOnChangedSelectile
   public getFocusedSelectiles() :any {
     var selectileMap = 
@@ -338,6 +523,15 @@ export class KlassFilterTileComponent implements OnInit {
     }
   }
   private showSelectile(targetList:any[], targetObj:any, focusIdx:number) :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("klass-filter-file / constructor / init");
+
+    if(isDebug) console.log("klass-filter-file / constructor / this.klassLevelSelected : ",this.klassLevelSelected);
+    if(isDebug) console.log("klass-filter-file / constructor / this.klassStationSelected : ",this.klassStationSelected);
+    if(isDebug) console.log("klass-filter-file / constructor / this.klassDaySelected : ",this.klassDaySelected);
+    if(isDebug) console.log("klass-filter-file / constructor / this.klassTimeSelected : ",this.klassTimeSelected);
 
     // 사용자가 선택한 필터를 보여주는 열(Row)
     let nextSelectileTable:any[] = [];

@@ -12,10 +12,12 @@ import { LoginService }               from '../service/login.service';
 import { MyLoggerService }            from '../../util/service/my-logger.service';
 import { MyCheckerService }           from '../../util/service/my-checker.service';
 import { UserService }                from '../../users/service/user.service';
+import { TeacherService }                from '../../teachers/service/teacher.service';
 
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
 import { MyResponse }                 from '../../util/model/my-response';
+import { MyCookie }                   from '../../util/http/my-cookie';
 
 import { User }                       from '../../users/model/user';
 
@@ -36,15 +38,19 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
 
+  private myCookie:MyCookie;
+
   constructor(  public loginService:LoginService,
                 private watchTower:MyEventWatchTowerService,
                 private userService:UserService,
+                private teacherService:TeacherService,
                 private myLoggerService:MyLoggerService,
                 public myCheckerService:MyCheckerService,
                 private activatedRoute:ActivatedRoute,
                 public router:Router) {
 
-    // Do something...
+    this.myCookie = new MyCookie();
+
   } // end function
 
   ngOnInit(): void {
@@ -392,7 +398,22 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
   
           // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
           this.watchTower.announceLogin(user);
-        }
+
+          // wonder.jung
+          // 선생님 등록이 되어있는 회원인지 확인.
+          this.teacherService
+          .getTeacher(this.watchTower.getApiKey(), +user.id)
+          .then((myResponse:MyResponse) => {
+
+            if(isDebug) console.log(`kakao-callback / getTeacher / myResponse : `,myResponse);
+
+            let teacherFromDB = myResponse.getDataProp("teacher");
+            // 선생님 로그인 여부를 확인, 전파한다.
+            this.watchTower.announceLoginTeacher(teacherFromDB);
+
+          }); // end service          
+
+        } // end if 
 
         // api key 필요!
         this.userService
@@ -412,12 +433,16 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
             // 쿠키 인증 성공!
             if(isDebug) console.log("kakao-callback / getUserByKakaoId / 쿠키 인증 성공! 홈으로 이동.");
 
-            // 쿠키 정보로 가져온 유저 정보를 등록, 전파합니다.
-            
-
             // 로그인 직전 페이지로 리다이렉트. 
             // 돌아갈 주소가 없다면, 홈으로 이동.
-            this.router.navigate(['/class-center']);
+            let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+            if(null == redirectUrl || "" == redirectUrl) {
+              redirectUrl = '/class-center';
+            }
+
+            if(isDebug) console.log("kakao-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
+            
+            this.router.navigate([redirectUrl]);
 
           } else {
 

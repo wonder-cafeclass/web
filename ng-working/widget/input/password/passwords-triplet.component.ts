@@ -41,8 +41,8 @@ export class PasswordsTripletComponent implements OnInit, AfterViewInit {
 
   	onChangedFromChild(myEvent:MyEvent) {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("passwords-triplet / onChangedFromChild / init");
 		if(isDebug) console.log("passwords-triplet / onChangedFromChild / myEvent : ",myEvent);
 
@@ -52,8 +52,8 @@ export class PasswordsTripletComponent implements OnInit, AfterViewInit {
 
 	private emitEvent(myEvnet:MyEvent) :void {
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("passwords-triplet / emitEvent / init");
 
 		this.emitter.emit(myEvnet);
@@ -64,8 +64,8 @@ export class PasswordsTripletComponent implements OnInit, AfterViewInit {
 		// childrenPW
 		// http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("passwords-triplet / showTooltipWarning / init");
 
 		let childPW:PasswordSingleComponent = this.getChild(eventKey);
@@ -88,8 +88,8 @@ export class PasswordsTripletComponent implements OnInit, AfterViewInit {
 		// childrenPW
 		// http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
 
-		let isDebug:boolean = true;
-		// let isDebug:boolean = false;
+		// let isDebug:boolean = true;
+		let isDebug:boolean = false;
 		if(isDebug) console.log("passwords-triplet / showTooltipSuccess / init");
 
 		let childPW:PasswordSingleComponent = this.getChild(eventKey);

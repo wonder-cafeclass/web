@@ -64,23 +64,6 @@ export class InputsBtnsRowsComponent implements OnInit {
     ];
 
     this.updateMyRemovableBtnList();
-    /*
-    this.myRemovableBtnList = [];
-    for (var i = 0; i < this.myEventList.length; ++i) {
-
-      let curMyEvent:MyEvent = this.myEventList[i];
-      let myButtonNext:MyButton = 
-      new MyButton (
-        "빼기",
-        this.myEventService.ON_REMOVE_ROW,
-        myChecker,
-        curMyEvent
-      )
-
-      this.myRemovableBtnList.push(myButtonNext);
-
-    }
-    */
 
     // Ready Event 발송 
     let myEventReady:MyEvent =
@@ -160,9 +143,28 @@ export class InputsBtnsRowsComponent implements OnInit {
     return true;
   }
 
+  private getInputTextList() :string[] {
+    let inputTextList:string[] = [];
+
+    if(null != this.myEventList && 0 < this.myEventList.length) {
+      for (var i = 0; i < this.myEventList.length; ++i) {
+        let myEvent:MyEvent = this.myEventList[i];
+        if(null != myEvent) {
+          inputTextList.push(myEvent.value);
+        } // end if
+      } // end for
+    } // end if
+
+    return inputTextList;
+  }
+
   onChangeFromChild(myEvent:MyEvent) :void {
 
-    console.log("inputs-btns-rows / onChangeFromChild / myEvent : ",myEvent);
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("inputs-btns-rows / onChangeFromChild / init");
+
+    if(isDebug) console.log("inputs-btns-rows / onChangeFromChild / myEvent : ",myEvent);
 
     if(null == myEvent && null != myEvent.value) {
       return;
@@ -175,6 +177,11 @@ export class InputsBtnsRowsComponent implements OnInit {
 
       let hasChanged:boolean = this.hasChanged();
       this.isDisabledSave = (hasChanged)?false:true;
+
+      // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+      let inputTextList:string[] = this.getInputTextList();
+      myEvent.metaObj = inputTextList;
+
       this.emitter.emit(myEvent);
 
     } else if(this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -192,6 +199,10 @@ export class InputsBtnsRowsComponent implements OnInit {
         myEvent
       );
       this.myRemovableBtnList.push(myButtonNew);
+
+      // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+      let inputTextList:string[] = this.getInputTextList();
+      myEvent.metaObj = inputTextList;
 
       // 저장 관련 작업을 할 수 없으므로 부모에게 이벤트 전달.
       let hasChanged:boolean = this.hasChanged();
@@ -236,6 +247,10 @@ export class InputsBtnsRowsComponent implements OnInit {
         // 리스트가 1개가 줄어야 부모에게 이벤트를 발송할 있다.
         let hasChanged:boolean = this.hasChanged();
         this.isDisabledSave = (hasChanged)?false:true;
+
+        // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+        let inputTextList:string[] = this.getInputTextList();
+        myEvent.metaObj = inputTextList;
 
         myEvent.parentEventList = this.myEventList;
         this.emitter.emit(myEvent);
@@ -366,6 +381,10 @@ export class InputsBtnsRowsComponent implements OnInit {
     );    
 
     console.log("inputs-btns-rows / save / 010 / myEventReturn : ",myEventReturn);
+
+    // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+    let inputTextList:string[] = this.getInputTextList();
+    myEventReturn.metaObj = inputTextList;
 
     this.emitter.emit(myEventReturn);
 

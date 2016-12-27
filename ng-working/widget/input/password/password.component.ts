@@ -15,7 +15,7 @@ import { MyLoggerService }            from '../../../util/service/my-logger.serv
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../../../util/model/my-response';
 
-
+// @ Deprecated - REMOVE ME
 @Component({
   moduleId: module.id,
   selector: 'password',
@@ -51,6 +51,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   placeholderHead:string="비밀번호를 입력해주세요";
   isValidPassword:boolean = false;
   isWarningPassword:boolean = false;
+  isShowTooltipPassword:boolean = false;
   tooltipHeadMsg:string=null;
   tooltipHeadPasswordNeeds:string="패스워드를 먼저 입력해주세요.";
   tooltipHeadNotAllowed:string="앗! 패스워드에 문제가 있습니다.";
@@ -63,6 +64,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   isValidRepassword:boolean = false;
   isWarningRepassword:boolean = false;
+  isShowTooltipRepassword:boolean = false;
   tooltipTailMsg:string=null;
   tooltipTailInit:string="입력한 패스워드를 확인해볼께요.";
   tooltipTailNotMatch:string="앗! 패스워드가 일치하지 않습니다.";
@@ -87,8 +89,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / ngOnInit / init");
 
     if(this.isCheckCurPW) {
@@ -101,8 +103,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -110,8 +112,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -206,6 +208,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusPassword = true;
     this.isWarningPassword = true;
     this.isValidPassword = false;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
 
   }
@@ -230,6 +233,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusRepassword = true;
     this.isWarningRepassword = true;
     this.isValidRepassword = false;
+    this.isShowTooltipRepassword = true;
 
     if((this.password !== this.repassword)) {
       this.tooltipTailMsg = this.tooltipTailNotMatch;  
@@ -260,8 +264,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onClickPasswordConfirm / 시작");
 
     event.stopPropagation();
@@ -365,8 +369,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;    
     if(isDebug) console.log("password / onBlurPassword / init");
 
     if(null == this.myCheckerService) {
@@ -415,12 +419,6 @@ export class PasswordComponent implements OnInit, AfterViewInit {
         // 패스워드의 문제를 발견했습니다.
         this.showTooltipHeadFailWarning(issueMsg, true);
 
-        // REMOVE ME
-        // 패스워드 경고 메시지 ON
-        // this.tooltipHeadMsg = issueMsg;
-        // 패스워드 경고 표시 ON
-        // this.isWarningPassword = true;
-
       } else {
         // 패스워드가 정상입니다. 
         this.isWarningPassword = false;
@@ -446,6 +444,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipHeadMsg = null;
+      _self.isShowTooltipPassword = false;
     }, 1000 * sec);        
 
   }
@@ -459,6 +458,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     setTimeout(function() {
       // 메시지를 3초 뒤에 화면에서 지웁니다.
       _self.tooltipTailMsg = null;
+      _self.isShowTooltipRepassword = false;
     }, 1000 * sec);        
 
   }  
@@ -502,6 +502,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
       // 메시지 노출.
       this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
+      this.isShowTooltipPassword = true;
       this.isWarningPassword = true;
 
     } // end if
@@ -509,8 +510,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   onKeyupEnter(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeyupEnter / init");
 
     event.stopPropagation();
@@ -540,8 +541,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   private emitEventOnSubmitPW(eventKey:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / emitEventOnSubmitPW / init");
 
     // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -564,8 +565,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
   private emitEventOnChangePW(eventKey:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / emitEventOnChangePW / init");
 
     // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -591,8 +592,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onKeyupPassword / init");
 
     // shift, tab
@@ -639,13 +640,6 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       }
 
       // 1-1-2. 삭제 안내 메시지를 노출합니다.
-
-      // REMOVE ME
-      // this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
-      // this.isValidPassword = false;
-      // this.isWarningPassword = true;
-      // this.hideTooltipHead(2);
-
       this.showTooltipHeadFailWarning("한글 및 공백을 사용할 수 없어요.", true);
 
       if(isDebug) console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
@@ -668,6 +662,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
           if("max" === history.key) {
             // 최대 문자 갯수보다 많은 경우.
             this.tooltipHeadMsg = history.msg;
+            this.isShowTooltipPassword = true;
             // 글자수를 줄여줍니다.
             let max:number = history.value;
             element.value = this.passwordPrev = this.password = this.password.slice(0, max);
@@ -692,12 +687,14 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   hideTooltipHeadFailWarning() :void {
     this.isFocusPassword = false;
     this.isValidPassword = true;
+    this.isShowTooltipPassword = false;
     this.tooltipHeadMsg = null;
   }
   // @ Desc : 실패 툴팁을 보여줍니다.
   showTooltipHeadFailWarning(warningMsg:string, isTimeout:boolean) :void {
     this.isFocusPassword = true;
     this.isValidPassword = false;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = warningMsg;
 
     if(null != isTimeout && isTimeout) {
@@ -708,6 +705,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   public showTooltipHeadSuccess(msg:string) :void {
     this.isFocusPassword = false;
     this.isValidPassword = true;
+    this.isShowTooltipPassword = true;
     this.tooltipHeadMsg = msg;
     this.hideTooltipHead(2);
   }  
@@ -737,6 +735,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
 
     this.isFocusPassword = true;
     this.isWarningPassword = true;
+    this.isShowTooltipPassword = true;
     elementPassword.focus();
 
     if(null == this.tooltipHeadMsg || "" === this.tooltipHeadMsg) {
@@ -824,8 +823,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   private repasswordPrev:string="";
   onKeyupRepassword(event, element) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;  
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;  
 
     if(isDebug) console.log("password / onKeyupRepassword / init");
 
@@ -880,6 +879,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
       this.tooltipTailMsg = "한글 및 공백을 사용할 수 없어요.";
       this.isValidPassword = false;
       this.isWarningPassword = true;
+      this.isShowTooltipRepassword = true;
       this.hideTooltipTail(2);
 
       if(isDebug) console.log("password / onKeyupRepassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ",matchArr);
@@ -903,6 +903,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
             console.log("password / onKeyupRepassword / history : ",history);
             // 최대 문자 갯수보다 많은 경우.
             this.tooltipTailMsg = history.msg;
+            this.isShowTooltipRepassword = true;
             // 글자수를 줄여줍니다.
             let max:number = history.value;
             element.value = this.repasswordPrev = this.repassword = this.repassword.slice(0, max);
@@ -951,6 +952,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     // 패스워드 재입력 성공!
     if(isKeyup) {
       this.tooltipTailMsg = this.tooltipTailMatched;
+      this.isShowTooltipRepassword = true;
       this.hideTooltipTail(2);
 
       // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
@@ -987,6 +989,7 @@ export class PasswordComponent implements OnInit, AfterViewInit {
     this.isFocusRepassword = false;
     this.isValidRepassword = false;
     this.isWarningRepassword = true;
+    this.isShowTooltipRepassword = true;
   }
 
   checkRepassword(element) :boolean {
@@ -1027,8 +1030,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   // @ Desc : 지금의 자신의 패스워드를 확인하는 모드로 바꿉니다.
   public openCheckCurPWMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / openCheckCurPWMode / init");
 
     this.initPassword();
@@ -1040,8 +1043,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   // @ Desc : 지금의 자신의 패스워드를 확인하는 모드를 해제합니다.
   private closeCheckCurPWMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / releaseUpdateMode / init");
 
     this.isCheckCurPW = false;
@@ -1071,8 +1074,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   onClickNewPasswordConfirm(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / onClickNewPasswordConfirm / init");
 
     event.stopPropagation();
@@ -1083,8 +1086,8 @@ export class PasswordComponent implements OnInit, AfterViewInit {
   }
   public openNewPasswordMode() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("password / openNewPasswordMode / init");
 
     this.closeCheckCurPWMode();

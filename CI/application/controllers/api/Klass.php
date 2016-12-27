@@ -3,8 +3,18 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
-require APPPATH . '/libraries/REST_Controller.php';
-require APPPATH . '/libraries/MY_Class.php';
+/*
+    !Caution/주의!
+
+    require APPPATH . '${your-class-path}';
+    ...
+    $this->load->library(${your-class-path});
+
+    // 위의 경우처럼 2번 동일한 클래스를 호출하게 되면 $this->${your-class-path} 의 경우, null을 돌려주게 됩니다.
+
+*/
+
+require APPPATH . '/libraries/MY_REST_Controller.php';
 require APPPATH . '/models/SelectTile.php';
 require APPPATH . '/models/KlassCourse.php';
 require APPPATH . '/models/KlassKeyword.php';
@@ -16,82 +26,39 @@ require APPPATH . '/models/KlassCalendar.php';
 require APPPATH . '/models/KlassReview.php';
 require APPPATH . '/models/KlassQuestion.php';
 
+/*
+*   @ Author : Wonder Jung
+*   @ Desc : 카페클래스 유저 정보를 조회,추가,삭제,변경하는 API 클래스.
+*/
 
-/**
- * This is an example of a few basic user interaction methods you could use
- * all done with a hardcoded array
- *
- * @package         CodeIgniter
- * @subpackage      Rest Server
- * @category        Controller
- * @author          Phil Sturgeon, Chris Kacerguis
- * @license         MIT
- * @link            https://github.com/chriskacerguis/codeigniter-restserver
- */
-class Klass extends REST_Controller implements MY_Class{
+class Klass extends MY_REST_Controller {
 
     function __construct()
     {
         // Construct the parent class
         parent::__construct();
 
-        // Configure limits on our controller methods
-        // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
-        // $this->methods['list_get']['limit'] = 500; // 500 requests per hour per user/key
-
-        // init database
-        $this->load->database();
-
-        // init error logger
-        $this->load->library('MY_Error');
-
-        // init path util
-        $this->load->library('MY_Path');
-
-        // init param checker
-        $this->load->library('MY_ParamChecker');
-
-        // init MyReponse
-        $this->load->library('MY_Response');
-
-        // init MyTime
-        $this->load->library('MY_Time');
-
-        // init MyCalendar
-        $this->load->library('MY_Calendar');
-
-        // init MyKlassCalendar
-        $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
-            
-        // Set time zone as Seoul
+        // Library Loaded from parent - MY_REST_Controller
+        /*
         date_default_timezone_set('Asia/Seoul');
-    }
+        $this->load->database();
+        $this->load->library('MY_Error');
+        $this->load->library('MY_Path');
+        $this->load->library('MY_KeyValue');
+        $this->load->library('MY_ParamChecker');
+        $this->load->library('MY_Response');
+        $this->load->library('MY_Time');
+        $this->load->library('MY_Curl');
+        $this->load->library('MY_ApiKey');
+        $this->load->library('MY_Sql');
+        $this->load->library('user_agent');
+        $this->load->library('MY_Logger');
+        */
 
-    public function is_not_ok() {
-        return !$this->is_ok();
-    }
-    public function is_ok() {
-
-        $is_ok = true;
-        if($this->my_error->hasError()) {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                MY_Response::$EVENT_UNKNOWN_ERROR_OCCURED, 
-                // $query="" 
-                "", 
-                // $data=null 
-                null, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
-            $is_ok = false;
-        }
-
-        return $is_ok;
+        // Please add library you need here!
+        $this->load->library('MY_Calendar');
+        $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
+        $this->load->library('MY_Thumbnail');
     }
 
     public function selectile_get() {
@@ -123,36 +90,91 @@ class Klass extends REST_Controller implements MY_Class{
         $response_body = array();
         if ($is_ok)
         {
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
+            $this->respond_200($output);
         }
         else
         {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
+            $this->respond_200_Failed(
+                // $msg=""
                 'Selectile is not valid!', 
-                // $query="" 
-                "", 
-                // $data=null 
-                $output, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
             );
-        }        
+            return;            
+        }
+    }
 
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
+    public function coursenew_get()
+    {
+        if($this->is_not_ok()) 
+        {
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->get(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+
+        $output["param"] = array(
+            "teacher_id"=>$teacher_id
+        );        
+
+        // CHECK LIST
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $output["check_list"] = $check_list;
+            $is_ok = false;
+        }
+        if($is_ok) {
+
+            // 새로 입력하는 수업 관련 기본 정보를 돌려줍니다.
+            // 수업 - 새로운 klass 정보를 가져옵니다.
+            $new_klass = $this->get_klass_course_new_class();
+
+            // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
+            $teacher = $this->my_sql->select_teacher($teacher_id);
+            $new_klass->teacher = $teacher;
+
+            // 수업의 리뷰를 가져옵니다.
+            $new_klass->review_list = [];
+
+            // 수업의 문의를 가져옵니다.
+            $new_klass->question_list = [];
+
+            $output["klass"] = $new_klass;
+            $this->respond_200($output);
+        }
+        else 
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "New course failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+
 
     }
 
@@ -171,153 +193,64 @@ class Klass extends REST_Controller implements MY_Class{
         $query_arr = array();
         
         // 수업 - klass 정보를 가져옵니다.
-        $this->db->where('id', $id);
-        $limit = 1;
-        $offset = 0;
-        $query = $this->db->get('klass', $limit, $offset);
-        $klass_list = $this->add_klass_extra_info($query);
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-        }
+        $klass = $this->my_sql->select_klass($id);
 
         // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
-        $teacher_id = -1;
         $teacher = null;
         if(isset($klass) && isset($klass->teacher_id))
         {
             $teacher_id = intval($klass->teacher_id);
+            $teacher = $this->my_sql->select_teacher($teacher_id);
         }
-        if(0 < $teacher_id)
-        {
-            $this->db->where('id', $teacher_id);
-            $limit = 1;
-            $offset = 0;
-            $query = $this->db->get('teacher', $limit, $offset);
-
-            $teacher = $this->add_klass_teacher_extra_info($query);
-        }
-        if(isset($klass))
+        if(isset($teacher))
         {
             $klass->teacher = $teacher;
         }
-        array_push($query_arr, $this->db->last_query());
 
         // 수업의 리뷰를 가져옵니다.
-        $review_list = null;
-        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
-        if(0 < $klass->id)
+        // $review_list = null;
+        if(0 < intval($klass->id))
         {
-            $this->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
-            $this->db->from('review');
-            $this->db->join('user', 'review.user_id = user.id');
-            $this->db->where('review.klass_id', $klass->id);
-            $this->db->where('review.parent_id=', 0);
-            $this->db->order_by('review.id', 'DESC');
-            $query = $this->db->get();
-
-            $review_list = $this->add_klass_review_extra_info($query);
+            $klass->review_list = $this->my_sql->select_klass_review_list(intval($klass->id));
         }
-        if(isset($review_list))
+        if(empty($klass->review_list))
         {
-            $klass->review_list = $review_list;
+            $klass->review_list = [];   
         }
-        array_push($query_arr, $this->db->last_query());
-
-        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
-        for ($i=0; $i < count($review_list); $i++) 
-        {
-
-            $review = $review_list[$i];
-            $review_id = intval($review->id);
-
-            if(!(0 < $review_id)) 
-            {
-                continue;
-            }
-
-            $this->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
-            $this->db->from('review');
-            $this->db->join('user', 'review.user_id = user.id');
-            $this->db->where('review.parent_id', $review_id);
-            $this->db->order_by('review.id', 'DESC');
-            $query = $this->db->get();
-
-            $review->child_review_list = $this->add_klass_review_extra_info($query);
-        }
-        array_push($query_arr, $this->db->last_query());
 
         // 수업의 문의를 가져옵니다.
-        $question_list = null;
-        // 1. 부모 문의를 먼저 가져옵니다.(최신순)
-        if(0 < $klass->id)
+        // $question_list = null;
+        if(0 < intval($klass->id))
         {
-            $this->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
-            $this->db->from('question');
-            $this->db->join('user', 'question.user_id = user.id');
-            $this->db->where('question.klass_id', $klass->id);
-            $this->db->where('question.parent_id=', 0);
-            $this->db->order_by('question.id', 'DESC');
-            $query = $this->db->get();
-
-            $question_list = $this->add_klass_question_extra_info($query);
+            $klass->question_list = $this->my_sql->select_klass_question_list(intval($klass->id));
         }
-        if(isset($question_list))
+        if(empty($klass->question_list))
         {
-            $klass->question_list = $question_list;
+            $klass->question_list = [];   
         }
-        array_push($query_arr, $this->db->last_query());
-
-        // 2. 부모 문의에 연결된 자식 문의 댓글(답변)들을 가져옵니다.(순차시간)
-        for ($i=0; $i < count($question_list); $i++) 
-        {
-
-            $question = $question_list[$i];
-            $question_id = intval($question->id);
-
-            if(!(0 < $question_id)) 
-            {
-                continue;
-            }
-
-            $this->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
-            $this->db->from('question');
-            $this->db->join('user', 'question.user_id = user.id');
-            $this->db->where('question.parent_id', $question_id);
-            $this->db->order_by('question.id', 'DESC');
-            $query = $this->db->get();
-
-            $question->child_question_list = $this->add_klass_question_extra_info($query);
-        }
-        array_push($query_arr, $this->db->last_query());
-
-
 
         // 조회 결과를 가져옵니다.
+        $output = [];
         if (!empty($klass))
         {
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                $query_arr, 
-                $klass, 
-                $this->my_error->get(),
-                $extra
-            );
+            $output["klass"] = $klass;
+            $this->respond_200($output);
         }
         else
         {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                'Klass could not be found', 
-                $query_arr, 
-                null, 
-                $this->my_error->get(),
-                $extra
+            $this->respond_200_Failed(
+                // $msg=""
+                'Klass could not be found',
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
             );
         }
-        $this->set_response($response_body, REST_Controller::HTTP_OK); 
     }   
 
     public function list_get()
@@ -326,36 +259,1697 @@ class Klass extends REST_Controller implements MY_Class{
             return;
         }
 
-        $check_list = $this->my_paramchecker->get_check_list();
-        
-        $query = $this->db->query('SELECT * FROM klass ORDER BY id DESC');
+        $output = [];
+        $offset = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "offset",
+            // $key_filter=""
+            "offset"
+        );
+        $limit = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "limit",
+            // $key_filter=""
+            "limit"
+        );
+        $output["param"] = array(
+            "offset"=>$offset,
+            "limit"=>$limit
+        );
 
-        $classes = $query->result();
-        $output = $this->add_klass_extra_info($query);
-        $last_query = $this->db->last_query();
-        if (!empty($classes))
+        $klass_list = $this->my_sql->select_klass_list($offset, $limit);
+        $last_query = $this->my_sql->get_last_query();
+        $output["klass_list"] = $klass_list;
+        $output["query"] = $last_query;
+        
+        $new_klass = $this->get_klass_course_new_class();
+        $output["new_klass"] = [$new_klass];
+
+        if (empty($klass_list))
         {
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                $last_query, 
-                $output, 
-                $this->my_error->get(),
-                $check_list
+            // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
+            $no_klass = $this->get_klass_course_no_class();
+            $output["klass_list"] = [$no_klass];
+        }
+        $this->respond_200($output);
+    }
+
+    public function test_get()
+    {
+        $result = $this->my_sql->test();
+        echo $result;
+    }
+
+    // @ 새로운 빈 수업을 추가합니다.
+    public function addklassempty_post()
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
             );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $teacher_resume = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_resume",
+            // $key_filter=""
+            "teacher_resume"
+        );
+        $teacher_greeting = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_greeting",
+            // $key_filter=""
+            "teacher_greeting"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "teacher_id"=>$teacher_id,
+            "teacher_resume"=>$teacher_resume,
+            "teacher_greeting"=>$teacher_greeting
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+
+        if($is_ok) 
+        {
+            $this->my_sql->add_klass(
+                // $user_id=-1, 
+                $user_id,
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $teacher_resume="", 
+                $teacher_resume,
+                // $teacher_greeting=""
+                $teacher_greeting
+            );
+
+            $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
+            $output["klass"] = $klass;
+            $this->respond_200($output);
         }
         else
         {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                'Klass could not be found', 
-                $last_query, 
-                $output, 
-                $this->my_error->get(),
-                $check_list
-            );
+            $this->respond_200_Failed(
+                // $msg=""
+                "addklassempty_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );             
         }
-        $this->set_response($response_body, REST_Controller::HTTP_OK); 
     }
+
+    // @ 수업을 업데이트합니다.
+    public function update_post()
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        // wonder.jung
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        $teacher_resume = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_resume",
+            // $key_filter=""
+            "teacher_resume"
+        );
+        $teacher_greeting = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_greeting",
+            // $key_filter=""
+            "teacher_greeting"
+        ); 
+        $klass_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_title",
+            // $key_filter=""
+            "klass_title"
+        ); 
+        $klass_desc = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_desc",
+            // $key_filter=""
+            "klass_desc"
+        ); 
+        $klass_feature = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_feature",
+            // $key_filter=""
+            "klass_feature"
+        ); 
+        $klass_target = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_target",
+            // $key_filter=""
+            "klass_target"
+        );
+        $klass_schedule = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_schedule",
+            // $key_filter=""
+            "klass_schedule"
+        );
+        $klass_date_begin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_date_begin",
+            // $key_filter=""
+            "klass_date_begin"
+        );
+        $klass_time_begin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_begin",
+            // $key_filter=""
+            "klass_time_hhmm"
+        );
+        $klass_time_end = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_end",
+            // $key_filter=""
+            "klass_time_hhmm"
+        );
+        $klass_time_duration_minutes = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time_duration_minutes",
+            // $key_filter=""
+            "klass_time_duration_minutes"
+        );
+        $klass_level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_level",
+            // $key_filter=""
+            "klass_level"
+        );
+        $klass_week = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_week",
+            // $key_filter=""
+            "klass_week"
+        );
+        $klass_days = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_days",
+            // $key_filter=""
+            "klass_days"
+        );
+        $klass_venue_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_title",
+            // $key_filter=""
+            "klass_venue_title"
+        );
+        $klass_venue_telephone = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_telephone",
+            // $key_filter=""
+            "klass_venue_telephone"
+        );
+        $klass_venue_address = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_address",
+            // $key_filter=""
+            "klass_venue_address"
+        );
+        $klass_venue_road_address = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_road_address",
+            // $key_filter=""
+            "klass_venue_road_address"
+        );
+        $klass_venue_latitude = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_latitude",
+            // $key_filter=""
+            "klass_venue_latitude"
+        );
+        $klass_venue_longitude = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_venue_longitude",
+            // $key_filter=""
+            "klass_venue_longitude"
+        );
+        $klass_subway_line = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_line",
+            // $key_filter=""
+            "klass_subway_line"
+        );
+        $klass_subway_station = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_station",
+            // $key_filter=""
+            "klass_subway_station"
+        );
+        $klass_price = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_price",
+            // $key_filter=""
+            "klass_price"
+        );        
+        $klass_student_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_student_cnt",
+            // $key_filter=""
+            "klass_student_cnt"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );      
+        // @ Optional  
+        $klass_poster_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_poster_url",
+            // $key_filter=""
+            "klass_poster_url",
+            // $is_no_record=false
+            true
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "teacher_id"=>$teacher_id,
+            "klass_id"=>$klass_id,
+            "teacher_id"=>$teacher_id,
+            "teacher_resume"=>$teacher_resume,
+            "teacher_greeting"=>$teacher_greeting,
+            "klass_title"=>$klass_title,
+            "klass_feature"=>$klass_feature,
+            "klass_target"=>$klass_target,
+            "klass_schedule"=>$klass_schedule,
+            "klass_date_begin"=>$klass_date_begin,
+            "klass_time_begin"=>$klass_time_begin,
+            "klass_time_end"=>$klass_time_end,
+            "klass_time_duration_minutes"=>$klass_time_duration_minutes,
+            "klass_level"=>$klass_level,
+            "klass_week"=>$klass_week,
+            "klass_days"=>$klass_days,
+            "klass_venue_title"=>$klass_venue_title,
+            "klass_venue_telephone"=>$klass_venue_telephone,
+            "klass_venue_address"=>$klass_venue_address,
+            "klass_venue_road_address"=>$klass_venue_road_address,
+            "klass_venue_latitude"=>$klass_venue_latitude,
+            "klass_venue_longitude"=>$klass_venue_longitude,
+            "klass_subway_line"=>$klass_subway_line,
+            "klass_subway_station"=>$klass_subway_station,
+            "klass_price"=>$klass_price,
+            "klass_student_cnt"=>$klass_student_cnt,
+            "klass_banner_url"=>$klass_banner_url,
+            "klass_poster_url"=>$klass_poster_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+
+        if($is_ok) 
+        {
+            // wonder.jung
+            $this->my_sql->update_klass(
+                // $klass_id=-1,
+                $klass_id,
+                // $user_id=-1,
+                $user_id,
+                // $teacher_id=-1
+                $teacher_id,
+                // $teacher_resume=""
+                $teacher_resume,
+                // $teacher_greeting=""
+                $teacher_greeting,
+                // $title=""
+                $klass_title,
+                // $feature=""
+                $klass_feature,
+                // $target=""
+                $klass_target,
+                // $schedule=""
+                $klass_schedule,
+                // $date_begin=""
+                $klass_date_begin,
+                // $time_begin=""
+                $klass_time_begin,
+                // $time_end=""
+                $klass_time_end,
+                // $time_duration_minutes=-1
+                $klass_time_duration_minutes,
+                // $level=""
+                $klass_level,
+                // $week=-1
+                $klass_week,
+                // $days=""
+                $klass_days,
+                // $venue_title=""
+                $klass_venue_title,
+                // $venue_telephone=""
+                $klass_venue_telephone,
+                // $venue_address=""
+                $klass_venue_address,
+                // $venue_road_address=""
+                $klass_venue_road_address,
+                // $venue_latitude=""
+                $klass_venue_latitude,
+                // $venue_longitude=""
+                $klass_venue_longitude,
+                // $subway_line=""
+                $klass_subway_line,
+                // $subway_station=""
+                $klass_subway_station,
+                // $banner_url=""
+                $klass_banner_url,
+                // $poster_url=""
+                $klass_poster_url,
+                // $price=-1
+                $klass_price,
+                // $student_cnt
+                $klass_student_cnt
+            );
+
+            // 쿼리 가져오기
+            $queries = array();
+            array_push($queries, $this->my_sql->get_last_query());
+            $output["queries"] = $queries;
+
+            $klass = $this->my_sql->select_klass($klass_id);
+            $output["klass"] = $klass;
+            
+            $this->respond_200($output);
+        }
+        else
+        {
+            $this->respond_200_Failed(
+                // $msg=""
+                "update_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );             
+        }
+    }    
+
+    public function updatetitle_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_title = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_title",
+            // $key_filter=""
+            "klass_title"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_title"=>$klass_title
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) 
+        {
+            $this->my_sql->update_klass_title(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_title_to_update=""
+                $klass_title
+            );
+            $klass = $this->my_sql->select_klass($klass_id);
+            $klass_title = "";
+            if(isset($klass) && isset($klass->title)) 
+            {
+                $klass_title = $klass->title;
+            }
+            $output["klass_title"] = $klass_title;
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addposter_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    } 
+
+    // @ Desc : 수업 리뷰를 삭제합니다. 물리적인 삭제가 아닌 리뷰 상태를 비활성(N)으로 바꿉니다.
+    public function removereview_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_review_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review_id",
+            // $key_filter=""
+            "klass_review_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_review_id"=>$klass_review_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->remove_klass_review(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_review_id=-1
+                $klass_review_id
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $removed_klass_review = 
+            $this->my_sql->select_klass_review_by_id(
+                // $klass_review_id=-1, 
+                $klass_review_id
+            );
+            $output["removed_klass_review"] = $removed_klass_review;
+
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addquestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+    public function addreview_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_review = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review",
+            // $key_filter=""
+            "klass_review"
+        );
+        $klass_review_star = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review_star",
+            // $key_filter=""
+            "klass_review_star"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_review"=>$klass_review,
+            "klass_review_star"=>$klass_review_star
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->add_klass_review(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_review=""
+                $klass_review,
+                // $klass_review_star=-1
+                $klass_review_star
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $new_klass_review = 
+            $this->my_sql->select_klass_review_last(
+                // $klass_id=-1, 
+                $klass_id,
+                // $user_id=-1
+                $user_id
+            );
+
+            $output["klass_review"] = $new_klass_review;
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addquestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+    public function addreviewreply_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_review = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review",
+            // $key_filter=""
+            "klass_review"
+        );
+        $klass_review_parent_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_review_parent_id",
+            // $key_filter=""
+            "klass_review_parent_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_review"=>$klass_review,
+            "klass_review_parent_id"=>$klass_review_parent_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->add_klass_review_reply(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_review_parent_id=-1
+                $klass_review_parent_id,
+                // $klass_reply=""
+                $klass_review
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $new_klass_review = 
+            $this->my_sql->select_klass_review_last(
+                // $klass_id=-1, 
+                $klass_id,
+                // $user_id=-1
+                $user_id
+            );
+
+            $output["klass_review"] = $new_klass_review;
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addreviewreply_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }    
+
+
+
+    // @ Desc : 수업 문의를 삭제합니다. 물리적인 삭제가 아닌 문의 상태를 비활성(N)으로 바꿉니다.
+    public function removequestion_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_question_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_question_id",
+            // $key_filter=""
+            "klass_question_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_question_id"=>$klass_question_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->remove_klass_question(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_question_id=-1
+                $klass_question_id
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $removed_klass_question = 
+            $this->my_sql->select_klass_question_by_id(
+                // $klass_question_id=-1, 
+                $klass_question_id
+            );
+            $output["removed_klass_question"] = $removed_klass_question;
+
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "removequestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+    public function addquestion_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_question = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_question",
+            // $key_filter=""
+            "klass_question"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_question"=>$klass_question
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->add_klass_question(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_question=""
+                $klass_question
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $klass_question = 
+            $this->my_sql->select_klass_question_last($klass_id, $user_id);
+
+            $output["klass_question"] = $klass_question;
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addquestion_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+    // @ Desc : 수업 문의의 답글을 등록합니다.
+    public function addquestionreply_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_question = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_question",
+            // $key_filter=""
+            "klass_question"
+        );
+        $klass_question_parent_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_question_parent_id",
+            // $key_filter=""
+            "klass_question_parent_id"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_question"=>$klass_question,
+            "klass_question_parent_id"=>$klass_question_parent_id
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->add_klass_question_reply(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_question_parent_id=-1, 
+                $klass_question_parent_id,
+                // $klass_question=""
+                $klass_question
+            );
+
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $klass_question = 
+            $this->my_sql->select_klass_question_last($klass_id, $user_id);
+
+            $output["klass_question"] = $klass_question;
+            $output["queries"] = $queries;
+
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addquestionreply_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }            
+
+    public function addposter_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_poster_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_poster_url",
+            // $key_filter=""
+            "klass_poster_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_poster_url"=>$klass_poster_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            // 이전 포스터 주소를 가져옵니다.
+            $klass_poster_prev = $this->my_sql->get_klass_poster($klass_id);
+            // 있다면 해당 포스터를 삭제합니다.
+            if(!empty($klass_poster_prev)) 
+            {
+                $output["klass_poster_deleted"] = $klass_poster_prev;
+                $output["klass_poster_path_deleted"]
+                = $this->my_thumbnail->get_path_thumbnail_klass_poster($klass_poster_prev);
+                $output["has_deleted"]
+                = $this->my_thumbnail->delete_thumbnail_klass_poster($klass_poster_prev);
+            }
+
+            $this->my_sql->add_klass_poster(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_poster_url_to_add=""
+                $klass_poster_url
+            );
+            $output["klass_poster"] = $this->my_sql->get_klass_poster($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addposter_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }  
+
+    public function updatebanner_post()   
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->update_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "updatebanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+
+    /*
+    public function addbanner_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->add_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "addbanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+
+    public function removebanner_post() 
+    {
+        if($this->is_not_ok()) {
+            return;
+        }
+
+        $output = array();
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_banner_url = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_banner_url",
+            // $key_filter=""
+            "klass_banner_url"
+        );
+
+        $output = array();
+        $output["params"] = 
+        [
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id,
+            "klass_banner_url"=>$klass_banner_url
+        ];
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
+        {
+            $is_ok = false;
+        }
+        
+        if($is_ok) {
+
+            $this->my_sql->remove_klass_banner(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_banner_url_to_add=""
+                $klass_banner_url
+            );
+            $output["query"] = $this->my_sql->get_last_query();
+
+            // 해당 파일을 삭제합니다.
+            $this->my_thumbnail->delete_thumbnail_klass_banner($klass_banner_url);
+
+            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
+            $this->respond_200($output);
+
+        } else {
+            $this->respond_200_Failed(
+                // $msg=""
+                "removebanner_post is failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );            
+        } // end if
+    }
+    */
 
     public function search_get() 
     {
@@ -363,317 +1957,216 @@ class Klass extends REST_Controller implements MY_Class{
             return;
         }
 
-        // CHECKS PARAMS
-        $extra = array();
-        $extra['q'] = $q = $this->my_paramchecker->get('q','klass_query');
-        $extra['level'] = $level = $this->my_paramchecker->get('level','klass_level');
-        $extra['station'] = $station = $this->my_paramchecker->get('station','klass_station');
-        $extra['day'] = $day = $this->my_paramchecker->get('day','klass_day');
-        $extra['time'] = $time = $this->my_paramchecker->get('time','klass_time');
-        $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
-
-        // DB QUERY
-        // 유효한 파라미터들만 검색에 사용한다.
-        $where_conditions = array();
-        if(isset($level))
-        {
-            $this->db->where('level', $level);
-        }
-        if(isset($station))
-        {
-            $this->db->where('venue_subway_station', $station);
-        }
-        if(isset($day))
-        {
-            $this->db->where('days', $day);
-        }
-        if(isset($q)) 
-        {
-            $keyword_list = explode("|",$q);
-            $extra['keyword_list'] = $keyword_list;
-
-            $like_cnt = 0;
-            for ($i=0; $i < count($keyword_list); $i++) 
-            { 
-                $keyword = $keyword_list[$i];
-
-                if(empty($keyword)) 
-                {
-                    continue;
-                }
-
-                if(0 === $like_cnt) 
-                {
-                    // escaped automatically in 'like' or 'or_like'
-                    $this->db->like('title', $keyword);
-                    $this->db->or_like('desc', $keyword);
-                }
-                else
-                {
-                    $this->db->or_like('title', $keyword);
-                    $this->db->or_like('desc', $keyword);
-                }
-
-                $like_cnt++;
-            }
-        }
-        // Set time range
-        // 시간 관련 검색은 범위를 가져와야 한다.
-        $extra['time_begin'] = 
-        $time_begin = 
-        $this->my_paramchecker->get_const_from_list(
-            $time, 
-            'class_times_list', 
-            'class_times_range_list'
+        $output = [];
+        $q = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "q",
+            // $key_filter=""
+            "klass_query"
         );
-        $extra['time_end'] = 
-        $time_end = 
-        $this->my_paramchecker->get_const_from_list(
-            $time, 
-            'class_times_list', 
-            'class_times_range_list', 
-            1
+        $level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "level",
+            // $key_filter=""
+            "klass_level"
         );
-        $time_begin_HHmm = "";
-        $time_end_HHmm = "";
-        if(is_numeric($time_begin) && is_numeric($time_end))
-        {
-            $time_begin_HHmm = $this->my_time->digit_to_HHmm($time_begin);
-            $time_end_HHmm = $this->my_time->digit_to_HHmm($time_end, true);
-        }
-        if( $this->my_time->is_valid_HHmm($time_begin_HHmm) && 
-            $this->my_time->is_valid_HHmm($time_end_HHmm)) 
-        {
-            $this->db->where('time_begin >=', $time_begin_HHmm);
-            $this->db->where('time_end <=', $time_end_HHmm);
+        $station = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "station",
+            // $key_filter=""
+            "klass_station"
+        );
+        $day = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "day",
+            // $key_filter=""
+            "klass_day"
+        );
+        $time = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "time",
+            // $key_filter=""
+            "klass_time"
+        );
+        $output["param"] = array(
+            "q"=>$q,
+            "level"=>$level,
+            "station"=>$station,
+            "day"=>$day,
+            "time"=>$time
+        );
 
-        }
-        $this->db->order_by('id', 'DESC');
+        $klass_list = 
+        $this->my_sql->search_klass(
+            // $q=""
+            $q,
+            // $level=""
+            $level,
+            // $station=""
+            $station,
+            // $day=""
+            $day,
+            // $time=""
+            $time
+        );
+        $output["klass_list"] = $klass_list;
+        $new_klass = $this->get_klass_course_new_class();
+        $output["new_klass"] = [$new_klass];
 
-        // DB WORKS
-        $limit = 30;
-        $offset = 0;
-        $query = $this->db->get('klass', $limit, $offset);
-
-        // RESULT
-        $classes = $query->result();
-        $last_query = $this->db->last_query();
-        if (!empty($classes))
-        {
-            $last_query = $this->db->last_query();
-            $output = $this->add_klass_extra_info($query);
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                $last_query, 
-                $output, 
-                $this->my_error->get(),
-                $extra
-            );
-        }
-        else
+        if (empty($klass_list))
         {
             // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
-            $course = $this->get_klass_course_no_class();
-            $output = array($course);
-
-            $response_body = 
-            $this->my_response->getResBodySuccess(
-                $last_query, 
-                $output, 
-                $this->my_error->get(),
-                $extra
-            );
+            $no_klass = $this->get_klass_course_no_class();
+            $output["klass_list"] = [$no_klass];
         }
-        $this->set_response($response_body, REST_Controller::HTTP_OK); 
-        
+        $this->respond_200($output);
     }
-
-    // 수정 및 변경은 admin 패키지에서 진행함.
-    /*
-    public function insert_post() {
-
-        if($this->is_not_ok()) {
-            return;
-        }        
-
-        // TODO 지정된 파라미터만 통과, json으로 파라미터 validation 하도록 변경. 
-        $name = $this->post('name');
-        $name_escaped = $this->db->escape($name);
-
-        // TODO - 입력하는 문자열 검증 필요. wonder.jung
-        if(empty($name_escaped)) {
-
-            $response_body = [
-                'status' => FALSE,
-                'message' => '!empty(\$name_escaped)',
-                'data' => null
-            ];
-            
-        } else {
-
-            // TODO - 쿼리 빌더 사용해보기.
-            $this->db->query("INSERT INTO `z_test_user`(`name`) VALUES (" . $name_escaped . ")");
-
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE name=" . $name_escaped);
-            $user_inserted = $query->result();
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'data' => $user_inserted
-            ];
-
-        }
-
-        // OK (200) being the HTTP response code
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
+    private function get_class_img_default() 
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'no_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
     }
-
-    public function update_get($id=0) {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'TEST',
-            'data' => null
-        ];
-
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }
-
-    public function update_post($id=0) {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $name = $this->post('name');
-        // 문자열인 경우는 아래 절차를 반드시 거쳐야 함.
-        $name_escaped = $this->db->escape($name);
-
-
-        if((0 < $id) && !empty($name_escaped)) {
-
-            // 유효한 이름값을 넘겨주었다면 업데이트를 진행합니다.
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE id=" . $id);
-            $user = $query->result();
-
-            $error = null;
-            if ( is_null($error) && ! $this->db->simple_query("UPDATE z_test_user SET `name`=" . $name_escaped . " WHERE `id`=" . $id))
-            {
-                $error = $this->db->error(); // Has keys 'code' and 'message'
-            }
-
-            $query = $this->db->query("SELECT id, name FROM z_test_user WHERE id=" . $id);
-            $user_modified = $query->result();
-
-            // 이전 객체, 이후 객체 비교.
-            $data = [
-                "user" => $user,
-                "user_modified" => $user_modified,
-                "id" => $id,
-                "name" => $name
-            ];
-
-            if(!is_null($error)) {
-
-                $response_body = [
-                    'status' => FALSE,
-                    'message' => 'Success',
-                    'error' => $error,
-                    'data' => $data
-                ];
-
-            } else {
-
-                $response_body = [
-                    'status' => TRUE,
-                    'message' => 'Success',
-                    'data' => $data
-                ];
-
-            }
-
-        } else {
-
-            // 업데이트할 정보가 유효하지 않습니다. 실행을 중단합니다.
-            $data = [
-                "id" => $id,
-                "name" => $name
-            ];
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'param is not valid!',
-                'data' => $data
-            ];
-            
-        }
-
-        // OK (200) being the HTTP response code
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-    }
-
-    public function delete_post($id=0) {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        // $id = $this->post('id');
-        $id = intval($id);
-
-        if(0 < $id) {
-
-            // TODO - 쿼리 빌더 사용해보기.
-            $this->db->query("DELETE FROM `z_test_user` WHERE id=" . $id);
-
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'query' => $this->db->last_query(), // DEBUGGING 모드일때만 제공되는 파라미터
-                'data' => null
-            ];
-
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-            
-        } else {
-
-            $response_body = [
-                'status' => FALSE,
-                'message' => '\$id is not valid!',
-                'query' => $this->db->last_query(), // DEBUGGING 모드일때만 제공되는 파라미터
-                'data' => null
-            ];
-
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-        }
-
-    }  
-    */  
-
-    private function get_klass_course_new_class() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
+    private function get_class_img_new() 
+    {
+        return $this->my_paramchecker->get_const_from_list(
             'new_class', 
             'klass_event_img_list', 
             'klass_event_img_url_list'
         );
+    }
+    private function get_level_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
+        );
+    }
+    private function get_level_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_days_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
+        );
+    }
+    private function get_days_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_time_begin_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_list'
+        );    
+    }
+    private function get_time_begin_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_img_url_list'
+        );    
+    }
+    private function get_subway_line_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_line_list'
+        );
+    }
+    private function get_subway_station_default()
+    {
+        $subway_station_list = 
+        $this->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_station_list'
+        );
+
+        return $subway_station_list[0];
+    }    
+    private function get_venue_subway_station_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'everywhere',
+            'class_venue_subway_station_list',
+            'class_venue_subway_station_list'
+        );        
+    
+    }
+    private function get_venue_subway_station_img_default()
+    {
+        return $this->my_paramchecker->get_const_from_list(
+            'everywhere',
+            'class_venue_subway_station_list',
+            'class_venue_subway_station_img_url_list'
+        );        
+    
+    } 
+    private function set_default_klass_course($klass_course) {
+
+        if(is_null($klass_course)) 
+        {
+            return null;
+        }
+
+        $klass_course->price = $klass_course->price_with_format = "0";
+
+        // 기본 이미지 설정.
+        $klass_course->level =  
+        $this->get_level_default();
+        $klass_course->level_img_url =  
+        $this->get_level_img_default();
+
+        $klass_course->days = 
+        $this->get_days_default();
+        $klass_course->days_img_url = 
+        $this->get_days_img_default();
+
+        $klass_course->time_begin = 
+        $this->get_time_begin_default();
+        $klass_course->time_begin_img_url = 
+        $this->get_time_begin_img_default();
+
+        $klass_course->subway_line = 
+        $this->get_subway_line_default();
+        $klass_course->subway_station = 
+        $this->get_subway_station_default();
+
+        $klass_course->venue_subway_station = 
+        $this->get_venue_subway_station_default();
+        $klass_course->venue_subway_station_img_url = 
+        $this->get_venue_subway_station_img_default();
+        $klass_course->subway_station_img = 
+        $this->get_venue_subway_station_img_default();
 
         return $klass_course;
-    }
+
+    }   
 
     private function get_klass_course_no_class() {
 
@@ -682,53 +2175,33 @@ class Klass extends REST_Controller implements MY_Class{
         }
         
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'no_class', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
+        $klass_course->id = -1;
+        $klass_course->class_poster_url_loadable = 
+        $this->get_class_img_default();
+        $klass_course->title="수업이 없습니다.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
 
         return $klass_course;
     }
-
-    private function get_klass_course_no_image() {
+    private function get_klass_course_new_class() {
 
         if($this->is_not_ok()) {
             return;
         }
 
         $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'no_image', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
+        $klass_course->id = -100;
+        $klass_course->class_poster_url_loadable = 
+        $this->get_class_img_new();
+        $klass_course->title="새로운 수업을 만들어요.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
 
         return $klass_course;
     }
-
-    private function get_klass_course_error() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-        
-        $klass_course = new KlassCourse();
-        $klass_course->class_img_url = 
-        $this->my_paramchecker->get_const_from_list(
-            'error', 
-            'klass_event_img_list', 
-            'klass_event_img_url_list'
-        );
-        $klass_course->price_with_format="0";
-
-        return $klass_course;
-    }
-
     private function get_levels() {
 
         if($this->is_not_ok()) {
@@ -771,23 +2244,6 @@ class Klass extends REST_Controller implements MY_Class{
         
         return $klass_level_list;    
     }
-    public function level_get() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_levels();
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }
-
     private function get_stations() {
 
         if($this->is_not_ok()) {
@@ -842,24 +2298,6 @@ class Klass extends REST_Controller implements MY_Class{
 
         return $klass_station_list;       
     }
-    public function station_get() {
-
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_stations();
-
-        $response_body = 
-        [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    }  
-
     private function get_days() {
 
         if($this->is_not_ok()) {
@@ -908,23 +2346,6 @@ class Klass extends REST_Controller implements MY_Class{
 
         return $klass_day_list;
     }
-    public function day_get() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $obj_list = $this->get_days();
-
-        $response_body = [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-
-    } 
-
     private function get_times() {
 
         if($this->is_not_ok()) {
@@ -936,6 +2357,7 @@ class Klass extends REST_Controller implements MY_Class{
         $klass_times_list = $const_map->class_times_list;
         $klass_times_eng_list = $const_map->class_times_eng_list;
         $klass_times_kor_list = $const_map->class_times_kor_list;
+        $class_times_hh_mm_list = $const_map->class_times_hh_mm_list;
         $klass_times_img_url_list = $const_map->class_times_img_url_list;
 
         // check list is valid
@@ -957,206 +2379,23 @@ class Klass extends REST_Controller implements MY_Class{
             $name_eng = $klass_times_eng_list[$i];
             $name_kor = $klass_times_kor_list[$i];
             $img_url = $klass_times_img_url_list[$i];
+            $hh_mm = $class_times_hh_mm_list[$i];
 
-            $time_obj = new KlassTime($key, $name_eng, $name_kor, $img_url);
+            $time_obj = 
+            new KlassTime(
+                $key, 
+                $name_eng, 
+                $name_kor, 
+                $img_url, 
+                $hh_mm
+            );
 
             array_push($klass_time_list, $time_obj);
         }
 
         return $klass_time_list;
     }
-    public function time_get() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
 
-        $obj_list = $this->get_times();
 
-        $response_body = 
-        [
-            'status' => TRUE,
-            'message' => 'Success',
-            'data' => $obj_list
-        ];
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-    } 
-
-    private function add_klass_review_extra_info($query=null)
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        if(is_null($query)) {
-            return;
-        }
-
-        $rows = $query->custom_result_object('KlassReview');
-        if(!empty($rows))
-        {
-            foreach ($rows as $row) 
-            {
-                $row->id = intval($row->id);
-                $row->parent_id = intval($row->parent_id);
-                $row->klass_id = intval($row->klass_id);
-                $row->user_id = intval($row->user_id);
-
-                if(empty($row->thumbnail))
-                {
-                    $row->thumbnail = "user_anonymous_150x150.png";
-                }
-
-                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
-
-                // 읽기 쉬운 시간 표기로 바꿉니다.
-                $row->date_updated_human_readable = 
-                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
-
-            }
-        }
-
-        return $rows;
-    }
-
-    private function add_klass_question_extra_info($query=null)
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        if(is_null($query)) {
-            return;
-        }
-
-        $rows = $query->custom_result_object('KlassQuestion');
-        if(!empty($rows))
-        {
-            foreach ($rows as $row) 
-            {
-                $row->id = intval($row->id);
-                $row->parent_id = intval($row->parent_id);
-                $row->klass_id = intval($row->klass_id);
-                $row->user_id = intval($row->user_id);
-
-                if(empty($row->thumbnail))
-                {
-                    $row->thumbnail = "user_anonymous_150x150.png";
-                }
-
-                $row->thumbnail_url = $this->my_path->get("/assets/images/user/" . $row->thumbnail);
-
-                // 읽기 쉬운 시간 표기로 바꿉니다.
-                $row->date_updated_human_readable = 
-                $this->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
-
-            }
-        }
-
-        return $rows;
-    }    
-
-    private function add_klass_teacher_extra_info($query=null)
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        if(is_null($query)) {
-            return;
-        }
-
-        $rows = $query->custom_result_object('KlassTeacher');
-        $teacher = null;
-        if(!empty($rows))
-        {
-            $teacher = $rows[0];   
-        }
-        if(isset($teacher) && !empty($teacher->resume))
-        {
-            $teacher->resume_arr = explode("|",$teacher->resume);
-        }
-        if(isset($teacher) && !empty($teacher->greeting))
-        {
-            $teacher->greeting_arr = explode("|",$teacher->greeting);
-        }
-        if(isset($teacher) && !empty($teacher->thumbnail))
-        {
-            $teacher->thumbnail_url = $this->my_path->get("/assets/images/teacher/" . $teacher->thumbnail);
-        }
-        if(isset($teacher) && empty($teacher->nickname))
-        {
-            $teacher->nickname = $teacher->name;
-        }
-
-        return $teacher;
-    }
-
-    private function add_klass_extra_info($query=null) 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        if(is_null($query)) {
-            return;
-        }
-
-        $const_map = $this->my_paramchecker->get_const_map();
-        if(is_null($const_map)) {
-            return;
-        }
-        $rows = $query->custom_result_object('KlassCourse');
-        $output = array();
-        foreach ($rows as $row)
-        {
-            // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($const_map, $this->my_path);
-            $row->level_img_url($const_map, $this->my_path);
-            $row->set_days_list($const_map);
-            $row->days_img_url($const_map, $this->my_path);
-            $row->venue_subway_station_img_url($const_map, $this->my_path);
-            $row->venue_cafe_logo_img_url($const_map, $this->my_path);
-            $row->price_with_format();
-            $row->set_klass_price_list();
-            $row->weeks_to_months();
-
-            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
-            $row->class_img_err_url = $this->my_path->get("/assets/images/event/error.svg");
-            $row->class_img_url = $this->my_path->get("/assets/images/class/test.jpg");
-
-            // 주당 수업 가격에 대해 계산한다.
-            // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
-            // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
-            $price = $row->price = intval($row->price);
-            $week_max = $row->week_max = intval($row->week_max);
-            $week_min = $row->week_min = intval($row->week_min);
-            $week_unit_cnt = ($week_max / $week_min);
-
-            // 주당 가격 산정은 다음과 같다. 
-            // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
-            $fee_per_a_week = $price/$week_min;
-
-            $row->week_list = array();
-            $row->price_list = array();
-            $row->weekly_price_list = array();
-            for ($i=1; $i <= $week_unit_cnt; $i++) { 
-                $next_weeks = $week_min * $i;
-                array_push($row->week_list, $next_weeks);
-                $next_price = $fee_per_a_week * $week_min * $i;
-                array_push($row->price_list, $next_price);
-
-                $weeky_price = [
-                    'weeks'=>$next_weeks,
-                    'price'=>$next_price
-                ];
-                array_push($row->weekly_price_list, $weeky_price);
-            }
-            
-            array_push($output, $row);
-        }
-
-        return $output;
-    }    
 
 }

@@ -6,7 +6,7 @@ import { CommonModule }              from '@angular/common';
 
 import { WidgetModule }              from '../widget/widget.module';
 
-import { KlassService }              from './klass.service';
+import { KlassService }              from './service/klass.service';
 import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
 import { KlassCheckBoxService }      from './service/klass-checkbox.service';
 import { KlassColorService }         from './service/klass-color.service';
@@ -18,17 +18,17 @@ import { CommentService }            from '../widget/comment/service/comment.ser
 
 import { KlassDetailResolve }        from './klass-detail-resolve.service';
 
-import { KlassCenterComponent }      from './klass-center.component';
-import { KlassListComponent }        from './klass-list.component';
-import { KlassCenterHomeComponent }  from './klass-center-home.component';
-import { KlassDetailComponent }      from './klass-detail.component';
-import { 
-    KlassDetailNavListComponent 
-}                                    from './klass-detail-nav-list.component';
-import { KlassFilterTileComponent }  from './klass-filter-tile.component';
-import { klassCenterRouting }        from './klass-center.routing';
-import { KlassVenueSearchListComponent } from './widget/klass-venue-search-list.component';
-import { KlassTeacherComponent }     from './widget/klass-teacher.component';
+import { KlassListComponent }                from './klass-list.component';
+import { klassCenterRouting }                from './klass-center.routing';
+import { KlassCenterComponent }              from './klass-center.component';
+import { KlassDetailComponent }              from './klass-detail.component';
+import { KlassFilterTileComponent }          from './klass-filter-tile.component';
+import { KlassCenterHomeComponent }          from './klass-center-home.component';
+import { KlassDetailNavListComponent }       from './klass-detail-nav-list.component';
+
+import { KlassTeacherComponent }             from './widget/klass-teacher.component';
+import { KlassVenueSearchListComponent }     from './widget/klass-venue-search-list.component';
+import { KlassPriceCalculatorComponent }     from './widget/klass-price-calculator.component';
 
 import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
 import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
@@ -74,6 +74,7 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     KlassFilterTileComponent,
     KlassVenueSearchListComponent,
     KlassTeacherComponent,
+    KlassPriceCalculatorComponent,
     
     ClockBoardComponent,
     ClockDigitalComponent,

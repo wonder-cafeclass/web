@@ -9,11 +9,11 @@
 	<input 	*ngIf="!isDisabled"
 			#input
 			(click)="onClick($event, input)"
-			(focus)="onFocus($event, password)"
-			(blur)="onBlur($event, input, tooltip)"
-			(keyup)="onKeyup($event, input, tooltip)"
+			(focus)="onFocus($event, input)"
+			(blur)="onBlur($event, input)"
+			(keyup)="onKeyup($event, input)"
 			(keydown.tab)="onKeydownTab($event)"
-			(keydown.shift.tab)="onKeydownTab($event)"
+			(keydown.shift.tab)="onKeydownTabShift($event)"
 			value={{inputStrPrev}}
 			class="form-control input-glass" 
 			placeholder="이름">
@@ -24,26 +24,22 @@
 			value={{inputStrPrev}}
 			class="form-control input-glass" 
 			placeholder="이름">
-
 	
 	<!-- icon - warning -->
-	<span 	*ngIf="isWarning"
+	<span 	*ngIf="!isValid"
 			class="glyphicon glyphicon-exclamation-sign warning"
 			aria-hidden="true"></span>
 			
 	<!-- tooltip -->
-	<div 	#tooltip
+	<div 	[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
 			class="tooltip top" 
-			[style.top]="topWarning + 'px'"
-			[style.left]="leftWarning + 'px'"
-			style="opacity:1;"
 			role="tooltip"> 
 
 		<div 	class="tooltip-arrow"
-				[ngClass]="{'tooltip-success-arrow':isSuccessInput,'tooltip-warning-arrow':!isSuccessInput}"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
 				></div> 
 		<div 	class="tooltip-inner" 
-				[ngClass]="{'tooltip-success-inner':isSuccessInput,'tooltip-warning-inner':!isSuccessInput}">{{tooltipHeadMsg}}</div> 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
 
 	</div>
 

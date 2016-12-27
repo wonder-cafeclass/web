@@ -57,6 +57,8 @@ class KlassCourse {
         public $level_kor;
         // 난이도 이미지
         public $level_img_url;
+        // 수업 주 단위
+        public $week;
         // 수업최소 주 단위
         public $week_min;
         // 수업최장 주 단위
@@ -82,16 +84,25 @@ class KlassCourse {
 
         // 수업장소 - 화면에 표시될 이름 / @ Deprecated
         public $venue;
-        // 수업장소 - 지하철 역 / @ Deprecated
-        public $venue_subway_station;
-        // 수업장소 이미지 - 지하철 역 / @ Deprecated
-        public $venue_subway_station_img_url;
         // 수업장소 - 카페 / @ Deprecated
         public $venue_cafe;
         // 수업장소 이미지 - 카페 / @ Deprecated
         public $venue_cafe_logo_img_url;
+
+
         // 수업장소링크 / @ Deprecated
         public $venue_map_link;
+        // 수업장소 - 지하철 역 / @ Deprecated
+        public $venue_subway_station;
+        // 수업장소 이미지 - 지하철 역 / @ Deprecated
+        public $venue_subway_station_img_url;
+
+        // 수업장소 - 지하철 노선
+        public $subway_line;
+        // 수업장소 - 지하철 역
+        public $subway_station;
+        // 수업장소 - 지하철 역 이미지
+        public $subway_station_img;
 
         // 수업장소 - 이름
         public $venue_title;
@@ -108,7 +119,7 @@ class KlassCourse {
 
         // 검색태그
         public $search_tag;
-        // 가격
+        // 4주당 수업 가격
         public $price;
         // 가격 관련 KlassPrice List
         public $klass_price_list;
@@ -124,18 +135,28 @@ class KlassCourse {
         public $weekly_price_list;
         // 가격 - 포맷적용
         public $price_with_format;
+
+        // 수업에 참여할 수 있는 학생수
+        public $student_cnt;
+
         // 수업운영상태
         public $class_status;
         // 수업 신청 타입
         public $enrollment_interval_week;
-        // 이미지 링크    
-        public $class_img_url;
+        // 이미지 링크
+        public $class_poster_url;
+        // 이미지 링크
+        public $class_poster_url_loadable;
+        // 배너 이미지 링크
+        public $class_banner_url;
         // 이미지 에러 링크    
         public $class_img_err_url;
         // 클래스 캘린더 리스트 (Linear) - Calendar[][]
         public $calendar_table_linear;
         // 클래스 캘린더 리스트 (Monthly) - Calendar[][][]
         public $calendar_table_monthly;
+
+        private $delimiter="|||";
 
         public function time_begin_img_url($const_map=null, $my_path=null)
         {
@@ -320,6 +341,67 @@ class KlassCourse {
 
         }
 
+        public function is_class_day($day="")
+        {
+                if(empty($day)) 
+                {
+                        return false;
+                }
+
+                $days_list = $this->get_days_list();
+                if(empty($days_list))
+                {
+                        return false;
+                }
+
+                for ($i=0; $i < count($days_list); $i++) 
+                {
+                        $day_from_list = $days_list[$i];
+                        $day_from_list = strtolower($day_from_list);
+
+                        $strpos = strpos(strtolower($day), $day_from_list);
+                        if(-1 < $strpos) 
+                        {
+                                return true;
+                        } // end if
+                } // end for
+
+                return false;
+        }
+
+        private function get_days_list()
+        {
+                if(!empty($this->days_list)) 
+                {
+                        return $this->days_list;
+                }
+
+                if(!empty($this->days))
+                {
+                        $this->days_list = explode($this->delimiter, $this->days);
+                }
+
+                return $this->days_list;
+        }
+
+        // @ Desc : 수업 요일 검색을 위한 맵 객체를 만들어 반환합니다.
+        public function get_days_map()
+        {
+                if(empty($this->days_list)) 
+                {
+                        $days_list = $this->days_list = explode($this->delimiter, $this->days);
+                }
+                $days_map = [];
+                for ($i=0; $i < count($days_list); $i++) 
+                {
+                        $day = $days_list[$i];
+                        $day = strtolower($day);
+                        $days_map[$day] = $day;
+                } // end for
+
+                return $days_map;
+        }
+
         public function days_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -352,17 +434,21 @@ class KlassCourse {
                 }
                 $class_days = $this->days;
 
+                // wonder.jung
+                $days_list = $this->days_list = explode($this->delimiter, $this->days);
+                $days_map = $this->get_days_map();
+
                 $class_days_list = $const_map->{"class_days_list"};
                 
                 $selected_idx_arr = array();
                 for ($i=0; $i < count($class_days_list); $i++) 
                 {
                         $cur_class_days = $class_days_list[$i];
-                        if (strpos($class_days, $cur_class_days) !== false) 
+                        if(!empty($days_map[$cur_class_days])) 
                         {
                                 array_push($selected_idx_arr, $i);
-                        }
-                }
+                        } // end if
+                } // end for
                 $class_days_eng_list = $const_map->{"class_days_eng_list"};
                 $class_days_kor_list = $const_map->{"class_days_kor_list"};
                 $class_days_img_url_list = $const_map->{"class_days_img_url_list"};
@@ -375,25 +461,20 @@ class KlassCourse {
                         if(empty($this->days_eng)) {
                                 $this->days_eng = $class_days_eng_list[$selected_idx];
                         } else {
-                                $this->days_eng .= "|".$class_days_eng_list[$selected_idx];
+                                $this->days_eng .= $this->delimiter . "" . $class_days_eng_list[$selected_idx];
                         }
                         if(empty($this->days_kor)) {
                                 $this->days_kor = $class_days_kor_list[$selected_idx];
                         } else {
-                                $this->days_kor .= "|".$class_days_kor_list[$selected_idx];
+                                $this->days_kor .= $this->delimiter . "" . $class_days_kor_list[$selected_idx];
                         }
                         if(empty($this->days_img_url)) {
                                 $this->days_img_url = $class_days_img_url_list[$selected_idx];
                         } else {
-                                $this->days_img_url .= "|".$class_days_img_url_list[$selected_idx];
+                                $this->days_img_url .= $this->delimiter . "" . $class_days_img_url_list[$selected_idx];
                         }
-                }
+                } // end for
 
-                // 이미지가 여러개일 경우의 문제있음.
-                if(!empty($this->days_img_url))
-                {
-                        $this->days_img_url = $my_path->get($this->days_img_url);
-                }
         }  
 
         public function venue_subway_station_img_url($const_map=null, $my_path=null)

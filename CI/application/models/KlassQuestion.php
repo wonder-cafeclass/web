@@ -5,7 +5,6 @@ class KlassQuestion {
         public $klass_id;
         public $user_id;
         public $name;
-        public $nickname;
         public $thumbnail;
         public $thumbnail_url;
         public $parent_id;

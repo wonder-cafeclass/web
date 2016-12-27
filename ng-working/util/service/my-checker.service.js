@@ -13,15 +13,17 @@ var http_1 = require('@angular/http');
 var my_checker_1 = require('../model/my-checker');
 var url_service_1 = require("../../util/url.service");
 var my_extractor_1 = require('../../util/http/my-extractor');
+var my_regex_1 = require('../../util/model/my-regex');
 var MyCheckerService = (function () {
     function MyCheckerService(us, http) {
         this.us = us;
         this.http = http;
         this.apiGetChecker = '/CI/index.php/api/admin/checker';
+        this.TYPE_NONE = "TYPE_NONE";
         this.TYPE_STRING = "TYPE_STRING";
         this.TYPE_NUMBER = "TYPE_NUMBER";
         this.TYPE_ARRAY = "TYPE_ARRAY";
-        this.REGEX_SAFE_STR = /[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
+        // public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
         this.MIN_STR_SAFE_TITLE = 2;
         this.MAX_STR_SAFE_TITLE = 48;
         this.MIN_STR_SAFE_COMMENT = 2;
@@ -35,7 +37,6 @@ var MyCheckerService = (function () {
         this.regExpRegExIncludeMatch = /regex_match_include\[(.+)\]/i;
         // @ Referer : http://jsfiddle.net/ghvj4gy9/embedded/result,js/
         this.regValidEmail = /valid_emails/i;
-        this.EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         // is_natural_no_zero
         this.regIsNaturalNoZero = /is_natural_no_zero/i;
         // is_unique
@@ -52,6 +53,7 @@ var MyCheckerService = (function () {
         this.regExpLessThanEqualTo = /less_than_equal_to\[(.+)\]/i;
         this.regExpDBQueryUnique = /is_unique\[(.+)\]/i;
         this.myExtractor = new my_extractor_1.MyExtractor();
+        this.myRegEx = new my_regex_1.MyRegEx();
     }
     // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
     MyCheckerService.prototype.setReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
@@ -179,6 +181,7 @@ var MyCheckerService = (function () {
                 type = this.TYPE_STRING;
                 continue;
             } // end if
+            // wonder.jung
             // 필터 - 정상 이메일 검증
             var regExpValidEmailReceived = this.getValidEmails(filter);
             if (null != regExpValidEmailReceived) {
@@ -450,23 +453,24 @@ var MyCheckerService = (function () {
         }
         return null;
     };
+    // public EMAIL_REGEX:RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     MyCheckerService.prototype.getValidEmails = function (filter) {
         // let isDebug:boolean = true;
         var isDebug = false;
-        if (isDebug) {
+        if (isDebug)
+            console.log("my-checker / getValidEmails / init");
+        if (isDebug)
             console.log("my-checker / getValidEmails / filter : ", filter);
-        }
         // ex) "user_email":"valid_emails"
         if (null == filter || 0 == filter.length) {
             return null;
         }
         var matchArr = filter.match(this.regValidEmail);
-        if (isDebug) {
+        if (isDebug)
             console.log("my-checker / getValidEmails / matchArr : ", matchArr);
-        }
         if (null != matchArr && 1 == matchArr.length) {
             // email 검증을 할 수 있는 정규표현식을 돌려줍니다.
-            return this.EMAIL_REGEX;
+            return this.myRegEx.EMAIL_REGEX;
         }
         return null;
     };
@@ -678,33 +682,6 @@ var MyCheckerService = (function () {
                 console.log("my-checker / isOK / myChecker : ", myChecker);
             }
             var inputStr = input;
-            // 음수는 검사 영역에 포함되지 않습니다.
-            var max = -1;
-            if (null != myChecker.max) {
-                max = myChecker.max;
-            }
-            if (0 < max && max < inputStr.length) {
-                this.history.reason =
-                    "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = "\uCD5C\uB300 " + max + "\uC790\uAE4C\uC9C0 \uC785\uB825\uD560 \uC218 \uC788\uC5B4\uC694.";
-                this.history.key = "max";
-                this.history.value = max;
-                return false;
-            }
-            var min = -1;
-            if (null != myChecker.min) {
-                min = myChecker.min;
-            }
-            if (0 <= min && inputStr.length < min) {
-                this.history.reason =
-                    "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = "\uCD5C\uC18C " + min + "\uC790 \uC774\uC0C1 \uC785\uB825\uD574\uC8FC\uC154\uC57C \uD574\uC694.";
-                this.history.key = "min";
-                this.history.value = min;
-                return false;
-            }
             var regexExclude = myChecker.regexExclude;
             if (null != regexExclude) {
                 // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
@@ -777,13 +754,100 @@ var MyCheckerService = (function () {
                     } // end if
                 } // end for
             } // end for
+            // 문자열의 최소, 최대 길이는 가장 마지막에 검사합니다.
+            // 음수는 검사 영역에 포함되지 않습니다.
+            var max = -1;
+            if (null != myChecker.max) {
+                max = myChecker.max;
+            }
+            if (0 < max && max < inputStr.length) {
+                this.history.reason =
+                    "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uB300 " + max + "\uC790\uAE4C\uC9C0 \uC785\uB825\uD560 \uC218 \uC788\uC5B4\uC694.";
+                this.history.key = "max";
+                this.history.value = max;
+                return false;
+            }
+            var min = -1;
+            if (null != myChecker.min) {
+                min = myChecker.min;
+            }
+            if (0 <= min && inputStr.length < min) {
+                this.history.reason =
+                    "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uC18C " + min + "\uC790 \uC774\uC0C1 \uC785\uB825\uD574\uC8FC\uC154\uC57C \uD574\uC694.";
+                this.history.key = "min";
+                this.history.value = min;
+                return false;
+            }
         }
         else if (this.TYPE_NUMBER === myChecker.type) {
-            if ('number' != typeof input) {
-                this.history.reason = "'number' != typeof input";
+            // 숫자라면 숫자 이외의 문자는 허용하지 않는다.
+            // 여기서는 자연수만 허용.
+            // wonder.jung
+            var inputStr = "" + input;
+            var regexExclude = this.myRegEx.REGEX_NATURAL_NUM;
+            if (null != regexExclude) {
+                // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
+                var matchArr = inputStr.match(regexExclude);
+                if (null != matchArr && 0 < matchArr.length) {
+                    this.history.reason =
+                        "target string is not allowed with regexExclude : " + regexExclude;
+                    this.history.success = false;
+                    this.history.matchArr = matchArr;
+                    this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                    this.history.key = "regexExclude";
+                    this.history.value = regexExclude;
+                    this.history.matchArr = matchArr;
+                    return false;
+                }
+            } // end if
+            var inputNum = parseInt(input);
+            if ('number' != typeof inputNum) {
+                this.history.reason = "'number' != typeof inputNum";
                 this.history.success = false;
                 return false;
             }
+            var min = myChecker.min;
+            if ((0 < min) && (inputNum < min)) {
+                this.history.reason = "inputNum:" + inputNum + " < min:" + min;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uC18C " + min + " \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.";
+                this.history.key = "min";
+                this.history.value = min;
+                return false;
+            }
+            var max = myChecker.max;
+            if ((0 < max) && (max < inputNum)) {
+                this.history.reason = "max:" + max + " < inputNum:" + inputNum;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uB300 " + max + " \uC774\uD558\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.";
+                this.history.key = "max";
+                this.history.value = max;
+                return false;
+            }
+            // @ Deprecated - max과 동일
+            var lessThanEqualTo = myChecker.lessThanEqualTo;
+            if ((0 < lessThanEqualTo) && (lessThanEqualTo < inputNum)) {
+                this.history.reason = "lessThanEqualTo:" + lessThanEqualTo + " < inputNum:" + inputNum;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uB300 " + lessThanEqualTo + " \uC774\uD558\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.";
+                this.history.key = "lessThanEqualTo";
+                this.history.value = lessThanEqualTo;
+                return false;
+            } // end if
+            // @ Deprecated - min과 동일
+            var greaterThanEqualTo = myChecker.greaterThanEqualTo;
+            if ((0 < greaterThanEqualTo) && (inputNum < greaterThanEqualTo)) {
+                this.history.reason = "inputNum:" + inputNum + " < greaterThanEqualTo:" + greaterThanEqualTo;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = "\uCD5C\uC18C " + greaterThanEqualTo + " \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.";
+                this.history.key = "greaterThanEqualTo";
+                this.history.value = greaterThanEqualTo;
+                return false;
+            } // end if
         }
         else if (this.TYPE_ARRAY === myChecker.type) {
         }
@@ -793,14 +857,26 @@ var MyCheckerService = (function () {
         // public myChecker:MyChecker
         return new my_checker_1.MyChecker(
         // public type:string
-        this.TYPE_STRING, this.MIN_STR_SAFE_TITLE, this.MAX_STR_SAFE_TITLE, this.REGEX_SAFE_STR);
+        this.TYPE_STRING, this.MIN_STR_SAFE_TITLE, this.MAX_STR_SAFE_TITLE, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
     MyCheckerService.prototype.getCommentChecker = function () {
         // public myChecker:MyChecker
         return new my_checker_1.MyChecker(
         // public type:string
-        this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.REGEX_SAFE_STR);
+        this.TYPE_STRING, this.MIN_STR_SAFE_COMMENT, this.MAX_STR_SAFE_COMMENT, this.myRegEx.REGEX_SAFE_STR);
     }; // end method
+    MyCheckerService.prototype.getNaturalNumberChecker = function () {
+        // public myChecker:MyChecker
+        return new my_checker_1.MyChecker(
+        // public type:string
+        this.TYPE_NONE, 0, Number.MAX_SAFE_INTEGER, this.myRegEx.REGEX_NATURAL_NUM);
+    };
+    MyCheckerService.prototype.getFreePassChecker = function () {
+        // public myChecker:MyChecker
+        return new my_checker_1.MyChecker(
+        // public type:string
+        this.TYPE_NONE, null, null, null);
+    };
     MyCheckerService.prototype.sanitizeDirtyWord = function (target) {
         if (null == this.dirtyWordList || 0 == this.dirtyWordList.length) {
             return target;

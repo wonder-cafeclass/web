@@ -12,9 +12,12 @@
           >{{desc}}</div>
           
       </td>
-      <td 	class="td-layout price" 
-      		[style.padding-top]="paddingTopPrice + 'px'"
-      		[style.font-size]="fontSizePrice + 'px'">{{currency}} {{priceWithFormat}}</td> 
+      <td 	
+      class="td-layout" 
+  		[style.padding-top]="paddingTopPrice + 'px'">
+        <div class="price" [style.font-size]="fontSizePrice + 'px'">{{currency}} {{priceWithFormat}}</div>
+        <div *ngIf="priceDesc" class="price-desc">{{priceDesc}}</div>
+      </td> 
     </tr>
   </tbody> 
 </table>

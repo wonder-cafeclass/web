@@ -22,8 +22,8 @@ var PasswordsTripletComponent = (function () {
     PasswordsTripletComponent.prototype.ngOnInit = function () { };
     PasswordsTripletComponent.prototype.ngAfterViewInit = function () { };
     PasswordsTripletComponent.prototype.onChangedFromChild = function (myEvent) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("passwords-triplet / onChangedFromChild / init");
         if (isDebug)
@@ -31,8 +31,8 @@ var PasswordsTripletComponent = (function () {
         this.emitEvent(myEvent);
     }; // end method
     PasswordsTripletComponent.prototype.emitEvent = function (myEvnet) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("passwords-triplet / emitEvent / init");
         this.emitter.emit(myEvnet);
@@ -40,8 +40,8 @@ var PasswordsTripletComponent = (function () {
     PasswordsTripletComponent.prototype.showTooltipWarning = function (eventKey, msg) {
         // childrenPW
         // http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("passwords-triplet / showTooltipWarning / init");
         var childPW = this.getChild(eventKey);
@@ -61,8 +61,8 @@ var PasswordsTripletComponent = (function () {
     PasswordsTripletComponent.prototype.showTooltipSuccess = function (eventKey, msg) {
         // childrenPW
         // http://blog.mgechev.com/2016/01/23/angular2-viewchildren-contentchildren-difference-viewproviders/
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("passwords-triplet / showTooltipSuccess / init");
         var childPW = this.getChild(eventKey);

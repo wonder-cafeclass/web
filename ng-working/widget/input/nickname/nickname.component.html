@@ -1,23 +1,5 @@
 <div class="btn-box text-left info">
 	<label class="title">닉네임</label>
-
-	<div 	*ngIf="isShowPopover"
-			class="popover left"
-			[style.top]="top + 'px'"
-			[style.left]="left + 'px'"
-			[ngClass]="{'popover-show':isFocusInfo}"> 
-		<div class="arrow"></div> 
-		<h3 class="popover-title">닉네임은 어떻게 사용되나요?</h3> 
-		<div class="popover-content"> 
-			<p>수업에서 선생님과 다른 학생들에게 불릴 이름으로 사용됩니다. 닉네임은 언제든지 수정이 가능합니다. 다만 다른 닉네임과 겹치면 안됩니다.2 ~ 32자리의 한글, 알파벳 대소문자,숫자가 가능합니다.</p> 
-		</div> 
-	</div>
-
-	<span 	*ngIf="isShowPopover"
-			class="glyphicon glyphicon-info-sign info"
-			[ngClass]="{'popover-show-info':isFocusInfo}"
-			(mouseover)="onMouseOverInfo($event)"
-			(mouseout)="onMouseOutInfo($event)"></span>
 </div>
 <div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus}"
 		class="btn-box radius-border">
@@ -28,28 +10,26 @@
 			(keyup)="onKeyup($event, input)"
 			(keydown.tab)="onKeydownTab($event)"
 			(keydown.shift.tab)="onKeydownTabShift($event)"
+			[(ngModel)]="ngModelInput"
 			value={{inputStrPrev}}
 			class="form-control input-glass" 
 			placeholder="닉네임">
 
 	<!-- icon - warning -->
-	<span 	*ngIf="isWarning"
+	<span 	*ngIf="!isValid"
 			class="glyphicon glyphicon-exclamation-sign warning"
 			aria-hidden="true"></span>
 			
 	<!-- tooltip -->
-	<div 	class="tooltip top" 
-			*ngIf="tooltipHeadMsg"
-			[style.top]="topWarning + 'px'"
-			[style.left]="leftWarning + 'px'"
-			style="opacity:1;"
-			role="tooltip"> 
+	<div 	[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
+			class="tooltip top"
+			role="tooltip">
 
 		<div 	class="tooltip-arrow"
-				[ngClass]="{'tooltip-success-arrow':isSuccessInput,'tooltip-warning-arrow':!isSuccessInput}"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
 				></div> 
 		<div 	class="tooltip-inner" 
-				[ngClass]="{'tooltip-success-inner':isSuccessInput,'tooltip-warning-inner':!isSuccessInput}">{{tooltipHeadMsg}}</div> 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
 
 	</div>			
 </div>

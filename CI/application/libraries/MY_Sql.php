@@ -9,13 +9,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @license   MIT
  */
 
+require APPPATH . '/models/Teacher.php';
 require APPPATH . '/models/User.php';
 require APPPATH . '/models/UserValidation.php';
 require APPPATH . '/models/UserCookie.php';
 
+/*
+require APPPATH . '/models/SelectTile.php';
+require APPPATH . '/models/KlassCourse.php';
+require APPPATH . '/models/KlassKeyword.php';
+require APPPATH . '/models/KlassLevel.php';
+require APPPATH . '/models/KlassStation.php';
+require APPPATH . '/models/KlassDay.php';
+require APPPATH . '/models/KlassTime.php';
+require APPPATH . '/models/KlassCalendar.php';
+require APPPATH . '/models/KlassReview.php';
+require APPPATH . '/models/KlassQuestion.php';
+*/
+
 class MY_Sql
 {
 	private $CI=null;
+    private $query="";
 
     function __construct()
     {
@@ -35,6 +50,18 @@ class MY_Sql
         {
             return;
         }
+    }
+
+    public function get_last_query()
+    {
+        return $this->query;
+    }
+    private function set_last_query($query="")
+    {
+        if(!empty($query)) 
+        {
+            $this->query = $query;
+        } // end if
     }
 
     /*
@@ -63,25 +90,30 @@ class MY_Sql
     }    
 
     private function is_not_ok($key=null, $value=null) 
+    {   
+        return !$this->is_ok($key, $value);
+    }
+
+    private function is_ok($key=null, $value=null) 
     {
         if(is_null($key)) 
         {
-            return true;
+            return false;
         }
         if(is_null($value)) 
         {
-            return true;
+            return false;
         }
         if(!isset($this->CI->my_paramchecker)) 
         {
-            return true;
+            return false;
         }
 
-        if($this->CI->my_paramchecker->is_not_ok($key, $value))
+        $result = $this->CI->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
         {
             return true;
         }
-
         return false;
     }
 
@@ -373,7 +405,7 @@ class MY_Sql
         $this->CI->db->where('facebook_id', $facebook_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -470,7 +502,7 @@ class MY_Sql
         $this->CI->db->where('naver_id', $naver_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -539,6 +571,8 @@ class MY_Sql
         {
             return false;
         }
+
+        $this->set_last_query($query);
 
         $is_success = 
         $this->insert_log_query(
@@ -725,14 +759,20 @@ class MY_Sql
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('email', $email);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->log_query(
-            // $user_id=-1
-            intval($user_id),
-            // $action_type=""
-            $this->CI->my_logger->QUERY_TYPE_UPDATE,
-            // $query=""
-            $sql
-        );
+
+        // email로 유저 정보를 가져온다. 
+        $user = $this->get_user_by_email($email);
+        if(isset($user) && isset($user->id)) 
+        {
+            $this->log_query(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->CI->my_logger->QUERY_TYPE_UPDATE,
+                // $query=""
+                $sql
+            );
+        }
 
         // QUERY EXECUTION
         $this->CI->db->where('email', $email);
@@ -848,9 +888,6 @@ class MY_Sql
             return;
         }
 
-        // 생일은 없는 경우, 공백 문자로 입력한다.
-        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
-
         $data = array(
             'password' => $password_hashed
         );
@@ -858,14 +895,19 @@ class MY_Sql
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
         $this->CI->db->where('email', $email);
-        $this->log_query(
-            // $user_id=-1
-            intval($user_id),
-            // $action_type=""
-            $this->CI->my_logger->QUERY_TYPE_UPDATE,
-            // $query=""
-            $sql
-        );
+
+        $user = $this->get_user_by_email($email);
+        if(isset($user) && isset($user->id)) 
+        {
+            $this->log_query(
+                // $user_id=-1
+                intval($user->id),
+                // $action_type=""
+                $this->CI->my_logger->QUERY_TYPE_UPDATE,
+                // $query=""
+                $sql
+            );
+        }
 
         // QUERY EXECUTION
         $this->CI->db->where('email', $email);
@@ -882,7 +924,7 @@ class MY_Sql
         $this->CI->db->where('kakao_id', $kakao_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -910,7 +952,7 @@ class MY_Sql
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -960,7 +1002,7 @@ class MY_Sql
         $this->CI->db->where('email', $email);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);        
 
         $password_hashed = "";
         foreach ($query->result() as $row)
@@ -1033,7 +1075,7 @@ class MY_Sql
         $this->CI->db->where('id', $user_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user');
+        $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
 
@@ -1145,7 +1187,7 @@ class MY_Sql
         $this->CI->db->where('user_id', $user_id);
         $limit = 1;
         $offset = 0;
-        $query = $this->CI->db->get('user_validation');
+        $query = $this->CI->db->get('user_validation', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'UserValidation');
 
@@ -1231,7 +1273,7 @@ class MY_Sql
     }     
     public function select_user_cookie_by_key($key="")
     {
-        if($this->is_not_ok("user_cookie", $key))
+        if($this->is_not_ok("user_cookie_key", $key))
         {
             return;
         }
@@ -1241,6 +1283,10 @@ class MY_Sql
         $this->CI->db->where('key', $key);
         $this->CI->db->where('date_expire >', 'NOW()', FALSE);
         $this->CI->db->limit(1);
+        // 쿼리 등록
+        $last_query = $this->CI->db->get_compiled_select('user_cookie');
+        $this->set_last_query($last_query);
+        // 쿼리 실행
         $query = $this->CI->db->get('user_cookie');
 
         $row = $query->custom_row_object(0, 'UserCookie');
@@ -1250,7 +1296,1872 @@ class MY_Sql
         $this->CI->db->delete('user_cookie');
 
         return $row;
-    }          
+    } 
+
+
+    public function search_klass($q="", $level="", $station="", $day="", $time="")
+    {
+        // 유효한 파라미터들만 검색에 사용한다.
+        $where_conditions = array();
+        if($this->is_ok("klass_level", $level))
+        {
+            $this->CI->db->where('level', $level);
+        }
+        if($this->is_ok("klass_station", $station))
+        {
+            $this->CI->db->where('venue_subway_station', $station);
+        }
+        if($this->is_ok("klass_day", $day))
+        {
+            $this->CI->db->where('days', $day);
+        }
+        if($this->is_ok("klass_query", $q))
+        {
+            $keyword_list = explode("|",$q);
+            $extra['keyword_list'] = $keyword_list;
+
+            $like_cnt = 0;
+            for ($i=0; $i < count($keyword_list); $i++) 
+            { 
+                $keyword = $keyword_list[$i];
+
+                if(empty($keyword)) 
+                {
+                    continue;
+                }
+
+                if(0 === $like_cnt) 
+                {
+                    // escaped automatically in 'like' or 'or_like'
+                    $this->CI->db->like('title', $keyword);
+                    $this->CI->db->or_like('desc', $keyword);
+                }
+                else
+                {
+                    $this->CI->db->or_like('title', $keyword);
+                    $this->CI->db->or_like('desc', $keyword);
+                }
+
+                $like_cnt++;
+            }
+        }
+        // Set time range
+        // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra['time_begin'] = 
+        $time_begin = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list'
+        );
+        $extra['time_end'] = 
+        $time_end = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $time, 
+            'class_times_list', 
+            'class_times_range_list', 
+            1
+        );
+        $time_begin_HHmm = "";
+        $time_end_HHmm = "";
+        if(is_numeric($time_begin) && is_numeric($time_end))
+        {
+            $time_begin_HHmm = $this->CI->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->CI->my_time->digit_to_HHmm($time_end, true);
+        }
+        if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
+            $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
+        {
+            $this->CI->db->where('time_begin >=', $time_begin_HHmm);
+            $this->CI->db->where('time_end <=', $time_end_HHmm);
+        }
+        $this->CI->db->order_by('id', 'DESC');
+
+        // DB WORKS
+        $limit = 30;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+
+        // RESULT
+        $klass_list = $query->result();
+
+        return $klass_list;
+    }
+
+    public function select_klass_list($offset=-1, $limit=-1)
+    {
+        if(!(0 < $offset)) 
+        {
+            $offset = 0;
+        }
+        if(!(0 < $limit)) 
+        {
+            $limit = 20;
+        }
+
+        $this->CI->db->limit($offset, $limit);  // Produces: LIMIT 20, 10
+        $this->CI->db->order_by('id', 'DESC');
+
+        $sql = $this->CI->db->get_compiled_select('klass');
+        $this->set_last_query($sql);
+
+        $query = $this->CI->db->get('klass');
+
+        $klass_list = $this->decorate_klass($query);
+
+        return $klass_list;
+    }
+
+    public function select_klass_question_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $klass_question_list = $this->select_klass_parent_question_list($klass_id);
+        if(!empty($klass_question_list))
+        {
+            $klass_question_list = 
+            $this->select_klass_child_question_comment_list($klass_question_list);
+        }
+
+        return $klass_question_list;
+    }
+    private function select_klass_parent_question_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 문의를 가져옵니다.
+        $question_list = null;
+        // 1. 부모 문의를 먼저 가져옵니다.(최신순)
+        if(0 < $klass_id)
+        {
+            $this->CI->db->select('question.id, question.klass_id, question.user_id, question.status, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->CI->db->from('question');
+            $this->CI->db->join('user', 'question.user_id = user.id');
+            $this->CI->db->where('question.klass_id', $klass_id);
+            $this->CI->db->where('question.parent_id < ', 1);
+            $this->CI->db->where('question.status', 'A');
+            $this->CI->db->order_by('question.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $question_list = $this->add_klass_question_extra_info($query);
+        }
+
+        return $question_list;
+    }
+    private function select_klass_child_question_comment_list($question_list=null)
+    {
+        if(empty($question_list))
+        {
+            return;
+        }
+
+        for ($i=0; $i < count($question_list); $i++) 
+        {
+
+            $question = $question_list[$i];
+            $question_id = intval($question->id);
+
+            if(!(0 < $question_id)) 
+            {
+                continue;
+            }
+
+            $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+            $this->CI->db->from('question');
+            $this->CI->db->join('user', 'question.user_id = user.id');
+            $this->CI->db->where('question.parent_id', $question_id);
+            $this->CI->db->where('question.status', 'A');
+            $this->CI->db->order_by('question.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $question->child_question_list = $this->add_klass_question_extra_info($query);
+        } // end for
+
+        return $question_list;
+    }
+    private function add_klass_question_extra_info($query=null)
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassQuestion');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->CI->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->CI->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }    
+
+
+    public function select_klass_review_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = $this->select_klass_parent_review_list($klass_id);
+
+        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
+        $review_list = $this->select_klass_children_review_comment_list($review_list);
+
+        return $review_list;
+    }
+    private function select_klass_parent_review_list($klass_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.klass_id', $klass_id);
+        $this->CI->db->where('review.parent_id < ', 1);
+        $this->CI->db->where('review.status',"A");
+        $this->CI->db->order_by('review.id', 'DESC');
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        return $review_list;
+    }
+    public function select_klass_review_last($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, review.status, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.klass_id', $klass_id);
+        $this->CI->db->where('review.user_id', $user_id);
+        $this->CI->db->order_by('review.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        if(empty($review_list)) {
+            return null;
+        }
+
+        return $review_list[0];
+    } 
+
+    public function select_klass_review_by_id($klass_review_id=-1)
+    {
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $review_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('review.id, review.klass_id, review.user_id, review.status, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.star, review.date_created, review.date_updated');
+        $this->CI->db->from('review');
+        $this->CI->db->join('user', 'review.user_id = user.id');
+        $this->CI->db->where('review.id', $klass_review_id);
+        $query = $this->CI->db->get();
+        $review_list = $this->add_klass_review_extra_info($query);
+
+        if(empty($review_list)) {
+            return null;
+        }
+
+        return $review_list[0];
+    }      
+    public function select_klass_question_last($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        // 수업의 문의를 가져옵니다.
+        $question_list = null;
+        $this->CI->db->select('question.id, question.klass_id, question.user_id, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+        $this->CI->db->from('question');
+        $this->CI->db->join('user', 'question.user_id = user.id');
+        $this->CI->db->where('question.klass_id', $klass_id);
+        $this->CI->db->where('question.user_id', $user_id);
+        $this->CI->db->order_by('question.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $question_list = $this->add_klass_question_extra_info($query);
+
+        if(empty($question_list)) {
+            return null;
+        }
+
+        return $question_list[0];
+    } 
+
+    public function select_klass_question_by_id($klass_question_id=-1)
+    {
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+
+        // 수업의 리뷰를 가져옵니다.
+        $question_list = null;
+        // 1. 부모 리뷰를 먼저 가져옵니다.(최신순)
+        $this->CI->db->select('question.id, question.klass_id, question.user_id, question.status, user.name, user.nickname, user.thumbnail, question.parent_id, question.comment, question.date_created, question.date_updated');
+        $this->CI->db->from('question');
+        $this->CI->db->join('user', 'question.user_id = user.id');
+        $this->CI->db->where('question.id', $klass_question_id);
+        $query = $this->CI->db->get();
+        $question_list = $this->add_klass_question_extra_info($query);
+
+        if(empty($question_list)) {
+            return null;
+        }
+
+        return $question_list[0];
+    } 
+      
+    private function select_klass_children_review_comment_list($review_list)
+    {
+        if(empty($review_list)) 
+        {
+            return [];
+        }
+
+        // 2. 부모 리뷰에 연결된 자식 리뷰 댓글들을 가져옵니다.(순차시간)
+        for ($i=0; $i < count($review_list); $i++) 
+        {
+
+            $review = $review_list[$i];
+            $review_id = intval($review->id);
+
+            if(!(0 < $review_id)) 
+            {
+                continue;
+            }
+
+            $this->CI->db->select('review.id, review.klass_id, review.user_id, user.name, user.nickname, user.thumbnail, review.parent_id, review.comment, review.date_created, review.date_updated');
+            $this->CI->db->from('review');
+            $this->CI->db->join('user', 'review.user_id = user.id');
+            $this->CI->db->where('review.parent_id', $review_id);
+            $this->CI->db->where('review.status', 'A');
+            $this->CI->db->order_by('review.id', 'DESC');
+            $query = $this->CI->db->get();
+
+            $review->child_review_list = $this->add_klass_review_extra_info($query);
+        } 
+        
+        return $review_list;
+    }
+    private function add_klass_review_extra_info($query=null)
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassReview');
+        if(!empty($rows))
+        {
+            foreach ($rows as $row) 
+            {
+                $row->id = intval($row->id);
+                $row->parent_id = intval($row->parent_id);
+                $row->klass_id = intval($row->klass_id);
+                $row->user_id = intval($row->user_id);
+                $row->star = intval($row->star);
+
+                if(empty($row->thumbnail))
+                {
+                    $row->thumbnail = "user_anonymous_150x150.png";
+                }
+
+                $row->thumbnail_url = $this->CI->my_path->get("/assets/images/user/" . $row->thumbnail);
+
+                // 읽기 쉬운 시간 표기로 바꿉니다.
+                $row->date_updated_human_readable = 
+                $this->CI->my_time->get_YYYYMMDDHHMMSS_human_readable_kor($row->date_updated);
+
+            }
+        }
+
+        return $rows;
+    }    
+
+    public function select_teacher($teacher_id=-1)
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('id', $teacher_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $teacher = $this->add_klass_teacher_extra_info($query);
+        return $teacher;
+    }
+    private function add_klass_teacher_extra_info($query=null)
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $rows = $query->custom_result_object('KlassTeacher');
+        $teacher = null;
+        if(!empty($rows))
+        {
+            $teacher = $rows[0];   
+        }
+
+        return $teacher;
+    }
+
+    // @ Desc : 시작날짜 ex) 2016-10-10
+    private function get_klass_date_begin_default()
+    {   
+        if(isset($this->CI->my_time))
+        {
+            // 기본 시작 값은 일주일 뒤.
+            return $this->CI->my_time->get_days_after(7);
+        }
+        return "";
+    }
+    // @ Desc : 시작시간 ex) 19:00
+    private function get_klass_time_begin_default()
+    {   
+        // 기본 시작 값은 일주일 뒤.
+        return "19:00";
+    }
+    // @ Desc : 시작시간 ex) 21:00
+    private function get_klass_time_end_default()
+    {   
+        // 기본 시작 값은 일주일 뒤.
+        return "21:00";
+    }
+    // @ Desc : 수업시간 분으로 표시(minutes) ex) 120
+    private function get_klass_time_duration_minutes_default()
+    {   
+        return 120;
+    }
+    // @ Desc : 수업레벨 B(Beginner/왕초급),E(Elementary/초급),P(Pre-intermediate/초중급),I(Intermediate/중급),U(Upper-intermediate/중상급),A(Advanced/상급)
+    private function get_klass_level_default()
+    {
+        $class_level_list = $this->CI->my_paramchecker->get_const('class_level_list');
+        if(!empty($class_level_list)) {
+            return $class_level_list[1];
+        }
+
+        return "";
+    }
+    // @ Desc : '수업 최소 수강 week 수 ex) 2 - 2주'
+    private function get_klass_week_min_default()
+    {
+        return 2;
+    }    
+    private function get_klass_week_max_default()
+    {
+        return 4;
+    }    
+    private function get_klass_days_default()
+    {
+        $class_level_list = $this->CI->my_paramchecker->get_const('class_days_list');
+        if(!empty($class_level_list)) {
+            return $class_level_list[1];
+        }
+
+        return "";
+    }
+    private function get_klass_class_per_week_default()
+    {
+        return 1;
+    }
+    private function get_klass_price_default()
+    {
+        return 65000;
+    }
+    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $week_min=-1, $week_max=-1, $days="", $class_per_week=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $teacher_resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $teacher_greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_title", $title))
+        {
+            $title = "수업 제목을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_desc", $desc))
+        {
+            $desc = "수업 설명을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_feature", $feature))
+        {
+            $feature = "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_target", $target))
+        {
+            $target = "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요";
+        }
+        if($this->is_not_ok("klass_schedule", $schedule))
+        {
+            $schedule = "수업 일정을 입력해주세요";
+        }
+
+        if($this->is_not_ok("klass_date_begin", $date_begin))
+        {
+            $date_begin = $this->get_klass_date_begin_default();
+        }
+        if($this->is_not_ok("klass_time", $time_begin))
+        {
+            $time_begin = $this->get_klass_time_begin_default();
+        }
+        if($this->is_not_ok("klass_time_range", $time_duration_minutes))
+        {
+            $time_duration_minutes = $this->get_klass_time_duration_minutes_default();
+        }
+        if($this->is_not_ok("klass_level", $level))
+        {
+            $level = $this->get_klass_level_default();
+        }
+
+        if($this->is_not_ok("klass_week_min", $week_min))
+        {
+            $week_min = $this->get_klass_week_min_default();
+        }
+        if($this->is_not_ok("klass_week_max", $week_max))
+        {
+            $week_max = $this->get_klass_week_max_default();
+        }
+        if($this->is_not_ok("klass_days", $days))
+        {
+            $days = $this->get_klass_days_default();
+        }
+        if($this->is_not_ok("klass_class_per_week", $class_per_week))
+        {
+            $class_per_week = $this->get_klass_class_per_week_default();
+        }
+        if($this->is_not_ok("klass_price", $price))
+        {
+            $price = $this->get_klass_price_default();
+        }
+
+        $data = array(
+            'teacher_id' => $teacher_id,
+            'teacher_resume' => $teacher_resume,
+            'teacher_greeting' => $teacher_greeting,
+            'title' => $title,
+            'desc' => $desc,
+            'feature' => $feature,
+            'target' => $target,
+            'schedule' => $schedule,
+            'date_begin' => $date_begin,
+            'time_begin' => $time_begin,
+            'time_duration_minutes' => $time_duration_minutes,
+            'level' => $level,
+            'week_min' => $week_min,
+            'week_max' => $week_max,
+            'days' => $days,
+            'class_per_week' => $class_per_week,
+            'price' => $price,
+            'class_banner_url' => "drinks.png|||help.png"
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('klass');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('klass', $data);        
+
+    } // end method
+
+    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
+    {
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $teacher_resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $teacher_greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_title", $title))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_feature", $feature))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_target", $target))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_schedule", $schedule))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_date_begin", $date_begin))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_time_hhmm", $time_begin))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_time_hhmm", $time_end))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_level", $level))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_week", $week))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_days", $days))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_price", $price))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_student_cnt", $student_cnt))
+        {
+            return;
+        }
+
+        if($this->is_not_ok("klass_venue_title", $venue_title))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_address", $venue_address))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_road_address", $venue_road_address))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_latitude", $venue_latitude))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_venue_longitude", $venue_longitude))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_subway_line", $subway_line))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_subway_station", $subway_station))
+        {
+            return;
+        }        
+        if($this->is_not_ok("klass_banner_url", $banner_url))
+        {
+            $klass_banner_url = "";
+        }        
+        if($this->is_not_ok("klass_poster_url", $poster_url))
+        {
+            return;
+        }
+
+        $data = array(
+            'teacher_resume' => $teacher_resume,
+            'teacher_greeting' => $teacher_greeting,
+            'title' => $title,
+            'feature' => $feature,
+            'target' => $target,
+            'schedule' => $schedule,
+            'date_begin' => $date_begin,
+            'time_begin' => $time_begin,
+            'time_end' => $time_end,
+            'time_duration_minutes' => $time_duration_minutes,
+            'level' => $level,
+            'week' => $week,
+            'days' => $days,
+            'price' => $price,
+            'student_cnt' => $student_cnt,
+
+            'venue_title' => $venue_title,
+            'venue_telephone' => $venue_telephone,
+            'venue_address' => $venue_address,
+            'venue_road_address' => $venue_road_address,
+            'venue_latitude' => $venue_latitude,
+            'venue_longitude' => $venue_longitude,
+
+            'subway_line' => $subway_line,
+            'subway_station' => $subway_station,
+
+            'class_banner_url' => $banner_url,
+            'class_poster_url' => $poster_url
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->update('klass', $data);
+
+    } // end method    
+
+
+    // @ Desc : 클래스의 타이틀을 가져옵니다.
+    /*
+    public function get_klass_title($klass_id=-1)
+    {
+        
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('title');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $title = "";
+        foreach ($rows as $row) 
+        {
+            $title = $row->title;
+            break;
+        }
+        
+        return $title;
+    }
+    */
+
+    
+    // @ Desc : 클래스의 제목을 업데이트합니다.
+    public function update_klass_title($user_id=-1, $klass_id=-1, $klass_title_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_title_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_title_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'title' => $klass_title_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    } 
+
+    public function remove_klass_review($user_id=-1, $klass_id=-1, $klass_review_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
+
+        $this->update_klass_review_status($user_id, $klass_id, $klass_review_id, "N");
+    }
+
+    // @ Desc : 클래스의 상태를 변경한다.
+    private function update_klass_review_status($user_id=-1, $klass_id=-1, $klass_review_id=-1, $klass_review_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_id", $klass_review_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_status", $klass_review_status))
+        {
+            return;
+        }
+
+        $data = array(
+            'status' => $klass_review_status,
+        );
+
+        // QUERY Logging
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_review_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY Execution
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_review_id);
+        $this->CI->db->update('review', $data);
+
+    }
+
+    // @ Desc : 클래스의 리뷰를 추가한다.
+    public function add_klass_review($user_id=-1, $klass_id=-1, $klass_review="", $klass_review_star=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review", $klass_review))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_star", $klass_review_star))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => -1,
+            'comment' => $klass_review,
+            'star' => $klass_review_star
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('review', $data);
+    }
+    // @ Desc : 클래스의 리뷰의 답글을 추가한다.
+    public function add_klass_review_reply($user_id=-1, $klass_id=-1, $klass_review_parent_id=-1, $klass_reply="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review_parent_id", $klass_review_parent_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_review", $klass_reply))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => $klass_review_parent_id,
+            'comment' => $klass_reply
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('review');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('review', $data);
+    }        
+
+
+    public function remove_klass_question($user_id=-1, $klass_id=-1, $klass_question_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+
+        $this->update_klass_question_status($user_id, $klass_id, $klass_question_id, "N");
+    }
+
+    // @ Desc : 클래스의 상태를 변경한다.
+    private function update_klass_question_status($user_id=-1, $klass_id=-1, $klass_question_id=-1, $klass_question_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_id", $klass_question_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_status", $klass_question_status))
+        {
+            return;
+        }
+
+        $data = array(
+            'status' => $klass_question_status,
+        );
+
+        // QUERY Logging
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_question_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY Execution
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('id', $klass_question_id);
+        $this->CI->db->update('question', $data);
+
+    }
+
+    // @ Desc : 클래스의 질문을 추가한다.
+    public function add_klass_question($user_id=-1, $klass_id=-1, $klass_question="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question", $klass_question))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => -1,
+            'comment' => $klass_question
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('question', $data);
+    }
+    // @ Desc : 클래스의 질문의 답글을 추가한다.
+    public function add_klass_question_reply($user_id=-1, $klass_id=-1, $klass_question_parent_id=-1, $klass_question_reply="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question_parent_id", $klass_question_parent_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_question", $klass_question_reply))
+        {
+            return;
+        }
+
+        // 새로운 수업의 사용자 질문을 추가한다.
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'parent_id' => $klass_question_parent_id,
+            'comment' => $klass_question_reply
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('question');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('question', $data);
+    }        
+
+
+    // @ Desc : 클래스의 포스터 정보를 가져옵니다.
+    public function get_klass_poster($klass_id=-1)
+    {
+        
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('class_poster_url');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $klass_poster_url = "";
+        foreach ($rows as $row) 
+        {
+            $klass_poster_url = $row->class_poster_url;
+            break;
+        }
+        
+        return $klass_poster_url;
+
+    }
+    // @ Desc : 클래스의 포스터를 추가한다.
+    public function add_klass_poster($user_id=-1, $klass_id=-1, $klass_poster_url_to_add="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_poster_url", $klass_poster_url_to_add))
+        {
+            return;
+        }
+
+        // 새로운 poster 주소를 추가한다.
+        $this->update_klass_poster($user_id, $klass_id, $klass_poster_url_to_add);
+    }
+    private function update_klass_poster($user_id=-1, $klass_id=-1, $klass_poster_url_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_poster_url_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_poster_url_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'class_poster_url' => $klass_poster_url_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    } 
+
+
+
+    private $delimiter_klass_banner="|||";
+    public function get_klass_banner_list($klass_id=-1)
+    {
+        // 클래스의 배너 정보를 가져옵니다.
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('class_banner_url');
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $rows = $query->result();
+
+        $klass_banner_arr = [];
+        if(empty($rows)) 
+        {
+            return $klass_banner_arr;
+        }
+
+        $klass_banner_url = "";
+        foreach ($rows as $row) 
+        {
+            $klass_banner_url = $row->class_banner_url;
+            break;
+        }
+
+        if(!empty($klass_banner_url))
+        {
+            $klass_banner_arr = explode($this->delimiter_klass_banner,$klass_banner_url);    
+        }
+
+        return $klass_banner_arr;
+
+    }       
+
+    /*
+    // @ Desc : 클래스의 특정 배너를 추가한다.
+    public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_add))
+        {
+            return;
+        }
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        $class_banner_url_next = "";
+        if(empty($klass_banner_arr)) {
+            $class_banner_url_next = $klass_banner_url_to_add;
+        }
+        else
+        {
+            $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr) . $this->delimiter_klass_banner . $klass_banner_url_to_add;
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
+    }
+
+    // @ Desc : 클래스의 특정 배너를 삭제한다.
+    public function remove_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_delete="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_delete))
+        {
+            return;
+        } 
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        if(empty($klass_banner_arr)) 
+        {
+            // Error Report
+            return;
+        }
+
+        $klass_banner_arr_next = [];
+        for ($i=0; $i < count($klass_banner_arr); $i++) { 
+            $klass_banner = $klass_banner_arr[$i];
+
+            if( empty($klass_banner) || 
+                $klass_banner === $klass_banner_url_to_delete) 
+            {
+                // 삭제함.
+                continue;
+            }
+
+            array_push($klass_banner_arr_next, $klass_banner);
+        }
+        $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr_next);
+
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
+    }
+    */
+    public function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if(is_null($klass_banner_url_to_update))
+        {   
+            // 공백도 허용함.
+            $klass_banner_url_to_update="";
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $data = array(
+            'class_banner_url' => $klass_banner_url_to_update
+        );
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $klass_id);
+        $this->CI->db->update('klass', $data);
+    }
+
+
+
+    public function select_klass($klass_id=-1) 
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('id', $klass_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('klass', $limit, $offset);
+        $klass_list = $this->decorate_klass($query);
+        $klass = null;
+        if(!empty($klass_list)) 
+        {
+            $klass = $klass_list[0];
+            $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
+        }
+
+        return $klass;
+    }
+    public function select_klass_by_teacher($teacher_id=-1) 
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('klass');
+
+        $klass_list = $this->decorate_klass($query);
+        $klass = null;
+        if(!empty($klass_list)) 
+        {
+            $klass = $klass_list[0];
+        }
+
+        return $klass;
+    }    
+    private function decorate_klass($query=null) 
+    {
+        if(is_null($query)) {
+            return;
+        }
+
+        $const_map = $this->CI->my_paramchecker->get_const_map();
+        if(is_null($const_map)) {
+            return;
+        }
+        $rows = $query->custom_result_object('KlassCourse');
+        $output = array();
+        foreach ($rows as $row)
+        {
+            // 추가할 정보들을 넣는다.
+            $row->time_begin_img_url($const_map, $this->CI->my_path);
+            $row->level_img_url($const_map, $this->CI->my_path);
+            $row->set_days_list($const_map);
+            $row->days_img_url($const_map, $this->CI->my_path);
+            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
+            $row->venue_cafe_logo_img_url($const_map, $this->CI->my_path);
+            $row->price_with_format();
+            $row->set_klass_price_list();
+            $row->weeks_to_months();
+
+            // wonder.jung
+
+            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
+            $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
+            if(empty($row->class_poster_url)) {
+                $row->class_poster_url = "";
+                $row->class_poster_url_loadable = $this->CI->my_path->get("/assets/images/class/poster/no_image.svg");
+            }
+            else
+            {
+                $row->class_poster_url_loadable = $this->CI->my_path->get_loadable_url_class_poster($row->class_poster_url);   
+            }
+
+            // Set number type
+            $row->id = intval($row->id);
+            $row->enrollment_interval_week = intval($row->enrollment_interval_week);
+            $row->student_cnt = intval($row->student_cnt);
+            $row->discount = intval($row->discount);
+            $row->teacher_id = intval($row->teacher_id);
+            $row->time_duration_minutes = intval($row->time_duration_minutes);
+            $row->week = intval($row->week);
+
+            // 주당 수업 가격에 대해 계산한다.
+            // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
+            // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
+            $price = $row->price = intval($row->price);
+            $week_max = $row->week_max = intval($row->week_max);
+            $week_min = $row->week_min = intval($row->week_min);
+            $week_unit_cnt = ($week_max / $week_min);
+
+            // 주당 가격 산정은 다음과 같다. 
+            // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
+            $fee_per_a_week = $price/$week_min;
+
+            $row->week_list = array();
+            $row->price_list = array();
+            $row->weekly_price_list = array();
+            for ($i=1; $i <= $week_unit_cnt; $i++) { 
+                $next_weeks = $week_min * $i;
+                array_push($row->week_list, $next_weeks);
+                $next_price = $fee_per_a_week * $week_min * $i;
+                array_push($row->price_list, $next_price);
+
+                $weeky_price = [
+                    'weeks'=>$next_weeks,
+                    'price'=>$next_price
+                ];
+                array_push($row->weekly_price_list, $weeky_price);
+            }
+            
+            array_push($output, $row);
+        }
+
+        return $output;
+    }     
+
+
+    public function insert_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+        if($this->is_not_ready())
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_email", $email))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_name", $name))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("teacher_resume", $resume))
+        {
+            return false;
+        }
+        // TODO - 입력 글자수가 많으므로, escape 처리 필요.
+        if($this->is_not_ok("teacher_greeting", $greeting))
+        {
+            return false;
+        }
+        // TODO - 입력 글자수가 많으므로, escape 처리 필요.
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return false;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return false;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'user_id' => $user_id,
+            'nickname' => $nickname,
+            'name' => $name,
+            'resume' => $resume,
+            'greeting' => $greeting,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail",
+            'email' => $email
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('teacher');
+        $this->log_query(
+            // $user_id=-1
+            $user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('teacher', $data);
+
+        return true;
+    }
+
+    public function update_teacher($user_id=-1, $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
+    {
+
+        // TODO - user id로 업데이트 되고 있음.
+        // 숫자로 구성되어 있으므로 공격 확률이 있음. 
+        // 문자열 조합키로 변경 필요 있음.
+
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_resume", $resume))
+        {
+            return;
+        }
+        if($this->is_not_ok("teacher_greeting", $greeting))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_nickname", $nickname))
+        {
+            $nickname = "";
+        }
+        if($this->is_not_ok("user_gender", $gender))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_birth_year", $birth_year))
+        {
+            $birth_year = "";
+        }
+        if($this->is_not_ok("user_birth_month", $birth_month))
+        {
+            $birth_month = "";
+        }
+        if($this->is_not_ok("user_birth_day", $birth_day))
+        {
+            $birth_day = "";
+        }
+        if($this->is_not_ok("user_thumbnail", $thumbnail))
+        {
+            $thumbnail = "";
+        }
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        // 생일은 없는 경우, 공백 문자로 입력한다.
+        $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+
+        $data = array(
+            'nickname' => $nickname,
+            'resume' => $resume,
+            'greeting' => $greeting,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'thumbnail' => $thumbnail,
+            'mobile' => "$mobile_head-$mobile_body-$mobile_tail"
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $user_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->update('teacher', $data);
+    } 
+
+    public function get_teacher_by_email($email=-1) 
+    {
+        if($this->is_not_ok("email", $email))
+        {
+            return;
+        }
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('email', $email);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    }    
+
+    public function get_teacher_by_user_id($user_id=-1) 
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('user_id', $user_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    }
+
+    public function get_teacher_by_mobile($mobile_head="", $mobile_body="", $mobile_tail="") 
+    {
+        if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
+        {
+            return;
+        }
+
+        $mobile = "$mobile_head-$mobile_body-$mobile_tail";
+
+        $this->CI->db->select('id, user_id, email, name, nickname, resume, greeting, mobile, gender, birthday, thumbnail, status, date_created, date_updated');
+        $this->CI->db->where('mobile', $mobile);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $row = $query->custom_row_object(0, 'Teacher');
+
+        return $row;
+    } 
 
 }
 

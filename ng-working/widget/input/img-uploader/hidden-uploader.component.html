@@ -1,0 +1,15 @@
+<!-- 
+파일 업로드 : https://plnkr.co/edit/ozZqbxIorjQW15BrDFrg?p=preview 
+-->
+<div class="btn-box radius-border img-uploader">
+	<!-- tooltip init -->
+	<tooltip
+	[marginTop]="0"
+	[marginLeft]="5"
+	></tooltip>
+	<input  #fileInput 
+			style="display:none;"
+			type="file" 
+			name="userfile" 
+			(change)="onChangeFile($event)"/>
+</div>

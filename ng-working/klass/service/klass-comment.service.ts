@@ -1,9 +1,11 @@
 import { Injectable }        from '@angular/core';
+
 import { Klass }             from '../model/klass';
-import { CommentService }    from '../../widget/comment/service/comment.service';
-import { Comment }           from '../../widget/comment/model/comment';
 import { KlassReview }       from '../model/klass-review';
 import { KlassQuestion }     from '../model/klass-question';
+
+import { CommentService }    from '../../widget/comment/service/comment.service';
+import { Comment }           from '../../widget/comment/model/comment';
 
 @Injectable()
 export class KlassCommentService {
@@ -11,49 +13,24 @@ export class KlassCommentService {
     // 카페 클래스에서 댓글 객체를 만들기 위한 로직을 관리하는 클래스.
     constructor(private commentService:CommentService) {}
 
-    getReviewCommentList(klassReviewList:KlassReview[]) :Comment[] {
+    getReviewCommentList(klassReviewList:KlassReview[], loginUserId:number) :Comment[] {
 
         let reviewCommentList:Comment[] = [];
         for (var i = 0; i < klassReviewList.length; ++i) {
-            let review = klassReviewList[i];
-            let reviewComment =
-            this.commentService.getNewComment(
-                // public comment:string
-                review.comment,
-                // public writer:string
-                review.nickname,
-                // public thumbnail_url:string
-                review.thumbnail_url,
-                // public dateUpdated:string
-                review.date_updated,
-                // public dateUpdatedHumanReadable:string
-                review.date_updated_human_readable,
-                // public metaObj:any
-                review
-            ); 
+            let review:KlassReview = klassReviewList[i];
+            let reviewComment = review.getComment();
 
+            reviewComment.checkMine(loginUserId);
 
             let child_comment_list = review.child_review_list;
             let childReviewCommentList:Comment[] = [];
             if(null != child_comment_list && 0 < child_comment_list.length) {
 
                 for (var j = 0; j < child_comment_list.length; ++j) {
-                    let childReview = child_comment_list[j];
-                    let childReviewComment = 
-                    this.commentService.getNewComment(
-                        // public comment:string
-                        childReview.comment,
-                        // public writer:string
-                        childReview.nickname,
-                        // public thumbnail_url:string
-                        childReview.thumbnail_url,
-                        // public dateUpdated:string
-                        childReview.date_updated,
-                        // public dateUpdatedHumanReadable:string
-                        childReview.date_updated_human_readable,
-                        // public metaObj:any
-                        childReview
-                    );
+                    let childReview:KlassReview = child_comment_list[j];
+                    let childReviewComment = childReview.getComment();
+
+                    childReviewComment.checkMine(loginUserId);
 
                     childReviewCommentList.push(childReviewComment);
                 } // end inner for
@@ -65,63 +42,54 @@ export class KlassCommentService {
         } // end outer for        
 
         return reviewCommentList;
-    }
+    } // end method  
 
-    getQuestionCommentList(klassQuestionList:KlassQuestion[]) :Comment[] {
+    getQuestionCommentList(klassQuestionList:KlassQuestion[], loginUserId:number) :Comment[] {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("klass-comment.service / getQuestionCommentList / init");
 
         let questionCommentList:Comment[] = [];
         for (var i = 0; i < klassQuestionList.length; ++i) {
-            let question = klassQuestionList[i];
-            let questionComment =
-            this.commentService.getNewComment(
-                // public comment:string
-                question.comment,
-                // public writer:string
-                question.nickname,
-                // public thumbnail_url:string
-                question.thumbnail_url,
-                // public dateUpdated:string
-                question.date_updated,
-                // public dateUpdatedHumanReadable:string
-                question.date_updated_human_readable,
-                // public metaObj:any
-                question
-            ); 
+            let question:KlassQuestion = klassQuestionList[i];
+            let questionComment = question.getComment();
 
+            questionComment.checkMine(loginUserId);
+
+            if(isDebug) console.log("klass-comment.service / getQuestionCommentList / question : ",question);
+            if(isDebug) console.log("klass-comment.service / getQuestionCommentList / questionComment : ",questionComment);
 
             let child_comment_list = question.child_question_list;
-            let childReviewCommentList:Comment[] = [];
+            if(isDebug) console.log("klass-comment.service / getQuestionCommentList / child_comment_list : ",child_comment_list);
+
+            let childQuestionCommentList:Comment[] = [];
             if(null != child_comment_list && 0 < child_comment_list.length) {
 
                 for (var j = 0; j < child_comment_list.length; ++j) {
-                    let childReview = child_comment_list[j];
-                    let childReviewComment = 
-                    this.commentService.getNewComment(
-                        // public comment:string
-                        childReview.comment,
-                        // public writer:string
-                        childReview.nickname,
-                        // public thumbnail_url:string
-                        childReview.thumbnail_url,
-                        // public dateUpdated:string
-                        childReview.date_updated,
-                        // public dateUpdatedHumanReadable:string
-                        childReview.date_updated_human_readable,
-                        // public metaObj:any
-                        childReview
-                    );
+                    let childQuestion:KlassQuestion = child_comment_list[j];
 
-                    childReviewCommentList.push(childReviewComment);
+                    if(isDebug) console.log("klass-comment.service / getQuestionCommentList / childQuestion : ",childQuestion);
+
+                    let childQuestionComment = childQuestion.getComment();
+
+                    childQuestionComment.checkMine(loginUserId);
+
+                    if(isDebug) console.log("klass-comment.service / getQuestionCommentList / childQuestionComment : ",childQuestionComment);
+
+                    childQuestionCommentList.push(childQuestionComment);
                 } // end inner for
 
-                questionComment.childCommentList = childReviewCommentList;
+                if(isDebug) console.log("klass-comment.service / getQuestionCommentList / childQuestionCommentList : ",childQuestionCommentList);
+
+                questionComment.childCommentList = childQuestionCommentList;
             } // end if
 
             questionCommentList.push(questionComment);
         } // end outer for        
 
         return questionCommentList;
-    }    
 
+    } // end method
 
 }

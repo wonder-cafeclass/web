@@ -6,21 +6,54 @@
           <div class="media">
             <div class="media-left">
 				<a href="#">
-					<img src={{comment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+					<img src={{comment.thumbnail}} alt="..." class="img-circle profile" style="width:50px;">
 				</a>
             </div>
             <div class="media-body">
-            	<span style="color:#777">{{comment.writer}}</span>
+            	<span class="writer">{{comment.writer}}</span>
+
+				<!-- 별점 표시 영역 INIT -->
+				<div *ngIf="hasEvaluation" class="star">
+					<span 
+					[ngClass]="{'glyphicon-star':0 < comment.star,'glyphicon-star-empty':comment.star < 1}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':1 < comment.star,'glyphicon-star-empty':comment.star < 2}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':2 < comment.star,'glyphicon-star-empty':comment.star < 3}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':3 < comment.star,'glyphicon-star-empty':comment.star < 4}"
+					class="glyphicon">
+					</span>
+					<span 
+					[ngClass]="{'glyphicon-star':4 < comment.star,'glyphicon-star-empty':comment.star < 5}"
+					class="glyphicon">
+					</span>
+				</div>
+				<!-- 별점 표시 영역 DONE -->
+
             	<span style="color:#9d9d9d;float:right;">
             		<small>{{comment.dateUpdatedHumanReadable}}</small>
             	</span><br/>
             	<span>{{comment.comment}}</span>
 
-            	<button 	type="button" 
-            				#replyBtn
-            				class="btn btn-default btn-xs pull-right" 
-            				(click)="onClickAddComment($event, replyContainer, replyBtn)"
-            				style="margin-top:5px;width:80px;">답글달기</button>
+            	<button 	
+            	type="button" 
+				#replyBtn
+				class="btn btn-default btn-xs pull-right right" 
+				(click)="onClickAddComment($event, replyContainer, replyBtn)">답글달기</button>
+
+            	<button
+            	*ngIf="comment.isMine"
+				type="button" 
+				class="btn btn-default btn-xs pull-right left" 
+				(click)="onClickRemoveComment($event, comment)">지우기</button>
+
 
         		<!-- child comment list / INIT -->
 				<div 	*ngFor="let childComment of comment.childCommentList" 
@@ -28,7 +61,7 @@
 					<div class="divider"></div>
 					<div class="media-left">
 						<a href="#">
-							<img src={{childComment.thumbnail_url}} alt="..." class="img-circle profile" style="width:50px;">
+							<img src={{childComment.thumbnail}} alt="..." class="img-circle profile" style="width:50px;">
 						</a>
 					</div>
 					<div class="media-body">
@@ -37,6 +70,13 @@
 							<small>{{childComment.dateUpdatedHumanReadable}}</small>
 						</span><br/>
 						<span>{{childComment.comment}}</span>
+
+		            	<button
+		            	*ngIf="comment.isMine"
+						type="button" 
+						class="btn btn-default btn-xs pull-right right" 
+						(click)="onClickRemoveComment($event, childComment)">지우기</button>
+
 					</div>
 				</div>
         		<!-- child comment list / DONE -->
@@ -44,13 +84,14 @@
 
 
         		<!-- child comment input / INIT -->
-				<div class="media child" #replyContainer style="margin-top: 11px;display:none;">
+				<div class="media child" #replyContainer style="margin-top: 21px;display:none;">
 					<div class="divider"></div>
 					<!-- <div class="media-left"> -->
 					<div class="media-body">
 						<div class="input-group">
 							<textarea 	#taNewReply
 										rows="2"
+										(focus)="onFocusReply($event, taNewReply, replyContainer)"
 										(click)="onClickReply($event, taNewReply, replyContainer)"
 										(blur)="onBlurReply($event, taNewReply, replyContainer)"
 										class="form-control input-text">{{placeholderReply}}</textarea>
@@ -71,13 +112,50 @@
     </li>
 
 	<!-- comment input / INIT -->
-	<li class="list-group-item" 
-		style="padding:5px;">
+	<li 
+	*ngIf="!isInputDisabled"
+	class="list-group-item" 
+	style="padding:5px;">
+
+		<!-- 별점 표시 영역 INIT -->
+		<div
+		*ngIf="hasEvaluation"
+		class="eval">
+			<span 
+			#star1
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 1)"
+			(mouseout)="onOutStar($event, star1, star2, star3, star4, star5)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star2
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 2)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star3
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 3)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star4
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 4)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span 
+			#star5
+			(mouseover)="onOverStar($event, star1, star2, star3, star4, star5, 5)"
+			class="glyphicon glyphicon-star-empty">
+			</span>
+			<span>{{evaluation}}</span>
+		</div>
+		<!-- 별점 표시 영역 DONE -->
 
 		<div 	*ngIf="isShowNewCommentInput" 
 				class="input-group">
 			<textarea 	#taNewComment
 						rows="2"
+						(focus)="onFocusTextarea($event, taNewComment)"
 						(click)="onClickTextarea($event, taNewComment)"
 						(blur)="onBlurTextarea($event, taNewComment)"
 						class="form-control input-text">{{placeholderInput}}</textarea>

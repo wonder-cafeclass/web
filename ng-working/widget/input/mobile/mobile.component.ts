@@ -7,6 +7,7 @@ import {  Component,
 import { Router }               from '@angular/router';
 
 import { UserService }          from '../../../users/service/user.service';
+import { User }                 from '../../../users/model/user';
 
 import { MyLoggerService }      from '../../../util/service/my-logger.service';
 import { MyCheckerService }     from '../../../util/service/my-checker.service';
@@ -58,13 +59,17 @@ export class MobileComponent implements OnInit, AfterViewInit {
   isFocusMobileTail:boolean=false;
   isFocusMobileInfo:boolean=false;  
 
-  private mobileHeadEmitted:string="";
-  private mobileBodyEmitted:string="";
-  private mobileTailEmitted:string="";
+  mobileHeadEmitted:string="";
+  mobileBodyEmitted:string="";
+  mobileTailEmitted:string="";
 
   mobileHeadPrev:string="010";
   mobileBodyPrev:string="";
   mobileTailPrev:string="";
+
+  ngModelHead:string="";
+  ngModelBody:string="";
+  ngModelTail:string="";
 
   isAdmin:boolean=false;
 
@@ -155,45 +160,77 @@ export class MobileComponent implements OnInit, AfterViewInit {
     this.setViewPack();
   }
 
+  isNotOKHead(input:string) :boolean {
+    return !this.isOKHead(input);
+  }
   isOKHead(input:string) :boolean {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("mobile / isOKHead / init");
+    if(isDebug) console.log(`mobile / isOKHead / init / |${input}|`);  
+
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("mobile / isOKHead / this.myCheckerService is not valid!");  
       return false;
     }
 
     let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileHead, input);
+    if(isDebug) console.log("mobile / isOKHead / isOK : ",isOK);  
 
     if(!isOK) {
       let history = this.myCheckerService.getLastHistory();
-      console.log("mobile / isOKHead / history : ",history);
+      if(isDebug) console.log("mobile / isOKHead / history : ",history);  
     }
 
     return isOK;
   }
+  isNotOKBody(input:string) :boolean {
+    return !this.isOKBody(input);
+  }
   isOKBody(input:string) :boolean {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("mobile / isOKBody / init");
+    if(isDebug) console.log(`mobile / isOKBody / init / |${input}|`);
+
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("mobile / isOKBody / this.myCheckerService is not valid!");  
       return false;
     }
 
     let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileBody, input);
+    if(isDebug) console.log("mobile / isOKBody / isOK : ",isOK);  
 
     if(!isOK) {
       let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("mobile / isOKBody / history : ",history);  
     }
 
     return isOK;
   }
+  isNotOKTail(input:string) :boolean {
+    return !this.isOKTail(input);
+  }  
   isOKTail(input:string) :boolean {
 
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("mobile / isOKTail / init");
+    if(isDebug) console.log(`mobile / isOKTail / init / |${input}|`);
+
     if(null == this.myCheckerService) {
+      if(isDebug) console.log("mobile / isOKTail / this.myCheckerService is not valid!");  
       return false;
     }
 
     let isOK:boolean = this.myCheckerService.isOK(this.myCheckerMobileTail, input);
+    if(isDebug) console.log("mobile / isOKTail / isOK : ",isOK);  
 
     if(!isOK) {
       let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("mobile / isOKTail / history : ",history);  
     }
 
     return isOK;
@@ -201,18 +238,27 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
   public setMobileHead(mobileHead:string) :void {
     if(this.isOKHead(mobileHead)) {
-      this.mobileHeadPrev = mobileHead;
+      this.ngModelHead = this.mobileHeadEmitted = this.mobileHeadPrev = mobileHead;
     }
   }
   public setMobileBody(mobileBody:string) :void {
     if(this.isOKBody(mobileBody)) {
-      this.mobileBodyPrev = mobileBody;
+      this.ngModelBody = this.mobileBodyEmitted = this.mobileBodyPrev = mobileBody;
     }
   }
   public setMobileTail(mobileTail:string) :void {
     if(this.isOKTail(mobileTail)) {
-      this.mobileTailPrev = mobileTail;
+      this.ngModelTail = this.mobileTailEmitted = this.mobileTailPrev = mobileTail;
     }
+  }
+
+  public hasDoneMobile() :boolean {
+    if( this.hasDoneMobileHead() && 
+        this.hasDoneMobileBody() && 
+        this.hasDoneMobileTail()) {
+      return true;
+    }
+    return false;
   }
 
   // @ Desc : 전화번호 앞자리가 제대로 입력되었는지 확인합니다.
@@ -247,10 +293,15 @@ export class MobileComponent implements OnInit, AfterViewInit {
     return this.isOKBody(this.mobileBodyPrev);
   }
   // @ Desc : 전화번호 가운데 자리를 확인해 달라는 표시를 보여줍니다.
-  public showWarningMobileBody() :void {
+  public showWarningMobileBody(msg:string) :void {
+
+    if(null == msg) {
+      msg = this.tooltipHeadNotAllowed;
+    }
+
     this.isFocusMobileBody = true;
     this.isSuccessBodyInput = false;
-    this.tooltipBodyMsg = this.tooltipHeadNotAllowed;
+    this.tooltipBodyMsg = msg;
   }
   // @ Desc : 전화번호 마지막 자리가 제대로 입력되었는지 확인합니다.
   public hasNotDoneMobileTail() :boolean {
@@ -293,7 +344,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
   }
 
   
-  onClickMobileHead(event, element) :void {
+  onClickHead(event, element) :void {
     event.stopPropagation();
     event.preventDefault();
 
@@ -305,13 +356,13 @@ export class MobileComponent implements OnInit, AfterViewInit {
     this.mobileHeadPrev = inputStr;
   }
 
-  onFocusMobileHead(event, element) :void {
+  onFocusHead(event, element) :void {
     this.isFocusMobileHead = true;
   }
-  onKeydownTabMobileHead(event, element) :void {
+  onKeydownTabHead(event, element) :void {
     this.isFocusMobileHead = true;
   }
-  onKeydownTabShiftMobileHead(event, element) :void {
+  onKeydownTabShiftHead(event, element) :void {
     this.isFocusMobileHead = true;
   }
   
@@ -321,8 +372,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
     event.preventDefault();
 
     // let isDebug:boolean = true;
-    let isDebug:boolean = false;  
-
+    let isDebug:boolean = false;
     if(isDebug) console.log("mobile / onKeyupHead / init");  
 
     let inputStr:string = element.value;
@@ -404,7 +454,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
               this.hideTooltipHead(2);
 
               // 직전 내용으로 롤백.
-              inputStr = this.mobileHeadPrev;
+              element.value = inputStr = this.mobileHeadPrev;
               
             }
         }
@@ -444,21 +494,19 @@ export class MobileComponent implements OnInit, AfterViewInit {
       this.emitter.emit(myEventOnChange);
 
       // 전송된 전화번호 값을 저장함. 
-      this.mobileHeadEmitted = inputStr;
+      this.mobileHeadPrev = this.mobileHeadEmitted = inputStr;
     }
-
-    this.mobileHeadPrev = element.value = inputStr;
   } // end method
 
   
-  onBlurMobileHead(event, element, elementNext) :void {
+  onBlurHead(event, element, elementNext) :void {
     event.stopPropagation();
     event.preventDefault();
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
 
-    if(isDebug) console.log("mobile / onBlurMobileHead / init");
+    if(isDebug) console.log("mobile / onBlurHead / init");
 
 
     if(this.isFocusMobileHead) {
@@ -579,7 +627,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
   }   
 
-  onClickMobileBody(event, element) :void {
+  onClickBody(event, element) :void {
     event.stopPropagation();
     event.preventDefault();
 
@@ -590,13 +638,13 @@ export class MobileComponent implements OnInit, AfterViewInit {
     this.mobileBodyPrev = element.value;
   }
 
-  onFocusMobileBody(event, element) :void {
+  onFocusBody(event, element) :void {
     this.isFocusMobileBody = true;
   }
-  onKeydownTabMobileBody(event, element) :void {
+  onKeydownTabBody(event, element) :void {
     this.isFocusMobileBody = true;
   }
-  onKeydownTabShiftMobileBody(event, element) :void {
+  onKeydownTabShiftBody(event, element) :void {
     this.isFocusMobileBody = true;
   }
 
@@ -615,21 +663,26 @@ export class MobileComponent implements OnInit, AfterViewInit {
       return;
     } 
 
+    if(isDebug) console.log("mobile / onKeyupBody / inputStr : ",inputStr);
+
     if(this.mobileBodyPrev === inputStr) {
       // 방향키로 움직이는 경우를 방어
       if(isDebug) console.log("mobile / onKeyupBody / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
       return;
     }
-    
+
     // 숫자가 아닌 글자들은 모두 삭제해준다.
-    element.value = inputStr.replace(/[^0-9]/gi,"");
+    let inputStrFiltered:string = inputStr.replace(/[^0-9]/gi,"");
+    if(inputStrFiltered != inputStr) {
+      if(isDebug) console.log("mobile / onKeyupBody / 숫자가 아닌 글자들은 모두 삭제해준다.");
+      element.value = inputStr = inputStrFiltered;
+    }
 
     // 툴팁을 보여줍니다.
     if(element.value != inputStr) {
       this.tooltipBodyMsg = "숫자만 가능합니다.";
       this.isFocusMobileBody = true;
       this.isSuccessBodyInput = false;
-      element.focus();
       this.hideTooltipBody(2);
     }
 
@@ -685,7 +738,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
               this.hideTooltipBody(2);
 
               // 직전 내용으로 롤백.
-              inputStr = this.mobileBodyPrev;
+              element.value = inputStr = this.mobileBodyPrev;
               
             }
         }
@@ -726,14 +779,12 @@ export class MobileComponent implements OnInit, AfterViewInit {
       this.emitter.emit(myEventOnChange);      
 
       // 전송된 전화번호 값을 저장함. 
-      this.mobileBodyEmitted = inputStr;
+      this.mobileBodyPrev = this.mobileBodyEmitted = inputStr;
 
     }
+  }  
 
-    this.mobileBodyPrev = element.value = inputStr;
-  }   
-
-  onBlurMobileBody(event, element, elementNext) :void {
+  onBlurBody(event, element, elementNext) :void {
 
     event.stopPropagation();
     event.preventDefault();
@@ -829,7 +880,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
   }  
 
-  onClickMobileTail(event, element, elementPrev) :void {
+  onClickTail(event, element, elementPrev) :void {
 
     event.stopPropagation();
     event.preventDefault();
@@ -837,7 +888,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
 
-    if(isDebug) console.log("mobile / onClickMobileTail / init");
+    if(isDebug) console.log("mobile / onClickTail / init");
 
     if(!this.isFocusMobileTail) {
       this.isFocusMobileTail = true;      
@@ -848,7 +899,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
     // 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.
     if(null != elementPrev && (null == elementPrev.value || "" === elementPrev.value)) {
 
-      if(isDebug) console.log("mobile / onClickMobileTail / 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.");
+      if(isDebug) console.log("mobile / onClickTail / 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.");
 
       this.isFocusMobileTail = false;
 
@@ -862,13 +913,13 @@ export class MobileComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onFocusMobileTail(event, element) :void {
+  onFocusTail(event, element) :void {
     this.isFocusMobileTail = true;
   }
-  onKeydownTabMobileTail(event, element) :void {
+  onKeydownTabTail(event, element) :void {
     this.isFocusMobileTail = true;
   }
-  onKeydownTabShiftMobileTail(event, element) :void {
+  onKeydownTabShiftTail(event, element) :void {
     this.isFocusMobileTail = true;
   }
   
@@ -888,6 +939,8 @@ export class MobileComponent implements OnInit, AfterViewInit {
       return;
     } 
 
+    if(isDebug) console.log("mobile / onKeyupTail / inputStr : ",inputStr);
+
     if(this.mobileTailPrev === inputStr) {
       // 방향키로 움직이는 경우를 방어
       if(isDebug) console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
@@ -895,7 +948,11 @@ export class MobileComponent implements OnInit, AfterViewInit {
     }
 
     // 숫자가 아닌 글자들은 모두 삭제해준다.
-    element.value = inputStr.replace(/[^0-9]/gi,"");
+    let inputStrFiltered:string = inputStr.replace(/[^0-9]/gi,"");
+    if(inputStrFiltered != inputStr) {
+      if(isDebug) console.log("mobile / onKeyupTail / 숫자가 아닌 글자들은 모두 삭제해준다.");
+      element.value = inputStr = inputStrFiltered;  
+    }
 
     // 툴팁을 보여줍니다.
     if(element.value != inputStr) {
@@ -958,7 +1015,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
               this.hideTooltipTail(2);
 
               // 직전 내용으로 롤백.
-              inputStr = this.mobileTailPrev;
+              element.value = inputStr = this.mobileTailPrev;
               
             }
         }
@@ -971,24 +1028,19 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
       // hide tooltip
       this.tooltipTailMsg = null;
-      // this.tooltipTailMsg = this.tooltipHeadAllowed;
       this.isFocusMobileTail = false;
       this.isSuccessTailInput = true;
-
-      // this.hideTooltipTail(2);
 
       element.blur();
 
       // wonder.jung
       // 전송될 전화번호 값을 저장함. 
-      this.mobileTailEmitted = inputStr;
+      this.mobileTailPrev = this.mobileTailEmitted = inputStr;
 
       // 전화번호 중복 확인 뒤에 부모 객체로 이벤트 발송.
       this.emitEventChange();
 
     }
-    
-    this.mobileTailPrev = element.value = inputStr;    
   }
 
   private emitEventChange() :void {
@@ -999,24 +1051,47 @@ export class MobileComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
 
-    let isOK:boolean = this.isOKHead(this.mobileHeadEmitted);
-    if(!isOK) {
+    if(this.isNotOKHead(this.mobileHeadEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 첫 3자리에 문제가 있습니다.");
       return;
     }
-
-    isOK = this.isOKBody(this.mobileBodyEmitted);
-    if(!isOK) {
+    if(this.isNotOKBody(this.mobileBodyEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 두번째 3~4자리에 문제가 있습니다.");
       return;
     }
-
-    isOK = this.isOKTail(this.mobileTailEmitted);
-    if(!isOK) {
+    if(this.isNotOKTail(this.mobileTailEmitted)) {
       if(isDebug) console.log("mobile / emitEventChange / 중단 / 전화번호 세번째 4자리에 문제가 있습니다.");
       return;
     }
 
+    // 부모 객체에게 Change Event 발송 
+    let myEventOnChange:MyEvent =
+    this.myEventService.getMyEvent(
+      // public eventName:string
+      this.myEventService.ON_CHANGE,
+      // public key:string
+      this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
+      // public value:string
+      this.mobileTailEmitted,
+      // public metaObj:any
+      null,
+      // public myChecker:MyChecker
+      this.myCheckerMobileTail
+    );
+    this.emitter.emit(myEventOnChange);         
+
+    // 이전에 노출한 경고 메시지가 있다면 내립니다.
+    this.tooltipBodyMsg = null;
+
+    // 포커싱을 모두 내립니다.
+    this.isFocusMobileHead = false;
+    this.isFocusMobileBody = false;
+    this.isFocusMobileTail = false;
+
+    // REMOVE ME
+    // TODO - 부모에게 전화번호 유효성 검사를 요청하는 이벤트를 보냅니다.
+    // 부모가 이 컴포넌트에게 상황에 따라 경고 메시지, 혹은 정상 처리를 합니다.
+    /*
     this.userService
     .getUserByMobile(
       this.myCheckerService.getAPIKey(),
@@ -1092,11 +1167,17 @@ export class MobileComponent implements OnInit, AfterViewInit {
       } // end if
 
     });
+    */
   }
 
-  onBlurMobileTail(event, element, elementNext) :void {
+  onBlurTail(event, element, elementNext) :void {
+
     event.stopPropagation();
     event.preventDefault();
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("mobile / onBlurTail / init");
 
     if(this.isFocusMobileTail) {
       this.isFocusMobileTail = false;
@@ -1104,15 +1185,21 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
     let inputStr:string = element.value;
     if(null == inputStr || "" == inputStr) {
+      if(isDebug) console.log("mobile / onBlurTail / 중단 / inputStr is not valid!");
       return;
     }
+    if(isDebug) console.log("mobile / onBlurTail / inputStr : ",inputStr);
 
     let isOK:boolean = this.isOKTail(inputStr);
+    if(isDebug) console.log("mobile / onBlurTail / isOK : ",isOK);
     if(!isOK) {
 
       // 조건에 맞지 않습니다.
+      if(isDebug) console.log("mobile / onBlurTail / 조건에 맞지 않습니다.");
+
       // 원인을 찾아봅니다.
       let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("mobile / onBlurTail / history : ",history);
 
       if( null != history && 
           null != history.key && 
@@ -1175,25 +1262,6 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
       // 전화번호 중복 확인 뒤에 부모 객체로 이벤트 발송.
       this.emitEventChange();
-
-      /*
-      // 부모 객체에게 Change Event 발송 
-      let myEventOnChange:MyEvent =
-      this.myEventService.getMyEvent(
-        // public eventName:string
-        this.myEventService.ON_CHANGE,
-        // public key:string
-        this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
-        // public value:string
-        inputStr,
-        // public metaObj:any
-        null,
-        // public myChecker:MyChecker
-        this.myCheckerMobileTail
-      );
-      this.emitter.emit(myEventOnChange); 
-      */     
-
 
     } // end if 
   } // end method

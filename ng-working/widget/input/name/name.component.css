@@ -71,3 +71,13 @@ span.warning {
   font-size: 10px;
   padding-top: 5px;
 }
+.show-my-tooltip {
+  opacity:1; 
+  margin-left: 100px;
+  margin-top: -80px; 
+}
+.hide-my-tooltip {
+  opacity:0; 
+  margin-left: 100px;
+  margin-top: -80px; 
+}

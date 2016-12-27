@@ -22,6 +22,7 @@ import { MyEvent }              from '../../util/model/my-event';
 
 import { User }                         from '../../users/model/user';
 import { MyResponse }                   from '../../util/model/my-response';
+import { MyCookie }                     from '../../util/http/my-cookie';
 import { MyEventWatchTowerService }     from '../../util/service/my-event-watchtower.service';
 
 @Component({
@@ -43,6 +44,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   isAdmin:boolean=false;
 
+  private myCookie:MyCookie;
+
   constructor(  private loginService: LoginService, 
                 private userService:UserService,
                 private myLoggerService: MyLoggerService,
@@ -50,12 +53,16 @@ export class ValidationComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService,
                 private route: ActivatedRoute,
-                public router: Router) {}
+                public router: Router) {
+
+    this.myCookie = new MyCookie();
+
+  }
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / ngOnInit / init");
 
   }
@@ -63,8 +70,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -72,8 +79,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
   }
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -106,8 +113,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
@@ -119,8 +126,8 @@ export class ValidationComponent implements OnInit, AfterViewInit {
 
   getUserValidation(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("validation / getUserValidation / init");
 
     // 외부 쿼리 스트링 파라미터를 가져옵니다.
@@ -193,8 +200,19 @@ export class ValidationComponent implements OnInit, AfterViewInit {
           // 3초 뒤에 홈으로 이동.
           var _self = this;
           setTimeout(function () {
-              // 메시지를 3초 뒤에 화면에서 지웁니다.
-              _self.router.navigate(['/class-center']);
+
+            // 로그인 직전 페이지로 리다이렉트. 
+            // 돌아갈 주소가 없다면, 홈으로 이동.
+            let redirectUrl:string = _self.myCookie.getCookie("redirectUrl");
+            if(null == redirectUrl || "" == redirectUrl) {
+              redirectUrl = '/class-center';
+            }
+
+            if(isDebug) console.log("validation / getUserValidation / subscribe / 3. 리다이렉트 : ",redirectUrl);
+
+            // 메시지를 3초 뒤에 화면에서 지웁니다.
+            _self.router.navigate([redirectUrl]);
+
           }, 3000);
 
           // event-watchtower에게 로그인 정보를 전달. 로그인 관련 내용을 화면에 표시합니다.

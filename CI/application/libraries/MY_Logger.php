@@ -195,27 +195,32 @@ class MY_Logger
 
     // @ Desc : Wrapper of my_paramchecker
     private function is_not_ok($key=null, $value=null) 
+    {   
+        return !$this->is_ok($key, $value);
+    }
+
+    private function is_ok($key=null, $value=null) 
     {
         if(is_null($key)) 
         {
-            return true;
+            return false;
         }
         if(is_null($value)) 
         {
-            return true;
+            return false;
         }
         if(!isset($this->CI->my_paramchecker)) 
         {
-            return true;
+            return false;
         }
 
-        if($this->CI->my_paramchecker->is_not_ok($key, $value))
+        $result = $this->CI->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
         {
             return true;
         }
-
         return false;
-    }
+    }    
 
     private function is_not_ready()
     {

@@ -33,6 +33,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   private uploadUserProfileUrl:string = '/CI/index.php/api/upload/userprofile';
   public userProfilePath:string = "/assets/images/user/";
   public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
+  public userProfileDefaultUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
 
   public userProfileSampleArr:string[] = [
     "/assets/images/user/user_anonymous_150x150_cat.jpg",
@@ -57,6 +58,10 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   private myChecker:MyChecker;
 
   isAdmin:boolean=false;
+
+  isShowTooltip:boolean=false;
+  isValidInput:boolean=false;
+  tooltipMsg:string="";
 
   constructor(  private uploadService: UploadService,
                 private myEventService:MyEventService,
@@ -136,6 +141,9 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
     this.setMyChecker();
   }  
 
+  isNotOK(input:string) :boolean {
+    return !this.isOK(input);
+  }
   isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
@@ -166,13 +174,19 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
     return isOK;
   } 
   // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
-  public showWarning() :void {
-    // Do something...
+  public showWarning(msg:string) :void {
+    this.isShowTooltip = true;
+    this.isValidInput = false;
+    this.tooltipMsg = msg;
   } 
+  public hideWarning() :void {
+    this.isShowTooltip = false;
+    this.isValidInput = false;
+    this.tooltipMsg = "";
+  }
   public getProfileImgUrl() :string {
     return this.userProfileUrl;
-  } 
-
+  }
 
   onClickSampleThumb(event, idx) :void {
 
@@ -247,8 +261,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
   }
   onChangeFile(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("profile-img / onChangeFile / init");
     
     var files = event.srcElement.files;
@@ -287,7 +301,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
     let req_url = this.urlService.get(this.uploadUserProfileUrl);
 
-    this.uploadService.makeFileRequest(req_url, [], files).subscribe((myResponse:MyResponse) => {
+    this.uploadService.makeFileRequest(req_url, {}, files).subscribe((myResponse:MyResponse) => {
       // 섬네일 주소를 받아와서 화면에 표시해야 한다.
       if(isDebug) console.log("profile-img / onChangeFile / myResponse : ",myResponse);
 
@@ -313,25 +327,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
             // value:string
             this.userProfileUrl
           );
-
-          // REMOVE ME
-          /*
-          let myEventOnChange:MyEvent =
-          this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE,
-            // public key:string
-            this.myEventService.KEY_USER_THUMBNAIL,
-            // public value:string
-            this.userProfileUrl,
-            // public metaObj:any
-            null,
-            // public myChecker:MyChecker
-            this.myChecker
-          );
-          this.emitter.emit(myEventOnChange);
-          */
-        }
+        } // end if
 
       }
     });
@@ -340,8 +336,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
   private emitEventOnChange(eventKey:string, value:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("profile-img / emitEventOnChange / 시작");
 
     if(null == eventKey) {

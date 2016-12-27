@@ -6,15 +6,12 @@
 			<tr> 
 				<td class="layout border-right">
 
-					<!-- Email -->
-					<email	
+					<!-- Default Input : Email -->
+					<widget-input-default
 					[isDisabled]="true"
-					[top]="133"
-					[left]="91"
-					[topWarning]="5"
-					[leftWarning]="117"
+					[meta]="defaultMetaList[0]"
 					(emitter)="onChangedFromChild($event)">
-					</email>
+					</widget-input-default>
 
 					<!-- Passwords Triplet -->
 					<passwords-triplet 
@@ -24,31 +21,18 @@
 					(emitter)="onChangedFromChild($event)">
 					</passwords-triplet>
 
-					<!-- Password -->
-					<!--
-					<password
-					[top]="228"
-					[left]="91"
-					[topWarning]="100"
-					[leftWarning]="117"
-					(emitter)="onChangedFromChild($event)">
-					</password>
-					-->
-
-					<!-- 이름 -->
-					<name 
+					<!-- Default Input : Name -->
+					<widget-input-default
 					[isDisabled]="true"
+					[meta]="defaultMetaList[1]"
 					(emitter)="onChangedFromChild($event)">
-					</name>
+					</widget-input-default>
 
-					<!-- 닉네임 -->
-					<nickname 	
-					[top]="503" 
-					[left]="91"
-					[topWarning]="385"
-					[leftWarning]="117"
+					<!-- Default Input : Nickname -->
+					<widget-input-default
+					[meta]="defaultMetaList[2]"
 					(emitter)="onChangedFromChild($event)">
-					</nickname>
+					</widget-input-default>
 
 					<!-- EOL -->
 
@@ -93,12 +77,12 @@
 			<tr> 
 				<td class="layout border-top" colspan="2">
 
-					<button 	*ngIf="hasChanged"
+					<button 	*ngIf="isReadyToSave"
 								(click)="onClickSave($event)"
 								type="button" 
 								class="btn btn-orange save">저장하기</button>
 
-					<button 	*ngIf="!hasChanged"
+					<button 	*ngIf="!isReadyToSave"
 								type="button-disabled" 
 								disabled="disabled"
 								class="btn btn-orange save">저장하기</button>

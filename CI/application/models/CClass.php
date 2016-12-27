@@ -67,7 +67,7 @@ class CClass {
         // 수업운영상태
         public $class_status;
         // 이미지 링크    
-        public $class_img_url;
+        public $class_poster_url;
 
         public function time_begin_img_url($const_map=null)
         {

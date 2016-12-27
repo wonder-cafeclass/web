@@ -37,17 +37,15 @@ li.col-next {
 li.col-next.first {
     padding-top: 0px;
 }
-
-
-
-
-
-
-
-
-
-
-
+button.img-uploader {
+  width: 100%;
+  margin-left: 0px;
+}
+.btn-orange {
+  color: #e85c41;
+  background-color: #fff;
+  border-color: #e85c41;
+}
 .klass-singup-btn-group {
     position:absolute;
     right:5px;
@@ -76,10 +74,6 @@ table.pricetag {
     margin: 0px;    
     border-top: 0px;
 }
-
-
-
-
 .watchtower {
     float: left;
     position: absolute;
@@ -87,59 +81,43 @@ table.pricetag {
     top: 5px;
     left: 3px;    
 }
-
-
-
-
-
-/*
-- REMOVE ME
-.klass-img-filter {
-    height:60px;
+div.box-selectile {
+    height: 72px;
+    width: 385px;
+    border:solid 1px #e85c41;
+    border-radius: 5px;
 }
-.klass-field {
+div.pin-selectile {
+    position: relative;
+    top: -11px;
+    left: -26px;    
+}
+div.box-selectile-show {
+    padding: 5px;
+    border:solid 1px #e85c41;
+    border-radius: 5px;    
+}
+table.my-ck-style {
+    margin: 0px;
+}
+td.my-ck-style {
     border:0px;
-}
-.klass-field.image {
-    width:400px;
     padding: 0px;
+    margin: 0px;  
 }
-.list-group-item.klass-info {
-    padding:5px;
-}
-.klass-price {
-    color: #e85c41;
-    padding: 0px;
-    margin: 10px;  
-}
-.btn-map-link {
-    color: #fff;
-    background-color: #e85c41;
-    border-color: #e85c41;
-}
-.klass-signup-btn {
+.btn-orange {
   color: #fff;
   background-color: #e85c41;
   border-color: #e85c41;
-  margin-right: 0px;
 }
-.badge.klass {
-    padding: 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: #fff;
-    background-color: #e85c41;
-    margin-right: 5px;
+button.save {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  margin: 10px;
 }
-.klass-misc {
-    padding-left: 7px;
-    padding-bottom: 40px;
-    padding-top: 0px;
-    border-top: 0px;
+div.price-calc {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
-.glyphicon-star-empty.wishlist {
-    color: #e85c41;
-}
-
-
-*/

@@ -21,7 +21,11 @@ export class MyLoggerService {
 	public pageTypeKlassList:string="CLASS_LIST";
 	public pageTypePolicy:string="POLICY";
 	public pageTypeSignup:string="SIGNUP";
+	public pageTypeSignupTeacher:string="SIGNUP_TEACHER";
 	public pageTypeSignupSelect:string="SIGNUP_SELECT";
+	public pageTypeMyInfo:string="MY_INFO";
+	public pageTypeTeacherInfo:string="TEACHER_INFO";
+	public pageTypeApplyTeacherTerm:string="APPLY_TEACHER_TERM";
 
 	public errorTypeNotValidValue:string="NOT_VALID_VALUE";
 	public errorTypeUnknownError:string="UNKNOWN_ERROR";
@@ -81,8 +85,8 @@ export class MyLoggerService {
 
 	logActionDirtyWord (apiKey:string, dirtyWord:string): Promise<any> {
 
-	    let isDebug:boolean = true;
-	    // let isDebug:boolean = false;
+	    // let isDebug:boolean = true;
+	    let isDebug:boolean = false;
 	    if(isDebug) console.log("my-logger.service / logActionDirtyWord / 시작");
 
 		if(null == apiKey || "" == apiKey) {

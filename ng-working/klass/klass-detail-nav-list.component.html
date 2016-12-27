@@ -1,98 +1,102 @@
 <div>
 
-	<nav-tabs *ngIf="radiobtnOptionListNavTabs"
-            (emitter)="onChangedFromChild($event, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution)"
-            [radiobtnList]="radiobtnOptionListNavTabs"
-            [colorTitleFocus]="colorWhite"
-            [colorTitleBlur]="colorOrange"
-            [colorBGFocus]="colorOrange"
-            [colorBGBlur]="colorWhite"
-            [colorBorder]="colorOrange"></nav-tabs>
+	<nav-tabs 
+  *ngIf="radiobtnOptionListNavTabs"
+  (emitter)="onChangedFromChild($event, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution)"
+  [radiobtnList]="radiobtnOptionListNavTabs"
+  [colorTitleFocus]="colorWhite"
+  [colorTitleBlur]="colorOrange"
+  [colorBGFocus]="colorOrange"
+  [colorBGBlur]="colorWhite"
+  [colorBorder]="colorOrange"></nav-tabs>
 
       <ul class="list-group">
-            <li   #klassDesc
-                  class="list-group-item klass-info first" 
-                  [ngClass]="{'focus':isFocusKlassDesc}">
 
-                  <ul class="list-group" style="margin-bottom:0px;">
+            <li   
+            #klassDesc
+            class="list-group-item klass-info first" 
+            [ngClass]="{'focus':isFocusKlassDesc}">
 
-                        <li *ngIf="myEventListForKlassFeature" 
-                            (click)="onClickKlassFeature()"
-                            class="list-group-item klass-desc klass-feature">
+              <ul class="list-group" style="margin-bottom:0px;">
 
-                            <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                            <div class="klass-feature-title">
-                              <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                              이 수업의 특징 {{myEventListForKlassFeature.length}}가지.
-                            </div>
-                            <div  *ngFor="let myEvent of myEventListForKlassFeature"
-                                  class="klass-feature-text" 
-                                  [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
-                        </li>
-                        <!-- Admin Section -->
-                        <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
-                            class="list-group-item admin">
-                          <inputs-btns-rows   [key]="myEventService.KLASS_FEATURE"
-                                              [rowType]="'fixed'"
-                                              [maxRowCnt]="3"
-                                              [myEventList]="myEventListForKlassFeature" 
-                                              (emitter)="onChangedFromInputRow($event)"
-                                              [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
-                          </inputs-btns-rows>
-                        </li>
+                <li *ngIf="myEventListForKlassFeature" 
+                    (click)="onClickKlassFeature()"
+                    class="list-group-item klass-desc klass-feature">
 
-                        <li *ngIf="myEventListForKlassTarget" 
-                            (click)="onClickKlassTarget()"
-                            class="list-group-item klass-target">
-                          
-                          <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                          <div class="klass-target-title">
-                            <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                            이런 분들께 추천드려요.
-                          </div>
-
-                          <div  *ngFor="let myEvent of myEventListForKlassTarget"
-                                class="klass-target-text" 
-                                [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
-
-                        </li>
-                        <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
-                            class="list-group-item admin">
-                          <inputs-btns-rows [key]="myEventService.KLASS_TARGET"
-                                            [rowType]="'removable'"
-                                            [maxRowCnt]="5"
-                                            [myEventList]="myEventListForKlassTarget"
-                                            (emitter)="onChangedFromInputRow($event)"
-                                            [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
-                          </inputs-btns-rows>
-                        </li>
-
-                        <li *ngIf="klassSchedule && (!isShowKlassScheduleAdmin || isPreviewKlassSchedule)"
-                            (click)="onClickKlassSchedule()"
-                            [ngClass]="{'last-temp':!isPreviewKlassSchedule}"
-                            class="list-group-item klass-schedule">
-
-                              <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                              <div class="klass-target-title">
-                                <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                                이렇게 진행됩니다.
-                              </div>
-                              <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
-                        </li>
-                        <li class="list-group-item admin">
-                          <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
-                                      [cageHeight]="350"
-                                      [cageWidth]="754"
-                                      [key]="myEventService.KLASS_SCHEDULE"
+                    <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                    <div class="klass-feature-title">
+                      <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                      이 수업의 특징 {{myEventListForKlassFeature.length}}가지.
+                    </div>
+                    <div  *ngFor="let myEvent of myEventListForKlassFeature"
+                          class="klass-feature-text" 
+                          [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
+                </li>
+                <!-- Admin Section -->
+                <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
+                    class="list-group-item admin">
+                  <inputs-btns-rows   [key]="myEventService.KEY_KLASS_FEATURE_LIST"
+                                      [rowType]="'fixed'"
+                                      [maxRowCnt]="3"
+                                      [myEventList]="myEventListForKlassFeature" 
                                       (emitter)="onChangedFromInputRow($event)"
-                                      [SEinnerHTML]="klassSchedule">
-                          </input-row>                        
-                        </li>
-                        <!-- TEST / smart editor / isAdmin -->
-                        <!-- wonder.jung 이미지는 PC의 경우는 750px을 초과할 경우, 750px로 고정 -->
-                        <!-- wonder.jung 이미지는 모바일의 경우는 아이폰5 기준, 320px을 초과할 경우, 320px로 고정 -->
-                        <!-- wonder.jung feature, target은 텍스트필드 입력으로 고정. 현재 서비스에서 사용중인 이미지로 배치할 것. -->
-                  </ul>
+                                      [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
+                  </inputs-btns-rows>
+                </li>
+
+                <li *ngIf="myEventListForKlassTarget" 
+                    (click)="onClickKlassTarget()"
+                    class="list-group-item klass-target">
+                  
+                  <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                  <div class="klass-target-title">
+                    <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                    이런 분들께 추천드려요.
+                  </div>
+
+                  <div  *ngFor="let myEvent of myEventListForKlassTarget"
+                        class="klass-target-text" 
+                        [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
+
+                </li>
+                <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
+                    class="list-group-item admin">
+                  <inputs-btns-rows [key]="myEventService.KEY_KLASS_TARGET_LIST"
+                                    [rowType]="'removable'"
+                                    [maxRowCnt]="5"
+                                    [myEventList]="myEventListForKlassTarget"
+                                    (emitter)="onChangedFromInputRow($event)"
+                                    [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
+                  </inputs-btns-rows>
+                </li>
+
+                <li *ngIf="klassSchedule && (!isShowKlassScheduleAdmin || isPreviewKlassSchedule)"
+                    (click)="onClickKlassSchedule()"
+                    [ngClass]="{'last-temp':!isPreviewKlassSchedule}"
+                    class="list-group-item klass-schedule">
+
+                      <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                      <div class="klass-target-title">
+                        <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                        이렇게 진행됩니다.
+                      </div>
+                      <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
+                </li>
+                <li class="list-group-item admin">
+                  <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
+                              [cageHeight]="350"
+                              [cageWidth]="754"
+                              [key]="myEventService.KEY_KLASS_SCHEDULE"
+                              (emitter)="onChangedFromInputRow($event)"
+                              [SEinnerHTML]="klassSchedule">
+                  </input-row>                        
+                </li>
+                <!-- TEST / smart editor / isAdmin -->
+                <!-- wonder.jung 이미지는 PC의 경우는 750px을 초과할 경우, 750px로 고정 -->
+                <!-- wonder.jung 이미지는 모바일의 경우는 아이폰5 기준, 320px을 초과할 경우, 320px로 고정 -->
+                <!-- wonder.jung feature, target은 텍스트필드 입력으로 고정. 현재 서비스에서 사용중인 이미지로 배치할 것. -->
+              </ul>
+              
             </li>
 
             <li #klassVenue
@@ -100,17 +104,9 @@
               <klass-venue-search-list  [isAdmin]="isAdmin"
                                         [cageHeight]="350"
                                         [cageWidth]="778"
-                                        [key]="myEventService.KLASS_VENUE"
                                         (emitter)="onChangedFromInputRow($event)">
               </klass-venue-search-list>
             </li>
-            <!--
-            <li   #klassVenue
-                  class="list-group-item klass-info"
-                  [ngClass]="{'focus':isFocusKlassVenue}">
-                  <img class="img-rounded" style="width:100%;" src={{imageService.get(imageService.mapDummy)}}>
-            </li>
-            -->
 
             <!-- 선생님 관련 소개 정보 데이터 예시 -->
             <!-- 
@@ -121,18 +117,28 @@
                   class="list-group-item klass-info"
                   style="padding:0px;"
                   [ngClass]="{'focus':isFocusTutorDesc}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
-              <klass-teacher  [isAdmin]="isAdmin"
-                              [klassTeacher]="klassTeacher" 
-                              [klassId]="klass.id">
-              </klass-teacher>
+              -->
+              <div style="padding: 5px;">
+                <klass-teacher  [isAdmin]="isAdmin"
+                                [klassTeacher]="klassTeacher" 
+                                [klassId]="klass.id"
+                                (emitter)="onChangedFromInputRow($event)">
+                </klass-teacher>
+              </div>
             </li>
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
+              -->
               <comment-list [isAdmin]="isAdmin"
+                            [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
+                            [hasEvaluation]="true"
                             [myEvent]="myEventForReview"
+                            [eventKey]="myEventService.KEY_KLASS_REVIEW_LIST"
                             [placeholderInput]="'수업을 받고 난 뒤의 느낌은 어떠셨나요?'"
                             [placeholderReply]="'어떤 답글을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"
@@ -142,15 +148,18 @@
             <li   #studentQuestion
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentQuestion}">
+              <!-- 
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
+              -->
               <comment-list [isAdmin]="isAdmin"
+                            [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [myEvent]="myEventForQuestion"
-                            [placeholderInput]="'더 알고 싶은 것이 았다면 무엇이든 물어보세요.'"
+                            [eventKey]="myEventService.KEY_KLASS_QUESTION_LIST"
+                            [placeholderInput]="'더 알고 싶은 것이 있다면 무엇이든 물어보세요.'"
                             [placeholderReply]="'어떤 답변을 해주면 좋을까요?'"
                             (emitter)="onChangedFromInputRow($event)"
                             [commentList]="questionCommentList">
               </comment-list>
-
             </li>
             <li   #caution
                   class="list-group-item klass-info"

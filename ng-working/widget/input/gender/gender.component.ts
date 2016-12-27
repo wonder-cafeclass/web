@@ -134,6 +134,9 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   }
 
+  isNotOK(input:string) :boolean {
+    return this.isOK(input);
+  }
   isOK(input:string) :boolean {
 
     if(null == this.myCheckerService) {
@@ -144,8 +147,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
   } 
   setGender(gender:string) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / gender / init");
     if(isDebug) console.log("gender / gender / gender : ",gender);
 
@@ -162,7 +165,7 @@ export class GenderComponent implements OnInit, AfterViewInit {
   public hasDone() :boolean {
     return this.isOK(this.gender);
   }
-  // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+  // @ Desc : 성별 입력을 확인해 달라는 표시를 보여줍니다.
   public showWarning() :void {
     this.isSuccessInput = false;
     this.tooltipMsg = this.tooltipMsgGenderNotValid;
@@ -230,8 +233,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderFemale(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / onClickGenderFemale / init");
     
     event.stopPropagation();
@@ -246,8 +249,8 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderMale(event) :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("gender / onClickGenderMale / init");
 
     event.stopPropagation();

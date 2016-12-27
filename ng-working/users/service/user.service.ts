@@ -525,8 +525,8 @@ export class UserService {
 
   public getUserCookie(apiKey:string):Promise<MyResponse> {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / getUserCookie / 시작");
     if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 
@@ -597,8 +597,8 @@ export class UserService {
 
   public updatePassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("user.service / updatePassword / 시작");
     if(isDebug) console.log("user.service / updatePassword / apiKey : ",apiKey);
     if(isDebug) console.log("user.service / updatePassword / email : ",email);
@@ -621,6 +621,47 @@ export class UserService {
                 .catch(this.myExtractor.handleError);
 
   }
+
+  public getUserEmpty():User {
+
+    let user:User = 
+    new User(
+      // public id:number,
+      -1,
+      // public nickname:string,
+      "",
+      // public name:string,
+      "",
+      // public gender:string,
+      "",
+      // public birthday:string, 
+      "",
+      // public thumbnail:string,
+      "",
+      // public status:string,
+      "",
+      // public permission:string,
+      "",
+      // public kakao_id:string,
+      "",
+      // public naver_id:string,
+      "",
+      // public facebook_id:string,
+      "",
+      // public google_id:string,
+      "",
+      // public mobile:string,
+      "",
+      // public email:string,
+      "",
+      // public date_created:string,
+      "",
+      // public date_updated:string          
+      ""
+    ); 
+    
+    return user;   
+  }  
 
   public getUserFromJSON(userJSON):User {
 

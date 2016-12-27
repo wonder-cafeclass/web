@@ -98,6 +98,9 @@ var GenderComponent = (function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
     };
+    GenderComponent.prototype.isNotOK = function (input) {
+        return this.isOK(input);
+    };
     GenderComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;
@@ -105,8 +108,8 @@ var GenderComponent = (function () {
         return this.myCheckerService.isOK(this.myChecker, input);
     };
     GenderComponent.prototype.setGender = function (gender) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / gender / init");
         if (isDebug)
@@ -124,7 +127,7 @@ var GenderComponent = (function () {
     GenderComponent.prototype.hasDone = function () {
         return this.isOK(this.gender);
     };
-    // @ Desc : 이메일 입력을 확인해 달라는 표시를 보여줍니다.
+    // @ Desc : 성별 입력을 확인해 달라는 표시를 보여줍니다.
     GenderComponent.prototype.showWarning = function () {
         this.isSuccessInput = false;
         this.tooltipMsg = this.tooltipMsgGenderNotValid;
@@ -176,8 +179,8 @@ var GenderComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     GenderComponent.prototype.onClickGenderFemale = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / onClickGenderFemale / init");
         event.stopPropagation();
@@ -187,8 +190,8 @@ var GenderComponent = (function () {
         this.tooltipMsg = null;
     };
     GenderComponent.prototype.onClickGenderMale = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("gender / onClickGenderMale / init");
         event.stopPropagation();

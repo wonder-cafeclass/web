@@ -12,7 +12,7 @@
 	border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;	
 }
-.td-layout.price {
+div.price {
 	color:#e85c41;
 	font-weight:bold;
 }
@@ -23,4 +23,7 @@
     border-radius:6px;
     -moz-border-radius:6px;	
 }
-
+.price-desc {
+    font-size:10px;
+    color:#777;
+}

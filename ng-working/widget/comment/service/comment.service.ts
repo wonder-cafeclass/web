@@ -8,6 +8,8 @@ export class CommentService {
     // 카페 클래스에서 댓글 객체를 만들기 위한 로직을 관리하는 클래스.
     constructor(private myEventService:MyEventService) {}
 
+    // REMOVE ME
+    /*
     getNewComment(  comment:string, 
                     writer:string, 
                     thumbnail_url:string, 
@@ -35,5 +37,6 @@ export class CommentService {
 
         return newComment;
     }
+    */
 
 }

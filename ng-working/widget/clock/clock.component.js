@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
-var clock_time_1 = require('./model/clock-time');
+var my_clock_time_1 = require('../../util/model/my-clock-time');
 var ClockComponent = (function () {
     function ClockComponent(imageService) {
         this.imageService = imageService;
@@ -330,11 +330,11 @@ var ClockComponent = (function () {
     };
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', clock_time_1.ClockTime)
+        __metadata('design:type', my_clock_time_1.MyClockTime)
     ], ClockComponent.prototype, "clockTimeBegin", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', clock_time_1.ClockTime)
+        __metadata('design:type', my_clock_time_1.MyClockTime)
     ], ClockComponent.prototype, "clockTimeEnd", void 0);
     __decorate([
         core_1.Input(), 

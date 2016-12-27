@@ -4,6 +4,8 @@ import {  Component,
           Input, 
           Output,
           ViewChild,
+          ViewChildren,
+          QueryList,
           OnInit,
           AfterViewInit }                 from '@angular/core';
 import {  Router,
@@ -12,15 +14,15 @@ import {  Router,
 
 import { LoginService }                   from '../service/login.service';
 import { UserService }                    from '../../users/service/user.service';
+import { TeacherService }                 from '../../teachers/service/teacher.service';
 
-import { EmailComponent }                 from '../../widget/input/email/email.component';
 import { ProfileImgUploadComponent }      from '../../widget/input/profile-img-upload/profile-img-upload.component';
 import { PasswordComponent }              from '../../widget/input/password/password.component';
 import { MobileComponent }                from '../../widget/input/mobile/mobile.component';
-import { NameComponent }                  from '../../widget/input/name/name.component';
 import { GenderComponent }                from '../../widget/input/gender/gender.component';
 import { BirthdayComponent }              from '../../widget/input/birthday/birthday.component';
-import { NicknameComponent }              from '../../widget/input/nickname/nickname.component';
+import { DefaultComponent }               from '../../widget/input/default/default.component';
+import { DefaultMeta }                    from '../../widget/input/default/model/default-meta';
 
 import { MyLoggerService }                from '../../util/service/my-logger.service';
 import { MyCheckerService }               from '../../util/service/my-checker.service';
@@ -41,42 +43,23 @@ import { MyResponse }                     from '../../util/model/my-response';
 })
 export class SignupComponent implements OnInit, AfterViewInit {
 
-  private email:string;
-  private password:string;
-  private name:string;
-  private nickname:string;
-  private thumbnail:string;
-  private mobileNumHead:string;
-  private mobileNumBody:string;
-  private mobileNumTail:string;
-  public gender:string="";
-
-  private birthYear:string;
-  private birthMonth:string;
-  private birthDay:string;
-
-  private facebookId:string;
-  private kakaoId:string;
-  private naverId:string;
-
   private hasAgreedWithTerms:boolean = false;
 
   private user:User;
+  private userCopy:User;
 
   public tooltipMsgTerms:string=null;
   private tooltipMsgTermsWarning:string="약관 동의가 필요합니다.";
 
-  @ViewChild(EmailComponent)
-  private emailComponent: EmailComponent;
+  @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
+  defaultMetaList:DefaultMeta[];
+
+  private emailComponent: DefaultComponent;
+  private nameComponent: DefaultComponent;
+  private nicknameComponent: DefaultComponent;
 
   @ViewChild(PasswordComponent)
   private passwordComponent: PasswordComponent;
-
-  @ViewChild(NameComponent)
-  private nameComponent: NameComponent;
-
-  @ViewChild(NicknameComponent)
-  private nicknameComponent: NicknameComponent;
 
   @ViewChild(MobileComponent)
   private mobileComponent: MobileComponent;  
@@ -102,7 +85,17 @@ export class SignupComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService, 
                 private route:ActivatedRoute,
-                public router:Router) {}
+                public router:Router) {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / constructor / init");
+
+    this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
+
+    if(isDebug) console.log("signup / ngOnInit / this.defaultMetaList : ",this.defaultMetaList);
+
+  }
 
   ngOnInit(): void {
 
@@ -119,10 +112,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
     let isDebug:boolean = false;
     if(isDebug) console.log("signup / ngAfterViewInit");
 
+    this.setDefaultComponents();
+
     this.asyncViewPack();
+  }
+  private setDefaultComponents() :void {
 
-  }  
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / setDefaultComponents / 시작");
 
+    // DefaultComponent들을 세팅
+    this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+    this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+    this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
+  }
   private asyncViewPack(): void {
     
     // let isDebug:boolean = true;
@@ -168,7 +172,34 @@ export class SignupComponent implements OnInit, AfterViewInit {
     
     this.logPageEnter();
     this.checkSignedUpUserInfo();
+
+    // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+    this.watchTower.announceToggleTopMenu(false);
   }
+  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+  private getInput(eventKey:string) :any {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / getInput / init");
+
+    let target:DefaultComponent = null;
+
+    this.inputComponentList.forEach(function(inputComponent) {
+
+      if(isDebug) console.log("signup / getInput / eventKey : ",eventKey);
+      if(isDebug) console.log("signup / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
+
+      if(inputComponent.hasEventKey(eventKey)) {
+        if(isDebug) console.log("signup / getInput / inputComponent : ",inputComponent);
+        target = inputComponent;
+        return;
+      }
+
+    }); // end for-each
+
+    return target;
+  }  
 
   private setMyChecker() :void {
 
@@ -218,31 +249,31 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
       if(null != params['facebookId']) {
 
-        this.facebookId = params['facebookId'];
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / this.facebookId : ",this.facebookId);
+        let facebookId:string = params['facebookId'];
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / facebookId : ",facebookId);
 
-        if(null != this.facebookId && "" != this.facebookId) {
-          return this.userService.getUserByFacebookId(this.facebookId);
+        if(null != facebookId && "" != facebookId) {
+          return this.userService.getUserByFacebookId(facebookId);
         }
       }
 
       if(null != params['kakaoId']) {
 
-        this.kakaoId = params['kakaoId'];
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / this.kakaoId : ",this.kakaoId);
+        let kakaoId:string = params['kakaoId'];
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / kakaoId : ",kakaoId);
 
-        if(null != this.kakaoId && "" != this.kakaoId) {
-          return this.userService.getUserByKakaoId(this.kakaoId);
+        if(null != kakaoId && "" != kakaoId) {
+          return this.userService.getUserByKakaoId(kakaoId);
         }
       }
 
       if(null != params['naverId']) {
 
-        this.naverId = params['naverId'];
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / this.naverId : ",this.naverId);
+        let naverId:string = params['naverId'];
+        if(isDebug) console.log("signup / checkSignedUpUserInfo / switchMap / naverId : ",naverId);
 
-        if(null != this.naverId && "" != this.naverId) {
-          return this.userService.getUserByNaverId(this.naverId);
+        if(null != naverId && "" != naverId) {
+          return this.userService.getUserByNaverId(naverId);
         }
       }
 
@@ -252,18 +283,49 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
       if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / myResponse : ",myResponse);
 
-      let kakaoId:number = -1;
-      let user:User = null;
+      // let kakaoId:number = -1;
+      let userJSON = null;
       if(myResponse.isSuccess()) {
-        kakaoId = +myResponse.getDataProp("kakao_id");
-        user = myResponse.getDataProp("user");
+        // kakaoId = +myResponse.getDataProp("kakao_id");
+        userJSON = myResponse.getDataProp("user");
       }
+      this.user = this.userService.getUserFromJSON(userJSON);
+      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / this.user : ",this.user);
 
-      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / kakaoId : ",kakaoId);
-      if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / user : ",user);
+      if(null != this.user) {
 
-      if(null != user) {
-        this.user = user;
+        this.userCopy = this.user.copy();
+        if(this.userCopy.isFacebookUser()) {
+
+          if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 페이스북 로그인 - 유저 정보 가져오기.");
+
+          // 페이스북 로그인 - 유저 정보 가져오기.
+          this.emailComponent.setInput(this.userCopy.email);
+          this.nameComponent.setInput(this.userCopy.name);
+          this.nicknameComponent.setInput(this.userCopy.nickname);
+          this.profileImgUploadComponent.setProfileImg(this.userCopy.thumbnail);
+
+        } else if(this.userCopy.isKakaoUser()) {
+
+          if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 카카오 로그인 - 유저 정보 가져오기.");
+
+          // 카카오 로그인 - 유저 정보 가져오기.
+          this.nameComponent.setInput(this.userCopy.name);
+          this.nicknameComponent.setInput(this.userCopy.nickname);
+          this.profileImgUploadComponent.setProfileImg(this.userCopy.thumbnail);
+
+        } else if(this.userCopy.isNaverUser()) {
+
+          if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 네이버 로그인 - 유저 정보 가져오기.");
+
+          // 네이버 로그인 - 유저 정보 가져오기.
+          this.emailComponent.setInput(this.user.email);
+          this.nameComponent.setInput(this.user.name);
+          this.nicknameComponent.setInput(this.user.nickname);
+          this.genderComponent.setGender(this.user.gender);
+
+        } // end if        
+
       } else {
 
         if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / Error Report");
@@ -278,59 +340,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
           `signup / checkSignedUpUserInfo / Failed!`
         );
         return;
-      }
-
-      if(null != this.user.facebook_id && "" != this.user.facebook_id) {
-
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 페이스북 로그인 - 유저 정보 가져오기.");
-
-        // 페이스북 로그인 - 유저 정보 가져오기.
-        // email
-        this.emailComponent.setEmail(this.user.email);
-        this.email = this.user.email;
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
-        this.thumbnail = this.user.thumbnail;
-
-      } else if(null != this.user.kakao_id && "" != this.user.kakao_id) {
-
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 카카오 로그인 - 유저 정보 가져오기.");
-
-        // 카카오 로그인 - 유저 정보 가져오기.
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // thumbnail
-        this.profileImgUploadComponent.setProfileImg(this.user.thumbnail);
-        this.thumbnail = this.user.thumbnail;
-
-      } else if(null != this.user.naver_id && "" != this.user.naver_id) {
-
-        if(isDebug) console.log("signup / checkSignedUpUserInfo / subscribe / 네이버 로그인 - 유저 정보 가져오기.");
-
-        // 네이버 로그인 - 유저 정보 가져오기.
-        // email
-        this.emailComponent.setEmail(this.user.email);
-        this.email = this.user.email;
-        // name
-        this.nameComponent.setName(this.user.name);
-        this.name = this.user.name;
-        // nickname
-        this.nicknameComponent.setNickname(this.user.nickname);
-        this.nickname = this.user.nickname;
-        // gender
-        this.genderComponent.setGender(this.user.gender);
-        this.gender = this.user.gender;
-
       } // end if
 
     }); // end subscribe
@@ -341,154 +350,152 @@ export class SignupComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
-    if(isDebug) console.log("signup / onClickSignup / 시작");    
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / onClickSignup / 시작");
 
-    let isAllOK:boolean = true;
+    // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
+    // 문제가 있다면 해당 필드에 경고를 보여줍니다.
+
+    // @ Required
+    if(this.emailComponent.hasNotDone()) {
+      this.nicknameComponent.showTooltipFailWarning(
+        // msg:string,
+        "이메일을 다시 확인해주세요",
+        // isTimeout:Boolean
+        false
+      );
+      return;
+    }
+    // @ Required - password
+    if(this.passwordComponent.hasNotDoneP()) {
+      if(isDebug) console.log("signup / onClickSignup / 비밀번호에 문제가 있습니다. 경고 메시지를 노출합니다.");
+      this.passwordComponent.showWarningP();
+      return;
+    } else if(this.passwordComponent.hasNotDoneRP()) {
+      if(isDebug) console.log("signup / onClickSignup / 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.");
+      this.passwordComponent.showWarningRP();
+      return;
+    }
+    // @ Required - Mobile
+    if(this.mobileComponent.hasNotDoneMobileHead()) {
+      this.mobileComponent.showWarningMobileHead();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneMobileHead : ");
+      return;
+    }
+    // @ Required - Mobile
+    if(this.userCopy.isMobileHeadEmpty()) {
+      // 전화번호 첫 3자리가 기본값 '010'일 경우, 컴포넌트에서 기본값을 가져온다.
+      this.userCopy.setMobileHead(this.mobileComponent.getMobileHead());
+    }
+    if( this.mobileComponent.hasDoneMobileHead() && 
+        this.mobileComponent.hasNotDoneMobileBody()) {
+
+      // 휴대전화 첫 세자리 완료. 두번째 네자리는 아직 완료안됨.
+      this.mobileComponent.showWarningMobileBody(null);
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneMobileBody");
+      return;
+    } else if(  this.mobileComponent.hasDoneMobileHead() && 
+                this.mobileComponent.hasDoneMobileBody() && 
+                this.mobileComponent.hasNotDoneMobileTail()) {
+
+      // 휴대전화 첫 세자리 완료. 두번째 네자리는 완료. 휴대전화 세번째 4자리 아직 완료안됨. 경고.
+      this.mobileComponent.showWarningMobileTail();
+      return;
+    }
+    // @ Required - Gender
+    if(this.genderComponent.hasNotDone()) {
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneGender");
+      this.genderComponent.showWarning();
+      return;
+    }
+    // @ Required
+    // name
+    if(this.nicknameComponent.hasNotDone()) {
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneNickname");
+      // 유효한 값이 아닙니다!
+      this.nicknameComponent.showTooltipFailWarning(
+        // msg:string,
+        "닉네임을 다시 확인해주세요",
+        // isTimeout:Boolean
+        false
+      );
+      return;
+    }
+    // @ Required
+    if(this.nameComponent.hasNotDone()) {
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneName");
+      // 유효한 값이 아닙니다!
+      this.nameComponent.showTooltipFailWarning(
+        // msg:string,
+        "이름을 다시 확인해주세요",
+        // isTimeout:Boolean
+        false
+      );
+      return;
+    }
+    // @ Optional
+    // 프로필 이미지 검사 - 없는 경우, 기본값 설정.
+    if(this.userCopy.isEmptyThumbnail()) {
+      this.userCopy.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+    } // end if
 
     // 약관 동의 확인. 
     if(!this.hasAgreedWithTerms) {
       if(isDebug) console.log("signup / onClickSignup / this.hasAgreedWithTerms : ",this.hasAgreedWithTerms);
-      isAllOK = false;
-
       // 약관 동의가 필요하다는 경고 메시지를 띄웁니다.
       this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
+      return;
     }
+    
+    if(null != this.user) {
+      // 1-1. 플랫폼을 통해 가입 - facebook
+      // 1-2. 플랫폼을 통해 가입 - kakao
+      // 1-3. 플랫폼을 통해 가입 - naver
+      if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통해 가입");
+      this.updateUser();
+    } else if(null == this.user) {
+      // 2. 플랫폼을 통하지 않고 직접 가입.
+      if(isDebug) console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
+      this.addUser();
+    } // end inner if
 
-    // @ Required
-    // Email
-    // 회원 가입을 하는데 필요한 모든 필드를 검사합니다.
-    // 문제가 있다면 해당 필드에 경고를 보여줍니다.
-    let hasNotDoneEmail:boolean = this.emailComponent.hasNotDone();
-    if(hasNotDoneEmail) {
-      this.emailComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneEmail : ",hasNotDoneEmail);
-      isAllOK = false;
-    }
-    // @ Required
-    // Password
-    let hasNotDonePassword:boolean = this.passwordComponent.hasNotDoneP();
-    let hasNotDoneRepassword:boolean = false;
-    if(hasNotDonePassword) {
-      this.passwordComponent.showWarningP();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDonePassword : ",hasNotDonePassword);
-      isAllOK = false;
-    } else {
-      // 비밀번호 입력이 확인되었다면, 비밀번호 재입력을 다시 확인합니다.
-      hasNotDoneRepassword = this.passwordComponent.hasNotDoneRP();
-    }
-    if(hasNotDoneRepassword) {
-      // 비밀번호 재입력에 문제가 있습니다. 화면에 표시해줍니다.
-      this.passwordComponent.showWarningRP();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneRepassword : ",hasNotDoneRepassword);
-      isAllOK = false;
-    }
-    // @ Required
-    // 전화번호
-    let hasNotDoneMobileHead:boolean = this.mobileComponent.hasNotDoneMobileHead();
-    let hasNotDoneMobileBody:boolean = false;
-    let hasNotDoneMobileTail:boolean = false;
+    // REMOVE ME
 
-    if(hasNotDoneMobileHead) {
-      this.mobileComponent.showWarningMobileHead();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneMobileHead : ",hasNotDoneMobileHead);
-      isAllOK = false;
-    } else {
-      // 휴대전화 첫번째 3자리가 문제가 없다면 휴대전화 두번째 4자리를 검사합니다.
-      hasNotDoneMobileBody = this.mobileComponent.hasNotDoneMobileBody();
-    }
-    if(null == this.mobileNumHead || "" === this.mobileNumHead) {
-      // 전화번호 첫 3자리가 기본값 '010'일 경우, 컴포넌트에서 기본값을 가져온다.
-      this.mobileNumHead = this.mobileComponent.getMobileHead();
-    }
-    if(!hasNotDoneMobileHead && hasNotDoneMobileBody) {
-      this.mobileComponent.showWarningMobileBody();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneMobileBody : ",hasNotDoneMobileBody);
-      isAllOK = false;
-    } else if(!hasNotDoneMobileHead) {
-      // 휴대전화 두번째 4자리가 문제가 없다면 휴대전화 세번째 4자리를 검사합니다.
-      hasNotDoneMobileTail = this.mobileComponent.hasNotDoneMobileTail();
-    }
-    if(!hasNotDoneMobileHead && !hasNotDoneMobileBody && hasNotDoneMobileTail) {
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneMobileTail : ",hasNotDoneMobileTail);
-      this.mobileComponent.showWarningMobileTail();
-      isAllOK = false;
-    } 
-    // @ Required
-    // gender
-    let hasNotDoneGender:boolean = this.genderComponent.hasNotDone();   
-    if(hasNotDoneGender) {
-      this.genderComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneGender : ",hasNotDoneGender);
-      isAllOK = false;
-    }
-    // @ Required
-    // name
-    let hasNotDoneNickname:boolean = this.nicknameComponent.hasNotDone();
-    if(hasNotDoneNickname) {
-      this.nicknameComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneNickname : ",hasNotDoneNickname);
-      // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-    }    
+    // let isAllOK:boolean = true;
 
-
-
-    // @ Optional
-    let hasNotDoneName:boolean = this.nameComponent.hasNotDone();
-    if(hasNotDoneName) {
-      this.nameComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneName : ",hasNotDoneName);
-      // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-    }
     // @ Optional
     // 생년월일 검사
-    let hasNotDoneBirthYear:boolean = this.birthdayComponent.hasNotDoneBirthYear();
-    if(hasNotDoneBirthYear) {
-      this.birthdayComponent.showWarningBirthYear();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthYear : ",hasNotDoneBirthYear);
+    /*
+    if(this.birthdayComponent.hasNotDoneBirthYear()) {
+      // this.birthdayComponent.showWarningBirthYear();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthYear");
       // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-
     }
-    let hasNotDoneBirthMonth:boolean = this.birthdayComponent.hasNotDoneBirthMonth();
-    if(hasNotDoneBirthMonth) {
-      this.birthdayComponent.showWarningBirthMonth();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthMonth : ",hasNotDoneBirthMonth);
+    if(this.birthdayComponent.hasNotDoneBirthMonth()) {
+      // this.birthdayComponent.showWarningBirthMonth();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthMonth");
       // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-
     }
-    let hasNotDoneBirthDay:boolean = this.birthdayComponent.hasNotDoneBirthDay();
-    if(hasNotDoneBirthDay) {
-      this.birthdayComponent.showWarningBirthDay();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthDay : ",hasNotDoneBirthDay);
+    if(this.birthdayComponent.hasNotDoneBirthDay()) {
+      // this.birthdayComponent.showWarningBirthDay();
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneBirthDay");
       // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-
     }
+
     // @ Optional
     // 프로필 이미지 검사
-    let hasNotDoneProfileImg:boolean = this.profileImgUploadComponent.hasNotDone();
-    if(hasNotDoneProfileImg) {
-      this.profileImgUploadComponent.showWarning();
-      if(isDebug) console.log("signup / onClickSignup / hasNotDoneProfileImg : ",hasNotDoneProfileImg);
+    if(this.profileImgUploadComponent.hasNotDone()) {
+      if(isDebug) console.log("signup / onClickSignup / hasNotDoneProfileImg");
       // 유효한 값이 아닙니다!
-      // 선택 입력 값이므로 기본 값으로 설정해줍니다. - wonder.jung
-
     } else {
-      if(null == this.thumbnail || "" === this.thumbnail) {
-        this.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
-      }
-    }
-
-
-    
-    if(isDebug) console.log("signup / onClickSignup / isAllOK : ",isAllOK);
-
+      if(this.userCopy.isEmptyThumbnail()) {
+        this.userCopy.thumbnail = this.profileImgUploadComponent.getProfileImgUrl();
+      } // end if
+    } // end if
+    */
     // 등록되지 않은 필드가 있다면 표시해줘야 합니다.
+    /*
     if(isAllOK) {
       if(isDebug) console.log("signup / onClickSignup / 모든 필드가 문제가 없다면 유저 데이터를 전송!");
 
@@ -504,71 +511,81 @@ export class SignupComponent implements OnInit, AfterViewInit {
         this.addUser();
       } // end inner if
     } // end outer if
+    */
+
+
   } // end method
 
   updateUser() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / updateUser / 시작");
 
-    if(isDebug) console.log("signup / updateUser / this.user.id : ",this.user.id);
-    if(isDebug) console.log("signup / updateUser / this.email : ",this.email);
-    if(isDebug) console.log("signup / updateUser / this.password : ",this.password);
-    if(isDebug) console.log("signup / updateUser / this.name : ",this.name);
-    if(isDebug) console.log("signup / updateUser / this.nickname : ",this.nickname);
-    if(isDebug) console.log("signup / updateUser / this.gender : ",this.gender);
-    if(isDebug) console.log("signup / updateUser / this.birthYear : ",this.birthYear);
-    if(isDebug) console.log("signup / updateUser / this.birthMonth : ",this.birthMonth);
-    if(isDebug) console.log("signup / updateUser / this.birthDay : ",this.birthDay);
-    if(isDebug) console.log("signup / updateUser / this.thumbnail : ",this.thumbnail);
-    if(isDebug) console.log("signup / updateUser / this.mobileNumHead : ",this.mobileNumHead);
-    if(isDebug) console.log("signup / updateUser / this.mobileNumBody : ",this.mobileNumBody);
-    if(isDebug) console.log("signup / updateUser / this.mobileNumTail : ",this.mobileNumTail);
+    if(isDebug) console.log("signup / updateUser / this.user.id : ",this.userCopy.id);
+    if(isDebug) console.log("signup / updateUser / this.email : ",this.userCopy.email);
+    if(isDebug) console.log("signup / updateUser / this.password : ",this.userCopy.password);
+    if(isDebug) console.log("signup / updateUser / this.name : ",this.userCopy.name);
+    if(isDebug) console.log("signup / updateUser / this.nickname : ",this.userCopy.nickname);
+    if(isDebug) console.log("signup / updateUser / this.gender : ",this.userCopy.gender);
+    if(isDebug) console.log("signup / updateUser / this.birthYear : ",this.userCopy.getBirthYear());
+    if(isDebug) console.log("signup / updateUser / this.birthMonth : ",this.userCopy.getBirthMonth());
+    if(isDebug) console.log("signup / updateUser / this.birthDay : ",this.userCopy.getBirthDay());
+    if(isDebug) console.log("signup / updateUser / this.thumbnail : ",this.userCopy.thumbnail);
+    if(isDebug) console.log("signup / updateUser / this.mobileNumHead : ",this.userCopy.getMobileHead());
+    if(isDebug) console.log("signup / updateUser / this.mobileNumBody : ",this.userCopy.getMobileBody());
+    if(isDebug) console.log("signup / updateUser / this.mobileNumTail : ",this.userCopy.getMobileTail());
 
     this.userService
     .updateUser(
       // apiKey:string
       this.myCheckerService.getAPIKey(),
       // userId:number
-      this.user.id,
+      this.userCopy.id,
       // email:string
-      this.email,
+      this.userCopy.email,
       // password:string
-      this.password,
+      this.userCopy.password,
       // name:string
-      this.name, 
+      this.userCopy.name, 
       // nickname:string
-      this.nickname,
+      this.userCopy.nickname,
       // gender:string
-      this.gender,
+      this.userCopy.gender,
       // birthYear:string
-      this.birthYear,
+      this.userCopy.getBirthYear(),
       // birthMonth:string
-      this.birthMonth,
+      this.userCopy.getBirthMonth(),
       // birthDay:string  
-      this.birthDay,
+      this.userCopy.getBirthDay(),
       // thumbnail:string
-      this.thumbnail,
+      this.userCopy.thumbnail,
       // mobileHead:string
-      this.mobileNumHead,
+      this.userCopy.getMobileHead(),
       // mobileBody:string
-      this.mobileNumBody,
+      this.userCopy.getMobileBody(),
       // mobileTail:string
-      this.mobileNumTail
-    ).then((myReponse:MyResponse) => {
+      this.userCopy.getMobileTail()
+    ).then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("signup / updateUser / myReponse : ",myReponse);
+      if(isDebug) console.log("signup / updateUser / myResponse : ",myResponse);
 
-      let user:User = null;
-      if(myReponse.isSuccess()) {
-        user = myReponse.getDataProp("user");
+      let userJSON = null;
+      if(myResponse.isSuccess()) {
+        userJSON = myResponse.getDataProp("user");
       }
-      if(isDebug) console.log("signup / updateUser / user : ",user);
-      if(null != user && null != user.id && null != user.email) {
+      if(null != userJSON) {
+        this.user = this.userService.getUserFromJSON(userJSON);
+        this.userCopy = this.user.copy();
+      }
+      if(isDebug) console.log("signup / updateUser / this.user : ",this.user);
+      if( null != userJSON && 
+          null != this.user && 
+          null != this.user.id && 
+          null != this.user.email ) {
 
         // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
-        this.sendMailUserValidation(user.id, user.email);
+        this.sendMailUserValidation(this.user.id, this.user.email);
 
       } else {
 
@@ -590,8 +607,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
   addUser(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("signup / addUser / 시작");
 
     this.userService
@@ -599,43 +616,48 @@ export class SignupComponent implements OnInit, AfterViewInit {
       // apiKey:string
       this.myCheckerService.getAPIKey(),
       // email:string
-      this.email,
+      this.userCopy.email,
       // password:string
-      this.password,
+      this.userCopy.password,
       // name:string
-      this.name, 
+      this.userCopy.name, 
       // nickname:string
-      this.nickname,
+      this.userCopy.nickname,
       // gender:string
-      this.gender,
+      this.userCopy.gender,
       // birthYear:string
-      this.birthYear,
+      this.userCopy.getBirthYear(),
       // birthMonth:string
-      this.birthMonth,
+      this.userCopy.getBirthMonth(),
       // birthDay:string  
-      this.birthDay,
+      this.userCopy.getBirthDay(),
       // thumbnail:string
-      this.thumbnail,
+      this.userCopy.thumbnail,
       // mobileHead:string
-      this.mobileNumHead,
+      this.userCopy.getMobileHead(),
       // mobileBody:string
-      this.mobileNumBody,
+      this.userCopy.getMobileBody(),
       // mobileTail:string
-      this.mobileNumTail
+      this.userCopy.getMobileTail()
     ).then((myResponse:MyResponse) => {
 
       if(isDebug) console.log("signup / addUser / myResponse : ",myResponse);
 
-      let user:User = null;
+      let userJSON = null;
       if(myResponse.isSuccess()) {
-        user = myResponse.getDataProp("user");
+        userJSON = myResponse.getDataProp("user");
       }
-      if(isDebug) console.log("signup / addUser / user : ",user);
-      if(null != user && null != user.id && null != user.email) {
+      if(null != userJSON) {
+        this.user = this.userService.getUserFromJSON(userJSON);
+        this.userCopy = this.user.copy();
+      }
+
+      if(isDebug) console.log("signup / addUser / this.user : ",this.user);
+      if(null != this.user && null != this.user.id && null != this.user.email) {
 
         // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
         if(isDebug) console.log("signup / addUser / 메일을 발송, 인증을 시작!");
-        this.sendMailUserValidation(user.id, user.email);
+        this.sendMailUserValidation(this.user.id, this.user.email);
 
       } else {
 
@@ -738,9 +760,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     // 개인정보 취급방침 페이지로 이동.
     window.open("/#/private-info");
 
-  }  
+  }
 
   onChangedFromChild(myEvent:MyEvent) :void {
+
     // 자식 엘리먼트들의 이벤트 처리
 
     // let isDebug:boolean = true;
@@ -749,113 +772,179 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
     if(isDebug) console.log("signup / onChangedFromChild / myEvent : ",myEvent);
 
-    if(null == myEvent) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEven");
-      return;
-    }
-    if(null == myEvent.myChecker) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEvent.myChecker");
-      return;
-    }
-    if(null == myEvent.value) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / null == myEvent.value");
+    if(myEvent.isNotValid()) {
+      if(isDebug) console.log("signup / onChangedFromChild / 중단 / myEvent.isNotValid()");
       return;
     }
 
-    // 모든 myEvent는 myChecker를 가지고 들어와야 합니다.
-    // myChecker로 다시 한번 더 검사, 통과해야만 사용할 수 있습니다.
-    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
-    if(!isOK) {
-      if(isDebug) console.log("signup / onChangedFromChild / 중단 / !isOK");
-      return;
-    }
+    if(null == this.user && null == this.userCopy) {
+      if(isDebug) console.log("signup / onChangedFromChild / 플랫폼을 통한 회원 등록이 아닌 경우를 대비, user 객체가 없다면, 빈 user 객체를 만들어 데이터를 채운다.");
+      this.user = this.userService.getUserEmpty();
+      this.userCopy = this.user.copy();
+    } // end if
 
     // 정상적인 값을 가진 이벤트입니다.
-    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
-      if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+      if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
 
         let email:string = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / email : ",email);
 
-        // DB Unique test
-        this.userService
-        .getUserByEmail(email)
-        .then((myResponse:MyResponse) => {
+        this.checkEmailUnique(email);
 
-          if( myResponse.isSuccess() && 
-              myResponse.hasDataProp("user") ) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_PASSWORD)) {
 
-            // 해당 이메일로 등록된 유저는 없습니다. 
-            // email 등록이 가능합니다.
-            this.email = email;
+        this.userCopy.password = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.password : ",this.userCopy.password);
 
-            if(isDebug) console.log("signup / onChangedFromChild / email 등록이 가능합니다.");
-          } // end if
-        }); // end service
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
 
-      } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+        this.userCopy.name = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.name : ",this.userCopy.name);
 
-        this.password = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.password : ",this.password);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
 
-      } else if(this.myEventService.KEY_USER_NAME === myEvent.key) {
+        this.userCopy.nickname = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.nickname : ",this.userCopy.nickname);
 
-        this.name = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.name : ",this.name);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
-      } else if(this.myEventService.KEY_USER_NICKNAME === myEvent.key) {
+        this.userCopy.thumbnail = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.thumbnail : ",this.userCopy.thumbnail);
 
-        this.nickname = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.nickname : ",this.nickname);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
 
-      } else if(this.myEventService.KEY_USER_THUMBNAIL === myEvent.key) {
+        this.userCopy.setMobileHead(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.mobile : ",this.userCopy.mobile);
 
-        this.thumbnail = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.thumbnail : ",this.thumbnail);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_HEAD === myEvent.key) {
+        this.userCopy.setMobileBody(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.mobile : ",this.userCopy.mobile);
 
-        this.mobileNumHead = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumHead : ",this.mobileNumHead);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_BODY === myEvent.key) {
+        this.userCopy.setMobileTail(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.mobile : ",this.userCopy.mobile);
 
-        this.mobileNumBody = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumBody : ",this.mobileNumBody);
+        this.checkMobileUnique(this.userCopy.mobile);
 
-      } else if(this.myEventService.KEY_USER_MOBILE_NUM_TAIL === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
 
-        this.mobileNumTail = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.mobileNumTail : ",this.mobileNumTail);
+        this.userCopy.gender = myEvent.value;
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.gender : ",this.userCopy.gender);
 
-        // 휴대전화 번호가 모두 확인되었습니다. 
-        // TODO - 이미 등록된 번호는 아닌지 확인.
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
 
-      } else if(this.myEventService.KEY_USER_GENDER === myEvent.key) {
+        this.userCopy.setBirthYear(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.birthday : ",this.userCopy.birthday);
 
-        this.gender = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.gender : ",this.gender);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
 
-      } else if(this.myEventService.KEY_USER_BIRTH_YEAR === myEvent.key) {
+        this.userCopy.setBirthMonth(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.birthday : ",this.userCopy.birthday);
 
-        this.birthYear = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.birthYear : ",this.birthYear);
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
 
-      } else if(this.myEventService.KEY_USER_BIRTH_MONTH === myEvent.key) {
-
-        this.birthMonth = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.birthMonth : ",this.birthMonth);
-
-      } else if(this.myEventService.KEY_USER_BIRTH_DAY === myEvent.key) {
-
-        this.birthDay = myEvent.value;
-        if(isDebug) console.log("signup / onChangedFromChild / this.birthDay : ",this.birthDay);
+        this.userCopy.setBirthDay(myEvent.value);
+        if(isDebug) console.log("signup / onChangedFromChild / this.userCopy.birthday : ",this.userCopy.birthday);
 
       } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE_NOT_VALID)) {
+
+      this.myEventService.onChangeNotValid(myEvent);
 
     } // end if
 
     if(isDebug) console.log("signup / onChangedFromChild / done");
   }
+
+  private checkEmailUnique(email:string): void{
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / checkEmailUnique / 시작");
+
+    if(null == email || "" === email) {
+      return;
+    }
+
+    // DB Unique test
+    this.userService
+    .getUserByEmail(email)
+    .then((myResponse:MyResponse) => {
+
+      if( myResponse.isSuccess() && 
+          myResponse.hasDataProp("user") ) {
+
+        // 해당 이메일로 등록된 유저는 없습니다. 
+        // email 등록이 가능합니다.
+        this.userCopy.email = email;
+
+        if(isDebug) console.log("signup / checkEmailUnique / email 등록이 가능합니다.");
+        if(isDebug) console.log("signup / checkEmailUnique / this.userCopy.email : ",this.userCopy.email);
+        
+      } // end if
+    }); // end service
+
+  } // end method
+
+  private checkMobileUnique(mobile:string): void{
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("signup / checkMobileUnique / 시작");
+
+    if(null == mobile || "" === mobile) {
+      return;
+    }
+
+    // 휴대전화 번호가 모두 확인되었습니다. 
+    // DB Unique test
+    this.userService
+    .getUserByMobile(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // mobileHead:string, 
+      this.userCopy.getMobileHead(),
+      // mobileBody:string, 
+      this.userCopy.getMobileBody(),
+      // mobileTail:string
+      this.userCopy.getMobileTail()
+    )
+    .then((myResponse:MyResponse) => {
+
+      if(isDebug) console.log("signup / checkMobileUnique / myResponse : ",myResponse);
+      if( myResponse.isSuccess() ) {
+
+        let userJSON = myResponse.getDataProp("user");
+        if(isDebug) console.log("signup / checkMobileUnique / userJSON : ",userJSON);
+        if(null != userJSON) {
+          this.mobileComponent.showWarningMobileBody("이미 등록된 번호입니다");
+        } else {
+          // 해당 전화번호로 등록된 유저는 없습니다. 
+          if(isDebug) console.log("signup / checkMobileUnique / mobile 등록이 가능합니다.");
+          if(isDebug) console.log("signup / checkMobileUnique / this.userCopy.mobile : ",this.userCopy.mobile);
+        }
+        
+      } else {
+
+        // TODO - Error Report
+        if(isDebug) console.log("signup / checkMobileUnique / Error Report");
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `signup / checkMobileUnique / Failed!`
+        );
+
+      } // end if
+    }); // end service    
+
+  } // end method
   
 }

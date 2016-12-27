@@ -244,6 +244,13 @@ class MY_ParamChecker {
 
         return $this->check_list;
     }
+    public function has_check_list_failed()
+    {
+        if(empty($this->check_list[$this->check_list_prop_fail])) {
+            return false;
+        }
+        return true;
+    }
     private function set_check_list($check_list=null) {
         $this->check_list = $check_list;
     }
@@ -570,14 +577,19 @@ class MY_ParamChecker {
 		return $output;
     }
 
+    // REMOVE ME
+    /*
     public function is_not_ok($key="", $value="")
     {
-        return !$this->is_ok($key, $value);
+        $result = $this->is_ok($key, $value);
+        $is_ok = $result["success"];
+
+        return !$is_ok;
     }
+    */
 
     public function is_ok($key="", $value="")
     {
-
     	// 결과 / 실패했다면, 실패 원인을 알려줘야 합니다.
     	$result = 
     	[
@@ -693,7 +705,7 @@ class MY_ParamChecker {
 		    		return $result;
 				}
 			}
-    		else if(strpos($filter, 'min_length') !== false) 
+    		else if(strpos($filter, 'min_length') === 0) 
     		{
     			$output = 
     			$this->extract_value_in_brackets(
@@ -729,7 +741,7 @@ class MY_ParamChecker {
 		    		return $result;
     			}
 			}
-    		else if(strpos($filter, 'max_length') !== false) 
+    		else if(strpos($filter, 'max_length') === 0) 
     		{
                 $output = 
                 $this->extract_value_in_brackets(
@@ -764,7 +776,7 @@ class MY_ParamChecker {
 		    		return $result;
     			}
 			}
-    		else if(strpos($filter, 'exact_length') !== false) 
+    		else if(strpos($filter, 'exact_length') === 0) 
     		{
                 $output = 
                 $this->extract_value_in_brackets(
@@ -798,7 +810,7 @@ class MY_ParamChecker {
     			}
 
 			}
-    		else if(strpos($filter, 'greater_than_equal_to') !== false) 
+    		else if(strpos($filter, 'greater_than_equal_to') === 0) 
     		{
                 $output = 
                 $this->extract_value_in_brackets(
@@ -809,16 +821,16 @@ class MY_ParamChecker {
                 );
                 $result = $output["result"];
                 $extracted_value = $output["extracted_value"];
-                if(empty($extracted_value)) {
+                if(0 != $extracted_value && empty($extracted_value)) {
                     return $result;
                 }
 
                 $value_int = intval($value);
 
     			$greater_than_equal_to = intval($extracted_value);
-    			if($greater_than_equal_to < 0) 
+    			if($greater_than_equal_to < -1) 
     			{
-		    		$result["message"]="\$greater_than_equal_to < 0";
+		    		$result["message"]="\$greater_than_equal_to < -1";
 		    		return $result;
     			}
     			else if(self::$mysql_int_max < $greater_than_equal_to) 
@@ -839,7 +851,7 @@ class MY_ParamChecker {
     			}
 
 			}
-    		else if(strpos($filter, 'less_than_equal_to') !== false) 
+    		else if(strpos($filter, 'less_than_equal_to') === 0) 
     		{
                 $output = 
                 $this->extract_value_in_brackets(
@@ -880,7 +892,7 @@ class MY_ParamChecker {
     			}
 
 			}			
-    		else if(strpos($filter, 'matches') !== false) 
+    		else if(strpos($filter, 'matches') === 0) 
     		{
  
                 $output = 
@@ -932,7 +944,7 @@ class MY_ParamChecker {
 		    		return $result;
     			}
 			}
-            else if(strpos($filter, 'exclude') !== false) 
+            else if(strpos($filter, 'exclude') === 0) 
             {
                 $output = 
                 $this->extract_value_in_brackets(
@@ -1054,7 +1066,7 @@ class MY_ParamChecker {
                     return $result;
                 }
             }            
-    		else if(strpos($filter, 'is_unique') !== false) 
+    		else if(strpos($filter, 'is_unique') === 0) 
     		{
                 $output = 
                 $this->extract_value_in_brackets(
@@ -1101,7 +1113,7 @@ class MY_ParamChecker {
 		    		return $result;
 		        }
 			}
-            else if(strpos($filter, 'regex_match_include') !== false)
+            else if(strpos($filter, 'regex_match_include') === 0)
             {
                 $pattern = "/regex_match_include\[(.+)\]$/";
                 preg_match($pattern, $filter, $match_in_filter);
@@ -1121,7 +1133,27 @@ class MY_ParamChecker {
                     return $result;
                 }
             }
-    		else if(strpos($filter, 'regex_match') !== false) 
+            else if(strpos($filter, 'regex_match_exclude') === 0)
+            {
+                $pattern = "/regex_match_exclude\[(.+)\]$/";
+                preg_match($pattern, $filter, $match_in_filter);
+                if(empty($match_in_filter)) 
+                {
+                    $result["message"]="empty(\$match_in_filter)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+
+                $pattern = $match_in_filter[1];
+                preg_match($pattern, $value, $match_in_value);
+                if(!empty($match_in_value)) 
+                {
+                    $result["message"]="!empty(\$match_in_value)";
+                    $result["pattern"]=$pattern;
+                    return $result;
+                }
+            }
+    		else if(strpos($filter, 'regex_match') === 0) 
     		{
     			$pattern = "/regex_match\[(.+)\]$/";
     			preg_match($pattern, $filter, $match_in_filter);
@@ -1143,7 +1175,7 @@ class MY_ParamChecker {
 
     			// CHECK!
 			} // valid_url
-    		else if(strpos($filter, 'valid_url') !== false) 
+    		else if(strpos($filter, 'valid_url') === 0) 
     		{
     			if(!is_string($value))
     			{
@@ -1173,7 +1205,7 @@ class MY_ParamChecker {
 		    		return $result;
 				}
     		}
-    		else if(strpos($filter, 'is_str') !== false) 
+    		else if(strpos($filter, 'is_str') === 0) 
     		{
     			if(!is_string($value))
     			{
@@ -1181,7 +1213,7 @@ class MY_ParamChecker {
 		    		return $result;
     			}
     		}
-            else if(strpos($filter, 'is_number') !== false) 
+            else if(strpos($filter, 'is_number') === 0) 
             {
                 if(!is_numeric($value))
                 {

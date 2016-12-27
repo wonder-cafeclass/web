@@ -1,6 +1,11 @@
 import { Injectable }             from '@angular/core';
 import { MyEvent }                from '../model/my-event';
 import { MyChecker }              from '../model/my-checker';
+import { MyRegEx }                from '../model/my-regex';
+
+import { DefaultComponent }       from '../../widget/input/default/default.component';
+import { DefaultMeta }            from '../../widget/input/default/model/default-meta';
+import { DefaultType }            from '../../widget/input/default/model/default-type';
 
 @Injectable()
 export class MyEventService {
@@ -11,6 +16,7 @@ export class MyEventService {
     ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
     ON_CHANGE:string="ON_CHANGE";
+    ON_CHANGE_NOT_VALID:string="ON_CHANGE_NOT_VALID";
     ON_SUBMIT:string="ON_SUBMIT";
     ON_KEYUP_ENTER:string="ON_KEYUP_ENTER";
     ON_SHUTDOWN:string="ON_SHUTDOWN";
@@ -24,6 +30,8 @@ export class MyEventService {
     ON_MOUSE_ENTER:string="ON_MOUSE_ENTER";
     ON_PREVIEW:string="ON_PREVIEW";
     ON_UNPREVIEW:string="ON_UNPREVIEW";
+    ON_DONE:string="ON_DONE";
+    ON_LOGIN_REQUIRED:string="ON_LOGIN_REQUIRED";
 
     // SPECIFIC ATTR
     KLASS_WEEK_MAX:string="KLASS_WEEK_MAX";
@@ -54,6 +62,10 @@ export class MyEventService {
     STUDENT_REVIEW:string="STUDENT_REVIEW";     // 리뷰
     STUDENT_QUESTION:string="STUDENT_QUESTION"; // 문의
     CAUTION:string="CAUTION";                   // 유의사항
+
+    // Widget
+    KEY_IMAGE_GRID:string="KEY_IMAGE_GRID";               // Widget - image grid
+    KEY_IMAGE_ENTRY:string="KEY_IMAGE_ENTRY";             // Widget - image entry
 
     KEY_SEARCH_LIST:string="KEY_SEARCH_LIST";             // 검색시, 결과가 리스트에 노출됨.
     KEY_SMART_EDITOR:string="KEY_SMART_EDITOR";           // 네이버 스마트에디터
@@ -90,11 +102,83 @@ export class MyEventService {
     KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";           // 유저 - 내정보 수정.
     KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";     // 유저 - 내 수강이력.
     KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
-    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";     // 유저 - 내 관심강의(찜).
+    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";   // 유저 - 내 관심강의(찜).
+
+    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";           // 선생님 - 내정보 수정.
+    KEY_TEACHER_MY_HISTORY:string="KEY_TEACHER_MY_HISTORY";     // 선생님 - 내 수강이력.
+    KEY_TEACHER_MY_PAYMENT:string="KEY_TEACHER_MY_PAYMENT";     // 선생님 - 내 결재정보.
+    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";   // 선생님 - 학생에게준 피드백.
+
+    KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
+    KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
+
+    KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
+    KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
+    KEY_KLASS_PRICE_VIEW:string="KEY_KLASS_PRICE_VIEW";         // 수업 - 수업 가격 뷰
+    KEY_KLASS_TIME_BEGIN:string="KEY_KLASS_TIME_BEGIN";         // 수업 - 수업 시작 시간
+    KEY_KLASS_TIME_END:string="KEY_KLASS_TIME_END";             // 수업 - 수업 종료 시간
+    KEY_KLASS_WEEKS:string="KEY_KLASS_WEEKS";                   // 수업 - 수업 기간 (몇주?)
+    KEY_KLASS_DATE_ENROLLMENT:string="KEY_KLASS_DATE_ENROLLMENT";              // 수업 - 등록 가능한 수업 시작일
+    KEY_KLASS_DATE_ENROLLMENT_VIEW:string="KEY_KLASS_DATE_ENROLLMENT_VIEW";    // 수업 - 등록 가능한 수업 시작일
+    KEY_KLASS_DATE_ENROLLMENT_INPUT:string="KEY_KLASS_DATE_ENROLLMENT_INPUT";  // 수업 - 등록 가능한 수업 시작일
+    KEY_KLASS_DAYS:string="KEY_KLASS_DAYS";                     // 수업 - 수업이 있는 요일
+    KEY_KLASS_POSTER:string="KEY_KLASS_POSTER";                 // 수업 - 포스터 이미지
+    KEY_KLASS_BANNER_VIEW:string="KEY_KLASS_BANNER_VIEW";                 // 수업 - 배너 이미지
+    // 수업 - 배너 이미지
+    KEY_KLASS_BANNER:string="KEY_KLASS_BANNER";
+    // 수업 - 레벨 이미지
+    KEY_KLASS_LEVEL:string="KEY_KLASS_LEVEL";
+    // 수업 - 지하철 노선
+    KEY_KLASS_VENUE_SUBWAY_LINE:string="KEY_KLASS_VENUE_SUBWAY_LINE";
+    // 수업 - 지하철 노선
+    KEY_KLASS_VENUE_SUBWAY_STATION:string="KEY_KLASS_VENUE_SUBWAY_STATION";
+    // 수업 - 장소, 레벨, 요일, 시간
+    KEY_KLASS_SELECTILE_VIEW:string="KEY_KLASS_SELECTILE_VIEW";
+    // 수업 - 장소, 레벨, 요일, 시간
+    KEY_KLASS_SELECTILE:string="KEY_KLASS_SELECTILE";
+    // 수업 - 수업 상세 내용 리스트
+    KEY_KLASS_DETAIL_NAV_LIST:string="KEY_KLASS_DETAIL_NAV_LIST";
+    // 수업 - 수업 상세 내용 - 지도(네이버)
+    KEY_KLASS_DETAIL_NAV_VENUE_MAP:string="KEY_KLASS_DETAIL_NAV_VENUE_MAP";
+    // 수업 - 수업 선생님 리스트
+    KEY_KLASS_TEACHER_LIST:string="KEY_KLASS_TEACHER_LIST";
+    // 수업 - 수업 관련 질문 리스트
+    KEY_KLASS_QUESTION_LIST:string="KEY_KLASS_QUESTION_LIST";
+    // 수업 - 수업 관련 리뷰 리스트
+    KEY_KLASS_REVIEW_LIST:string="KEY_KLASS_REVIEW_LIST";
+    // 수업 - 선생님 - 경력 리스트
+    KEY_KLASS_TEACHER_RESUME_LIST:string="KEY_KLASS_TEACHER_RESUME_LIST";
+    // 수업 - 선생님 - 인사말 리스트
+    KEY_KLASS_TEACHER_GREETING_LIST:string="KEY_KLASS_TEACHER_GREETING_LIST";
+    // 수업 - 수업 특징 리스트
+    KEY_KLASS_FEATURE_LIST:string="KEY_KLASS_FEATURE_LIST";
+    // 수업 - 수업 대상 리스트
+    KEY_KLASS_TARGET_LIST:string="KEY_KLASS_TARGET_LIST";
+    // 수업 - 수업 일정
+    KEY_KLASS_SCHEDULE:string="KEY_KLASS_SCHEDULE";
+
+    // 수업료 계산기 - 1인당 강의료
+    KEY_KLASS_PRICE_CALC:string="KEY_KLASS_PRICE_CALC";
+    // 수업료 계산기 - 1인당 강의료
+    KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT:string="KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT";
+    // 수업료 계산기 - 수수료
+    KEY_KLASS_PRICE_CALC_COMMISSION:string="KEY_KLASS_PRICE_CALC_COMMISSION";
+    // 수업료 계산기 - 1인당 강사 지급액
+    KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER:string="KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER";
+    // 수업료 계산기 - 수업 학생수
+    KEY_KLASS_PRICE_CALC_STUDENT_NUMBER:string="KEY_KLASS_PRICE_CALC_STUDENT_NUMBER";
+    // 수업료 계산기 - 합계
+    KEY_KLASS_PRICE_CALC_TOTAL:string="KEY_KLASS_PRICE_CALC_TOTAL";
+    // 수업료 계산기 - 수업 주수
+    KEY_KLASS_PRICE_CALC_WEEK:string="KEY_KLASS_PRICE_CALC_WEEK";
 
     private uniqueIdx:number=0;
+    private myRegEx:MyRegEx;
+    private defaultType:DefaultType;
 
     constructor() {
+        this.myRegEx = new MyRegEx();
+        this.defaultType = new DefaultType();
     }
 
     // @ Deprecated
@@ -238,6 +322,519 @@ export class MyEventService {
 
         return myEvent;
     }
+
+    // 변경된 내용이 문제가 있을 경우의 처리의 모음. 
+    // 여러 컴포넌트에서 공통적으로 사용.
+    public onChangeNotValid(myEvent:MyEvent) :void {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("my-info / onChangedFromChild / init");
+
+
+        // 입력 내용이 변했습니다. 
+        // 하지만 문제가 있는 경우의 처리입니다.
+
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID");
+
+        if(myEvent.hasNotMetaObj()) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.hasNotMetaObj()");
+            // TODO - Error Logger
+            return;
+        }
+
+        let history = myEvent.searchMetaProp(["history"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / history : ",history);
+        if(null == history) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / history is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let key:string = myEvent.searchMetaProp(["history","key"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / key : ",key);
+        if(null == key || "" == key) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / key is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let value:string = myEvent.searchMetaProp(["history","value"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / value : ",value);
+        if(null == key || "" == key) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / value is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        let view:DefaultComponent = myEvent.searchMetaProp(["view"]);
+        if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / view : ",view);
+        if(null == view) {
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / view is not valid!");
+            // TODO - Error Logger
+            return;
+        }
+
+        // history 객체로 분석, 처리합니다.
+        if(myEvent.hasKey(this.KEY_USER_NAME)) {
+
+            if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME");
+
+            if("regexInclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexInclude");
+
+                if(myEvent.isSameRegExp(/^[ㄱ-ㅎㅏ-ㅣ가-힣 ]+$/g, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "한글만 입력 가능합니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
+              
+            } else if("regexExclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / regexExclude");
+
+                if(myEvent.isSameRegExp(/^ /g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /^ /g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "첫글자로 빈칸을 입력하실 수 없습니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } else if(myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "빈칸을 연속으로 입력하실 수 없습니다.",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } // end if          
+
+            } // end if
+
+        } else if(myEvent.hasKey(this.KEY_USER_NICKNAME)) {
+
+            if("regexInclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexInclude");
+
+                if(myEvent.isSameRegExp(/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9 ]+$/g, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "한글,영문,숫자만 입력 가능합니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
+              
+            } else if("regexExclude" === key) {
+
+                if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / regexExclude");
+
+                if(myEvent.isSameRegExp(/^ /g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /^ /g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "첫글자로 빈칸을 입력하실 수 없습니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } else if(myEvent.isSameRegExp(/[ ]{2,10}/g, value)) {
+
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ ]{2,10}/g");
+                    view.showTooltipFailWarning(
+                        // msg:string
+                        "빈칸을 연속으로 입력하실 수 없습니다",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+
+                } // end if          
+
+            } // end if
+
+        } else if(myEvent.hasKey(this.KEY_USER_EMAIL)) {
+
+            if("regexInclude" === key) {
+
+                if(myEvent.isSameRegExp(this.myRegEx.EMAIL_REGEX, value)) {
+                    if(isDebug) console.log("my-event.service / onChangedFromChild / ON_CHANGE_NOT_VALID / KEY_USER_NICKNAME / /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣 ]+/g");
+                        view.showTooltipFailWarning(
+                        // msg:string
+                        "정상적인 이메일 주소를 입력해주세요",
+                        // isTimeout:Boolean
+                        false
+                    ); // end if
+                } // end if
+
+            } // end if
+
+        } // end if        
+
+    } // end method
+
+    /*
+    public getEventOnReady(eventKey:string, component) :void {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("default / emitEventOnReady / 시작");
+
+        let myEventOnChange:MyEvent =
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_READY,
+          // public key:string
+          this.meta.eventKey,
+          // public value:string
+          "",
+          // public metaObj:any
+          component,
+          // public myChecker:MyChecker
+          this.myCheckerService.getFreePassChecker()
+        );
+
+        if(isDebug) console.log("default / emitEventOnReady / Done!");
+
+    }
+    */
+
+    public getDefaultMetaListMyInfo() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+          new DefaultMeta(
+            // public title:string
+            "이메일",
+            // public placeholder:string
+            "이메일을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_EMAIL,
+            // public checkerKey:string
+            "user_email",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "이름",
+            // public placeholder:string
+            "이름을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NAME,
+            // public checkerKey:string
+            "user_name",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "닉네임",
+            // public placeholder:string
+            "닉네임을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NICKNAME,
+            // public checkerKey:string
+            "user_nickname",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          )
+        ];        
+
+        return defaultMetaList;
+    }
+
+    public getDefaultMetaListApplyTeacher() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+          new DefaultMeta(
+            // public title:string
+            "이메일",
+            // public placeholder:string
+            "이메일을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_EMAIL,
+            // public checkerKey:string
+            "user_email",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "이름",
+            // public placeholder:string
+            "이름을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NAME,
+            // public checkerKey:string
+            "user_name",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "닉네임",
+            // public placeholder:string
+            "닉네임을 입력해주세요",
+            // public eventKey:string
+            this.KEY_USER_NICKNAME,
+            // public checkerKey:string
+            "user_nickname",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+          ),
+          new DefaultMeta(
+            // public title:string
+            "경력",
+            // public placeholder:string
+            "경력을 입력해주세요",
+            // public eventKey:string
+            this.KEY_TEACHER_RESUME,
+            // public checkerKey:string
+            "teacher_resume",
+            // public type:string
+            this.defaultType.TYPE_TEXTAREA
+          ),
+          new DefaultMeta(
+            // public title:string
+            "인사말",
+            // public placeholder:string
+            "인사말을 입력해주세요",
+            // public eventKey:string
+            this.KEY_TEACHER_GREETING,
+            // public checkerKey:string
+            "teacher_greeting",
+            // public type:string
+            this.defaultType.TYPE_TEXTAREA
+          )
+        ];        
+
+        return defaultMetaList;
+    }
+
+    public getDefaultMetaListKlassDetail() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+            new DefaultMeta( // 0
+            // public title:string
+            "수업 제목",
+            // public placeholder:string
+            "수업 제목을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TITLE,
+            // public checkerKey:string
+            "klass_title",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+            ),
+            new DefaultMeta( // 1
+            // public title:string
+            "수업 가격",
+            // public placeholder:string
+            "수업 가격을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE,
+            // public checkerKey:string
+            "klass_price",
+            // public type:string
+            this.defaultType.TYPE_NUMBER
+            ),
+            new DefaultMeta( // 2
+            // public title:string
+            "수업 시작 시간",
+            // public placeholder:string
+            "수업 시작 시간을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TIME_BEGIN,
+            // public checkerKey:string
+            "klass_time_hhmm",
+            // public type:string
+            this.defaultType.TYPE_HHMM
+            ),
+            new DefaultMeta( // 3
+            // public title:string
+            "수업 종료 시간",
+            // public placeholder:string
+            "수업 종료 시간을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_TIME_END,
+            // public checkerKey:string
+            "klass_time_hhmm",
+            // public type:string
+            this.defaultType.TYPE_HHMM
+            ),
+            new DefaultMeta( // 4
+            // public title:string
+            "수업 시작 날짜",
+            // public placeholder:string
+            "수업 시작 날짜를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_DATE_ENROLLMENT_INPUT,
+            // public checkerKey:string
+            "klass_date_begin",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+            new DefaultMeta( // 5
+            // public title:string
+            "수업 레벨",
+            // public placeholder:string
+            "수업 레벨을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_LEVEL,
+            // public checkerKey:string
+            "klass_level",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+            new DefaultMeta( // 6
+            // public title:string
+            "수업 장소 - 지하철 노선",
+            // public placeholder:string
+            "수업 장소 - 지하철 노선을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_VENUE_SUBWAY_LINE,
+            // public checkerKey:string
+            "klass_day",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),            
+            new DefaultMeta( // 7
+            // public title:string
+            "수업 장소 - 지하철 역",
+            // public placeholder:string
+            "수업 장소 - 지하철 역을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_VENUE_SUBWAY_STATION,
+            // public checkerKey:string
+            "klass_day",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+            new DefaultMeta( // 8
+            // public title:string
+            "수업 요일",
+            // public placeholder:string
+            "수업 요일을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_DAYS,
+            // public checkerKey:string
+            "klass_day",
+            // public type:string
+            this.defaultType.TYPE_CHECKBOX
+            ),
+            new DefaultMeta( // 9
+            // public title:string
+            "수업 기간",
+            // public placeholder:string
+            "수업 기간 - 2주/4주/8주/10주/12주",
+            // public eventKey:string
+            this.KEY_KLASS_WEEKS,
+            // public checkerKey:string
+            "klass_week",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+        ];
+        
+        return defaultMetaList;
+    } 
+
+    public getDefaultMetaListKlassPriceCalculator() :DefaultMeta[] {
+
+        let defaultMetaList:DefaultMeta[] = 
+        [
+            new DefaultMeta( // 0
+            // public title:string
+            "4주당 1인당 강의료",
+            // public placeholder:string
+            "4주당 1인당 강의료를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT,
+            // public checkerKey:string
+            "klass_price",
+            // public type:string
+            this.defaultType.TYPE_NUMBER
+            ),
+            new DefaultMeta( // 1
+            // public title:string
+            "수수료",
+            // public placeholder:string
+            "수수료를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_COMMISSION,
+            // public checkerKey:string
+            "klass_price_calc_commission_str",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+            ),
+            new DefaultMeta( // 2
+            // public title:string
+            "4주당 1인당 강사 지급액",
+            // public placeholder:string
+            "4주당 1인당 강사 지급액을 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER,
+            // public checkerKey:string
+            "klass_price_calc_payment_str",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+            ),
+            new DefaultMeta( // 3
+            // public title:string
+            "수업 학생수",
+            // public placeholder:string
+            "수업 학생수를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER,
+            // public checkerKey:string
+            "klass_price_calc_student_number",
+            // public type:string
+            this.defaultType.TYPE_NUMBER
+            ), 
+            new DefaultMeta( // 4
+            // public title:string
+            "최종 전달 비용",
+            // public placeholder:string
+            "합계를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_TOTAL,
+            // public checkerKey:string
+            "klass_price_calc_payment_str",
+            // public type:string
+            this.defaultType.TYPE_INPUT
+            ),
+            new DefaultMeta( // 5
+            // public title:string
+            "수업 주수",
+            // public placeholder:string
+            "수업 주수를 입력해주세요",
+            // public eventKey:string
+            this.KEY_KLASS_PRICE_CALC_WEEK,
+            // public checkerKey:string
+            "klass_week",
+            // public type:string
+            this.defaultType.TYPE_SELECT
+            ),
+        ];
+    
+        return defaultMetaList;
+    }            
 
 
 }

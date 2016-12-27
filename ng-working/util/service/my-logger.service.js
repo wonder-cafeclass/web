@@ -26,7 +26,11 @@ var MyLoggerService = (function () {
         this.pageTypeKlassList = "CLASS_LIST";
         this.pageTypePolicy = "POLICY";
         this.pageTypeSignup = "SIGNUP";
+        this.pageTypeSignupTeacher = "SIGNUP_TEACHER";
         this.pageTypeSignupSelect = "SIGNUP_SELECT";
+        this.pageTypeMyInfo = "MY_INFO";
+        this.pageTypeTeacherInfo = "TEACHER_INFO";
+        this.pageTypeApplyTeacherTerm = "APPLY_TEACHER_TERM";
         this.errorTypeNotValidValue = "NOT_VALID_VALUE";
         this.errorTypeUnknownError = "UNKNOWN_ERROR";
         this.errorAPIFailed = "API_FAILED";
@@ -69,8 +73,8 @@ var MyLoggerService = (function () {
             .catch(this.myExtractor.handleError);
     };
     MyLoggerService.prototype.logActionDirtyWord = function (apiKey, dirtyWord) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("my-logger.service / logActionDirtyWord / 시작");
         if (null == apiKey || "" == apiKey) {

@@ -146,6 +146,9 @@ class MY_KlassCalendar {
         {
             $date_end = $calendar_list[count($calendar_list) - 1];
         }
+
+        // $days_list = $klass_course->days_list;
+        $days_map = $klass_course->get_days_map();
         
         for ($i=0; $i < count($calendar_list); $i++) 
         {
@@ -182,16 +185,11 @@ class MY_KlassCalendar {
                 $klassCalendar->isLastDay = true;
             }
 
-            $strpos = strpos(strtolower($cal_date), strtolower($klass_course->days));
-            $is_klass_day = false;
-            if(-1 < $strpos) 
-            {
-                // 수업이 있는 날짜입니다.
-                $is_klass_day = true;
-            }
-            $strpos = -1;
+            // 수업이 있는 요일 검사.
+            $is_klass_day = $klass_course->is_class_day($day);
 
             // 수업 시작 날짜 이전인지 검사.
+            $strpos = -1;
             if(strtotime($klass_course->date_begin) <= strtotime($cal_date_yyyy_mm_dd)) 
             {
                 $has_class_began = true;
@@ -586,7 +584,6 @@ class MY_KlassCalendar {
 
         // 해당 날짜에 수업이 있다면, 수강신청이 가능한지 확인해서 플래그 값을 업데이트 해줍니다.
         // 매주/2주/4주의 플래그값을 모두 검사, 등록합니다.
-        // wonder.jung
         $enrollment_interval_week = intval($klass_course->enrollment_interval_week);
         $enrollment_week = 1;
         $enrollment_2weeks = 2;
@@ -618,7 +615,6 @@ class MY_KlassCalendar {
                         continue;   
                     }
 
-                    // wonder.jung
                     // 1. 매주 강의 참여
                     $klassCalendar->isEnrollmentWeek = true; 
                     if($enrollment_week === $enrollment_interval_week)

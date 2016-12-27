@@ -38,23 +38,6 @@ var InputsBtnsRowsComponent = (function () {
             new my_button_1.MyButton("추가하기", this.myEventService.ON_ADD_ROW, myChecker, myEvent)
         ];
         this.updateMyRemovableBtnList();
-        /*
-        this.myRemovableBtnList = [];
-        for (var i = 0; i < this.myEventList.length; ++i) {
-    
-          let curMyEvent:MyEvent = this.myEventList[i];
-          let myButtonNext:MyButton =
-          new MyButton (
-            "빼기",
-            this.myEventService.ON_REMOVE_ROW,
-            myChecker,
-            curMyEvent
-          )
-    
-          this.myRemovableBtnList.push(myButtonNext);
-    
-        }
-        */
         // Ready Event 발송 
         var myEventReady = this.myEventService.getMyEvent(
         // public eventName:string
@@ -108,8 +91,25 @@ var InputsBtnsRowsComponent = (function () {
         }
         return true;
     };
+    InputsBtnsRowsComponent.prototype.getInputTextList = function () {
+        var inputTextList = [];
+        if (null != this.myEventList && 0 < this.myEventList.length) {
+            for (var i = 0; i < this.myEventList.length; ++i) {
+                var myEvent = this.myEventList[i];
+                if (null != myEvent) {
+                    inputTextList.push(myEvent.value);
+                } // end if
+            } // end for
+        } // end if
+        return inputTextList;
+    };
     InputsBtnsRowsComponent.prototype.onChangeFromChild = function (myEvent) {
-        console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("inputs-btns-rows / onChangeFromChild / init");
+        if (isDebug)
+            console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
         if (null == myEvent && null != myEvent.value) {
             return;
         }
@@ -118,6 +118,9 @@ var InputsBtnsRowsComponent = (function () {
             this.myEventList = this.myEventService.setEventValue(myEvent, this.myEventList);
             var hasChanged = this.hasChanged();
             this.isDisabledSave = (hasChanged) ? false : true;
+            // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+            var inputTextList = this.getInputTextList();
+            myEvent.metaObj = inputTextList;
             this.emitter.emit(myEvent);
         }
         else if (this.myEventService.ON_ADD_ROW === myEvent.eventName) {
@@ -127,6 +130,9 @@ var InputsBtnsRowsComponent = (function () {
             var myChecker = this.myCheckerService.getTitleChecker();
             var myButtonNew = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, myEvent);
             this.myRemovableBtnList.push(myButtonNew);
+            // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+            var inputTextList = this.getInputTextList();
+            myEvent.metaObj = inputTextList;
             // 저장 관련 작업을 할 수 없으므로 부모에게 이벤트 전달.
             var hasChanged = this.hasChanged();
             this.isDisabledSave = (hasChanged) ? false : true;
@@ -164,6 +170,9 @@ var InputsBtnsRowsComponent = (function () {
                 // 리스트가 1개가 줄어야 부모에게 이벤트를 발송할 있다.
                 var hasChanged = this.hasChanged();
                 this.isDisabledSave = (hasChanged) ? false : true;
+                // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+                var inputTextList = this.getInputTextList();
+                myEvent.metaObj = inputTextList;
                 myEvent.parentEventList = this.myEventList;
                 this.emitter.emit(myEvent);
             }
@@ -266,6 +275,9 @@ var InputsBtnsRowsComponent = (function () {
         // public myChecker:MyChecker
         this.myCheckerService.getTitleChecker());
         console.log("inputs-btns-rows / save / 010 / myEventReturn : ", myEventReturn);
+        // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
+        var inputTextList = this.getInputTextList();
+        myEventReturn.metaObj = inputTextList;
         this.emitter.emit(myEventReturn);
     };
     InputsBtnsRowsComponent.prototype.hasChanged = function () {

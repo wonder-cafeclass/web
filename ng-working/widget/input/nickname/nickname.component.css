@@ -71,3 +71,13 @@ span.warning {
 .tooltip-success-inner {
   background-color: #5cb85c;
 }
+.show-my-tooltip {
+  opacity:1; 
+  margin-left: 100px;
+  margin-top: -80px; 
+}
+.hide-my-tooltip {
+  opacity:0; 
+  margin-left: 100px;
+  margin-top: -80px; 
+}

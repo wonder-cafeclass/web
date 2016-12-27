@@ -13,6 +13,7 @@ var my_checker_service_1 = require('../../../util/service/my-checker.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
+// @ Deprecated - REMOVE ME
 var PasswordComponent = (function () {
     function PasswordComponent(myEventService, myLoggerService, watchTower, myCheckerService) {
         this.myEventService = myEventService;
@@ -38,6 +39,7 @@ var PasswordComponent = (function () {
         this.placeholderHead = "비밀번호를 입력해주세요";
         this.isValidPassword = false;
         this.isWarningPassword = false;
+        this.isShowTooltipPassword = false;
         this.tooltipHeadMsg = null;
         this.tooltipHeadPasswordNeeds = "패스워드를 먼저 입력해주세요.";
         this.tooltipHeadNotAllowed = "앗! 패스워드에 문제가 있습니다.";
@@ -48,6 +50,7 @@ var PasswordComponent = (function () {
         this.lastKeyupTypeP = "";
         this.isValidRepassword = false;
         this.isWarningRepassword = false;
+        this.isShowTooltipRepassword = false;
         this.tooltipTailMsg = null;
         this.tooltipTailInit = "입력한 패스워드를 확인해볼께요.";
         this.tooltipTailNotMatch = "앗! 패스워드가 일치하지 않습니다.";
@@ -64,8 +67,8 @@ var PasswordComponent = (function () {
         this.isNewPW = false;
     }
     PasswordComponent.prototype.ngOnInit = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / ngOnInit / init");
         if (this.isCheckCurPW) {
@@ -75,16 +78,16 @@ var PasswordComponent = (function () {
     };
     PasswordComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / ngAfterViewInit");
         this.asyncViewPack();
     };
     PasswordComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -166,6 +169,7 @@ var PasswordComponent = (function () {
         this.isFocusPassword = true;
         this.isWarningPassword = true;
         this.isValidPassword = false;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = this.tooltipHeadNotAllowed;
     };
     // @ Desc : 이메일 재입력이 제대로 입력되었는지 확인합니다.
@@ -186,6 +190,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = true;
         this.isWarningRepassword = true;
         this.isValidRepassword = false;
+        this.isShowTooltipRepassword = true;
         if ((this.password !== this.repassword)) {
             this.tooltipTailMsg = this.tooltipTailNotMatch;
         }
@@ -206,8 +211,8 @@ var PasswordComponent = (function () {
         if (!this.isCheckCurPW) {
             return;
         }
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onClickPasswordConfirm / 시작");
         event.stopPropagation();
@@ -292,8 +297,8 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.onBlurPassword = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;    
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onBlurPassword / init");
         if (null == this.myCheckerService) {
@@ -354,6 +359,7 @@ var PasswordComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipHeadMsg = null;
+            _self.isShowTooltipPassword = false;
         }, 1000 * sec);
     };
     PasswordComponent.prototype.hideTooltipTail = function (sec) {
@@ -364,6 +370,7 @@ var PasswordComponent = (function () {
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipTailMsg = null;
+            _self.isShowTooltipRepassword = false;
         }, 1000 * sec);
     };
     PasswordComponent.prototype.onKeydownTabShiftPassword = function (event, elementPassword) {
@@ -399,12 +406,13 @@ var PasswordComponent = (function () {
                 console.log("password / onKeydownTabPassword / 패스워드가 입력되지 않은 상태라면, 패스워드 재입력 창으로 넘어가면 안됩니다.");
             // 메시지 노출.
             this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
+            this.isShowTooltipPassword = true;
             this.isWarningPassword = true;
         } // end if
     };
     PasswordComponent.prototype.onKeyupEnter = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupEnter / init");
         event.stopPropagation();
@@ -431,8 +439,8 @@ var PasswordComponent = (function () {
         this.emitEventOnSubmitPW(eventKey);
     };
     PasswordComponent.prototype.emitEventOnSubmitPW = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / emitEventOnSubmitPW / init");
         // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -450,8 +458,8 @@ var PasswordComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     PasswordComponent.prototype.emitEventOnChangePW = function (eventKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / emitEventOnChangePW / init");
         // 사용자가 input 영역에서 enter를 누르는 이벤트를 부모 객체로 전달합니다.
@@ -471,8 +479,8 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.onKeyupPassword = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupPassword / init");
         // shift, tab
@@ -516,11 +524,6 @@ var PasswordComponent = (function () {
                 element.value = this.passwordPrev = this.password = this.password.replace(match, "");
             }
             // 1-1-2. 삭제 안내 메시지를 노출합니다.
-            // REMOVE ME
-            // this.tooltipHeadMsg = "한글 및 공백을 사용할 수 없어요.";
-            // this.isValidPassword = false;
-            // this.isWarningPassword = true;
-            // this.hideTooltipHead(2);
             this.showTooltipHeadFailWarning("한글 및 공백을 사용할 수 없어요.", true);
             if (isDebug)
                 console.log("password / onKeyupPassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
@@ -539,6 +542,7 @@ var PasswordComponent = (function () {
                     if ("max" === history_1.key) {
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipHeadMsg = history_1.msg;
+                        this.isShowTooltipPassword = true;
                         // 글자수를 줄여줍니다.
                         var max = history_1.value;
                         element.value = this.passwordPrev = this.password = this.password.slice(0, max);
@@ -559,12 +563,14 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.hideTooltipHeadFailWarning = function () {
         this.isFocusPassword = false;
         this.isValidPassword = true;
+        this.isShowTooltipPassword = false;
         this.tooltipHeadMsg = null;
     };
     // @ Desc : 실패 툴팁을 보여줍니다.
     PasswordComponent.prototype.showTooltipHeadFailWarning = function (warningMsg, isTimeout) {
         this.isFocusPassword = true;
         this.isValidPassword = false;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = warningMsg;
         if (null != isTimeout && isTimeout) {
             this.hideTooltipHead(2);
@@ -574,6 +580,7 @@ var PasswordComponent = (function () {
     PasswordComponent.prototype.showTooltipHeadSuccess = function (msg) {
         this.isFocusPassword = false;
         this.isValidPassword = true;
+        this.isShowTooltipPassword = true;
         this.tooltipHeadMsg = msg;
         this.hideTooltipHead(2);
     };
@@ -597,6 +604,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = false;
         this.isFocusPassword = true;
         this.isWarningPassword = true;
+        this.isShowTooltipPassword = true;
         elementPassword.focus();
         if (null == this.tooltipHeadMsg || "" === this.tooltipHeadMsg) {
             this.tooltipHeadMsg = this.tooltipHeadPasswordNeeds;
@@ -668,8 +676,8 @@ var PasswordComponent = (function () {
         }
     };
     PasswordComponent.prototype.onKeyupRepassword = function (event, element) {
-        var isDebug = true;
-        // let isDebug:boolean = false;  
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onKeyupRepassword / init");
         event.stopPropagation();
@@ -717,6 +725,7 @@ var PasswordComponent = (function () {
             this.tooltipTailMsg = "한글 및 공백을 사용할 수 없어요.";
             this.isValidPassword = false;
             this.isWarningPassword = true;
+            this.isShowTooltipRepassword = true;
             this.hideTooltipTail(2);
             if (isDebug)
                 console.log("password / onKeyupRepassword / 한글 및 공백 입력시 삭제 처리. / matchArr : ", matchArr);
@@ -736,6 +745,7 @@ var PasswordComponent = (function () {
                         console.log("password / onKeyupRepassword / history : ", history_2);
                         // 최대 문자 갯수보다 많은 경우.
                         this.tooltipTailMsg = history_2.msg;
+                        this.isShowTooltipRepassword = true;
                         // 글자수를 줄여줍니다.
                         var max = history_2.value;
                         element.value = this.repasswordPrev = this.repassword = this.repassword.slice(0, max);
@@ -771,6 +781,7 @@ var PasswordComponent = (function () {
         // 패스워드 재입력 성공!
         if (isKeyup) {
             this.tooltipTailMsg = this.tooltipTailMatched;
+            this.isShowTooltipRepassword = true;
             this.hideTooltipTail(2);
             // 부모 객체에게 정상적인 이메일 주소를 전달합니다.
             // 부모 객체에게 Event 발송 
@@ -799,6 +810,7 @@ var PasswordComponent = (function () {
         this.isFocusRepassword = false;
         this.isValidRepassword = false;
         this.isWarningRepassword = true;
+        this.isShowTooltipRepassword = true;
     };
     PasswordComponent.prototype.checkRepassword = function (element) {
         // let isDebug:boolean = true;
@@ -833,8 +845,8 @@ var PasswordComponent = (function () {
     };
     // @ Desc : 지금의 자신의 패스워드를 확인하는 모드로 바꿉니다.
     PasswordComponent.prototype.openCheckCurPWMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / openCheckCurPWMode / init");
         this.initPassword();
@@ -844,8 +856,8 @@ var PasswordComponent = (function () {
     };
     // @ Desc : 지금의 자신의 패스워드를 확인하는 모드를 해제합니다.
     PasswordComponent.prototype.closeCheckCurPWMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / releaseUpdateMode / init");
         this.isCheckCurPW = false;
@@ -870,8 +882,8 @@ var PasswordComponent = (function () {
         this.isNewPW = true;
     };
     PasswordComponent.prototype.onClickNewPasswordConfirm = function (event) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / onClickNewPasswordConfirm / init");
         event.stopPropagation();
@@ -879,8 +891,8 @@ var PasswordComponent = (function () {
         this.emitEventOnSubmitPW(this.myEventService.KEY_USER_NEW_PASSWORD);
     };
     PasswordComponent.prototype.openNewPasswordMode = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("password / openNewPasswordMode / init");
         this.closeCheckCurPWMode();

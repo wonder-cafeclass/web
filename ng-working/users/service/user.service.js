@@ -470,8 +470,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.getUserCookie = function (apiKey) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / getUserCookie / 시작");
         if (isDebug)
@@ -530,8 +530,8 @@ var UserService = (function () {
             .catch(this.myExtractor.handleError);
     };
     UserService.prototype.updatePassword = function (apiKey, email, password) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("user.service / updatePassword / 시작");
         if (isDebug)
@@ -553,6 +553,42 @@ var UserService = (function () {
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
+    };
+    UserService.prototype.getUserEmpty = function () {
+        var user = new user_1.User(
+        // public id:number,
+        -1, 
+        // public nickname:string,
+        "", 
+        // public name:string,
+        "", 
+        // public gender:string,
+        "", 
+        // public birthday:string, 
+        "", 
+        // public thumbnail:string,
+        "", 
+        // public status:string,
+        "", 
+        // public permission:string,
+        "", 
+        // public kakao_id:string,
+        "", 
+        // public naver_id:string,
+        "", 
+        // public facebook_id:string,
+        "", 
+        // public google_id:string,
+        "", 
+        // public mobile:string,
+        "", 
+        // public email:string,
+        "", 
+        // public date_created:string,
+        "", 
+        // public date_updated:string          
+        "");
+        return user;
     };
     UserService.prototype.getUserFromJSON = function (userJSON) {
         if (null == userJSON) {

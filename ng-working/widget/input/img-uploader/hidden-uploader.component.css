@@ -1,0 +1,35 @@
+div.btn-box {
+  padding: 10px;
+}
+div.radius-border {
+  border-radius: 5px;
+}
+div.img-uploader {
+  text-align: left;
+  padding: 0px;
+}
+img.img-uploader {
+  width: 100%;
+  margin-left: 0px;
+}
+.btn-orange {
+  color: #e85c41;
+  background-color: #fff;
+  border-color: #e85c41;
+}
+table.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout {
+  border:0px;
+  padding:0px;
+  margin:0px;
+}
+td.layout.no-border {
+  border: 0px;
+}
+td.layout.no-border.btn-style {
+  padding: 10px;
+}

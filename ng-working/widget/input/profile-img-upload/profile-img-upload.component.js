@@ -27,6 +27,7 @@ var ProfileImgUploadComponent = (function () {
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
         this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
+        this.userProfileDefaultUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
         this.userProfileSampleArr = [
             "/assets/images/user/user_anonymous_150x150_cat.jpg",
             "/assets/images/user/user_anonymous_150x150_lion.jpg",
@@ -41,6 +42,9 @@ var ProfileImgUploadComponent = (function () {
         this.isFocusInfo = false;
         this.isShowPopover = false;
         this.isAdmin = false;
+        this.isShowTooltip = false;
+        this.isValidInput = false;
+        this.tooltipMsg = "";
     }
     ProfileImgUploadComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
@@ -101,6 +105,9 @@ var ProfileImgUploadComponent = (function () {
         this.setViewPack();
         this.setMyChecker();
     };
+    ProfileImgUploadComponent.prototype.isNotOK = function (input) {
+        return !this.isOK(input);
+    };
     ProfileImgUploadComponent.prototype.isOK = function (input) {
         if (null == this.myCheckerService) {
             return false;
@@ -125,8 +132,15 @@ var ProfileImgUploadComponent = (function () {
         return isOK;
     };
     // @ Desc : 프로필 이미지를 확인해 달라는 표시를 보여줍니다.
-    ProfileImgUploadComponent.prototype.showWarning = function () {
-        // Do something...
+    ProfileImgUploadComponent.prototype.showWarning = function (msg) {
+        this.isShowTooltip = true;
+        this.isValidInput = false;
+        this.tooltipMsg = msg;
+    };
+    ProfileImgUploadComponent.prototype.hideWarning = function () {
+        this.isShowTooltip = false;
+        this.isValidInput = false;
+        this.tooltipMsg = "";
     };
     ProfileImgUploadComponent.prototype.getProfileImgUrl = function () {
         return this.userProfileUrl;
@@ -189,8 +203,8 @@ var ProfileImgUploadComponent = (function () {
     };
     ProfileImgUploadComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("profile-img / onChangeFile / init");
         var files = event.srcElement.files;
@@ -223,7 +237,7 @@ var ProfileImgUploadComponent = (function () {
         }
         // max size / 100kb
         var req_url = this.urlService.get(this.uploadUserProfileUrl);
-        this.uploadService.makeFileRequest(req_url, [], files).subscribe(function (myResponse) {
+        this.uploadService.makeFileRequest(req_url, {}, files).subscribe(function (myResponse) {
             // 섬네일 주소를 받아와서 화면에 표시해야 한다.
             if (isDebug)
                 console.log("profile-img / onChangeFile / myResponse : ", myResponse);
@@ -246,13 +260,13 @@ var ProfileImgUploadComponent = (function () {
                     _this.myEventService.KEY_USER_THUMBNAIL, 
                     // value:string
                     _this.userProfileUrl);
-                }
+                } // end if
             }
         });
     }; // end method
     ProfileImgUploadComponent.prototype.emitEventOnChange = function (eventKey, value) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("profile-img / emitEventOnChange / 시작");
         if (null == eventKey) {

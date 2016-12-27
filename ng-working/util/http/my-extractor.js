@@ -74,6 +74,7 @@ var MyExtractor = (function () {
             if (null != jsonObj &&
                 null != jsonObj["success"] &&
                 null != jsonObj["message"]) {
+                // wonder.jung - 에러 정보 넘어오지 않음.
                 myResponse =
                     new my_response_1.MyResponse(
                     // public success:boolean
@@ -92,8 +93,10 @@ var MyExtractor = (function () {
             return myResponse;
         }
         else if (hasErrorHtml(res)) {
+            // let jsonObj = getJson(res);
             if (isDebug)
                 console.log("my-extractor / extractData / 1-2. body string이 json object이 아니고, 에러 메시지 html일 경우.");
+            // if(isDebug) console.log("my-extractor / extractData / jsonObj : ",jsonObj);
             myResponse =
                 new my_response_1.MyResponse(
                 // public success:boolean
@@ -115,6 +118,29 @@ var MyExtractor = (function () {
                 console.log("my-extractor / extractData / 1-3. 그 외의 경우.");
             return null;
         } // end if
+    };
+    MyExtractor.prototype.getMyResponseFromJSON = function (jsonObj) {
+        var myResponse = null;
+        if (null != jsonObj &&
+            null != jsonObj["success"] &&
+            null != jsonObj["message"]) {
+            // wonder.jung - 에러 정보 넘어오지 않음.
+            myResponse =
+                new my_response_1.MyResponse(
+                // public success:boolean
+                jsonObj["success"], 
+                // public message:string
+                jsonObj["message"], 
+                // public query:string
+                jsonObj["query"], 
+                // public error:string
+                jsonObj["error"], 
+                // public data:any
+                jsonObj["data"], 
+                // public extra:any
+                jsonObj["extra"]);
+        }
+        return myResponse;
     };
     MyExtractor.prototype.handleError = function (error) {
         // let isDebug:boolean = true;

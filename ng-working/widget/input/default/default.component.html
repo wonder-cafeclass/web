@@ -1,0 +1,245 @@
+<div 	*ngIf="isShowTitle" 
+		[ngClass]="{'no-l':isNoSpace,'no-t':isNoSpace}"
+		[style.width]="widthStr"
+		class="btn-box text-left info">
+	<label class="title">{{meta.title}}</label>
+</div>
+<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus,'no-l':isNoSpace,'no-tb':meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM,'disabled':isDisabled}"
+		[style.width]="widthStr"
+		class="btn-box radius-border">
+
+	<!-- input -->
+	<input 	
+	*ngIf="!isDisabled && meta.type == defaultType.TYPE_INPUT"
+	#input
+	(click)="onClick($event, input)"
+	(focus)="onFocus($event, input)"
+	(blur)="onBlur($event, input)"
+	(keyup)="onKeyup($event, input)"
+	(keydown.tab)="onKeydownTab($event)"
+	(keydown.shift.tab)="onKeydownTabShift($event)"
+	[(ngModel)]="ngModelInput"
+	value={{inputStrPrev}}
+	class="form-control input-glass" 
+	placeholder={{meta.placeholder}}>
+	<!-- input-disabled -->
+	<input 	
+	*ngIf="isDisabled && meta.type == defaultType.TYPE_INPUT"
+	disabled="disabled" 
+	value={{inputStrPrev}}
+	class="form-control input-glass disabled" 
+	placeholder={{meta.placeholder}}>
+
+
+	<!-- text-area -->
+	<textarea 
+	rows="4" 
+	cols="50" 	
+	*ngIf="!isDisabled && meta.type == defaultType.TYPE_TEXTAREA"
+	#textarea
+	(click)="onClick($event, textarea)"
+	(focus)="onFocus($event, textarea)"
+	(blur)="onBlur($event, textarea)"
+	(keyup)="onKeyup($event, textarea)"
+	(keydown.tab)="onKeydownTab($event)"
+	(keydown.shift.tab)="onKeydownTabShift($event)"
+	[(ngModel)]="ngModelInput"
+	value={{inputStrPrev}}
+	class="form-control input-glass my-style" 
+	placeholder={{meta.placeholder}}>
+	</textarea>
+	<!-- text-area-disabled -->
+	<textarea 
+	rows="4" 
+	cols="50"
+	*ngIf="isDisabled && meta.type == defaultType.TYPE_TEXTAREA"
+	disabled="disabled" 
+	value={{inputStrPrev}}
+	class="form-control input-glass my-style disabled"
+	placeholder={{meta.placeholder}}>
+	</textarea>
+
+
+	<!-- Number:Up-down -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_NUMBER">
+
+        <button   
+        type="button"
+		class="btn btn-default btn-l btn-num" 
+		(click)="onClickIncreaseNumber($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-top"></span>
+        </button>
+        <button   
+        type="button"
+		class="btn btn-default btn-r btn-num" 
+		(click)="onClickDecreaseNumber($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-bottom"></span>
+        </button>
+		<input 
+		#inputNumber
+		(click)="onClick($event, inputNumber)"
+		(focus)="onFocus($event, inputNumber)"
+		(blur)="onBlur($event, inputNumber)"
+		(keyup)="onKeyup($event, inputNumber)"
+		(keydown.tab)="onKeydownTab($event)"
+		(keydown.shift.tab)="onKeydownTabShift($event)"
+		[(ngModel)]="ngModelInput"
+		value={{inputStrPrev}}
+		class="form-control input-glass input-num" 
+		placeholder={{meta.placeholder}}>
+	</div>
+
+	<!-- Number:Up-down / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_NUMBER">
+		Number Controller - Disabled
+	</div>
+
+	<!-- HHMM:Up-down -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_HHMM">
+
+        <button   
+        type="button"
+		class="btn btn-default btn-l btn-num" 
+		(click)="onClickIncreaseHHMM($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-top"></span>
+        </button>
+        <button   
+        type="button"
+		class="btn btn-default btn-r btn-num" 
+		(click)="onClickDecreaseHHMM($event, inputNumber)">
+        	<span class="glyphicon glyphicon-triangle-bottom"></span>
+        </button>
+		<input 
+		#inputNumber
+		(click)="onClick($event, inputNumber)"
+		(focus)="onFocus($event, inputNumber)"
+		(blur)="onBlur($event, inputNumber)"
+		(keyup)="onKeyup($event, inputNumber)"
+		(keydown.tab)="onKeydownTab($event)"
+		(keydown.shift.tab)="onKeydownTabShift($event)"
+		[(ngModel)]="ngModelInput"
+		value={{inputStrPrev}}
+		class="form-control input-glass input-num" 
+		placeholder={{meta.placeholder}}>
+	</div>
+
+	<!-- HHMM:Up-down / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_HHMM">
+		Number Controller - Disabled
+	</div>
+
+
+
+	<!-- SELECT BOX -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" style="padding-left: 10px;">
+		<select 
+		class="form-control" 
+		(change)="onSelect($event, $event.target.value)">
+			<option 	
+			*ngFor="let option of selectOptionList" 
+			[selected]="option.isFocus"
+			value={{option.value}}>{{option.key}}</option>
+		</select>
+	</div>
+	<!-- SELECT BOX / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT">
+		Select Controller - Disabled
+	</div>
+
+
+
+
+
+	<!-- CHECK BOX / checkOptionTable -->
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_CHECKBOX">
+
+		<table class="table my-ck-style">
+			<tbody> 
+				<tr *ngFor="let row of checkOptionTable"> 
+					<td *ngFor="let option of row" class="my-ck-style">
+						<div class="checkbox">
+							<label>
+								<input 
+								#checkbox
+								[checked]="option.isFocus"
+								(change)="onCheck($event, $event.target.value, checkbox.checked, checkbox)"
+								type="checkbox" 
+								name={{option.key}} 
+								value={{option.value}}>{{option.key}}
+							</label>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+	<!-- CHECK BOX / Disabled -->
+	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_CHECKBOX">
+		CheckBox Controller - Disabled
+	</div>
+
+
+
+
+
+
+
+	
+	<!-- icon - warning -->
+	<span 	
+	*ngIf="!isValid"
+	[ngClass]="{'num-warning':meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM,'text-warning':meta.type != defaultType.TYPE_NUMBER && meta.type != defaultType.TYPE_HHMM}"
+	class="glyphicon glyphicon-exclamation-sign warning">
+	</span>
+
+
+
+
+
+
+			
+	<!-- tooltip for input -->
+	<div 	*ngIf="meta.type == defaultType.TYPE_INPUT"
+			[ngClass]="{'show-my-tooltip':isShowTooltip,'hide-my-tooltip':!isShowTooltip}"
+			class="tooltip top" 
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
+
+	</div>
+
+	<!-- tooltip for textarea -->
+	<div 	*ngIf="meta.type == defaultType.TYPE_TEXTAREA"
+			[ngClass]="{'show-my-tooltip-ta':isShowTooltip,'hide-my-tooltip-ta':!isShowTooltip}"
+			class="tooltip top" 
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
+
+	</div>
+
+	<!-- tooltip for number & time -->
+	<div 	*ngIf="meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM"
+			[ngClass]="{'show-my-tooltip-num':isShowTooltip,'hide-my-tooltip-num':!isShowTooltip}"
+			class="tooltip top" 
+			role="tooltip"> 
+
+		<div 	class="tooltip-arrow"
+				[ngClass]="{'tooltip-success-arrow':isValid,'tooltip-warning-arrow':!isValid}"
+				></div> 
+		<div 	class="tooltip-inner" 
+				[ngClass]="{'tooltip-success-inner':isValid,'tooltip-warning-inner':!isValid}">{{tooltipMsg}}</div> 
+
+	</div>		
+
+</div>

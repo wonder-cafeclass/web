@@ -12,6 +12,8 @@ import { UrlService }             from "../../util/url.service";
 import { MyExtractor }            from '../../util/http/my-extractor';
 import { MyResponse }             from '../../util/model/my-response';
 
+import { MyRegEx }                from '../../util/model/my-regex';
+
 
 @Injectable()
 export class MyCheckerService {
@@ -22,11 +24,12 @@ export class MyCheckerService {
     private dirtyWordList;
     private apiKey:string;
 
+    public TYPE_NONE:string="TYPE_NONE";
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
     public TYPE_ARRAY:string="TYPE_ARRAY";
 
-    public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
+    // public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
 
     public MIN_STR_SAFE_TITLE:number = 2;
     public MAX_STR_SAFE_TITLE:number = 48;
@@ -38,10 +41,13 @@ export class MyCheckerService {
 
     private myExtractor:MyExtractor;
 
+    private myRegEx:MyRegEx;
+
     constructor(    private us:UrlService, 
                     private http: Http) {
 
         this.myExtractor = new MyExtractor();
+        this.myRegEx = new MyRegEx();
     }
 
     // @ Desc : 외부에서 my-checker를 강제로 세팅할 경우에 사용.
@@ -194,6 +200,7 @@ export class MyCheckerService {
                 continue;
             } // end if
 
+            // wonder.jung
             // 필터 - 정상 이메일 검증
             let regExpValidEmailReceived:RegExp = this.getValidEmails(filter);
             if(null != regExpValidEmailReceived) {
@@ -547,15 +554,13 @@ export class MyCheckerService {
 
     // @ Referer : http://jsfiddle.net/ghvj4gy9/embedded/result,js/
     private regValidEmail:RegExp = /valid_emails/i;
-    private EMAIL_REGEX:RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // public EMAIL_REGEX:RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     private getValidEmails(filter:string) :RegExp {
 
         // let isDebug:boolean = true;
         let isDebug:boolean = false;
-
-        if(isDebug) {
-            console.log("my-checker / getValidEmails / filter : ",filter);
-        }
+        if(isDebug) console.log("my-checker / getValidEmails / init");
+        if(isDebug) console.log("my-checker / getValidEmails / filter : ",filter);
 
         // ex) "user_email":"valid_emails"
         if(null == filter || 0 == filter.length) {
@@ -563,14 +568,11 @@ export class MyCheckerService {
         }
 
         let matchArr:RegExpMatchArray = filter.match(this.regValidEmail);
-
-        if(isDebug) {
-            console.log("my-checker / getValidEmails / matchArr : ",matchArr);
-        }
+        if(isDebug) console.log("my-checker / getValidEmails / matchArr : ",matchArr);
 
         if(null != matchArr && 1 == matchArr.length) {
             // email 검증을 할 수 있는 정규표현식을 돌려줍니다.
-            return this.EMAIL_REGEX;
+            return this.myRegEx.EMAIL_REGEX;
         }
         
         return null;
@@ -858,39 +860,6 @@ export class MyCheckerService {
 
             let inputStr:string = input;
 
-            // 음수는 검사 영역에 포함되지 않습니다.
-            let max = -1;
-            if(null != myChecker.max) {
-                max = myChecker.max;
-            }
-            if(0 < max && max < inputStr.length) {
-
-                this.history.reason = 
-                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
-                this.history.key = "max";
-                this.history.value = max;
-
-                return false;
-            }
-
-            let min = -1;
-            if(null != myChecker.min) {
-                min = myChecker.min;
-            }
-            if(0 <= min && inputStr.length < min) {
-
-                this.history.reason = 
-                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length;
-                this.history.success = false;
-                this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
-                this.history.key = "min";
-                this.history.value = min;
-
-                return false;
-            }
-
             let regexExclude:RegExp = myChecker.regexExclude;
             if(null != regexExclude) {
                 // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
@@ -974,16 +943,120 @@ export class MyCheckerService {
                 } // end for
             } // end for
 
+            // 문자열의 최소, 최대 길이는 가장 마지막에 검사합니다.
+            // 음수는 검사 영역에 포함되지 않습니다.
+            let max = -1;
+            if(null != myChecker.max) {
+                max = myChecker.max;
+            }
+            if(0 < max && max < inputStr.length) {
+
+                this.history.reason = 
+                "0 < max && max < inputStr.length / max : " + max + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${max}자까지 입력할 수 있어요.`;
+                this.history.key = "max";
+                this.history.value = max;
+
+                return false;
+            }
+
+            let min = -1;
+            if(null != myChecker.min) {
+                min = myChecker.min;
+            }
+            if(0 <= min && inputStr.length < min) {
+
+                this.history.reason = 
+                "0 <= min && inputStr.length < min / min : " + min + " / inputStr.length : " + inputStr.length + " / inputStr : " + inputStr;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${min}자 이상 입력해주셔야 해요.`;
+                this.history.key = "min";
+                this.history.value = min;
+
+                return false;
+            }            
+
 
         } else if(this.TYPE_NUMBER === myChecker.type) {
 
-            if ('number' != typeof input) {
+            // 숫자라면 숫자 이외의 문자는 허용하지 않는다.
+            // 여기서는 자연수만 허용.
+            // wonder.jung
+            let inputStr:string = "" + input;
+            let regexExclude:RegExp = this.myRegEx.REGEX_NATURAL_NUM;
+            if(null != regexExclude) {
+                // 1. 정규표현식에 포함되지 말아야할 문자가 이는지 검사.
+                let matchArr = inputStr.match(regexExclude);
+                if(null != matchArr && 0 < matchArr.length) {
+                    this.history.reason = 
+                    `target string is not allowed with regexExclude : ${regexExclude}`;
+                    this.history.success = false;
+                    this.history.matchArr = matchArr;
+                    this.history.msg = myChecker.msg = "허용되지 않는 문자가 포함되어 있습니다. : " + matchArr.join(",");
+                    this.history.key = "regexExclude";
+                    this.history.value = regexExclude;
+                    this.history.matchArr = matchArr;
 
-                this.history.reason = "'number' != typeof input";
+                    return false;
+                }
+            } // end if
+
+            let inputNum:number = parseInt(input);
+
+            if ('number' != typeof inputNum) {
+
+                this.history.reason = "'number' != typeof inputNum";
                 this.history.success = false;
 
                 return false;
             }
+
+            let min:number = myChecker.min;
+            if((0 < min) && (inputNum < min)) {
+                this.history.reason = `inputNum:${inputNum} < min:${min}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${min} 이상이어야 합니다.`;
+                this.history.key = "min";
+                this.history.value = min;
+
+                return false;
+            }
+
+            let max:number = myChecker.max;
+            if((0 < max) && (max < inputNum)) {
+                this.history.reason = `max:${max} < inputNum:${inputNum}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${max} 이하이어야 합니다.`;
+                this.history.key = "max";
+                this.history.value = max;
+
+                return false;
+            }
+
+            // @ Deprecated - max과 동일
+            let lessThanEqualTo:number = myChecker.lessThanEqualTo;
+            if((0 < lessThanEqualTo) && (lessThanEqualTo < inputNum)) {
+                this.history.reason = `lessThanEqualTo:${lessThanEqualTo} < inputNum:${inputNum}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최대 ${lessThanEqualTo} 이하이어야 합니다.`;
+                this.history.key = "lessThanEqualTo";
+                this.history.value = lessThanEqualTo;
+
+                return false;
+            } // end if
+
+            // @ Deprecated - min과 동일
+            let greaterThanEqualTo:number = myChecker.greaterThanEqualTo;
+            if((0 < greaterThanEqualTo) && (inputNum < greaterThanEqualTo)) {
+                this.history.reason = `inputNum:${inputNum} < greaterThanEqualTo:${greaterThanEqualTo}`;
+                this.history.success = false;
+                this.history.msg = myChecker.msg = `최소 ${greaterThanEqualTo} 이상이어야 합니다.`;
+                this.history.key = "greaterThanEqualTo";
+                this.history.value = greaterThanEqualTo;
+
+                return false;
+            } // end if
 
         } else if(this.TYPE_ARRAY === myChecker.type) {
 
@@ -1003,7 +1076,7 @@ export class MyCheckerService {
           // public max:number
           , this.MAX_STR_SAFE_TITLE
           // public regex:string
-          , this.REGEX_SAFE_STR
+          , this.myRegEx.REGEX_SAFE_STR
         );
     } // end method
     getCommentChecker() :MyChecker {
@@ -1016,9 +1089,35 @@ export class MyCheckerService {
           // public max:number
           , this.MAX_STR_SAFE_COMMENT
           // public regex:string
-          , this.REGEX_SAFE_STR
+          , this.myRegEx.REGEX_SAFE_STR
         );
     } // end method
+    getNaturalNumberChecker() :MyChecker {
+        // public myChecker:MyChecker
+        return new MyChecker(
+          // public type:string
+          this.TYPE_NONE
+          // public min:number
+          , 0
+          // public max:number
+          , Number.MAX_SAFE_INTEGER
+          // public regex:string
+          , this.myRegEx.REGEX_NATURAL_NUM
+        );        
+    }    
+    getFreePassChecker() :MyChecker {
+        // public myChecker:MyChecker
+        return new MyChecker(
+          // public type:string
+          this.TYPE_NONE
+          // public min:number
+          , null
+          // public max:number
+          , null
+          // public regex:string
+          , null
+        );        
+    }
 
     sanitizeDirtyWord(target:string) :string {
 

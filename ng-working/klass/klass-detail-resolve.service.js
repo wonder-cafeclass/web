@@ -10,15 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var klass_service_1 = require('./klass.service');
+var klass_service_1 = require('./service/klass.service');
 var KlassDetailResolve = (function () {
     function KlassDetailResolve(ks, router) {
         this.ks = ks;
         this.router = router;
     }
     KlassDetailResolve.prototype.resolve = function (route) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-detail-resolve / resolve / 시작");
         var id = +route.params['id'];

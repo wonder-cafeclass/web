@@ -1,4 +1,27 @@
-<div class="container">
+<div *ngIf="klass" class="container">
+
+  <!-- Save Button Row Init -->
+  <div *ngIf="isTeacher" class="row">
+    <div class="col-md-2" style="padding:0px;"></div>
+    <div class="col-md-8 cc-div-col" style="padding:0px;">
+
+      <ul class="list-group">
+        <li class="list-group-item" style="padding: 0px;">
+
+          <button   
+          (click)="onClickSave($event)"
+          [disabled]="isSaveBtnDisabled"
+          type="button" 
+          class="btn btn-orange save">저장하기
+          </button>
+
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-md-2" style="padding:0px;"></div>
+  </div>
+  <!-- Save Button Row Done -->
   
   <!-- First Row -->
   <div class="row">
@@ -9,82 +32,308 @@
         <!-- First Column -->
         <ul class="list-group col-md-4">
           <li class="list-group-item" style="padding: 0px;">
+            <hidden-uploader
+            [uploadAPIUrl]="imgUploaderUploadAPIUrl"
+            [imagePath]="imgUploaderImagePathKlassPoster"
+            [imageUrl]="imgUploaderImageUrlKlassPoster"
+            [eventKey]="imgUploaderEventKeyKlassPoster"
+            [fileSizeKBMax]="400"
+            [fileWidth]="535"
+            [fileMinWidth]="512"
+            [fileMaxWidth]="1024"
+            [fileMinHeight]="256"
+            [fileMaxHeight]="512"
+            (emitter)="onChangedFromChild($event)">
+            </hidden-uploader>
+            <img  
+            #classImage 
+            (click)="onClickKlassPoster($event)"
+            class="klass-image refactor-me" 
+            style="width: 100%;"
+            src={{imgUploaderImageUrlKlassPoster}} 
+            alt={{klassCopy.title}}>
 
-            <img  #classImage 
-                class="klass-image refactor-me" 
-                style="width: 100%;"
-                src={{klass.class_img_url}} 
-                alt={{klass.title}}>
-            <div *ngIf="klass.title" class="klass-title-overlay">
-              <h5 class="font"><strong>{{klass.title}}</strong></h5>
+            <!-- LABEL : klass title -->
+            <div class="klass-title-overlay">
+              <h5 class="font"><strong>{{klassTitle}}</strong></h5>
             </div>
-            <div *ngIf="klass.title" class="klass-title-overlay-bg"></div>
+            <div class="klass-title-overlay-bg"></div>
           
           </li>
-
-          <li class="list-group-item" style="padding:0px;">
-              <image-grid [imageTable]="bannerImageTable"
-                          [hasTableBorder]="false"></image-grid>
+          
+          <!-- 포스터 올리기 열 -->
+          <li *ngIf="isTeacher" 
+              class="list-group-item" 
+              style="padding: 10px;">
+            <button type="button" 
+                (click)="onClickKlassPoster($event)"
+                class="btn btn-default img-uploader btn-orange">
+              <span>수업 포스터 올리기</span>
+            </button>
           </li>
+
+          <!-- 수업 제목 입력 창 -->
+          <li *ngIf="isTeacher" 
+              class="list-group-item"
+              style="padding: 0px;">
+
+            <widget-input-default
+            [ngModelInput]="klassTitle"
+            [width]="353"
+            [meta]="defaultMetaList[0]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+
+          </li>
+          
+          <!-- Banner Image List For Service INIT -->
+          <li *ngIf="!isTeacher" 
+              class="list-group-item" 
+              style="padding:0px;border-top:0px;">
+            <image-grid
+            [eventKey]="myEventService.KEY_KLASS_BANNER_VIEW"
+            [imageTable]="imageTableBannerListService"
+            [hasTableBorder]="false">
+            </image-grid>
+          </li>
+          <!-- Banner Image List For Service DONE -->
+          
+          <!-- Banner Image List For Admin INIT -->
+          <li *ngIf="isTeacher" 
+              class="list-group-item" 
+              style="padding:0px;border-top:0px;">
+            <image-grid-v2
+            [eventKey]="myEventService.KEY_KLASS_BANNER"
+            [imageTable]="imageTableBannerList"
+            [handleType]="'checkbox'"
+            [hasTableBorder]="false"
+            [isAdmin]="isTeacher"
+            (emitter)="onChangedFromChild($event)">
+            </image-grid-v2>
+          </li>
+          <!-- Banner Image List For Admin DONE -->
+
         </ul>
+        
 
         <!-- Second Column -->
         <ul class="list-group col-md-4" style="padding-right: 0px;">
-          
+
+          <!-- WEEKS & PRICE INIT -->
           <li class="list-group-item col-next first">
-            <pricetag-h [title]="pricePerWeekFormat"
-                        [fontSizeTitle]="40"
-                        [paddingTitle]="5"
+            <pricetag-h 
+            [title]="pricePerWeekFormat"
+            [fontSizeTitle]="40"
+            [paddingTitle]="5"
 
-                        [price]="klass.price"
-                        [fontSizePrice]="25"
-                        [paddingTopPrice]="25"
-  
-                        [desc]="pricetagDesc"
-                        [fontSizeDesc]="14"
-                        [paddingDesc]="5"
+            [price]="klassCopy.price"
+            [fontSizePrice]="25"
+            [paddingTopPrice]="15"
 
-                        [currency]="priceTagCurrency"
-                        [color]="priceTagColor"></pricetag-h>
+            [desc]="pricetagDesc"
+            [fontSizeDesc]="14"
+            [paddingDesc]="5"
+            
+            [currency]="priceTagCurrency"
+            [color]="priceTagColor"
+            
+            [eventKey]="myEventService.KEY_KLASS_PRICE_VIEW"
+            (emitter)="onChangedFromChild($event)">
+            </pricetag-h>
           </li>
-          <!-- FILTERS -->
+          <!-- WEEKS & PRICE DONE -->
+
+          <!-- WEEKS ADMIN INIT -->
+          <!-- Default Input : Number -->
+          <!--
+          <li 
+          *ngIf="isTeacher" 
+          class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[9]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- WEEKS ADMIN DONE -->          
+
+          <!-- PRICE ADMIN INIT -->
+          <!-- Default Input : Number -->
+          <!-- 
+          <li 
+          *ngIf="isTeacher" 
+          class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [isDisabled]="false"
+            [meta]="defaultMetaList[1]"
+            [numUnit]="1000"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- PRICE ADMIN DONE -->
+
+          <!-- PRICE CALC ADMIN INIT-->
+          <li 
+          *ngIf="isTeacher" 
+          class="list-group-item col-next">
+            <div class="price-calc">
+              <klass-price-calculator (emitter)="onChangedFromChild($event)">
+              </klass-price-calculator>
+            </div>
+          </li>
+          <!-- PRICE CALC ADMIN DONE-->
+
+          <!-- FILTERS INIT -->
           <li class="list-group-item col-next">
-            <image-grid [imageTable]="selectileImageTable"
-                        [imageHeight]="selectileImageHeight"
-                        [imageWidth]="selectileImageWidth"
-                        [hasTableBorder]="true"></image-grid>
+            <div class="box-selectile-show">
+              <image-grid 
+              [eventKey]="myEventService.KEY_KLASS_SELECTILE_VIEW"
+              [imageTable]="selectileImageTable"
+              [imageHeight]="selectileImageHeight"
+              [imageWidth]="selectileImageWidth"
+              [hasTableBorder]="false">
+              </image-grid>
+            </div>
           </li>
+          <!-- FILTERS DONE -->
 
-          <!-- COURSE TIME -->
+          <!-- CLASS LEVEL ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+            <widget-input-default
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[5]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- CLASS LEVEL ADMIN DONE --> 
+
+          <!-- CLASS SUBWAYSTATION ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+
+<table class="table my-ck-style">
+  <tbody> 
+    <tr> 
+      <td class="my-ck-style" style="padding-right:15px;">
+
+        <!-- <div> -->
+          <widget-input-default
+          [width]="185"
+          [isNoSpace]="true"
+          [meta]="defaultMetaList[6]"
+          (emitter)="onChangedFromChild($event)">
+          </widget-input-default>
+        <!-- </div> -->
+
+      </td>
+      <td class="my-ck-style">
+      
+        <!-- <div> -->
+          <widget-input-default
+          [width]="185"
+          [isNoSpace]="true"
+          [meta]="defaultMetaList[7]"
+          (emitter)="onChangedFromChild($event)">
+          </widget-input-default>
+        <!-- </div> -->
+
+      </td>      
+    </tr>
+  </tbody>
+</table>          
+
+          </li>
+          <!-- CLASS SUBWAYSTATION ADMIN DONE --> 
+
+          <!-- CLASS DAYS ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+            <widget-input-default
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[8]"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- CLASS DAYS ADMIN DONE --> 
+
+
+          <!-- COURSE TIME INIT -->
           <li class="list-group-item col-next" style="height: 97px;">
             <clock-board  #clockboard 
                           [clockHeight]=86
                           [clockWidth]=300
-                          [klassTimeBegin]="klassTimeBegin" 
-                          [klassTimeEnd]="klassTimeEnd"></clock-board>
+                          [klassTimeBegin]="this.klassCopy.time_begin" 
+                          [klassTimeEnd]="this.klassCopy.time_end"></clock-board>
           </li>
+          <!-- COURSE TIME DONE -->
 
-          <!-- FIRST KLASS DATE -->
-          <li *ngIf="firstClassDateFormatStr" class="list-group-item col-next">
-            <butterfly  [title]="'강의 참가 가능일'"
-                        [fontSizeTitle]="16"
-                        [paddingTitle]="7"
-                        [text]="firstClassDateFormatStr"
-                        [fontSizeText]="18"
-                        [paddingText]="5"
-                        [color]="priceTagColor"></butterfly>
+          <!-- COURSE TIME BEGIN ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [isDisabled]="false"
+            [meta]="defaultMetaList[2]"
+            [minutesUnit]="30"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
           </li>
+          <!-- COURSE TIME BEGIN ADMIN DONE -->
 
+          <!-- COURSE TIME END ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+            <widget-input-default
+            [width]="-1"
+            [isNoSpace]="true"
+            [meta]="defaultMetaList[3]"
+            [minutesUnit]="30"
+            (emitter)="onChangedFromChild($event)">
+            </widget-input-default>
+          </li>
+          <!-- COURSE TIME END ADMIN DONE -->          
+
+
+          <!-- FIRST KLASS DATE INIT -->
           <li class="list-group-item col-next">
-            <butterfly  [title]="'수업 장소'"
-                        [fontSizeTitle]="16"
-                        [paddingTitle]="7"
-                        [text]="'투썸플레이스 잠실역점'"
-                        [fontSizeText]="18"
-                        [paddingText]="5"
-                        [color]="priceTagColor"></butterfly>          
+            <butterfly  
+            [title]="'수업 시작'"
+            [fontSizeTitle]="16"
+            [paddingTitle]="7"
+            [text]="firstClassDateFormatStr"
+            [fontSizeText]="18"
+            [paddingText]="5"
+            [color]="priceTagColor"
+            [eventKey]="myEventService.KEY_KLASS_DATE_ENROLLMENT_VIEW"
+            (emitter)="onChangedFromChild($event)">
+            </butterfly>
           </li>
+          <!-- FIRST KLASS DATE DONE -->
 
+          <!-- FIRST KLASS DATE ADMIN INIT -->
+          <li 
+          *ngIf="isTeacher"
+          class="list-group-item col-next">
+            <div>
+              <widget-input-default
+              [isNoSpace]="true"
+              [meta]="defaultMetaList[4]"
+              (emitter)="onChangedFromChild($event)">
+              </widget-input-default>
+            </div>
+          </li>
+          <!-- FIRST KLASS DATE ADMIN DONE -->
+          
           <li class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
@@ -100,19 +349,41 @@
   </div>
   
   <!-- Second Row -->
+  <!-- SECOND ROW INIT -->
   <div class="row">
     <div class="col-md-2" style="padding:0px;"></div>
     <div class="col-md-8 cc-div-col" style="padding:0px;">
       <klass-detail-nav-list  #klassDetailNav
                               [radiobtnOptionListNavTabs]="radiobtnOptionListNavTabs"
-                              (emitter)="onChangedFromChildNav($event)"
-                              [isAdmin]="isAdmin"
-                              [klassFeature]="klassFeature"
-                              [klassTarget]="klassTarget"
-                              [klassSchedule]="klassSchedule"
-                              [klass]="klass">
+                              (emitter)="onChangedFromChild($event)"
+                              [isAdmin]="isAdmin">
       </klass-detail-nav-list>
     </div>
     <div class="col-md-2" style="padding:0px;"></div>
   </div>
+  <!-- SECOND ROW DONE -->
+
+  <!-- Save Button Row Init -->
+  <div *ngIf="isTeacher" class="row">
+    <div class="col-md-2" style="padding:0px;"></div>
+    <div class="col-md-8 cc-div-col" style="padding:0px;">
+
+      <ul class="list-group">
+        <li class="list-group-item" style="padding: 0px;">
+
+          <button   
+          (click)="onClickSave($event)"
+          [disabled]="isSaveBtnDisabled"
+          type="button" 
+          class="btn btn-orange save">저장하기
+          </button>
+
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-md-2" style="padding:0px;"></div>
+  </div>
+  <!-- Save Button Row Done -->
+
 </div>

@@ -11,16 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var Observable_1 = require('rxjs/Observable');
 var Subject_1 = require('rxjs/Subject');
-var my_event_service_1 = require('../../util/service/my-event.service');
-var klass_service_1 = require('../klass.service');
-var my_event_1 = require('../../util/model/my-event');
 var klass_venue_1 = require('../model/klass-venue');
+var klass_service_1 = require('../service/klass.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
+var my_event_1 = require('../../util/model/my-event');
+var my_is_1 = require('../../util/helper/my-is');
+var my_time_1 = require('../../util/helper/my-time');
+var my_array_1 = require('../../util/helper/my-array');
 var KlassVenueSearchListComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
-    function KlassVenueSearchListComponent(myEventService, klassService, zone) {
-        var _this = this;
+    function KlassVenueSearchListComponent(myEventService, klassService, watchTower, zone) {
         this.myEventService = myEventService;
         this.klassService = klassService;
+        this.watchTower = watchTower;
         this.zone = zone;
         this.cageWidth = -1;
         this.cageWidthNaverMap = -1;
@@ -33,15 +37,58 @@ var KlassVenueSearchListComponent = (function () {
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
         this.isOverSearchResult = false;
+        this.myIs = new my_is_1.HelperMyIs();
+        this.myTime = new my_time_1.HelperMyTime();
+        this.myArray = new my_array_1.HelperMyArray();
+        this.initIFrame();
+    }
+    KlassVenueSearchListComponent.prototype.ngOnInit = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / ngOnInit / init");
+        this.initLayout();
+        this.initIFrameAfterOnInit();
+        // 맵 정보가 없는 경우, 기본 맵 정보를 만듭니다.
+        if (null == this.klassVenue) {
+            this.klassVenue = this.getDefaultVenue();
+        }
+        this.initVenueSearch();
+        this.subscribeEventPack();
+    };
+    KlassVenueSearchListComponent.prototype.getDefaultVenue = function () {
+        return new klass_venue_1.KlassVenue().set(
+        // public title:string
+        "&lt;b&gt;스타벅스&lt;/b&gt; 갤러리아팰리스점", 
+        // public telephone:string
+        "02-758-8118", 
+        // public address:string
+        "서울특별시 송파구 잠실동 40", 
+        // public roadAddress:string
+        "서울특별시 송파구 올림픽로 212 갤러리아팰리스", 
+        // public latitude:number
+        37.5111896, 
+        // public longitude:number
+        127.0939713);
+    };
+    KlassVenueSearchListComponent.prototype.initIFrame = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / constructor / init");
         // set function reference out of app. ( ex)iframe )
         window["angularMySL"] = {
             zone: this.zone,
             componentFn: function (value) { return _this.callFromOutside(value); },
             component: this
         };
-    }
-    KlassVenueSearchListComponent.prototype.ngOnInit = function () {
-        var _this = this;
+    };
+    KlassVenueSearchListComponent.prototype.initLayout = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / initLayout / init");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
             this.cageWidthNaverMap = Math.round(this.cageWidth * (2 / 3));
@@ -53,13 +100,13 @@ var KlassVenueSearchListComponent = (function () {
             this.cageWidthStr = "100%";
             this.cageWidthNaverMapStr = "80%";
             this.cageWidthVenueInfoStr = "20%";
-        }
+        } // end if
         if (0 < this.cageHeight) {
             this.cageHeightStr = this.cageHeight + "px";
         }
         else {
             this.cageHeightStr = "100%";
-        }
+        } // end if
         var inputPadding = 60;
         this.inputWidth = this.cageWidthNaverMap - inputPadding;
         if (0 < this.inputWidth && 0 < this.cageWidthNaverMap) {
@@ -67,43 +114,27 @@ var KlassVenueSearchListComponent = (function () {
         }
         else {
             this.inputWidthStr = "90%";
+        } // end if
+    };
+    // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
+    KlassVenueSearchListComponent.prototype.setVenue = function (klassVenue) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / setVenue / init");
+        if (null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
+            if (isDebug)
+                console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
+            return;
         }
+        this.klassVenue = this.klassVenuesNaverMap = klassVenue;
+        if (isDebug)
+            console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ", this.klassVenuesNaverMap);
+    };
+    KlassVenueSearchListComponent.prototype.initIFrameAfterOnInit = function () {
         // Javascript, ifarme 통신 
         // https://plnkr.co/edit/e77JkHmO7n5FYoKSXnIL?p=preview
         this.childContentWindow = this.iframe.nativeElement.contentWindow;
-        // 맵 정보가 없는 경우, 기본 맵 정보를 만듭니다.
-        if (null == this.klassVenue) {
-            this.klassVenue = new klass_venue_1.KlassVenue(
-            // public title:string
-            "&lt;b&gt;스타벅스&lt;/b&gt; 갤러리아팰리스점", 
-            // public telephone:string
-            "02-758-8118", 
-            // public address:string
-            "서울특별시 송파구 잠실동 40", 
-            // public roadAddress:string
-            "서울특별시 송파구 올림픽로 212 갤러리아팰리스", 
-            // public latitude:number
-            37.5111896, 
-            // public longitude:number
-            127.0939713);
-        }
-        this.klassVenues =
-            this.searchTermsNaverLocal
-                .debounceTime(300) // wait for 300ms pause in events
-                .distinctUntilChanged() // ignore if next search term is same as previous
-                .switchMap(function (term) {
-                // 새로운 입력이 들어온다면 검색 결과리스트를 노출합니다.
-                _this.isHideKlassVenue = false;
-                // switch to new observable each time
-                // return the http search observable
-                // or the observable of empty heroes if no search term
-                return (null != term) ? _this.klassService.searchKlassVenue(term) : Observable_1.Observable.of([]);
-            })
-                .catch(function (error) {
-                // TODO: real error handling
-                console.log(error);
-                return Observable_1.Observable.of([]);
-            });
     };
     KlassVenueSearchListComponent.prototype.callFromOutside = function (myEvent) {
         if (null == myEvent || null == myEvent.key) {
@@ -120,21 +151,117 @@ var KlassVenueSearchListComponent = (function () {
             }
             // iframe을 시작합니다.
             // 부모 객체에게 Ready Event 발송 
-            var myEventReady = this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_READY, 
-            // public key:string
-            this.myEventService.KEY_SEARCH_LIST, 
-            // public value:string
-            "", 
-            // public metaObj:any
-            null, 
-            // public myChecker:MyChecker
-            null);
-            this.emitter.emit(myEventReady);
+            var myEvent_1 = this.watchTower.getEventOnReady(
+            // eventKey:string, 
+            this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_VENUE_MAP, 
+            // component
+            this);
+            this.emitter.emit(myEvent_1);
         }
         else if ("update" === myEvent.key) {
         }
+    }; // end method  
+    KlassVenueSearchListComponent.prototype.initVenueSearch = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / initVenueSearch / init");
+        this.klassVenues =
+            this.searchTermsNaverLocal
+                .debounceTime(300) // wait for 300ms pause in events
+                .distinctUntilChanged() // ignore if next search term is same as previous
+                .switchMap(function (term) {
+                if (isDebug)
+                    console.log("k-v-s-l / initVenueSearch / switchMap / term : ", term);
+                if (null == term || "" === term || term.length < 3) {
+                    // 유효하지 않은 검색어는 중단합니다.
+                    // 2글자 이상이어야 합니다.
+                    return Observable_1.Observable.of([]);
+                }
+                // 새로운 입력이 들어온다면 검색 결과리스트를 노출합니다.
+                _this.isHideKlassVenue = false;
+                // switch to new observable each time
+                // return the http search observable
+                // or the observable of empty heroes if no search term
+                return (null != term) ? _this.klassService.searchKlassVenue(term) : Observable_1.Observable.of([]);
+            })
+                .catch(function (error) {
+                // TODO: real error handling
+                console.log(error);
+                return Observable_1.Observable.of([]);
+            });
+    }; // end method 
+    KlassVenueSearchListComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / subscribeEventPack / init");
+        var isEventPackReady = this.watchTower.getIsEventPackReady();
+        if (isDebug)
+            console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+        if (this.watchTower.getIsEventPackReady()) {
+            // 1. 이미 EventPack 로딩이 완료된 경우
+            // 부모 객체에게 component가 준비된 것을 알립니다.
+            this.emitEventOnReady();
+        }
+        else {
+            // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+            this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
+                if (isDebug)
+                    console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                // 이벤트 관련 정보가 준비되었습니다.
+                // 부모 객체에게 component가 준비된 것을 알립니다.
+                _this.emitEventOnReady();
+            }); // end subscribe
+        } // end if
+    }; // end method
+    KlassVenueSearchListComponent.prototype.emitEventOnReady = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnReady / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-v-s-l / emitEventOnReady / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnReady = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_VENUE_MAP, 
+        // component
+        this);
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnReady / myEventOnReady : ", myEventOnReady);
+        this.emitter.emit(myEventOnReady);
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnReady / Done!");
+    };
+    KlassVenueSearchListComponent.prototype.emitEventOnChangeMeta = function (value, meta) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnChangeMeta / init");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("k-v-s-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnReady = this.watchTower.getEventOnChangeMeta(
+        // eventKey:string, 
+        this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_VENUE_MAP, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker
+        this.watchTower.getMyCheckerService().getFreePassChecker(), 
+        // 
+        meta);
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnChangeMeta / myEventOnReady : ", myEventOnReady);
+        this.emitter.emit(myEventOnReady);
+        if (isDebug)
+            console.log("k-v-s-l / emitEventOnChangeMeta / Done!");
     };
     KlassVenueSearchListComponent.prototype.onChangeInputText = function (value) {
         // 사용자가 내용을 변경한 뒤에 부모에게 내용이 변경되었다고 이벤트 발송.
@@ -168,37 +295,37 @@ var KlassVenueSearchListComponent = (function () {
         }
     };
     KlassVenueSearchListComponent.prototype.onClickKlassVenue = function (klassVenue) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("klass-venue-search-list / onClickKlassVenue / 시작");
+        if (isDebug)
+            console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ", klassVenue);
         this.klassVenuesNaverMap = klassVenue;
         this.klassService.searchKlassMap(
         // q:string
         klassVenue.address).then(function (myReponse) {
             if (isDebug)
                 console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ", myReponse);
-            /*
-            this.klassVenuesNaverMap.latitude = klassVenue.latitude;
-            this.klassVenuesNaverMap.longitude = klassVenue.longitude;
-      
+            klassVenue = _this.klassService.setLatLon(myReponse.data, klassVenue);
+            _this.klassVenuesNaverMap.latitude = klassVenue.latitude;
+            _this.klassVenuesNaverMap.longitude = klassVenue.longitude;
             // iframe에 위치 업데이트
-            if(null != this.childContentWindow.init) {
-              this.childContentWindow.init(this.klassVenuesNaverMap);
-      
-              // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
-              // this.klassVenues = null;
-      
-              // 선택한 업체 이름을 화면에 표시합니다.
-              this.searchBoxText = this.removeHTMLTags(this.klassVenuesNaverMap.title);
-      
-              // 결과 라스트는 화면에서 가립니다.
-              this.isHideKlassVenue = true;
-      
-              // DB UPDATE!
-              console.log("DB UPDATE!");
+            if (null != _this.childContentWindow.init) {
+                _this.childContentWindow.init(_this.klassVenuesNaverMap);
+                // (Do not!)검색 리스트 삭제를 하게되면 Observable 이 작동하지 않습니다.
+                // this.klassVenues = null;
+                // 선택한 업체 이름을 화면에 표시합니다.
+                _this.searchBoxText = _this.removeHTMLTags(_this.klassVenuesNaverMap.title);
+                // 결과 라스트는 화면에서 가립니다.
+                _this.isHideKlassVenue = true;
+                _this.emitEventOnChangeMeta(
+                // value:string, 
+                klassVenue.title, 
+                // meta:any
+                klassVenue);
             }
-            */
         });
     };
     KlassVenueSearchListComponent.prototype.removeHTMLTags = function (targetStr) {
@@ -251,7 +378,7 @@ var KlassVenueSearchListComponent = (function () {
             templateUrl: 'klass-venue-search-list.component.html',
             styleUrls: ['klass-venue-search-list.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, klass_service_1.KlassService, core_1.NgZone])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, klass_service_1.KlassService, my_event_watchtower_service_1.MyEventWatchTowerService, core_1.NgZone])
     ], KlassVenueSearchListComponent);
     return KlassVenueSearchListComponent;
 }());

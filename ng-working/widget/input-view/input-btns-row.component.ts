@@ -69,12 +69,57 @@ export class InputBtnsRowComponent implements OnInit {
     this.emitter.emit(myEventReady);
   }
 
+  onBlur(event, value, inputTextEl) :void{
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("input-btns-row / onBlur / init");
+
+    if(isDebug) console.log("input-btns-row / onBlur / this.myEventKeyEnterCallback : ",this.myEventKeyEnterCallback);
+
+    let myChecker:MyChecker = null;
+    let myEventCopy:MyEvent = null;
+    if(null != this.myEventKeyEnterCallback) {
+      myEventCopy = this.myEventKeyEnterCallback.copy();
+      myEventCopy.eventName = this.myEventService.ON_CHANGE;
+      myEventCopy.value = value;
+      myChecker = myEventCopy.myChecker;
+    }
+
+    // input field의 역할이 어떤 것인지 모르므로 부모에게 change 이벤트 및 input field의 값을 전달합니다.
+    if(null != myChecker && null != myEventCopy) {
+      let isOK = this.myCheckerService.isOK(myChecker, value);
+      if(isOK) {
+        this.emitter.emit(myEventCopy);
+        return;
+      }
+
+      let history = this.myCheckerService.getLastHistory();
+      if(isDebug) console.log("input-btns-row / onBlur / history : ",history);
+
+      // 유효한 문자열이 아닙니다.
+      // 유저에게 알립니다.
+      let msg:string = myEventCopy.myChecker.msg;
+      if(null != msg && "" != msg) {
+        alert(msg);
+        // inputTextEl.focus();
+      } // end if
+    }
+
+  }
+
   onChange(value, inputTextEl) :void{
 
-    // wonder.jung / 문자열의 길이 및 유효성 검증을 해야함.
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("input-btns-row / onChange / init");
 
-    console.log("input-btns-row / onChange / this.myEventKeyEnterCallback : ",this.myEventKeyEnterCallback);
+    if(isDebug) console.log("input-btns-row / onChange / this.myEventKeyEnterCallback : ",this.myEventKeyEnterCallback);
 
+    /*
     let myChecker:MyChecker = null;
     let myEventCopy:MyEvent = null;
     if(null != this.myEventKeyEnterCallback) {
@@ -103,6 +148,7 @@ export class InputBtnsRowComponent implements OnInit {
         inputTextEl.focus();
       } // end if
     }
+    */
   }
 
   callbackSave(value:string, myEventCallback:MyEvent) {

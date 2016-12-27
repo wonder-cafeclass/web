@@ -9,13 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var my_event_service_1 = require('../../util/service/my-event.service');
-var my_event_1 = require('../../util/model/my-event');
-var my_checker_service_1 = require('../../util/service/my-checker.service');
 var klass_teacher_1 = require('../model/klass-teacher');
+var my_event_service_1 = require('../../util/service/my-event.service');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_event_1 = require('../../util/model/my-event');
+var my_is_1 = require('../../util/helper/my-is');
+var my_array_1 = require('../../util/helper/my-array');
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
-    function KlassTeacherComponent(myEventService, myCheckerService) {
+    function KlassTeacherComponent(watchTower, myEventService, myCheckerService) {
+        this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.cageWidth = -1;
@@ -24,10 +28,14 @@ var KlassTeacherComponent = (function () {
         this.isShowGreeting = false;
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
+        this.myIs = new my_is_1.HelperMyIs();
+        this.myArray = new my_array_1.HelperMyArray();
     }
     KlassTeacherComponent.prototype.ngOnInit = function () {
-        // TEST
-        console.log("klass-teacher / ngOnInit / klassId : ", this.klassId);
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-teacher / ngOnInit / init");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
         }
@@ -40,45 +48,111 @@ var KlassTeacherComponent = (function () {
         else {
             this.cageHeightStr = "100%";
         }
+        this.subscribeEventPack();
+        this.init();
+    };
+    KlassTeacherComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-teacher / subscribeEventPack / init");
+        var isEventPackReady = this.watchTower.getIsEventPackReady();
+        if (isDebug)
+            console.log("klass-teacher / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+        if (this.watchTower.getIsEventPackReady()) {
+            // 1. 이미 EventPack 로딩이 완료된 경우
+            // 부모 객체에게 component가 준비된 것을 알립니다.
+            this.emitEventOnReady();
+        }
+        else {
+            // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+            this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
+                if (isDebug)
+                    console.log("klass-teacher / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                // 이벤트 관련 정보가 준비되었습니다.
+                // 부모 객체에게 component가 준비된 것을 알립니다.
+                _this.emitEventOnReady();
+            }); // end subscribe
+        } // end if
+    }; // end method 
+    KlassTeacherComponent.prototype.emitEventOnReady = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-teacher / emitEventOnReady / 시작");
+        if (!this.watchTower.getIsEventPackReady()) {
+            if (isDebug)
+                console.log("klass-teacher / emitEventOnReady / 중단 / EventPack is not valid!");
+            return;
+        }
+        var myEventOnReady = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.watchTower.getMyEventService().KEY_KLASS_TEACHER_LIST, 
+        // component
+        this);
+        if (isDebug)
+            console.log("klass-teacher / emitEventOnReady / myEventOnReady : ", myEventOnReady);
+        this.emitter.emit(myEventOnReady);
+        if (isDebug)
+            console.log("klass-teacher / emitEventOnReady / Done!");
+    };
+    KlassTeacherComponent.prototype.init = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass-teacher / init / 시작");
+        if (isDebug)
+            console.log("klass-teacher / init / this.klassTeacher : ", this.klassTeacher);
+        this.setResume();
+        this.setGreeting();
+    };
+    KlassTeacherComponent.prototype.setResume = function () {
         // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
-        this.myEventListForTeacherResume = [];
-        for (var i = 0; i < this.klassTeacher.resume_arr.length; ++i) {
-            var resume = this.klassTeacher.resume_arr[i];
+        var resumeArr = this.klassTeacher.getResumeArr();
+        var myEventList = [];
+        for (var i = 0; i < resumeArr.length; ++i) {
+            var resume = resumeArr[i];
             var myEventResume = new my_event_1.MyEvent(
             // public id:string
             this.myEventService.getUniqueIdx(), 
             // public eventName:string
             this.myEventService.ANY, 
             // public key:string
-            this.myEventService.TEACHER_RESUME, 
+            this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST, 
             // public value:string
             resume, 
             // public metaObj:any
             { klassId: +this.klassId }, 
             // public myChecker:MyChecker
             this.myCheckerService.getTitleChecker());
-            this.myEventListForTeacherResume.push(myEventResume);
+            myEventList.push(myEventResume);
         } // end for
+        this.myEventListForTeacherResume = myEventList;
+    }; // end method
+    KlassTeacherComponent.prototype.setGreeting = function () {
         // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-        this.myEventListForTeacherGreeting = [];
-        for (var i = 0; i < this.klassTeacher.greeting_arr.length; ++i) {
-            var greeting = this.klassTeacher.greeting_arr[i];
-            var myEventResume = new my_event_1.MyEvent(
+        var greetingArr = this.klassTeacher.getGreetingArr();
+        var myEventList = [];
+        for (var i = 0; i < greetingArr.length; ++i) {
+            var greeting = greetingArr[i];
+            var myEventGreeting = new my_event_1.MyEvent(
             // public id:string
             this.myEventService.getUniqueIdx(), 
             // public eventName:string
             this.myEventService.ANY, 
             // public key:string
-            this.myEventService.TEACHER_GREETING, 
+            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST, 
             // public value:string
             greeting, 
             // public metaObj:any
             { klassId: +this.klassId }, 
             // public myChecker:MyChecker
             this.myCheckerService.getTitleChecker());
-            this.myEventListForTeacherGreeting.push(myEventResume);
-        } // end for    
-    };
+            myEventList.push(myEventGreeting);
+        }
+        this.myEventListForTeacherGreeting = myEventList;
+    }; // end method  
     KlassTeacherComponent.prototype.onClickResume = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -96,51 +170,144 @@ var KlassTeacherComponent = (function () {
         if (null == myEvent) {
             return;
         }
-        if (this.myEventService.TEACHER_RESUME === myEvent.key) {
-            if (this.myEventService.ON_CHANGE === myEvent.eventName) {
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
             }
-            else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+            } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+            } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 추가되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+                // 추가되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
+            } // end if      
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_REMOVE_ROW)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 삭제되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
+                // 삭제된 데이터로 업데이트.
                 if (null != myEvent.parentEventList) {
                     this.myEventListForTeacherResume = myEvent.parentEventList;
-                }
+                } // end if
             }
-            else if (this.myEventService.ON_SAVE === myEvent.eventName) {
-                // DB UPDATE!
-                console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
-            }
-            else if (this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+                // 삭제되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
+                // 삭제된 데이터로 업데이트.
+                if (null != myEvent.parentEventList) {
+                    this.myEventListForTeacherGreeting = myEvent.parentEventList;
+                } // end if
+            } // end if       
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SAVE)) {
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SHUTDOWN)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 사용자가 저장 이후, 창을 닫았습니다.
                 this.isShowResume = false;
             }
-            else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+                // 사용자가 저장 이후, 창을 닫았습니다.
+                this.isShowGreeting = false;
+            } // end if      
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_SHUTDOWN_N_ROLLBACK)) {
+            if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 사용자가 저장하지 않고, 창을 닫았습니다.
+                this.isShowResume = false;
+                // 이전 데이터롤 롤백.
                 if (null != myEvent.parentEventList) {
                     this.myEventListForTeacherResume = myEvent.parentEventList;
-                }
-                this.isShowResume = false;
+                } // end if
             }
-        }
-        else if (this.myEventService.TEACHER_GREETING === myEvent.key) {
-            if (this.myEventService.ON_CHANGE === myEvent.eventName) {
-            }
-            else if (this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+                // 사용자가 저장하지 않고, 창을 닫았습니다.
+                this.isShowGreeting = false;
+                // 이전 데이터롤 롤백.
                 if (null != myEvent.parentEventList) {
                     this.myEventListForTeacherGreeting = myEvent.parentEventList;
-                }
+                } // end if
+            } // end if      
+        } // end if
+        // REFACTOR ME / REMOVE ME
+        /*
+        if(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST === myEvent.key) {
+    
+          if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    
+            // Do something...
+    
+          } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
+    
+            // 열이 추가되었습니다. 부모 객체에게 전달합니다.
+    
+    
+          } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+    
+            if(null != myEvent.parentEventList) {
+              this.myEventListForTeacherResume = myEvent.parentEventList;
             }
-            else if (this.myEventService.ON_SAVE === myEvent.eventName) {
-                // DB UPDATE!
-                console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
+    
+          } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
+    
+            // DB UPDATE!
+            console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
+    
+          } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
+    
+            this.isShowResume = false;
+    
+          } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
+    
+            if(null != myEvent.parentEventList) {
+              this.myEventListForTeacherResume = myEvent.parentEventList;
             }
-            else if (this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
-                this.isShowGreeting = false;
+            this.isShowResume = false;
+    
+          }
+    
+        } else if(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST === myEvent.key) {
+    
+          if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+            // Do something...
+          } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
+    
+            if(null != myEvent.parentEventList) {
+              this.myEventListForTeacherGreeting = myEvent.parentEventList;
             }
-            else if (this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
-                if (null != myEvent.parentEventList) {
-                    this.myEventListForTeacherGreeting = myEvent.parentEventList;
-                }
-                this.isShowGreeting = false;
+    
+          } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
+    
+            // DB UPDATE!
+            console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
+    
+          } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
+    
+            this.isShowGreeting = false;
+    
+          } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
+    
+            if(null != myEvent.parentEventList) {
+              this.myEventListForTeacherGreeting = myEvent.parentEventList;
             }
-        }
-    };
+            this.isShowGreeting = false;
+    
+          } // end if
+    
+        } // end if
+        */
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
@@ -180,9 +347,9 @@ var KlassTeacherComponent = (function () {
             templateUrl: 'klass-teacher.component.html',
             styleUrls: ['klass-teacher.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
     ], KlassTeacherComponent);
     return KlassTeacherComponent;
 }());
-exports.KlassTeacherComponent = KlassTeacherComponent;
+exports.KlassTeacherComponent = KlassTeacherComponent; // end class
 //# sourceMappingURL=klass-teacher.component.js.map

@@ -14,18 +14,21 @@ var url_service_1 = require('./util/url.service');
 var auth_service_1 = require('./auth.service');
 var image_service_1 = require('./util/image.service');
 var user_service_1 = require('./users/service/user.service');
+var teacher_service_1 = require('./teachers/service/teacher.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
+var my_event_service_1 = require('./util/service/my-event.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, imageService, watchTower, myCheckerService, myLoggerService, route, router) {
-        // Do something...
+    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, route, router) {
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
+        this.teacherService = teacherService;
         this.imageService = imageService;
         this.watchTower = watchTower;
+        this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.myLoggerService = myLoggerService;
         this.route = route;
@@ -33,13 +36,27 @@ var AppComponent = (function () {
         this.isAdmin = false;
         this.toggleTopMenu = true;
         this.errorMsgArr = [];
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / constructor / 시작");
+        this.watchTower.announceMyEventService(this.myEventService);
+        this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
         this.subscribeLoginUser();
+        this.subscribeLoginTeacher();
         this.subscribeToggleTopMenu();
         this.setIsAdmin();
         this.setMyChecker();
+    };
+    AppComponent.prototype.ngAfterViewChecked = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / ngAfterViewChecked / 시작");
+        this.watchTower.announceContentHeight();
     };
     AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
@@ -75,6 +92,21 @@ var AppComponent = (function () {
             */
             // 로그인한 유저 정보가 들어왔습니다.
             _this.loginUser = loginUser;
+        });
+    };
+    AppComponent.prototype.subscribeLoginTeacher = function () {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / subscribeLoginTeacher / 시작");
+        // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+        // Subscribe login user
+        this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
+            if (isDebug)
+                console.log("app-root / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
+            // 로그인한 선생님 정보가 들어왔습니다.
+            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
         });
     };
     AppComponent.prototype.subscribeToggleTopMenu = function () {
@@ -159,8 +191,8 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        var isDebug = true;
-        // let isDebug:boolean = false;
+        // let isDebug:boolean = true;
+        var isDebug = false;
         if (isDebug)
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
         this.userService
@@ -176,8 +208,32 @@ var AppComponent = (function () {
                 _this.loginUser = user;
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                 _this.watchTower.announceLogin(_this.loginUser);
+                // 회원이 선생님이라면 선생님 정보를 가져온다.
+                _this.getTeacherFromUser(+_this.loginUser.id);
+            }
+            else if (myResponse.isFailed() && null != myResponse.error) {
+                _this.watchTower.announceErrorMsgArr([myResponse.error]);
             }
         });
+    };
+    AppComponent.prototype.getTeacherFromUser = function (userId) {
+        var _this = this;
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("app-root / getTeacherFromUser / \uC2DC\uC791");
+        if (isDebug)
+            console.log("app-root / getTeacherFromUser / userId : " + userId);
+        this.teacherService
+            .getTeacher(this.watchTower.getApiKey(), userId)
+            .then(function (myResponse) {
+            if (isDebug)
+                console.log("app-root / getTeacherFromUser / myResponse : ", myResponse);
+            var teacherFromDB = myResponse.getDataProp("teacher");
+            // 선생님 로그인 여부를 확인, 전파한다.
+            _this.watchTower.announceLoginTeacher(teacherFromDB);
+            _this.loginTeacher = _this.teacherService.getTeacherFromUser(teacherFromDB);
+        }); // end service
     };
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
         event.stopPropagation();
@@ -202,7 +258,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());

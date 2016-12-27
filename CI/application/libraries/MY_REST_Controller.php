@@ -73,12 +73,14 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     }
 
     // @ Required : MyClass interface
-    public function is_not_ok() {
+    public function is_not_ok() 
+    {
         return !$this->is_ok();
     }
 
     // @ Required : MyClass interface
-    public function is_ok() {
+    public function is_ok() 
+    {
 
         $is_ok = true;
         if($this->my_error->hasError()) {
@@ -100,6 +102,33 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         }
 
         return $is_ok;
+    }
+
+    public function is_not_ok_param($key=null, $value=null)
+    {
+        return !$this->is_ok_param($key, $value);
+    }
+    public function is_ok_param($key=null, $value=null)
+    {
+        if(is_null($key)) 
+        {
+            return false;
+        }
+        if(is_null($value)) 
+        {
+            return false;
+        }
+        if(!isset($this->my_paramchecker)) 
+        {
+            return false;
+        }
+
+        $result = $this->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
+        {
+            return true;
+        }
+        return false;
     }
 
     // Add methods ...
@@ -211,7 +240,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 유저 파라미터에 의한 실패.
     */
-    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null)
+    public function respond_200_Failed($msg="", $function="", $file="", $line="", $data=null, $error_msg="", $extra=null)
     {
         if(is_null($msg)) 
         {
@@ -252,9 +281,9 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
                 // $data=null 
                 $data,
                 // $error=null
-                null,
+                $error_msg,
                 // $extra=null
-                null
+                $extra
             );
             $this->set_response($response_body, REST_Controller::HTTP_OK);
         }

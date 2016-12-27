@@ -1,10 +1,12 @@
-import {  Component, 
-          Input, 
-          Output,
-          ViewChild,
-          OnInit,
-          AfterViewInit }       from '@angular/core';
+import { Component, 
+         Input, 
+         Output,
+         ViewChild,
+         OnInit,
+         AfterViewInit }       from '@angular/core';
+import { Subscription }        from 'rxjs';
 import { Router,
+         ActivatedRoute,
          NavigationExtras }     from '@angular/router';
 
 import { AuthService }          from '../auth/auth.service';
@@ -18,6 +20,7 @@ import { MyLoggerService }      from '../util/service/my-logger.service';
 import { MyCheckerService }     from '../util/service/my-checker.service';
 import { MyEventService }       from '../util/service/my-event.service';
 import { MyEvent }              from '../util/model/my-event';
+import { MyCookie }             from '../util/http/my-cookie';
 
 import { MyEventWatchTowerService } from '../util/service/my-event-watchtower.service';
 
@@ -48,10 +51,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
   warningMsgHead:string;
   warningMsgTail:string;
 
+  private subscription: Subscription;
   private redirectUrl:string="/class-center";
   private apiKey:string;
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
+
+  private myCookie:MyCookie;
 
   constructor(  public authService: AuthService, 
                 public loginService: LoginService, 
@@ -60,14 +66,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 public myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService,
+                private activatedRoute:ActivatedRoute,
                 public router: Router) {
+
+    this.myCookie = new MyCookie();
 
   }
 
   ngOnInit(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / ngOnInit / init");
 
   }
@@ -75,8 +84,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / ngAfterViewInit");
 
     this.asyncViewPack();
@@ -85,8 +94,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
@@ -119,8 +128,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private checkLoginUser(): void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / checkLoginUser / 시작");
 
     this.userService.getUserCookie(
@@ -139,14 +148,46 @@ export class LoginComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private getQueryString() :void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("kakao-callback / getQueryString / 시작");
+
+    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
+
+        if(isDebug) console.log("kakao-callback / getQueryString / param : ",param);
+
+        let redirectUrl:string = param['redirect'];
+        if(null != this.redirectUrl && "" != this.redirectUrl) {
+          if(isDebug) console.log("kakao-callback / getQueryString / this.redirectUrl : ",this.redirectUrl);
+          // 쿠키에 저장합니다.
+          this.myCookie.setCookie(
+            // cname
+            "redirectUrl",
+            // cvalue
+            redirectUrl,
+            // exdays
+            1
+          );
+        } // end if
+      }
+    ); // end subscribe
+  }  
+
   private init() :void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
+
+    // redirect url을 파라미터로 넘겼는지 확인합니다.
+    this.getQueryString();
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -200,8 +241,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / onChangedFromChild / 시작");
     if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
@@ -273,8 +314,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   verifyEmailNPassword():void {
 
-    let isDebug:boolean = true;
-    // let isDebug:boolean = false;
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
     if(isDebug) console.log("login / verifyEmailNPassword / 시작");
 
 
@@ -312,8 +353,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
           return;
         }
 
-        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 홈화면으로 이동합니다.");
-        this.router.navigate(['/class-center']);
+        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 리다이렉트합니다.");
+
+        let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+        if(null == redirectUrl || "" == redirectUrl) {
+          redirectUrl = '/class-center';
+        }
+        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / redirectUrl : ",redirectUrl);
+        this.router.navigate([redirectUrl]);
 
       });
     } // end service    

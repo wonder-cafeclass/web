@@ -15,9 +15,13 @@ import { RadioBtnHListComponent }      from '../radiobtn/radiobtn-h-list.compone
 import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.component';
 
 import { KlassColorService }           from '../../klass/service/klass-color.service';
+
 import { MyRulerService }              from '../../util/service/my-ruler.service';
 import { MyEventService }              from '../../util/service/my-event.service';
+import { MyCheckerService }            from '../../util/service/my-checker.service';
+
 import { MyEvent }                     from '../../util/model/my-event';
+import { MyChecker }                   from '../../util/model/my-checker';
 
 /*
 *
@@ -77,6 +81,7 @@ export class InputRowComponent implements OnInit {
 
   constructor(  private klassColorService:KlassColorService, 
                 private myEventService:MyEventService,
+                private myCheckerService:MyCheckerService,
                 private myRulerService:MyRulerService) {}
 
   ngOnInit(): void {
@@ -138,7 +143,7 @@ export class InputRowComponent implements OnInit {
           // public metaObj:any
           null,
           // public myChecker:MyChecker
-          null    
+          this.myCheckerService.getFreePassChecker()
         );
 
         this.emitter.emit(myEventReturn);
@@ -188,7 +193,7 @@ export class InputRowComponent implements OnInit {
         // public metaObj:any
         null,
         // public myChecker:MyChecker
-        null    
+        this.myCheckerService.getFreePassChecker()
       );
 
     } else {
@@ -203,11 +208,11 @@ export class InputRowComponent implements OnInit {
           // public key:string
           this.key,
           // public value:string
-          "",
+          HTMLPrev,
           // public metaObj:any
           null,
           // public myChecker:MyChecker
-          null    
+          this.myCheckerService.getFreePassChecker()
         );        
 
       } else if(null != this.singleInputViewComponent) {
@@ -226,7 +231,7 @@ export class InputRowComponent implements OnInit {
           // public metaObj:any
           null,
           // public myChecker:MyChecker
-          null    
+          this.myCheckerService.getFreePassChecker()
         );
 
       }
@@ -273,7 +278,7 @@ export class InputRowComponent implements OnInit {
       // public metaObj:any
       null,
       // public myChecker:MyChecker
-      null    
+      this.myCheckerService.getFreePassChecker()
     );
 
     this.emitter.emit(myEventReturn);      
@@ -294,7 +299,7 @@ export class InputRowComponent implements OnInit {
       // public metaObj:any
       null,
       // public myChecker:MyChecker
-      null    
+      this.myCheckerService.getFreePassChecker()
     );
 
     this.emitter.emit(myEventReturn);    
@@ -322,7 +327,7 @@ export class InputRowComponent implements OnInit {
       // public metaObj:any
       null,
       // public myChecker:MyChecker
-      null    
+      this.myCheckerService.getFreePassChecker()
     );
 
     this.emitter.emit(myEventReturn);

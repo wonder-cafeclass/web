@@ -6,11 +6,36 @@
   <tbody>
 
     <tr *ngFor="let row of imageTable">
-      <td *ngFor="let field of row" class="td-layout" [style.width]="'10%'">
-        <img  *ngIf="field" src="{{field}}" 
+      <td 
+      *ngFor="let field of row; let isLast=last" 
+      class="td-layout" 
+      [style.width]="(!isLast)?tdWidthStr:'100%'">
+
+        <button *ngIf="isAdmin && handleType=='button'"
+                (click)="onClickDelete($event, field)"
+                class="btn btn-default dron" 
+                type="button">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+
+        <div  
+        *ngIf="isAdmin && handleType=='checkbox'" 
+        class="checkbox dron">
+          <label>
+            <input 
+            type="checkbox"
+            checked="checked"
+            #checkboxToggle
+            (change)="onChangeCheck($event, checkboxToggle, field)">
+          </label>
+        </div>
+
+        <img  *ngIf="field" 
+              src="{{field}}" 
               [style.width]="(0 < imageWidth)?imageWidth + 'px':'100%'">
       </td>
     </tr>
 
   </tbody>
+  
 </table>

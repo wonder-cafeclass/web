@@ -9,8 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var my_checker_service_1 = require('../../util/service/my-checker.service');
+var my_event_service_1 = require('../../util/service/my-event.service');
 var ButterflyComponent = (function () {
-    function ButterflyComponent() {
+    function ButterflyComponent(myCheckerService, myEventService) {
+        this.myCheckerService = myCheckerService;
+        this.myEventService = myEventService;
+        // @ Common Props
+        this.emitter = new core_1.EventEmitter();
         this.fontSizeTitle = 12;
         this.paddingTitle = 10;
         this.fontSizeText = 12;
@@ -19,13 +25,48 @@ var ButterflyComponent = (function () {
     }
     ButterflyComponent.prototype.ngOnInit = function () {
         // Do something.
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("butterfly / ngOnInit / 시작");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
         }
         else {
             this.cageWidthStr = "100%";
         }
+        this.emitEventOnReady();
     };
+    ButterflyComponent.prototype.setText = function (text) {
+        if (null == text || "" === text) {
+            return;
+        }
+        this.text = text;
+    };
+    ButterflyComponent.prototype.emitEventOnReady = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("butterfly / emitEventOnReady / 시작");
+        var myEventOnChange = this.myEventService.getMyEvent(
+        // public eventName:string
+        this.myEventService.ON_READY, 
+        // public key:string
+        this.eventKey, 
+        // public value:string
+        "", 
+        // public metaObj:any
+        this, 
+        // public myChecker:MyChecker
+        this.myCheckerService.getFreePassChecker());
+        this.emitter.emit(myEventOnChange);
+        if (isDebug)
+            console.log("butterfly / emitEventOnReady / Done!");
+    };
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], ButterflyComponent.prototype, "emitter", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -58,6 +99,10 @@ var ButterflyComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ButterflyComponent.prototype, "color", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ButterflyComponent.prototype, "eventKey", void 0);
     ButterflyComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -65,7 +110,7 @@ var ButterflyComponent = (function () {
             templateUrl: 'butterfly.component.html',
             styleUrls: ['butterfly.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService])
     ], ButterflyComponent);
     return ButterflyComponent;
 }());
