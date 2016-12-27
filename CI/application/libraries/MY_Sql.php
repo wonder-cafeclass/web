@@ -1824,6 +1824,17 @@ class MY_Sql
     {
         return 65000;
     }
+    private function get_subway_line_default()
+    {
+        $subway_line_list = $this->CI->my_paramchecker->get_const('subway_line_list');
+        return $subway_line_list[2]; // 2호선
+    }
+    private function get_subway_station_default()
+    {
+        $subway_station_list = $this->CI->my_paramchecker->get_const('subway_station_list');
+        return $subway_station_list[2][1]; // 잠실역
+    }
+
     public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $week_min=-1, $week_max=-1, $days="", $class_per_week=-1)
     {
         if($this->is_not_ready())
@@ -1914,6 +1925,9 @@ class MY_Sql
         $venue_latitude = "37.5111896";
         $venue_longitude = "37.5111896";
 
+        $subway_line = $this->get_subway_line_default();
+        $subway_station = $this->get_subway_station_default();
+
         $data = array(
             'teacher_id' => $teacher_id,
             'teacher_resume' => $teacher_resume,
@@ -1941,6 +1955,8 @@ class MY_Sql
             'venue_road_address' => $venue_road_address,
             'venue_latitude' => $venue_latitude,
             'venue_longitude' => $venue_longitude,
+            'subway_line' => $subway_line,
+            'subway_station' => $subway_station,
             'class_banner_url' => "",
             'class_poster_url' => ""
         );

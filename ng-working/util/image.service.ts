@@ -12,6 +12,7 @@ export class ImageService {
     cafeclassLogoUrl:string="assets/images/cafeclass_logo_text_only.svg";
 
     watchTowerUrl:string="assets/images/admin/watchtower.svg";
+    watchTowerGrayUrl:string="assets/images/admin/watchtower_gray.svg";
     watchTowerWhiteUrl:string="assets/images/admin/watchtower_white.svg";
 
     clock1hr00m00mUrl:string="assets/images/clock/clock-1hr-00m-00m.svg";
@@ -47,9 +48,17 @@ export class ImageService {
     mapDummy:string="assets/images/map_dummy.png";
     userDummy:string="assets/images/user/user_anonymous_150x150.png";
 
+    pathKlassPoster:string="assets/images/class/poster";
+
     loginBtnKakao:string="assets/images/auth/login_kakao.png";
 
     constructor(private us:UrlService) {
+    }
+
+    getPathKlassPoster(img:string) {
+
+        return `${this.pathKlassPoster}/${img}`;
+
     }
 
     get(imgUrl:string) {

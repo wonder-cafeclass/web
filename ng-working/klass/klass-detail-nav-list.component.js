@@ -61,10 +61,11 @@ var KlassDetailNavListComponent = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
     }
+    KlassDetailNavListComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     KlassDetailNavListComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / ngOnInit / init");
         // WIDTH
         if (0 < this.cageWidth) {
@@ -78,12 +79,10 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / subscribeLoginUser / init");
         this.loginUser = this.watchTower.getLoginUser();
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / subscribeLoginUser / this.loginUser : ", this.loginUser);
         if (null != this.loginUser) {
             // 로그인 유저 정보가 필요한 컴포넌트들에게 로그인 정보를 전달!
@@ -92,7 +91,7 @@ var KlassDetailNavListComponent = (function () {
         } // end if
         // 로그인 유저 정보를 가져오지 못했습니다. watchTowerd에서 전달해주기를 기다립니다.
         this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("k-d-n-l / subscribeLoginUser / loginUser : ", loginUser);
             // 이벤트 관련 정보가 준비되었습니다.
             _this.loginUser = loginUser;
@@ -101,9 +100,7 @@ var KlassDetailNavListComponent = (function () {
         }); // end subscribe
     }; // end method
     KlassDetailNavListComponent.prototype.tossLoginUser = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / tossLoginUser / init");
         if (null == this.loginUser) {
             return;
@@ -117,12 +114,10 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
         if (this.watchTower.getIsEventPackReady()) {
             // 1. 이미 EventPack 로딩이 완료된 경우
@@ -132,7 +127,7 @@ var KlassDetailNavListComponent = (function () {
         else {
             // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
             this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("k-d-n-l / subscribeEventPack / isEventPackReady : ", isEventPackReady);
                 // 이벤트 관련 정보가 준비되었습니다.
                 // 부모 객체에게 component가 준비된 것을 알립니다.
@@ -141,12 +136,10 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     }; // end method
     KlassDetailNavListComponent.prototype.emitEventOnReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / emitEventOnReady / init");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / emitEventOnReady / 중단 / EventPack is not valid!");
             return;
         }
@@ -155,50 +148,44 @@ var KlassDetailNavListComponent = (function () {
         this.watchTower.getMyEventService().KEY_KLASS_DETAIL_NAV_LIST, 
         // component
         this);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / emitEventOnReady / myEventOnReady : ", myEventOnReady);
         this.emitter.emit(myEventOnReady);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / emitEventOnReady / Done!");
     };
     KlassDetailNavListComponent.prototype.emitEvent = function (myEvent) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / emitEvent / init");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / emitEvent / 중단 / EventPack is not valid!");
             return;
         }
         if (null == myEvent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / emitEvent / 중단 / myEvent is not valid!");
             return;
         }
         this.emitter.emit(myEvent);
     };
     KlassDetailNavListComponent.prototype.setKlass = function (klass) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setKlass / init");
         if (null == klass) {
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setKlass / klass : ", klass);
         this.klass = klass;
         // klass의 정보가 들어온 시점에 레이아웃 정보를 설정합니다.
         this.init();
     };
     KlassDetailNavListComponent.prototype.setKlassFeature = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setKlassFeature / init");
         if (null == this.klass) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / setKlassFeature / 중단 / this.klass is not valid!");
             return;
         }
@@ -215,9 +202,7 @@ var KlassDetailNavListComponent = (function () {
         this.updateKlassFeature(featureList);
     }; // end method
     KlassDetailNavListComponent.prototype.updateKlassFeature = function (featureList) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / updateKlassFeature / init");
         // 3개 열 고정 노출입니다. 모자라다면 채워서 노출합니다.
         if (this.myArray.isNotOK(featureList)) {
@@ -253,12 +238,10 @@ var KlassDetailNavListComponent = (function () {
         this.myEventListForKlassFeature = myEventKlassFeatureList;
     }; // end method  
     KlassDetailNavListComponent.prototype.setKlassTarget = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setKlassTarget / init");
         if (null == this.klass) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / setKlassTarget / 중단 / this.klass is not valid!");
             return;
         }
@@ -273,9 +256,7 @@ var KlassDetailNavListComponent = (function () {
         this.updateKlassTarget(targetList);
     }; // end method
     KlassDetailNavListComponent.prototype.updateKlassTarget = function (targetList) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / updateKlassTarget / init");
         // 3개 열 고정 노출입니다. 모자라다면 채워서 노출합니다.
         if (this.myArray.isNotOK(targetList)) {
@@ -311,9 +292,7 @@ var KlassDetailNavListComponent = (function () {
         this.myEventListForKlassTarget = myEventKlassTargetList;
     }; // end method
     KlassDetailNavListComponent.prototype.setKlassSchedule = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setKlassSchedule / init");
         var klassSchedule = this.klass.schedule;
         if (null === klassSchedule || "" === klassSchedule) {
@@ -332,9 +311,7 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     };
     KlassDetailNavListComponent.prototype.setReview = function () {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setReview / init");
         var loginUserId = -1;
         if (null != this.loginUser) {
@@ -345,7 +322,7 @@ var KlassDetailNavListComponent = (function () {
         }
         this.reviewCommentList =
             this.klassCommentService.getReviewCommentList(this.klass.review_list, loginUserId);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setReview / this.reviewCommentList : ", this.reviewCommentList);
         // MyEvent for Review
         this.myEventForReview =
@@ -362,9 +339,7 @@ var KlassDetailNavListComponent = (function () {
             this.myCheckerService.getCommentChecker());
     }; // end method
     KlassDetailNavListComponent.prototype.setQuestion = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setQuestion / init");
         var loginUserId = -1;
         if (null != this.loginUser) {
@@ -398,16 +373,14 @@ var KlassDetailNavListComponent = (function () {
             this.watchTower.getMyEventService().KLASS_DESC);
     };
     KlassDetailNavListComponent.prototype.init = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / init / init");
         if (null == this.klass) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("k-d-n-l / init / 중단 / this.klass is not valid!");
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / init / this.klass : ", this.klass);
         // COLOR
         this.colorWhite = this.klassColorService.white;
@@ -473,9 +446,7 @@ var KlassDetailNavListComponent = (function () {
         this.reviewListComponent.setLoginUser(this.loginUser);
     };
     KlassDetailNavListComponent.prototype.setVenueSearch = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setVenueSearch / init");
         if (null == this.klass) {
             return;
@@ -491,9 +462,7 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     }; // end method
     KlassDetailNavListComponent.prototype.setVenueDefault = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / setVenueDefault / init");
         if (null == this.klass) {
             return;
@@ -505,25 +474,21 @@ var KlassDetailNavListComponent = (function () {
     }; // end method
     // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
     KlassDetailNavListComponent.prototype.goLogin = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / goLogin / init");
         var appViewUrl = this.urlService.getAppViewUrl();
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / goLogin / appViewUrl : ", appViewUrl);
         var req_url = this.urlService.get("#/login?redirect=" + appViewUrl);
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / goLogin / req_url : ", req_url);
         window.location.href = req_url;
     };
     KlassDetailNavListComponent.prototype.removeReview = function (reviewId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / removeReview / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / removeReview / reviewId : ", reviewId);
         // DB UPDATE!
         this.klassService.removeKlassReview(
@@ -536,7 +501,7 @@ var KlassDetailNavListComponent = (function () {
         // reviewId:number
         reviewId).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("klass-detail / removeReview / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
             }
@@ -557,11 +522,9 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.addReview = function (newComment) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addReview / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addReview / newComment : ", newComment);
         // DB UPDATE!
         this.klassService.addKlassReview(
@@ -576,7 +539,7 @@ var KlassDetailNavListComponent = (function () {
         // star:number
         newComment.star).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("klass-detail / addReview / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
                 // 리뷰가 등록되었습니다.  
@@ -608,11 +571,9 @@ var KlassDetailNavListComponent = (function () {
     }; // end if
     KlassDetailNavListComponent.prototype.addReviewReply = function (newComment) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addReviewReply / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addReviewReply / newComment : ", newComment);
         // DB UPDATE!
         this.klassService.addKlassReviewReply(
@@ -627,7 +588,7 @@ var KlassDetailNavListComponent = (function () {
         // question:string
         newComment.comment).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("k-d-n-l / addReviewReply / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
                 // 리뷰가 등록되었습니다.  
@@ -659,11 +620,9 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.removeQuestion = function (questionId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / removeQuestion / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / removeQuestion / questionId : ", questionId);
         // DB UPDATE!
         this.klassService.removeKlassQuestion(
@@ -676,7 +635,7 @@ var KlassDetailNavListComponent = (function () {
         // questionId:number
         questionId).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("klass-detail / removeQuestion / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
             }
@@ -697,11 +656,9 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.addQuestion = function (newComment) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addQuestion / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addQuestion / newComment : ", newComment);
         // DB UPDATE!
         this.klassService.addKlassQuestion(
@@ -714,7 +671,7 @@ var KlassDetailNavListComponent = (function () {
         // question:string
         newComment.comment).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("klass-detail / addQuestion / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
                 // 리뷰가 등록되었습니다.  
@@ -746,11 +703,9 @@ var KlassDetailNavListComponent = (function () {
     }; // end if
     KlassDetailNavListComponent.prototype.addQuestionReply = function (newComment) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addQuestionReply / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / addQuestionReply / newComment : ", newComment);
         // DB UPDATE!
         this.klassService.addKlassQuestionReply(
@@ -765,7 +720,7 @@ var KlassDetailNavListComponent = (function () {
         // question:string
         newComment.comment).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("k-d-n-l / addQuestionReply / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass_question")) {
                 // 리뷰가 등록되었습니다.  
@@ -797,11 +752,9 @@ var KlassDetailNavListComponent = (function () {
     };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / onChangedFromInputRow / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("k-d-n-l / onChangedFromInputRow / myEvent : ", myEvent);
         if (null == myEvent || null == myEvent.key || "" == myEvent.key) {
             return;
@@ -858,7 +811,7 @@ var KlassDetailNavListComponent = (function () {
                 // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
                 // metaObj로 받는 comment 객체
                 var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
                 this.addQuestion(newComment);
             }
@@ -866,7 +819,7 @@ var KlassDetailNavListComponent = (function () {
                 // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
                 // metaObj로 받는 comment 객체
                 var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
                 this.addReview(newComment);
             }
@@ -876,7 +829,7 @@ var KlassDetailNavListComponent = (function () {
                 // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
                 // metaObj로 받는 comment 객체        
                 var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
                 this.addQuestionReply(newComment);
             }
@@ -884,7 +837,7 @@ var KlassDetailNavListComponent = (function () {
                 // 1. 댓글을 추가하는 경우, 필요한 정보는 다음과 같습니다. 
                 // metaObj로 받는 comment 객체        
                 var newComment = new comment_1.Comment().setJSON(myEvent.metaObj);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("k-d-n-l / onChangedFromInputRow / newComment : ", newComment);
                 this.addReviewReply(newComment);
             }

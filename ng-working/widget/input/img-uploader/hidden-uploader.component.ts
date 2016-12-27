@@ -5,7 +5,6 @@ import {  Component,
           Input, 
           Output,
           EventEmitter,
-          OnInit,
           AfterViewInit }             from '@angular/core';
 import { Router }                     from '@angular/router';
 
@@ -29,7 +28,7 @@ import { TooltipComponent }           from '../tooltip/tooltip.component';
   templateUrl: 'hidden-uploader.component.html',
   styleUrls: [ 'hidden-uploader.component.css' ]
 })
-export class HiddenUploaderComponent implements OnInit, AfterViewInit {
+export class HiddenUploaderComponent implements AfterViewInit {
 
   /*
   * Samples *
@@ -60,10 +59,6 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   isAdmin:boolean=false;
 
-  // isShowTooltip:boolean=false;
-  // isValidInput:boolean=false;
-  // tooltipMsg:string="";
-
   constructor(  private uploadService: UploadService,
                 private myEventService:MyEventService,
                 private myLoggerService:MyLoggerService,
@@ -71,6 +66,10 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
                 private myCheckerService:MyCheckerService,
                 private renderer:Renderer,
                 private urlService:UrlService  ) {}
+
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
 
   private isNotValidParams() :boolean {
     return !this.isValidParams();
@@ -117,40 +116,27 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
     return true;
   }
 
-  ngOnInit(): void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / ngOnInit / init");
-
-  }
-
   ngAfterViewInit(): void {
 
-    // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / ngAfterViewInit");
+    if(this.isDebug()) console.log("hidden-uploader / ngAfterViewInit");
 
     this.asyncViewPack();
 
   } 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("hidden-uploader / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("hidden-uploader / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("hidden-uploader / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("hidden-uploader / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("hidden-uploader / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -241,9 +227,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   initFileUpload():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / initFileUpload / init");
+    if(this.isDebug()) console.log("hidden-uploader / initFileUpload / init");
     
     // from http://stackoverflow.com/a/32010791/217408
     let eventClick = new MouseEvent('click', {bubbles: true});
@@ -253,12 +237,10 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   onChangeFile(event) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / onChangeFile / init");
+    if(this.isDebug()) console.log("hidden-uploader / onChangeFile / init");
 
     if(this.isNotValidParams()) {
-      if(isDebug) console.log("hidden-uploader / onChangeFile / Params is not valid!");
+      if(this.isDebug()) console.log("hidden-uploader / onChangeFile / Params is not valid!");
       return;
     }
 
@@ -270,7 +252,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
       // 1개의 파일만 업로드할 수 있습니다.
       return;
     }
-    if(isDebug) console.log("hidden-uploader / onChangeFile / files : ",files);
+    if(this.isDebug()) console.log("hidden-uploader / onChangeFile / files : ",files);
 
     let file = files[0];
     let isValidFileType:boolean = false;
@@ -288,7 +270,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
     let fileSizeBytesMax:number = this.fileSizeKBMax*1000;
     if(fileSizeBytesMax < file.size) {
-      if(isDebug) console.log("hidden-uploader / onChangeFile / size : ",file.size);
+      if(this.isDebug()) console.log("hidden-uploader / onChangeFile / size : ",file.size);
       this.tooltipComponent.showTooltipFailWarning(`${ this.fileSizeKBMax }kb 이하 이미지로 올려주세요`, false);
       return;
     }
@@ -311,7 +293,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
     this.uploadService.makeFileRequest(req_url, paramsObj, files).subscribe((myResponse:MyResponse) => {
       
       // 섬네일 주소를 받아와서 화면에 표시해야 한다.
-      if(isDebug) console.log("hidden-uploader / onChangeFile / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("hidden-uploader / onChangeFile / myResponse : ",myResponse);
 
       if( myResponse.isSuccess() &&
           null != myResponse && 
@@ -321,12 +303,12 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
         // this.imageUrl = this.imagePath + myResponse.data.thumbnail;
         this.imageUrl = myResponse.data.thumbnail;
 
-        if(isDebug) console.log("hidden-uploader / onChangeFile / this.imageUrl : ",this.imageUrl);
+        if(this.isDebug()) console.log("hidden-uploader / onChangeFile / this.imageUrl : ",this.imageUrl);
 
         let isOK:boolean = this.isOK(this.imageUrl);
 
-        if(isDebug) console.log("hidden-uploader / onChangeFile / isOK : ",isOK);
-        if(isDebug) console.log("hidden-uploader / onChangeFile / this.myChecker : ",this.myChecker);
+        if(this.isDebug()) console.log("hidden-uploader / onChangeFile / isOK : ",isOK);
+        if(this.isDebug()) console.log("hidden-uploader / onChangeFile / this.myChecker : ",this.myChecker);
 
         if(isOK && this.isValidEventkey()) {
           // 부모 객체에게 Change Event 발송 
@@ -345,7 +327,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
         if(null != myResponse && null != myResponse["error"] && "" != myResponse["error"]) {
 
           let error:string = myResponse["error"];
-          if(isDebug) console.log("hidden-uploader / onChangeFile / error : ",error);
+          if(this.isDebug()) console.log("hidden-uploader / onChangeFile / error : ",error);
 
           this.tooltipComponent.showTooltipFailWarning(error, false);
         }
@@ -361,16 +343,14 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
 
   private emitEventOnDone(eventKey:string, value:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("hidden-uploader / emitEventOnDone / 시작");
+    if(this.isDebug()) console.log("hidden-uploader / emitEventOnDone / 시작");
 
     if(null == eventKey) {
-      if(isDebug) console.log("hidden-uploader / emitEventOnDone / 중단 / eventKey is not valid!");
+      if(this.isDebug()) console.log("hidden-uploader / emitEventOnDone / 중단 / eventKey is not valid!");
       return;
     }
     if(null == value) {
-      if(isDebug) console.log("hidden-uploader / emitEventOnDone / 중단 / value is not valid!");
+      if(this.isDebug()) console.log("hidden-uploader / emitEventOnDone / 중단 / value is not valid!");
       return;
     }
 
@@ -389,7 +369,7 @@ export class HiddenUploaderComponent implements OnInit, AfterViewInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("hidden-uploader / emitEventOnDone / Done!");
+    if(this.isDebug()) console.log("hidden-uploader / emitEventOnDone / Done!");
 
   } // end method
 

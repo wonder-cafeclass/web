@@ -46,11 +46,7 @@ export class Klass {
     public week: number=-1;
     public week_min: number=-1;
     public week_max: number=-1;
-    // public week_list: string[]=[]; // @ Deprecated / REMOVE ME
-    // public weekly_price_list: any[]=[]; // @ Deprecated / REMOVE ME
 
-    // public month_min: number=-1; // @ Deprecated / REMOVE ME
-    // public month_max: number=-1; // @ Deprecated / REMOVE ME
     public days: string="";
     public days_list: string[]=[];
     public days_img_url: string="";
@@ -59,19 +55,6 @@ export class Klass {
     public days_kor: string="";
     public class_day_per_week: number=-1; // 주 n회 수업
 
-    // public resume: string="";      // @ Deprecated
-    // public greeting: string="";    // @ Deprecated
-
-    public venue: string="";
-    // public venue_cafe: string="";                 // @ Deprecated / REMOVE ME
-    // public venue_cafe_logo_img_url: string="";    // @ Deprecated / REMOVE ME
-    // public venue_map_link: string="";             // @ Deprecated / REMOVE ME
-
-    // @ Deprecated
-    // public venue_subway_station: string="";            // @ Deprecated / REMOVE ME
-    // public venue_subway_station_img_url: string="";    // @ Deprecated / REMOVE ME
-
-    // @ Recommended
     public subway_line: string="";
     public subway_station: string="";
     public subway_station_img: string="";
@@ -85,11 +68,6 @@ export class Klass {
 
     public search_tag: string="";
     public price: number=-1;
-    // public price_list: string[]=[];                    // @ Deprecated / REMOVE ME
-    // public klass_price_list: KlassPrice[]=[];          // @ Deprecated / REMOVE ME
-    // public price_list_width_discount: number[]=[];     // @ Deprecated / REMOVE ME
-    // public discount:string="";                         // @ Deprecated / REMOVE ME
-    // public discount_arr:number[]=[];                   // @ Deprecated / REMOVE ME
     public price_with_format: string="";
 
     // 수업 참여 학생수

@@ -85,11 +85,13 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   }
 
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / ngOnInit / init");
+    if(this.isDebug()) console.log("k-v-s-l / ngOnInit / init");
 
     this.initLayout();
 
@@ -126,9 +128,7 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initIFrame(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / constructor / init");
+    if(this.isDebug()) console.log("k-v-s-l / constructor / init");
 
     // set function reference out of app. ( ex)iframe )
     window["angularMySL"] = {
@@ -141,9 +141,7 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initLayout() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / initLayout / init");
+    if(this.isDebug()) console.log("k-v-s-l / initLayout / init");
 
     if(0 < this.cageWidth) {
 
@@ -181,18 +179,16 @@ export class KlassVenueSearchListComponent implements OnInit {
   // @ Desc : 지도에 표시할 정보를 외부로 부터 받습니다.
   setVenue(klassVenue:KlassVenue) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / setVenue / init");
+    if(this.isDebug()) console.log("k-v-s-l / setVenue / init");
 
     if(null == klassVenue || null == klassVenue.title || "" == klassVenue.title) {
-      if(isDebug) console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
+      if(this.isDebug()) console.log("k-v-s-l / setVenue / 중단 / klassVenue is not valid!");
       return;
     }
 
     this.klassVenue = this.klassVenuesNaverMap = klassVenue;
 
-    if(isDebug) console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ",this.klassVenuesNaverMap);
+    if(this.isDebug()) console.log("k-v-s-l / setVenue / this.klassVenuesNaverMap : ",this.klassVenuesNaverMap);
 
   }
 
@@ -259,9 +255,7 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private initVenueSearch():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / initVenueSearch / init");
+    if(this.isDebug()) console.log("k-v-s-l / initVenueSearch / init");
 
     this.klassVenues = 
     this.searchTermsNaverLocal
@@ -269,7 +263,7 @@ export class KlassVenueSearchListComponent implements OnInit {
     .distinctUntilChanged()   // ignore if next search term is same as previous
     .switchMap(term => {
 
-      if(isDebug) console.log("k-v-s-l / initVenueSearch / switchMap / term : ",term);
+      if(this.isDebug()) console.log("k-v-s-l / initVenueSearch / switchMap / term : ",term);
 
       if(null == term || "" === term || term.length < 3) {
         // 유효하지 않은 검색어는 중단합니다.
@@ -295,12 +289,10 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private subscribeEventPack() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / subscribeEventPack / init");
+    if(this.isDebug()) console.log("k-v-s-l / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
-    if(isDebug) console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+    if(this.isDebug()) console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
 
     if(this.watchTower.getIsEventPackReady()) {
       // 1. 이미 EventPack 로딩이 완료된 경우
@@ -313,7 +305,7 @@ export class KlassVenueSearchListComponent implements OnInit {
       this.watchTower.isEventPackReady$.subscribe(
         (isEventPackReady:boolean) => {
 
-        if(isDebug) console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+        if(this.isDebug()) console.log("k-v-s-l / subscribeEventPack / isEventPackReady : ",isEventPackReady);
 
         // 이벤트 관련 정보가 준비되었습니다.
 
@@ -329,12 +321,10 @@ export class KlassVenueSearchListComponent implements OnInit {
 
   private emitEventOnReady() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / emitEventOnReady / init");
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnReady / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-v-s-l / emitEventOnReady / 중단 / EventPack is not valid!");    
+      if(this.isDebug()) console.log("k-v-s-l / emitEventOnReady / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -346,22 +336,20 @@ export class KlassVenueSearchListComponent implements OnInit {
       this
     );
 
-    if(isDebug) console.log("k-v-s-l / emitEventOnReady / myEventOnReady : ",myEventOnReady);
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnReady / myEventOnReady : ",myEventOnReady);
 
     this.emitter.emit(myEventOnReady);
 
-    if(isDebug) console.log("k-v-s-l / emitEventOnReady / Done!");
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnReady / Done!");
 
   }   
 
   private emitEventOnChangeMeta(value:string, meta:any) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / init");
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnChangeMeta / init");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");    
+      if(this.isDebug()) console.log("k-v-s-l / emitEventOnChangeMeta / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -377,11 +365,11 @@ export class KlassVenueSearchListComponent implements OnInit {
       meta
     );
 
-    if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / myEventOnReady : ",myEventOnReady);
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnChangeMeta / myEventOnReady : ",myEventOnReady);
 
     this.emitter.emit(myEventOnReady);
 
-    if(isDebug) console.log("k-v-s-l / emitEventOnChangeMeta / Done!");
+    if(this.isDebug()) console.log("k-v-s-l / emitEventOnChangeMeta / Done!");
 
   }   
 
@@ -427,10 +415,8 @@ export class KlassVenueSearchListComponent implements OnInit {
   }
   onClickKlassVenue(klassVenue:KlassVenue) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
-    if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ",klassVenue);
+    if(this.isDebug()) console.log("klass-venue-search-list / onClickKlassVenue / 시작");
+    if(this.isDebug()) console.log("klass-venue-search-list / onClickKlassVenue / klassVenue : ",klassVenue);
 
     this.klassVenuesNaverMap = klassVenue;
 
@@ -439,7 +425,7 @@ export class KlassVenueSearchListComponent implements OnInit {
       klassVenue.address
     ).then((myReponse:MyResponse) => {
 
-      if(isDebug) console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ",myReponse);
+      if(this.isDebug()) console.log("klass-venue-search-list / onClickKlassVenue / myReponse : ",myReponse);
 
       klassVenue = this.klassService.setLatLon(myReponse.data, klassVenue);
 

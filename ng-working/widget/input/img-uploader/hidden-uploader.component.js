@@ -17,9 +17,6 @@ var my_logger_service_1 = require('../../../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var tooltip_component_1 = require('../tooltip/tooltip.component');
 var HiddenUploaderComponent = (function () {
-    // isShowTooltip:boolean=false;
-    // isValidInput:boolean=false;
-    // tooltipMsg:string="";
     function HiddenUploaderComponent(uploadService, myEventService, myLoggerService, watchTower, myCheckerService, renderer, urlService) {
         this.uploadService = uploadService;
         this.myEventService = myEventService;
@@ -48,6 +45,9 @@ var HiddenUploaderComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
     }
+    HiddenUploaderComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     HiddenUploaderComponent.prototype.isNotValidParams = function () {
         return !this.isValidParams();
     };
@@ -90,35 +90,24 @@ var HiddenUploaderComponent = (function () {
         }
         return true;
     };
-    HiddenUploaderComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("hidden-uploader / ngOnInit / init");
-    };
     HiddenUploaderComponent.prototype.ngAfterViewInit = function () {
-        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / ngAfterViewInit");
         this.asyncViewPack();
     };
     HiddenUploaderComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("hidden-uploader / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("hidden-uploader / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
@@ -191,9 +180,7 @@ var HiddenUploaderComponent = (function () {
         return true;
     };
     HiddenUploaderComponent.prototype.initFileUpload = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / initFileUpload / init");
         // from http://stackoverflow.com/a/32010791/217408
         var eventClick = new MouseEvent('click', { bubbles: true });
@@ -201,12 +188,10 @@ var HiddenUploaderComponent = (function () {
     };
     HiddenUploaderComponent.prototype.onChangeFile = function (event) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / onChangeFile / init");
         if (this.isNotValidParams()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("hidden-uploader / onChangeFile / Params is not valid!");
             return;
         }
@@ -217,7 +202,7 @@ var HiddenUploaderComponent = (function () {
             // 1개의 파일만 업로드할 수 있습니다.
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / onChangeFile / files : ", files);
         var file = files[0];
         var isValidFileType = false;
@@ -233,7 +218,7 @@ var HiddenUploaderComponent = (function () {
         }
         var fileSizeBytesMax = this.fileSizeKBMax * 1000;
         if (fileSizeBytesMax < file.size) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("hidden-uploader / onChangeFile / size : ", file.size);
             this.tooltipComponent.showTooltipFailWarning(this.fileSizeKBMax + "kb \uC774\uD558 \uC774\uBBF8\uC9C0\uB85C \uC62C\uB824\uC8FC\uC138\uC694", false);
             return;
@@ -253,7 +238,7 @@ var HiddenUploaderComponent = (function () {
         };
         this.uploadService.makeFileRequest(req_url, paramsObj, files).subscribe(function (myResponse) {
             // 섬네일 주소를 받아와서 화면에 표시해야 한다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("hidden-uploader / onChangeFile / myResponse : ", myResponse);
             if (myResponse.isSuccess() &&
                 null != myResponse &&
@@ -261,12 +246,12 @@ var HiddenUploaderComponent = (function () {
                 null != myResponse.data.thumbnail) {
                 // this.imageUrl = this.imagePath + myResponse.data.thumbnail;
                 _this.imageUrl = myResponse.data.thumbnail;
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("hidden-uploader / onChangeFile / this.imageUrl : ", _this.imageUrl);
                 var isOK = _this.isOK(_this.imageUrl);
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("hidden-uploader / onChangeFile / isOK : ", isOK);
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("hidden-uploader / onChangeFile / this.myChecker : ", _this.myChecker);
                 if (isOK && _this.isValidEventkey()) {
                     // 부모 객체에게 Change Event 발송 
@@ -282,7 +267,7 @@ var HiddenUploaderComponent = (function () {
                 // 원인이 전달되었다면, 이유를 사용자에게 툴팁으로 보여줍니다.
                 if (null != myResponse && null != myResponse["error"] && "" != myResponse["error"]) {
                     var error = myResponse["error"];
-                    if (isDebug)
+                    if (_this.isDebug())
                         console.log("hidden-uploader / onChangeFile / error : ", error);
                     _this.tooltipComponent.showTooltipFailWarning(error, false);
                 }
@@ -292,17 +277,15 @@ var HiddenUploaderComponent = (function () {
         });
     }; // end method
     HiddenUploaderComponent.prototype.emitEventOnDone = function (eventKey, value) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / emitEventOnDone / 시작");
         if (null == eventKey) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("hidden-uploader / emitEventOnDone / 중단 / eventKey is not valid!");
             return;
         }
         if (null == value) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("hidden-uploader / emitEventOnDone / 중단 / value is not valid!");
             return;
         }
@@ -318,7 +301,7 @@ var HiddenUploaderComponent = (function () {
         // public myChecker:MyChecker
         this.myChecker);
         this.emitter.emit(myEventOnChange);
-        if (isDebug)
+        if (this.isDebug())
             console.log("hidden-uploader / emitEventOnDone / Done!");
     }; // end method
     __decorate([

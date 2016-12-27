@@ -11,11 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var image_service_1 = require('../../util/image.service');
 var my_clock_time_1 = require('../../util/model/my-clock-time');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var ClockComponent = (function () {
-    function ClockComponent(imageService) {
+    function ClockComponent(imageService, watchTower) {
         this.imageService = imageService;
+        this.watchTower = watchTower;
         this.clockHeight = 80;
     }
+    ClockComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     ClockComponent.prototype.ngOnInit = function () {
         // Do something
         this.clock1hr00m00mUrl = this.imageService.get(this.imageService.clock1hr00m00mUrl);
@@ -46,13 +51,11 @@ var ClockComponent = (function () {
         this.show(this.clockTimeBegin, this.clockTimeEnd);
     };
     ClockComponent.prototype.show = function (clockTimeBegin, clockTimeEnd) {
-        var isDebug = true;
-        // let isDebug:boolean = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-detail / updateClockTime / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-detail / updateClockTime / clockTimeBegin : ", clockTimeBegin);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-detail / updateClockTime / clockTimeEnd : ", clockTimeEnd);
         if (null == clockTimeBegin || !(0 < clockTimeBegin.totalMinutes)) {
             return;
@@ -62,12 +65,14 @@ var ClockComponent = (function () {
         }
         var diffMinutes = clockTimeEnd.totalMinutes - clockTimeBegin.totalMinutes;
         if (0 < (diffMinutes % 10)) {
-            console.log("Error / 10분 단위로 파라미터가 변경되어야 합니다.");
+            if (this.isDebug())
+                console.log("klass-detail / updateClockTime / 중단 / 10분 단위로 파라미터가 변경되어야 합니다.");
             return;
         }
         var diffHours = Math.floor(diffMinutes / 60);
         if (!(1 <= diffHours) || !(diffHours <= 3)) {
-            console.log("Error / 최소 시간 범위는 1시간, 최대 시간 범위는 3시간입니다. / diffHours : ", diffHours);
+            if (this.isDebug())
+                console.log("klass-detail / updateClockTime / \uC911\uB2E8 / \uCD5C\uC18C \uC2DC\uAC04 \uBC94\uC704\uB294 1\uC2DC\uAC04, \uCD5C\uB300 \uC2DC\uAC04 \uBC94\uC704\uB294 3\uC2DC\uAC04\uC785\uB2C8\uB2E4. / diffHours : " + diffHours);
             return;
         }
         // 시작 시간으로부터 15분 미만까지는 동일 시간으로 표현합니다.
@@ -178,12 +183,6 @@ var ClockComponent = (function () {
                     this.clockNoticeUrl = this.clock3hr30mNoticePMUrl;
                 }
             }
-        }
-        if (null == this.clockHoursUrl) {
-            console.log("!Error! / null == this.clockHoursUrl");
-        }
-        if (null == this.clockNoticeUrl) {
-            console.log("!Error! / null == this.clockNoticeUrl");
         }
         this.rotate = clockTimeBegin.hoursForRotate * 30;
     };
@@ -355,7 +354,7 @@ var ClockComponent = (function () {
             templateUrl: 'clock.component.html',
             styleUrls: ['clock.component.css']
         }), 
-        __metadata('design:paramtypes', [image_service_1.ImageService])
+        __metadata('design:paramtypes', [image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService])
     ], ClockComponent);
     return ClockComponent;
 }());

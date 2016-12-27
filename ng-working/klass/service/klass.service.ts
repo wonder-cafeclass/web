@@ -22,6 +22,8 @@ import { MyResponse }             from '../../util/model/my-response';
 import { HelperMyArray }          from '../../util/helper/my-array';
 import { HelperMyTime }           from '../../util/helper/my-time';
 
+import { MyEventWatchTowerService }  from '../../util/service/my-event-watchtower.service';
+
 @Injectable()
 export class KlassService {
 
@@ -56,6 +58,8 @@ export class KlassService {
   private myArray:HelperMyArray;
   private myTime:HelperMyTime;
 
+  private watchTower:MyEventWatchTowerService;
+
   private dirPathKlassBanner:string="/assets/images/class/banner";
 
   constructor(private http: Http, private urlService:UrlService) {
@@ -65,6 +69,18 @@ export class KlassService {
     this.myTime = new HelperMyTime();
   }
 
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  }
+
   updateKlass(    
     apiKey:string, 
     userId:number,
@@ -72,12 +88,10 @@ export class KlassService {
     klass:Klass
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / updateKlass / 시작");
-    if(isDebug) console.log("klass.service / updateKlass / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / updateKlass / userId : ",userId);
-    if(isDebug) console.log("klass.service / updateKlass / klass : ",klass);
+    if(this.isDebug()) console.log("klass.service / updateKlass / 시작");
+    if(this.isDebug()) console.log("klass.service / updateKlass / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / updateKlass / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / updateKlass / klass : ",klass);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -128,13 +142,11 @@ export class KlassService {
     reviewId:number
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / removeKlassReview / 시작");
-    if(isDebug) console.log("klass.service / removeKlassReview / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / removeKlassReview / userId : ",userId);
-    if(isDebug) console.log("klass.service / removeKlassReview / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / removeKlassReview / reviewId : ",reviewId);
+    if(this.isDebug()) console.log("klass.service / removeKlassReview / 시작");
+    if(this.isDebug()) console.log("klass.service / removeKlassReview / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / removeKlassReview / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / removeKlassReview / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / removeKlassReview / reviewId : ",reviewId);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -159,14 +171,12 @@ export class KlassService {
     star:number
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
-    if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassQuestion / review : ",review);
-    if(isDebug) console.log("klass.service / addKlassQuestion / star : ",star);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / review : ",review);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / star : ",star);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -192,14 +202,12 @@ export class KlassService {
     reply:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassReviewReply / 시작");
-    if(isDebug) console.log("klass.service / addKlassReviewReply / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassReviewReply / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassReviewReply / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassReviewReply / parentId : ",parentId);
-    if(isDebug) console.log("klass.service / addKlassReviewReply / reply : ",reply);
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / parentId : ",parentId);
+    if(this.isDebug()) console.log("klass.service / addKlassReviewReply / reply : ",reply);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -224,13 +232,11 @@ export class KlassService {
     questionId:number
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / removeKlassQuestion / 시작");
-    if(isDebug) console.log("klass.service / removeKlassQuestion / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / removeKlassQuestion / userId : ",userId);
-    if(isDebug) console.log("klass.service / removeKlassQuestion / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / removeKlassQuestion / questionId : ",questionId);
+    if(this.isDebug()) console.log("klass.service / removeKlassQuestion / 시작");
+    if(this.isDebug()) console.log("klass.service / removeKlassQuestion / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / removeKlassQuestion / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / removeKlassQuestion / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / removeKlassQuestion / questionId : ",questionId);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -254,13 +260,11 @@ export class KlassService {
     question:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassQuestion / 시작");
-    if(isDebug) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassQuestion / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassQuestion / question : ",question);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestion / question : ",question);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -285,14 +289,12 @@ export class KlassService {
     question:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / 시작");
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / parentId : ",parentId);
-    if(isDebug) console.log("klass.service / addKlassQuestionReply / question : ",question);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / parentId : ",parentId);
+    if(this.isDebug()) console.log("klass.service / addKlassQuestionReply / question : ",question);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -317,13 +319,11 @@ export class KlassService {
     klassTitle:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / updateKlassTitle / 시작");
-    if(isDebug) console.log("klass.service / updateKlassTitle / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / updateKlassTitle / userId : ",userId);
-    if(isDebug) console.log("klass.service / updateKlassTitle / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / updateKlassTitle / klassTitle : ",klassTitle);
+    if(this.isDebug()) console.log("klass.service / updateKlassTitle / 시작");
+    if(this.isDebug()) console.log("klass.service / updateKlassTitle / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / updateKlassTitle / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / updateKlassTitle / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / updateKlassTitle / klassTitle : ",klassTitle);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -347,13 +347,11 @@ export class KlassService {
     klassPosterUrl:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassPoster / 시작");
-    if(isDebug) console.log("klass.service / addKlassPoster / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassPoster / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassPoster / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassPoster / klassPosterUrl : ",klassPosterUrl);
+    if(this.isDebug()) console.log("klass.service / addKlassPoster / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassPoster / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassPoster / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassPoster / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassPoster / klassPosterUrl : ",klassPosterUrl);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -378,14 +376,12 @@ export class KlassService {
     teacherGreeting:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassEmpty / 시작");
-    if(isDebug) console.log("klass.service / addKlassEmpty / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassEmpty / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassEmpty / teacherId : ",teacherId);
-    if(isDebug) console.log("klass.service / addKlassEmpty / teacherResume : ",teacherResume);
-    if(isDebug) console.log("klass.service / addKlassEmpty / teacherGreeting : ",teacherGreeting);
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / teacherId : ",teacherId);
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / teacherResume : ",teacherResume);
+    if(this.isDebug()) console.log("klass.service / addKlassEmpty / teacherGreeting : ",teacherGreeting);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -411,13 +407,11 @@ export class KlassService {
     klassBanners:string
   ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / addKlassBanner / 시작");
-    if(isDebug) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
-    if(isDebug) console.log("klass.service / addKlassBanner / userId : ",userId);
-    if(isDebug) console.log("klass.service / addKlassBanner / klassId : ",klassId);
-    if(isDebug) console.log("klass.service / addKlassBanner / klassBanners : ",klassBanners);
+    if(this.isDebug()) console.log("klass.service / addKlassBanner / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassBanner / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassBanner / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassBanner / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassBanner / klassBanners : ",klassBanners);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -436,17 +430,15 @@ export class KlassService {
 
   searchKlassVenue (q:string): Observable<KlassVenue[]> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / searchKlassVenue / 시작");
-    if(isDebug) console.log("klass.service / searchKlassVenue / q : ",q);
+    if(this.isDebug()) console.log("klass.service / searchKlassVenue / 시작");
+    if(this.isDebug()) console.log("klass.service / searchKlassVenue / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
     let req_url = this.urlService.get(this.klassVenueSearchLocalUrl);
 
     req_url = `${ req_url }?q=${ qEncoded }`;
 
-    if(isDebug) console.log("klass.service / searchKlassVenue / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / searchKlassVenue / req_url : ",req_url);
 
     return this.http.get(req_url).map(this.getKlassVenue);
 
@@ -476,10 +468,8 @@ export class KlassService {
       }
     }
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlassVenue / 시작");
-    if(isDebug) console.log("klass.service / getKlassVenue / result : ",result);
+    // console.log("klass.service / getKlassVenue / 시작");
+    // console.log("klass.service / getKlassVenue / result : ",result);
 
     // json 정보를 KlassVenue 정보로 바꿉니다.
     let klassVenueList:KlassVenue[] = [];
@@ -495,23 +485,21 @@ export class KlassService {
       } // end for
     } // end if
 
-    if(isDebug) console.log("klass.service / getKlassVenue / klassVenueList : ",klassVenueList);
+    // console.log("klass.service / getKlassVenue / klassVenueList : ",klassVenueList);
 
     return klassVenueList;
   }
 
   searchKlassMap (q:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / searchKlassMap / 시작");
-    if(isDebug) console.log("klass.service / searchKlassMap / q : ",q);
+    if(this.isDebug()) console.log("klass.service / searchKlassMap / 시작");
+    if(this.isDebug()) console.log("klass.service / searchKlassMap / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
     let req_url = this.urlService.get(this.klassVenueSearchMapUrl);
 
     req_url = `${ req_url }?q=${ qEncoded }`;
-    if(isDebug) console.log("klass.service / searchKlassMap / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / searchKlassMap / req_url : ",req_url);
     
     return this.http.get(req_url)
               .toPromise()
@@ -560,21 +548,19 @@ export class KlassService {
                     time:string, 
                     q:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / searchKlassList / 시작");
+    if(this.isDebug()) console.log("klass.service / searchKlassList / 시작");
 
-    if(isDebug) console.log("klass.service / searchKlassList / level : ",level);
-    if(isDebug) console.log("klass.service / searchKlassList / station : ",station);
-    if(isDebug) console.log("klass.service / searchKlassList / day : ",day);
-    if(isDebug) console.log("klass.service / searchKlassList / time : ",time);
-    if(isDebug) console.log("klass.service / searchKlassList / q : ",q);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / level : ",level);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / station : ",station);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / day : ",day);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / time : ",time);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / q : ",q);
 
     let qEncoded = encodeURIComponent(q);
     let req_url = this.urlService.get(this.klassSearchUrl);
 
     req_url = `${ req_url }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
-    if(isDebug) console.log("klass.service / searchKlassList / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / req_url : ",req_url);
 
     return this.http.get(req_url)
                   .toPromise()
@@ -585,16 +571,12 @@ export class KlassService {
 
   getKlass (id: number | string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlass / 시작");
-
-    if(isDebug) console.log("klass.service / getKlass / id : ",id);
-
+    if(this.isDebug()) console.log("klass.service / getKlass / 시작");
+    if(this.isDebug()) console.log("klass.service / getKlass / id : ",id);
       
     let req_url = this.urlService.get(this.klassUrl);
     req_url = `${ req_url }?id=${ id }`;
-    if(isDebug) console.log("klass.service / getKlass / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / getKlass / req_url : ",req_url);
 
     return this.http.get(req_url)
                   .toPromise()
@@ -604,13 +586,11 @@ export class KlassService {
 
   getKlasses (): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlasses / 시작");
+    if(this.isDebug()) console.log("klass.service / getKlasses / 시작");
 
     let req_url = this.urlService.get(this.klassesUrl);
 
-    if(isDebug) console.log("klass.service / getKlasses / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / getKlasses / req_url : ",req_url);
 
     return this.http.get(req_url)
                   .toPromise()
@@ -621,13 +601,11 @@ export class KlassService {
   
   getKlassSelectile(): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass.service / getKlassSelectile / 시작");
+    if(this.isDebug()) console.log("klass.service / getKlassSelectile / 시작");
 
     let req_url = this.urlService.get(this.klassSelectileUrl);
 
-    if(isDebug) console.log("klass.service / getKlassSelectile / req_url : ",req_url);
+    if(this.isDebug()) console.log("klass.service / getKlassSelectile / req_url : ",req_url);
 
     return this.http.get(req_url)
                     .toPromise()
