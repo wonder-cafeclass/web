@@ -50,8 +50,7 @@
             (click)="onClickKlassPoster($event)"
             class="klass-image refactor-me" 
             style="width: 100%;"
-            src={{imgUploaderImageUrlKlassPoster}} 
-            alt={{klassCopy.title}}>
+            src={{imgUploaderImageUrlKlassPoster}}>
 
             <!-- LABEL : klass title -->
             <div class="klass-title-overlay">
@@ -78,7 +77,6 @@
               style="padding: 0px;">
 
             <widget-input-default
-            [ngModelInput]="klassTitle"
             [width]="353"
             [meta]="defaultMetaList[0]"
             (emitter)="onChangedFromChild($event)">
@@ -126,7 +124,6 @@
             [fontSizeTitle]="40"
             [paddingTitle]="5"
 
-            [price]="klassCopy.price"
             [fontSizePrice]="25"
             [paddingTopPrice]="15"
 
@@ -266,11 +263,11 @@
 
           <!-- COURSE TIME INIT -->
           <li class="list-group-item col-next" style="height: 97px;">
-            <clock-board  #clockboard 
-                          [clockHeight]=86
-                          [clockWidth]=300
-                          [klassTimeBegin]="this.klassCopy.time_begin" 
-                          [klassTimeEnd]="this.klassCopy.time_end"></clock-board>
+            <clock-board  
+            #clockboard 
+            [clockHeight]=86
+            [clockWidth]=300>
+            </clock-board>
           </li>
           <!-- COURSE TIME DONE -->
 

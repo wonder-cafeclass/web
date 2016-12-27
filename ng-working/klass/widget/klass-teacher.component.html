@@ -1,6 +1,6 @@
 <div>
 
-	<ul class="list-group" style="margin-bottom:0px;">
+	<ul *ngIf="klassTeacher" class="list-group" style="margin-bottom:0px;">
 		<li class="list-group-item profile">
 			<img src={{klassTeacher.thumbnail}} alt="..." class="img-circle profile">
 			<div><h4>{{klassTeacher.nickname}}</h4></div>

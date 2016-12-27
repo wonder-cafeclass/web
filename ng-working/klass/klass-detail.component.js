@@ -216,13 +216,14 @@ var KlassDetailComponent = (function () {
     };
     KlassDetailComponent.prototype.getParams = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / getParams / 시작");
+        var klassId = -1;
         this.route.params
             .switchMap(function (params) {
-            var klassId = +params['id'];
+            klassId = +params['id'];
             if (klassId === -100 && null == _this.loginTeacher) {
                 // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
                 if (isDebug)
@@ -245,28 +246,45 @@ var KlassDetailComponent = (function () {
                 _this.loginTeacher.resume, 
                 // teacherGreeting:string
                 _this.loginTeacher.greeting);
+            }
+            else {
+                // 기존 수업 가져오기
+                if (isDebug)
+                    console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ", klassId);
+                return _this.klassService.getKlass(klassId);
             } // end if
-            // 기존 수업 가져오기
-            if (isDebug)
-                console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ", klassId);
-            return _this.klassService.getKlass(klassId);
         })
             .subscribe(function (myResponse) {
             if (isDebug)
                 console.log("klass-detail / getParams / subscribe / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
                 var klassJSON = myResponse.getDataProp("klass");
                 if (isDebug)
                     console.log("klass-detail / getParams / subscribe / klassJSON : ", klassJSON);
                 if (null != klassJSON) {
                     _this.klass = new klass_1.Klass().setJSON(klassJSON);
+                } // end if
+                if (isDebug)
+                    console.log("klass-detail / getParams / subscribe / this.klass : ", _this.klass);
+                if (klassId === -100) {
+                    // 새로 만든 수업이라면, 
+                    // 해당 url로 refresh를 하게되면 자동으로 수업이 생기므로 
+                    // 이를 방지하기 위해 새로 만든 수업 id로 다시 페이지를 로딩해야 합니다.
+                    var newKlassId = _this.klass.id;
+                    _this.router.navigate([("/class-center/" + newKlassId)]);
+                    return;
+                }
+                else {
+                    // 이미 이전에 등록된 수업입니다. 가져온 수업 정보를 화면에 노출합니다.
+                    if (isDebug)
+                        console.log("klass-detail / getParams / subscribe / 이미 이전에 등록된 수업입니다.수업 정보를 화면에 노출합니다.");
                     _this.onAfterReceivingKlass();
                 } // end if
             }
-            else if (myResponse.isFailed() && null != myResponse.error) {
-                _this.watchTower.announceErrorMsgArr([myResponse.error]);
-            }
-            else {
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
                 // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
@@ -333,7 +351,10 @@ var KlassDetailComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("klass-detail / setKlassPrice / 시작");
-        if (null == this.klass || null == this.klassCopy.price || !(0 < this.klassCopy.price)) {
+        if (null == this.klass ||
+            null == this.klassCopy ||
+            null == this.klassCopy.price ||
+            !(0 < this.klassCopy.price)) {
             return;
         } // end if
         if (null != this.priceTagHComponent) {
@@ -1088,7 +1109,10 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.bannerComponent = myEvent.metaObj;
                 } // end if
-                if (null != this.klass && null != this.bannerComponent) {
+                if (null != this.klass &&
+                    null != this.bannerComponent &&
+                    null != this.klassCopy &&
+                    null != this.klassCopy.class_banner_url_arr) {
                     this.bannerComponent.compareUserImages(this.klassCopy.class_banner_url_arr);
                 } // end if
             }
@@ -1658,6 +1682,12 @@ var KlassDetailComponent = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("klass-detail / updateClockTime / 시작");
+        if (null == hhmmBegin || "" === hhmmBegin) {
+            return;
+        }
+        if (null == hhmmEnd || "" === hhmmEnd) {
+            return;
+        }
         // 서비스에 표시되는 시계 아이콘을 업데이트합니다.
         this.clockBoardComponent.setClockTimeBeginEnd(hhmmBegin, hhmmEnd);
         var timeImgNext = this.getTimeImage(hhmmBegin);

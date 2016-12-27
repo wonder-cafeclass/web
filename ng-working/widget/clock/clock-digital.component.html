@@ -1,6 +1,10 @@
 <div>
 	<ul class="list-group" [style.width]="clockWidth + 'px'">
-		<li class="list-group-item clock" [style.height]="rowHeight + 'px'" [style.font-size]="fontSize + 'px'">
+		<li 
+		*ngIf="clockTimeBegin"
+		class="list-group-item clock" 
+		[style.height]="rowHeight + 'px'" 
+		[style.font-size]="fontSize + 'px'">
 			&nbsp;
 			<span 	class="pull-right klass-time-guide" 
 					[style.margin-top]="textMarginTop + 'px'">부터</span>
@@ -9,9 +13,11 @@
 				<strong>{{clockTimeBegin.hhmm12}}</strong>
 			</span>
 		</li>
-		<li 	class="list-group-item clock bottom" 
-				[style.height]="rowHeight + 'px'" 
-				[style.font-size]="fontSize + 'px'">
+		<li 	
+		*ngIf="clockTimeEnd"
+		class="list-group-item clock bottom" 
+		[style.height]="rowHeight + 'px'" 
+		[style.font-size]="fontSize + 'px'">
 			&nbsp;
 			<span 	class="pull-right klass-time-guide" 
 					[style.margin-top]="textMarginTop + 'px'">까지</span>

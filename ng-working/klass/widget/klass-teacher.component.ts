@@ -160,6 +160,10 @@ export class KlassTeacherComponent implements OnInit {
 
   setResume() :void {
 
+    if(null == this.klassTeacher) {
+      return;
+    }
+
     // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
     let resumeArr:string[] = this.klassTeacher.getResumeArr();
     let myEventList:MyEvent[] = [];
@@ -190,6 +194,10 @@ export class KlassTeacherComponent implements OnInit {
   } // end method
 
   setGreeting() :void {
+
+    if(null == this.klassTeacher) {
+      return;
+    }
 
     // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
     let greetingArr:string[] = this.klassTeacher.getGreetingArr();

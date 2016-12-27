@@ -142,10 +142,29 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
       // pageType:string
       this.myLoggerService.pageTypeLoginKakao
     ).then((myResponse:MyResponse) => {
+
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("kakao-callback / logActionPage / myResponse : ",myResponse);
-    })
-  }  
+      if(myResponse.isFailed() && null != myResponse.error) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `kakao-callback / logActionPage`
+        ); // end logger      
+
+      } // end if
+
+    }) // end service
+
+  } // end method 
 
   private getQueryString() :void {
 
@@ -210,20 +229,27 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         if(isDebug) console.log(`kakao-callback / getKakaoToken / 유저 앱등록을 진행합니다.`);
         this.getKakaoSignUp(tokenType, accessToken);
 
-      } else {
+      } else if(myResponse.isFailed()) {  
 
-        if(isDebug) console.log(`kakao-callback / getKakaoToken / 에러 로그 등록`);
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
           this.watchTower.getApiKey(),
           // errorType:string
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
-          "kakao-callback / getKakaoToken / Failed! / kakaoCode : " + kakaoCode
-        );
-      }
-    });
-  }
+          `kakao-callback / getUserByKakaoId / kakaoCode : ${kakaoCode}`
+        ); // end logger      
+
+      } // end if       
+
+    }); // end service
+
+  } // end method
 
   // 유저를 카카오 앱 - cafeclass에 등록합니다. 이미 등록되어 있다면 재등록되지 않습니다.
   private getKakaoSignUp(kakaoTokenType:string, kakaoAccessToken:string) :void {
@@ -253,27 +279,27 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
           this.getKakaoMe(kakaoTokenType, kakaoAccessToken);
         }
 
-      } else {
+      } else if(myResponse.isFailed()) {  
 
-        if(isDebug) console.log("kakao-callback / getKakaoSignUp / 에러 로그 등록");
-
-        let errMsg:string = `kakao-callback / getKakaoSignUp / Failed! / kakaoTokenType : ${kakaoTokenType} / kakaoAccessToken : ${kakaoAccessToken}`;
-        this.logError(
-          // errorType:string
-          this.myLoggerService.errorAPIFailed,
-          // errMsg:string
-          errMsg
-        );
-
-        if(null != myResponse.error && "" != myResponse.error) {
-          // 에러 내용은 화면에 표시한다.
+        if(null != myResponse.error) {
           this.watchTower.announceErrorMsgArr([myResponse.error]);
         }
 
-      } // end if
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `kakao-callback / getKakaoSignUp / kakaoTokenType : ${kakaoTokenType} / kakaoAccessToken : ${kakaoAccessToken}`
+        ); // end logger      
 
-    });
-  } 
+      } // end if        
+
+    }); // end service
+
+  } // end method
 
   private logError(errorType:string, errMsg:string) :void {
 
@@ -334,13 +360,32 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
         // 홈으로 리다이렉트
         this.router.navigate(['/class-center']);
         return;
-      }
 
-      // 카카오 플랫폼에서의 로그인 성공!
-      if(isDebug) console.log(`kakao-callback / getKakaoMe / kakao_id : ${kakaoId}`);
+      } else if( myResponse.isSuccess() ) {
 
-      // 카카오 아이디로 유저 정보를 가져옵니다.
-      this.getUserByKakaoId(""+kakaoId);
+        // 카카오 플랫폼에서의 로그인 성공!
+        if(isDebug) console.log(`kakao-callback / getKakaoMe / kakao_id : ${kakaoId}`);
+
+        // 카카오 아이디로 유저 정보를 가져옵니다.
+        this.getUserByKakaoId(""+kakaoId);
+
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `kakao-callback / getKakaoMe / kakaoTokenType : ${kakaoTokenType} / kakaoAccessToken : ${kakaoAccessToken}`
+        ); // end logger      
+
+      } // end if
 
     }); // end service
 
@@ -466,7 +511,26 @@ export class KakaoCallbackComponent implements OnInit, AfterViewInit, OnDestroy 
           
         }); // end userService
 
+      
+
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
+        this.myLoggerService.logError(
+          // apiKey:string
+          this.watchTower.getApiKey(),
+          // errorType:string
+          this.myLoggerService.errorAPIFailed,
+          // errorMsg:string
+          `kakao-callback / getUserByKakaoId / kakaoId : ${kakaoId}`
+        ); // end logger      
+
       } // end if
+
     }); // end service
 
   }
