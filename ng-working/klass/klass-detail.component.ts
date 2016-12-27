@@ -171,10 +171,6 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
   @ViewChild(PriceTagHComponent)
   private priceTagHComponent: PriceTagHComponent;
 
-  // @ Deprecated / REMOVE ME
-  // @ViewChild(KlassFilterTileComponent)
-  // private klassFilterTileComponent: KlassFilterTileComponent;
-
   @ViewChild(ClockBoardComponent)
   private clockBoardComponent: ClockBoardComponent;
 
@@ -919,6 +915,34 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     );
   } // end method
 
+  // @ 수업 시작 / 종료 시간을 나타내는 시계뷰를 설정함.
+  private setKlassClock() :void {
+
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
+    if(isDebug) console.log("klass-detail / setKlassClock / 시작");
+
+    if(null == this.klassCopy) {
+      if(isDebug) console.log("klass-detail / setKlassClock / 중단 / this.klassCopy is not valid!");
+      return;
+    } // end if
+    if(null == this.clockBoardComponent) {
+      if(isDebug) console.log("klass-detail / setKlassClock / 중단 / this.clockBoardComponent is not valid!");
+      return;
+    } // end if
+
+    if(isDebug) console.log("klass-detail / setKlassClock / this.klassCopy : ",this.klassCopy);
+    if(isDebug) console.log("klass-detail / setKlassClock / this.clockBoardComponent : ",this.clockBoardComponent);
+
+    this.clockBoardComponent.setClockTimeBeginEnd(
+      // timeBegin:string, 
+      this.klassCopy.time_begin,
+      // timeEnd:string
+      this.klassCopy.time_end,
+    );
+
+  } // end method
+
   private setPriceCalculator() :void {
 
     // let isDebug:boolean = true;
@@ -926,16 +950,13 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
     if(isDebug) console.log("klass-detail / setPriceCalculator / 시작");
 
     if(null == this.klassCopy) {
-      if(isDebug) console.log("klass-detail / setKlassDetailNavList / 중단 / this.klassCopy is not valid!");
+      if(isDebug) console.log("klass-detail / setPriceCalculator / 중단 / this.klassCopy is not valid!");
       return;
     }
     if(null == this.priceCalculator) {
-      if(isDebug) console.log("klass-detail / setKlassDays / 중단 / this.priceCalculator is not valid!");
+      if(isDebug) console.log("klass-detail / setPriceCalculator / 중단 / this.priceCalculator is not valid!");
       return;
     }
-
-    if(isDebug) console.log("klass-detail / setKlassDays / this.klassCopy.price : ",this.klassCopy.price);
-    if(isDebug) console.log("klass-detail / setKlassDays / this.klassCopy.student_cnt : ",this.klassCopy.student_cnt);
 
     this.priceCalculator.setPriceNStudentCnt(
       // price:number, 
@@ -1365,8 +1386,8 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
   onChangedFromChild(myEvent:MyEvent):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("klass-detail / onChangedFromChild / 시작");
     if(isDebug) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
 
@@ -1498,9 +1519,16 @@ export class KlassDetailComponent implements OnInit, AfterViewInit, AfterViewChe
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {  
 
-        if( null != myEvent.metaObj ) { // wonder.jung
+        if( null != myEvent.metaObj ) {
           this.priceCalculator = myEvent.metaObj;
           this.setPriceCalculator();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_CLOCK_VIEW)) {  
+
+        if( null != myEvent.metaObj ) { // wonder.jung
+          this.clockBoardComponent = myEvent.metaObj;
+          this.setKlassClock();
         } // end if
 
       } // end if  

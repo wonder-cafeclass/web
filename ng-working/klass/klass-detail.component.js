@@ -654,6 +654,32 @@ var KlassDetailComponent = (function () {
         // valueFocus:string
         valueFocus);
     }; // end method
+    // @ 수업 시작 / 종료 시간을 나타내는 시계뷰를 설정함.
+    KlassDetailComponent.prototype.setKlassClock = function () {
+        var isDebug = true;
+        // let isDebug:boolean = false;
+        if (isDebug)
+            console.log("klass-detail / setKlassClock / 시작");
+        if (null == this.klassCopy) {
+            if (isDebug)
+                console.log("klass-detail / setKlassClock / 중단 / this.klassCopy is not valid!");
+            return;
+        } // end if
+        if (null == this.clockBoardComponent) {
+            if (isDebug)
+                console.log("klass-detail / setKlassClock / 중단 / this.clockBoardComponent is not valid!");
+            return;
+        } // end if
+        if (isDebug)
+            console.log("klass-detail / setKlassClock / this.klassCopy : ", this.klassCopy);
+        if (isDebug)
+            console.log("klass-detail / setKlassClock / this.clockBoardComponent : ", this.clockBoardComponent);
+        this.clockBoardComponent.setClockTimeBeginEnd(
+        // timeBegin:string, 
+        this.klassCopy.time_begin, 
+        // timeEnd:string
+        this.klassCopy.time_end);
+    }; // end method
     KlassDetailComponent.prototype.setPriceCalculator = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -661,18 +687,14 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / setPriceCalculator / 시작");
         if (null == this.klassCopy) {
             if (isDebug)
-                console.log("klass-detail / setKlassDetailNavList / 중단 / this.klassCopy is not valid!");
+                console.log("klass-detail / setPriceCalculator / 중단 / this.klassCopy is not valid!");
             return;
         }
         if (null == this.priceCalculator) {
             if (isDebug)
-                console.log("klass-detail / setKlassDays / 중단 / this.priceCalculator is not valid!");
+                console.log("klass-detail / setPriceCalculator / 중단 / this.priceCalculator is not valid!");
             return;
         }
-        if (isDebug)
-            console.log("klass-detail / setKlassDays / this.klassCopy.price : ", this.klassCopy.price);
-        if (isDebug)
-            console.log("klass-detail / setKlassDays / this.klassCopy.student_cnt : ", this.klassCopy.student_cnt);
         this.priceCalculator.setPriceNStudentCnt(
         // price:number, 
         this.klassCopy.price, 
@@ -1016,8 +1038,8 @@ var KlassDetailComponent = (function () {
         console.log("onClickYellowID / klass ::: ", klass);
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("klass-detail / onChangedFromChild / 시작");
         if (isDebug)
@@ -1133,6 +1155,12 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.priceCalculator = myEvent.metaObj;
                     this.setPriceCalculator();
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_CLOCK_VIEW)) {
+                if (null != myEvent.metaObj) {
+                    this.clockBoardComponent = myEvent.metaObj;
+                    this.setKlassClock();
                 } // end if
             } // end if  
         }

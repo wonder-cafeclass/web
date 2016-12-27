@@ -682,7 +682,7 @@ export class KlassDetailNavListComponent implements OnInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / goLogin / init");
+    if(isDebug) console.log("k-d-n-l / setVenueSearch / init");
 
     if(null == this.klass) {
       return;
@@ -691,9 +691,29 @@ export class KlassDetailNavListComponent implements OnInit {
       return;
     }
 
-    this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+    if(this.klass.hasNotKlassVenue()) {
+      this.setVenueDefault();
+    } else {
+      this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+    } // end if
+  } // end method
 
-  } 
+  public setVenueDefault():void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setVenueDefault / init");
+
+    if(null == this.klass) {
+      return;
+    }
+    if(null == this.venueSearchComponent) {
+      return;
+    }
+
+    this.venueSearchComponent.setVenue(this.venueSearchComponent.getDefaultVenue());
+
+  } // end method
 
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {

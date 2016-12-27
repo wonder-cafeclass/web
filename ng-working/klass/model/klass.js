@@ -258,6 +258,24 @@ var Klass = (function () {
         this.venue_latitude = "" + klassVenue.latitude;
         this.venue_longitude = "" + klassVenue.longitude;
     };
+    Klass.prototype.hasNotKlassVenue = function () {
+        return !this.hasKlassVenue();
+    };
+    Klass.prototype.hasKlassVenue = function () {
+        if (null == this.venue_title || "" === this.venue_title) {
+            return false;
+        }
+        if (null == this.venue_address || "" === this.venue_address) {
+            return false;
+        }
+        if (null == this.venue_latitude || "" === this.venue_latitude) {
+            return false;
+        }
+        if (null == this.venue_longitude || "" === this.venue_longitude) {
+            return false;
+        }
+        return true;
+    };
     Klass.prototype.getKlassVenue = function () {
         if (null == this.klassVenue) {
             this.klassVenue =

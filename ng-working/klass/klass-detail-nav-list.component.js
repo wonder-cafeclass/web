@@ -474,15 +474,33 @@ var KlassDetailNavListComponent = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("k-d-n-l / goLogin / init");
+            console.log("k-d-n-l / setVenueSearch / init");
         if (null == this.klass) {
             return;
         }
         if (null == this.venueSearchComponent) {
             return;
         }
-        this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
-    };
+        if (this.klass.hasNotKlassVenue()) {
+            this.setVenueDefault();
+        }
+        else {
+            this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+        } // end if
+    }; // end method
+    KlassDetailNavListComponent.prototype.setVenueDefault = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("k-d-n-l / setVenueDefault / init");
+        if (null == this.klass) {
+            return;
+        }
+        if (null == this.venueSearchComponent) {
+            return;
+        }
+        this.venueSearchComponent.setVenue(this.venueSearchComponent.getDefaultVenue());
+    }; // end method
     // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
     KlassDetailNavListComponent.prototype.goLogin = function () {
         // let isDebug:boolean = true;

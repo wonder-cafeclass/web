@@ -59,7 +59,7 @@ var KlassVenueSearchListComponent = (function () {
     KlassVenueSearchListComponent.prototype.getDefaultVenue = function () {
         return new klass_venue_1.KlassVenue().set(
         // public title:string
-        "&lt;b&gt;스타벅스&lt;/b&gt; 갤러리아팰리스점", 
+        "<b>스타벅스</b> 갤러리아팰리스점", 
         // public telephone:string
         "02-758-8118", 
         // public address:string
