@@ -332,8 +332,8 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     };
     KlassDetailNavListComponent.prototype.setReview = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
+        var isDebug = true;
+        // let isDebug:boolean = false;
         if (isDebug)
             console.log("k-d-n-l / setReview / init");
         var loginUserId = -1;
@@ -345,6 +345,8 @@ var KlassDetailNavListComponent = (function () {
         }
         this.reviewCommentList =
             this.klassCommentService.getReviewCommentList(this.klass.review_list, loginUserId);
+        if (isDebug)
+            console.log("k-d-n-l / setReview / this.reviewCommentList : ", this.reviewCommentList);
         // MyEvent for Review
         this.myEventForReview =
             this.myEventService.getMyEvent(

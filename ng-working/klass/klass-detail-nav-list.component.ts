@@ -492,8 +492,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setReview() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setReview / init");
 
     let loginUserId:number = -1;
@@ -509,6 +509,8 @@ export class KlassDetailNavListComponent implements OnInit {
       this.klass.review_list,
       loginUserId
     );
+
+    if(isDebug) console.log("k-d-n-l / setReview / this.reviewCommentList : ",this.reviewCommentList);
 
     // MyEvent for Review
     this.myEventForReview = 

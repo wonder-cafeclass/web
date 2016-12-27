@@ -37,6 +37,7 @@ var CommentListComponent = (function () {
         this.isAdmin = false;
         this.isInputDisabled = false;
         this.hasEvaluation = false; // @ 유저평가 - 별점여부
+        this.msgNoComment = "등록된 댓글이 없습니다.";
         this.cageWidth = -1;
         this.cageHeight = -1;
         this.isShowNewCommentInput = true;
@@ -625,6 +626,10 @@ var CommentListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], CommentListComponent.prototype, "eventKey", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], CommentListComponent.prototype, "msgNoComment", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', my_event_1.MyEvent)

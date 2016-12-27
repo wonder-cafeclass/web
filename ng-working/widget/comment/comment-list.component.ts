@@ -45,6 +45,7 @@ export class CommentListComponent implements OnInit {
   @Input() hasEvaluation:boolean=false; // @ 유저평가 - 별점여부
   @Input() commentList:Comment[];
   @Input() eventKey:string;
+  @Input() msgNoComment:string="등록된 댓글이 없습니다.";
   @Input() myEvent:MyEvent; // @ Deprecated
   @Input() cageWidth:number=-1;
   cageWidthStr:string;
