@@ -172,6 +172,10 @@ export class MyEventService {
     // 수업료 계산기 - 수업 주수
     KEY_KLASS_PRICE_CALC_WEEK:string="KEY_KLASS_PRICE_CALC_WEEK";
 
+    // 수업시간 뷰
+    KEY_KLASS_CLOCK_VIEW:string="KEY_KLASS_CLOCK_VIEW";
+
+
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;
     private defaultType:DefaultType;

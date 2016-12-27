@@ -134,6 +134,7 @@
               <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
               -->
               <comment-list [isAdmin]="isAdmin"
+                            [msgNoComment]="'등록된 리뷰가 없습니다'"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [hasEvaluation]="true"
                             [myEvent]="myEventForReview"
@@ -151,6 +152,7 @@
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
               -->
               <comment-list [isAdmin]="isAdmin"
+                            [msgNoComment]="'등록된 문의가 없습니다'"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [myEvent]="myEventForQuestion"
                             [eventKey]="myEventService.KEY_KLASS_QUESTION_LIST"

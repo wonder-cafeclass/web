@@ -1906,6 +1906,14 @@ class MY_Sql
             $price = $this->get_klass_price_default();
         }
 
+        // @ Default Venue Info
+        $venue_title = "<b>스타벅스</b> 갤러리아팰리스점";
+        $venue_telephone = "02-758-8118";
+        $venue_address = "서울특별시 송파구 잠실동 40";
+        $venue_road_address = "서울특별시 송파구 올림픽로 212 갤러리아팰리스";
+        $venue_latitude = "37.5111896";
+        $venue_longitude = "37.5111896";
+
         $data = array(
             'teacher_id' => $teacher_id,
             'teacher_resume' => $teacher_resume,
@@ -1927,6 +1935,12 @@ class MY_Sql
             'class_per_week' => $class_per_week,
             'price' => $price,
             'student_cnt' => 3,
+            'venue_title' => $venue_title,
+            'venue_telephone' => $venue_telephone,
+            'venue_address' => $venue_address,
+            'venue_road_address' => $venue_road_address,
+            'venue_latitude' => $venue_latitude,
+            'venue_longitude' => $venue_longitude,
             'class_banner_url' => "",
             'class_poster_url' => ""
         );

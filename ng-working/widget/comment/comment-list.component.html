@@ -1,4 +1,5 @@
 <ul class="list-group" style="margin-bottom:0px;">
+	<li class="list-group-item no-comment-list" *ngIf="commentList">{{msgNoComment}}</li>
     <li *ngFor="let comment of commentList"
     	class="list-group-item" 
     	style="padding:5px;">

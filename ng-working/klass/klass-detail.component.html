@@ -140,38 +140,6 @@
           </li>
           <!-- WEEKS & PRICE DONE -->
 
-          <!-- WEEKS ADMIN INIT -->
-          <!-- Default Input : Number -->
-          <!--
-          <li 
-          *ngIf="isTeacher" 
-          class="list-group-item col-next">
-            <widget-input-default
-            [width]="-1"
-            [isNoSpace]="true"
-            [meta]="defaultMetaList[9]"
-            (emitter)="onChangedFromChild($event)">
-            </widget-input-default>
-          </li>
-          <!-- WEEKS ADMIN DONE -->          
-
-          <!-- PRICE ADMIN INIT -->
-          <!-- Default Input : Number -->
-          <!-- 
-          <li 
-          *ngIf="isTeacher" 
-          class="list-group-item col-next">
-            <widget-input-default
-            [width]="-1"
-            [isNoSpace]="true"
-            [isDisabled]="false"
-            [meta]="defaultMetaList[1]"
-            [numUnit]="1000"
-            (emitter)="onChangedFromChild($event)">
-            </widget-input-default>
-          </li>
-          <!-- PRICE ADMIN DONE -->
-
           <!-- PRICE CALC ADMIN INIT-->
           <li 
           *ngIf="isTeacher" 
@@ -265,8 +233,10 @@
           <li class="list-group-item col-next" style="height: 97px;">
             <clock-board  
             #clockboard 
-            [clockHeight]=86
-            [clockWidth]=300>
+            [clockHeight]="86"
+            [clockWidth]="300"
+            [eventKey]="myEventService.KEY_KLASS_CLOCK_VIEW"
+            (emitter)="onChangedFromChild($event)">
             </clock-board>
           </li>
           <!-- COURSE TIME DONE -->

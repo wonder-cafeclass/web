@@ -492,8 +492,8 @@ export class KlassDetailNavListComponent implements OnInit {
 
   private setReview() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
+    let isDebug:boolean = true;
+    // let isDebug:boolean = false;
     if(isDebug) console.log("k-d-n-l / setReview / init");
 
     let loginUserId:number = -1;
@@ -509,6 +509,8 @@ export class KlassDetailNavListComponent implements OnInit {
       this.klass.review_list,
       loginUserId
     );
+
+    if(isDebug) console.log("k-d-n-l / setReview / this.reviewCommentList : ",this.reviewCommentList);
 
     // MyEvent for Review
     this.myEventForReview = 
@@ -682,7 +684,7 @@ export class KlassDetailNavListComponent implements OnInit {
 
     // let isDebug:boolean = true;
     let isDebug:boolean = false;
-    if(isDebug) console.log("k-d-n-l / goLogin / init");
+    if(isDebug) console.log("k-d-n-l / setVenueSearch / init");
 
     if(null == this.klass) {
       return;
@@ -691,9 +693,29 @@ export class KlassDetailNavListComponent implements OnInit {
       return;
     }
 
-    this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+    if(this.klass.hasNotKlassVenue()) {
+      this.setVenueDefault();
+    } else {
+      this.venueSearchComponent.setVenue(this.klass.getKlassVenue());
+    } // end if
+  } // end method
 
-  } 
+  public setVenueDefault():void {
+
+    // let isDebug:boolean = true;
+    let isDebug:boolean = false;
+    if(isDebug) console.log("k-d-n-l / setVenueDefault / init");
+
+    if(null == this.klass) {
+      return;
+    }
+    if(null == this.venueSearchComponent) {
+      return;
+    }
+
+    this.venueSearchComponent.setVenue(this.venueSearchComponent.getDefaultVenue());
+
+  } // end method
 
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {

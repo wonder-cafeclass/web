@@ -323,6 +323,28 @@ export class Klass {
 
     }
 
+    hasNotKlassVenue() :boolean {
+        return !this.hasKlassVenue();
+    }
+
+    hasKlassVenue() :boolean {
+
+        if(null == this.venue_title || "" === this.venue_title) {
+            return false;
+        }
+        if(null == this.venue_address || "" === this.venue_address) {
+            return false;
+        }
+        if(null == this.venue_latitude || "" === this.venue_latitude) {
+            return false;
+        }
+        if(null == this.venue_longitude || "" === this.venue_longitude) {
+            return false;
+        }
+
+        return true;
+    }
+
     getKlassVenue() :KlassVenue {
 
         if(null == this.klassVenue) {
