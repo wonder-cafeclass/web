@@ -7,7 +7,7 @@
 
 	      	<!-- 운영툴에서만 노출되는 아이콘 -->
 	      	<img 
-	      	*ngIf="isAdmin===true && isDebugging" 
+	      	*ngIf="isDebugging"
 	      	(click)="onClickToggleDebugging($event)"
 	      	class="watchtower" 
 	      	src={{imageService.get(imageService.watchTowerUrl)}}>

@@ -22,7 +22,7 @@ var my_logger_service_1 = require('./util/service/my-logger.service');
 var user_1 = require('./users/model/user');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, route, router) {
+    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, activatedRoute, router) {
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
@@ -32,21 +32,21 @@ var AppComponent = (function () {
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.myLoggerService = myLoggerService;
-        this.route = route;
+        this.activatedRoute = activatedRoute;
         this.router = router;
         this.isAdmin = false;
         this.toggleTopMenu = true;
-        this.errorMsgArr = [];
-        // 디버깅 모드로 전환하는 방법은 2가지
-        // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
         this.isDebugging = false;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        this.errorMsgArr = [];
+        if (this.isDebug())
             console.log("app-root / constructor / 시작");
         this.watchTower.announceMyEventService(this.myEventService);
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
+    AppComponent.prototype.isDebug = function () {
+        return true;
+        // return this.watchTower.isDebug();
+    };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
         this.subscribeLoginUser();
@@ -54,24 +54,41 @@ var AppComponent = (function () {
         this.subscribeToggleTopMenu();
         this.setIsAdmin();
         this.setMyChecker();
+        // this.checkExternalAdmin();
     };
     AppComponent.prototype.ngAfterViewChecked = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / ngAfterViewChecked / 시작");
         this.watchTower.announceContentHeight();
     };
+    /*
+    // @ Desc : http://devcafeclass.com?hawkeye=true 인 경우, 모니터링 모드로 전환합니다.
+    checkExternalAdmin():void {
+
+        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
+        this.subscription = this.activatedRoute.queryParams.subscribe(
+          (param: any) => {
+
+            console.log("app-root / getQueryString / param : ",param);
+
+            let isActivated:boolean = param['hawkeye'];
+            if(null != isActivated && true == isActivated) {
+                this.watchTower.announceIsDebugging(true);
+                this.isDebugging = isActivated;
+            } // end if
+          } // end return
+        ); // end subscribe
+
+    } // end method
+    */
     AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / subscribeLoginUser / 시작");
         // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
         // Subscribe login user
         this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / subscribeLoginUser / loginUser : ", loginUser);
             // Example
             /*
@@ -100,14 +117,12 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / subscribeLoginTeacher / 시작");
         // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
         // Subscribe login user
         this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
             _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
@@ -115,41 +130,47 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.subscribeToggleTopMenu = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / subscribeToggleTopMenu / \uC2DC\uC791");
         // 최상단 메뉴를 보이거나 감춥니다.
         this.watchTower.toggleTopMenuAnnounced$.subscribe(function (toggleTopMenu) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / subscribeToggleTopMenu / toggleTopMenu : " + toggleTopMenu);
             _this.toggleTopMenu = toggleTopMenu;
         });
     };
     AppComponent.prototype.subscribeAllErrors = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / subscribeAllErrors / \uC2DC\uC791");
         // 화면에 표시할수 있는 발생한 모든 에러에 대해 표시합니다.
         this.watchTower.errorMsgArr$.subscribe(function (errorMsgArr) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / subscribeAllErrors / errorMsgArr : ", errorMsgArr);
             _this.errorMsgArr = errorMsgArr;
         });
     };
+    AppComponent.prototype.subscribeIsDebugging = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("app-root / subscribeIsDebugging / 시작");
+        // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
+        // Subscribe login user
+        this.watchTower.isDebugging$.subscribe(function (isDebugging) {
+            if (_this.isDebug())
+                console.log("app-root / isDebugging$ / isDebugging : ", isDebugging);
+            _this.isDebugging = isDebugging;
+        });
+    };
     AppComponent.prototype.setIsAdmin = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / setIsAdmin / \uC2DC\uC791");
         // 운영 서버인지 서비스 서버인지 판단하는 플래그값 가져옴.
         this.authService
             .getAdminAuth()
             .then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / setIsAdmin / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
                 _this.isAdmin = myResponse.getDataProp("is_admin");
@@ -169,16 +190,14 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setMyChecker = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / setMyChecker / \uC2DC\uC791");
         // 회원 로그인 쿠키를 가져옵니다.
         // 로그인 이후 만들어진 쿠키와 유저 정보가 있다면 DB를 통해 가져옵니다.
         this.myCheckerService
             .getChecker()
             .then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / setMyChecker / myResponse : ", myResponse);
             // 가져온 체커 정보들을 event-watchtower를 통해 전달합니다.
             _this.watchTower.announceMyCheckerServiceReady(
@@ -195,19 +214,17 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
         this.userService
             .getUserCookie(this.watchTower.getApiKey())
             .then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / getLoginUserFromCookie / myResponse : ", myResponse);
             var userFromDB = myResponse.getDataProp("user");
             if (myResponse.isSuccess() && null != userFromDB) {
                 var user = new user_1.User().setJSON(userFromDB);
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("app-root / getLoginUserFromCookie / user : ", user);
                 _this.loginUser = user;
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
@@ -222,16 +239,14 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.getTeacherFromUser = function (userId) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / getTeacherFromUser / \uC2DC\uC791");
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / getTeacherFromUser / userId : " + userId);
         this.teacherService
             .getTeacher(this.watchTower.getApiKey(), userId)
             .then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("app-root / getTeacherFromUser / myResponse : ", myResponse);
             var teacherFromDB = myResponse.getDataProp("teacher");
             // 선생님 로그인 여부를 확인, 전파한다.
@@ -255,15 +270,15 @@ var AppComponent = (function () {
         event.preventDefault();
         // 내정보로 이동합니다.
     };
+    // 디버깅 모드로 전환하는 방법은 2가지
+    // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
     AppComponent.prototype.onClickToggleDebugging = function (event) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / onClickToggleDebugging / \uC2DC\uC791");
         this.isDebugging = !this.watchTower.getIsDebugging();
-        if (isDebug)
+        if (this.isDebug())
             console.log("app-root / onClickToggleDebugging / this.isDebugging : " + this.isDebugging);
         this.watchTower.announceIsDebugging(this.isDebugging);
     };

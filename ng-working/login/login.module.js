@@ -22,6 +22,7 @@ var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
 var signup_select_component_1 = require('./signup/signup-select.component');
 var validation_component_1 = require('./validation/validation.component');
+var hawkeye_component_1 = require('./validation/hawkeye.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
@@ -45,7 +46,8 @@ var LoginModule = (function () {
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
                 signup_select_component_1.SignupSelectComponent,
-                validation_component_1.ValidationComponent
+                validation_component_1.ValidationComponent,
+                hawkeye_component_1.HawkeyeComponent
             ],
             providers: [
                 login_service_1.LoginService,
