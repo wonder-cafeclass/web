@@ -47,8 +47,7 @@ var SignupComponent = (function () {
             console.log("signup / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
     }
     SignupComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        return this.watchTower.isDebug();
     };
     SignupComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.

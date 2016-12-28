@@ -92,8 +92,7 @@ export class SignupComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
