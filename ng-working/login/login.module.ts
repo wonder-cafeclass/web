@@ -16,6 +16,7 @@ import { NaverCallbackComponent } 	      from './naver/naver-callback.component'
 import { SignupComponent } 	 		          from './signup/signup.component';
 import { SignupSelectComponent }          from './signup/signup-select.component';
 import { ValidationComponent }            from './validation/validation.component';
+import { HawkeyeComponent }               from './validation/hawkeye.component';
 
 import { LoginService }                   from './service/login.service';
 import { UserService }                    from '../users/service/user.service';
@@ -38,7 +39,8 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     NaverCallbackComponent,
     SignupComponent,
     SignupSelectComponent,
-    ValidationComponent
+    ValidationComponent,
+    HawkeyeComponent
   ],
   providers: [
   	LoginService,
