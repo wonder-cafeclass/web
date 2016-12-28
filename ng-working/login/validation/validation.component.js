@@ -84,6 +84,8 @@ var ValidationComponent = (function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
         this.getUserValidation();
+        // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+        this.watchTower.announceToggleTopMenu(false);
     };
     ValidationComponent.prototype.getUserValidation = function () {
         var _this = this;

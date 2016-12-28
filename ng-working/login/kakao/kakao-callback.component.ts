@@ -108,13 +108,13 @@ export class KakaoCallbackComponent implements AfterViewInit, OnDestroy {
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
-
     // 페이지 진입을 기록으로 남깁니다.
     this.logActionPage();
-
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
     this.getQueryString();
-
+    // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+    this.watchTower.announceToggleTopMenu(false);
+    
   } // end init
 
   private logActionPage() :void {

@@ -83,6 +83,8 @@ var FacebookCallbackComponent = (function () {
         this.logActionPage();
         // 쿼리 스트링으로 전달받을 parameter들을 가져옵니다.
         this.getQueryString();
+        // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+        this.watchTower.announceToggleTopMenu(false);
     };
     FacebookCallbackComponent.prototype.logActionPage = function () {
         var _this = this;

@@ -85,6 +85,8 @@ var KakaoCallbackComponent = (function () {
         this.logActionPage();
         // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
         this.getQueryString();
+        // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
+        this.watchTower.announceToggleTopMenu(false);
     }; // end init
     KakaoCallbackComponent.prototype.logActionPage = function () {
         var _this = this;

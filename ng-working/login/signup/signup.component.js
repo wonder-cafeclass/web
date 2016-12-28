@@ -47,8 +47,8 @@ var SignupComponent = (function () {
             console.log("signup / ngOnInit / this.defaultMetaList : ", this.defaultMetaList);
     }
     SignupComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     SignupComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -469,31 +469,31 @@ var SignupComponent = (function () {
             var userJSON = null;
             if (myResponse.isSuccess()) {
                 userJSON = myResponse.getDataProp("user");
-            }
-            if (null != userJSON) {
-                _this.user = new user_1.User().setJSON(userJSON);
-                _this.userCopy = _this.user.copy();
-            }
-            if (_this.isDebug())
-                console.log("signup / updateUser / this.user : ", _this.user);
-            if (null != userJSON &&
-                null != _this.user &&
-                null != _this.user.id &&
-                null != _this.user.email) {
-                // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
-                _this.sendMailUserValidation(_this.user.id, _this.user.email);
-            }
-            else {
-                // Error Report
+                if (null != userJSON) {
+                    _this.user = new user_1.User().setJSON(userJSON);
+                    _this.userCopy = _this.user.copy();
+                }
                 if (_this.isDebug())
-                    console.log("signup / updateUser / Error Report");
+                    console.log("signup / updateUser / this.user : ", _this.user);
+                if (null != userJSON &&
+                    null != _this.user &&
+                    null != _this.user.id &&
+                    null != _this.user.email) {
+                    _this.sendMailUserValidation(_this.user.id, _this.user.email);
+                }
+            }
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
                 _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
-                "signup / updateUser / Failed!");
+                "signup / updateUser / Failed!"); // end logger      
             } // end if
         }); // end service     
     };
@@ -536,29 +536,33 @@ var SignupComponent = (function () {
             var userJSON = null;
             if (myResponse.isSuccess()) {
                 userJSON = myResponse.getDataProp("user");
-            }
-            if (null != userJSON) {
-                _this.user = new user_1.User().setJSON(userJSON);
-                _this.userCopy = _this.user.copy();
-            }
-            if (_this.isDebug())
-                console.log("signup / addUser / this.user : ", _this.user);
-            if (null != _this.user && null != _this.user.id && null != _this.user.email) {
+                if (null != userJSON) {
+                    _this.user = new user_1.User().setJSON(userJSON);
+                    _this.userCopy = _this.user.copy();
+                }
+                if (_this.isDebug())
+                    console.log("signup / addUser / this.user : ", _this.user);
                 // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
                 if (_this.isDebug())
                     console.log("signup / addUser / 메일을 발송, 인증을 시작!");
-                _this.sendMailUserValidation(_this.user.id, _this.user.email);
+                if (null != _this.user &&
+                    null != _this.user.id &&
+                    null != _this.user.email) {
+                    _this.sendMailUserValidation(_this.user.id, _this.user.email);
+                } // end if
             }
-            else {
-                if (_this.isDebug())
-                    console.log("signup / addUser / Error Report");
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
                 _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
-                "signup / addUser / Failed!");
+                "signup / addUser / Failed!"); // end logger      
             } // end if
         }); // end service      
     };
@@ -582,15 +586,18 @@ var SignupComponent = (function () {
                 // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
                 _this.router.navigate(['login/signup/validation']);
             }
-            else {
-                // Error Report
+            else if (myResponse.isFailed()) {
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                }
+                // 에러 로그 등록
                 _this.myLoggerService.logError(
                 // apiKey:string
                 _this.watchTower.getApiKey(), 
                 // errorType:string
                 _this.myLoggerService.errorAPIFailed, 
                 // errorMsg:string
-                "signup / sendMailUserValidation / Failed!");
+                "signup / sendMailUserValidation / Failed!"); // end logger      
             } // end if
         }); // end service     
     };

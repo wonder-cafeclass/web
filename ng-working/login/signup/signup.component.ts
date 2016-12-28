@@ -92,8 +92,8 @@ export class SignupComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    // return true;
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
@@ -544,24 +544,30 @@ export class SignupComponent implements AfterViewInit {
       let userJSON = null;
       if(myResponse.isSuccess()) {
         userJSON = myResponse.getDataProp("user");
-      }
-      if(null != userJSON) {
-        this.user = new User().setJSON(userJSON);
-        this.userCopy = this.user.copy();
-      }
-      if(this.isDebug()) console.log("signup / updateUser / this.user : ",this.user);
-      if( null != userJSON && 
-          null != this.user && 
-          null != this.user.id && 
-          null != this.user.email ) {
 
-        // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
-        this.sendMailUserValidation(this.user.id, this.user.email);
+        if(null != userJSON) {
+          this.user = new User().setJSON(userJSON);
+          this.userCopy = this.user.copy();
+        }
 
-      } else {
+        if(this.isDebug()) console.log("signup / updateUser / this.user : ",this.user);
 
-        // Error Report
-        if(this.isDebug()) console.log("signup / updateUser / Error Report");
+        if( null != userJSON && 
+            null != this.user && 
+            null != this.user.id && 
+            null != this.user.email ) {
+
+          this.sendMailUserValidation(this.user.id, this.user.email);
+
+        }
+        
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
           this.watchTower.getApiKey(),
@@ -569,7 +575,7 @@ export class SignupComponent implements AfterViewInit {
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
           `signup / updateUser / Failed!`
-        );
+        ); // end logger      
 
       } // end if
 
@@ -616,23 +622,34 @@ export class SignupComponent implements AfterViewInit {
 
       let userJSON = null;
       if(myResponse.isSuccess()) {
-        userJSON = myResponse.getDataProp("user");
-      }
-      if(null != userJSON) {
-        this.user = new User().setJSON(userJSON);
-        this.userCopy = this.user.copy();
-      }
 
-      if(this.isDebug()) console.log("signup / addUser / this.user : ",this.user);
-      if(null != this.user && null != this.user.id && null != this.user.email) {
+        userJSON = myResponse.getDataProp("user");
+
+        if(null != userJSON) {
+          this.user = new User().setJSON(userJSON);
+          this.userCopy = this.user.copy();
+        }
+        
+        if(this.isDebug()) console.log("signup / addUser / this.user : ",this.user);
 
         // 유저 정보가 제대로 추가되었다면, 메일을 발송, 인증을 시작!
         if(this.isDebug()) console.log("signup / addUser / 메일을 발송, 인증을 시작!");
-        this.sendMailUserValidation(this.user.id, this.user.email);
 
-      } else {
+        if( null != this.user && 
+            null != this.user.id && 
+            null != this.user.email) {
 
-        if(this.isDebug()) console.log("signup / addUser / Error Report");
+          this.sendMailUserValidation(this.user.id, this.user.email);
+          
+        } // end if
+
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
           this.watchTower.getApiKey(),
@@ -640,8 +657,8 @@ export class SignupComponent implements AfterViewInit {
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
           `signup / addUser / Failed!`
-        );
-        
+        ); // end logger      
+
       } // end if
 
     }); // end service      
@@ -670,9 +687,13 @@ export class SignupComponent implements AfterViewInit {
         // 전송이 완료되었다면 팝업으로 사용자에게 메일을 확인해볼 것을 안내한다.
         this.router.navigate(['login/signup/validation']);
 
-      } else {
+      } else if(myResponse.isFailed()) {  
 
-        // Error Report
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        }
+
+        // 에러 로그 등록
         this.myLoggerService.logError(
           // apiKey:string
           this.watchTower.getApiKey(),
@@ -680,7 +701,7 @@ export class SignupComponent implements AfterViewInit {
           this.myLoggerService.errorAPIFailed,
           // errorMsg:string
           `signup / sendMailUserValidation / Failed!`
-        );        
+        ); // end logger      
 
       } // end if
 

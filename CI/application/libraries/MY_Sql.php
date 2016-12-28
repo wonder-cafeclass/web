@@ -87,7 +87,34 @@ class MY_Sql
         }
 
         return true;
-    }    
+    }  
+
+
+    private function add_track($class_name="", $method_name="", $line_num=-1, $msg="")
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
+
+        $this->CI->my_tracker->add($class_name, $method_name, $line_num, $msg);
+    }  
+    private function add_track_init($class_name="", $method_name="", $line_num=-1)
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
+
+        $this->CI->my_tracker->add_init($class_name, $method_name, $line_num);
+    }
+    private function add_track_stopped($class_name="", $method_name="", $line_num=-1, $msg)
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
+
+        $this->CI->my_tracker->add_stopped($class_name, $method_name, $line_num, $msg);
+    }
+
 
     private function is_not_ok($key=null, $value=null) 
     {   
@@ -414,14 +441,17 @@ class MY_Sql
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $name="", $thumbnail_url="")
     {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }        
 
         if($this->is_not_ok("naver_id", $naver_id))
         {
             // @ Required / 필수
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"naver_id\", \$naver_id)");
             return;   
         }
         if($this->is_not_ok("user_birth_range", $birth_year))
@@ -452,16 +482,19 @@ class MY_Sql
         if(empty($nickname))
         {
             // @ Required / 필수
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$nickname)");
             return;   
         }
         if(empty($name)) 
         {
             // @ Required / 필수
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$name)");
             return;
         }
         if(empty($thumbnail_url)) 
         {
             // @ Required / 필수
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$thumbnail_url)");
             return;
         }
 
@@ -478,6 +511,7 @@ class MY_Sql
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
         $sql = $this->CI->db->set($data)->get_compiled_insert('user');
         $this->log_query(
             // $user_id=-1
@@ -487,6 +521,7 @@ class MY_Sql
             // $query=""
             $sql
         );
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
@@ -494,14 +529,23 @@ class MY_Sql
 
     public function get_user_naver($naver_id=-1) 
     {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
         if(!(0 < $naver_id)) 
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "(!(0 < \$naver_id))");
             return null;
         }
 
-        $this->CI->db->where('naver_id', $naver_id);
         $limit = 1;
         $offset = 0;
+        $this->CI->db->where('naver_id', $naver_id);
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->CI->db->where('naver_id', $naver_id);
+        $this->CI->db->limit($limit, $offset);
         $query = $this->CI->db->get('user', $limit, $offset);
 
         $row = $query->custom_row_object(0, 'User');
@@ -785,26 +829,31 @@ class MY_Sql
         // TODO - user id로 업데이트 되고 있음.
         // 숫자로 구성되어 있으므로 공격 확률이 있음. 
         // 문자열 조합키로 변경 필요 있음.
-
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            return false;
         }
         if($this->is_not_ok("user_password_hashed", $password_hashed))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(password_hashed:$password_hashed)");
+            return false;
         }
-        if($this->is_not_ok("user_email_insert", $email))
+        if($this->is_not_ok("user_email", $email))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(email:$email)");
+            return false;
         }
         if($this->is_not_ok("user_name", $name))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(name:$name)");
+            return false;
         }
         if($this->is_not_ok("user_nickname", $nickname))
         {
@@ -812,39 +861,48 @@ class MY_Sql
         }
         if($this->is_not_ok("user_gender", $gender))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(gender:$gender)");
+            return false;
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_year:$birth_year)");
             $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_month:$birth_month)");
             $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_day:$birth_day)");
             $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(thumbnail:$thumbnail)");
             $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_head:$mobile_head)");
+            return false;
         }
         if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_body:$mobile_body)");
+            return false;
         }
         if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_tail:$mobile_tail)");
+            return false;
         }
 
         // 생일은 없는 경우, 공백 문자로 입력한다.
         $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
 
         $data = array(
             'nickname' => $nickname,
@@ -858,7 +916,9 @@ class MY_Sql
         );
 
         // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id),
@@ -871,6 +931,8 @@ class MY_Sql
         // QUERY EXECUTION
         $this->CI->db->where('id', $user_id);
         $this->CI->db->update('user', $data);
+
+        return true;
     }
 
     public function update_user_pw($email="", $password_hashed="")
@@ -984,8 +1046,11 @@ class MY_Sql
 
     public function get_user_password_by_email($email="") 
     {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
         if(empty($email))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$email)");
             return "";
         }
 
@@ -995,14 +1060,20 @@ class MY_Sql
         }
 
         if(!$is_ok) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
             return "";
         }
 
         $this->CI->db->select('password');
         $this->CI->db->where('email', $email);
-        $limit = 1;
-        $offset = 0;
-        $query = $this->CI->db->get('user', $limit, $offset);        
+        $this->CI->db->limit(1);
+        $sql = $this->CI->db->get_compiled_select('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        $this->CI->db->select('password');
+        $this->CI->db->where('email', $email);
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('user');
 
         $password_hashed = "";
         foreach ($query->result() as $row)
@@ -1010,50 +1081,10 @@ class MY_Sql
             $password_hashed = $row->password;
             break;
         }
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
 
         return $password_hashed;
     }    
-
-    // REMOVE ME
-    /*
-    public function get_user_by_email_n_password($email="", $password="") 
-    {
-        if(empty($email))
-        {
-            return null;
-        }
-
-        $is_ok = true;
-        if(isset($this->CI->my_paramchecker)) {
-            $is_ok = $this->CI->my_paramchecker->is_ok("user_email", $email);
-        }
-
-        if(!$is_ok) {
-            return null;
-        }
-
-        $is_ok = true;
-        if(isset($this->CI->my_paramchecker)) {
-            $is_ok = $this->CI->my_paramchecker->is_ok("user_password_hashed", $password);
-        }
-
-        if(!$is_ok) {
-            return null;
-        }
-
-
-        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
-        $this->CI->db->where('email', $email);
-        $this->CI->db->where('password', $password);
-        $limit = 1;
-        $offset = 0;
-        $query = $this->CI->db->get('user');
-
-        $row = $query->custom_row_object(0, 'User');
-
-        return $this->decorate_user($row);
-    } 
-    */   
 
     public function get_user_by_id($user_id=-1) 
     {

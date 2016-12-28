@@ -136,13 +136,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / getUserByMobile / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.getUserByMobileUrl);
 
     if(this.isDebug()) console.log("user.service / getUserByMobile / req_url : ",req_url);
@@ -279,14 +273,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / updateUser / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });    
-
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.updateUserUrl);
 
     if(this.isDebug()) console.log("user.service / updateUser / req_url : ",req_url);
@@ -344,14 +331,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / addUser / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });    
-
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.addUserUrl);
     let params = {
       email:email,
@@ -382,13 +362,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / sendMailUserValidation / email : ",email);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.sendMailUserValidationUrl);
 
     if(this.isDebug()) console.log("user.service / sendMailUserValidation / req_url : ",req_url);
@@ -411,13 +385,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / confirmUserValidation / key : ",key);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserValidationUrl);
 
     if(this.isDebug()) console.log("user.service / confirmUserValidation / req_url : ",req_url);
@@ -439,13 +407,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / confirmUserKakao / kakaoId : ",kakaoId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserKakaoUrl);
 
     if(this.isDebug()) console.log("user.service / confirmUserKakao / req_url : ",req_url);
@@ -467,13 +429,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserFacebookUrl);
 
     if(this.isDebug()) console.log("user.service / confirmUserFacebook / req_url : ",req_url);
@@ -495,13 +451,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / confirmUserNaver / naverId : ",naverId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserNaverUrl);
 
     if(this.isDebug()) console.log("user.service / confirmUserNaver / req_url : ",req_url);
@@ -522,13 +472,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.getUserCookieUrl);
 
     if(this.isDebug()) console.log("user.service / getUserCookie / req_url : ",req_url);
@@ -560,13 +504,7 @@ export class UserService {
     if(this.isDebug()) console.log("user.service / confirmUserEmailPassword / apiKey : ",apiKey);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserEmailPasswordUrl);
 
     if(this.isDebug()) console.log("user.service / confirmUserEmailPassword / req_url : ",req_url);
