@@ -1,21 +1,28 @@
-import { Calendar }                 from '../../widget/calendar/model/calendar';
 import { KlassPrice }               from './klass-price';
-import { KlassTeacher }             from './klass-teacher';
 import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
 import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
 import { KlassVenue }               from './klass-venue';
+
+import { Calendar }                 from '../../widget/calendar/model/calendar';
+
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
 import { HelperMyTime }             from '../../util/helper/my-time';
 import { HelperMyFormat }           from '../../util/helper/my-format';
 
+import { Teacher }                  from '../../teachers/model/teacher';
+
+// import { KlassTeacher }             from './klass-teacher'; // REMOVE ME
+
+
+
 export class Klass {
 
     public id: number=-1;
 
-    public teacher:KlassTeacher=null;
+    public teacher:Teacher=null;
     public review_list:KlassReview[]=[];
     public question_list:KlassQuestion[]=[];
     public klassVenue:KlassVenue=null;
@@ -644,7 +651,7 @@ export class Klass {
 
         // teacher
         if(null != klass.teacher) {
-            klass.teacher = new KlassTeacher().setJSON(klass.teacher);
+            klass.teacher = new Teacher().setJSON(klass.teacher);
         }
 
         // review_list

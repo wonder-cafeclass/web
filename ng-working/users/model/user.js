@@ -1,7 +1,7 @@
 "use strict";
-var mobile_1 = require('../../util/helper/mobile');
-var birthday_1 = require('../../util/helper/birthday');
 var my_is_1 = require('../../util/helper/my-is');
+var my_mobile_1 = require('../../util/helper/my-mobile');
+var my_birthday_1 = require('../../util/helper/my-birthday');
 var User = (function () {
     function User() {
         this.id = -1;
@@ -20,14 +20,12 @@ var User = (function () {
         this.email = "";
         this.date_created = "";
         this.date_updated = "";
-        this.helperMobile = null;
-        this.helperBirthday = null;
+        this.myMobile = null;
+        this.myBirthday = null;
         this.myIs = null;
         this.isAdmin = false;
-        // 휴대 전화번호를 관리하는 객체를 만듭니다.
-        this.helperMobile = new mobile_1.HelperMobile(this.mobile);
-        // 생일을 관리하는 객체를 만듭니다.
-        this.helperBirthday = new birthday_1.HelperBirthday(this.birthday);
+        this.myMobile = new my_mobile_1.HelperMyMobile();
+        this.myBirthday = new my_birthday_1.HelperMyBirthday();
         this.myIs = new my_is_1.HelperMyIs();
     }
     User.prototype.set = function (id, nickname, name, gender, birthday, thumbnail, status, permission, kakao_id, naver_id, facebook_id, google_id, mobile, email, date_created, date_updated) {
@@ -35,7 +33,7 @@ var User = (function () {
         this.nickname = nickname;
         this.name = name;
         this.gender = gender;
-        this.birthday = birthday;
+        this.setBirthday(birthday);
         this.thumbnail = thumbnail;
         this.status = status;
         this.permission = permission;
@@ -43,12 +41,20 @@ var User = (function () {
         this.naver_id = naver_id;
         this.facebook_id = facebook_id;
         this.google_id = google_id;
-        this.mobile = mobile;
+        this.setMobile(mobile);
         this.email = email;
         this.date_created = date_created;
         this.date_updated = date_updated;
         return this;
     }; // end method
+    User.prototype.setMobile = function (mobile) {
+        this.mobile = mobile;
+        this.myBirthday.set(this.birthday);
+    };
+    User.prototype.setBirthday = function (birthday) {
+        this.birthday = birthday;
+        this.myMobile.set(this.mobile);
+    };
     User.prototype.setJSON = function (json) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -57,9 +63,10 @@ var User = (function () {
         if (isDebug)
             console.log("klass / setJSON / json : ", json);
         var user = this._setJSON(json);
+        user.setMobile(user.mobile);
+        user.setBirthday(user.birthday);
         if (isDebug)
             console.log("klass / setJSON / user : ", user);
-        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         return user;
     }; // end method	
     User.prototype._setJSON = function (json) {
@@ -80,6 +87,9 @@ var User = (function () {
     };
     User.prototype.isTeacher = function () {
         return (null != this.teacher) ? true : false;
+    };
+    User.prototype.getTeacher = function () {
+        return this.teacher;
     };
     User.prototype.setTeacher = function (teacher) {
         if (null == teacher) {
@@ -153,87 +163,87 @@ var User = (function () {
     // Platforms - DONE 
     // Mobile Methods - INIT
     User.prototype.getMobileArr = function () {
-        return this.helperMobile.getMobileArr();
+        return this.myMobile.getMobileArr();
     };
     User.prototype.setMobileHead = function (mobileHead) {
-        this.mobile = this.helperMobile.getMobileWithNewHead(mobileHead);
+        this.mobile = this.myMobile.getMobileWithNewHead(mobileHead);
     };
     User.prototype.getMobileHead = function () {
-        return this.helperMobile.getMobileHead();
+        return this.myMobile.getMobileHead();
     };
     User.prototype.isMobileHeadEmpty = function () {
-        return this.helperMobile.isMobileHeadEmpty();
+        return this.myMobile.isMobileHeadEmpty();
     };
     User.prototype.isNotSameMobileHead = function (target) {
-        return this.helperMobile.isMobileHeadNotSame(target);
+        return this.myMobile.isMobileHeadNotSame(target);
     };
     User.prototype.isSameMobileHead = function (target) {
-        return this.helperMobile.isMobileHeadSame(target);
+        return this.myMobile.isMobileHeadSame(target);
     };
     User.prototype.setMobileBody = function (mobileBody) {
-        this.mobile = this.helperMobile.getMobileWithNewBody(mobileBody);
+        this.mobile = this.myMobile.getMobileWithNewBody(mobileBody);
     };
     User.prototype.getMobileBody = function () {
-        return this.helperMobile.getMobileBody();
+        return this.myMobile.getMobileBody();
     };
     User.prototype.isNotSameMobileBody = function (target) {
-        return this.helperMobile.isMobileBodyNotSame(target);
+        return this.myMobile.isMobileBodyNotSame(target);
     };
     User.prototype.isSameMobileBody = function (target) {
-        return this.helperMobile.isMobileBodySame(target);
+        return this.myMobile.isMobileBodySame(target);
     };
     User.prototype.setMobileTail = function (mobileTail) {
-        this.mobile = this.helperMobile.getMobileWithNewTail(mobileTail);
+        this.mobile = this.myMobile.getMobileWithNewTail(mobileTail);
     };
     User.prototype.getMobileTail = function () {
-        return this.helperMobile.getMobileTail();
+        return this.myMobile.getMobileTail();
     };
     User.prototype.isNotSameMobileTail = function (target) {
-        return this.helperMobile.isMobileTailNotSame(target);
+        return this.myMobile.isMobileTailNotSame(target);
     };
     User.prototype.isSameMobileTail = function (target) {
-        return this.helperMobile.isMobileTailSame(target);
+        return this.myMobile.isMobileTailSame(target);
     };
     // Mobile Methods - DONE
     // Birthday Methods - INIT
     User.prototype.getBirthdayArr = function () {
-        return this.helperBirthday.getBirthdayArr();
+        return this.myBirthday.getBirthdayArr();
     };
     User.prototype.setBirthYear = function (newBirthYear) {
-        this.birthday = this.helperBirthday.getBirthdayWithNewBirthYear(newBirthYear);
+        this.birthday = this.myBirthday.getBirthdayWithNewBirthYear(newBirthYear);
     };
     User.prototype.getBirthYear = function () {
-        return this.helperBirthday.getBirthYear();
+        return this.myBirthday.getBirthYear();
     };
     User.prototype.isNotSameBirthYear = function (target) {
-        return this.helperBirthday.isBirthYearNotSame(target);
+        return this.myBirthday.isBirthYearNotSame(target);
     };
     User.prototype.isSameBirthYear = function (target) {
-        return this.helperBirthday.isBirthYearSame(target);
+        return this.myBirthday.isBirthYearSame(target);
     };
     User.prototype.setBirthMonth = function (newBirthMonth) {
-        this.birthday = this.helperBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
+        this.birthday = this.myBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
     };
     User.prototype.getBirthMonth = function () {
-        return this.helperBirthday.getBirthMonth();
+        return this.myBirthday.getBirthMonth();
     };
     User.prototype.isNotSameBirthMonth = function (target) {
-        return this.helperBirthday.isBirthMonthNotSame(target);
+        return this.myBirthday.isBirthMonthNotSame(target);
     };
     User.prototype.isSameBirthMonth = function (target) {
-        return this.helperBirthday.isBirthMonthSame(target);
+        return this.myBirthday.isBirthMonthSame(target);
     };
     User.prototype.setBirthDay = function (newBirthDay) {
-        this.birthday = this.helperBirthday.getBirthdayWithNewBirthDay(newBirthDay);
+        this.birthday = this.myBirthday.getBirthdayWithNewBirthDay(newBirthDay);
     };
     User.prototype.getBirthDay = function () {
-        return this.helperBirthday.getBirthDay();
+        return this.myBirthday.getBirthDay();
     };
     User.prototype.isNotSameBirthDay = function (target) {
-        return this.helperBirthday.isBirthDayNotSame(target);
+        return this.myBirthday.isBirthDayNotSame(target);
     };
     User.prototype.isSameBirthDay = function (target) {
-        return this.helperBirthday.isBirthDaySame(target);
+        return this.myBirthday.isBirthDaySame(target);
     };
     // Birthday Methods - DONE
     User.prototype.updateWithJSON = function (userJSON) {

@@ -1,17 +1,24 @@
 /*
-*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21 / @ Deprecated
+*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21
 */
-export class HelperBirthday {
+export class HelperMyBirthday {
 
-	constructor(
-		public birthdayStr:string
-	) {
-		this.update(this.birthdayStr);
-	}
+	constructor() {}
 
+	private birthdayStr:string
 	private head:string="";
 	private body:string="";
 	private tail:string="";
+
+	public set(birthdayStr:string) :void {
+
+		if( null == birthdayStr || "" === birthdayStr ) {
+			return;
+		}
+
+		this.update(birthdayStr);
+
+	} // end method
 
 	private update(birthdayStr:string) :void {
 

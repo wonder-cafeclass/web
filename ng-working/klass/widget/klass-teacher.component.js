@@ -9,13 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var klass_teacher_1 = require('../model/klass-teacher');
+var teacher_1 = require('../../teacher/model/teacher');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_event_1 = require('../../util/model/my-event');
 var my_is_1 = require('../../util/helper/my-is');
 var my_array_1 = require('../../util/helper/my-array');
+// import { KlassTeacher }                from '../model/klass-teacher'; // REMOVE ME
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
     function KlassTeacherComponent(watchTower, myEventService, myCheckerService) {
@@ -98,27 +99,27 @@ var KlassTeacherComponent = (function () {
         if (this.isDebug())
             console.log("klass-teacher / init / 시작");
         if (this.isDebug())
-            console.log("klass-teacher / init / this.klassTeacher : ", this.klassTeacher);
+            console.log("klass-teacher / init / this.teacher : ", this.teacher);
         this.setResume();
         this.setGreeting();
     };
-    KlassTeacherComponent.prototype.setTeacher = function (klassTeacher) {
+    KlassTeacherComponent.prototype.setTeacher = function (teacher) {
         if (this.isDebug())
             console.log("klass-teacher / setTeacher / 시작");
         if (this.isDebug())
-            console.log("klass-teacher / setTeacher / klassTeacher : ", klassTeacher);
-        this.klassTeacher = klassTeacher;
+            console.log("klass-teacher / setTeacher / teacher : ", teacher);
+        this.teacher = teacher;
     };
     KlassTeacherComponent.prototype.setResume = function () {
         if (this.isDebug())
             console.log("klass-teacher / setResume / 시작");
-        if (null == this.klassTeacher) {
+        if (null == this.teacher) {
             if (this.isDebug())
-                console.log("klass-teacher / setResume / 중단 / null == this.klassTeacher");
+                console.log("klass-teacher / setResume / 중단 / null == this.teacher");
             return;
         }
         // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
-        var resumeArr = this.klassTeacher.getResumeArr();
+        var resumeArr = this.teacher.getResumeArr();
         var myEventList = [];
         for (var i = 0; i < resumeArr.length; ++i) {
             var resume = resumeArr[i];
@@ -142,13 +143,13 @@ var KlassTeacherComponent = (function () {
     KlassTeacherComponent.prototype.setGreeting = function () {
         if (this.isDebug())
             console.log("klass-teacher / setGreeting / 시작");
-        if (null == this.klassTeacher) {
+        if (null == this.teacher) {
             if (this.isDebug())
-                console.log("klass-teacher / setGreeting / 중단 / null == this.klassTeacher");
+                console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
             return;
         }
         // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-        var greetingArr = this.klassTeacher.getGreetingArr();
+        var greetingArr = this.teacher.getGreetingArr();
         var myEventList = [];
         for (var i = 0; i < greetingArr.length; ++i) {
             var greeting = greetingArr[i];
@@ -279,8 +280,8 @@ var KlassTeacherComponent = (function () {
     ], KlassTeacherComponent.prototype, "cageHeight", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', klass_teacher_1.KlassTeacher)
-    ], KlassTeacherComponent.prototype, "klassTeacher", void 0);
+        __metadata('design:type', (typeof (_a = typeof teacher_1.Teacher !== 'undefined' && teacher_1.Teacher) === 'function' && _a) || Object)
+    ], KlassTeacherComponent.prototype, "teacher", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
@@ -299,6 +300,7 @@ var KlassTeacherComponent = (function () {
         __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
     ], KlassTeacherComponent);
     return KlassTeacherComponent;
+    var _a;
 }());
 exports.KlassTeacherComponent = KlassTeacherComponent; // end class
 //# sourceMappingURL=klass-teacher.component.js.map

@@ -144,7 +144,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       if(isDebug) console.log("klass-list / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
     
       // 로그인한 선생님 정보가 들어왔습니다.
-      this.loginTeacher = this.teacherService.getTeacherFromJSON(loginTeacher);
+      this.loginTeacher = new Teacher().setJSON(loginTeacher);
 
       // 클래스 리스트를 다시 가져옵니다.
       this.getKlassList(true);
@@ -189,15 +189,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("klass-list / setLoginTeacher / 시작");
 
     // 로그인 선생님 데이터를 가져옵니다.
-    let teacherJSON = this.watchTower.getLoginTeacher();
-
-    if(isDebug) console.log("klass-list / setLoginTeacher / teacherJSON : ",teacherJSON);
-
-    let loginTeacher:Teacher = null;
     let isTeacher:boolean = false;
-    if(null != teacherJSON) {
-      loginTeacher = this.teacherService.getTeacherFromJSON(teacherJSON);
-    }
+    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
     if(null != loginTeacher) {
       this.loginTeacher = loginTeacher;
       isTeacher = true;

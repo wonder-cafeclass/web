@@ -1,30 +1,37 @@
 /*
 *	@ Desc : 대한민국 휴대폰 번호 관련 처리 로직. / @ Deprecated
 */
-export class HelperMobile {
+export class HelperMyMobile {
 
-	constructor(
-		public mobileDigits:string
-	) {
-		this.update(this.mobileDigits);
-	}
+	constructor() {}
 
+	private mobileDigits:string
 	private head:string="010";
 	private body:string="";
 	private tail:string="";
+
+	public set(mobileDigits:string) :void {
+
+		if( null == mobileDigits || "" === mobileDigits ) {
+			return;
+		}
+
+		this.update(mobileDigits);
+
+	} // end method
 
 	private update(mobileDigits:string) :void {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / update / init");
+		if(isDebug) console.log("my-mobile / update / init");
 
 		if(null == mobileDigits || "" == mobileDigits) {
 			return;
 		}
-		if(isDebug) console.log("helper.mobile / update / BEFORE / this.mobileDigits : ",this.mobileDigits);
+		if(isDebug) console.log("my-mobile / update / BEFORE / this.mobileDigits : ",this.mobileDigits);
 		this.mobileDigits = mobileDigits;
-		if(isDebug) console.log("helper.mobile / update / AFTER / this.mobileDigits : ",this.mobileDigits);
+		if(isDebug) console.log("my-mobile / update / AFTER / this.mobileDigits : ",this.mobileDigits);
 
 		// 초기화.
 		this.head = "010";
@@ -32,7 +39,7 @@ export class HelperMobile {
 		this.tail = "";
 
 		let mobileArr:string[] = mobileDigits.split("-");
-		if(isDebug) console.log("helper.mobile / update / mobileArr : ",mobileArr);
+		if(isDebug) console.log("my-mobile / update / mobileArr : ",mobileArr);
 		if(null != mobileArr && 3 == mobileArr.length) {
 			this.head = mobileArr[0];
 			this.body = mobileArr[1];
@@ -43,7 +50,7 @@ export class HelperMobile {
 	public getMobileArr() :string[] {
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileArr / init");
+		if(isDebug) console.log("my-mobile / getMobileArr / init");
 
 		return [this.head, this.body, this.tail];
 	}
@@ -54,7 +61,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileHead / init");
+		if(isDebug) console.log("my-mobile / getMobileHead / init");
 
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[0];
@@ -63,7 +70,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileWithNewHead / init");
+		if(isDebug) console.log("my-mobile / getMobileWithNewHead / init");
 
 		if(null == newHead || "" == newHead) {
 			return this.mobileDigits;
@@ -80,7 +87,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileHeadNotEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileHeadNotEmpty / init");
 
 		return !this.isMobileHeadEmpty();
 	}
@@ -88,7 +95,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileHeadEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileHeadEmpty / init");
 
 		let mobileHead:string = this.getMobileHead();
 		return (null == mobileHead || "" == mobileHead)?true:false;
@@ -97,7 +104,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileHeadNotSame / init");
+		if(isDebug) console.log("my-mobile / isMobileHeadNotSame / init");
 
 		return !this.isMobileHeadSame(target);
 	}
@@ -105,7 +112,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileHeadSame / init");
+		if(isDebug) console.log("my-mobile / isMobileHeadSame / init");
 
 		if(null == target || "" === target) {
 			return false;
@@ -119,7 +126,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileBody / init");
+		if(isDebug) console.log("my-mobile / getMobileBody / init");
 
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[1];
@@ -128,7 +135,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileWithNewBody / init");
+		if(isDebug) console.log("my-mobile / getMobileWithNewBody / init");
 
 		if(null == newBody || "" == newBody) {
 			return this.mobileDigits;
@@ -145,7 +152,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileBodyNotEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileBodyNotEmpty / init");
 
 		return !this.isMobileBodyEmpty();
 	}
@@ -153,7 +160,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileBodyEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileBodyEmpty / init");
 
 		let mobileBody:string = this.getMobileBody();
 		return (null == mobileBody || "" == mobileBody)?true:false;
@@ -162,7 +169,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileBodyNotSame / init");
+		if(isDebug) console.log("my-mobile / isMobileBodyNotSame / init");
 
 		return !this.isMobileBodySame(target);
 	}
@@ -170,7 +177,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileBodySame / init");
+		if(isDebug) console.log("my-mobile / isMobileBodySame / init");
 
 		if(null == target || "" === target) {
 			return false;
@@ -184,7 +191,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileTail / init");
+		if(isDebug) console.log("my-mobile / getMobileTail / init");
 
 		let mobileArr:string[] = this.getMobileArr();
 		return mobileArr[2];
@@ -193,7 +200,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / getMobileWithNewTail / init");
+		if(isDebug) console.log("my-mobile / getMobileWithNewTail / init");
 
 		if(null == newTail || "" == newTail) {
 			return this.mobileDigits;
@@ -210,7 +217,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileTailNotEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileTailNotEmpty / init");
 
 		return !this.isMobileTailEmpty();
 	}
@@ -218,7 +225,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileTailEmpty / init");
+		if(isDebug) console.log("my-mobile / isMobileTailEmpty / init");
 
 		let mobileTail:string = this.getMobileTail();
 		return (null == mobileTail || "" == mobileTail)?true:false;
@@ -227,7 +234,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileTailNotSame / init");
+		if(isDebug) console.log("my-mobile / isMobileTailNotSame / init");
 
 		return !this.isMobileTailSame(target);
 	}
@@ -235,7 +242,7 @@ export class HelperMobile {
 
 		// let isDebug:boolean = true;
 		let isDebug:boolean = false;
-		if(isDebug) console.log("helper.mobile / isMobileTailSame / init");
+		if(isDebug) console.log("my-mobile / isMobileTailSame / init");
 
 		if(null == target || "" === target) {
 			return false;

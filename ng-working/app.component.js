@@ -20,6 +20,7 @@ var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_event_service_1 = require('./util/service/my-event.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var user_1 = require('./users/model/user');
+var teacher_1 = require('./teachers/model/teacher');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
     function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, activatedRoute, router) {
@@ -125,7 +126,7 @@ var AppComponent = (function () {
             if (_this.isDebug())
                 console.log("app-root / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
-            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
         });
     };
     AppComponent.prototype.subscribeToggleTopMenu = function () {

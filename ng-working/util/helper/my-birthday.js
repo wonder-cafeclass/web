@@ -1,16 +1,20 @@
 "use strict";
 /*
-*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21 / @ Deprecated
+*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21
 */
-var HelperBirthday = (function () {
-    function HelperBirthday(birthdayStr) {
-        this.birthdayStr = birthdayStr;
+var HelperMyBirthday = (function () {
+    function HelperMyBirthday() {
         this.head = "";
         this.body = "";
         this.tail = "";
-        this.update(this.birthdayStr);
     }
-    HelperBirthday.prototype.update = function (birthdayStr) {
+    HelperMyBirthday.prototype.set = function (birthdayStr) {
+        if (null == birthdayStr || "" === birthdayStr) {
+            return;
+        }
+        this.update(birthdayStr);
+    }; // end method
+    HelperMyBirthday.prototype.update = function (birthdayStr) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -38,7 +42,7 @@ var HelperBirthday = (function () {
             this.tail = birthArr[2];
         }
     };
-    HelperBirthday.prototype.getBirthdayArr = function () {
+    HelperMyBirthday.prototype.getBirthdayArr = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -46,7 +50,7 @@ var HelperBirthday = (function () {
         return [this.head, this.body, this.tail];
     };
     // HEAD
-    HelperBirthday.prototype.getBirthYear = function () {
+    HelperMyBirthday.prototype.getBirthYear = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -54,7 +58,7 @@ var HelperBirthday = (function () {
         var birthArr = this.getBirthdayArr();
         return birthArr[0];
     };
-    HelperBirthday.prototype.getBirthdayWithNewBirthYear = function (newHead) {
+    HelperMyBirthday.prototype.getBirthdayWithNewBirthYear = function (newHead) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -71,14 +75,14 @@ var HelperBirthday = (function () {
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };
-    HelperBirthday.prototype.isBirthYearNotEmpty = function () {
+    HelperMyBirthday.prototype.isBirthYearNotEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthYearNotEmpty / init");
         return !this.isBirthYearEmpty();
     };
-    HelperBirthday.prototype.isBirthYearEmpty = function () {
+    HelperMyBirthday.prototype.isBirthYearEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -86,14 +90,14 @@ var HelperBirthday = (function () {
         var birthYear = this.getBirthYear();
         return (null == birthYear || "" == birthYear) ? true : false;
     };
-    HelperBirthday.prototype.isBirthYearNotSame = function (target) {
+    HelperMyBirthday.prototype.isBirthYearNotSame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthYearNotSame / init");
         return !this.isBirthYearSame(target);
     };
-    HelperBirthday.prototype.isBirthYearSame = function (target) {
+    HelperMyBirthday.prototype.isBirthYearSame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -105,7 +109,7 @@ var HelperBirthday = (function () {
         return (birthYear === target) ? true : false;
     };
     // BODY
-    HelperBirthday.prototype.getBirthMonth = function () {
+    HelperMyBirthday.prototype.getBirthMonth = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -113,7 +117,7 @@ var HelperBirthday = (function () {
         var birthArr = this.getBirthdayArr();
         return birthArr[1];
     };
-    HelperBirthday.prototype.getBirthdayWithNewBirthMonth = function (newBody) {
+    HelperMyBirthday.prototype.getBirthdayWithNewBirthMonth = function (newBody) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -130,14 +134,14 @@ var HelperBirthday = (function () {
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };
-    HelperBirthday.prototype.isBirthMonthNotEmpty = function () {
+    HelperMyBirthday.prototype.isBirthMonthNotEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthMonthNotEmpty / init");
         return !this.isBirthMonthEmpty();
     };
-    HelperBirthday.prototype.isBirthMonthEmpty = function () {
+    HelperMyBirthday.prototype.isBirthMonthEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -145,14 +149,14 @@ var HelperBirthday = (function () {
         var birthMonth = this.getBirthMonth();
         return (null == birthMonth || "" == birthMonth) ? true : false;
     };
-    HelperBirthday.prototype.isBirthMonthNotSame = function (target) {
+    HelperMyBirthday.prototype.isBirthMonthNotSame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthMonthNotSame / init");
         return !this.isBirthMonthSame(target);
     };
-    HelperBirthday.prototype.isBirthMonthSame = function (target) {
+    HelperMyBirthday.prototype.isBirthMonthSame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -164,7 +168,7 @@ var HelperBirthday = (function () {
         return (birthMonth === target) ? true : false;
     };
     // TAIL
-    HelperBirthday.prototype.getBirthDay = function () {
+    HelperMyBirthday.prototype.getBirthDay = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -172,7 +176,7 @@ var HelperBirthday = (function () {
         var birthArr = this.getBirthdayArr();
         return birthArr[2];
     };
-    HelperBirthday.prototype.getBirthdayWithNewBirthDay = function (newTail) {
+    HelperMyBirthday.prototype.getBirthdayWithNewBirthDay = function (newTail) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -189,14 +193,14 @@ var HelperBirthday = (function () {
         this.update(newBirthdayDigits);
         return newBirthdayDigits;
     };
-    HelperBirthday.prototype.isBirthDayNotEmpty = function () {
+    HelperMyBirthday.prototype.isBirthDayNotEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthDayNotEmpty / init");
         return !this.isBirthDayEmpty();
     };
-    HelperBirthday.prototype.isBirthDayEmpty = function () {
+    HelperMyBirthday.prototype.isBirthDayEmpty = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -204,14 +208,14 @@ var HelperBirthday = (function () {
         var birthDay = this.getBirthDay();
         return (null == birthDay || "" == birthDay) ? true : false;
     };
-    HelperBirthday.prototype.isBirthDayNotSame = function (target) {
+    HelperMyBirthday.prototype.isBirthDayNotSame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
             console.log("helper.birth / isBirthDayNotSame / init");
         return !this.isBirthDaySame(target);
     };
-    HelperBirthday.prototype.isBirthDaySame = function (target) {
+    HelperMyBirthday.prototype.isBirthDaySame = function (target) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -222,7 +226,7 @@ var HelperBirthday = (function () {
         var birthDay = this.getBirthDay();
         return (birthDay === target) ? true : false;
     }; // end method
-    return HelperBirthday;
+    return HelperMyBirthday;
 }());
-exports.HelperBirthday = HelperBirthday; // end class
-//# sourceMappingURL=birthday.js.map
+exports.HelperMyBirthday = HelperMyBirthday; // end class
+//# sourceMappingURL=my-birthday.js.map

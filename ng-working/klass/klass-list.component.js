@@ -24,6 +24,7 @@ var my_checker_service_1 = require('../util/service/my-checker.service');
 var user_service_1 = require('../users/service/user.service');
 var user_1 = require('../users/model/user');
 var teacher_service_1 = require('../teachers/service/teacher.service');
+var teacher_1 = require('../teachers/model/teacher');
 var KlassListComponent = (function () {
     function KlassListComponent(klassService, urlService, userService, teacherService, myLoggerService, watchTower, myCheckerService, route, router) {
         this.klassService = klassService;
@@ -112,7 +113,7 @@ var KlassListComponent = (function () {
             if (isDebug)
                 console.log("klass-list / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
-            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
             // 클래스 리스트를 다시 가져옵니다.
             _this.getKlassList(true);
         });
@@ -152,14 +153,8 @@ var KlassListComponent = (function () {
         if (isDebug)
             console.log("klass-list / setLoginTeacher / 시작");
         // 로그인 선생님 데이터를 가져옵니다.
-        var teacherJSON = this.watchTower.getLoginTeacher();
-        if (isDebug)
-            console.log("klass-list / setLoginTeacher / teacherJSON : ", teacherJSON);
-        var loginTeacher = null;
         var isTeacher = false;
-        if (null != teacherJSON) {
-            loginTeacher = this.teacherService.getTeacherFromJSON(teacherJSON);
-        }
+        var loginTeacher = this.watchTower.getLoginTeacher();
         if (null != loginTeacher) {
             this.loginTeacher = loginTeacher;
             isTeacher = true;

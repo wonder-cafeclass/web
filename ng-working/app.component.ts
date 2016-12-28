@@ -155,7 +155,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			if(this.isDebug()) console.log("app-root / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
 		
 			// 로그인한 선생님 정보가 들어왔습니다.
-			this.loginTeacher = this.teacherService.getTeacherFromJSON(loginTeacher);
+			this.loginTeacher = new Teacher().setJSON(loginTeacher);
 		});
 	}	
 	private subscribeToggleTopMenu() :void {

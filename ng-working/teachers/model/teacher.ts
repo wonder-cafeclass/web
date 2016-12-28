@@ -1,252 +1,240 @@
-import { HelperMobile } from '../../util/helper/mobile';
-import { HelperBirthday } 	from '../../util/helper/birthday';
+import { HelperMyArray }            from '../../util/helper/my-array';
+import { HelperMyIs }               from '../../util/helper/my-is';
+import { HelperMyTime }             from '../../util/helper/my-time';
+import { HelperMyFormat }           from '../../util/helper/my-format';
+import { HelperMyMobile } 			from '../../util/helper/my-mobile';
+import { HelperMyBirthday } 		from '../../util/helper/my-birthday';
 
 export class Teacher {
-	constructor(
-		public id:number,
-		public user_id:number,
-		public nickname:string,
-		public name:string,
-		public gender:string,
-		public resume:string,
-		public greeting:string,
-		public birthday:string, 
-		public thumbnail:string,
-		public status:string,
-		public permission:string,
-		public mobile:string,
-		public email:string,
-		public date_created:string,
-		public date_updated:string
-	) {
-		// 휴대 전화번호를 관리하는 객체를 만듭니다.
-		this.helperMobile = new HelperMobile(this.mobile);
-		// 생일을 관리하는 객체를 만듭니다.
-		this.helperBirthday = new HelperBirthday(this.birthday);
+
+	public id:number=-1;
+	public user_id:number=-1;
+	public nickname:string="";
+	public name:string="";
+	public gender:string="";
+	public birthday:string=""; 
+	public thumbnail:string="";
+	public thumbnail_url:string=""; // @ Deprecated
+	public status:string="";
+	public mobile:string="";
+	public email:string="";
+    public resume:string="";
+    public resume_arr:string[]=[];
+    public greeting:string="";
+    public greeting_arr:string[]=[];
+	public memo:string="";
+	public date_created:string="";
+	public date_updated:string="";
+
+	private delimiter:string="|||";
+
+    private myArray:HelperMyArray=null;
+    private myIs:HelperMyIs=null;
+    private myTime:HelperMyTime=null;
+    private myFormat:HelperMyFormat=null;
+    private myMobile:HelperMyMobile=null;
+    private myBirthday:HelperMyBirthday=null;
+
+	constructor() {
+        this.myArray = new HelperMyArray();
+        this.myIs = new HelperMyIs();
+        this.myTime = new HelperMyTime();
+        this.myFormat = new HelperMyFormat();
+        this.myMobile = new HelperMyMobile();
+        this.myBirthday = new HelperMyBirthday();
 	} 
 
-	// Common Properties - INIT
-	isNotSameName(name:string) :boolean {
-		return !this.isSameName(name);
-	}
-	isSameName(name:string) :boolean {
-		if(null != name && name === this.name) {
-			return true;
-		}
-		return false;
-	} 
-	isNotSameNickname(nickname:string) :boolean {
-		return !this.isSameNickname(nickname);
-	}
-	isSameNickname(nickname) :boolean {
-		if(null != nickname && nickname === this.nickname) {
-			return true;
-		}
-		return false;
-	} 
-	isNotSameGender(gender:string) :boolean {
-		return !this.isSameGender(gender);
-	}
-	isSameGender(gender) :boolean {
-		if(null != gender && gender === this.gender) {
-			return true;
-		}
-		return false;
-	}
-	isNotSameResume(resume:string) :boolean {
-		return !this.isSameResume(resume);
-	}
-	isSameResume(resume) :boolean {
-		if(null != resume && resume === this.resume) {
-			return true;
-		}
-		return false;
-	} 
-	isNotSameGreeting(greeting:string) :boolean {
-		return !this.isSameGreeting(greeting);
-	}
-	isSameGreeting(greeting) :boolean {
-		if(null != greeting && greeting === this.greeting) {
-			return true;
-		}
-		return false;
-	}
-	isNotSameThumbnail(thumbnail:string) :boolean {
-		return !this.isSameThumbnail(thumbnail);
-	}
-	isSameThumbnail(thumbnail) :boolean {
-		if(null != thumbnail && thumbnail === this.thumbnail) {
-			return true;
-		}
-		return false;
-	}
-	isEmptyThumbnail() :boolean {
-		return (null == this.thumbnail || "" === this.thumbnail)?true:false;
-	}
-	// Common Properties - DONE
+	set(	id:number,
+			user_id:number,
+			nickname:string,
+			name:string,
+			gender:string,
+			birthday:string, 
+			thumbnail:string,
+			status:string,
+			mobile:string,
+			email:string,
+			resume:string,
+			greeting:string,
+			memo:string,
+			date_created:string,
+			date_updated:string ):Teacher {
 
+		this.id = id;
+		this.user_id = user_id;
+		this.nickname = nickname;
+		this.name = name;
+		this.gender = gender;
+		this.setBirthday(birthday);
+		this.thumbnail = thumbnail;
+		this.status = status;
+		this.setMobile(mobile);
+		this.email = email;
+		this.resume = resume;
+		this.greeting = greeting;
+		this.memo = memo;
+		this.date_created = date_created;
+		this.date_updated = date_updated;
 
+		return this;
+
+	} // end method
+
+	setMobile(mobile:string):void {
+		this.mobile = mobile;
+		this.myMobile.set(mobile);
+	}
+
+	setBirthday(birthday:string):void {
+		this.birthday = birthday;
+		this.myBirthday.set(birthday);
+	}
+
+	getResumeArr():string[] {
+
+		if(null == this.resume || "" === this.resume) {
+			return [];
+		}
+
+		return this.resume.split(this.delimiter);
+	}
+
+    copy():Teacher {
+
+        return this.myIs.copy(
+            // src:any
+            this, 
+            // copy:any
+            new Teacher()
+        );
+
+    } // end method
+
+    setJSON(json):Teacher {
+
+        // let isDebug:boolean = true;
+        let isDebug:boolean = false;
+        if(isDebug) console.log("klass-teacher / setJSON / init");
+
+        if(isDebug) console.log("klass-teacher / setJSON / json : ",json);
+
+        let teacher:Teacher = this._setJSON(json);
+
+        if(isDebug) console.log("klass-teacher / setJSON / teacher : ",teacher);
+
+        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        teacher.setMobile(teacher.mobile);
+        teacher.setBirthday(teacher.birthday);
+
+        return teacher;
+
+    } // end method
+
+    private _setJSON(json):Teacher {
+
+        return this.myIs.copyFromJSON(
+            // target:any,
+            this,
+            // json
+            json
+        );
+
+    } // end method 
 
 	// Mobile Methods - INIT
-	private helperMobile:HelperMobile;
 	getMobileArr() :string[] {
-		return this.helperMobile.getMobileArr();
+		return this.myMobile.getMobileArr();
 	} 
 	// Head
 	setMobileHead(mobileHead:string) :void {
-		this.mobile = this.helperMobile.getMobileWithNewHead(mobileHead);
+		this.mobile = this.myMobile.getMobileWithNewHead(mobileHead);
 	}
 	getMobileHead() :string {
-		return this.helperMobile.getMobileHead();
+		return this.myMobile.getMobileHead();
 	}
 	isMobileHeadEmpty() :boolean {
-		return this.helperMobile.isMobileHeadEmpty();
+		return this.myMobile.isMobileHeadEmpty();
 	}
 	isNotSameMobileHead(target:string) :boolean {
-		return this.helperMobile.isMobileHeadNotSame(target);
+		return this.myMobile.isMobileHeadNotSame(target);
 	}
 	isSameMobileHead(target:string) :boolean {
-		return this.helperMobile.isMobileHeadSame(target);
+		return this.myMobile.isMobileHeadSame(target);
 	}
 	// Body
 	setMobileBody(mobileBody:string) :void {
-		this.mobile = this.helperMobile.getMobileWithNewBody(mobileBody);
+		this.mobile = this.myMobile.getMobileWithNewBody(mobileBody);
 	}
 	getMobileBody() :string {
-		return this.helperMobile.getMobileBody();
+		return this.myMobile.getMobileBody();
 	}
 	isNotSameMobileBody(target:string) :boolean {
-		return this.helperMobile.isMobileBodyNotSame(target);
+		return this.myMobile.isMobileBodyNotSame(target);
 	}
 	isSameMobileBody(target:string) :boolean {
-		return this.helperMobile.isMobileBodySame(target);
+		return this.myMobile.isMobileBodySame(target);
 	}
 	// Tail
 	setMobileTail(mobileTail:string) :void {
-		this.mobile = this.helperMobile.getMobileWithNewTail(mobileTail);
+		this.mobile = this.myMobile.getMobileWithNewTail(mobileTail);
 	}
 	getMobileTail() :string {
-		return this.helperMobile.getMobileTail();
+		return this.myMobile.getMobileTail();
 	}
 	isNotSameMobileTail(target:string) :boolean {
-		return this.helperMobile.isMobileTailNotSame(target);
+		return this.myMobile.isMobileTailNotSame(target);
 	}
 	isSameMobileTail(target:string) :boolean {
-		return this.helperMobile.isMobileTailSame(target);
+		return this.myMobile.isMobileTailSame(target);
 	}
 	// Mobile Methods - DONE
 
 
 
 	// Birthday Methods - INIT
-	private helperBirthday:HelperBirthday;
 	getBirthdayArr() :string[] {
-		return this.helperBirthday.getBirthdayArr();
+		return this.myBirthday.getBirthdayArr();
 	}	
 	// Year
 	setBirthYear(newBirthYear:string) :void {
-		this.birthday = this.helperBirthday.getBirthdayWithNewBirthYear(newBirthYear);
+		this.birthday = this.myBirthday.getBirthdayWithNewBirthYear(newBirthYear);
 	}
 	getBirthYear() :string {
-		return this.helperBirthday.getBirthYear();
+		return this.myBirthday.getBirthYear();
 	}
 	isNotSameBirthYear(target:string) :boolean {
-		return this.helperBirthday.isBirthYearNotSame(target);
+		return this.myBirthday.isBirthYearNotSame(target);
 	}
 	isSameBirthYear(target:string) :boolean {
-		return this.helperBirthday.isBirthYearSame(target);
+		return this.myBirthday.isBirthYearSame(target);
 	}
 	// Month
 	setBirthMonth(newBirthMonth:string) :void {
-		this.birthday = this.helperBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
+		this.birthday = this.myBirthday.getBirthdayWithNewBirthMonth(newBirthMonth);
 	}
 	getBirthMonth() :string {
-		return this.helperBirthday.getBirthMonth();
+		return this.myBirthday.getBirthMonth();
 	}
 	isNotSameBirthMonth(target:string) :boolean {
-		return this.helperBirthday.isBirthMonthNotSame(target);
+		return this.myBirthday.isBirthMonthNotSame(target);
 	}
 	isSameBirthMonth(target:string) :boolean {
-		return this.helperBirthday.isBirthMonthSame(target);
+		return this.myBirthday.isBirthMonthSame(target);
 	}
 	// Day
 	setBirthDay(newBirthDay:string) :void {
-		this.birthday = this.helperBirthday.getBirthdayWithNewBirthDay(newBirthDay);
+		this.birthday = this.myBirthday.getBirthdayWithNewBirthDay(newBirthDay);
 	}
 	getBirthDay() :string {
-		return this.helperBirthday.getBirthDay();
+		return this.myBirthday.getBirthDay();
 	}
 	isNotSameBirthDay(target:string) :boolean {
-		return this.helperBirthday.isBirthDayNotSame(target);
+		return this.myBirthday.isBirthDayNotSame(target);
 	}
 	isSameBirthDay(target:string) :boolean {
-		return this.helperBirthday.isBirthDaySame(target);
+		return this.myBirthday.isBirthDaySame(target);
 	}
 	// Birthday Methods - DONE	
-
-
-
-	updateWithJSON(teacherJSON) :void {
-
-		// let isDebug:boolean = true;
-		let isDebug:boolean = false;
-		if(isDebug) console.log("teacher.model / updateWithJson / init");
-
-		if(null == teacherJSON) {
-			if(isDebug) console.log("teacher.model / updateWithJson / 중단 / teacherJSON is not valid!");
-			return;
-		}
-
-		this.id = +teacherJSON["id"];
-		this.nickname = teacherJSON["nickname"];
-		this.resume = teacherJSON["resume"];
-		this.greeting = teacherJSON["greeting"];
-		this.name = teacherJSON["name"];
-		this.gender = teacherJSON["gender"];
-		this.birthday = teacherJSON["birthday"];
-		this.thumbnail = teacherJSON["thumbnail"];
-		this.status = teacherJSON["status"];
-		this.permission = teacherJSON["permission"];
-		this.mobile = teacherJSON["mobile"];
-		this.email = teacherJSON["email"];
-		this.date_created = teacherJSON["date_created"];
-		this.date_updated = teacherJSON["date_updated"];
-	} 
-
-	copy() :Teacher {
-		return new Teacher(
-			// public id:number,
-			this.id,
-			// public user_id:number,
-			this.user_id,
-			// public nickname:string,
-			this.nickname,
-			// public name:string,
-			this.name,
-			// public gender:string,
-			this.gender,
-			// public resume:string,
-			this.resume,
-			// public greeting:string,
-			this.greeting,
-			// public birthday:string, 
-			this.birthday,
-			// public thumbnail:string,
-			this.thumbnail,
-			// public status:string,
-			this.status,
-			// public permission:string,
-			this.permission,
-			// public mobile:string,
-			this.mobile,
-			// public email:string,
-			this.email,
-			// public date_created:string,
-			this.date_created,
-			// public date_updated:string			
-			this.date_updated
-		);
-	}
 
 	// @ 사용자가 변경 가능한 값들을 기준으로 비교, 결과를 알려준다.
 	isNotSame(teacher:Teacher) :boolean {
@@ -270,14 +258,6 @@ export class Teacher {
 			return false;
 		}
 
-		if(this.resume !== teacher.resume) {
-			return false;
-		}
-
-		if(this.greeting !== teacher.greeting) {
-			return false;
-		}
-
 		if(this.birthday !== teacher.birthday) {
 			return false;
 		}
@@ -290,6 +270,15 @@ export class Teacher {
 			return false;
 		}
 
+		if(this.resume !== teacher.resume) {
+			return false;
+		}
+
+		if(this.greeting !== teacher.greeting) {
+			return false;
+		} // end if
+
 		return true;
-	}
+	}	       
+
 }

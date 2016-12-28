@@ -1,5 +1,4 @@
 "use strict";
-var klass_teacher_1 = require('./klass-teacher');
 var klass_review_1 = require('./klass-review');
 var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
@@ -9,6 +8,8 @@ var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
 var my_format_1 = require('../../util/helper/my-format');
+var teacher_1 = require('../../teachers/model/teacher');
+// import { KlassTeacher }             from './klass-teacher'; // REMOVE ME
 var Klass = (function () {
     function Klass() {
         this.id = -1;
@@ -526,7 +527,7 @@ var Klass = (function () {
         }
         // teacher
         if (null != klass.teacher) {
-            klass.teacher = new klass_teacher_1.KlassTeacher().setJSON(klass.teacher);
+            klass.teacher = new teacher_1.Teacher().setJSON(klass.teacher);
         }
         // review_list
         var klassReviewList = [];

@@ -163,8 +163,7 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
     if(isDebug) console.log("teacher-info / setLoginTeacher / 시작");
 
     // 로그인 데이터를 가져옵니다.
-    let loginTeacherJSON = this.watchTower.getLoginTeacher();
-    let loginTeacher:Teacher = this.teacherService.getTeacherFromJSON(loginTeacherJSON);
+    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
     if(null != loginTeacher) {
       this.loginTeacher = loginTeacher;
       this.loginTeacherCopy = this.loginTeacher.copy();
@@ -584,8 +583,8 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
 
           // 저장된 유저 정보를 다시 받아옵니다.
           // 받아온 유저 정보로 업데이트 합니다.
-          this.loginTeacher.updateWithJSON(teacherUpdated);
-          this.loginTeacherCopy.updateWithJSON(teacherUpdated);
+          this.loginTeacher.setJSON(teacherUpdated);
+          this.loginTeacherCopy = this.loginTeacher.copy();
 
           // 업데이트한 선생님 정보를 전파합니다.
           this.watchTower.announceLoginTeacher(this.loginTeacher);
@@ -673,70 +672,12 @@ export class TeacherInfoComponent implements OnInit, AfterViewInit {
     if(this.isNotOKAll()) {
       if(isDebug) console.log("teacher-info / checkHasChanged / 중단 / 정상적이지 않은 값이 있습니다.");
       return false;
-    }
+    } // end method
 
-    // 검사 시작!
-    if( this.loginTeacher.isNotSameName(this.loginTeacherCopy.name)) {
-
-      // 1. name
-      if(isDebug) console.log("teacher-info / checkHasChanged / 이름이 변경됨");
+    if(this.loginTeacher.isNotSame(this.loginTeacherCopy)) {
+      if(isDebug) console.log("teacher-info / checkHasChanged / 변경됨");
       return true;
-
-    } else if( this.loginTeacher.isNotSameNickname(this.loginTeacherCopy.nickname)) {
-
-      // 2. nickname
-      if(isDebug) console.log("teacher-info / checkHasChanged / 닉네임이 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameThumbnail(this.loginTeacherCopy.thumbnail)) {
-
-      // 3. profile-img
-      if(isDebug) console.log("teacher-info / checkHasChanged / 섬네일이 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameMobileHead(this.loginTeacherCopy.getMobileHead()) ) {
-
-      // 4-1. mobile head
-      if(isDebug) console.log("teacher-info / checkHasChanged / 휴대전화 첫 3자리 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameMobileBody(this.loginTeacherCopy.getMobileBody()) ) {
-
-      // 4-2. mobile body
-      if(isDebug) console.log("teacher-info / checkHasChanged / 휴대전화 두번째 4자리 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameMobileTail(this.loginTeacherCopy.getMobileTail()) ) {
-
-      // 4-3. mobile tail
-      if(isDebug) console.log("teacher-info / checkHasChanged / 휴대전화 세번째 4자리 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameGender(this.loginTeacherCopy.gender)) {
-
-      // 5. gender
-      if(isDebug) console.log("teacher-info / checkHasChanged / 성별 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameBirthYear(this.loginTeacherCopy.getBirthYear())) {
-
-      // 6-1. birthYear
-      if(isDebug) console.log("teacher-info / checkHasChanged / 생일 - 연도 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameBirthMonth(this.loginTeacherCopy.getBirthMonth())) {  
-
-      // 6-2. birthMonth
-      if(isDebug) console.log("teacher-info / checkHasChanged / 생일 - 월 변경됨");
-      return true;
-
-    } else if( this.loginTeacher.isNotSameBirthDay(this.loginTeacherCopy.getBirthDay())) {  
-
-      // 6-3. birthDay
-      if(isDebug) console.log("teacher-info / checkHasChanged / 생일 - 일 변경됨");
-      return true;
-
-    } // end if
+    } // end method
 
     return false;
   } // end method

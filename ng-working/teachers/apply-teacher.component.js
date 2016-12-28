@@ -13,10 +13,12 @@ var router_1 = require('@angular/router');
 var login_service_1 = require('../login/service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var teacher_service_1 = require('./service/teacher.service');
+var teacher_1 = require('./model/teacher');
 var url_service_1 = require("../util/url.service");
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../util/service/my-event.service');
+var my_event_1 = require('../util/model/my-event');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var profile_img_upload_component_1 = require('../widget/input/profile-img-upload/profile-img-upload.component');
 var mobile_component_1 = require('../widget/input/mobile/mobile.component');
@@ -24,6 +26,7 @@ var gender_component_1 = require('../widget/input/gender/gender.component');
 var birthday_component_1 = require('../widget/input/birthday/birthday.component');
 var default_component_1 = require('../widget/input/default/default.component');
 var default_service_1 = require('../widget/input/default/service/default.service');
+var my_array_1 = require('../util/helper/my-array');
 var ApplyTeacherComponent = (function () {
     function ApplyTeacherComponent(loginService, myEventService, watchTower, userService, teacherService, myLoggerService, myCheckerService, urlService, defaultService, router) {
         this.loginService = loginService;
@@ -42,7 +45,11 @@ var ApplyTeacherComponent = (function () {
         this.isReadyToSave = false;
         // Default Input 셋을 가져옵니다. 이름/닉네임/이메일에 사용됩니다.
         this.defaultMetaList = this.myEventService.getDefaultMetaListApplyTeacher();
+        this.myArray = new my_array_1.HelperMyArray();
     } // end function
+    ApplyTeacherComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     ApplyTeacherComponent.prototype.ngOnInit = function () {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -114,10 +121,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / copyTeacher / 중단 / 유저가 없는 경우는 복사를 중단합니다.");
             return;
         }
-        this.newTeacher = this.teacherService.getTeacherFromUser(this.loginUser);
-        this.newTeacherCopy = this.newTeacher.copy();
-        if (isDebug)
-            console.log("apply-teacher / copyTeacher / this.newTeacherCopy : ", this.newTeacherCopy);
+        // wonder.jung
+        this.teacher = this.loginUser.getTeacher();
+        this.teacherCopy = this.teacher.copy();
+        // this.teacher = this.teacherService.getTeacherFromUser(this.loginUser);
+        // this.teacherCopy = this.teacher.copy();
+        // if(isDebug) console.log("apply-teacher / copyTeacher / this.teacherCopy : ",this.teacherCopy);
     };
     ApplyTeacherComponent.prototype.init = function () {
         // let isDebug:boolean = true;
@@ -137,25 +146,25 @@ var ApplyTeacherComponent = (function () {
         if (isDebug)
             console.log("apply-teacher / fillViewTeacherInfo");
         if (isDebug)
-            console.log("apply-teacher / fillViewTeacherInfo / this.newTeacher : ", this.newTeacher);
-        if (null == this.newTeacher) {
+            console.log("apply-teacher / fillViewTeacherInfo / this.teacherCopy : ", this.teacherCopy);
+        if (null == this.teacherCopy) {
             if (isDebug)
-                console.log("apply-teacher / fillViewTeacherInfo / 중단 / this.newTeacherCopy is not valid!");
+                console.log("apply-teacher / fillViewTeacherInfo / 중단 / this.teacherCopy is not valid!");
             return;
         }
-        this.emailComponent.setInput(this.newTeacherCopy.email);
-        this.nameComponent.setInput(this.newTeacherCopy.name);
-        this.nicknameComponent.setInput(this.newTeacherCopy.nickname);
-        this.resumeComponent.setInput(this.newTeacherCopy.resume);
-        this.greetingComponent.setInput(this.newTeacherCopy.greeting);
-        this.profileImgUploadComponent.setProfileImg(this.newTeacherCopy.thumbnail);
-        this.mobileComponent.setMobileHead(this.newTeacherCopy.getMobileHead());
-        this.mobileComponent.setMobileBody(this.newTeacherCopy.getMobileBody());
-        this.mobileComponent.setMobileTail(this.newTeacherCopy.getMobileTail());
-        this.genderComponent.setGender(this.newTeacherCopy.gender);
-        this.birthdayComponent.setBirthYear(this.newTeacherCopy.getBirthYear());
-        this.birthdayComponent.setBirthMonth(this.newTeacherCopy.getBirthMonth());
-        this.birthdayComponent.setBirthDay(this.newTeacherCopy.getBirthMonth(), this.newTeacherCopy.getBirthDay());
+        this.emailComponent.setInput(this.teacherCopy.email);
+        this.nameComponent.setInput(this.teacherCopy.name);
+        this.nicknameComponent.setInput(this.teacherCopy.nickname);
+        // this.resumeComponent.setInput(this.teacherCopy.resume);
+        this.greetingComponent.setInput(this.teacherCopy.greeting);
+        this.profileImgUploadComponent.setProfileImg(this.teacherCopy.thumbnail);
+        this.mobileComponent.setMobileHead(this.teacherCopy.getMobileHead());
+        this.mobileComponent.setMobileBody(this.teacherCopy.getMobileBody());
+        this.mobileComponent.setMobileTail(this.teacherCopy.getMobileTail());
+        this.genderComponent.setGender(this.teacherCopy.gender);
+        this.birthdayComponent.setBirthYear(this.teacherCopy.getBirthYear());
+        this.birthdayComponent.setBirthMonth(this.teacherCopy.getBirthMonth());
+        this.birthdayComponent.setBirthDay(this.teacherCopy.getBirthMonth(), this.teacherCopy.getBirthDay());
     };
     ApplyTeacherComponent.prototype.logActionPage = function () {
         // let isDebug:boolean = true;
@@ -252,61 +261,61 @@ var ApplyTeacherComponent = (function () {
             if (myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_EMAIL");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("email", myEvent.value);
                 this.checkEmailUnique(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_NAME");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("name", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_NICKNAME");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("nickname", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_RESUME)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_TEACHER_RESUME");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
-                this.updateNewProp("resume", myEvent.value);
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
+                this.updateResume(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_TEACHER_GREETING");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("greeting", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_THUMBNAIL");
-                // 1. newTeacher객체와 비교, 변경된 이름인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
                 this.updateNewProp("thumbnail", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
-                // 1. newTeacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileHead(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
-                // 1. newTeacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 전화번호 첫 3자리 인지 확인합니다.
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileBody(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
                 if (isDebug)
                     console.log("apply-teacher / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
-                // 1. newTeacher객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
+                // 1. teacher객체와 비교, 변경된 전화번호 마지막 4자리 인지 확인합니다.
                 // 새로운 전화번호라면 변수에 저장합니다.
                 this.updateNewMobileTail(myEvent.value);
-                this.checkMobileUnique(this.newTeacherCopy.mobile);
+                this.checkMobileUnique(this.teacherCopy.mobile);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
                 if (isDebug)
@@ -358,12 +367,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewMobileHead / 중단 / newMobileHead is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameMobileHead(newMobileHead)) {
+        if (this.teacherCopy.isSameMobileHead(newMobileHead)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewMobileHead / 중단 / newMobileHead is not changed!");
             return;
         }
-        this.newTeacherCopy.setMobileHead(newMobileHead);
+        this.teacherCopy.setMobileHead(newMobileHead);
         // 저장 버튼 노출
         if (this.isOKAll(false)) {
             // 아래 플래그는 저장 버튼을 활성화합니다.
@@ -381,12 +390,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewMobileBody / 중단 / newMobileBody is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameMobileBody(newMobileBody)) {
+        if (this.teacherCopy.isSameMobileBody(newMobileBody)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewMobileBody / 중단 / newMobileBody is not changed!");
             return;
         }
-        this.newTeacherCopy.setMobileBody(newMobileBody);
+        this.teacherCopy.setMobileBody(newMobileBody);
         // 저장 버튼 노출
         if (this.isOKAll(false)) {
             // 아래 플래그는 저장 버튼을 활성화합니다.
@@ -404,12 +413,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewMobileTail / 중단 / newMobileTail is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameMobileTail(newMobileTail)) {
+        if (this.teacherCopy.isSameMobileTail(newMobileTail)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewMobileTail / 중단 / newMobileTail is not changed!");
             return;
         }
-        this.newTeacherCopy.setMobileTail(newMobileTail);
+        this.teacherCopy.setMobileTail(newMobileTail);
         // 저장 버튼 노출
         if (this.isOKAll(false)) {
             // 아래 플래그는 저장 버튼을 활성화합니다.
@@ -427,12 +436,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewBirthYear / 중단 / newBirthYear is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameBirthYear(newBirthYear)) {
+        if (this.teacherCopy.isSameBirthYear(newBirthYear)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewBirthYear / 중단 / newBirthYear is not changed!");
             return;
         }
-        this.newTeacherCopy.setBirthYear(newBirthYear);
+        this.teacherCopy.setBirthYear(newBirthYear);
         // 저장 버튼 노출
         // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
         if (this.isOKAll(false)) {
@@ -451,12 +460,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameBirthMonth(newBirthMonth)) {
+        if (this.teacherCopy.isSameBirthMonth(newBirthMonth)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
             return;
         }
-        this.newTeacherCopy.setBirthMonth(newBirthMonth);
+        this.teacherCopy.setBirthMonth(newBirthMonth);
         // 저장 버튼 노출
         // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
         if (this.isOKAll(false)) {
@@ -475,12 +484,12 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewBirthDay / 중단 / newBirthDay is not valid!");
             return;
         }
-        if (this.newTeacherCopy.isSameBirthDay(newBirthDay)) {
+        if (this.teacherCopy.isSameBirthDay(newBirthDay)) {
             if (isDebug)
                 console.log("apply-teacher / updateNewBirthDay / 중단 / newBirthDay is not changed!");
             return;
         }
-        this.newTeacherCopy.setBirthDay(newBirthDay);
+        this.teacherCopy.setBirthDay(newBirthDay);
         // 저장 버튼 노출
         // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
         if (this.isOKAll(false)) {
@@ -489,6 +498,57 @@ var ApplyTeacherComponent = (function () {
             this.isReadyToSave = true;
         }
     };
+    ApplyTeacherComponent.prototype.updateResume = function (resume) {
+        this.updateNewProp("resume", resume);
+        this.setResume();
+    }; // end method
+    ApplyTeacherComponent.prototype.setResume = function () {
+        if (this.isDebug())
+            console.log("apply-teacher / setResume / 시작");
+        if (null == this.teacherCopy) {
+            if (this.isDebug())
+                console.log("apply-teacher / setResume / 중단 / null == this.teacherCopy");
+            return;
+        }
+        // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
+        var resumeArr = this.teacherCopy.getResumeArr();
+        if (this.isDebug())
+            console.log("apply-teacher / setResume / Before / resumeArr : ", resumeArr);
+        // 이력 정보가 없다면 기본 값으로 채워줍니다.
+        var resumeCnt = 3;
+        var startIdx = 3;
+        if (null == resumeArr) {
+            resumeArr = [];
+            startIdx = 0;
+        }
+        else if (3 != resumeArr.length && resumeArr.length < 3) {
+            startIdx = resumeArr.length;
+        } // end if
+        for (var i = startIdx; i < resumeCnt; ++i) {
+            resumeArr.push("선생님의 경력 사항을 입력해주세요.");
+        } // end for
+        if (this.isDebug())
+            console.log("apply-teacher / setResume / After / resumeArr : ", resumeArr);
+        var myEventList = [];
+        for (var i = 0; i < resumeArr.length; ++i) {
+            var resume = resumeArr[i];
+            var myEventResume = new my_event_1.MyEvent(
+            // public id:string
+            this.myEventService.getUniqueIdx(), 
+            // public eventName:string
+            this.myEventService.ANY, 
+            // public key:string
+            this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST, 
+            // public value:string
+            resume, 
+            // public metaObj:any
+            null, 
+            // public myChecker:MyChecker
+            this.myCheckerService.getTitleChecker());
+            myEventList.push(myEventResume);
+        } // end for
+        this.myEventListForTeacherResume = myEventList;
+    }; // end method     
     ApplyTeacherComponent.prototype.updateNewProp = function (key, newValue) {
         // let isDebug:boolean = true;
         var isDebug = false;
@@ -499,24 +559,24 @@ var ApplyTeacherComponent = (function () {
                 console.log("apply-teacher / updateNewProp / 중단 / key is not valid!");
             return;
         }
-        if (null == this.newTeacherCopy) {
+        if (null == this.teacherCopy) {
             if (isDebug)
-                console.log("apply-teacher / updateNewProp / 중단 / this.newTeacherCopy is not valid!");
+                console.log("apply-teacher / updateNewProp / 중단 / this.teacherCopy is not valid!");
             return;
         }
-        var valueFromDB = this.newTeacher[key];
+        var valueFromDB = this.teacher[key];
         if (valueFromDB !== newValue) {
             // 1-1. 변경된 값이라면 업데이트.
             if (null != this[key]) {
                 this[key] = newValue;
             }
             // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
-            if (null != this.newTeacherCopy && null != this.newTeacherCopy[key]) {
-                this.newTeacherCopy[key] = newValue;
+            if (null != this.teacherCopy && null != this.teacherCopy[key]) {
+                this.teacherCopy[key] = newValue;
                 if (isDebug)
                     console.log("apply-teacher / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
                 if (isDebug)
-                    console.log("apply-teacher / updateNewProp / this.newTeacherCopy : ", this.newTeacherCopy);
+                    console.log("apply-teacher / updateNewProp / this.teacherCopy : ", this.teacherCopy);
             }
             // 저장 버튼 노출은 모든 값이 정상적인 경우에만 노출됩니다.
             this.isReadyToSave = this.isOKAll(false);
@@ -539,11 +599,11 @@ var ApplyTeacherComponent = (function () {
             console.log("apply-teacher / isOKAll / init");
         // 모든 값들을 검사. 
         // 문제가 있다면, 사용자에게 알림.
-        if (null == this.newTeacherCopy) {
+        if (null == this.teacherCopy) {
             return false;
         }
         var isOK = false;
-        isOK = this.emailComponent.isOK(this.newTeacherCopy.email);
+        isOK = this.emailComponent.isOK(this.teacherCopy.email);
         if (!isOK) {
             if (showTooltip) {
                 this.emailComponent.showTooltipFailWarning(
@@ -554,7 +614,7 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        isOK = this.nameComponent.isOK(this.newTeacherCopy.name);
+        isOK = this.nameComponent.isOK(this.teacherCopy.name);
         if (!isOK) {
             if (showTooltip) {
                 this.nameComponent.showTooltipFailWarning(
@@ -565,7 +625,7 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        isOK = this.nicknameComponent.isOK(this.newTeacherCopy.nickname);
+        isOK = this.nicknameComponent.isOK(this.teacherCopy.nickname);
         if (!isOK) {
             if (showTooltip) {
                 this.nicknameComponent.showTooltipFailWarning(
@@ -576,7 +636,7 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        isOK = this.resumeComponent.isOK(this.newTeacherCopy.resume);
+        isOK = this.resumeComponent.isOK(this.teacherCopy.resume);
         if (!isOK) {
             if (showTooltip) {
                 this.resumeComponent.showTooltipFailWarning(
@@ -587,7 +647,7 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        isOK = this.greetingComponent.isOK(this.newTeacherCopy.greeting);
+        isOK = this.greetingComponent.isOK(this.teacherCopy.greeting);
         if (!isOK) {
             if (showTooltip) {
                 this.greetingComponent.showTooltipFailWarning(
@@ -616,7 +676,7 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        isOK = this.genderComponent.isOK(this.newTeacherCopy.gender);
+        isOK = this.genderComponent.isOK(this.teacherCopy.gender);
         if (!isOK) {
             if (showTooltip) {
                 this.genderComponent.showWarning();
@@ -642,7 +702,7 @@ var ApplyTeacherComponent = (function () {
             return false;
         }
         // 기본 이미지나 샘플 이미지 주소여서는 안됩니다.
-        if (this.newTeacherCopy.thumbnail === this.profileImgUploadComponent.userProfileDefaultUrl) {
+        if (this.teacherCopy.thumbnail === this.profileImgUploadComponent.userProfileDefaultUrl) {
             // 선생님은 기본이미지를 사용할 수 없습니다.
             if (showTooltip) {
                 this.profileImgUploadComponent.showWarning("기본이미지를 사용할 수 없습니다");
@@ -674,19 +734,19 @@ var ApplyTeacherComponent = (function () {
         if (isDebug)
             console.log("apply-teacher / onClickSave / isReadyToSave : ", isReadyToSave);
         if (isDebug)
-            console.log("apply-teacher / onClickSave / this.newTeacherCopy : ", this.newTeacherCopy);
+            console.log("apply-teacher / onClickSave / this.teacherCopy : ", this.teacherCopy);
         if (isReadyToSave) {
             // 변경되었다면 저장합니다.
             if (isDebug)
                 console.log("apply-teacher / onClickSave / 변경되었다면 저장합니다.");
-            this.teacherService.insertTeacherByTeacher(this.watchTower.getApiKey(), this.newTeacherCopy).then(function (myResponse) {
+            this.teacherService.insertTeacherByTeacher(this.watchTower.getApiKey(), this.teacherCopy).then(function (myResponse) {
                 if (isDebug)
                     console.log("apply-teacher / onClickSave / myResponse : ", myResponse);
                 var teacherJSON = myResponse.digDataProp(["teacher"]);
                 if (myResponse.isSuccess() && null != teacherJSON) {
                     // 저장완료!
                     // 저장된 선생님 정보를 전파합니다.
-                    var teacher = _this.teacherService.getTeacherFromJSON(teacherJSON);
+                    var teacher = new teacher_1.Teacher().setJSON(teacherJSON);
                     _this.watchTower.announceLoginTeacher(teacher);
                     // 홈으로 리다이렉트 합니다.
                     if (isDebug)
@@ -715,14 +775,14 @@ var ApplyTeacherComponent = (function () {
         if (isDebug)
             console.log("apply-teacher / checkUserInfoChanged / init");
         if (isDebug)
-            console.log("apply-teacher / checkUserInfoChanged / this.newTeacher : ", this.newTeacher);
+            console.log("apply-teacher / checkUserInfoChanged / this.teacher : ", this.teacher);
         if (isDebug)
-            console.log("apply-teacher / checkUserInfoChanged / this.newTeacherCopy : ", this.newTeacherCopy);
+            console.log("apply-teacher / checkUserInfoChanged / this.teacherCopy : ", this.teacherCopy);
         if (!this.isOKAll(true)) {
             // 유효하지 않은 값이 있으므로 변경되지 않았다고 처리합니다.
             return false;
         }
-        return this.newTeacher.isNotSame(this.newTeacherCopy);
+        return this.teacher.isNotSame(this.teacherCopy);
     };
     ApplyTeacherComponent.prototype.checkEmailUnique = function (email) {
         var _this = this;
@@ -752,11 +812,11 @@ var ApplyTeacherComponent = (function () {
                 else {
                     // 해당 이메일로 등록된 유저는 없습니다. 
                     // email 등록이 가능합니다.
-                    _this.newTeacherCopy.email = email;
+                    _this.teacherCopy.email = email;
                     if (isDebug)
                         console.log("apply-teacher / checkEmailUnique / email 등록이 가능합니다.");
                     if (isDebug)
-                        console.log("apply-teacher / checkEmailUnique / this.newTeacherCopy.email : ", _this.newTeacherCopy.email);
+                        console.log("apply-teacher / checkEmailUnique / this.teacherCopy.email : ", _this.teacherCopy.email);
                 } // end if
             }
             else {
@@ -788,11 +848,11 @@ var ApplyTeacherComponent = (function () {
         // apiKey:string, 
         this.watchTower.getApiKey(), 
         // mobileHead:string, 
-        this.newTeacherCopy.getMobileHead(), 
+        this.teacherCopy.getMobileHead(), 
         // mobileBody:string, 
-        this.newTeacherCopy.getMobileBody(), 
+        this.teacherCopy.getMobileBody(), 
         // mobileTail:string
-        this.newTeacherCopy.getMobileTail())
+        this.teacherCopy.getMobileTail())
             .then(function (myResponse) {
             if (myResponse.isSuccess()) {
                 var teacherJSON = myResponse.getDataProp("teacher");
@@ -804,8 +864,8 @@ var ApplyTeacherComponent = (function () {
                     if (isDebug)
                         console.log("apply-teacher / checkMobileUnique / mobile 등록이 가능합니다.");
                     if (isDebug)
-                        console.log("apply-teacher / checkMobileUnique / this.newTeacherCopy.mobile : ", _this.newTeacherCopy.mobile);
-                    _this.newTeacherCopy.mobile = mobile;
+                        console.log("apply-teacher / checkMobileUnique / this.teacherCopy.mobile : ", _this.teacherCopy.mobile);
+                    _this.teacherCopy.mobile = mobile;
                 } // end if
             }
             else {

@@ -37,6 +37,7 @@ var my_array_1 = require('../util/helper/my-array');
 var my_is_1 = require('../util/helper/my-is');
 var my_format_1 = require('../util/helper/my-format');
 var teacher_service_1 = require('../teachers/service/teacher.service');
+var teacher_1 = require('../teachers/model/teacher');
 var KlassDetailComponent = (function () {
     function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
         this.route = route;
@@ -118,7 +119,7 @@ var KlassDetailComponent = (function () {
             if (_this.isDebug())
                 console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
-            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
             _this.loginUser = _this.watchTower.getLoginUser();
             if (null != _this.loginUser) {
                 _this.isAdmin = _this.loginUser.getIsAdmin();

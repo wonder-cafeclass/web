@@ -1,11 +1,10 @@
-import { 
-  Component, 
-  OnInit, 
-  Input, 
-  Output, 
-  EventEmitter }                       from '@angular/core';
+import { Component, 
+         OnInit, 
+         Input, 
+         Output, 
+         EventEmitter }                from '@angular/core';
 
-import { KlassTeacher }                from '../model/klass-teacher';
+import { Teacher }                     from '../../teacher/model/teacher';
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 
 import { MyEventService }              from '../../util/service/my-event.service';
@@ -17,6 +16,8 @@ import { MyEvent }                     from '../../util/model/my-event';
 import { HelperMyIs }                  from '../../util/helper/my-is';
 import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
+
+// import { KlassTeacher }                from '../model/klass-teacher'; // REMOVE ME
 
 @Component({
   moduleId: module.id,
@@ -36,7 +37,7 @@ export class KlassTeacherComponent implements OnInit {
   cageHeightStr:string;
 
   myEventCallback:MyEvent;
-  @Input() klassTeacher:KlassTeacher;
+  @Input() teacher:Teacher;
   @Input() klassId:number;
 
   isShowResume:boolean=false;
@@ -146,7 +147,7 @@ export class KlassTeacherComponent implements OnInit {
   init() :void {
 
     if(this.isDebug()) console.log("klass-teacher / init / 시작");
-    if(this.isDebug()) console.log("klass-teacher / init / this.klassTeacher : ",this.klassTeacher);
+    if(this.isDebug()) console.log("klass-teacher / init / this.teacher : ",this.teacher);
 
     this.setResume();
 
@@ -154,25 +155,25 @@ export class KlassTeacherComponent implements OnInit {
 
   }
 
-  setTeacher(klassTeacher:KlassTeacher) :void {
+  setTeacher(teacher:Teacher) :void {
 
     if(this.isDebug()) console.log("klass-teacher / setTeacher / 시작");
-    if(this.isDebug()) console.log("klass-teacher / setTeacher / klassTeacher : ",klassTeacher);
+    if(this.isDebug()) console.log("klass-teacher / setTeacher / teacher : ",teacher);
 
-    this.klassTeacher = klassTeacher;
+    this.teacher = teacher;
   }
 
   setResume() :void {
 
     if(this.isDebug()) console.log("klass-teacher / setResume / 시작");
 
-    if(null == this.klassTeacher) {
-      if(this.isDebug()) console.log("klass-teacher / setResume / 중단 / null == this.klassTeacher");
+    if(null == this.teacher) {
+      if(this.isDebug()) console.log("klass-teacher / setResume / 중단 / null == this.teacher");
       return;
     }
 
     // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
-    let resumeArr:string[] = this.klassTeacher.getResumeArr();
+    let resumeArr:string[] = this.teacher.getResumeArr();
     let myEventList:MyEvent[] = [];
     for (var i = 0; i < resumeArr.length; ++i) {
       let resume:string = resumeArr[i];
@@ -204,13 +205,13 @@ export class KlassTeacherComponent implements OnInit {
 
     if(this.isDebug()) console.log("klass-teacher / setGreeting / 시작");
 
-    if(null == this.klassTeacher) {
-      if(this.isDebug()) console.log("klass-teacher / setGreeting / 중단 / null == this.klassTeacher");
+    if(null == this.teacher) {
+      if(this.isDebug()) console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
       return;
     }
 
     // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-    let greetingArr:string[] = this.klassTeacher.getGreetingArr();
+    let greetingArr:string[] = this.teacher.getGreetingArr();
     let myEventList:MyEvent[] = [];
     for (var i = 0; i < greetingArr.length; ++i) {
       let greeting:string = greetingArr[i];

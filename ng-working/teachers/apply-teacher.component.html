@@ -47,14 +47,26 @@
 					(emitter)="onChangedFromChild($event)">
 					</widget-input-default>
 
-					<!-- Default Input : 경력 -->
+					<!-- Default Input : Resume -->
+					<!--
 					<widget-input-default
 					[width]="380"
 					[meta]="defaultMetaList[3]"
 					(emitter)="onChangedFromChild($event)">
 					</widget-input-default>
+					-->
 
-					<!-- Default Input : 자기소개 -->
+					<inputs-btns-rows   
+					[key]="myEventService.KEY_KLASS_TEACHER_RESUME_LIST"
+					[rowType]="'removable'"
+					[maxRowCnt]="3"
+					[myEventList]="myEventListForTeacherResume" 
+					(emitter)="onChangedFromChild($event)"
+					[placeholderForNewRow]="'선생님의 이력을 입력해주세요.'">
+					</inputs-btns-rows>
+
+
+					<!-- Default Input : Greeting -->
 					<widget-input-default
 					[width]="380"
 					[meta]="defaultMetaList[4]"
