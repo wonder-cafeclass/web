@@ -476,13 +476,13 @@ export class SignupComponent implements AfterViewInit {
       return;
     }
     
-    if(null != this.user) {
+    if( null != this.user && this.user.isPlatformUser() ) {
       // 1-1. 플랫폼을 통해 가입 - facebook
       // 1-2. 플랫폼을 통해 가입 - kakao
       // 1-3. 플랫폼을 통해 가입 - naver
       if(this.isDebug()) console.log("signup / onClickSignup / 플랫폼을 통해 가입");
       this.updateUser();
-    } else if(null == this.user) {
+    } else {
       // 2. 플랫폼을 통하지 않고 직접 가입.
       if(this.isDebug()) console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
       this.addUser();
@@ -878,12 +878,25 @@ export class SignupComponent implements AfterViewInit {
     .getUserByEmail(email)
     .then((myResponse:MyResponse) => {
 
+      if(this.isDebug()) console.log("signup / checkEmailUnique / myResponse : ",myResponse);
+
       if( myResponse.isSuccess() && 
           myResponse.hasDataProp("user") ) {
 
-        // 해당 이메일로 등록된 유저는 없습니다. 
-        // email 등록이 가능합니다.
-        this.userCopy.email = email;
+        let userJSON = myResponse.getDataProp("user");
+        let user:User = null;
+        if(null != userJSON) {
+          user = new User().setJSON(userJSON);
+        }
+        if(null == user) {
+          // 해당 이메일로 등록된 유저는 없습니다. 
+          // email 등록이 가능합니다.
+          if(null == this.user) {
+            this.user = new User();
+            this.userCopy = this.user.copy();
+          }
+          this.userCopy.email = email;
+        } // end if
 
         if(this.isDebug()) console.log("signup / checkEmailUnique / email 등록이 가능합니다.");
         if(this.isDebug()) console.log("signup / checkEmailUnique / this.userCopy.email : ",this.userCopy.email);

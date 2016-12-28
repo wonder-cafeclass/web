@@ -194,6 +194,9 @@ export class User {
 	isGoogleUser() :boolean {
 		return (null != this.google_id && "" != this.google_id)?true:false;
 	} 
+	isPlatformUser():boolean {
+		return (this.isFacebookUser() || this.isKakaoUser() || this.isGoogleUser() || this.isNaverUser())?true:false;
+	}
 	// Platforms - DONE 
 
 

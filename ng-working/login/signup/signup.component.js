@@ -389,7 +389,7 @@ var SignupComponent = (function () {
             this.tooltipMsgTerms = this.tooltipMsgTermsWarning;
             return;
         }
-        if (null != this.user) {
+        if (null != this.user && this.user.isPlatformUser()) {
             // 1-1. 플랫폼을 통해 가입 - facebook
             // 1-2. 플랫폼을 통해 가입 - kakao
             // 1-3. 플랫폼을 통해 가입 - naver
@@ -397,7 +397,7 @@ var SignupComponent = (function () {
                 console.log("signup / onClickSignup / 플랫폼을 통해 가입");
             this.updateUser();
         }
-        else if (null == this.user) {
+        else {
             // 2. 플랫폼을 통하지 않고 직접 가입.
             if (this.isDebug())
                 console.log("signup / onClickSignup / 플랫폼을 통하지 않고 직접 가입.");
@@ -743,11 +743,24 @@ var SignupComponent = (function () {
         this.userService
             .getUserByEmail(email)
             .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("signup / checkEmailUnique / myResponse : ", myResponse);
             if (myResponse.isSuccess() &&
                 myResponse.hasDataProp("user")) {
-                // 해당 이메일로 등록된 유저는 없습니다. 
-                // email 등록이 가능합니다.
-                _this.userCopy.email = email;
+                var userJSON = myResponse.getDataProp("user");
+                var user = null;
+                if (null != userJSON) {
+                    user = new user_1.User().setJSON(userJSON);
+                }
+                if (null == user) {
+                    // 해당 이메일로 등록된 유저는 없습니다. 
+                    // email 등록이 가능합니다.
+                    if (null == _this.user) {
+                        _this.user = new user_1.User();
+                        _this.userCopy = _this.user.copy();
+                    }
+                    _this.userCopy.email = email;
+                } // end if
                 if (_this.isDebug())
                     console.log("signup / checkEmailUnique / email 등록이 가능합니다.");
                 if (_this.isDebug())
