@@ -1118,8 +1118,14 @@ export class KlassDetailComponent implements AfterViewInit {
     this.setKlassTimeEnd();
     this.setKlassDays();
     this.setKlassPriceDesc();
+    this.setPriceCalculator();
+    this.setKlassLevel();
+    this.setKlassSubwayLine();
+    this.setKlassSubwayStation();
+    this.setKlassClock();
 
-    // @ Deprecated
+    this.setKlassDetailNavList();
+
     this.setKlassDateEnrollmentView();
     this.setKlassDateEnrollmentInput();
 

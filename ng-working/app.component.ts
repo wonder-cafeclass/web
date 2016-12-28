@@ -53,8 +53,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		return true;
-		// return this.watchTower.isDebug();
+		// return true;
+		return this.watchTower.isDebug();
 	}
 
 	isAdmin:boolean=false;

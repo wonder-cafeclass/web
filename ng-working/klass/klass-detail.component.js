@@ -821,7 +821,12 @@ var KlassDetailComponent = (function () {
         this.setKlassTimeEnd();
         this.setKlassDays();
         this.setKlassPriceDesc();
-        // @ Deprecated
+        this.setPriceCalculator();
+        this.setKlassLevel();
+        this.setKlassSubwayLine();
+        this.setKlassSubwayStation();
+        this.setKlassClock();
+        this.setKlassDetailNavList();
         this.setKlassDateEnrollmentView();
         this.setKlassDateEnrollmentInput();
         // set image-grid service

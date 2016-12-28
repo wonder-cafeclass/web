@@ -29,6 +29,7 @@ var klass_comment_service_1 = require('./service/klass-comment.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_service_1 = require('./service/klass.service');
 var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
+var klass_teacher_component_1 = require('./widget/klass-teacher.component');
 var KlassDetailNavListComponent = (function () {
     function KlassDetailNavListComponent(klassColorService, klassCommentService, klassService, watchTower, myEventService, myCheckerService, radiobtnService, myLoggerService, urlService, imageService) {
         this.klassColorService = klassColorService;
@@ -306,9 +307,26 @@ var KlassDetailNavListComponent = (function () {
         this.klassPointsImgUrl = this.imageService.get(this.imageService.classFeatureUrl);
     };
     KlassDetailNavListComponent.prototype.setTeacher = function () {
-        if (null != this.klass.teacher) {
-            this.klassTeacher = this.klass.teacher;
+        if (this.isDebug())
+            console.log("k-d-n-l / setTeacher / init");
+        if (null == this.klass || null == this.klass.teacher) {
+            if (this.isDebug())
+                console.log("k-d-n-l / setTeacher / 중단 / null == this.klass.teacher");
+            return;
         } // end if
+        if (null == this.teacherComponent) {
+            if (this.isDebug())
+                console.log("k-d-n-l / setTeacher / 중단 / null == this.teacherComponent");
+            return;
+        } // end if
+        if (this.isDebug())
+            console.log("k-d-n-l / setTeacher / this.klass.teacher : ", this.klass.teacher);
+        if (this.isDebug())
+            console.log("k-d-n-l / setTeacher / this.teacherComponent : ", this.teacherComponent);
+        this.klassTeacher = this.klass.teacher;
+        this.teacherComponent.setTeacher(this.klass.teacher);
+        this.teacherComponent.setResume();
+        this.teacherComponent.setGreeting();
     };
     KlassDetailNavListComponent.prototype.setReview = function () {
         if (this.isDebug())
@@ -779,6 +797,14 @@ var KlassDetailNavListComponent = (function () {
                     this.venueSearchComponent = myEvent.metaObj;
                     this.setVenueSearch();
                 } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
+                // wonder.jung
+                if (null != myEvent.metaObj) {
+                    // 네이버 맵 장소 검색 컴포넌트가 준비됨.
+                    this.teacherComponent = myEvent.metaObj;
+                    this.setTeacher();
+                } // end if
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_LOGIN_REQUIRED)) {
@@ -1071,6 +1097,10 @@ var KlassDetailNavListComponent = (function () {
         core_1.ViewChild(klass_venue_search_list_component_1.KlassVenueSearchListComponent), 
         __metadata('design:type', klass_venue_search_list_component_1.KlassVenueSearchListComponent)
     ], KlassDetailNavListComponent.prototype, "venueSearchComponent", void 0);
+    __decorate([
+        core_1.ViewChild(klass_teacher_component_1.KlassTeacherComponent), 
+        __metadata('design:type', klass_teacher_component_1.KlassTeacherComponent)
+    ], KlassDetailNavListComponent.prototype, "teacherComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
