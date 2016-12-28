@@ -114,13 +114,13 @@ export class Teacher {
 
         // let isDebug:boolean = true;
         let isDebug:boolean = false;
-        if(isDebug) console.log("klass-teacher / setJSON / init");
+        if(isDebug) console.log("teacher / setJSON / init");
 
-        if(isDebug) console.log("klass-teacher / setJSON / json : ",json);
+        if(isDebug) console.log("teacher / setJSON / json : ",json);
 
         let teacher:Teacher = this._setJSON(json);
 
-        if(isDebug) console.log("klass-teacher / setJSON / teacher : ",teacher);
+        if(isDebug) console.log("teacher / setJSON / teacher : ",teacher);
 
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         teacher.setMobile(teacher.mobile);

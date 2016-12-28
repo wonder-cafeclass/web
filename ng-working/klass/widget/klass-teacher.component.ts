@@ -4,7 +4,7 @@ import { Component,
          Output, 
          EventEmitter }                from '@angular/core';
 
-import { Teacher }                     from '../../teacher/model/teacher';
+import { Teacher }                     from '../../teachers/model/teacher';
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 
 import { MyEventService }              from '../../util/service/my-event.service';
@@ -16,8 +16,6 @@ import { MyEvent }                     from '../../util/model/my-event';
 import { HelperMyIs }                  from '../../util/helper/my-is';
 import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
-
-// import { KlassTeacher }                from '../model/klass-teacher'; // REMOVE ME
 
 @Component({
   moduleId: module.id,
@@ -210,6 +208,7 @@ export class KlassTeacherComponent implements OnInit {
       return;
     }
 
+    /*
     // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
     let greetingArr:string[] = this.teacher.getGreetingArr();
     let myEventList:MyEvent[] = [];
@@ -235,6 +234,7 @@ export class KlassTeacherComponent implements OnInit {
       myEventList.push(myEventGreeting);      
     }
     this.myEventListForTeacherGreeting = myEventList;
+    */
 
   } // end method  
 

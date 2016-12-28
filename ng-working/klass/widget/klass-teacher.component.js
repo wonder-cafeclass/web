@@ -9,14 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var teacher_1 = require('../../teacher/model/teacher');
+var teacher_1 = require('../../teachers/model/teacher');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_event_1 = require('../../util/model/my-event');
 var my_is_1 = require('../../util/helper/my-is');
 var my_array_1 = require('../../util/helper/my-array');
-// import { KlassTeacher }                from '../model/klass-teacher'; // REMOVE ME
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
     function KlassTeacherComponent(watchTower, myEventService, myCheckerService) {
@@ -148,27 +147,33 @@ var KlassTeacherComponent = (function () {
                 console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
             return;
         }
+        /*
         // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-        var greetingArr = this.teacher.getGreetingArr();
-        var myEventList = [];
+        let greetingArr:string[] = this.teacher.getGreetingArr();
+        let myEventList:MyEvent[] = [];
         for (var i = 0; i < greetingArr.length; ++i) {
-            var greeting = greetingArr[i];
-            var myEventGreeting = new my_event_1.MyEvent(
+          let greeting:string = greetingArr[i];
+    
+          let myEventGreeting =
+          new MyEvent(
             // public id:string
-            this.myEventService.getUniqueIdx(), 
+            this.myEventService.getUniqueIdx(),
             // public eventName:string
-            this.myEventService.ANY, 
+            this.myEventService.ANY,
             // public key:string
-            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST, 
+            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST,
             // public value:string
-            greeting, 
+            greeting,
             // public metaObj:any
-            { klassId: +this.klassId }, 
+            {klassId:+this.klassId},
             // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker());
-            myEventList.push(myEventGreeting);
+            this.myCheckerService.getTitleChecker()
+          );
+    
+          myEventList.push(myEventGreeting);
         }
         this.myEventListForTeacherGreeting = myEventList;
+        */
     }; // end method  
     KlassTeacherComponent.prototype.onClickResume = function (event) {
         event.stopPropagation();
@@ -280,7 +285,7 @@ var KlassTeacherComponent = (function () {
     ], KlassTeacherComponent.prototype, "cageHeight", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', (typeof (_a = typeof teacher_1.Teacher !== 'undefined' && teacher_1.Teacher) === 'function' && _a) || Object)
+        __metadata('design:type', teacher_1.Teacher)
     ], KlassTeacherComponent.prototype, "teacher", void 0);
     __decorate([
         core_1.Input(), 
@@ -300,7 +305,6 @@ var KlassTeacherComponent = (function () {
         __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
     ], KlassTeacherComponent);
     return KlassTeacherComponent;
-    var _a;
 }());
 exports.KlassTeacherComponent = KlassTeacherComponent; // end class
 //# sourceMappingURL=klass-teacher.component.js.map

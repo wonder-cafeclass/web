@@ -46,8 +46,8 @@ import { InputViewHListComponent }   from '../widget/input-view/input-view-h-lis
 import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
 import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
 import { SingleInputViewComponent }  from '../widget/input-view/single-input-view.component';
-import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
-import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
+// import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
+// import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
 
 import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
 import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
@@ -91,8 +91,8 @@ import { InputRowComponent }         from '../widget/input-row/input-row.compone
     InputViewHListComponent,
     InputViewTableComponent,
     InputViewUpdownComponent,
-    InputBtnsRowComponent,
-    InputsBtnsRowsComponent,
+    // InputBtnsRowComponent,
+    // InputsBtnsRowsComponent, // @ Deprecated
 
     SingleInputViewComponent,
     RadioBtnHListComponent,

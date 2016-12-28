@@ -48,8 +48,8 @@ var input_view_h_list_component_1 = require('../widget/input-view/input-view-h-l
 var input_view_updown_component_1 = require('../widget/input-view/input-view-updown.component');
 var input_view_table_component_1 = require('../widget/input-view-table/input-view-table.component');
 var single_input_view_component_1 = require('../widget/input-view/single-input-view.component');
-var input_btns_row_component_1 = require('../widget/input-view/input-btns-row.component');
-var inputs_btns_rows_component_1 = require('../widget/input-view/inputs-btns-rows.component');
+// import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
+// import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
 var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
 var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
@@ -92,8 +92,8 @@ var KlassCenterModule = (function () {
                 input_view_h_list_component_1.InputViewHListComponent,
                 input_view_table_component_1.InputViewTableComponent,
                 input_view_updown_component_1.InputViewUpdownComponent,
-                input_btns_row_component_1.InputBtnsRowComponent,
-                inputs_btns_rows_component_1.InputsBtnsRowsComponent,
+                // InputBtnsRowComponent,
+                // InputsBtnsRowsComponent, // @ Deprecated
                 single_input_view_component_1.SingleInputViewComponent,
                 radiobtn_h_list_component_1.RadioBtnHListComponent,
                 checkbox_h_list_component_1.CheckBoxHListComponent,

@@ -121,9 +121,9 @@
               <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
               -->
               <div style="padding: 5px;">
-                <klass-teacher  [isAdmin]="isAdmin"
-                                [klassTeacher]="klassTeacher"
-                                (emitter)="onChangedFromInputRow($event)">
+                <klass-teacher  
+                [isAdmin]="isAdmin"
+                (emitter)="onChangedFromInputRow($event)">
                 </klass-teacher>
               </div>
             </li>

@@ -14,9 +14,6 @@ import { HelperMyFormat }           from '../../util/helper/my-format';
 
 import { Teacher }                  from '../../teachers/model/teacher';
 
-// import { KlassTeacher }             from './klass-teacher'; // REMOVE ME
-
-
 
 export class Klass {
 

@@ -323,7 +323,6 @@ var KlassDetailNavListComponent = (function () {
             console.log("k-d-n-l / setTeacher / this.klass.teacher : ", this.klass.teacher);
         if (this.isDebug())
             console.log("k-d-n-l / setTeacher / this.teacherComponent : ", this.teacherComponent);
-        this.klassTeacher = this.klass.teacher;
         this.teacherComponent.setTeacher(this.klass.teacher);
         this.teacherComponent.setResume();
         this.teacherComponent.setGreeting();

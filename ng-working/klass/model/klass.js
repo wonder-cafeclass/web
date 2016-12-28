@@ -9,7 +9,6 @@ var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
 var my_format_1 = require('../../util/helper/my-format');
 var teacher_1 = require('../../teachers/model/teacher');
-// import { KlassTeacher }             from './klass-teacher'; // REMOVE ME
 var Klass = (function () {
     function Klass() {
         this.id = -1;

@@ -29,7 +29,6 @@ import { Comment }                    from '../widget/comment/model/comment';
 import { CommentListComponent }       from '../widget/comment/comment-list.component';
 
 import { Klass }                      from './model/klass';
-import { KlassTeacher }               from './model/klass-teacher';
 import { KlassQuestion }              from './model/klass-question';
 import { KlassReview }                from './model/klass-review';
 import { KlassVenue }                 from './model/klass-venue';
@@ -40,9 +39,10 @@ import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
 import { KlassService }               from './service/klass.service';
 
 import { KlassVenueSearchListComponent }  from './widget/klass-venue-search-list.component';
-import { KlassTeacherComponent }      from './widget/klass-teacher.component';
+import { KlassTeacherComponent }          from './widget/klass-teacher.component';
 
-import { User }                       from '../users/model/user';
+import { User }                           from '../users/model/user';
+import { Teacher }                        from '../teachers/model/teacher';
 
 @Component({
   moduleId: module.id,
@@ -69,7 +69,6 @@ export class KlassDetailNavListComponent implements OnInit {
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
-  klassTeacher:KlassTeacher;
   loginUser:User;
 
   @Input() klassFeature:string; // @ Deprecated
@@ -482,7 +481,6 @@ export class KlassDetailNavListComponent implements OnInit {
     if(this.isDebug()) console.log("k-d-n-l / setTeacher / this.klass.teacher : ",this.klass.teacher);
     if(this.isDebug()) console.log("k-d-n-l / setTeacher / this.teacherComponent : ",this.teacherComponent);
 
-    this.klassTeacher = this.klass.teacher;
     this.teacherComponent.setTeacher(this.klass.teacher);
     this.teacherComponent.setResume();
     this.teacherComponent.setGreeting();

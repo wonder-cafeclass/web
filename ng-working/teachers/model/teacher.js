@@ -82,12 +82,12 @@ var Teacher = (function () {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
-            console.log("klass-teacher / setJSON / init");
+            console.log("teacher / setJSON / init");
         if (isDebug)
-            console.log("klass-teacher / setJSON / json : ", json);
+            console.log("teacher / setJSON / json : ", json);
         var teacher = this._setJSON(json);
         if (isDebug)
-            console.log("klass-teacher / setJSON / teacher : ", teacher);
+            console.log("teacher / setJSON / teacher : ", teacher);
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         teacher.setMobile(teacher.mobile);
         teacher.setBirthday(teacher.birthday);
