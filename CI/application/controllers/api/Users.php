@@ -686,15 +686,34 @@ class Users extends MY_REST_Controller {
 
     public function update_post()
     {
+        $output = array();
+
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
         if($this->is_not_ok())
         {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "\$this->is_not_ok()",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
-
-        $output = array();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "is_ok");
+        
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
-        {   
+        {  
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_not_allowed_api_call");
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "Not allowed api call",
@@ -836,6 +855,7 @@ class Users extends MY_REST_Controller {
             "mobile_tail"=>$mobile_tail
         );
         $output["params"] = $params;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");
 
         // CHECK LIST
         $is_ok = true;
@@ -846,6 +866,7 @@ class Users extends MY_REST_Controller {
         {
             $is_ok = false;
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         if($is_ok) {
 
             // 1. 플랫폼(카카오, 페이스북, 네이버)으로 로그인, 추가 정보를 등록하는 경우.
@@ -854,11 +875,11 @@ class Users extends MY_REST_Controller {
 
             // 유저 정보를 추가합니다.
             // 회원 정보는 메일 인증이 필요하므로, 유저 상태를 C로 등록합니다.
+            $is_ok = 
             $this->my_sql->update_user(
                 // $user_id=-1
                 $user_id,
                 // $password_hashed=""
-                // $this->getHash($password),
                 $this->my_auth->getHash($password),
                 // $email=""
                 $email,
@@ -883,17 +904,23 @@ class Users extends MY_REST_Controller {
                 // $mobile_tail,=""
                 $mobile_tail
             ); // end insert
-
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user");
+        } 
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        
+        if($is_ok) {
             // 등록한 유저 정보를 가져옵니다.
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "등록한 유저 정보를 가져옵니다.");
             $user = $this->my_sql->get_user_by_email($email);
-            $output["success"] = true;
+            $output["success"] = $is_success;
             $output["user"] = $user;
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200($output);
-
         } 
         else 
         {
             // 실패!
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "User update failed!",
@@ -1659,11 +1686,13 @@ class Users extends MY_REST_Controller {
         {
             return;
         }
+        $this->my_tracker->init();
 
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "Not allowed api call",
@@ -1678,6 +1707,7 @@ class Users extends MY_REST_Controller {
             );
             return;
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
         $email = 
         $this->my_paramchecker->post(
@@ -1687,10 +1717,12 @@ class Users extends MY_REST_Controller {
             "user_email"
         );
         $output["email"] = $email;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$email : $email");
 
         $user = $this->my_sql->get_user_by_email($email);
         if(is_null($user)) 
         {
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "user is not valid!",
@@ -1705,10 +1737,12 @@ class Users extends MY_REST_Controller {
             );
             return;
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$user");
 
         $password_hashed = $this->my_sql->get_user_password_by_email($email);
         if(is_null($password_hashed)) 
         {
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "password_hashed is not valid!",
@@ -1723,12 +1757,14 @@ class Users extends MY_REST_Controller {
             );
             return;
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
 
         // 인증키 만들기 - DB에 저장.
         $time_now = $this->my_time->get_now_YYYYMMDDHHMMSSU();
         $key_hashed = $this->my_auth->getHashQueryStringSafe($password_hashed . $time_now);
 
         $output["key_hashed"] = $key_hashed;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
         $this->my_sql->insert_user_validation_key(
             // $user_id=-1
@@ -1736,18 +1772,22 @@ class Users extends MY_REST_Controller {
             // $key=""
             $key_hashed
         );
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
+
         $user_validation_key = 
         $this->my_sql->select_user_validation_key_by_user_id(
             // $user_id=-1
             $user->id
         );
         $output["user_validation_key"] = $user_validation_key;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
         // 인증키가 포함된 링크주소 만들기.
         // 인증키를 확인할 페이지 만들기.
         $path_user_validation = $this->my_path->get_path_user_validation();
         $path_user_validation = $path_user_validation . "?key=" . $user_validation_key->key;
         $output["path_user_validation"] = $path_user_validation;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
         $this->email->from('info@cafeclass.kr', '카페클래스');
         $this->email->to($email);
@@ -1758,6 +1798,7 @@ class Users extends MY_REST_Controller {
         $this->email->message($path_user_validation);
 
         $this->email->send();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
         // 메일 발송을 기록합니다. 로거에 기록합니다.
         $this->my_logger->add_action(
@@ -1768,7 +1809,9 @@ class Users extends MY_REST_Controller {
             // $action_key=""
             $this->my_logger->ACTION_KEY_SEND_AUTH_MAIL
         );
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
+        $output["track"] = $this->my_tracker->flush();
         $this->respond_200($output);
     }
 

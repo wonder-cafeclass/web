@@ -19,6 +19,7 @@ var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.
 var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_event_service_1 = require('./util/service/my-event.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
+var user_1 = require('./users/model/user');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
     function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, route, router) {
@@ -205,7 +206,7 @@ var AppComponent = (function () {
                 console.log("app-root / getLoginUserFromCookie / myResponse : ", myResponse);
             var userFromDB = myResponse.getDataProp("user");
             if (myResponse.isSuccess() && null != userFromDB) {
-                var user = _this.userService.getUserFromJSON(userFromDB);
+                var user = new user_1.User().setJSON(userFromDB);
                 if (isDebug)
                     console.log("app-root / getLoginUserFromCookie / user : ", user);
                 _this.loginUser = user;

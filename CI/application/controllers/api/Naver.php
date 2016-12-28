@@ -135,7 +135,7 @@ class Naver extends MY_REST_Controller {
         $naver_code = $this->my_paramchecker->get('naver_code','naver_code');
         if(empty($naver_code)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "naver_code is not valid!",
                 // $function=""
@@ -143,7 +143,9 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
+                __LINE__,
+                // $data=null
+                null
             );            
             return;
         }
@@ -191,7 +193,7 @@ class Naver extends MY_REST_Controller {
         }
         else
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "access_token is not valid!",
                 // $function=""
@@ -199,8 +201,11 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                null
+            );            
+            return;            
         }
 
         $token_type = $this->my_keyvalue->get($result, "token_type");
@@ -210,7 +215,7 @@ class Naver extends MY_REST_Controller {
         }
         else
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "token_type is not valid!",
                 // $function=""
@@ -218,8 +223,11 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                null
+            );            
+            return;            
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -233,8 +241,25 @@ class Naver extends MY_REST_Controller {
     */
     public function me_get()
     {
+        $output = array();
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
         if($this->is_not_ok()) 
         {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "\$this->is_not_ok()",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
 
@@ -242,7 +267,9 @@ class Naver extends MY_REST_Controller {
         $token_type = $_SESSION[$this->session_token_type];
         if(empty($token_type)) 
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$token_type)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "token_type is not valid!",
                 // $function=""
@@ -250,14 +277,18 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                 
             return;
         }
         $access_token = $_SESSION[$this->session_access_token];
         if(empty($access_token)) 
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$access_token)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "access_token is not valid!",
                 // $function=""
@@ -265,8 +296,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                      
             return;
         }
 
@@ -286,6 +319,7 @@ class Naver extends MY_REST_Controller {
             // $post_params
             []
         );
+        $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->my_curl->get_json");
 
         /*
         // Sample Data
@@ -303,23 +337,27 @@ class Naver extends MY_REST_Controller {
         */
 
         $naver_id = $this->my_keyvalue->get_number($result, "id");
+        $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$naver_id : $naver_id");
         $user = null;
         if(0 < $naver_id) 
         {
-            $user = $this->get_user($naver_id);
+            $user = $this->get_user("" . $naver_id);
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$this->get_user");
         }
         if(0 < $naver_id && is_null($user))
         {
             // 회원 정보를 검사, 없다면 회원으로 추가합니다.
             // 유저 등록이 진행되었다면, 추가 정보 입력이 필요함. 추가 정보 입력창으로 이동.
             $this->add_user($result);
-            $user = $this->get_user($naver_id);   
+            $user = $this->get_user("" . $naver_id);
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "회원 정보를 검사, 없다면 회원으로 추가");  
         }
         else if(0 < $naver_id)
         {
             // 등록되어 있다면 등록하지 않는다.
             // 뷰에 정상적으로 로그인된 것을 알려줌.
             // (Redirect)유저 등록이 이미 완료된 상태라면, 로그인을 호출한 위치로 돌아간다.
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "등록되어 있다면 등록하지 않는다.");
         }
 
         if(is_null($user))
@@ -327,7 +365,9 @@ class Naver extends MY_REST_Controller {
             // 그 외의 상황.
             // 에러 등록.
             // 사용자에게 서비스 이상 메시지로 알림.
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$user)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "user is not valid!",
                 // $function=""
@@ -335,15 +375,16 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
-
+                __LINE__,
+                // $data=null
+                $output
+            ); 
             return;
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
-        $output = [];
         $output["me"] = $user;
+        $output["track"] = $this->my_tracker->flush();
         $this->respond_200($output);
     }
 
@@ -370,7 +411,7 @@ class Naver extends MY_REST_Controller {
         $is_ok = true;
         if(empty($query)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "Search query is not valid!",
                 // $function=""
@@ -378,8 +419,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                null
+            );             
             return;
         }
 
@@ -462,8 +505,7 @@ class Naver extends MY_REST_Controller {
 
         if(empty($location_list))
         {
-            // Error Report
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "location_list is not valid!",
                 // $function=""
@@ -471,8 +513,11 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                null
+            ); 
+            return;                   
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -493,7 +538,7 @@ class Naver extends MY_REST_Controller {
         $output = array();
         if(empty($query)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "Search query is not valid!",
                 // $function=""
@@ -501,8 +546,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                null
+            );                   
             return;
         } 
 
@@ -529,8 +576,7 @@ class Naver extends MY_REST_Controller {
 
         if(empty($result))
         {
-            // Error Report
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "result is not valid!",
                 // $function=""
@@ -538,8 +584,11 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                null
+            );  
+            return;                     
         }
 
         // @ Required - 응답객체는 반드시 json 형태여야 합니다.
@@ -591,7 +640,7 @@ class Naver extends MY_REST_Controller {
         $state = $this->my_paramchecker->get('state','naver_login_state');
         if(empty($state)) 
         {
-            $this->respond_500_detail(
+            $this->respond_200_Failed(
                 // $msg=""
                 "state is not valid!",
                 // $function=""
@@ -599,8 +648,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                null
+            );                       
             return;
         }
 
@@ -651,11 +702,14 @@ class Naver extends MY_REST_Controller {
     /*
     *   @ Desc : 유저 정보를 가져옵니다.
     */
-    public function get_user($naver_id=-1) 
+    public function get_user($naver_id="") 
     {
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
         if($this->is_not_ok_param("naver_id", $naver_id))
         {
-            return null;   
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok_param(\"naver_id\", \$naver_id)");
+            return null;
         }
 
         return $this->my_sql->get_user_naver($naver_id);
@@ -667,9 +721,13 @@ class Naver extends MY_REST_Controller {
     */
     public function add_user($naver_user=null) 
     {
+        $output = array();
+
         if(is_null($naver_user)) 
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$naver_user)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "naver_user is not valid!",
                 // $function=""
@@ -677,8 +735,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                        
             return;
         }
 
@@ -711,7 +771,9 @@ class Naver extends MY_REST_Controller {
 
                 $year_now = intval($this->my_time->get_now_YYYY());
                 $year_birth = $year_now - $inbetween;
-            }            
+            } 
+
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$year_birth : $year_birth");
         }
         
         $birthday = $this->my_keyvalue->get($naver_user, "birthday");
@@ -719,12 +781,15 @@ class Naver extends MY_REST_Controller {
         {
             // 기본값 설정
             $birthday = "";
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
         }
         
         $email = $this->my_keyvalue->get($naver_user, "email");
         if($this->is_not_ok_param("user_email", $email))
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok_param(\"user_email\", \$email)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "email is not valid!",
                 // $function=""
@@ -732,8 +797,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                $output
+            );             
             return;
         }
         $gender = $this->my_keyvalue->get($naver_user, "gender");
@@ -747,11 +814,14 @@ class Naver extends MY_REST_Controller {
                 $gender = $user_gender_list[count($user_gender_list) - 1];
             }
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$gender : $gender");
 
         $naver_id = $this->my_keyvalue->get($naver_user, "id");
         if($this->is_not_ok_param("naver_id", $naver_id))
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok_param(\"naver_id\", \$naver_id)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "naver_id is not valid!",
                 // $function=""
@@ -759,14 +829,18 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                  
             return;
         }
         $name = $this->my_keyvalue->get($naver_user, "name");
         if(empty($name))
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$name)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "name is not valid!",
                 // $function=""
@@ -774,14 +848,18 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                      
             return;
         }
         $nickname = $this->my_keyvalue->get($naver_user, "nickname");
         if(empty($nickname))
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$nickname)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "nickname is not valid!",
                 // $function=""
@@ -789,14 +867,18 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );            
+                __LINE__,
+                // $data=null
+                $output
+            );                       
             return;
         }
         $profile_image = $this->my_keyvalue->get($naver_user, "profile_image");
         if(empty($profile_image))
         {
-            $this->respond_500_detail(
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$profile_image)");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
                 // $msg=""
                 "profile_image is not valid!",
                 // $function=""
@@ -804,8 +886,10 @@ class Naver extends MY_REST_Controller {
                 // $file=""
                 __FILE__,
                 // $line=""
-                __LINE__
-            );
+                __LINE__,
+                // $data=null
+                $output
+            );            
             return;
         }
 
@@ -819,8 +903,8 @@ class Naver extends MY_REST_Controller {
         // 섬네일 다운로드. - 네이버는 기본 33x33 사이즈.
         // 다운로드 받지 않고 기본 섬네일을 사용합니다.
         $thumbnail_url = $this->get_const("user_thumbnail_default");
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$thumbnail_url : $thumbnail_url");
 
-        $last_query = 
         $this->my_sql->insert_user_naver(
             // $naver_id=-1, 
             $naver_id,
@@ -839,7 +923,5 @@ class Naver extends MY_REST_Controller {
             // $thumbnail_url=""
             $thumbnail_url
         );
-
-        return $last_query;
     }    
 }

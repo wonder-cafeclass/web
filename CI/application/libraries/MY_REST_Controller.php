@@ -70,6 +70,9 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         // init MyLogger
         $this->load->library('MY_Logger');
 
+        // init MyLogger
+        $this->load->library('MY_Tracker');
+
     }
 
     // @ Required : MyClass interface

@@ -208,7 +208,7 @@ var KlassRadioBtnService = (function () {
             // public key:string
             this.myEventService.KLASS_VENUE, 
             // public value:string
-            klass.venue, 
+            klass.venue_title, 
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker

@@ -1,8 +1,36 @@
 "use strict";
 var mobile_1 = require('../../util/helper/mobile');
 var birthday_1 = require('../../util/helper/birthday');
+var my_is_1 = require('../../util/helper/my-is');
 var User = (function () {
-    function User(id, nickname, name, gender, birthday, thumbnail, status, permission, kakao_id, naver_id, facebook_id, google_id, mobile, email, date_created, date_updated) {
+    function User() {
+        this.id = -1;
+        this.nickname = "";
+        this.name = "";
+        this.gender = "";
+        this.birthday = "";
+        this.thumbnail = "";
+        this.status = "";
+        this.permission = "";
+        this.kakao_id = "";
+        this.naver_id = "";
+        this.facebook_id = "";
+        this.google_id = "";
+        this.mobile = "";
+        this.email = "";
+        this.date_created = "";
+        this.date_updated = "";
+        this.helperMobile = null;
+        this.helperBirthday = null;
+        this.myIs = null;
+        this.isAdmin = false;
+        // 휴대 전화번호를 관리하는 객체를 만듭니다.
+        this.helperMobile = new mobile_1.HelperMobile(this.mobile);
+        // 생일을 관리하는 객체를 만듭니다.
+        this.helperBirthday = new birthday_1.HelperBirthday(this.birthday);
+        this.myIs = new my_is_1.HelperMyIs();
+    }
+    User.prototype.set = function (id, nickname, name, gender, birthday, thumbnail, status, permission, kakao_id, naver_id, facebook_id, google_id, mobile, email, date_created, date_updated) {
         this.id = id;
         this.nickname = nickname;
         this.name = name;
@@ -19,12 +47,28 @@ var User = (function () {
         this.email = email;
         this.date_created = date_created;
         this.date_updated = date_updated;
-        this.isAdmin = false;
-        // 휴대 전화번호를 관리하는 객체를 만듭니다.
-        this.helperMobile = new mobile_1.HelperMobile(this.mobile);
-        // 생일을 관리하는 객체를 만듭니다.
-        this.helperBirthday = new birthday_1.HelperBirthday(this.birthday);
-    }
+        return this;
+    }; // end method
+    User.prototype.setJSON = function (json) {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass / setJSON / init");
+        if (isDebug)
+            console.log("klass / setJSON / json : ", json);
+        var user = this._setJSON(json);
+        if (isDebug)
+            console.log("klass / setJSON / user : ", user);
+        // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        return user;
+    }; // end method	
+    User.prototype._setJSON = function (json) {
+        return this.myIs.copyFromJSON(
+        // target:any,
+        this, 
+        // json
+        json);
+    }; // end method	
     User.prototype.setIsAdmin = function (isAdmin) {
         if (null == isAdmin) {
             return;
@@ -103,6 +147,11 @@ var User = (function () {
     User.prototype.isGoogleUser = function () {
         return (null != this.google_id && "" != this.google_id) ? true : false;
     };
+    User.prototype.isPlatformUser = function () {
+        return (this.isFacebookUser() || this.isKakaoUser() || this.isGoogleUser() || this.isNaverUser()) ? true : false;
+    };
+    // Platforms - DONE 
+    // Mobile Methods - INIT
     User.prototype.getMobileArr = function () {
         return this.helperMobile.getMobileArr();
     };
@@ -145,6 +194,8 @@ var User = (function () {
     User.prototype.isSameMobileTail = function (target) {
         return this.helperMobile.isMobileTailSame(target);
     };
+    // Mobile Methods - DONE
+    // Birthday Methods - INIT
     User.prototype.getBirthdayArr = function () {
         return this.helperBirthday.getBirthdayArr();
     };
@@ -213,40 +264,12 @@ var User = (function () {
         this.date_updated = userJSON["date_updated"];
     };
     User.prototype.copy = function () {
-        return new User(
-        // public id:number,
-        this.id, 
-        // public nickname:string,
-        this.nickname, 
-        // public name:string,
-        this.name, 
-        // public gender:string,
-        this.gender, 
-        // public birthday:string, 
-        this.birthday, 
-        // public thumbnail:string,
-        this.thumbnail, 
-        // public status:string,
-        this.status, 
-        // public permission:string,
-        this.permission, 
-        // public kakao_id:string,
-        this.kakao_id, 
-        // public naver_id:string,
-        this.naver_id, 
-        // public facebook_id:string,
-        this.facebook_id, 
-        // public google_id:string,
-        this.google_id, 
-        // public mobile:string,
-        this.mobile, 
-        // public email:string,
-        this.email, 
-        // public date_created:string,
-        this.date_created, 
-        // public date_updated:string
-        this.date_updated);
-    };
+        return this.myIs.copy(
+        // src:any
+        this, 
+        // copy:any
+        new User());
+    }; // end method
     // @ 사용자가 변경 가능한 값들을 기준으로 비교, 결과를 알려준다.
     User.prototype.isNotSame = function (user) {
         return !this.isSame(user);

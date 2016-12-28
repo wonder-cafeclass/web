@@ -3,11 +3,14 @@ import { Headers,
          Http, 
          Response, 
          RequestOptions }                  from '@angular/http';
+
+import { User }                            from "../model/user";
+
 import { UrlService }                      from "../../util/url.service";
 import { MyExtractor }                     from '../../util/http/my-extractor';
 import { MyRequest }                       from '../../util/http/my-request';
 import { MyResponse }                      from '../../util/model/my-response';
-import { User }                            from "../model/user";
+import { MyEventWatchTowerService }        from '../../util/service/my-event-watchtower.service';
 
 @Injectable()
 export class UserService {
@@ -39,11 +42,27 @@ export class UserService {
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
 
+  private watchTower:MyEventWatchTowerService;
+
   constructor(  private us:UrlService, 
                 private http: Http) {
+
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
+
   }
+
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  }  
 
   getUserByEmail (email:string): Promise<MyResponse> {
 
@@ -53,11 +72,9 @@ export class UserService {
     let req_url = this.us.get(this.getUserByEmailUrl);
     req_url = `${ req_url }?q=${ email }`;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserByEmail / 시작");
-    if(isDebug) console.log("user.service / getUserByEmail / email : ",email);
-    if(isDebug) console.log("user.service / getUserByEmail / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserByEmail / 시작");
+    if(this.isDebug()) console.log("user.service / getUserByEmail / email : ",email);
+    if(this.isDebug()) console.log("user.service / getUserByEmail / req_url : ",req_url);
 
     return this.http.get(req_url)
                 .toPromise()
@@ -70,11 +87,9 @@ export class UserService {
     let req_url = this.us.get(this.getUserByFacebookIdUrl);
     req_url = `${ req_url }?q=${ facebookId }`;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserByFacebookId / 시작");
-    if(isDebug) console.log("user.service / getUserByFacebookId / facebookId : ",facebookId);
-    if(isDebug) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserByFacebookId / 시작");
+    if(this.isDebug()) console.log("user.service / getUserByFacebookId / facebookId : ",facebookId);
+    if(this.isDebug()) console.log("user.service / getUserByFacebookId / req_url : ",req_url);
 
     return this.http.get(req_url)
                 .toPromise()
@@ -87,11 +102,9 @@ export class UserService {
     let req_url = this.us.get(this.getUserByNaverIdUrl);
     req_url = `${ req_url }?q=${ naverId }`;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserByNaverId / 시작");
-    if(isDebug) console.log("user.service / getUserByNaverId / naverId : ",naverId);
-    if(isDebug) console.log("user.service / getUserByNaverId / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserByNaverId / 시작");
+    if(this.isDebug()) console.log("user.service / getUserByNaverId / naverId : ",naverId);
+    if(this.isDebug()) console.log("user.service / getUserByNaverId / req_url : ",req_url);
 
     return this.http.get(req_url)
                 .toPromise()
@@ -104,11 +117,9 @@ export class UserService {
     let req_url = this.us.get(this.getUserByKakaoIdUrl);
     req_url = `${ req_url }?q=${ kakaoId }`;
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserByKakaoId / 시작");
-    if(isDebug) console.log("user.service / getUserByKakaoId / kakaoId : ",kakaoId);
-    if(isDebug) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserByKakaoId / 시작");
+    if(this.isDebug()) console.log("user.service / getUserByKakaoId / kakaoId : ",kakaoId);
+    if(this.isDebug()) console.log("user.service / getUserByKakaoId / req_url : ",req_url);
 
     return this.http.get(req_url)
                 .toPromise()
@@ -118,25 +129,17 @@ export class UserService {
 
   getUserByMobile (apiKey:string, mobileHead:string, mobileBody:string, mobileTail:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserByMobile / 시작");
-    if(isDebug) console.log("user.service / getUserByMobile / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / getUserByMobile / mobileHead : ",mobileHead);
-    if(isDebug) console.log("user.service / getUserByMobile / mobileBody : ",mobileBody);
-    if(isDebug) console.log("user.service / getUserByMobile / mobileTail : ",mobileTail);
+    if(this.isDebug()) console.log("user.service / getUserByMobile / 시작");
+    if(this.isDebug()) console.log("user.service / getUserByMobile / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / getUserByMobile / mobileHead : ",mobileHead);
+    if(this.isDebug()) console.log("user.service / getUserByMobile / mobileBody : ",mobileBody);
+    if(this.isDebug()) console.log("user.service / getUserByMobile / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.getUserByMobileUrl);
 
-    if(isDebug) console.log("user.service / getUserByMobile / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserByMobile / req_url : ",req_url);
 
     let params = {
       mobile_head:mobileHead,
@@ -197,27 +200,25 @@ export class UserService {
     mobileBody:string,
     mobileTail:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / updateUserMutableProps / 시작");
-    if(isDebug) console.log("user.service / updateUserMutableProps / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / updateUserMutableProps / email : ",email);
-    if(isDebug) console.log("user.service / updateUserMutableProps / name : ",name);
-    if(isDebug) console.log("user.service / updateUserMutableProps / nickname : ",nickname);
-    if(isDebug) console.log("user.service / updateUserMutableProps / gender : ",gender);
-    if(isDebug) console.log("user.service / updateUserMutableProps / birthYear : ",birthYear);
-    if(isDebug) console.log("user.service / updateUserMutableProps / birthMonth : ",birthMonth);
-    if(isDebug) console.log("user.service / updateUserMutableProps / birthDay : ",birthDay);
-    if(isDebug) console.log("user.service / updateUserMutableProps / thumbnail : ",thumbnail);
-    if(isDebug) console.log("user.service / updateUserMutableProps / mobileHead : ",mobileHead);
-    if(isDebug) console.log("user.service / updateUserMutableProps / mobileBody : ",mobileBody);
-    if(isDebug) console.log("user.service / updateUserMutableProps / mobileTail : ",mobileTail);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / 시작");
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / email : ",email);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / name : ",name);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / nickname : ",nickname);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / gender : ",gender);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / birthYear : ",birthYear);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / birthMonth : ",birthMonth);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / birthDay : ",birthDay);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / thumbnail : ",thumbnail);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / mobileHead : ",mobileHead);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / mobileBody : ",mobileBody);
+    if(this.isDebug()) console.log("user.service / updateUserMutableProps / mobileTail : ",mobileTail);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.updateUserMutablesUrl);
 
-    if(isDebug) console.log("user.service / updateUser / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / updateUser / req_url : ",req_url);
 
     let params = {
       email:email,
@@ -255,36 +256,27 @@ export class UserService {
                 mobileBody:string,
                 mobileTail:string): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / updateUser / 시작");
-    if(isDebug) console.log("user.service / updateUser / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / updateUser / userId : ",userId);
-    if(isDebug) console.log("user.service / updateUser / email : ",email);
-    if(isDebug) console.log("user.service / updateUser / password : ",password);
-    if(isDebug) console.log("user.service / updateUser / name : ",name);
-    if(isDebug) console.log("user.service / updateUser / nickname : ",nickname);
-    if(isDebug) console.log("user.service / updateUser / gender : ",gender);
-    if(isDebug) console.log("user.service / updateUser / birthYear : ",birthYear);
-    if(isDebug) console.log("user.service / updateUser / birthMonth : ",birthMonth);
-    if(isDebug) console.log("user.service / updateUser / birthDay : ",birthDay);
-    if(isDebug) console.log("user.service / updateUser / thumbnail : ",thumbnail);
-    if(isDebug) console.log("user.service / updateUser / mobileHead : ",mobileHead);
-    if(isDebug) console.log("user.service / updateUser / mobileBody : ",mobileBody);
-    if(isDebug) console.log("user.service / updateUser / mobileTail : ",mobileTail);
+    if(this.isDebug()) console.log("user.service / updateUser / 시작");
+    if(this.isDebug()) console.log("user.service / updateUser / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updateUser / userId : ",userId);
+    if(this.isDebug()) console.log("user.service / updateUser / email : ",email);
+    if(this.isDebug()) console.log("user.service / updateUser / password : ",password);
+    if(this.isDebug()) console.log("user.service / updateUser / name : ",name);
+    if(this.isDebug()) console.log("user.service / updateUser / nickname : ",nickname);
+    if(this.isDebug()) console.log("user.service / updateUser / gender : ",gender);
+    if(this.isDebug()) console.log("user.service / updateUser / birthYear : ",birthYear);
+    if(this.isDebug()) console.log("user.service / updateUser / birthMonth : ",birthMonth);
+    if(this.isDebug()) console.log("user.service / updateUser / birthDay : ",birthDay);
+    if(this.isDebug()) console.log("user.service / updateUser / thumbnail : ",thumbnail);
+    if(this.isDebug()) console.log("user.service / updateUser / mobileHead : ",mobileHead);
+    if(this.isDebug()) console.log("user.service / updateUser / mobileBody : ",mobileBody);
+    if(this.isDebug()) console.log("user.service / updateUser / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });    
-
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.updateUserUrl);
 
-    if(isDebug) console.log("user.service / updateUser / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / updateUser / req_url : ",req_url);
 
     let params = {
       user_id:userId,
@@ -323,32 +315,23 @@ export class UserService {
             mobileTail:string
           ): Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / addUser / 시작");
-    if(isDebug) console.log("user.service / addUser / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / addUser / email : ",email);
-    if(isDebug) console.log("user.service / addUser / password : ",password);
-    if(isDebug) console.log("user.service / addUser / name : ",name);
-    if(isDebug) console.log("user.service / addUser / nickname : ",nickname);
-    if(isDebug) console.log("user.service / addUser / gender : ",gender);
-    if(isDebug) console.log("user.service / addUser / birthYear : ",birthYear);
-    if(isDebug) console.log("user.service / addUser / birthMonth : ",birthMonth);
-    if(isDebug) console.log("user.service / addUser / birthDay : ",birthDay);
-    if(isDebug) console.log("user.service / addUser / thumbnail : ",thumbnail);
-    if(isDebug) console.log("user.service / addUser / mobileHead : ",mobileHead);
-    if(isDebug) console.log("user.service / addUser / mobileBody : ",mobileBody);
-    if(isDebug) console.log("user.service / addUser / mobileTail : ",mobileTail);
+    if(this.isDebug()) console.log("user.service / addUser / 시작");
+    if(this.isDebug()) console.log("user.service / addUser / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / addUser / email : ",email);
+    if(this.isDebug()) console.log("user.service / addUser / password : ",password);
+    if(this.isDebug()) console.log("user.service / addUser / name : ",name);
+    if(this.isDebug()) console.log("user.service / addUser / nickname : ",nickname);
+    if(this.isDebug()) console.log("user.service / addUser / gender : ",gender);
+    if(this.isDebug()) console.log("user.service / addUser / birthYear : ",birthYear);
+    if(this.isDebug()) console.log("user.service / addUser / birthMonth : ",birthMonth);
+    if(this.isDebug()) console.log("user.service / addUser / birthDay : ",birthDay);
+    if(this.isDebug()) console.log("user.service / addUser / thumbnail : ",thumbnail);
+    if(this.isDebug()) console.log("user.service / addUser / mobileHead : ",mobileHead);
+    if(this.isDebug()) console.log("user.service / addUser / mobileBody : ",mobileBody);
+    if(this.isDebug()) console.log("user.service / addUser / mobileTail : ",mobileTail);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });    
-
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.addUserUrl);
     let params = {
       email:email,
@@ -373,24 +356,16 @@ export class UserService {
 
   public sendMailUserValidation(apiKey:string, userId:number, email:string) {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / sendMailUserValidation / 시작");
-    if(isDebug) console.log("user.service / sendMailUserValidation / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / sendMailUserValidation / userId : ",userId);
-    if(isDebug) console.log("user.service / sendMailUserValidation / email : ",email);
+    if(this.isDebug()) console.log("user.service / sendMailUserValidation / 시작");
+    if(this.isDebug()) console.log("user.service / sendMailUserValidation / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / sendMailUserValidation / userId : ",userId);
+    if(this.isDebug()) console.log("user.service / sendMailUserValidation / email : ",email);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.sendMailUserValidationUrl);
 
-    if(isDebug) console.log("user.service / sendMailUserValidation / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / sendMailUserValidation / req_url : ",req_url);
 
     let params = {
       user_id:userId,
@@ -405,23 +380,15 @@ export class UserService {
 
   public confirmUserValidation(apiKey:string, key:string):Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / confirmUserValidation / 시작");
-    if(isDebug) console.log("user.service / confirmUserValidation / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / confirmUserValidation / key : ",key);
+    if(this.isDebug()) console.log("user.service / confirmUserValidation / 시작");
+    if(this.isDebug()) console.log("user.service / confirmUserValidation / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / confirmUserValidation / key : ",key);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserValidationUrl);
 
-    if(isDebug) console.log("user.service / confirmUserValidation / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / confirmUserValidation / req_url : ",req_url);
 
     let params = {
       key:key
@@ -435,23 +402,15 @@ export class UserService {
 
   public confirmUserKakao(apiKey:string, kakaoId:string):Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / confirmUserKakao / 시작");
-    if(isDebug) console.log("user.service / confirmUserKakao / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / confirmUserKakao / kakaoId : ",kakaoId);
+    if(this.isDebug()) console.log("user.service / confirmUserKakao / 시작");
+    if(this.isDebug()) console.log("user.service / confirmUserKakao / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / confirmUserKakao / kakaoId : ",kakaoId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserKakaoUrl);
 
-    if(isDebug) console.log("user.service / confirmUserKakao / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / confirmUserKakao / req_url : ",req_url);
 
     let params = {
       kakao_id:kakaoId
@@ -465,23 +424,15 @@ export class UserService {
 
   public confirmUserFacebook(apiKey:string, facebookId:string):Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / confirmUserFacebook / 시작");
-    if(isDebug) console.log("user.service / confirmUserFacebook / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
+    if(this.isDebug()) console.log("user.service / confirmUserFacebook / 시작");
+    if(this.isDebug()) console.log("user.service / confirmUserFacebook / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / confirmUserFacebook / facebookId : ",facebookId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserFacebookUrl);
 
-    if(isDebug) console.log("user.service / confirmUserFacebook / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / confirmUserFacebook / req_url : ",req_url);
 
     let params = {
       facebook_id:facebookId
@@ -495,23 +446,15 @@ export class UserService {
 
   public confirmUserNaver(apiKey:string, naverId:string):Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / confirmUserNaver / 시작");
-    if(isDebug) console.log("user.service / confirmUserNaver / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / confirmUserNaver / naverId : ",naverId);
+    if(this.isDebug()) console.log("user.service / confirmUserNaver / 시작");
+    if(this.isDebug()) console.log("user.service / confirmUserNaver / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / confirmUserNaver / naverId : ",naverId);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserNaverUrl);
 
-    if(isDebug) console.log("user.service / confirmUserNaver / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / confirmUserNaver / req_url : ",req_url);
 
     let params = {
       naver_id:naverId
@@ -525,22 +468,14 @@ export class UserService {
 
   public getUserCookie(apiKey:string):Promise<MyResponse> {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / getUserCookie / 시작");
-    if(isDebug) console.log("user.service / getUserCookie / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / getUserCookie / 시작");
+    if(this.isDebug()) console.log("user.service / getUserCookie / apiKey : ",apiKey);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.getUserCookieUrl);
 
-    if(isDebug) console.log("user.service / getUserCookie / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / getUserCookie / req_url : ",req_url);
 
     let params = {};
 
@@ -554,10 +489,8 @@ export class UserService {
     
     let req_url = this.us.get(this.logoutUrl);
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / deleteUserCookie / 시작");
-    if(isDebug) console.log("user.service / deleteUserCookie / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / deleteUserCookie / 시작");
+    if(this.isDebug()) console.log("user.service / deleteUserCookie / req_url : ",req_url);
 
     return this.http.get(req_url)
                 .toPromise()
@@ -567,22 +500,14 @@ export class UserService {
 
   public confirmUserEmailPassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / confirmUserEmailPassword / 시작");
-    if(isDebug) console.log("user.service / confirmUserEmailPassword / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / confirmUserEmailPassword / 시작");
+    if(this.isDebug()) console.log("user.service / confirmUserEmailPassword / apiKey : ",apiKey);
 
     // POST
-    let headers = new Headers(
-      { 
-        'Content-Type': 'application/json',
-        'Cafeclass-REST-API-Key': apiKey
-      }
-    );
-    let options = new RequestOptions({ headers: headers });
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.confirmUserEmailPasswordUrl);
 
-    if(isDebug) console.log("user.service / confirmUserEmailPassword / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / confirmUserEmailPassword / req_url : ",req_url);
 
     let params = {
       email:email, 
@@ -597,18 +522,16 @@ export class UserService {
 
   public updatePassword(apiKey:string, email:string, password:string):Promise<MyResponse> {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user.service / updatePassword / 시작");
-    if(isDebug) console.log("user.service / updatePassword / apiKey : ",apiKey);
-    if(isDebug) console.log("user.service / updatePassword / email : ",email);
-    if(isDebug) console.log("user.service / updatePassword / password : ",password);
+    if(this.isDebug()) console.log("user.service / updatePassword / 시작");
+    if(this.isDebug()) console.log("user.service / updatePassword / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updatePassword / email : ",email);
+    if(this.isDebug()) console.log("user.service / updatePassword / password : ",password);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.us.get(this.updatePasswordUrl);
 
-    if(isDebug) console.log("user.service / updatePassword / req_url : ",req_url);
+    if(this.isDebug()) console.log("user.service / updatePassword / req_url : ",req_url);
 
     let params = {
       email:email, 
@@ -620,182 +543,38 @@ export class UserService {
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);
 
-  }
+  } // end method
+  
+} // end class
 
+
+// REMOVE ME
+/*
   public getUserEmpty():User {
-
-    let user:User = 
-    new User(
-      // public id:number,
-      -1,
-      // public nickname:string,
-      "",
-      // public name:string,
-      "",
-      // public gender:string,
-      "",
-      // public birthday:string, 
-      "",
-      // public thumbnail:string,
-      "",
-      // public status:string,
-      "",
-      // public permission:string,
-      "",
-      // public kakao_id:string,
-      "",
-      // public naver_id:string,
-      "",
-      // public facebook_id:string,
-      "",
-      // public google_id:string,
-      "",
-      // public mobile:string,
-      "",
-      // public email:string,
-      "",
-      // public date_created:string,
-      "",
-      // public date_updated:string          
-      ""
-    ); 
-    
-    return user;   
-  }  
-
+    return new User();
+  }
   public getUserFromJSON(userJSON):User {
 
     if(null == userJSON) {
       return null;
     }
 
-    let user:User = 
-    new User(
-      // public id:number,
-      +userJSON["id"],
-      // public nickname:string,
-      userJSON["nickname"],
-      // public name:string,
-      userJSON["name"],
-      // public gender:string,
-      userJSON["gender"],
-      // public birthday:string, 
-      userJSON["birthday"],
-      // public thumbnail:string,
-      userJSON["thumbnail"],
-      // public status:string,
-      userJSON["status"],
-      // public permission:string,
-      userJSON["permission"],
-      // public kakao_id:string,
-      userJSON["kakao_id"],
-      // public naver_id:string,
-      userJSON["naver_id"],
-      // public facebook_id:string,
-      userJSON["facebook_id"],
-      // public google_id:string,
-      userJSON["google_id"],
-      // public mobile:string,
-      userJSON["mobile"],
-      // public email:string,
-      userJSON["email"],
-      // public date_created:string,
-      userJSON["date_created"],
-      // public date_updated:string          
-      userJSON["date_updated"]
-    ); 
-    
-    return user;   
+    return new User().setJSON(userJSON);
   }
-
   public copyUser(user:User):User {
 
     if(null == user) {
       return;
     }
 
-    let copy:User = new User(
-      // public id:number
-      user.id,
-      // public nickname:string
-      user.nickname,
-      // public name:string
-      user.name,
-      // public gender:string
-      user.gender,
-      // public birthday:string 
-      user.birthday,
-      // public thumbnail:string
-      user.thumbnail,
-      // public status:string
-      user.status,
-      // public permission:string
-      user.permission,
-      // public kakao_id:string
-      user.kakao_id,
-      // public naver_id:string
-      user.naver_id,
-      // public facebook_id:string
-      user.facebook_id,
-      // public google_id:string
-      user.google_id,
-      // public mobile:string
-      user.mobile,
-      // public email:string
-      user.email,
-      // public date_created:string
-      user.date_created,
-      // public date_updated:string      
-      user.date_updated
-    );
-
-    return copy;
-
+    return user.copy();
   }
-
   public isSameUser(userHead:User, userTail:User) :boolean {
 
     if(null == userHead || null == userTail) {
       return false;
     }
 
-    if(userHead.id !== userTail.id) {
-      return false;
-    } else if(userHead.nickname !== userTail.nickname) {
-      return false;
-    } else if(userHead.name !== userTail.name) {
-      return false;
-    } else if(userHead.gender !== userTail.gender) {
-      return false;
-    } else if(userHead.birthday !== userTail.birthday) {
-      return false;
-    } else if(userHead.thumbnail !== userTail.thumbnail) {
-      return false;
-    } else if(userHead.status !== userTail.status) {
-      return false;
-    } else if(userHead.permission !== userTail.permission) {
-      return false;
-    } else if(userHead.kakao_id !== userTail.kakao_id) {
-      return false;
-    } else if(userHead.naver_id !== userTail.naver_id) {
-      return false;
-    } else if(userHead.facebook_id !== userTail.facebook_id) {
-      return false;
-    } else if(userHead.google_id !== userTail.google_id) {
-      return false;
-    } else if(userHead.mobile !== userTail.mobile) {
-      return false;
-    } else if(userHead.email !== userTail.email) {
-      return false;
-    } else if(userHead.date_created !== userTail.date_created) {
-      return false;
-    } else if(userHead.date_updated !== userTail.date_updated) {
-      return false;
-    }
-
-    return true;
+    return userHead.isSame(userTail);
   }
-
-
-  
-}
+*/  

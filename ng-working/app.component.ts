@@ -242,7 +242,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			let userFromDB = myResponse.getDataProp("user");
 			if(myResponse.isSuccess() && null != userFromDB) {
 
-				let user:User = this.userService.getUserFromJSON(userFromDB);
+				let user:User = new User().setJSON(userFromDB);
 				if(isDebug) console.log(`app-root / getLoginUserFromCookie / user : `,user);
 				this.loginUser = user;
 

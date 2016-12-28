@@ -15,7 +15,6 @@ var widget_module_1 = require('../widget/widget.module');
 var user_my_component_1 = require('./user-my.component');
 var user_my_nav_list_component_1 = require('./user-my-nav-list.component');
 var my_info_component_1 = require('./view/user-my-nav-list/my-info.component');
-var user_service_1 = require('./user.service');
 var klass_radiobtn_service_1 = require('../klass/service/klass-radiobtn.service');
 var users_routing_1 = require('./users.routing');
 var UsersModule = (function () {
@@ -35,7 +34,6 @@ var UsersModule = (function () {
                 my_info_component_1.MyInfoComponent
             ],
             providers: [
-                user_service_1.UserService,
                 klass_radiobtn_service_1.KlassRadioBtnService
             ]
         }), 
