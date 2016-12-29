@@ -276,7 +276,7 @@ var TeacherService = (function () {
         if (null == user) {
             return null;
         }
-        var newTeacher = new teacher_1.Teacher(
+        var newTeacher = new teacher_1.Teacher().set(
         // public id:number,
         -1, 
         // public user_id:number,
@@ -313,38 +313,7 @@ var TeacherService = (function () {
         if (null == jsonObj) {
             return null;
         }
-        var newTeacher = new teacher_1.Teacher(
-        // public id:number,
-        jsonObj.id, 
-        // public user_id:number,
-        +jsonObj.user_id, 
-        // public nickname:string,
-        jsonObj.nickname, 
-        // public name:string,
-        jsonObj.name, 
-        // public gender:string,
-        jsonObj.gender, 
-        // public resume:string,
-        jsonObj.resume, 
-        // public greeting:string,
-        jsonObj.greeting, 
-        // public birthday:string, 
-        jsonObj.birthday, 
-        // public thumbnail:string,
-        jsonObj.thumbnail, 
-        // public status:string,
-        jsonObj.status, 
-        // public permission:string,
-        jsonObj.permission, 
-        // public mobile:string,
-        jsonObj.mobile, 
-        // public email:string,
-        jsonObj.email, 
-        // public date_created:string,
-        jsonObj.date_created, 
-        // public date_updated:string
-        jsonObj.date_updated);
-        return newTeacher;
+        return new teacher_1.Teacher().setJSON(jsonObj);
     };
     TeacherService = __decorate([
         core_1.Injectable(), 

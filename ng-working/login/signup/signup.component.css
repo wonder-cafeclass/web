@@ -32,8 +32,9 @@ td.layout.btn-box {
   text-align: right;
 }
 img.logo {
-    width: 50%;
-    padding: 35px;
+  width: 50%;
+  padding: 35px;
+  cursor: pointer;
 }
 img.title-signup {
     width: 10%;

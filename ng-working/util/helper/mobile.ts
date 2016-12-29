@@ -1,5 +1,5 @@
 /*
-*	@ Desc : 대한민국 휴대폰 번호 관련 처리 로직.
+*	@ Desc : 대한민국 휴대폰 번호 관련 처리 로직. / @ Deprecated
 */
 export class HelperMobile {
 

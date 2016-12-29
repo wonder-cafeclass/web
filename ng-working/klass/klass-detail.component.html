@@ -37,12 +37,12 @@
             [imagePath]="imgUploaderImagePathKlassPoster"
             [imageUrl]="imgUploaderImageUrlKlassPoster"
             [eventKey]="imgUploaderEventKeyKlassPoster"
-            [fileSizeKBMax]="400"
+            [fileSizeKBMax]="1000"
             [fileWidth]="535"
-            [fileMinWidth]="512"
-            [fileMaxWidth]="1024"
+            [fileMinWidth]="256"
+            [fileMaxWidth]="2048"
             [fileMinHeight]="256"
-            [fileMaxHeight]="512"
+            [fileMaxHeight]="1024"
             (emitter)="onChangedFromChild($event)">
             </hidden-uploader>
             <img  
@@ -53,8 +53,10 @@
             src={{imgUploaderImageUrlKlassPoster}}>
 
             <!-- LABEL : klass title -->
-            <div class="klass-title-overlay">
-              <h5 class="font"><strong>{{klassTitle}}</strong></h5>
+            <div 
+            (click)="onClickKlassTitle($event)"
+            class="klass-title-overlay">
+              <h5 class="font unselectable"><strong>{{klassTitle}}</strong></h5>
             </div>
             <div class="klass-title-overlay-bg"></div>
           
@@ -67,7 +69,7 @@
             <button type="button" 
                 (click)="onClickKlassPoster($event)"
                 class="btn btn-default img-uploader btn-orange">
-              <span>수업 포스터 올리기</span>
+              <span>클래스 커버 이미지 올리기</span>
             </button>
           </li>
 
@@ -117,8 +119,20 @@
         <!-- Second Column -->
         <ul class="list-group col-md-4" style="padding-right: 0px;">
 
+          <!-- PRICE CALC ADMIN INIT-->
+          <li 
+          *ngIf="isTeacher" 
+          class="list-group-item col-next first">
+            <div class="price-calc">
+              <klass-price-calculator (emitter)="onChangedFromChild($event)">
+              </klass-price-calculator>
+            </div>
+          </li>
+          <!-- PRICE CALC ADMIN DONE-->        
+
           <!-- WEEKS & PRICE INIT -->
-          <li class="list-group-item col-next first">
+          <li
+          class="list-group-item col-next">
             <pricetag-h 
             [title]="pricePerWeekFormat"
             [fontSizeTitle]="40"
@@ -139,17 +153,6 @@
             </pricetag-h>
           </li>
           <!-- WEEKS & PRICE DONE -->
-
-          <!-- PRICE CALC ADMIN INIT-->
-          <li 
-          *ngIf="isTeacher" 
-          class="list-group-item col-next">
-            <div class="price-calc">
-              <klass-price-calculator (emitter)="onChangedFromChild($event)">
-              </klass-price-calculator>
-            </div>
-          </li>
-          <!-- PRICE CALC ADMIN DONE-->
 
           <!-- FILTERS INIT -->
           <li class="list-group-item col-next">
@@ -272,7 +275,9 @@
 
 
           <!-- FIRST KLASS DATE INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next">
             <butterfly  
             [title]="'수업 시작'"
             [fontSizeTitle]="16"
@@ -301,7 +306,9 @@
           </li>
           <!-- FIRST KLASS DATE ADMIN DONE -->
           
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
                       style="width:100%;"

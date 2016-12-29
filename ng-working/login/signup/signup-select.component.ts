@@ -184,4 +184,14 @@ export class SignupSelectComponent implements OnInit, AfterViewInit {
 
   } // end init
 
+  onClickLogo(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+
+  }
+
 }

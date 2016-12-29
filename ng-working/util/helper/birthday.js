@@ -1,6 +1,6 @@
 "use strict";
 /*
-*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21
+*	@ Desc : 생일 관련 처리 로직. ex) 1990-01-21 / @ Deprecated
 */
 var HelperBirthday = (function () {
     function HelperBirthday(birthdayStr) {

@@ -87,6 +87,7 @@ var MyEventService = (function () {
         this.KEY_USER_MOBILE_NUM_BODY = "KEY_USER_MOBILE_NUM_BODY"; // 유저 - 휴대전화 두번째 3~4자리 
         this.KEY_USER_MOBILE_NUM_TAIL = "KEY_USER_MOBILE_NUM_TAIL"; // 유저 - 휴대전화 마지막 4자리 
         this.KEY_USER_GENDER = "KEY_USER_GENDER"; // 유저 - 성별
+        this.KEY_USER_BIRTH = "KEY_USER_BIRTH"; // 유저 - 생년월일
         this.KEY_USER_BIRTH_YEAR = "KEY_USER_BIRTH_YEAR"; // 유저 - 생년
         this.KEY_USER_BIRTH_MONTH = "KEY_USER_BIRTH_MONTH"; // 유저 - 생월
         this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
@@ -482,7 +483,7 @@ var MyEventService = (function () {
         ];
         return defaultMetaList;
     };
-    MyEventService.prototype.getDefaultMetaListApplyTeacher = function () {
+    MyEventService.prototype.getDefaultMetaListTeacherInfo = function () {
         var defaultMetaList = [
             new default_meta_1.DefaultMeta(
             // public title:string
@@ -661,7 +662,7 @@ var MyEventService = (function () {
         var defaultMetaList = [
             new default_meta_1.DefaultMeta(// 0
             // public title:string
-            "4주당 1인당 강의료", 
+            "강의료는 얼마인가요?", 
             // public placeholder:string
             "4주당 1인당 강의료를 입력해주세요", 
             // public eventKey:string
@@ -694,7 +695,7 @@ var MyEventService = (function () {
             this.defaultType.TYPE_INPUT),
             new default_meta_1.DefaultMeta(// 3
             // public title:string
-            "수업 학생수", 
+            "몇 명까지 참석 가능한가요?", 
             // public placeholder:string
             "수업 학생수를 입력해주세요", 
             // public eventKey:string
@@ -705,7 +706,7 @@ var MyEventService = (function () {
             this.defaultType.TYPE_NUMBER),
             new default_meta_1.DefaultMeta(// 4
             // public title:string
-            "최종 전달 비용", 
+            "최종 전달 금액", 
             // public placeholder:string
             "합계를 입력해주세요", 
             // public eventKey:string
@@ -716,7 +717,7 @@ var MyEventService = (function () {
             this.defaultType.TYPE_INPUT),
             new default_meta_1.DefaultMeta(// 5
             // public title:string
-            "수업 주수", 
+            "수업은 몇 주간 진행되나요?", 
             // public placeholder:string
             "수업 주수를 입력해주세요", 
             // public eventKey:string

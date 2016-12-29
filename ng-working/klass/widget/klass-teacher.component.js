@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var klass_teacher_1 = require('../model/klass-teacher');
+var teacher_1 = require('../../teachers/model/teacher');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
@@ -31,10 +31,11 @@ var KlassTeacherComponent = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
     }
+    KlassTeacherComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     KlassTeacherComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / ngOnInit / init");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -53,12 +54,10 @@ var KlassTeacherComponent = (function () {
     };
     KlassTeacherComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / subscribeEventPack / isEventPackReady : ", isEventPackReady);
         if (this.watchTower.getIsEventPackReady()) {
             // 1. 이미 EventPack 로딩이 완료된 경우
@@ -68,7 +67,7 @@ var KlassTeacherComponent = (function () {
         else {
             // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
             this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("klass-teacher / subscribeEventPack / isEventPackReady : ", isEventPackReady);
                 // 이벤트 관련 정보가 준비되었습니다.
                 // 부모 객체에게 component가 준비된 것을 알립니다.
@@ -77,12 +76,10 @@ var KlassTeacherComponent = (function () {
         } // end if
     }; // end method 
     KlassTeacherComponent.prototype.emitEventOnReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / emitEventOnReady / 시작");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-teacher / emitEventOnReady / 중단 / EventPack is not valid!");
             return;
         }
@@ -91,28 +88,37 @@ var KlassTeacherComponent = (function () {
         this.watchTower.getMyEventService().KEY_KLASS_TEACHER_LIST, 
         // component
         this);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / emitEventOnReady / myEventOnReady : ", myEventOnReady);
         this.emitter.emit(myEventOnReady);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / emitEventOnReady / Done!");
     };
     KlassTeacherComponent.prototype.init = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-teacher / init / 시작");
-        if (isDebug)
-            console.log("klass-teacher / init / this.klassTeacher : ", this.klassTeacher);
+        if (this.isDebug())
+            console.log("klass-teacher / init / this.teacher : ", this.teacher);
         this.setResume();
         this.setGreeting();
     };
+    KlassTeacherComponent.prototype.setTeacher = function (teacher) {
+        if (this.isDebug())
+            console.log("klass-teacher / setTeacher / 시작");
+        if (this.isDebug())
+            console.log("klass-teacher / setTeacher / teacher : ", teacher);
+        this.teacher = teacher;
+    };
     KlassTeacherComponent.prototype.setResume = function () {
-        if (null == this.klassTeacher) {
+        if (this.isDebug())
+            console.log("klass-teacher / setResume / 시작");
+        if (null == this.teacher) {
+            if (this.isDebug())
+                console.log("klass-teacher / setResume / 중단 / null == this.teacher");
             return;
         }
         // Resume를 변경하기 위한 이벤트 리스트를 만듭니다.
-        var resumeArr = this.klassTeacher.getResumeArr();
+        var resumeArr = this.teacher.getResumeArr();
         var myEventList = [];
         for (var i = 0; i < resumeArr.length; ++i) {
             var resume = resumeArr[i];
@@ -134,30 +140,40 @@ var KlassTeacherComponent = (function () {
         this.myEventListForTeacherResume = myEventList;
     }; // end method
     KlassTeacherComponent.prototype.setGreeting = function () {
-        if (null == this.klassTeacher) {
+        if (this.isDebug())
+            console.log("klass-teacher / setGreeting / 시작");
+        if (null == this.teacher) {
+            if (this.isDebug())
+                console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
             return;
         }
+        /*
         // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-        var greetingArr = this.klassTeacher.getGreetingArr();
-        var myEventList = [];
+        let greetingArr:string[] = this.teacher.getGreetingArr();
+        let myEventList:MyEvent[] = [];
         for (var i = 0; i < greetingArr.length; ++i) {
-            var greeting = greetingArr[i];
-            var myEventGreeting = new my_event_1.MyEvent(
+          let greeting:string = greetingArr[i];
+    
+          let myEventGreeting =
+          new MyEvent(
             // public id:string
-            this.myEventService.getUniqueIdx(), 
+            this.myEventService.getUniqueIdx(),
             // public eventName:string
-            this.myEventService.ANY, 
+            this.myEventService.ANY,
             // public key:string
-            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST, 
+            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST,
             // public value:string
-            greeting, 
+            greeting,
             // public metaObj:any
-            { klassId: +this.klassId }, 
+            {klassId:+this.klassId},
             // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker());
-            myEventList.push(myEventGreeting);
+            this.myCheckerService.getTitleChecker()
+          );
+    
+          myEventList.push(myEventGreeting);
         }
         this.myEventListForTeacherGreeting = myEventList;
+        */
     }; // end method  
     KlassTeacherComponent.prototype.onClickResume = function (event) {
         event.stopPropagation();
@@ -246,73 +262,6 @@ var KlassTeacherComponent = (function () {
                 } // end if
             } // end if      
         } // end if
-        // REFACTOR ME / REMOVE ME
-        /*
-        if(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST === myEvent.key) {
-    
-          if(this.myEventService.ON_CHANGE === myEvent.eventName) {
-    
-            // Do something...
-    
-          } else if(myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
-    
-            // 열이 추가되었습니다. 부모 객체에게 전달합니다.
-    
-    
-          } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
-    
-            if(null != myEvent.parentEventList) {
-              this.myEventListForTeacherResume = myEvent.parentEventList;
-            }
-    
-          } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
-    
-            // DB UPDATE!
-            console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
-    
-          } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
-    
-            this.isShowResume = false;
-    
-          } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
-    
-            if(null != myEvent.parentEventList) {
-              this.myEventListForTeacherResume = myEvent.parentEventList;
-            }
-            this.isShowResume = false;
-    
-          }
-    
-        } else if(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST === myEvent.key) {
-    
-          if(this.myEventService.ON_CHANGE === myEvent.eventName) {
-            // Do something...
-          } else if(this.myEventService.ON_REMOVE_ROW === myEvent.eventName) {
-    
-            if(null != myEvent.parentEventList) {
-              this.myEventListForTeacherGreeting = myEvent.parentEventList;
-            }
-    
-          } else if(this.myEventService.ON_SAVE === myEvent.eventName) {
-    
-            // DB UPDATE!
-            console.log("klass-teacher / onChangedFromChild / DB UPDATE!");
-    
-          } else if(this.myEventService.ON_SHUTDOWN === myEvent.eventName) {
-    
-            this.isShowGreeting = false;
-    
-          } else if(this.myEventService.ON_SHUTDOWN_N_ROLLBACK === myEvent.eventName) {
-    
-            if(null != myEvent.parentEventList) {
-              this.myEventListForTeacherGreeting = myEvent.parentEventList;
-            }
-            this.isShowGreeting = false;
-    
-          } // end if
-    
-        } // end if
-        */
     }; // end method
     __decorate([
         core_1.Input(), 
@@ -336,8 +285,8 @@ var KlassTeacherComponent = (function () {
     ], KlassTeacherComponent.prototype, "cageHeight", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', klass_teacher_1.KlassTeacher)
-    ], KlassTeacherComponent.prototype, "klassTeacher", void 0);
+        __metadata('design:type', teacher_1.Teacher)
+    ], KlassTeacherComponent.prototype, "teacher", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

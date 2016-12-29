@@ -312,7 +312,7 @@ export class TeacherService {
     }
 
     let newTeacher:Teacher = 
-    new Teacher(
+    new Teacher().set(
       // public id:number,
       -1,
       // public user_id:number,
@@ -350,47 +350,11 @@ export class TeacherService {
   } // end method
 
   getTeacherFromJSON (jsonObj): Teacher {
-
     if(null == jsonObj) {
       return null;
     }
 
-    let newTeacher:Teacher = 
-    new Teacher(
-      // public id:number,
-      jsonObj.id,
-      // public user_id:number,
-      +jsonObj.user_id,
-      // public nickname:string,
-      jsonObj.nickname,
-      // public name:string,
-      jsonObj.name,
-      // public gender:string,
-      jsonObj.gender,
-      // public resume:string,
-      jsonObj.resume,
-      // public greeting:string,
-      jsonObj.greeting,
-      // public birthday:string, 
-      jsonObj.birthday,
-      // public thumbnail:string,
-      jsonObj.thumbnail,
-      // public status:string,
-      jsonObj.status,
-      // public permission:string,
-      jsonObj.permission,
-      // public mobile:string,
-      jsonObj.mobile,
-      // public email:string,
-      jsonObj.email,
-      // public date_created:string,
-      jsonObj.date_created,
-      // public date_updated:string
-      jsonObj.date_updated
-    );
-
-    return newTeacher;    
-
+    return new Teacher().setJSON(jsonObj);
   }
   
 }

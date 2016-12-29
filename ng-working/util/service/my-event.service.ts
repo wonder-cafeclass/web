@@ -95,6 +95,7 @@ export class MyEventService {
 
     KEY_USER_GENDER:string="KEY_USER_GENDER";             // 유저 - 성별
 
+    KEY_USER_BIRTH:string="KEY_USER_BIRTH";               // 유저 - 생년월일
     KEY_USER_BIRTH_YEAR:string="KEY_USER_BIRTH_YEAR";     // 유저 - 생년
     KEY_USER_BIRTH_MONTH:string="KEY_USER_BIRTH_MONTH";   // 유저 - 생월
     KEY_USER_BIRTH_DAY:string="KEY_USER_BIRTH_DAY";       // 유저 - 생일
@@ -561,7 +562,7 @@ export class MyEventService {
         return defaultMetaList;
     }
 
-    public getDefaultMetaListApplyTeacher() :DefaultMeta[] {
+    public getDefaultMetaListTeacherInfo() :DefaultMeta[] {
 
         let defaultMetaList:DefaultMeta[] = 
         [
@@ -765,7 +766,7 @@ export class MyEventService {
         [
             new DefaultMeta( // 0
             // public title:string
-            "4주당 1인당 강의료",
+            "강의료는 얼마인가요?",
             // public placeholder:string
             "4주당 1인당 강의료를 입력해주세요",
             // public eventKey:string
@@ -801,7 +802,7 @@ export class MyEventService {
             ),
             new DefaultMeta( // 3
             // public title:string
-            "수업 학생수",
+            "몇 명까지 참석 가능한가요?",
             // public placeholder:string
             "수업 학생수를 입력해주세요",
             // public eventKey:string
@@ -813,7 +814,7 @@ export class MyEventService {
             ), 
             new DefaultMeta( // 4
             // public title:string
-            "최종 전달 비용",
+            "최종 전달 금액",
             // public placeholder:string
             "합계를 입력해주세요",
             // public eventKey:string
@@ -825,7 +826,7 @@ export class MyEventService {
             ),
             new DefaultMeta( // 5
             // public title:string
-            "수업 주수",
+            "수업은 몇 주간 진행되나요?",
             // public placeholder:string
             "수업 주수를 입력해주세요",
             // public eventKey:string

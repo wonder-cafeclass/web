@@ -281,7 +281,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     } else if(this.defaultType.TYPE_CHECKBOX == this.meta.type) {
 
-      // wonder.jung
       let optionListChecked:DefaultOption[] = this.getCheckedDefaultOptionList();
       if(isDebug) console.log("default / hasDone / optionListChecked : ",optionListChecked);
       for (var i = 0; i < optionListChecked.length; ++i) {
@@ -558,6 +557,21 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     }
 
   } // end method 
+
+  setFocus() :void {
+    this.isFocus = true;
+
+    // wonder.jung
+
+    if( this.meta.type === this.defaultType.TYPE_INPUT ) {
+
+      let inputEl = document.getElementById("default-input");
+      if(null != inputEl) {
+        inputEl.focus();
+      }
+
+    } // end if
+  }
 
   getSelectedValue() :string {
     

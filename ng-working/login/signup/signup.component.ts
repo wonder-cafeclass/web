@@ -220,6 +220,25 @@ export class SignupComponent implements AfterViewInit {
     this.nicknameComponent.setInput(this.userCopy.nickname);
   }
 
+  private setBirthday():void {
+
+    if(this.isDebug()) console.log("signup / setBirthday / 시작");
+    
+    if(null == this.birthdayComponent) {
+      if(this.isDebug()) console.log("signup / setBirthday / 중단 / null == this.birthdayComponent");
+      return;
+    }
+    if(null == this.userCopy) {
+      if(this.isDebug()) console.log("signup / setBirthday / 중단 / null == this.userCopy");
+      return;
+    }
+
+    this.birthdayComponent.setBirthYear(this.userCopy.getBirthYear());
+    this.birthdayComponent.setBirthMonth(this.userCopy.getBirthMonth());
+    this.birthdayComponent.setBirthDay(this.userCopy.getBirthMonth(), this.userCopy.getBirthDay());
+
+  } // end method
+
   private setProfileImg():void {
 
     if(this.isDebug()) console.log("signup / setProfileImg / 시작");
@@ -751,6 +770,17 @@ export class SignupComponent implements AfterViewInit {
 
   }
 
+  // @ Desc : 페이스북, 네이버, 카카오 플랫폼 로그인이 아닌 카페 클래스로 직접 회원 가입을 진행할 경우, 
+  // 플랫폼을 통한 유저 정보를 만들지 않았으므로 새로 만들어 줍니다.
+  checkEnrollCafeclass() :void {
+
+    if(null == this.user) {
+      this.user = new User();
+      this.userCopy = this.user.copy();
+    } // end if
+
+  } // end method
+
   onChangedFromChild(myEvent:MyEvent) :void {
 
     // 자식 엘리먼트들의 이벤트 처리
@@ -783,9 +813,17 @@ export class SignupComponent implements AfterViewInit {
         this.nicknameComponent = myEvent.metaObj;
         this.setNickname();
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH)) {
+
+        this.birthdayComponent.setDefault();
+        this.setBirthday();
+
       } // end if
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      // 카페 클래스로 가입 신청을 하는 경우, 미리 만들어 놓은 회원 정보가 없으므로 빈 회원 객체를 만들어 준다.
+      this.checkEnrollCafeclass();
 
       if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
 
@@ -960,43 +998,14 @@ export class SignupComponent implements AfterViewInit {
     }); // end service    
 
   } // end method
+
+  onClickLogo(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+  } // end method
   
 }
-
-
-  // REMOVE ME
-  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
-  /*
-  private getInput(eventKey:string) :any {
-
-    if(this.isDebug()) console.log("signup / getInput / init");
-
-    let target:DefaultComponent = null;
-
-    this.inputComponentList.forEach(function(inputComponent) {
-
-      if(this.isDebug()) console.log("signup / getInput / eventKey : ",eventKey);
-      if(this.isDebug()) console.log("signup / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
-
-      if(inputComponent.hasEventKey(eventKey)) {
-        if(this.isDebug()) console.log("signup / getInput / inputComponent : ",inputComponent);
-        target = inputComponent;
-        return;
-      }
-
-    }); // end for-each
-
-    return target;
-  }  
-  */
-  /*
-  private setDefaultComponents() :void {
-
-    if(this.isDebug()) console.log("signup / setDefaultComponents / 시작");
-
-    // DefaultComponent들을 세팅
-    this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
-    this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
-    this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
-  }
-  */

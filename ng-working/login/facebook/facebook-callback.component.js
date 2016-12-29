@@ -193,7 +193,7 @@ var FacebookCallbackComponent = (function () {
                 "facebook-callback / getAccessToken / Failed! / code : " + code);
             } // end if
         });
-    };
+    }; // end method
     FacebookCallbackComponent.prototype.getMe = function () {
         var _this = this;
         if (this.isDebug())
@@ -238,16 +238,10 @@ var FacebookCallbackComponent = (function () {
                         console.log("facebook-callback / getMe / loginUser : ", loginUser);
                     // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                     _this.watchTower.announceLogin(loginUser);
-                    // 선생님 등록이 되어있는 회원인지 확인.
-                    _this.teacherService
-                        .getTeacher(_this.watchTower.getApiKey(), +user.id)
-                        .then(function (myResponse) {
-                        if (_this.isDebug())
-                            console.log("naver-callback / getTeacher / myResponse : ", myResponse);
-                        var teacherFromDB = myResponse.getDataProp("teacher");
-                        // 선생님 로그인 여부를 확인, 전파한다.
-                        _this.watchTower.announceLoginTeacher(teacherFromDB);
-                    }); // end service
+                    // this.getTeacher(+user.id);
+                    if (loginUser.isTeacher()) {
+                        _this.watchTower.announceLoginTeacher(loginUser.getTeacher());
+                    } // end if
                 }
                 if (_this.isDebug())
                     console.log("facebook-callback / 페이스북 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");

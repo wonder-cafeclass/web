@@ -97,46 +97,49 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   }
 
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / ngAfterViewInit");
+    if(this.isDebug()) console.log("my-info / ngAfterViewInit");
 
-    this.setDefaultComponents();
+    // REMOVE ME
+    // this.setDefaultComponents();
 
     this.asyncViewPack();
   }
+
+  // REMOVE ME
+  /*
   private setDefaultComponents() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / setDefaultComponents / 시작");
+    if(this.isDebug()) console.log("my-info / setDefaultComponents / 시작");
 
     // DefaultComponent들을 세팅
     this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
     this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
     this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
   }
+  */
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("my-info / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("my-info / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -156,9 +159,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private setLoginUser() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / setLoginUser / 시작");
+    if(this.isDebug()) console.log("my-info / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
     let userJSON = this.watchTower.getLoginUser();
@@ -178,22 +179,22 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   }
 
+  // REMOVE ME
   // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
+  /*
   private getInput(eventKey:string) :any {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / getInput / init");
+    if(this.isDebug()) console.log("my-info / getInput / init");
 
     let target:DefaultComponent = null;
 
     this.inputComponentList.forEach(function(inputComponent) {
 
-      if(isDebug) console.log("my-info / getInput / eventKey : ",eventKey);
-      if(isDebug) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
+      if(this.isDebug()) console.log("my-info / getInput / eventKey : ",eventKey);
+      if(this.isDebug()) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
 
       if(inputComponent.hasEventKey(eventKey)) {
-        if(isDebug) console.log("my-info / getInput / inputComponent : ",inputComponent);
+        if(this.isDebug()) console.log("my-info / getInput / inputComponent : ",inputComponent);
         target = inputComponent;
         return;
       }
@@ -201,13 +202,12 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     }); // end for-each
 
     return target;
-  }  
+  } 
+  */ 
 
   private logActionPage() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / logActionPage / 시작");
+    if(this.isDebug()) console.log("my-info / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -217,16 +217,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       this.myLoggerService.pageTypeMyInfo
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("my-info / logActionPage / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("my-info / logActionPage / myResponse : ",myResponse);
     }) // end service
 
   }  
 
   private init() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / init / 시작");
+    if(this.isDebug()) console.log("my-info / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
@@ -239,18 +237,16 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   fillViewUserInfo() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / fillViewUserInfo");
-    if(isDebug) console.log("my-info / fillViewUserInfo / this.loginUser : ",this.loginUser);
+    if(this.isDebug()) console.log("my-info / fillViewUserInfo");
+    if(this.isDebug()) console.log("my-info / fillViewUserInfo / this.loginUser : ",this.loginUser);
 
     if(null == this.loginUser) {
-      if(isDebug) console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
+      if(this.isDebug()) console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
       return;
     }
-    this.emailComponent.setInput(this.loginUserCopy.email);
-    this.nameComponent.setInput(this.loginUserCopy.name);
-    this.nicknameComponent.setInput(this.loginUserCopy.nickname);
+    this.setEmail();
+    this.setName();
+    this.setNickname();
     this.profileImgUploadComponent.setProfileImg(this.loginUserCopy.thumbnail);
     this.mobileComponent.setMobileHead(this.loginUserCopy.getMobileHead());
     this.mobileComponent.setMobileBody(this.loginUserCopy.getMobileBody());
@@ -262,11 +258,60 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   }
 
+  private setEmail():void {
+
+    if(this.isDebug()) console.log("my-info / setEmail");
+
+    if(null == this.loginUserCopy) {
+      if(this.isDebug()) console.log("my-info / setEmail / 중단 / null == this.loginUserCopy");
+      return;
+    }
+    if(null == this.emailComponent) {
+      if(this.isDebug()) console.log("my-info / setEmail / 중단 / null == this.emailComponent");
+      return;
+    }
+
+    this.emailComponent.setInput(this.loginUserCopy.email);
+
+  }
+
+  private setName():void {
+
+    if(this.isDebug()) console.log("my-info / setName");
+
+    if(null == this.loginUserCopy) {
+      if(this.isDebug()) console.log("my-info / setName / 중단 / null == this.loginUserCopy");
+      return;
+    }
+    if(null == this.nameComponent) {
+      if(this.isDebug()) console.log("my-info / setName / 중단 / null == this.nameComponent");
+      return;
+    }
+
+    this.nameComponent.setInput(this.loginUserCopy.name);
+
+  }
+
+  private setNickname():void {
+
+    if(this.isDebug()) console.log("my-info / setNickname");
+
+    if(null == this.loginUserCopy) {
+      if(this.isDebug()) console.log("my-info / setNickname / 중단 / null == this.loginUserCopy");
+      return;
+    }
+    if(null == this.nicknameComponent) {
+      if(this.isDebug()) console.log("my-info / setNickname / 중단 / null == this.nicknameComponent");
+      return;
+    }
+
+    this.nicknameComponent.setInput(this.loginUserCopy.nickname);    
+
+  }
+
   private confirmUserEmailPassword(password:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / confirmUserEmailPassword / init");
+    if(this.isDebug()) console.log("my-info / confirmUserEmailPassword / init");
 
     // 현재 유저의 비밀번호와 동일한지 비교합니다.
     this.userService.confirmUserEmailPassword(
@@ -278,15 +323,15 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       password
     ).then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("my-info / confirmUserEmailPassword / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("my-info / confirmUserEmailPassword / myResponse : ",myResponse);
 
       let user:User = null;
       if(myResponse.isSuccess()) {
         user = myResponse.digDataProp(["user","mobile"]);
       } // end if
       if(null != user) {
-        if(isDebug) console.log("my-info / confirmUserEmailPassword / 패스워드가 확인되었습니다.");
-        if(isDebug) console.log("my-info / confirmUserEmailPassword / user : ",user);
+        if(this.isDebug()) console.log("my-info / confirmUserEmailPassword / 패스워드가 확인되었습니다.");
+        if(this.isDebug()) console.log("my-info / confirmUserEmailPassword / user : ",user);
 
         // wonder.jung
         // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
@@ -302,7 +347,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       } else {
 
         // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
-        if(isDebug) console.log("my-info / confirmUserEmailPassword / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
+        if(this.isDebug()) console.log("my-info / confirmUserEmailPassword / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
         this.passwordsComponent.showTooltipWarning(
           // eventKey:string
           this.passwordsComponent.eventKeyHead,
@@ -316,13 +361,11 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private confirmNewPassword(password:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / confirmNewPassword / init");
+    if(this.isDebug()) console.log("my-info / confirmNewPassword / init");
 
     // 1. 새로운 패스워드는 이전의 패스워드와 달라야 합니다.
     if(this.passwordCur === password) {
-      if(isDebug) console.log("my-info / confirmNewPassword / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
+      if(this.isDebug()) console.log("my-info / confirmNewPassword / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
       this.passwordsComponent.showTooltipWarning(
         // eventKey:string
         this.passwordsComponent.eventKeyBody,
@@ -330,7 +373,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         "새로운 비밀번호가 이전과 같습니다!"
       );
     } else {
-      if(isDebug) console.log("my-info / confirmNewPassword / 유효한 새로운 패스워드를 받았습니다.");
+      if(this.isDebug()) console.log("my-info / confirmNewPassword / 유효한 새로운 패스워드를 받았습니다.");
       // 변수에 저장합니다.
       this.passwordNew = password;
       // 사용자에게 성공 메시지 노출
@@ -345,9 +388,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private confirmRepassword(password:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / confirmRepassword / init");
+    if(this.isDebug()) console.log("my-info / confirmRepassword / init");
 
     if(this.passwordNew !== password) {
       // 새로운 비밀번호 재확인이 새로운 비밀번호와 다릅니다. 
@@ -376,15 +417,13 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / onChangedFromChild / init");
-    if(isDebug) console.log("my-info / onChangedFromChild / myEvent : ",myEvent);
-    if(isDebug) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
-    if(isDebug) console.log("my-info / onChangedFromChild / myEvent.value : ",myEvent.value);
+    if(this.isDebug()) console.log("my-info / onChangedFromChild / init");
+    if(this.isDebug()) console.log("my-info / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("my-info / onChangedFromChild / myEvent.key : ",myEvent.key);
+    if(this.isDebug()) console.log("my-info / onChangedFromChild / myEvent.value : ",myEvent.value);
 
     if(myEvent.isNotValid()) {
-      if(isDebug) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+      if(this.isDebug()) console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
       // 에러 로그 등록
       this.myLoggerService.logError(
         // apiKey:string
@@ -399,85 +438,104 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
     let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
     if(!isOK) {
-      if(isDebug) console.log("my-info / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      if(this.isDebug()) console.log("my-info / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
       return;
     }
+    
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
-    if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+      if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
+
+        this.emailComponent = myEvent.metaObj;
+        this.setEmail();
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
+
+        this.nameComponent = myEvent.metaObj;
+        this.setName();
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
+
+        this.nicknameComponent = myEvent.metaObj;
+        this.setNickname();
+        
+      } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
         this.confirmUserEmailPassword(myEvent.value);
         // end KEY_USER_CUR_PASSWORD
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
         this.confirmNewPassword(myEvent.value);
         // end KEY_USER_NEW_PASSWORD
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_RE_PASSWORD)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
         this.confirmRepassword(myEvent.value);
         // end KEY_USER_RE_PASSWORD
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NAME");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_NAME");
         this.updateNewProp("name", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NAME
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
         this.updateNewProp("nickname", myEvent.value);
         // end if - ON CHANGE - KEY_USER_NICKNAME
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
         this.updateNewProp("thumbnail", myEvent.value);
         // end if - ON CHANGE - KEY_USER_THUMBNAIL
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
         this.updateNewMobileHead(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_HEAD
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
         this.updateNewMobileBody(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_BODY
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
         this.updateNewMobileTail(myEvent.value);
         // end if - ON CHANGE - KEY_USER_MOBILE_NUM_TAIL
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
         this.updateNewBirthYear(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_YEAR
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
         this.updateNewBirthMonth(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_MONTH
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
         this.updateNewBirthDay(myEvent.value);
         // end if - ON CHANGE - KEY_USER_BIRTH_DAY
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
 
-        if(isDebug) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
+        if(this.isDebug()) console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
         this.updateNewProp("gender", myEvent.value);
         // end if - ON CHANGE - KEY_USER_GENDER
 
@@ -494,16 +552,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewMobileHead(newMobileHead:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewMobileHead / init");
+    if(this.isDebug()) console.log("my-info / updateNewMobileHead / init");
 
     if(!this.mobileComponent.isOKHead(newMobileHead)) {
-      if(isDebug) console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameMobileHead(newMobileHead)) {
-      if(isDebug) console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
       return;
     }
     this.loginUserCopy.setMobileHead(newMobileHead);
@@ -513,16 +569,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileBody(newMobileBody:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewMobileBody / init");
+    if(this.isDebug()) console.log("my-info / updateNewMobileBody / init");
 
     if(!this.mobileComponent.isOKBody(newMobileBody)) {
-      if(isDebug) console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameMobileBody(newMobileBody)) {
-      if(isDebug) console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
       return;
     }
     this.loginUserCopy.setMobileBody(newMobileBody);
@@ -532,16 +586,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewMobileTail(newMobileTail:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewMobileTail / init");
+    if(this.isDebug()) console.log("my-info / updateNewMobileTail / init");
 
     if(!this.mobileComponent.isOKTail(newMobileTail)) {
-      if(isDebug) console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameMobileTail(newMobileTail)) {
-      if(isDebug) console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
       return;
     }
     this.loginUserCopy.setMobileTail(newMobileTail);
@@ -552,16 +604,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewBirthYear(newBirthYear:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewBirthYear / init");
+    if(this.isDebug()) console.log("my-info / updateNewBirthYear / init");
 
     if(!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
-      if(isDebug) console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameBirthYear(newBirthYear)) {
-      if(isDebug) console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
       return;
     }
     this.loginUserCopy.setBirthYear(newBirthYear);
@@ -571,16 +621,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthMonth(newBirthMonth:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewBirthMonth / init");
+    if(this.isDebug()) console.log("my-info / updateNewBirthMonth / init");
 
     if(!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
-      if(isDebug) console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameBirthMonth(newBirthMonth)) {
-      if(isDebug) console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
       return;
     }
     this.loginUserCopy.setBirthMonth(newBirthMonth);
@@ -590,16 +638,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private updateNewBirthDay(newBirthDay:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewBirthDay / init");
+    if(this.isDebug()) console.log("my-info / updateNewBirthDay / init");
 
     if(!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
-      if(isDebug) console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not valid!");
       return;
     }
     if(this.loginUserCopy.isSameBirthDay(newBirthDay)) {
-      if(isDebug) console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
+      if(this.isDebug()) console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
       return;
     }
     this.loginUserCopy.setBirthDay(newBirthDay);
@@ -611,16 +657,14 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private updateNewProp(key:string, newValue:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / updateNewProp / init");
+    if(this.isDebug()) console.log("my-info / updateNewProp / init");
 
     if(null == key || "" == key) {
-      if(isDebug) console.log("my-info / updateNewProp / 중단 / key is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewProp / 중단 / key is not valid!");
       return;
     }
     if(null == this.loginUserCopy) {
-      if(isDebug) console.log("my-info / updateNewProp / 중단 / this.loginUserCopy is not valid!");
+      if(this.isDebug()) console.log("my-info / updateNewProp / 중단 / this.loginUserCopy is not valid!");
       return;
     }
 
@@ -633,8 +677,8 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
       // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
       if(null != this.loginUserCopy && null != this.loginUserCopy[key]) {
         this.loginUserCopy[key] = newValue;
-        if(isDebug) console.log("my-info / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
-        if(isDebug) console.log("my-info / updateNewProp / this.loginUserCopy : ",this.loginUserCopy);
+        if(this.isDebug()) console.log("my-info / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
+        if(this.isDebug()) console.log("my-info / updateNewProp / this.loginUserCopy : ",this.loginUserCopy);
       }
       // 저장 버튼을 노출합니다.
       this.isReadyToSave=true;
@@ -652,13 +696,11 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   onClickSave(event) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / onClickSave / init");
+    if(this.isDebug()) console.log("my-info / onClickSave / init");
 
     let isReadyToSave:boolean = this.checkUserInfoChanged();
-    if(isDebug) console.log("my-info / onClickSave / isReadyToSave : ",isReadyToSave);
-    if(isDebug) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
+    if(this.isDebug()) console.log("my-info / onClickSave / isReadyToSave : ",isReadyToSave);
+    if(this.isDebug()) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
     if(isReadyToSave) {
       // 변경되었다면 저장합니다.
       this.userService.updateUserByUser(
@@ -666,18 +708,22 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.loginUserCopy
       ).then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("my-info / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
+        if(this.isDebug()) console.log("my-info / onClickSave / 유저정보 업데이트 / myResponse : ",myResponse);
 
         let userUpdated = myResponse.digDataProp(["user"]);
         if(myResponse.isSuccess && null != userUpdated) {
+
           // 저장된 유저 정보를 다시 받아옵니다.
           // 받아온 유저 정보로 업데이트 합니다.
           this.loginUser.updateWithJSON(userUpdated);
           this.loginUserCopy = this.loginUser.copy();
 
-          if(isDebug) console.log("my-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
-          if(isDebug) console.log("my-info / onClickSave / this.loginUser : ",this.loginUser);
-          if(isDebug) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
+          // 변경된 유저 정보를 전파.
+          this.watchTower.announceLogin(this.loginUser);
+
+          if(this.isDebug()) console.log("my-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
+          if(this.isDebug()) console.log("my-info / onClickSave / this.loginUser : ",this.loginUser);
+          if(this.isDebug()) console.log("my-info / onClickSave / this.loginUserCopy : ",this.loginUserCopy);
 
         } else {
           // 에러 로그 등록
@@ -695,7 +741,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
     // 비밀번호 변경 여부 확인
     let isReadyToSavePassword:boolean = this.checkUserPasswordChanged();
-    if(isDebug) console.log("my-info / onClickSave / isReadyToSavePassword : ",isReadyToSavePassword);
+    if(this.isDebug()) console.log("my-info / onClickSave / isReadyToSavePassword : ",isReadyToSavePassword);
 
     if(isReadyToSavePassword) {
       // 변경되었다면 업데이트!
@@ -710,11 +756,11 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.passwordNew
       ).then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("my-info / onClickSave / 비밀번호 업데이트 / myResponse : ",myResponse);
+        if(this.isDebug()) console.log("my-info / onClickSave / 비밀번호 업데이트 / myResponse : ",myResponse);
         let is_valid_password:boolean = myResponse.getDataProp("is_valid_password");
         if(myResponse.isSuccess && is_valid_password) {
           // 비밀번호 업데이트 성공!
-          if(isDebug) console.log("my-info / onClickSave / 비밀번호 업데이트 성공!");
+          if(this.isDebug()) console.log("my-info / onClickSave / 비밀번호 업데이트 성공!");
         }
 
         // 입력한 모든 비밀번호를 초기화합니다.
@@ -734,22 +780,30 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   }
   private isOKEssential() :boolean {
 
+    if(this.isDebug()) console.log("my-info / isOKEssential / init");
+
     if(this.nameComponent.isNotOK(this.loginUserCopy.name)) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.name is not valid!");
       return false;
     }
     if(this.nicknameComponent.isNotOK(this.loginUserCopy.nickname)) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.nickname is not valid!");
       return false;
     }
     if(this.mobileComponent.isNotOKHead(this.loginUserCopy.getMobileHead())) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileHead is not valid!");
       return false;
     }
     if(this.mobileComponent.isNotOKBody(this.loginUserCopy.getMobileBody())) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileBody is not valid!");
       return false;
     }
     if(this.mobileComponent.isNotOKTail(this.loginUserCopy.getMobileTail())) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileTail is not valid!");
       return false;
     }
     if(this.genderComponent.isNotOK(this.loginUserCopy.gender)) {
+      if(this.isDebug()) console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.gender is not valid!");
       return false;
     }
 
@@ -759,20 +813,19 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private checkUserInfoChanged() :boolean {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / checkUserInfoChanged / init");
-    if(isDebug) console.log("my-info / checkUserInfoChanged / this.loginUser : ",this.loginUser);
+    if(this.isDebug()) console.log("my-info / checkUserInfoChanged / init");
+    if(this.isDebug()) console.log("my-info / checkUserInfoChanged / this.loginUser : ",this.loginUser);
 
     // 필수 항목들은 반드시 유효해야합니다.
     if(this.isNotOKEssential()) {
+      if(this.isDebug()) console.log("my-info / checkUserInfoChanged / 중단 / this.isNotOKEssential()");
       return false;
     }
 
     // 검사 시작!
     if(this.loginUser.isNotSame(this.loginUserCopy)) {
       // 2. 유저정보
-      if(isDebug) console.log("my-info / checkUserInfoChanged / 유저정보 변경됨");
+      if(this.isDebug()) console.log("my-info / checkUserInfoChanged / 유저정보 변경됨");
       return true;
     }
     return false;
@@ -780,9 +833,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   private checkUserPasswordChanged() :boolean {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("my-info / checkUserPasswordChanged / init");
+    if(this.isDebug()) console.log("my-info / checkUserPasswordChanged / init");
 
     let isReadyToSave:boolean = false;
 
@@ -791,7 +842,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
         this.passwordNew === this.passwordRe) {
 
       // 7. password
-      if(isDebug) console.log("my-info / checkUserPasswordChanged / 비밀번호 변경됨.");
+      if(this.isDebug()) console.log("my-info / checkUserPasswordChanged / 비밀번호 변경됨.");
       isReadyToSave = true;
 
     } // end if

@@ -1,5 +1,22 @@
 <div>
 	<div class="title"><h4>수업료 계산기</h4></div>
+	<div>
+		<!-- 5. 수업 주수 -->
+	    <widget-input-default
+	    [isNoSpace]="true"
+	    [meta]="defaultMetaList[5]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>
+	<div style="margin-bottom: 10px;">
+		<!-- 4. 수업 학생수 -->
+	    <widget-input-default
+	    [isNoSpace]="true"
+	    [numUnit]="1"
+	    [meta]="defaultMetaList[3]"
+	    (emitter)="onChangedFromChild($event)">
+	    </widget-input-default>	
+	</div>	
 	<div style="margin-bottom: 5px;">
 		<!-- 1. 1인당 강의료 -->
 	    <widget-input-default
@@ -26,23 +43,6 @@
 	    [isNoSpace]="true"
 	    [ngModelInput]="paymentForTeacherStr"
 	    [meta]="defaultMetaList[2]"
-	    (emitter)="onChangedFromChild($event)">
-	    </widget-input-default>	
-	</div>
-	<div style="margin-bottom: 5px;">
-		<!-- 4. 수업 학생수 -->
-	    <widget-input-default
-	    [isNoSpace]="true"
-	    [numUnit]="1"
-	    [meta]="defaultMetaList[3]"
-	    (emitter)="onChangedFromChild($event)">
-	    </widget-input-default>	
-	</div>
-	<div>
-		<!-- 5. 수업 주수 -->
-	    <widget-input-default
-	    [isNoSpace]="true"
-	    [meta]="defaultMetaList[5]"
 	    (emitter)="onChangedFromChild($event)">
 	    </widget-input-default>	
 	</div>

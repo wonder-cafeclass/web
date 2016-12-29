@@ -2,8 +2,7 @@
 	<label class="title">전화번호</label>
 	<div 	class="popover left"
 			[style.top]="top + 'px'"
-			[style.left]="left + 'px'"	
-			(click)="onClickInfo($event)"
+			[style.left]="left + 'px'"
 			[ngClass]="{'popover-show':isFocusInfo}"> 
 		<div class="arrow"></div> 
 		<h3 class="popover-title">전화번호가 필요한 이유는 무엇인가요?</h3> 
@@ -14,6 +13,8 @@
 
 	<a 	href="#" 
 		(click)="onClickInfo($event)"
+		(mouseover)="onMouseOverInfo($event)"
+		(mouseout)="onMouseOutInfo($event)"
 		class="info">왜 전화번호가 필요한가요?</a>
 
 </div>

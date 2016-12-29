@@ -10,6 +10,7 @@
 
 	<!-- input -->
 	<input 	
+	id="default-input"
 	*ngIf="!isDisabled && meta.type == defaultType.TYPE_INPUT"
 	#input
 	(click)="onClick($event, input)"

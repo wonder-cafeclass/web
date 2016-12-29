@@ -1120,6 +1120,14 @@ class MY_Sql
 			return null;
 		}
 
+        // 1. 유저가 선생님이라면 선생님 정보를 추가합니다.
+        $user_id = intval($user->id);
+        $teacher = $this->get_teacher_by_user_id($user_id);
+        if(isset($teacher))
+        {
+            $user->teacher = $teacher;
+        }
+
 		// 뷰에 필요한 정보들을 여기서 추가합니다. 
 		// ex) 시간 포맷, 이름 템플릿 ,....
 

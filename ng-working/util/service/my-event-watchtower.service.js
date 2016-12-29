@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var Subject_1 = require('rxjs/Subject');
+var teacher_1 = require('../../teachers/model/teacher');
 var my_const_1 = require('../../util/helper/my-const');
 /*
 *	@ Desc : 부모와 자식 객체 간의 - 모듈 단위로 부모, 자식 관계라도 상관없음. - 이벤트를 주고 받을수 있는 shared service 객체
@@ -145,7 +146,13 @@ var MyEventWatchTowerService = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uC2DC\uC791");
-        this.loginTeacher = loginTeacher;
+        if (null == this.loginUser) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceLoginTeacher / \uC911\uB2E8 / null == this.loginUser");
+            return;
+        }
+        this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
+        ;
         if (null != this.loginTeacher) {
             if (isDebug)
                 console.log("my-event-watchtower / announceLoginTeacher / setTeacher");

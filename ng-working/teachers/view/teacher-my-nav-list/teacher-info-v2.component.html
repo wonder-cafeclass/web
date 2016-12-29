@@ -1,0 +1,109 @@
+<div>
+	<table class="table layout"> 
+		<tbody>
+
+			<tr> 
+				<td class="layout border-right">
+
+					<!-- Default Input : Email -->
+					<widget-input-default
+					[width]="380"
+					[meta]="defaultMetaList[0]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : Name -->
+					<widget-input-default
+					[width]="380"
+					[meta]="defaultMetaList[1]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- Default Input : Nickname -->
+					<widget-input-default
+					[width]="380"
+					[meta]="defaultMetaList[2]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<div style="padding:5px;">
+						<inputs-btns-rows
+						[eventKey]="myEventService.KEY_KLASS_TEACHER_RESUME_LIST"
+						[rowType]="'fixed'"
+						[hasButton]="false"
+						[maxRowCnt]="3"
+	                    [isShowTitle]="true"
+	                    [title]="'선생님의 이력'"
+						(emitter)="onChangedFromChild($event)"
+						[placeholderForNewRow]="'선생님의 이력을 입력해주세요.'">
+						</inputs-btns-rows>
+					</div>
+
+					<!-- Default Input : Greeting -->
+					<widget-input-default
+					[width]="380"
+					[meta]="defaultMetaList[4]"
+					(emitter)="onChangedFromChild($event)">
+					</widget-input-default>
+
+					<!-- EOL -->
+
+				</td>
+				<td class="layout">
+
+					<!-- 프로필 이미지 -->
+					<profile-img-upload 
+					[top]="143"
+					[left]="490"
+					(emitter)="onChangedFromChild($event)">
+					</profile-img-upload>
+
+					<!-- 전화번호 -->
+					<mobile 	
+					[top]="90" 
+					[left]="390"
+					[topWarning]="151"
+					[leftWarning]="382"
+					(emitter)="onChangedFromChild($event)">
+					</mobile>
+
+					<!-- 성별 -->
+					<gender 	[top]="390" 
+								[left]="586"
+								[gender]="gender"
+								[topWarning]="251"
+								[leftWarning]="382"
+								(emitter)="onChangedFromChild($event)">
+					</gender>
+
+					<!-- 연령 / 월 / 일 -->
+					<birthday 	[top]="310" 
+								[left]="390"
+								[eventKey]="myEventService.KEY_USER_BIRTH"
+								(emitter)="onChangedFromChild($event)">
+					</birthday>
+
+					<!-- EOL -->
+
+				</td>
+			</tr>
+
+			<tr> 
+				<td class="layout border-top" colspan="2">
+
+					<button 	*ngIf="isReadyToSave"
+								(click)="onClickSave($event)"
+								type="button" 
+								class="btn btn-orange save">등록하기</button>
+
+					<button 	*ngIf="!isReadyToSave"
+								type="button-disabled" 
+								disabled="disabled"
+								class="btn btn-orange save">등록하기</button>
+
+				</td> 
+			</tr>
+
+		</tbody>
+	</table>
+</div>

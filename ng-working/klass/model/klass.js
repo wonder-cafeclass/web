@@ -1,5 +1,4 @@
 "use strict";
-var klass_teacher_1 = require('./klass-teacher');
 var klass_review_1 = require('./klass-review');
 var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
@@ -9,6 +8,7 @@ var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
 var my_format_1 = require('../../util/helper/my-format');
+var teacher_1 = require('../../teachers/model/teacher');
 var Klass = (function () {
     function Klass() {
         this.id = -1;
@@ -20,7 +20,6 @@ var Klass = (function () {
         this.teacher_resume = "";
         this.teacher_resume_list = [];
         this.teacher_greeting = "";
-        this.teacher_greeting_list = [];
         this.title = "";
         this.desc = "";
         this.feature = "";
@@ -82,6 +81,13 @@ var Klass = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myFormat = new my_format_1.HelperMyFormat();
     }
+    // @ Desc : 새로운 클래스를 만드는 버튼 역할의 수업인지 여부.
+    Klass.prototype.isNewClassBtn = function () {
+        return (-100 === this.id) ? true : false;
+    };
+    Klass.prototype.isNotNewClassBtn = function () {
+        return !this.isNewClassBtn();
+    };
     // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
     Klass.prototype.getCommision = function () {
         if (!(0 < this.price)) {
@@ -526,7 +532,7 @@ var Klass = (function () {
         }
         // teacher
         if (null != klass.teacher) {
-            klass.teacher = new klass_teacher_1.KlassTeacher().setJSON(klass.teacher);
+            klass.teacher = new teacher_1.Teacher().setJSON(klass.teacher);
         }
         // review_list
         var klassReviewList = [];
@@ -561,14 +567,10 @@ var Klass = (function () {
             klass.teacher.resume_arr = klass.teacher_resume_list;
         } // end if
         // teacher - greeting
-        if (null != klass.teacher_greeting && "" != klass.teacher_greeting) {
-            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
-        } // end if
         if (null != klass.teacher_greeting &&
             "" != klass.teacher_greeting &&
             null != klass.teacher) {
             klass.teacher.greeting = klass.teacher_greeting;
-            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
         // time_end
         if (null == klass.time_end ||

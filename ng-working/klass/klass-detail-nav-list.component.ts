@@ -29,7 +29,6 @@ import { Comment }                    from '../widget/comment/model/comment';
 import { CommentListComponent }       from '../widget/comment/comment-list.component';
 
 import { Klass }                      from './model/klass';
-import { KlassTeacher }               from './model/klass-teacher';
 import { KlassQuestion }              from './model/klass-question';
 import { KlassReview }                from './model/klass-review';
 import { KlassVenue }                 from './model/klass-venue';
@@ -40,8 +39,10 @@ import { KlassRadioBtnService }       from './service/klass-radiobtn.service';
 import { KlassService }               from './service/klass.service';
 
 import { KlassVenueSearchListComponent }  from './widget/klass-venue-search-list.component';
+import { KlassTeacherComponent }          from './widget/klass-teacher.component';
 
-import { User }                       from '../users/model/user';
+import { User }                           from '../users/model/user';
+import { Teacher }                        from '../teachers/model/teacher';
 
 @Component({
   moduleId: module.id,
@@ -63,9 +64,11 @@ export class KlassDetailNavListComponent implements OnInit {
   @ViewChild(KlassVenueSearchListComponent)
   private venueSearchComponent: KlassVenueSearchListComponent;
 
+  @ViewChild(KlassTeacherComponent)
+  private teacherComponent: KlassTeacherComponent;
+
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
-  klassTeacher:KlassTeacher;
   loginUser:User;
 
   @Input() klassFeature:string; // @ Deprecated
@@ -465,9 +468,22 @@ export class KlassDetailNavListComponent implements OnInit {
   }
 
   private setTeacher() :void {
-    if(null != this.klass.teacher) {
-      this.klassTeacher = this.klass.teacher;
+
+    if(this.isDebug()) console.log("k-d-n-l / setTeacher / init");
+    if(null == this.klass || null == this.klass.teacher) {
+      if(this.isDebug()) console.log("k-d-n-l / setTeacher / 중단 / null == this.klass.teacher");
+      return;
     } // end if
+    if(null == this.teacherComponent) {
+      if(this.isDebug()) console.log("k-d-n-l / setTeacher / 중단 / null == this.teacherComponent");
+      return;
+    } // end if
+    if(this.isDebug()) console.log("k-d-n-l / setTeacher / this.klass.teacher : ",this.klass.teacher);
+    if(this.isDebug()) console.log("k-d-n-l / setTeacher / this.teacherComponent : ",this.teacherComponent);
+
+    this.teacherComponent.setTeacher(this.klass.teacher);
+    this.teacherComponent.setResume();
+    this.teacherComponent.setGreeting();
   }
 
   private setReview() :void {
@@ -1072,6 +1088,15 @@ export class KlassDetailNavListComponent implements OnInit {
           // 네이버 맵 장소 검색 컴포넌트가 준비됨.
           this.venueSearchComponent = myEvent.metaObj;
           this.setVenueSearch();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
+
+        // wonder.jung
+        if(  null != myEvent.metaObj ) {
+          // 네이버 맵 장소 검색 컴포넌트가 준비됨.
+          this.teacherComponent = myEvent.metaObj;
+          this.setTeacher();
         } // end if
 
       } // end if

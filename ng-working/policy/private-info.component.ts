@@ -11,8 +11,18 @@ import { Router }               from '@angular/router';
 })
 export class PrivateInfoComponent implements OnInit {
 
-  constructor() {}
+  constructor(public router: Router) {}
 
   ngOnInit(): void {}
+
+  onClickLogo(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+    
+  } // end method
   
-}
+} // end class

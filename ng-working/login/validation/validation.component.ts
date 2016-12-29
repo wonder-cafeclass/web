@@ -240,4 +240,13 @@ export class ValidationComponent implements AfterViewInit {
 
   } // end method
 
+  onClickLogo(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+  } // end method  
+
 } // end class

@@ -14,7 +14,10 @@
 						<tr> 
 							<td class="layout border-bottom" colspan="2">
 								<div>
-									<img class="logo" src="../../assets/images/cafeclass_logo_text_only.svg">
+									<img 
+									class="logo" 
+									src="../../assets/images/cafeclass_logo_text_only.svg"
+									(click)="onClickLogo($event)">
 								</div>
 								<div>
 									<img class="title-signup" src="../../assets/images/login/signup_kor.svg">
@@ -83,6 +86,7 @@
 								<!-- 연령 / 월 / 일 -->
 								<birthday 	[top]="480" 
 											[left]="390"
+											[eventKey]="myEventService.KEY_USER_BIRTH"
 											(emitter)="onChangedFromChild($event)">
 								</birthday>
 

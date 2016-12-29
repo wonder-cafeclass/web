@@ -23,6 +23,7 @@
 				<img 
 				class="cc-logo-image" 
 				alt="Brand" 
+				(click)="onClickLogo($event)"
 				src="{{imageService.get(imageService.cafeclassLogoUrl)}}">
 			</a>
 	    </div>
@@ -48,9 +49,11 @@
 				<li *ngIf="loginTeacher">
 					<a routerLink="/teacher/my" routerLinkActive="active">선생님 정보</a>
 				</li>
+				<!--
 				<li *ngIf="loginUser">
 					<a routerLink="/user/my" routerLinkActive="active">내정보</a>
 				</li>
+				-->
 				<li>
 					<!-- 유저 섬네일만 노출 -->
 					<img 	#thumbnail

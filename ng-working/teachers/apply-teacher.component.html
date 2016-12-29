@@ -5,7 +5,6 @@
 		<div class="row">
 			<!-- Column padding -->
 			<div class="col-md-2" style="padding:0px;"></div>
-			
 
 			<!-- Column init -->
 			<div class="col-md-8 my-box">
@@ -19,6 +18,9 @@
 	<ul class="list-group my-style">
 		<li class="list-group-item my-style my-style-first">
 
+<!-- TEACHER INFO Init -->
+
+<!-- TEACHER INFO Done -->
 <div>
 	<table class="table layout"> 
 		<tbody>
@@ -47,14 +49,20 @@
 					(emitter)="onChangedFromChild($event)">
 					</widget-input-default>
 
-					<!-- Default Input : 경력 -->
-					<widget-input-default
-					[width]="380"
-					[meta]="defaultMetaList[3]"
-					(emitter)="onChangedFromChild($event)">
-					</widget-input-default>
+					<div style="padding:5px;">
+						<inputs-btns-rows
+						[eventKey]="myEventService.KEY_KLASS_TEACHER_RESUME_LIST"
+						[rowType]="'fixed'"
+						[hasButton]="false"
+						[maxRowCnt]="3"
+	                    [isShowTitle]="true"
+	                    [title]="'선생님의 이력'"
+						(emitter)="onChangedFromChild($event)"
+						[placeholderForNewRow]="'선생님의 이력을 입력해주세요.'">
+						</inputs-btns-rows>
+					</div>
 
-					<!-- Default Input : 자기소개 -->
+					<!-- Default Input : Greeting -->
 					<widget-input-default
 					[width]="380"
 					[meta]="defaultMetaList[4]"
@@ -94,6 +102,7 @@
 					<!-- 연령 / 월 / 일 -->
 					<birthday 	[top]="310" 
 								[left]="390"
+								[eventKey]="myEventService.KEY_USER_BIRTH"
 								(emitter)="onChangedFromChild($event)">
 					</birthday>
 

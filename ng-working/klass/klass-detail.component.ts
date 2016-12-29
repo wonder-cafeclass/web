@@ -259,7 +259,7 @@ export class KlassDetailComponent implements AfterViewInit {
       if(this.isDebug()) console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
     
       // 로그인한 선생님 정보가 들어왔습니다.
-      this.loginTeacher = this.teacherService.getTeacherFromJSON(loginTeacher);
+      this.loginTeacher = new Teacher().setJSON(loginTeacher);
 
       this.loginUser = this.watchTower.getLoginUser();
       if(null != this.loginUser) {
@@ -1118,8 +1118,14 @@ export class KlassDetailComponent implements AfterViewInit {
     this.setKlassTimeEnd();
     this.setKlassDays();
     this.setKlassPriceDesc();
+    this.setPriceCalculator();
+    this.setKlassLevel();
+    this.setKlassSubwayLine();
+    this.setKlassSubwayStation();
+    this.setKlassClock();
 
-    // @ Deprecated
+    this.setKlassDetailNavList();
+
     this.setKlassDateEnrollmentView();
     this.setKlassDateEnrollmentInput();
 
@@ -1158,7 +1164,7 @@ export class KlassDetailComponent implements AfterViewInit {
     if(this.isDebug()) console.log("klass-detail / onClickKlassPoster / 시작");
 
     if(!this.isAdmin || !this.isTeacher) {
-      if(this.isDebug()) console.log("klass-detail / onClickKlassPoster / 중단 / 수업 포스터를 수정할수 없습니다.");
+      if(this.isDebug()) console.log("klass-detail / onClickKlassPoster / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
       return;
     }
 
@@ -1168,6 +1174,24 @@ export class KlassDetailComponent implements AfterViewInit {
     // 수업 이미지 업로드를 시작합니다.
     this.hiddenUploaderComponent.initFileUpload();
   }
+
+  onClickKlassTitle(event) {
+
+    if(this.isDebug()) console.log("klass-detail / onClickKlassTitle / 시작");
+
+    if(!this.isAdmin || !this.isTeacher) {
+      if(this.isDebug()) console.log("klass-detail / onClickKlassTitle / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
+      return;
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(null != this.klassTitleComponent) {
+      this.klassTitleComponent.setFocus();
+    } // end if
+
+  } // end method
 
 
   onClickEnrollment(event, klass:Klass) {
@@ -1489,13 +1513,15 @@ export class KlassDetailComponent implements AfterViewInit {
     let studentPrice:number = this.klassCopy.getPriceForStudent();
     if(this.isDebug()) console.log("klass-detail / updateKlassPriceCalc / studentPrice : ",studentPrice);
 
-    this.priceTagHComponent.setPrice(studentPrice);
+    if(null != this.priceTagHComponent) {
+      this.priceTagHComponent.setPrice(studentPrice);
+    } // end if
 
     this.setKlassPriceDesc();
     this.updateSaveBtnStatus();
     this.updateKlassWeeks(this.klassCopy.week);
 
-  }
+  } // end if
 
     // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
   private setKlassTitle() :void {
@@ -1899,7 +1925,10 @@ export class KlassDetailComponent implements AfterViewInit {
     if(this.isDebug()) console.log("klass-detail / updateKlassDateEnrollment / dateEnrollmentStr : ",dateEnrollmentStr);
 
     this.klassCopy.date_begin = klassDateEnrollment;
-    this.butterflyComponent.setText(dateEnrollmentStr);
+
+    if(null != this.butterflyComponent) {
+      this.butterflyComponent.setText(dateEnrollmentStr);
+    } // end if
 
     this.updateSaveBtnStatus();
 

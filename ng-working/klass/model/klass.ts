@@ -1,21 +1,25 @@
-import { Calendar }                 from '../../widget/calendar/model/calendar';
 import { KlassPrice }               from './klass-price';
-import { KlassTeacher }             from './klass-teacher';
 import { KlassReview }              from './klass-review';
 import { KlassQuestion }            from './klass-question';
 import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
 import { KlassVenue }               from './klass-venue';
+
+import { Calendar }                 from '../../widget/calendar/model/calendar';
+
 import { HelperMyArray }            from '../../util/helper/my-array';
 import { HelperMyIs }               from '../../util/helper/my-is';
 import { HelperMyTime }             from '../../util/helper/my-time';
 import { HelperMyFormat }           from '../../util/helper/my-format';
 
+import { Teacher }                  from '../../teachers/model/teacher';
+
+
 export class Klass {
 
     public id: number=-1;
 
-    public teacher:KlassTeacher=null;
+    public teacher:Teacher=null;
     public review_list:KlassReview[]=[];
     public question_list:KlassQuestion[]=[];
     public klassVenue:KlassVenue=null;
@@ -24,7 +28,6 @@ export class Klass {
     public teacher_resume:string="";
     public teacher_resume_list:string[]=[];
     public teacher_greeting:string="";
-    public teacher_greeting_list:string[]=[];
 
     public title: string="";
     public desc: string="";
@@ -97,6 +100,14 @@ export class Klass {
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
         this.myFormat = new HelperMyFormat();
+    }
+
+    // @ Desc : 새로운 클래스를 만드는 버튼 역할의 수업인지 여부.
+    isNewClassBtn() :boolean {
+        return (-100 === this.id) ? true:false;
+    }
+    isNotNewClassBtn() :boolean {
+        return !this.isNewClassBtn();
     }
 
     // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
@@ -644,7 +655,7 @@ export class Klass {
 
         // teacher
         if(null != klass.teacher) {
-            klass.teacher = new KlassTeacher().setJSON(klass.teacher);
+            klass.teacher = new Teacher().setJSON(klass.teacher);
         }
 
         // review_list
@@ -687,15 +698,11 @@ export class Klass {
         } // end if
 
         // teacher - greeting
-        if(null != klass.teacher_greeting && "" != klass.teacher_greeting) {
-            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
-        } // end if
         if( null != klass.teacher_greeting && 
             "" != klass.teacher_greeting &&
             null != klass.teacher ) {
 
             klass.teacher.greeting = klass.teacher_greeting;
-            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
 
         // time_end

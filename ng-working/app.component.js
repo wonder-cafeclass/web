@@ -20,6 +20,7 @@ var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_event_service_1 = require('./util/service/my-event.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
 var user_1 = require('./users/model/user');
+var teacher_1 = require('./teachers/model/teacher');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
     function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, activatedRoute, router) {
@@ -44,8 +45,8 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
@@ -61,26 +62,6 @@ var AppComponent = (function () {
             console.log("app-root / ngAfterViewChecked / 시작");
         this.watchTower.announceContentHeight();
     };
-    /*
-    // @ Desc : http://devcafeclass.com?hawkeye=true 인 경우, 모니터링 모드로 전환합니다.
-    checkExternalAdmin():void {
-
-        // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
-        this.subscription = this.activatedRoute.queryParams.subscribe(
-          (param: any) => {
-
-            console.log("app-root / getQueryString / param : ",param);
-
-            let isActivated:boolean = param['hawkeye'];
-            if(null != isActivated && true == isActivated) {
-                this.watchTower.announceIsDebugging(true);
-                this.isDebugging = isActivated;
-            } // end if
-          } // end return
-        ); // end subscribe
-
-    } // end method
-    */
     AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
         if (this.isDebug())
@@ -125,7 +106,7 @@ var AppComponent = (function () {
             if (_this.isDebug())
                 console.log("app-root / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
-            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
         });
     };
     AppComponent.prototype.subscribeToggleTopMenu = function () {
@@ -213,6 +194,8 @@ var AppComponent = (function () {
         });
     };
     AppComponent.prototype.getLoginUserFromCookie = function () {
+        // wonder.jung - 유저 정보를 가져올 때 선생님 정보도 함께 가져와야 한다. 
+        // 선생님 정보를 분리해서 가져오면 시차 발생등의 문제에 대응하기 어렵다.
         var _this = this;
         if (this.isDebug())
             console.log("app-root / getLoginUserFromCookie / \uC2DC\uC791");
@@ -229,31 +212,40 @@ var AppComponent = (function () {
                 _this.loginUser = user;
                 // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                 _this.watchTower.announceLogin(_this.loginUser);
-                // 회원이 선생님이라면 선생님 정보를 가져온다.
-                _this.getTeacherFromUser(+_this.loginUser.id);
+                if (user.isTeacher()) {
+                    _this.loginTeacher = _this.loginUser.getTeacher();
+                    // 선생님 로그인 여부를 확인, 전파한다.
+                    _this.watchTower.announceLoginTeacher(_this.loginTeacher);
+                } // end if
             }
             else if (myResponse.isFailed() && null != myResponse.error) {
                 _this.watchTower.announceErrorMsgArr([myResponse.error]);
-            }
-        });
-    };
-    AppComponent.prototype.getTeacherFromUser = function (userId) {
-        var _this = this;
-        if (this.isDebug())
-            console.log("app-root / getTeacherFromUser / \uC2DC\uC791");
-        if (this.isDebug())
-            console.log("app-root / getTeacherFromUser / userId : " + userId);
-        this.teacherService
-            .getTeacher(this.watchTower.getApiKey(), userId)
-            .then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("app-root / getTeacherFromUser / myResponse : ", myResponse);
-            var teacherFromDB = myResponse.getDataProp("teacher");
-            // 선생님 로그인 여부를 확인, 전파한다.
-            _this.watchTower.announceLoginTeacher(teacherFromDB);
-            _this.loginTeacher = _this.teacherService.getTeacherFromUser(teacherFromDB);
+            } // end if
         }); // end service
-    };
+    }; // end method
+    // REMOVE ME
+    /*
+    private getTeacherFromUser(userId:number) :void {
+
+        if(this.isDebug()) console.log(`app-root / getTeacherFromUser / 시작`);
+        if(this.isDebug()) console.log(`app-root / getTeacherFromUser / userId : ${userId}`);
+
+        this.teacherService
+        .getTeacher(this.watchTower.getApiKey(), userId)
+        .then((myResponse:MyResponse) => {
+
+            if(this.isDebug()) console.log(`app-root / getTeacherFromUser / myResponse : `,myResponse);
+
+            let teacherFromDB = myResponse.getDataProp("teacher");
+            // 선생님 로그인 여부를 확인, 전파한다.
+            this.watchTower.announceLoginTeacher(teacherFromDB);
+
+            this.loginTeacher = this.teacherService.getTeacherFromUser(teacherFromDB);
+
+        }); // end service
+
+    } // end method
+    */
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
         event.stopPropagation();
         event.preventDefault();
@@ -269,6 +261,7 @@ var AppComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         // 내정보로 이동합니다.
+        this.router.navigate(['/user/my']);
     };
     // 디버깅 모드로 전환하는 방법은 2가지
     // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
@@ -282,6 +275,12 @@ var AppComponent = (function () {
             console.log("app-root / onClickToggleDebugging / this.isDebugging : " + this.isDebugging);
         this.watchTower.announceIsDebugging(this.isDebugging);
     };
+    AppComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(['/']);
+    }; // end if
     AppComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

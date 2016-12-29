@@ -12,57 +12,96 @@ var core_1 = require('@angular/core');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_button_1 = require('../../util/model/my-button');
+var my_array_1 = require('../../util/helper/my-array');
+var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var InputsBtnsRowsComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
-    function InputsBtnsRowsComponent(myEventService, myCheckerService) {
+    function InputsBtnsRowsComponent(myEventService, watchTower, myCheckerService) {
         this.myEventService = myEventService;
+        this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
+        this.hasButton = true;
+        this.isShowTitle = false;
         this.maxRowCnt = 3;
         this.isDisabledSave = true;
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
+        this.myArray = new my_array_1.HelperMyArray();
     }
     InputsBtnsRowsComponent.prototype.ngOnInit = function () {
-        if (null == this.myEventList || 0 === this.myEventList.length) {
-            console.log("!Error! / inputs-btns-rows / this.myEventList is not valid!");
+        this.asyncViewPack();
+    };
+    InputsBtnsRowsComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
+    InputsBtnsRowsComponent.prototype.asyncViewPack = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("inputs-btns-rows / asyncViewPack / 시작");
+        // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
+        if (this.watchTower.getIsViewPackReady()) {
+            if (this.isDebug())
+                console.log("inputs-btns-rows / asyncViewPack / isViewPackReady : ", true);
+            this.init();
+        } // end if
+        // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
+        this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (_this.isDebug())
+                console.log("inputs-btns-rows / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
+            _this.init();
+        }); // end subscribe
+    }; // end method
+    InputsBtnsRowsComponent.prototype.init = function () {
+        if (this.isDebug())
+            console.log("inputs-btns-rows / init / 시작");
+        this.emitEventOnReady();
+    }; // end method
+    InputsBtnsRowsComponent.prototype.emitEventOnReady = function () {
+        if (this.isDebug())
+            console.log("inputs-btns-rows / emitEventOnReady / 시작");
+        var myEvent = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.eventKey, 
+        // component
+        this);
+        this.emitter.emit(myEvent);
+    }; // end method  
+    InputsBtnsRowsComponent.prototype.setMyEventList = function (myEventList) {
+        if (this.isDebug())
+            console.log("inputs-btns-rows / setMyEventList / 시작");
+        if (this.myArray.isNotOK(myEventList)) {
+            if (this.isDebug())
+                console.log("inputs-btns-rows / setMyEventList / 중단 / this.myArray.isNotOK(myEventList)");
             return;
-        }
-        console.log("inputs-btns-rows / key : ", this.key);
+        } // end if
+        this.myEventList = myEventList;
         // 원본 비교를 위한 copy list 만들기
-        this.myEventListCopy =
-            this.myEventService.getCopyEventList(this.myEventList);
+        this.myEventListCopy = this.myEventService.getCopyEventList(this.myEventList);
+        if (this.isDebug())
+            console.log("inputs-btns-rows / setMyEventList / this.myEventList : ", this.myEventList);
         // 열을 추가할 수 있는 기능을 하는 input group 만들기
-        var myChecker = this.myCheckerService.getTitleChecker();
         var myEvent = this.myEventList[0];
         this.myAddBtnList = [
-            new my_button_1.MyButton("추가하기", this.myEventService.ON_ADD_ROW, myChecker, myEvent)
+            new my_button_1.MyButton("추가하기", this.myEventService.ON_ADD_ROW, myEvent.myChecker, myEvent)
         ];
         this.updateMyRemovableBtnList();
-        // Ready Event 발송 
-        var myEventReady = this.myEventService.getMyEvent(
-        // public eventName:string
-        this.myEventService.ON_READY, 
-        // public key:string
-        this.myEventService.KEY_INPUTS_BTNS_ROWS, 
-        // public value:string
-        "", 
-        // public metaObj:any
-        null, 
-        // public myChecker:MyChecker
-        null);
-        this.emitter.emit(myEventReady);
-    };
+    }; // end method
     InputsBtnsRowsComponent.prototype.updateMyRemovableBtnList = function () {
+        if (this.isDebug())
+            console.log("inputs-btns-rows / updateMyRemovableBtnList / 시작");
         var myRemovableBtnListNext = [];
-        var myChecker = this.myCheckerService.getTitleChecker();
         for (var i = 0; i < this.myEventList.length; ++i) {
             var curMyEvent = this.myEventList[i];
-            var myButtonNext = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, curMyEvent);
+            var myButtonNext = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, curMyEvent.myChecker, curMyEvent);
             myRemovableBtnListNext.push(myButtonNext);
         }
+        if (this.isDebug())
+            console.log("inputs-btns-rows / updateMyRemovableBtnList / myRemovableBtnListNext : ", myRemovableBtnListNext);
         this.myRemovableBtnList = myRemovableBtnListNext;
-    };
+    }; // end method
     InputsBtnsRowsComponent.prototype.getCopyEventList = function (myEventList) {
+        if (this.isDebug())
+            console.log("inputs-btns-rows / getCopyEventList / 시작");
         var copyList = [];
         for (var i = 0; i < myEventList.length; ++i) {
             var myEvent = myEventList[i];
@@ -106,12 +145,20 @@ var InputsBtnsRowsComponent = (function () {
     InputsBtnsRowsComponent.prototype.onChangeFromChild = function (myEvent) {
         // let isDebug:boolean = true;
         var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("inputs-btns-rows / onChangeFromChild / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("inputs-btns-rows / onChangeFromChild / myEvent : ", myEvent);
         if (null == myEvent && null != myEvent.value) {
             return;
+        }
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if (this.isDebug())
+            console.log("inputs-btns-rows / onChangeFromChild / isOK : ", isOK);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            if (this.isDebug())
+                console.log("inputs-btns-rows / onChangeFromChild / history : ", history_1);
         }
         if (this.myEventService.ON_CHANGE === myEvent.eventName) {
             // 변수 전파가 즉시 되지 않으므로 동일한 객체라면 직접 업데이트 해줍니다.
@@ -127,8 +174,7 @@ var InputsBtnsRowsComponent = (function () {
             // 공백 문자열도 허용합니다.
             this.myEventList.push(myEvent);
             // MyButton 객체를 만들어 열울 추가합니다.
-            var myChecker = this.myCheckerService.getTitleChecker();
-            var myButtonNew = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myChecker, myEvent);
+            var myButtonNew = new my_button_1.MyButton("빼기", this.myEventService.ON_REMOVE_ROW, myEvent.myChecker, myEvent);
             this.myRemovableBtnList.push(myButtonNew);
             // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
             var inputTextList = this.getInputTextList();
@@ -214,7 +260,7 @@ var InputsBtnsRowsComponent = (function () {
                 // public metaObj:any
                 this.myEventList, 
                 // public myChecker:MyChecker
-                null);
+                this.myEventList[0].myChecker);
             myEventReturn.parentEventList = this.myEventList;
         }
         else {
@@ -230,7 +276,7 @@ var InputsBtnsRowsComponent = (function () {
                 // public metaObj:any
                 this.myEventListCopy, 
                 // public myChecker:MyChecker
-                null);
+                this.myEventList[0].myChecker);
             this.rollbackMyEventListCopies();
             myEventReturn.parentEventList = this.myEventList;
         }
@@ -267,13 +313,13 @@ var InputsBtnsRowsComponent = (function () {
         // public eventName:string
         this.myEventService.ON_SAVE, 
         // public key:string
-        this.key, 
+        this.eventKey, 
         // public value:string
         "", 
         // public metaObj:any
         "", 
         // public myChecker:MyChecker
-        this.myCheckerService.getTitleChecker());
+        this.myEventList[0].myChecker);
         console.log("inputs-btns-rows / save / 010 / myEventReturn : ", myEventReturn);
         // 부모 객체에게는 현재 각 이벤트 객체가 가지고 있는 문자열들을 문자배열로 만들어 metaObj로 전달합니다.
         var inputTextList = this.getInputTextList();
@@ -282,8 +328,6 @@ var InputsBtnsRowsComponent = (function () {
     };
     InputsBtnsRowsComponent.prototype.hasChanged = function () {
         var hasChanged = this.myEventService.hasChangedList(this.myEventList, this.myEventListCopy);
-        console.log("inputs-btns-rows / hasChanged / this.myEventList : ", this.myEventList);
-        console.log("inputs-btns-rows / hasChanged / this.myEventListCopy : ", this.myEventListCopy);
         return hasChanged;
     };
     InputsBtnsRowsComponent.prototype.getChanged = function () {
@@ -310,7 +354,19 @@ var InputsBtnsRowsComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], InputsBtnsRowsComponent.prototype, "key", void 0);
+    ], InputsBtnsRowsComponent.prototype, "eventKey", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], InputsBtnsRowsComponent.prototype, "hasButton", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], InputsBtnsRowsComponent.prototype, "isShowTitle", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], InputsBtnsRowsComponent.prototype, "title", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
@@ -338,7 +394,7 @@ var InputsBtnsRowsComponent = (function () {
             templateUrl: 'inputs-btns-rows.component.html',
             styleUrls: ['inputs-btns-rows.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService])
     ], InputsBtnsRowsComponent);
     return InputsBtnsRowsComponent;
 }());

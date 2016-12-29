@@ -360,16 +360,9 @@ var NaverCallbackComponent = (function () {
                             console.log("naver-callback / getNaverMe / loginUser : ", loginUser);
                         // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                         _this.watchTower.announceLogin(loginUser);
-                        // 선생님 등록이 되어있는 회원인지 확인.
-                        _this.teacherService
-                            .getTeacher(_this.watchTower.getApiKey(), +user.id)
-                            .then(function (myResponse) {
-                            if (_this.isDebug())
-                                console.log("naver-callback / getTeacher / myResponse : ", myResponse);
-                            var teacherFromDB = myResponse.getDataProp("teacher");
-                            // 선생님 로그인 여부를 확인, 전파한다.
-                            _this.watchTower.announceLoginTeacher(teacherFromDB);
-                        }); // end service  
+                        if (loginUser.isTeacher()) {
+                            _this.watchTower.announceLoginTeacher(loginUser.getTeacher());
+                        } // end if
                     } // end if        
                     if (_this.isDebug())
                         console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
@@ -393,89 +386,6 @@ var NaverCallbackComponent = (function () {
                     _this.router.navigate([_this.redirectUrl]);
                 }
             } // end if
-            // REMOVE ME
-            /*
-                  if(myResponse.isFailed() || null == myResponse.hasNotDataProp("naver_id")) {
-                    // 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.
-                    if(this.isDebug()) console.log("naver-callback / getNaverMe / 네이버에서 유저 정보를 가져오는데 실패했습니다. 로그를 기록, 홈으로 이동합니다.");
-            
-                    if(null != myResponse.error && "" != myResponse.error) {
-                      // 에러 내용은 화면에 표시한다.
-                      this.watchTower.announceErrorMsgArr([myResponse.error]);
-                    }
-            
-                    // 에러 로그 등록
-                    this.myLoggerService.logError(
-                      // apiKey:string
-                      this.watchTower.getApiKey(),
-                      // errorType:string
-                      this.myLoggerService.errorAPIFailed,
-                      // errorMsg:string
-                      `naver-callback / getNaverMe / Failed!`
-                    ); // end logError
-            
-                    // 홈으로 리다이렉트
-                    this.router.navigate([this.redirectUrl]);
-            
-                    return;
-                  }
-            
-                  // 네이버 로그인 성공!
-                  // 로그인한 유저 정보를 가져오는데 성공했습니다!
-                  let user = myResponse.digDataProp(["me"]);
-                  let naverId = myResponse.digDataProp(["me","naver_id"]);
-            
-                  if(this.isDebug()) console.log("naver-callback / getNaverMe / user : ",user);
-                  if(this.isDebug()) console.log("naver-callback / getNaverMe / naverId : ",naverId);
-            
-                  if( myResponse.isSuccess() &&
-                      (null == user.gender ||
-                      "" === user.gender ||
-                      null == user.mobile ||
-                      "" === user.mobile)) {
-            
-                    // 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.
-                    // 하지만 추가 정보 필요.
-                    // 회원 가입창으로 이동.
-                    if(this.isDebug()) console.log("naver-callback / 네이버 로그인은 성공. 네이버 유저 프로필에서 가져온 정보로 유저 등록됨.회원 가입창으로 이동.");
-                    this.router.navigate(['/login/signup/naver', naverId]);
-                      
-                  } else {
-            
-                    // 2. mobile, gender가 있다면 정상 등록된 유저. 로그인 창으로 리다이렉트.
-                    // this.router.navigate([this.redirectUrl]);
-            
-                    // 네이버 로그인 성공. 등록된 유저 정보가 문제 없음.
-                    // 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.
-            
-                    if(null != user) {
-                      let loginUser:User = new User().setJSON(user);
-                      if(this.isDebug()) console.log(`naver-callback / getNaverMe / loginUser : `,loginUser);
-            
-                      // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
-                      this.watchTower.announceLogin(loginUser);
-            
-                      // 선생님 등록이 되어있는 회원인지 확인.
-                      this.teacherService
-                      .getTeacher(this.watchTower.getApiKey(), +user.id)
-                      .then((myResponse:MyResponse) => {
-            
-                        if(this.isDebug()) console.log(`naver-callback / getTeacher / myResponse : `,myResponse);
-            
-                        let teacherFromDB = myResponse.getDataProp("teacher");
-                        // 선생님 로그인 여부를 확인, 전파한다.
-                        this.watchTower.announceLoginTeacher(teacherFromDB);
-            
-                      }); // end service
-            
-                    } // end if
-            
-                    if(this.isDebug()) console.log("naver-callback / 네이버 로그인은 성공. 로그인이 성공했으므로, 서버에 해당 유저의 로그인 쿠키를 만들어야 함.");
-            
-                    this.confirmUserNaver(naverId);
-                    
-                  } // end if
-            */
         }); // end service
     }; // end method  
     NaverCallbackComponent.prototype.confirmUserNaver = function (naverId) {
@@ -516,35 +426,6 @@ var NaverCallbackComponent = (function () {
                     console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
                 _this.router.navigate([_this.redirectUrl]);
             } // end if
-            // REMOVE ME
-            /*
-            if(myResponse.isFailed()) {
-              // naver id로 쿠키 인증 실패. 홈으로 이동.
-              if(this.isDebug()) console.log("naver-callback / confirmUserNaver / naver id로 쿠키 인증 실패. 홈으로 이동.");
-              this.router.navigate([this.redirectUrl]);
-      
-              // 에러 로그 등록
-              this.myLoggerService.logError(
-                // apiKey:string
-                this.watchTower.getApiKey(),
-                // errorType:string
-                this.myLoggerService.errorAPIFailed,
-                // errorMsg:string
-                `naver-callback / confirmUserNaver / Failed!`
-              ); // end logError
-              return;
-            }
-            // 쿠키 인증 성공!
-            // 로그인 직전 페이지로 리다이렉트.
-            // 돌아갈 주소가 없다면, 홈으로 이동.
-            let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
-            if(null == redirectUrl || "" == redirectUrl) {
-              redirectUrl = '/class-center';
-            }
-      
-            if(this.isDebug()) console.log("naver-callback / getUserByKakaoId / redirectUrl : ",redirectUrl);
-            this.router.navigate([redirectUrl]);
-            */
         }); // end userService    
     }; // end method
     NaverCallbackComponent = __decorate([

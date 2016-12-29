@@ -53,35 +53,32 @@ var MobileComponent = (function () {
         this.isAdmin = false;
     }
     MobileComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / ngOnInit / init");
         this.mobileHeadEmitted = this.mobileHeadPrev;
     };
+    MobileComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     MobileComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / ngAfterViewInit");
         this.asyncViewPack();
     };
     MobileComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("mobile / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
@@ -99,12 +96,10 @@ var MobileComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     MobileComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / setMyChecker / 시작");
         if (null == this.myCheckerService) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / setMyChecker / this.myCheckerService is not valid!");
             return;
         }
@@ -128,23 +123,21 @@ var MobileComponent = (function () {
         return !this.isOKHead(input);
     };
     MobileComponent.prototype.isOKHead = function (input) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKHead / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKHead / init / |" + input + "|");
         if (null == this.myCheckerService) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKHead / this.myCheckerService is not valid!");
             return false;
         }
         var isOK = this.myCheckerService.isOK(this.myCheckerMobileHead, input);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKHead / isOK : ", isOK);
         if (!isOK) {
             var history_1 = this.myCheckerService.getLastHistory();
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKHead / history : ", history_1);
         }
         return isOK;
@@ -153,23 +146,21 @@ var MobileComponent = (function () {
         return !this.isOKBody(input);
     };
     MobileComponent.prototype.isOKBody = function (input) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKBody / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKBody / init / |" + input + "|");
         if (null == this.myCheckerService) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKBody / this.myCheckerService is not valid!");
             return false;
         }
         var isOK = this.myCheckerService.isOK(this.myCheckerMobileBody, input);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKBody / isOK : ", isOK);
         if (!isOK) {
             var history_2 = this.myCheckerService.getLastHistory();
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKBody / history : ", history_2);
         }
         return isOK;
@@ -178,23 +169,21 @@ var MobileComponent = (function () {
         return !this.isOKTail(input);
     };
     MobileComponent.prototype.isOKTail = function (input) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKTail / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKTail / init / |" + input + "|");
         if (null == this.myCheckerService) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKTail / this.myCheckerService is not valid!");
             return false;
         }
         var isOK = this.myCheckerService.isOK(this.myCheckerMobileTail, input);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / isOKTail / isOK : ", isOK);
         if (!isOK) {
             var history_3 = this.myCheckerService.getLastHistory();
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / isOKTail / history : ", history_3);
         }
         return isOK;
@@ -313,19 +302,17 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupHead = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupHead / init");
         var inputStr = element.value;
         if (null == inputStr || "" == inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupHead / 중단 / 입력된 내용이 없습니다.");
             return;
         }
         if (this.mobileHeadPrev === inputStr) {
             // 방향키로 움직이는 경우를 방어
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupHead / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
@@ -338,7 +325,7 @@ var MobileComponent = (function () {
             this.isSuccessHeadInput = false;
             element.focus();
             this.hideTooltipHead(2);
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupHead / 숫자가 아닌 글자들은 모두 삭제해준다.");
             inputStr = inputStrFiltered;
         }
@@ -347,9 +334,9 @@ var MobileComponent = (function () {
         if (0 < max && max < inputStr.length) {
             isOK = false;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupHead / isOK : ", isOK);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupHead / max : ", max);
         if (!isOK) {
             // 최대 길이보다 깁니다.
@@ -360,7 +347,7 @@ var MobileComponent = (function () {
             this.hideTooltipHead(2);
             // 마지막으로 입력한 문자를 지웁니다.
             inputStr = inputStr.slice(0, (inputStr.length - 1));
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupHead / 마지막으로 입력한 문자를 지웁니다.");
         } // end if
         // 전체 필터 검사를 진행합니다.
@@ -372,9 +359,9 @@ var MobileComponent = (function () {
             if (null != history_4 &&
                 null != history_4.key &&
                 null != history_4.msg) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupHead / 전체 필터 검사 / history : ", history_4);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupHead / 전체 필터 검사 / this.mobileHeadPrev : ", this.mobileHeadPrev);
                 if ("regexInclude" === history_4.key) {
                     var regExpStr = history_4.value + "";
@@ -393,7 +380,7 @@ var MobileComponent = (function () {
         }
         else {
             // 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupHead / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
             // hide tooltip
             this.tooltipHeadMsg = null;
@@ -424,9 +411,7 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onBlurHead = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onBlurHead / init");
         if (this.isFocusMobileHead) {
             this.isFocusMobileHead = false;
@@ -535,26 +520,24 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupBody = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
         var inputStr = element.value;
         if (null == inputStr || "" == inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupBody / 중단 / inputStr is not valid!");
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupBody / inputStr : ", inputStr);
         if (this.mobileBodyPrev === inputStr) {
             // 방향키로 움직이는 경우를 방어
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupBody / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
         // 숫자가 아닌 글자들은 모두 삭제해준다.
         var inputStrFiltered = inputStr.replace(/[^0-9]/gi, "");
         if (inputStrFiltered != inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupBody / 숫자가 아닌 글자들은 모두 삭제해준다.");
             element.value = inputStr = inputStrFiltered;
         }
@@ -570,9 +553,9 @@ var MobileComponent = (function () {
         if (0 < max && max < inputStr.length) {
             isOK = false;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupBody / isOK : ", isOK);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupBody / max : ", max);
         if (!isOK) {
             // 최대 길이보다 깁니다.
@@ -583,7 +566,7 @@ var MobileComponent = (function () {
             this.hideTooltipBody(2);
             // 마지막으로 입력한 문자를 지웁니다.
             inputStr = inputStr.slice(0, (inputStr.length - 1));
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupBody / 마지막으로 입력한 문자를 지웁니다.");
         } // end if
         // 전체 필터 검사를 진행합니다.
@@ -595,9 +578,9 @@ var MobileComponent = (function () {
             if (null != history_6 &&
                 null != history_6.key &&
                 null != history_6.msg) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupBody / 전체 필터 검사 / history : ", history_6);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupBody / 전체 필터 검사 / this.mobileBodyPrev : ", this.mobileBodyPrev);
                 if ("regexInclude" === history_6.key) {
                     var regExpStr = history_6.value + "";
@@ -617,7 +600,7 @@ var MobileComponent = (function () {
         else if (max === inputStr.length) {
             // 사용자가 입력한 전화번호가 가장 긴 4자리인 경우, 입력은 완료한 것으로 판단합니다.
             // 모든 조건이 맞습니다. 
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupBody / 모든 조건이 맞습니다. 다음 번호 입력창으로 넘어갑니다.");
             // hide tooltip
             this.tooltipBodyMsg = null;
@@ -722,9 +705,7 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onClickTail = function (event, element, elementPrev) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onClickTail / init");
         if (!this.isFocusMobileTail) {
             this.isFocusMobileTail = true;
@@ -732,7 +713,7 @@ var MobileComponent = (function () {
         this.mobileTailPrev = element.value;
         // 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.
         if (null != elementPrev && (null == elementPrev.value || "" === elementPrev.value)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onClickTail / 중간 전화번호 입력이 안되어 있다면 중간 전화번호 입력으로 먼저 이동합니다.");
             this.isFocusMobileTail = false;
             // 사용자에게 안내메시지 노출.
@@ -755,26 +736,24 @@ var MobileComponent = (function () {
     MobileComponent.prototype.onKeyupTail = function (event, element) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
         var inputStr = element.value;
         if (null == inputStr || "" == inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupTail / 중단 / inputStr is not valid!");
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupTail / inputStr : ", inputStr);
         if (this.mobileTailPrev === inputStr) {
             // 방향키로 움직이는 경우를 방어
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupTail / 중단 / 바뀌지 않았다면 검사하지 않습니다.");
             return;
         }
         // 숫자가 아닌 글자들은 모두 삭제해준다.
         var inputStrFiltered = inputStr.replace(/[^0-9]/gi, "");
         if (inputStrFiltered != inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupTail / 숫자가 아닌 글자들은 모두 삭제해준다.");
             element.value = inputStr = inputStrFiltered;
         }
@@ -791,9 +770,9 @@ var MobileComponent = (function () {
         if (0 < max && max < inputStr.length) {
             isOK = false;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupTail / isOK : ", isOK);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onKeyupTail / max : ", max);
         if (!isOK) {
             // 최대 길이보다 깁니다.
@@ -804,7 +783,7 @@ var MobileComponent = (function () {
             this.hideTooltipTail(2);
             // 마지막으로 입력한 문자를 지웁니다.
             inputStr = inputStr.slice(0, (inputStr.length - 1));
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupTail / 마지막으로 입력한 문자를 지웁니다.");
         } // end if
         // 전체 필터 검사를 진행합니다.
@@ -816,9 +795,9 @@ var MobileComponent = (function () {
             if (null != history_8 &&
                 null != history_8.key &&
                 null != history_8.msg) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupTail / 전체 필터 검사 / history : ", history_8);
-                if (isDebug)
+                if (this.isDebug())
                     console.log("mobile / onKeyupTail / 전체 필터 검사 / this.mobileTailPrev : ", this.mobileTailPrev);
                 if ("regexInclude" === history_8.key) {
                     var regExpStr = history_8.value + "";
@@ -838,7 +817,7 @@ var MobileComponent = (function () {
         else if (max === inputStr.length) {
             // 사용자가 입력한 전화번호가 가장 긴 4자리인 경우, 입력은 완료한 것으로 판단합니다.
             // 모든 조건이 맞습니다. 
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onKeyupTail / 모든 조건이 맞습니다. 전화번호 입력을 종료합니다.");
             // hide tooltip
             this.tooltipTailMsg = null;
@@ -855,22 +834,20 @@ var MobileComponent = (function () {
     MobileComponent.prototype.emitEventChange = function () {
         // 모든 전화번호를 가져와야 함.
         // 완성이 된 전화번호만 검사합니다.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / emitEventChange / init / 완성이 된 전화번호만 검사합니다.");
         if (this.isNotOKHead(this.mobileHeadEmitted)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / emitEventChange / 중단 / 전화번호 첫 3자리에 문제가 있습니다.");
             return;
         }
         if (this.isNotOKBody(this.mobileBodyEmitted)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / emitEventChange / 중단 / 전화번호 두번째 3~4자리에 문제가 있습니다.");
             return;
         }
         if (this.isNotOKTail(this.mobileTailEmitted)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / emitEventChange / 중단 / 전화번호 세번째 4자리에 문제가 있습니다.");
             return;
         }
@@ -893,115 +870,33 @@ var MobileComponent = (function () {
         this.isFocusMobileHead = false;
         this.isFocusMobileBody = false;
         this.isFocusMobileTail = false;
-        // REMOVE ME
-        // TODO - 부모에게 전화번호 유효성 검사를 요청하는 이벤트를 보냅니다.
-        // 부모가 이 컴포넌트에게 상황에 따라 경고 메시지, 혹은 정상 처리를 합니다.
-        /*
-        this.userService
-        .getUserByMobile(
-          this.myCheckerService.getAPIKey(),
-          this.mobileHeadEmitted,
-          this.mobileBodyEmitted,
-          this.mobileTailEmitted
-        ).then((myResponse:MyResponse) => {
-    
-          if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / myResponse : ",myResponse);
-    
-          if(myResponse.isSuccess()) {
-    
-            let user:User = myResponse.getDataProp("user");
-    
-            if(null == user) {
-    
-              // 전화번호가 유일합니다. 문제 없음.
-              if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일합니다. 문제 없음.");
-    
-              // 부모 객체에게 Change Event 발송
-              let myEventOnChange:MyEvent =
-              this.myEventService.getMyEvent(
-                // public eventName:string
-                this.myEventService.ON_CHANGE,
-                // public key:string
-                this.myEventService.KEY_USER_MOBILE_NUM_TAIL,
-                // public value:string
-                this.mobileTailEmitted,
-                // public metaObj:any
-                null,
-                // public myChecker:MyChecker
-                this.myCheckerMobileTail
-              );
-              this.emitter.emit(myEventOnChange);
-    
-              // 이전에 노출한 경고 메시지가 있다면 내립니다.
-              this.tooltipBodyMsg = null;
-    
-              // 포커싱을 모두 내립니다.
-              this.isFocusMobileHead = false;
-              this.isFocusMobileBody = false;
-              this.isFocusMobileTail = false;
-    
-            } else {
-    
-              // 전화번호가 유일하지 않습니다.
-              if(isDebug) console.log("mobile / emitEventChange / getUserByMobile / 전화번호가 유일하지 않습니다. 다른 사용자의 전화번호입니다.");
-    
-              // 사용자에게 알립니다. - 마지막 전화번호 칸에 경고 메시지.
-              this.isSuccessBodyInput = false;
-              this.tooltipBodyMsg = this.tooltipDuplicated;
-    
-              // 전화번호 입력칸을 모두 포커싱합니다.
-              this.isFocusMobileHead = true;
-              this.isFocusMobileBody = true;
-              this.isFocusMobileTail = true;
-    
-            } // end inner if
-    
-          } else {
-    
-            // Error Report
-            // 에러 로그 등록
-            this.myLoggerService.logError(
-              // apiKey:string
-              this.watchTower.getApiKey(),
-              // errorType:string
-              this.myLoggerService.errorAPIFailed,
-              // errorMsg:string
-              `mobile / emitEventChange / Failed!`
-            );
-    
-          } // end if
-    
-        });
-        */
     };
     MobileComponent.prototype.onBlurTail = function (event, element, elementNext) {
         event.stopPropagation();
         event.preventDefault();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onBlurTail / init");
         if (this.isFocusMobileTail) {
             this.isFocusMobileTail = false;
         } // end if
         var inputStr = element.value;
         if (null == inputStr || "" == inputStr) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onBlurTail / 중단 / inputStr is not valid!");
             return;
         }
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onBlurTail / inputStr : ", inputStr);
         var isOK = this.isOKTail(inputStr);
-        if (isDebug)
+        if (this.isDebug())
             console.log("mobile / onBlurTail / isOK : ", isOK);
         if (!isOK) {
             // 조건에 맞지 않습니다.
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onBlurTail / 조건에 맞지 않습니다.");
             // 원인을 찾아봅니다.
             var history_9 = this.myCheckerService.getLastHistory();
-            if (isDebug)
+            if (this.isDebug())
                 console.log("mobile / onBlurTail / history : ", history_9);
             if (null != history_9 &&
                 null != history_9.key &&

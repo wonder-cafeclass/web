@@ -37,6 +37,7 @@ var my_array_1 = require('../util/helper/my-array');
 var my_is_1 = require('../util/helper/my-is');
 var my_format_1 = require('../util/helper/my-format');
 var teacher_service_1 = require('../teachers/service/teacher.service');
+var teacher_1 = require('../teachers/model/teacher');
 var KlassDetailComponent = (function () {
     function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
         this.route = route;
@@ -118,7 +119,7 @@ var KlassDetailComponent = (function () {
             if (_this.isDebug())
                 console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
-            _this.loginTeacher = _this.teacherService.getTeacherFromJSON(loginTeacher);
+            _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
             _this.loginUser = _this.watchTower.getLoginUser();
             if (null != _this.loginUser) {
                 _this.isAdmin = _this.loginUser.getIsAdmin();
@@ -821,7 +822,12 @@ var KlassDetailComponent = (function () {
         this.setKlassTimeEnd();
         this.setKlassDays();
         this.setKlassPriceDesc();
-        // @ Deprecated
+        this.setPriceCalculator();
+        this.setKlassLevel();
+        this.setKlassSubwayLine();
+        this.setKlassSubwayStation();
+        this.setKlassClock();
+        this.setKlassDetailNavList();
         this.setKlassDateEnrollmentView();
         this.setKlassDateEnrollmentInput();
         // set image-grid service
@@ -854,7 +860,7 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onClickKlassPoster / 시작");
         if (!this.isAdmin || !this.isTeacher) {
             if (this.isDebug())
-                console.log("klass-detail / onClickKlassPoster / 중단 / 수업 포스터를 수정할수 없습니다.");
+                console.log("klass-detail / onClickKlassPoster / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
             return;
         }
         event.stopPropagation();
@@ -862,6 +868,20 @@ var KlassDetailComponent = (function () {
         // 수업 이미지 업로드를 시작합니다.
         this.hiddenUploaderComponent.initFileUpload();
     };
+    KlassDetailComponent.prototype.onClickKlassTitle = function (event) {
+        if (this.isDebug())
+            console.log("klass-detail / onClickKlassTitle / 시작");
+        if (!this.isAdmin || !this.isTeacher) {
+            if (this.isDebug())
+                console.log("klass-detail / onClickKlassTitle / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
+            return;
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        if (null != this.klassTitleComponent) {
+            this.klassTitleComponent.setFocus();
+        } // end if
+    }; // end method
     KlassDetailComponent.prototype.onClickEnrollment = function (event, klass) {
         event.stopPropagation();
     };
@@ -1107,11 +1127,13 @@ var KlassDetailComponent = (function () {
         var studentPrice = this.klassCopy.getPriceForStudent();
         if (this.isDebug())
             console.log("klass-detail / updateKlassPriceCalc / studentPrice : ", studentPrice);
-        this.priceTagHComponent.setPrice(studentPrice);
+        if (null != this.priceTagHComponent) {
+            this.priceTagHComponent.setPrice(studentPrice);
+        } // end if
         this.setKlassPriceDesc();
         this.updateSaveBtnStatus();
         this.updateKlassWeeks(this.klassCopy.week);
-    };
+    }; // end if
     // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
     KlassDetailComponent.prototype.setKlassTitle = function () {
         if (this.isDebug())
@@ -1460,7 +1482,9 @@ var KlassDetailComponent = (function () {
         if (this.isDebug())
             console.log("klass-detail / updateKlassDateEnrollment / dateEnrollmentStr : ", dateEnrollmentStr);
         this.klassCopy.date_begin = klassDateEnrollment;
-        this.butterflyComponent.setText(dateEnrollmentStr);
+        if (null != this.butterflyComponent) {
+            this.butterflyComponent.setText(dateEnrollmentStr);
+        } // end if
         this.updateSaveBtnStatus();
         if (this.isDebug())
             console.log("klass-detail / updateKlassDateEnrollment / this.klassCopy.date_begin : ", this.klassCopy.date_begin);
