@@ -1127,11 +1127,13 @@ var KlassDetailComponent = (function () {
         var studentPrice = this.klassCopy.getPriceForStudent();
         if (this.isDebug())
             console.log("klass-detail / updateKlassPriceCalc / studentPrice : ", studentPrice);
-        this.priceTagHComponent.setPrice(studentPrice);
+        if (null != this.priceTagHComponent) {
+            this.priceTagHComponent.setPrice(studentPrice);
+        } // end if
         this.setKlassPriceDesc();
         this.updateSaveBtnStatus();
         this.updateKlassWeeks(this.klassCopy.week);
-    };
+    }; // end if
     // @ Desc : 해당 수업의 선생님인 경우, 수수료 요율등의 정보를 표시합니다.
     KlassDetailComponent.prototype.setKlassTitle = function () {
         if (this.isDebug())
@@ -1480,7 +1482,9 @@ var KlassDetailComponent = (function () {
         if (this.isDebug())
             console.log("klass-detail / updateKlassDateEnrollment / dateEnrollmentStr : ", dateEnrollmentStr);
         this.klassCopy.date_begin = klassDateEnrollment;
-        this.butterflyComponent.setText(dateEnrollmentStr);
+        if (null != this.butterflyComponent) {
+            this.butterflyComponent.setText(dateEnrollmentStr);
+        } // end if
         this.updateSaveBtnStatus();
         if (this.isDebug())
             console.log("klass-detail / updateKlassDateEnrollment / this.klassCopy.date_begin : ", this.klassCopy.date_begin);
