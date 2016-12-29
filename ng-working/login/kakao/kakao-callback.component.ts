@@ -418,6 +418,11 @@ export class KakaoCallbackComponent implements AfterViewInit, OnDestroy {
           // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
           this.watchTower.announceLogin(user);
 
+          if(user.isTeacher()) {
+            this.watchTower.announceLoginTeacher(user.getTeacher());
+          } // end if
+
+          /*
           // wonder.jung
           // 선생님 등록이 되어있는 회원인지 확인.
           this.teacherService
@@ -431,6 +436,7 @@ export class KakaoCallbackComponent implements AfterViewInit, OnDestroy {
             this.watchTower.announceLoginTeacher(teacherFromDB);
 
           }); // end service          
+          */
 
         } // end if 
 

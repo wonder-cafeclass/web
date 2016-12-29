@@ -28,7 +28,6 @@ export class Klass {
     public teacher_resume:string="";
     public teacher_resume_list:string[]=[];
     public teacher_greeting:string="";
-    public teacher_greeting_list:string[]=[];
 
     public title: string="";
     public desc: string="";
@@ -691,15 +690,11 @@ export class Klass {
         } // end if
 
         // teacher - greeting
-        if(null != klass.teacher_greeting && "" != klass.teacher_greeting) {
-            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
-        } // end if
         if( null != klass.teacher_greeting && 
             "" != klass.teacher_greeting &&
             null != klass.teacher ) {
 
             klass.teacher.greeting = klass.teacher_greeting;
-            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
 
         // time_end

@@ -337,17 +337,9 @@ var KakaoCallbackComponent = (function () {
                         console.log("kakao-callback / getUserByKakaoId / user : ", user_2);
                     // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
                     _this.watchTower.announceLogin(user_2);
-                    // wonder.jung
-                    // 선생님 등록이 되어있는 회원인지 확인.
-                    _this.teacherService
-                        .getTeacher(_this.watchTower.getApiKey(), +user_2.id)
-                        .then(function (myResponse) {
-                        if (_this.isDebug())
-                            console.log("kakao-callback / getTeacher / myResponse : ", myResponse);
-                        var teacherFromDB = myResponse.getDataProp("teacher");
-                        // 선생님 로그인 여부를 확인, 전파한다.
-                        _this.watchTower.announceLoginTeacher(teacherFromDB);
-                    }); // end service          
+                    if (user_2.isTeacher()) {
+                        _this.watchTower.announceLoginTeacher(user_2.getTeacher());
+                    } // end if
                 } // end if 
                 // api key 필요!
                 _this.userService

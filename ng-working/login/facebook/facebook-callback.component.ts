@@ -240,7 +240,7 @@ export class FacebookCallbackComponent implements OnDestroy {
       } // end if
     });     
 
-  }
+  } // end method
 
   private getMe() :void {
 
@@ -290,6 +290,13 @@ export class FacebookCallbackComponent implements OnDestroy {
           // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
           this.watchTower.announceLogin(loginUser);
 
+          // this.getTeacher(+user.id);
+          if(loginUser.isTeacher()) {
+            this.watchTower.announceLoginTeacher(loginUser.getTeacher());
+          } // end if
+
+          // REMOVE ME
+          /*
           // 선생님 등록이 되어있는 회원인지 확인.
           this.teacherService
           .getTeacher(this.watchTower.getApiKey(), +user.id)
@@ -302,6 +309,7 @@ export class FacebookCallbackComponent implements OnDestroy {
             this.watchTower.announceLoginTeacher(teacherFromDB);
 
           }); // end service
+          */
 
         }
 

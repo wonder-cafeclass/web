@@ -20,7 +20,6 @@ var Klass = (function () {
         this.teacher_resume = "";
         this.teacher_resume_list = [];
         this.teacher_greeting = "";
-        this.teacher_greeting_list = [];
         this.title = "";
         this.desc = "";
         this.feature = "";
@@ -561,14 +560,10 @@ var Klass = (function () {
             klass.teacher.resume_arr = klass.teacher_resume_list;
         } // end if
         // teacher - greeting
-        if (null != klass.teacher_greeting && "" != klass.teacher_greeting) {
-            klass.teacher_greeting_list = klass.teacher_greeting.split(this.delimiter);
-        } // end if
         if (null != klass.teacher_greeting &&
             "" != klass.teacher_greeting &&
             null != klass.teacher) {
             klass.teacher.greeting = klass.teacher_greeting;
-            klass.teacher.greeting_arr = klass.teacher_greeting_list;
         } // end if
         // time_end
         if (null == klass.time_end ||
