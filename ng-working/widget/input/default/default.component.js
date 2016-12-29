@@ -244,7 +244,6 @@ var DefaultComponent = (function () {
             isOK = this.isOK(input);
         }
         else if (this.defaultType.TYPE_CHECKBOX == this.meta.type) {
-            // wonder.jung
             var optionListChecked = this.getCheckedDefaultOptionList();
             if (isDebug)
                 console.log("default / hasDone / optionListChecked : ", optionListChecked);
@@ -474,6 +473,16 @@ var DefaultComponent = (function () {
         else {
         }
     }; // end method 
+    DefaultComponent.prototype.setFocus = function () {
+        this.isFocus = true;
+        // wonder.jung
+        if (this.meta.type === this.defaultType.TYPE_INPUT) {
+            var inputEl = document.getElementById("default-input");
+            if (null != inputEl) {
+                inputEl.focus();
+            }
+        } // end if
+    };
     DefaultComponent.prototype.getSelectedValue = function () {
         var selectedOption = this.getSelectedDefaultOption();
         if (null == selectedOption ||

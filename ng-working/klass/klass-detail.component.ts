@@ -1175,6 +1175,24 @@ export class KlassDetailComponent implements AfterViewInit {
     this.hiddenUploaderComponent.initFileUpload();
   }
 
+  onClickKlassTitle(event) {
+
+    if(this.isDebug()) console.log("klass-detail / onClickKlassTitle / 시작");
+
+    if(!this.isAdmin || !this.isTeacher) {
+      if(this.isDebug()) console.log("klass-detail / onClickKlassTitle / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
+      return;
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(null != this.klassTitleComponent) {
+      this.klassTitleComponent.setFocus();
+    } // end if
+
+  } // end method
+
 
   onClickEnrollment(event, klass:Klass) {
 

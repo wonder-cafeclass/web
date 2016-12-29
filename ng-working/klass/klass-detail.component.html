@@ -53,8 +53,10 @@
             src={{imgUploaderImageUrlKlassPoster}}>
 
             <!-- LABEL : klass title -->
-            <div class="klass-title-overlay">
-              <h5 class="font"><strong>{{klassTitle}}</strong></h5>
+            <div 
+            (click)="onClickKlassTitle($event)"
+            class="klass-title-overlay">
+              <h5 class="font unselectable"><strong>{{klassTitle}}</strong></h5>
             </div>
             <div class="klass-title-overlay-bg"></div>
           
@@ -118,7 +120,9 @@
         <ul class="list-group col-md-4" style="padding-right: 0px;">
 
           <!-- WEEKS & PRICE INIT -->
-          <li class="list-group-item col-next first">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next first">
             <pricetag-h 
             [title]="pricePerWeekFormat"
             [fontSizeTitle]="40"
@@ -272,7 +276,9 @@
 
 
           <!-- FIRST KLASS DATE INIT -->
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next">
             <butterfly  
             [title]="'수업 시작'"
             [fontSizeTitle]="16"
@@ -301,7 +307,9 @@
           </li>
           <!-- FIRST KLASS DATE ADMIN DONE -->
           
-          <li class="list-group-item col-next">
+          <li 
+          *ngIf="!isTeacher"
+          class="list-group-item col-next">
             <button   type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
                       style="width:100%;"
