@@ -70,83 +70,9 @@
 .search_enabled{
   opacity: 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-- REMOVE ME
-
-.col-md-4
-{
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  width:33%;
+li.shim {
+  height: 108px;
+  border: 0px;
+  background-color: #f9f9f9;  
+  cursor: pointer;
 }
-
-.row
-{
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -moz-column-gap: 0em;
-  -webkit-column-gap: 0em;
- 
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-}
-.panel {
-  width:100%;
-}
-.cc-panel {
-  padding: 0px;
-}
-.cc-border {
-  border-color: #ddd;
-  border-color: #e85c41;
-}
-.cc-panel-class-bg {
-  background-color: #f2f2f2;
-}
-.cc-class-filter {
-  float: left;
-  position: absolute;
-  top: 0px;
-  padding-top: 126px;
-  padding-left: 10px;
-}
-.cc-panel-magnifier {
-  font-size: 20px;
-  padding: 10px;
-  color: #e85c41;
-}
-.klass-row-next-image {
-  border-top: 0px;
-}
-.klass-title {
-  text-align: center;
-  color: #555;
-}
-.klass-desc {
-  margin: 0px;
-  color: #b0b0b0;
-}
-
-
-
-
-*/

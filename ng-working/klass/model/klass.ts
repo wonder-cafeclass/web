@@ -102,6 +102,14 @@ export class Klass {
         this.myFormat = new HelperMyFormat();
     }
 
+    // @ Desc : 새로운 클래스를 만드는 버튼 역할의 수업인지 여부.
+    isNewClassBtn() :boolean {
+        return (-100 === this.id) ? true:false;
+    }
+    isNotNewClassBtn() :boolean {
+        return !this.isNewClassBtn();
+    }
+
     // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
     getCommision() :number {
 

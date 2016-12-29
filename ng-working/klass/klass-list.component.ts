@@ -65,24 +65,25 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     private router:Router
   ) { }
 
+  private isDebug():boolean {
+    // return true;
+    return this.watchTower.isDebug();
+  }
+
   isSelected(klass: Klass): boolean {
     return klass.id === this.selectedId;
   }
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / ngOnInit / 시작");
+    if(this.isDebug()) console.log("klass-list / ngOnInit / 시작");
 
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / ngAfterViewInit");
+    if(this.isDebug()) console.log("klass-list / ngAfterViewInit");
 
     this.asyncViewPack();
     this.subscribeLoginUser();
@@ -94,20 +95,18 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   } 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("klass-list / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("klass-list / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("klass-list / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe    
 
@@ -115,16 +114,14 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private subscribeLoginUser() :void {
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("klass-list / subscribeLoginUser / 시작");
+      if(this.isDebug()) console.log("klass-list / subscribeLoginUser / 시작");
 
     // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
     // Subscribe login user
     this.watchTower.loginAnnounced$.subscribe(
       (loginUser:User) => {
 
-      if(isDebug) console.log("klass-list / subscribeLoginUser / loginUser : ",loginUser);
+      if(this.isDebug()) console.log("klass-list / subscribeLoginUser / loginUser : ",loginUser);
       this.loginUser = loginUser;  
 
     }); // end service
@@ -132,16 +129,14 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private subscribeLoginTeacher() :void {
 
-      // let isDebug:boolean = true;
-      let isDebug:boolean = false;
-      if(isDebug) console.log("klass-list / subscribeLoginTeacher / 시작");
+      if(this.isDebug()) console.log("klass-list / subscribeLoginTeacher / 시작");
 
     // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
     // Subscribe login user
     this.watchTower.loginTeacherAnnounced$.subscribe(
       (loginTeacher:Teacher) => {
 
-      if(isDebug) console.log("klass-list / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
+      if(this.isDebug()) console.log("klass-list / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
     
       // 로그인한 선생님 정보가 들어왔습니다.
       this.loginTeacher = new Teacher().setJSON(loginTeacher);
@@ -165,9 +160,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   }
   private setLoginUser() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / setLoginUser / 시작");
+    if(this.isDebug()) console.log("klass-list / setLoginUser / 시작");
 
     // 1. watch tower에게 직접 요청
     // 로그인 학생 데이터를 가져옵니다.
@@ -184,9 +177,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   } 
   private setLoginTeacher() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / setLoginTeacher / 시작");
+    if(this.isDebug()) console.log("klass-list / setLoginTeacher / 시작");
 
     // 로그인 선생님 데이터를 가져옵니다.
     let isTeacher:boolean = false;
@@ -202,9 +193,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   }
   private logActionPage() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / logActionPage / 시작");
+    if(this.isDebug()) console.log("klass-list / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -214,15 +203,13 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       this.myLoggerService.pageTypeKlassList
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("klass-list / logActionPage / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("klass-list / logActionPage / myResponse : ",myResponse);
     }) // end service
 
   }
   private init() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / init / 시작");
+    if(this.isDebug()) console.log("klass-list / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
@@ -235,31 +222,26 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private getKlassList(isTeacher:boolean) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / getKlassList / 시작");
-    if(isDebug) console.log("klass-list / getKlassList / isTeacher : ",isTeacher);
+    if(this.isDebug()) console.log("klass-list / getKlassList / 시작");
+    if(this.isDebug()) console.log("klass-list / getKlassList / isTeacher : ",isTeacher);
 
     // 1. 선생님인 경우, 자신의 수업을 추가한 리스트를 가져와야 합니다.
-    // 
-
-
     this.klassService
     .getKlasses()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("klass-list / getKlassList / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("klass-list / getKlassList / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
 
         // 성공!
         let klassJSONList = myResponse.getDataProp("klass_list");
-        if(isDebug) console.log("klass-list / getKlassList / klassJSONList : ",klassJSONList);
+        if(this.isDebug()) console.log("klass-list / getKlassList / klassJSONList : ",klassJSONList);
 
         let klassList:Klass[] = [];
         if(null != klassJSONList) {
           klassList = this.klassService.getKlassListFromJSON(klassJSONList);
-          if(isDebug) console.log("klass-list / getKlassList / klassList : ",klassList);
+          if(this.isDebug()) console.log("klass-list / getKlassList / klassList : ",klassList);
         }
         if(null != klassList && 0 < klassList.length) {
           // 1. 클래스 리스트를 가져왔습니다.
@@ -276,7 +258,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
           let newKlass:Klass = new Klass().setJSON(newKlassJSONList[0]);
 
-          if(isDebug) console.log("klass-list / getKlassList / newKlass : ",newKlass);
+          if(this.isDebug()) console.log("klass-list / getKlassList / newKlass : ",newKlass);
 
           klassList.unshift(newKlass);
         } // end if
@@ -295,61 +277,6 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       } // end if
     }); // end service    
 
-    // REFACTOR ME!
-    // wonder.jung
-    /*
-    this.route.params.forEach((params: Params) => {
-
-      if(isDebug) console.log("klass-list / getKlassList / params : ",params);
-
-      this.selectedId = params['id'];
-
-      this.klassService
-      .getKlasses()
-      .then((myResponse:MyResponse) => {
-
-        if(isDebug) console.log("klass-list / getKlassList / myResponse : ",myResponse);
-
-        if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
-
-          // 성공!
-          let klassJSONList = myResponse.getDataProp("klass_list");
-          if(isDebug) console.log("klass-list / getKlassList / klassJSONList : ",klassJSONList);
-
-          let klassList:Klass[] = [];
-          if(null != klassJSONList) {
-            klassList = this.klassService.getKlassListFromJSON(klassJSONList);
-            if(isDebug) console.log("klass-list / getKlassList / klassList : ",klassList);
-          }
-          if(null != klassList && 0 < klassList.length) {
-            // 1. 클래스 리스트를 가져왔습니다.
-            this.klasses = klassList;
-          }
-
-          // wonder.jung
-          if(isTeacher) {
-            // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
-            let newKlassJSONList = myResponse.getDataProp("new_klass");
-            let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
-
-            if(isDebug) console.log("klass-list / getKlassList / newKlass : ",newKlass);
-
-            klassList.unshift(newKlass);
-          } // end if
-
-          // let klass:Klass = new_klass
-          // 1-2. 유저라면 수업 없음 칸을 노출합니다.
-          // new_klass
-
-        } else {
-          if(null != myResponse.error && "" != myResponse.error) {
-            // 에러 내용은 화면에 표시한다.
-            this.watchTower.announceErrorMsgArr([myResponse.error]);
-          }
-        } // end if
-      }); // end service
-    }); // end param
-    */
 
   }
 
@@ -364,9 +291,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
           time:KlassTime, 
           searchKeyword:string): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / search / 시작");
+    if(this.isDebug()) console.log("klass-list / search / 시작");
 
     // 항목별 filter 만들기
     var levelKey = "";
@@ -411,7 +336,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       // q:string
       searchKeywordSafe
     ).then((myResponse:MyResponse) => {
-      if(isDebug) console.log("klass-list / search / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("klass-list / search / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
 
@@ -775,28 +700,26 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     event.preventDefault();
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / onSelectKlass");
-    if(isDebug) console.log("klass-list / onSelectKlass / klass : ",klass);
+    if(this.isDebug()) console.log("klass-list / onSelectKlass");
+    if(this.isDebug()) console.log("klass-list / onSelectKlass / klass : ",klass);
 
     let newClassId:number = -100;
 
     if(newClassId === +klass.id) {
-      if(isDebug) console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
+      if(this.isDebug()) console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
       this.gotoNewClassDetail(klass);
     } else if(0 < +klass.id) {
-      if(isDebug) console.log("klass-list / onSelectKlass / 수업 상세 화면으로 이동하기");
+      if(this.isDebug()) console.log("klass-list / onSelectKlass / 수업 상세 화면으로 이동하기");
       this.gotoClassDetail(klass);
     } // end if
   } // end method
   gotoNewClassDetail(klass: Klass):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-list / gotoNewClassDetail / init");
+    if(this.isDebug()) console.log("klass-list / gotoNewClassDetail / init");
 
-    this.router.navigate([klass.id], { relativeTo: this.route });
+    if(confirm("수업을 새로 만드시겠어요?")) {
+      this.router.navigate([klass.id], { relativeTo: this.route });  
+    } // end if
   }
   gotoClassDetail(klass: Klass):void {
     // 수업 상세 페이지로 이동

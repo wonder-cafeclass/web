@@ -860,7 +860,7 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onClickKlassPoster / 시작");
         if (!this.isAdmin || !this.isTeacher) {
             if (this.isDebug())
-                console.log("klass-detail / onClickKlassPoster / 중단 / 수업 포스터를 수정할수 없습니다.");
+                console.log("klass-detail / onClickKlassPoster / 중단 / 클래스 커버 이미지를 수정할수 없습니다.");
             return;
         }
         event.stopPropagation();
