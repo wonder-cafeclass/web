@@ -119,10 +119,20 @@
         <!-- Second Column -->
         <ul class="list-group col-md-4" style="padding-right: 0px;">
 
-          <!-- WEEKS & PRICE INIT -->
+          <!-- PRICE CALC ADMIN INIT-->
           <li 
-          *ngIf="!isTeacher"
+          *ngIf="isTeacher" 
           class="list-group-item col-next first">
+            <div class="price-calc">
+              <klass-price-calculator (emitter)="onChangedFromChild($event)">
+              </klass-price-calculator>
+            </div>
+          </li>
+          <!-- PRICE CALC ADMIN DONE-->        
+
+          <!-- WEEKS & PRICE INIT -->
+          <li
+          class="list-group-item col-next">
             <pricetag-h 
             [title]="pricePerWeekFormat"
             [fontSizeTitle]="40"
@@ -143,17 +153,6 @@
             </pricetag-h>
           </li>
           <!-- WEEKS & PRICE DONE -->
-
-          <!-- PRICE CALC ADMIN INIT-->
-          <li 
-          *ngIf="isTeacher" 
-          class="list-group-item col-next">
-            <div class="price-calc">
-              <klass-price-calculator (emitter)="onChangedFromChild($event)">
-              </klass-price-calculator>
-            </div>
-          </li>
-          <!-- PRICE CALC ADMIN DONE-->
 
           <!-- FILTERS INIT -->
           <li class="list-group-item col-next">
