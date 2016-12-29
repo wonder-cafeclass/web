@@ -126,3 +126,7 @@ li.my-style.last {
 	border-bottom: 0px;
 	padding-bottom: 15px;
 }
+div.pointer {
+	text-align: center;
+	cursor: pointer;
+}
