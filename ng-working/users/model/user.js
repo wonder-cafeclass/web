@@ -2,6 +2,7 @@
 var my_is_1 = require('../../util/helper/my-is');
 var my_mobile_1 = require('../../util/helper/my-mobile');
 var my_birthday_1 = require('../../util/helper/my-birthday');
+var teacher_1 = require('../../teachers/model/teacher');
 var User = (function () {
     function User() {
         this.id = -1;
@@ -65,6 +66,10 @@ var User = (function () {
         var user = this._setJSON(json);
         user.setMobile(user.mobile);
         user.setBirthday(user.birthday);
+        if (null != json.teacher) {
+            var teacher = new teacher_1.Teacher().setJSON(json.teacher);
+            user.setTeacher(teacher);
+        }
         if (isDebug)
             console.log("klass / setJSON / user : ", user);
         return user;
@@ -102,6 +107,27 @@ var User = (function () {
             return -1;
         }
         return +this.teacher.id;
+    };
+    // @ Desc : 선생님으로 새롭게 등록하는 경우, 유저 정보에서 선생님 정보로 복사합니다.
+    User.prototype.getNewTeacherFromUser = function () {
+        var newTeacher = null;
+        if (null == this.teacher) {
+            newTeacher = new teacher_1.Teacher();
+        }
+        else {
+            newTeacher = this.teacher.copy();
+        }
+        newTeacher.user_id = this.id;
+        newTeacher.email = this.email;
+        newTeacher.name = this.name;
+        newTeacher.nickname = this.nickname;
+        newTeacher.greeting = "";
+        newTeacher.resume = "";
+        newTeacher.thumbnail = this.thumbnail;
+        newTeacher.setMobile(this.mobile);
+        newTeacher.gender = this.gender;
+        newTeacher.setBirthday(this.birthday);
+        return newTeacher;
     };
     // Common Properties - INIT
     User.prototype.isNotSameName = function (name) {

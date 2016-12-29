@@ -17,4 +17,5 @@ class User {
         public $email;
         public $date_created;
         public $date_updated;
+        public $teacher;
 }

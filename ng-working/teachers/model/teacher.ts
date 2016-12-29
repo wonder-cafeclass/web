@@ -21,7 +21,6 @@ export class Teacher {
     public resume:string="";
     public resume_arr:string[]=[];
     public greeting:string="";
-    public greeting_arr:string[]=[];
 	public memo:string="";
 	public date_created:string="";
 	public date_updated:string="";
@@ -99,6 +98,28 @@ export class Teacher {
 		return this.resume.split(this.delimiter);
 	}
 
+	setResume(resume:string):void {
+
+		if(null == resume || "" === resume) {
+			return;
+		}
+
+		this.resume = resume;
+		this.resume_arr = resume.split(this.delimiter);
+
+	}
+
+	setResumeArr(resumeArr:string[]):void {
+
+		if(this.myArray.isNotOK(resumeArr)) {
+			return;
+		}
+
+		this.resume_arr = resumeArr;
+		this.resume = resumeArr.join(this.delimiter);
+
+	} // end if
+
     copy():Teacher {
 
         return this.myIs.copy(
@@ -125,6 +146,7 @@ export class Teacher {
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         teacher.setMobile(teacher.mobile);
         teacher.setBirthday(teacher.birthday);
+        teacher.setResume(teacher.resume);
 
         return teacher;
 

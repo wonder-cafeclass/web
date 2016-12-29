@@ -21,7 +21,6 @@ var Teacher = (function () {
         this.resume = "";
         this.resume_arr = [];
         this.greeting = "";
-        this.greeting_arr = [];
         this.memo = "";
         this.date_created = "";
         this.date_updated = "";
@@ -71,6 +70,20 @@ var Teacher = (function () {
         }
         return this.resume.split(this.delimiter);
     };
+    Teacher.prototype.setResume = function (resume) {
+        if (null == resume || "" === resume) {
+            return;
+        }
+        this.resume = resume;
+        this.resume_arr = resume.split(this.delimiter);
+    };
+    Teacher.prototype.setResumeArr = function (resumeArr) {
+        if (this.myArray.isNotOK(resumeArr)) {
+            return;
+        }
+        this.resume_arr = resumeArr;
+        this.resume = resumeArr.join(this.delimiter);
+    }; // end if
     Teacher.prototype.copy = function () {
         return this.myIs.copy(
         // src:any
@@ -91,6 +104,7 @@ var Teacher = (function () {
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
         teacher.setMobile(teacher.mobile);
         teacher.setBirthday(teacher.birthday);
+        teacher.setResume(teacher.resume);
         return teacher;
     }; // end method
     Teacher.prototype._setJSON = function (json) {

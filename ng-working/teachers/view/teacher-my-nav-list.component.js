@@ -30,35 +30,28 @@ var TeacherMyNavListComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
     }
-    TeacherMyNavListComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("teacher-my-nav-list / ngOnInit / init");
+    TeacherMyNavListComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
     };
     TeacherMyNavListComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / ngAfterViewInit");
         this.asyncViewPack();
     };
     TeacherMyNavListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("teacher-my-nav-list / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("teacher-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
@@ -78,19 +71,17 @@ var TeacherMyNavListComponent = (function () {
     TeacherMyNavListComponent.prototype.init = function () {
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / init");
         // COLOR
         this.colorWhite = this.klassColorService.white;
         this.colorOrange = this.klassColorService.orange;
         this.colorGray = this.klassColorService.gray;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / init / this.colorWhite : ", this.colorWhite);
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / init / this.colorOrange : ", this.colorOrange);
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / init / this.colorGray : ", this.colorGray);
         this.navTabsOptions =
             this.radiobtnService.getNavTabsTeacherMyInfo(
@@ -99,17 +90,15 @@ var TeacherMyNavListComponent = (function () {
             // keyFocus:string
             null);
         this.showMyInfo = true;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);
     };
     TeacherMyNavListComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / myEvent : ", myEvent);
-        if (isDebug)
+        if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / myEvent.key : ", myEvent.key);
         // 모든 플래그값을 초기화
         this.showMyInfo = false;

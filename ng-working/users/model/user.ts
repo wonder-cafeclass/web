@@ -104,6 +104,11 @@ export class User {
         user.setMobile(user.mobile);
         user.setBirthday(user.birthday);
 
+        if(null != json.teacher) {
+        	let teacher:Teacher = new Teacher().setJSON(json.teacher);
+        	user.setTeacher(teacher);
+        }
+
         if(isDebug) console.log("klass / setJSON / user : ",user);
 
         return user;
@@ -150,7 +155,31 @@ export class User {
 		}
 
 		return +this.teacher.id;
+	}	
+	// @ Desc : 선생님으로 새롭게 등록하는 경우, 유저 정보에서 선생님 정보로 복사합니다.
+	getNewTeacherFromUser():Teacher {
+
+		let newTeacher:Teacher = null;
+		if(null == this.teacher) {
+			newTeacher = new Teacher();
+		} else {
+			newTeacher = this.teacher.copy();
+		}
+
+		newTeacher.user_id = this.id;
+		newTeacher.email = this.email;
+		newTeacher.name = this.name;
+		newTeacher.nickname = this.nickname;
+		newTeacher.greeting = "";
+		newTeacher.resume = "";
+		newTeacher.thumbnail = this.thumbnail;
+		newTeacher.setMobile(this.mobile);
+		newTeacher.gender = this.gender;
+		newTeacher.setBirthday(this.birthday);
+
+		return newTeacher;
 	}
+
 
 	// Common Properties - INIT
 	isNotSameName(name:string) :boolean {

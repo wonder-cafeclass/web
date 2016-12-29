@@ -220,6 +220,25 @@ export class SignupComponent implements AfterViewInit {
     this.nicknameComponent.setInput(this.userCopy.nickname);
   }
 
+  private setBirthday():void {
+
+    if(this.isDebug()) console.log("signup / setBirthday / 시작");
+    
+    if(null == this.birthdayComponent) {
+      if(this.isDebug()) console.log("signup / setBirthday / 중단 / null == this.birthdayComponent");
+      return;
+    }
+    if(null == this.userCopy) {
+      if(this.isDebug()) console.log("signup / setBirthday / 중단 / null == this.userCopy");
+      return;
+    }
+
+    this.birthdayComponent.setBirthYear(this.userCopy.getBirthYear());
+    this.birthdayComponent.setBirthMonth(this.userCopy.getBirthMonth());
+    this.birthdayComponent.setBirthDay(this.userCopy.getBirthMonth(), this.userCopy.getBirthDay());
+
+  } // end method
+
   private setProfileImg():void {
 
     if(this.isDebug()) console.log("signup / setProfileImg / 시작");
@@ -782,6 +801,11 @@ export class SignupComponent implements AfterViewInit {
 
         this.nicknameComponent = myEvent.metaObj;
         this.setNickname();
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_BIRTH)) {
+
+        this.birthdayComponent.setDefault();
+        this.setBirthday();
 
       } // end if
 

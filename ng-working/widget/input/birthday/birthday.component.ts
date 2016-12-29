@@ -29,6 +29,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
+  @Input() eventKey:string="";//this.myEventService.KEY_USER_BIRTH_YEAR
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -68,18 +69,22 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / ngOnInit / init");
+    if(this.isDebug()) console.log("birthday / ngOnInit / init");
 
+    if(null == this.eventKey || "" == this.eventKey) {
+      this.eventKey = this.myEventService.KEY_USER_BIRTH;
+    } // end if
+
+  } // end method
+
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / ngAfterViewInit");
+    if(this.isDebug()) console.log("birthday / ngAfterViewInit");
 
     this.asyncViewPack();
 
@@ -87,20 +92,18 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("birthday / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("birthday / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("birthday / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("birthday / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("birthday / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -121,61 +124,55 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   private setBirthdayDefault() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / setBirthdayDefault / 시작");
-
+    if(this.isDebug()) console.log("birthday / setBirthdayDefault / 시작");
 
     this.birthYearArr = this.myBirthdayService.getYear();
-    if(isDebug) console.log("birthday / setBirthdayDefault / this.birthYearArr : ",this.birthYearArr);
+    if(this.isDebug()) console.log("birthday / setBirthdayDefault / this.birthYearArr : ",this.birthYearArr);
     if(!(0 < this.selectedYear)) {
       // 지정된 '연도'가 없다면, 초기 값은 '선택안됨'
-      if(isDebug) console.log("birthday / setBirthdayDefault / birthYearArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+      if(this.isDebug()) console.log("birthday / setBirthdayDefault / birthYearArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
       this.birthYearArr.unshift("-");
     } // end if
 
 
     this.birthMonthArr = this.myBirthdayService.getMonth();
-    if(isDebug) console.log("birthday / setBirthdayDefault / this.birthMonthArr : ",this.birthMonthArr);
+    if(this.isDebug()) console.log("birthday / setBirthdayDefault / this.birthMonthArr : ",this.birthMonthArr);
     if(!(0 < this.selectedMonth)) {
       // 지정된 '월'이 없다면, 초기 값은 '선택안됨'
-      if(isDebug) console.log("birthday / setBirthdayDefault / birthMonthArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+      if(this.isDebug()) console.log("birthday / setBirthdayDefault / birthMonthArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
       this.birthMonthArr.unshift("-");
     } // end if
 
 
     this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
-    if(isDebug) console.log("birthday / setBirthdayDefault / this.birthDayArr : ",this.birthDayArr);
+    if(this.isDebug()) console.log("birthday / setBirthdayDefault / this.birthDayArr : ",this.birthDayArr);
     if(!(0 < this.selectedMonth)) {
       // 지정된 '월'이 없다면, 초기 값은 '선택안됨'
-      if(isDebug) console.log("birthday / setBirthdayDefault / birthDayArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
+      if(this.isDebug()) console.log("birthday / setBirthdayDefault / birthDayArr / 지정된 '월'이 없다면, 초기 값은 '선택안됨'");
       this.birthDayArr.unshift("-");
     } // end if
 
-
-  }
+  } // end method
 
   private setMyChecker() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / setMyChecker / 시작");
+    if(this.isDebug()) console.log("birthday / setMyChecker / 시작");
 
     if(null == this.myCheckerService) {
-      if(isDebug) console.log("birthday / setMyChecker / 중단 / this.myCheckerService is not valid!");
+      if(this.isDebug()) console.log("birthday / setMyChecker / 중단 / this.myCheckerService is not valid!");
       return;
     }
 
     if(null == this.myCheckerBirthYear) {
-      if(isDebug) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthYear");
+      if(this.isDebug()) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthYear");
       this.myCheckerBirthYear = this.myCheckerService.getMyChecker("user_birth_year");
     }
     if(null == this.myCheckerBirthMonth) {
-      if(isDebug) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthMonth");
+      if(this.isDebug()) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthMonth");
       this.myCheckerBirthMonth = this.myCheckerService.getMyChecker("user_birth_month");
     }
     if(null == this.myCheckerBirthDay) {
-      if(isDebug) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthDay");
+      if(this.isDebug()) console.log("birthday / setMyChecker / update checker / this.myCheckerBirthDay");
       this.myCheckerBirthDay = this.myCheckerService.getMyChecker("user_birth_day");
     }
 
@@ -183,76 +180,135 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
+    if(this.isDebug()) console.log("birthday / init / 시작");
+
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
 
+    // Ready Event 발송
+    this.emitEventOnReady();
+  }
+
+  emitEventOnReady():void {
+
+    if(this.isDebug()) console.log("birthday / emitEventOnReady / 시작");
+
+    let myEvent:MyEvent = 
+    this.watchTower.getEventOnReady(
+      // eventKey:string, 
+      this.eventKey,
+      // component
+      this
+    );
+    this.emitter.emit(myEvent);
+
+  } // end method  
+
+  // @ Desc : 부모 객체가 Birthday Component의 참조를 받아 호출하는 세팅 메서드
+  setDefault() :void {
+
+    if(this.isDebug()) console.log("birthday / init / 시작");
+
     this.setBirthdayDefault();
     this.setMyChecker();
-    
+
   }
 
   isNotOKBirthYear(input:string) :boolean {
     return !this.isOKBirthYear(input);
   }
   isOKBirthYear(input:string) :boolean {
+
+    if(this.isDebug()) console.log("birthday / isOKBirthYear / 시작");
+
     if(null == this.myCheckerService) {
+      if(this.isDebug()) console.log("birthday / isOKBirthYear / 중단 / null == this.myCheckerService");
       return false;
+    } // end if
+    if(null == this.myCheckerBirthYear) {
+      this.setMyChecker();
+    } // end if
+
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerBirthYear, input);
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("birthday / isOKBirthYear / 중단 / history : ",history);
     }
 
-    return this.myCheckerService.isOK(this.myCheckerBirthYear, input);
+    return isOK;
   }  
   isNotOKBirthMonth(input:string) :boolean {
     return !this.isOKBirthMonth(input);
   }
   isOKBirthMonth(input:string) :boolean {
+
+    if(this.isDebug()) console.log("birthday / isOKBirthMonth / 시작");
+
     if(null == this.myCheckerService) {
+      if(this.isDebug()) console.log("birthday / isOKBirthMonth / 중단 / null == this.myCheckerService");
       return false;
     }
+    if(null == this.myCheckerBirthMonth) {
+      this.setMyChecker();
+    } // end if
 
-    return this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerBirthMonth, input);
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("birthday / isOKBirthMonth / 중단 / history : ",history);
+    } // end if
+
+    return isOK;
   }  
   isNotOKBirthDay(input:string) :boolean {
     return !this.isOKBirthDay(input);
   }
   isOKBirthDay(input:string) :boolean {
+
+    if(this.isDebug()) console.log("birthday / isOKBirthDay / 시작");
+
     if(null == this.myCheckerService) {
+      if(this.isDebug()) console.log("birthday / isOKBirthDay / 중단 / null == this.myCheckerService");
       return false;
     }
+    if(null == this.myCheckerBirthDay) {
+      this.setMyChecker();
+    } // end if
 
-    return this.myCheckerService.isOK(this.myCheckerBirthDay, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myCheckerBirthDay, input);
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("birthday / isOKBirthDay / 중단 / history : ",history);
+    } // end if
+
+    return isOK;
   } 
   setBirthYear(year:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / setBirthYear / year : ",year);
+    if(this.isDebug()) console.log("birthday / setBirthYear / year : ",year);
 
     if(this.isOKBirthYear(year)) {
-      if(isDebug) console.log("birthday / setBirthYear / done");
+      if(this.isDebug()) console.log("birthday / setBirthYear / done");
       this.birthYearArr = this.myBirthdayService.getYear();
       this.selectedYear = +year;
     }
   }
   setBirthMonth(month:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / setBirthMonth / month : ",month);
+    if(this.isDebug()) console.log("birthday / setBirthMonth / month : ",month);
 
     if(this.isOKBirthMonth(month)) {
-      if(isDebug) console.log("birthday / setBirthMonth / done");
+      if(this.isDebug()) console.log("birthday / setBirthMonth / done");
       this.birthMonthArr = this.myBirthdayService.getMonth();
       this.selectedMonth = +month;
     }
   }
   setBirthDay(month:string, day:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birthday / setBirthDay / day : ",day);
+    if(this.isDebug()) console.log("birthday / setBirthDay / day : ",day);
 
     if(this.isOKBirthDay(day)) {
-      if(isDebug) console.log("birthday / setBirthDay / done");
+      if(this.isDebug()) console.log("birthday / setBirthDay / done");
 
       // 날짜가 설정되어 있지 않다면, 세팅해줍니다.
       this.birthDayArr = this.myBirthdayService.getDay(+month);
@@ -394,17 +450,15 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   onChangeBirthYear(selectBirthYear) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birtday / onChangeBirthYear / init");
+    if(this.isDebug()) console.log("birtday / onChangeBirthYear / init");
 
     this.selectedYear = selectBirthYear;
 
-    if(isDebug) console.log("birtday / onChangeBirthYear / this.selectedYear : ",this.selectedYear);
+    if(this.isDebug()) console.log("birtday / onChangeBirthYear / this.selectedYear : ",this.selectedYear);
 
     let isOK:boolean = this.isOKBirthYear(""+this.selectedYear);
 
-    if(isDebug) console.log("birtday / onChangeBirthYear / isOK : ",isOK);
+    if(this.isDebug()) console.log("birtday / onChangeBirthYear / isOK : ",isOK);
 
     if(isOK) {
 
@@ -429,16 +483,14 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     } else {
 
       let history = this.myCheckerService.getLastHistory();
-      if(isDebug) console.log("birtday / onChangeBirthYear / history : ",history);
+      if(this.isDebug()) console.log("birtday / onChangeBirthYear / history : ",history);
 
     } // end if
   }
 
   onChangeBirthMonth(selectBirthMonth) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birtday / onChangeBirthMonth / init");    
+    if(this.isDebug()) console.log("birtday / onChangeBirthMonth / init");    
 
     this.selectedMonth = selectBirthMonth;
 
@@ -446,13 +498,13 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     this.birthDayArr = this.myBirthdayService.getDay(this.selectedMonth);
     this.selectedDay = +this.birthDayArr[Math.round(this.birthDayArr.length/2)];    
 
-    if(isDebug) console.log("birtday / onChangeBirthMonth / this.selectedMonth : ",this.selectedMonth);
+    if(this.isDebug()) console.log("birtday / onChangeBirthMonth / this.selectedMonth : ",this.selectedMonth);
 
     let monthCalFormat = this.setCalendarFormat("" + this.selectedMonth);
     let dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
     let isOK:boolean = this.isOKBirthMonth(monthCalFormat);
 
-    if(isDebug) console.log("birtday / onChangeBirthMonth / isOK : ",isOK);
+    if(this.isDebug()) console.log("birtday / onChangeBirthMonth / isOK : ",isOK);
 
     if(isOK) {
 
@@ -494,7 +546,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     } else {
 
       let history = this.myCheckerService.getLastHistory();
-      if(isDebug) console.log("birtday / onChangeBirthMonth / history : ",history);
+      if(this.isDebug()) console.log("birtday / onChangeBirthMonth / history : ",history);
 
     } // end if
 
@@ -502,19 +554,17 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
 
   onChangeBirthDay(selectBirthDay) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("birtday / onChangeBirthDay / init");    
+    if(this.isDebug()) console.log("birtday / onChangeBirthDay / init");    
 
     this.selectedDay = selectBirthDay;
 
-    if(isDebug) console.log("birtday / onChangeBirthDay / this.selectedDay : ",this.selectedDay);
+    if(this.isDebug()) console.log("birtday / onChangeBirthDay / this.selectedDay : ",this.selectedDay);
 
     let dayCalFormat = this.setCalendarFormat("" + this.selectedDay);
     let isOK:boolean = this.isOKBirthDay(dayCalFormat);
 
-    if(isDebug) console.log("birtday / onChangeBirthDay / isOK : ",isOK);
-    if(isDebug) console.log("birtday / onChangeBirthDay / dayCalFormat : ",dayCalFormat);
+    if(this.isDebug()) console.log("birtday / onChangeBirthDay / isOK : ",isOK);
+    if(this.isDebug()) console.log("birtday / onChangeBirthDay / dayCalFormat : ",dayCalFormat);
 
     if(isOK) {
 
@@ -540,7 +590,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
     } else {
 
       let history = this.myCheckerService.getLastHistory();
-      if(isDebug) console.log("birtday / onChangeBirthDay / history : ",history);
+      if(this.isDebug()) console.log("birtday / onChangeBirthDay / history : ",history);
 
     } // end if
 

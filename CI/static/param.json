@@ -33,6 +33,7 @@
 
 		"teacher_id":"is_natural_no_zero",
 		"teacher_resume":"is_str|||min_length[10]|||max_length[255]",
+		"teacher_resume_row":"is_str|||min_length[5]|||max_length[40]",
 		"teacher_greeting":"is_str|||min_length[10]|||max_length[255]",
 
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",

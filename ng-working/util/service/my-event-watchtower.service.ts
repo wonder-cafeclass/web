@@ -169,6 +169,11 @@ export class MyEventWatchTowerService {
 	    let isDebug:boolean = false;
 	    if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 시작`);
 
+	    if(null == this.loginUser) {
+	    	if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / 중단 / null == this.loginUser`);
+	    	return 
+	    }
+
 		this.loginTeacher = new Teacher().setJSON(loginTeacher);;
 		if(null != this.loginTeacher) {
 			if(isDebug) console.log(`my-event-watchtower / announceLoginTeacher / setTeacher`);

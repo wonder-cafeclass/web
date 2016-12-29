@@ -53,8 +53,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		// return true;
-		return this.watchTower.isDebug();
+		return true;
+		// return this.watchTower.isDebug();
 	}
 
 	isAdmin:boolean=false;
@@ -84,27 +84,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.watchTower.announceContentHeight();
 		
 	}
-
-	/*
-	// @ Desc : http://devcafeclass.com?hawkeye=true 인 경우, 모니터링 모드로 전환합니다.
-	checkExternalAdmin():void {
-
-	    // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
-	    this.subscription = this.activatedRoute.queryParams.subscribe(
-	      (param: any) => {
-
-	        console.log("app-root / getQueryString / param : ",param);
-
-	        let isActivated:boolean = param['hawkeye'];
-	        if(null != isActivated && true == isActivated) {
-	        	this.watchTower.announceIsDebugging(true);
-	        	this.isDebugging = isActivated; 
-	        } // end if
-	      } // end return
-	    ); // end subscribe
-
-	} // end method
-	*/
 
 	private subscribeLoginUser() :void {
 
@@ -257,6 +236,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 	private getLoginUserFromCookie() :void {
 
+		// wonder.jung - 유저 정보를 가져올 때 선생님 정보도 함께 가져와야 한다. 
+		// 선생님 정보를 분리해서 가져오면 시차 발생등의 문제에 대응하기 어렵다.
+
 	    if(this.isDebug()) console.log(`app-root / getLoginUserFromCookie / 시작`);
 
 		this.userService
@@ -275,16 +257,25 @@ export class AppComponent implements OnInit, AfterViewChecked {
 				// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
 				this.watchTower.announceLogin(this.loginUser);
 
-				// 회원이 선생님이라면 선생님 정보를 가져온다.
-				this.getTeacherFromUser(+this.loginUser.id);
+				if(user.isTeacher()) {
+					this.loginTeacher = this.loginUser.getTeacher();
+
+					// 선생님 로그인 여부를 확인, 전파한다.
+					this.watchTower.announceLoginTeacher(this.loginTeacher);
+				} // end if
 
 			} else if(myResponse.isFailed() && null != myResponse.error) {  
 
 				this.watchTower.announceErrorMsgArr([myResponse.error]);
 				
-	        }			
-		});
-	}
+	        } // end if
+
+		}); // end service
+
+	} // end method
+
+	// REMOVE ME
+	/*
 	private getTeacherFromUser(userId:number) :void {
 
 	    if(this.isDebug()) console.log(`app-root / getTeacherFromUser / 시작`);
@@ -304,7 +295,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 		}); // end service
 
-	}
+	} // end method
+	*/
 
 	onErrorThumbnail(event, thumbnail) :void{
 		event.stopPropagation();

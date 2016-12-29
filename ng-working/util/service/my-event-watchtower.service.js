@@ -146,6 +146,11 @@ var MyEventWatchTowerService = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uC2DC\uC791");
+        if (null == this.loginUser) {
+            if (isDebug)
+                console.log("my-event-watchtower / announceLoginTeacher / \uC911\uB2E8 / null == this.loginUser");
+            return;
+        }
         this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
         ;
         if (null != this.loginTeacher) {
