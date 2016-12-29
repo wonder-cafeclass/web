@@ -1,11 +1,7 @@
 import {  Component, 
-          ViewChild,
-          OnInit, 
           AfterViewInit,
-          SimpleChanges,
           Output, 
-          EventEmitter,
-          Input }                     from '@angular/core';
+          EventEmitter }              from '@angular/core';
 
 import { MyEventService }             from '../util/service/my-event.service';
 import { MyEvent }                    from '../util/model/my-event';
@@ -30,7 +26,7 @@ import { MyResponse }                 from '../util/model/my-response';
   templateUrl: 'user-my-nav-list.component.html',
   styleUrls: [ 'user-my-nav-list.component.css' ]
 })
-export class UserMyNavListComponent implements OnInit, AfterViewInit {
+export class UserMyNavListComponent implements AfterViewInit {
 
   navTabsOptions:RadioBtnOption[];
 
@@ -54,20 +50,14 @@ export class UserMyNavListComponent implements OnInit, AfterViewInit {
                 private watchTower:MyEventWatchTowerService, 
                 private myCheckerService:MyCheckerService) {}
 
-  ngOnInit(): void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user-my-nav-list / ngOnInit / init");
-
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user-my-nav-list / ngAfterViewInit");
+    if(this.isDebug()) console.log("user-my-nav-list / ngAfterViewInit");
 
     this.asyncViewPack();
 
@@ -75,20 +65,18 @@ export class UserMyNavListComponent implements OnInit, AfterViewInit {
   
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user-my-nav-list / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("user-my-nav-list / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("user-my-nav-list / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("user-my-nav-list / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("user-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("user-my-nav-list / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -112,18 +100,16 @@ export class UserMyNavListComponent implements OnInit, AfterViewInit {
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user-my-nav-list / init");
+    if(this.isDebug()) console.log("user-my-nav-list / init");
 
     // COLOR
     this.colorWhite = this.klassColorService.white;
     this.colorOrange = this.klassColorService.orange;
     this.colorGray = this.klassColorService.gray;
 
-    if(isDebug) console.log("user-my-nav-list / init / this.colorWhite : ",this.colorWhite);
-    if(isDebug) console.log("user-my-nav-list / init / this.colorOrange : ",this.colorOrange);
-    if(isDebug) console.log("user-my-nav-list / init / this.colorGray : ",this.colorGray);
+    if(this.isDebug()) console.log("user-my-nav-list / init / this.colorWhite : ",this.colorWhite);
+    if(this.isDebug()) console.log("user-my-nav-list / init / this.colorOrange : ",this.colorOrange);
+    if(this.isDebug()) console.log("user-my-nav-list / init / this.colorGray : ",this.colorGray);
 
     this.navTabsOptions = 
     this.radiobtnService.getNavTabsUserMyInfo(
@@ -134,17 +120,15 @@ export class UserMyNavListComponent implements OnInit, AfterViewInit {
     );
     this.showMyInfo = true;
 
-    if(isDebug) console.log("user-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);    
+    if(this.isDebug()) console.log("user-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);    
 
   }
 
   onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("user-my-nav-list / onChangedFromChild / init");
-    if(isDebug) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
-    if(isDebug) console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / init");
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
 
     // 모든 플래그값을 초기화
     this.showMyInfo = false;

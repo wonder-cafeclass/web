@@ -119,9 +119,6 @@
                   class="list-group-item klass-info"
                   style="padding:0px;"
                   [ngClass]="{'focus':isFocusTutorDesc}">
-              <!-- 
-              <div style="padding-left:10px;color:#777;"><h4>선생님 소개</h4></div>
-              -->
               <div style="padding: 5px;">
                 <klass-teacher  
                 [isAdmin]="isAdmin"
@@ -132,9 +129,6 @@
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
-              <!-- 
-              <div style="padding-left:10px;color:#777;"><h4>수업 리뷰</h4></div>
-              -->
               <comment-list [isAdmin]="isAdmin"
                             [msgNoComment]="'등록된 리뷰가 없습니다'"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"

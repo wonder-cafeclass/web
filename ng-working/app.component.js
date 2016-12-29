@@ -261,6 +261,7 @@ var AppComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         // 내정보로 이동합니다.
+        this.router.navigate(['/user/my']);
     };
     // 디버깅 모드로 전환하는 방법은 2가지
     // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
@@ -274,6 +275,12 @@ var AppComponent = (function () {
             console.log("app-root / onClickToggleDebugging / this.isDebugging : " + this.isDebugging);
         this.watchTower.announceIsDebugging(this.isDebugging);
     };
+    AppComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(['/']);
+    }; // end if
     AppComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

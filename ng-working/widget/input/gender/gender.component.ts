@@ -2,7 +2,6 @@ import {  Component,
           Input, 
           Output,
           EventEmitter,
-          OnInit,
           AfterViewInit }       from '@angular/core';
 import { Router }               from '@angular/router';
 
@@ -22,7 +21,7 @@ import { MyResponse }                 from '../../../util/model/my-response';
   templateUrl: 'gender.component.html',
   styleUrls: [ 'gender.component.css' ]
 })
-export class GenderComponent implements OnInit, AfterViewInit {
+export class GenderComponent implements AfterViewInit {
 
   @Input() top:number=-1;
   @Input() left:number=-1;
@@ -57,40 +56,32 @@ export class GenderComponent implements OnInit, AfterViewInit {
                 private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService) {}
 
-  ngOnInit(): void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / ngOnInit / init");
-
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / ngAfterViewInit");
+    if(this.isDebug()) console.log("gender / ngAfterViewInit");
 
     this.asyncViewPack();
 
   } 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("gender / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("gender / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("gender / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("gender / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("gender / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -111,9 +102,7 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   private setMyChecker() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / setMyChecker / 시작");
+    if(this.isDebug()) console.log("gender / setMyChecker / 시작");
 
     if(null == this.myCheckerService) {
       return;
@@ -135,25 +124,32 @@ export class GenderComponent implements OnInit, AfterViewInit {
   }
 
   isNotOK(input:string) :boolean {
-    return this.isOK(input);
+    return !this.isOK(input);
   }
   isOK(input:string) :boolean {
 
+    if(this.isDebug()) console.log("gender / isOK / init");
+
     if(null == this.myCheckerService) {
+      if(this.isDebug()) console.log("gender / isOK / 중단 / null == this.myCheckerService");
       return false;
     }
 
-    return this.myCheckerService.isOK(this.myChecker, input);
+    let isOK:boolean = this.myCheckerService.isOK(this.myChecker, input);
+    if(!isOK) {
+      let history = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("gender / isOK / history : ",history);
+    }
+
+    return isOK;
   } 
   setGender(gender:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / gender / init");
-    if(isDebug) console.log("gender / gender / gender : ",gender);
+    if(this.isDebug()) console.log("gender / gender / init");
+    if(this.isDebug()) console.log("gender / gender / gender : ",gender);
 
     if(this.isOK(gender)) {
-      if(isDebug) console.log("gender / gender / 성별이 변경됩니다.");
+      if(this.isDebug()) console.log("gender / gender / 성별이 변경됩니다.");
       this.gender = gender;
     }
   }
@@ -233,9 +229,7 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderFemale(event) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / onClickGenderFemale / init");
+    if(this.isDebug()) console.log("gender / onClickGenderFemale / init");
     
     event.stopPropagation();
     event.preventDefault();
@@ -249,9 +243,7 @@ export class GenderComponent implements OnInit, AfterViewInit {
 
   onClickGenderMale(event) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("gender / onClickGenderMale / init");
+    if(this.isDebug()) console.log("gender / onClickGenderMale / init");
 
     event.stopPropagation();
     event.preventDefault();

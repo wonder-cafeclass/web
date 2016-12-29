@@ -187,20 +187,12 @@ class Upload extends MY_REST_Controller {
             $config['allowed_types']        = 'gif|jpg|png|jpeg';
             $config['max_size']             = $image_file_size; // kb?
 
-            $config['min_width']            = $min_width;
-            $config['min_height']           = $min_height;
+            // TODO - 너비 제한을 거는 경우와 아닌 경우에 대한 로직이 필요.
+            // $config['min_width']            = $min_width;
+            // $config['min_height']           = $min_height;
 
-            $config['max_width']            = $max_width;
-            $config['max_height']           = $max_height;
-
-        // $image_file_size = intval($image_file_size);
-        // $desired_width = intval($desired_width);
-        // $desired_height = intval($desired_height);
-        // $min_width = intval($min_width);
-        // $max_width = intval($max_width);
-        // $min_height = intval($min_height);
-        // $max_height = intval($max_height);
-
+            // $config['max_width']            = $max_width;
+            // $config['max_height']           = $max_height;
             
             $this->load->library('upload', $config);
 
@@ -255,7 +247,8 @@ class Upload extends MY_REST_Controller {
                         "image_file_width_actual"=>$image_file_width_actual,
                         "image_file_height_actual"=>$image_file_height_actual,
                         "image_file_valid_actual"=>$image_file_valid_actual
-                    ]
+                    ],
+                    "error_data"=>$error_data
                 ];
 
                 $this->respond_200_Failed(

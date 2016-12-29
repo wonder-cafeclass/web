@@ -319,6 +319,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		event.preventDefault();
 		
 		// 내정보로 이동합니다.
+		this.router.navigate(['/user/my']);
 	}
 
 	// 디버깅 모드로 전환하는 방법은 2가지
@@ -335,5 +336,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 	    this.watchTower.announceIsDebugging(this.isDebugging);
 	}
+
+	onClickLogo(event) :void {
+
+		event.stopPropagation();
+		event.preventDefault();
+
+		// 홈으로 이동
+		this.router.navigate(['/']);
+	} // end if
 
 }

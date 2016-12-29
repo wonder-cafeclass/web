@@ -35,35 +35,28 @@ var GenderComponent = (function () {
         this.isShowPopover = false;
         this.isAdmin = false;
     }
-    GenderComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("gender / ngOnInit / init");
+    GenderComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
     };
     GenderComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / ngAfterViewInit");
         this.asyncViewPack();
     };
     GenderComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("gender / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("gender / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
@@ -81,9 +74,7 @@ var GenderComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     GenderComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / setMyChecker / 시작");
         if (null == this.myCheckerService) {
             return;
@@ -99,23 +90,31 @@ var GenderComponent = (function () {
         this.setViewPack();
     };
     GenderComponent.prototype.isNotOK = function (input) {
-        return this.isOK(input);
+        return !this.isOK(input);
     };
     GenderComponent.prototype.isOK = function (input) {
+        if (this.isDebug())
+            console.log("gender / isOK / init");
         if (null == this.myCheckerService) {
+            if (this.isDebug())
+                console.log("gender / isOK / 중단 / null == this.myCheckerService");
             return false;
         }
-        return this.myCheckerService.isOK(this.myChecker, input);
+        var isOK = this.myCheckerService.isOK(this.myChecker, input);
+        if (!isOK) {
+            var history_1 = this.myCheckerService.getLastHistory();
+            if (this.isDebug())
+                console.log("gender / isOK / history : ", history_1);
+        }
+        return isOK;
     };
     GenderComponent.prototype.setGender = function (gender) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / gender / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / gender / gender : ", gender);
         if (this.isOK(gender)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("gender / gender / 성별이 변경됩니다.");
             this.gender = gender;
         }
@@ -179,9 +178,7 @@ var GenderComponent = (function () {
         this.emitter.emit(myEventOnChange);
     };
     GenderComponent.prototype.onClickGenderFemale = function (event) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / onClickGenderFemale / init");
         event.stopPropagation();
         event.preventDefault();
@@ -190,9 +187,7 @@ var GenderComponent = (function () {
         this.tooltipMsg = null;
     };
     GenderComponent.prototype.onClickGenderMale = function (event) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("gender / onClickGenderMale / init");
         event.stopPropagation();
         event.preventDefault();

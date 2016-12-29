@@ -39,41 +39,43 @@ var MyInfoComponent = (function () {
         this.eventKeyPWTail = this.myEventService.KEY_USER_RE_PASSWORD;
         this.defaultMetaList = this.myEventService.getDefaultMetaListMyInfo();
     }
+    MyInfoComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     MyInfoComponent.prototype.ngOnInit = function () { };
     MyInfoComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / ngAfterViewInit");
-        this.setDefaultComponents();
+        // REMOVE ME
+        // this.setDefaultComponents();
         this.asyncViewPack();
     };
-    MyInfoComponent.prototype.setDefaultComponents = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("my-info / setDefaultComponents / 시작");
-        // DefaultComponent들을 세팅
-        this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
-        this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
-        this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
-    };
+    // REMOVE ME
+    /*
+    private setDefaultComponents() :void {
+  
+      if(this.isDebug()) console.log("my-info / setDefaultComponents / 시작");
+  
+      // DefaultComponent들을 세팅
+      this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
+      this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
+      this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
+    }
+    */
     MyInfoComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("my-info / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe
@@ -91,9 +93,7 @@ var MyInfoComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     MyInfoComponent.prototype.setLoginUser = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / setLoginUser / 시작");
         // 로그인 데이터를 가져옵니다.
         var userJSON = this.watchTower.getLoginUser();
@@ -112,31 +112,34 @@ var MyInfoComponent = (function () {
             this.router.navigate(['/login']);
         } // end if
     };
+    // REMOVE ME
     // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
-    MyInfoComponent.prototype.getInput = function (eventKey) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("my-info / getInput / init");
-        var target = null;
-        this.inputComponentList.forEach(function (inputComponent) {
-            if (isDebug)
-                console.log("my-info / getInput / eventKey : ", eventKey);
-            if (isDebug)
-                console.log("my-info / getInput / inputComponent.getEventKey() : ", inputComponent.getEventKey());
-            if (inputComponent.hasEventKey(eventKey)) {
-                if (isDebug)
-                    console.log("my-info / getInput / inputComponent : ", inputComponent);
-                target = inputComponent;
-                return;
-            }
-        }); // end for-each
-        return target;
-    };
+    /*
+    private getInput(eventKey:string) :any {
+  
+      if(this.isDebug()) console.log("my-info / getInput / init");
+  
+      let target:DefaultComponent = null;
+  
+      this.inputComponentList.forEach(function(inputComponent) {
+  
+        if(this.isDebug()) console.log("my-info / getInput / eventKey : ",eventKey);
+        if(this.isDebug()) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
+  
+        if(inputComponent.hasEventKey(eventKey)) {
+          if(this.isDebug()) console.log("my-info / getInput / inputComponent : ",inputComponent);
+          target = inputComponent;
+          return;
+        }
+  
+      }); // end for-each
+  
+      return target;
+    }
+    */
     MyInfoComponent.prototype.logActionPage = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        var _this = this;
+        if (this.isDebug())
             console.log("my-info / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
@@ -145,14 +148,12 @@ var MyInfoComponent = (function () {
         // pageType:string
         this.myLoggerService.pageTypeMyInfo).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("my-info / logActionPage / myResponse : ", myResponse);
         }); // end service
     };
     MyInfoComponent.prototype.init = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / init / 시작");
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
@@ -162,20 +163,18 @@ var MyInfoComponent = (function () {
         this.logActionPage();
     };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / fillViewUserInfo");
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / fillViewUserInfo / this.loginUser : ", this.loginUser);
         if (null == this.loginUser) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / fillViewUserInfo / 중단 / this.loginUser is not valid!");
             return;
         }
-        this.emailComponent.setInput(this.loginUserCopy.email);
-        this.nameComponent.setInput(this.loginUserCopy.name);
-        this.nicknameComponent.setInput(this.loginUserCopy.nickname);
+        this.setEmail();
+        this.setName();
+        this.setNickname();
         this.profileImgUploadComponent.setProfileImg(this.loginUserCopy.thumbnail);
         this.mobileComponent.setMobileHead(this.loginUserCopy.getMobileHead());
         this.mobileComponent.setMobileBody(this.loginUserCopy.getMobileBody());
@@ -185,11 +184,54 @@ var MyInfoComponent = (function () {
         this.birthdayComponent.setBirthMonth(this.loginUserCopy.getBirthMonth());
         this.birthdayComponent.setBirthDay(this.loginUserCopy.getBirthMonth(), this.loginUserCopy.getBirthDay());
     };
+    MyInfoComponent.prototype.setEmail = function () {
+        if (this.isDebug())
+            console.log("my-info / setEmail");
+        if (null == this.loginUserCopy) {
+            if (this.isDebug())
+                console.log("my-info / setEmail / 중단 / null == this.loginUserCopy");
+            return;
+        }
+        if (null == this.emailComponent) {
+            if (this.isDebug())
+                console.log("my-info / setEmail / 중단 / null == this.emailComponent");
+            return;
+        }
+        this.emailComponent.setInput(this.loginUserCopy.email);
+    };
+    MyInfoComponent.prototype.setName = function () {
+        if (this.isDebug())
+            console.log("my-info / setName");
+        if (null == this.loginUserCopy) {
+            if (this.isDebug())
+                console.log("my-info / setName / 중단 / null == this.loginUserCopy");
+            return;
+        }
+        if (null == this.nameComponent) {
+            if (this.isDebug())
+                console.log("my-info / setName / 중단 / null == this.nameComponent");
+            return;
+        }
+        this.nameComponent.setInput(this.loginUserCopy.name);
+    };
+    MyInfoComponent.prototype.setNickname = function () {
+        if (this.isDebug())
+            console.log("my-info / setNickname");
+        if (null == this.loginUserCopy) {
+            if (this.isDebug())
+                console.log("my-info / setNickname / 중단 / null == this.loginUserCopy");
+            return;
+        }
+        if (null == this.nicknameComponent) {
+            if (this.isDebug())
+                console.log("my-info / setNickname / 중단 / null == this.nicknameComponent");
+            return;
+        }
+        this.nicknameComponent.setInput(this.loginUserCopy.nickname);
+    };
     MyInfoComponent.prototype.confirmUserEmailPassword = function (password) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / confirmUserEmailPassword / init");
         // 현재 유저의 비밀번호와 동일한지 비교합니다.
         this.userService.confirmUserEmailPassword(
@@ -199,16 +241,16 @@ var MyInfoComponent = (function () {
         this.loginUserCopy.email, 
         // password:string
         password).then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("my-info / confirmUserEmailPassword / myResponse : ", myResponse);
             var user = null;
             if (myResponse.isSuccess()) {
                 user = myResponse.digDataProp(["user", "mobile"]);
             } // end if
             if (null != user) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("my-info / confirmUserEmailPassword / 패스워드가 확인되었습니다.");
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("my-info / confirmUserEmailPassword / user : ", user);
                 // wonder.jung
                 // 사용자가 입력한 패스워드를 변수 - cur_pw에 등록.
@@ -222,7 +264,7 @@ var MyInfoComponent = (function () {
             }
             else {
                 // 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("my-info / confirmUserEmailPassword / 사용자가 입력한 암호와 다를 경우는 경고 메시지를 노출.");
                 _this.passwordsComponent.showTooltipWarning(
                 // eventKey:string
@@ -233,13 +275,11 @@ var MyInfoComponent = (function () {
         });
     };
     MyInfoComponent.prototype.confirmNewPassword = function (password) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / confirmNewPassword / init");
         // 1. 새로운 패스워드는 이전의 패스워드와 달라야 합니다.
         if (this.passwordCur === password) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / confirmNewPassword / 중단 / 이전 비밀번화와 새로운 비밀번호가 같음.");
             this.passwordsComponent.showTooltipWarning(
             // eventKey:string
@@ -248,7 +288,7 @@ var MyInfoComponent = (function () {
             "새로운 비밀번호가 이전과 같습니다!");
         }
         else {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / confirmNewPassword / 유효한 새로운 패스워드를 받았습니다.");
             // 변수에 저장합니다.
             this.passwordNew = password;
@@ -261,9 +301,7 @@ var MyInfoComponent = (function () {
         } // end if
     };
     MyInfoComponent.prototype.confirmRepassword = function (password) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / confirmRepassword / init");
         if (this.passwordNew !== password) {
             // 새로운 비밀번호 재확인이 새로운 비밀번호와 다릅니다. 
@@ -288,18 +326,16 @@ var MyInfoComponent = (function () {
         } // end if    
     };
     MyInfoComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onChangedFromChild / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onChangedFromChild / myEvent : ", myEvent);
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onChangedFromChild / myEvent.key : ", myEvent.key);
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onChangedFromChild / myEvent.value : ", myEvent.value);
         if (myEvent.isNotValid()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
             // 에러 로그 등록
             this.myLoggerService.logError(
@@ -313,73 +349,87 @@ var MyInfoComponent = (function () {
         }
         var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
         if (!isOK) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
             return;
         }
-        if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
+                this.emailComponent = myEvent.metaObj;
+                this.setEmail();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
+                this.nameComponent = myEvent.metaObj;
+                this.setName();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
+                this.nicknameComponent = myEvent.metaObj;
+                this.setNickname();
+            } // end if
+        }
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_CUR_PASSWORD");
                 this.confirmUserEmailPassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_NEW_PASSWORD");
                 this.confirmNewPassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_RE_PASSWORD)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_RE_PASSWORD");
                 this.confirmRepassword(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NAME)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_NAME");
                 this.updateNewProp("name", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_NICKNAME)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_NICKNAME");
                 this.updateNewProp("nickname", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_THUMBNAIL");
                 this.updateNewProp("thumbnail", myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_HEAD)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_HEAD");
                 this.updateNewMobileHead(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_BODY)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_BODY");
                 this.updateNewMobileBody(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MOBILE_NUM_TAIL)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_MOBILE_NUM_TAIL");
                 this.updateNewMobileTail(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_YEAR)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_YEAR");
                 this.updateNewBirthYear(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_MONTH)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_MONTH");
                 this.updateNewBirthMonth(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_BIRTH_DAY)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
                 this.updateNewBirthDay(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_GENDER)) {
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / onChangedFromChild / KEY_USER_BIRTH_DAY");
                 this.updateNewProp("gender", myEvent.value);
             } // end if - ON CHANGE
@@ -389,17 +439,15 @@ var MyInfoComponent = (function () {
         } // end if
     }; // end method
     MyInfoComponent.prototype.updateNewMobileHead = function (newMobileHead) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewMobileHead / init");
         if (!this.mobileComponent.isOKHead(newMobileHead)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameMobileHead(newMobileHead)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileHead / 중단 / newMobileHead is not changed!");
             return;
         }
@@ -408,17 +456,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewMobileBody = function (newMobileBody) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewMobileBody / init");
         if (!this.mobileComponent.isOKBody(newMobileBody)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameMobileBody(newMobileBody)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileBody / 중단 / newMobileBody is not changed!");
             return;
         }
@@ -427,17 +473,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewMobileTail = function (newMobileTail) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewMobileTail / init");
         if (!this.mobileComponent.isOKTail(newMobileTail)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameMobileTail(newMobileTail)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewMobileTail / 중단 / newMobileTail is not changed!");
             return;
         }
@@ -446,17 +490,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthYear = function (newBirthYear) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewBirthYear / init");
         if (!this.birthdayComponent.isOKBirthYear(newBirthYear)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameBirthYear(newBirthYear)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthYear / 중단 / newBirthYear is not changed!");
             return;
         }
@@ -465,17 +507,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthMonth = function (newBirthMonth) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewBirthMonth / init");
         if (!this.birthdayComponent.isOKBirthMonth(newBirthMonth)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameBirthMonth(newBirthMonth)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthMonth / 중단 / newBirthMonth is not changed!");
             return;
         }
@@ -484,17 +524,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewBirthDay = function (newBirthDay) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewBirthDay / init");
         if (!this.birthdayComponent.isOKBirthDay(newBirthDay)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not valid!");
             return;
         }
         if (this.loginUserCopy.isSameBirthDay(newBirthDay)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewBirthDay / 중단 / newBirthDay is not changed!");
             return;
         }
@@ -503,17 +541,15 @@ var MyInfoComponent = (function () {
         this.isReadyToSave = true;
     };
     MyInfoComponent.prototype.updateNewProp = function (key, newValue) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / updateNewProp / init");
         if (null == key || "" == key) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewProp / 중단 / key is not valid!");
             return;
         }
         if (null == this.loginUserCopy) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / updateNewProp / 중단 / this.loginUserCopy is not valid!");
             return;
         }
@@ -526,9 +562,9 @@ var MyInfoComponent = (function () {
             // 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.
             if (null != this.loginUserCopy && null != this.loginUserCopy[key]) {
                 this.loginUserCopy[key] = newValue;
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / updateNewProp / 변경된 이름을 복사해둔 loginUserCopy에 저장합니다.");
-                if (isDebug)
+                if (this.isDebug())
                     console.log("my-info / updateNewProp / this.loginUserCopy : ", this.loginUserCopy);
             }
             // 저장 버튼을 노출합니다.
@@ -545,19 +581,17 @@ var MyInfoComponent = (function () {
     }; // end method
     MyInfoComponent.prototype.onClickSave = function (event) {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onClickSave / init");
         var isReadyToSave = this.checkUserInfoChanged();
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onClickSave / isReadyToSave : ", isReadyToSave);
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onClickSave / this.loginUserCopy : ", this.loginUserCopy);
         if (isReadyToSave) {
             // 변경되었다면 저장합니다.
             this.userService.updateUserByUser(this.watchTower.getApiKey(), this.loginUserCopy).then(function (myResponse) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("my-info / onClickSave / 유저정보 업데이트 / myResponse : ", myResponse);
                 var userUpdated = myResponse.digDataProp(["user"]);
                 if (myResponse.isSuccess && null != userUpdated) {
@@ -565,11 +599,13 @@ var MyInfoComponent = (function () {
                     // 받아온 유저 정보로 업데이트 합니다.
                     _this.loginUser.updateWithJSON(userUpdated);
                     _this.loginUserCopy = _this.loginUser.copy();
-                    if (isDebug)
+                    // 변경된 유저 정보를 전파.
+                    _this.watchTower.announceLogin(_this.loginUser);
+                    if (_this.isDebug())
                         console.log("my-info / onClickSave / 받아온 유저 정보로 업데이트 합니다.");
-                    if (isDebug)
+                    if (_this.isDebug())
                         console.log("my-info / onClickSave / this.loginUser : ", _this.loginUser);
-                    if (isDebug)
+                    if (_this.isDebug())
                         console.log("my-info / onClickSave / this.loginUserCopy : ", _this.loginUserCopy);
                 }
                 else {
@@ -586,7 +622,7 @@ var MyInfoComponent = (function () {
         }
         // 비밀번호 변경 여부 확인
         var isReadyToSavePassword = this.checkUserPasswordChanged();
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / onClickSave / isReadyToSavePassword : ", isReadyToSavePassword);
         if (isReadyToSavePassword) {
             // 변경되었다면 업데이트!
@@ -598,12 +634,12 @@ var MyInfoComponent = (function () {
             this.loginUserCopy.email, 
             // password:string
             this.passwordNew).then(function (myResponse) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("my-info / onClickSave / 비밀번호 업데이트 / myResponse : ", myResponse);
                 var is_valid_password = myResponse.getDataProp("is_valid_password");
                 if (myResponse.isSuccess && is_valid_password) {
                     // 비밀번호 업데이트 성공!
-                    if (isDebug)
+                    if (_this.isDebug())
                         console.log("my-info / onClickSave / 비밀번호 업데이트 성공!");
                 }
                 // 입력한 모든 비밀번호를 초기화합니다.
@@ -618,57 +654,69 @@ var MyInfoComponent = (function () {
         return !this.isOKEssential();
     };
     MyInfoComponent.prototype.isOKEssential = function () {
+        if (this.isDebug())
+            console.log("my-info / isOKEssential / init");
         if (this.nameComponent.isNotOK(this.loginUserCopy.name)) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.name is not valid!");
             return false;
         }
         if (this.nicknameComponent.isNotOK(this.loginUserCopy.nickname)) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.nickname is not valid!");
             return false;
         }
         if (this.mobileComponent.isNotOKHead(this.loginUserCopy.getMobileHead())) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileHead is not valid!");
             return false;
         }
         if (this.mobileComponent.isNotOKBody(this.loginUserCopy.getMobileBody())) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileBody is not valid!");
             return false;
         }
         if (this.mobileComponent.isNotOKTail(this.loginUserCopy.getMobileTail())) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.getMobileTail is not valid!");
             return false;
         }
         if (this.genderComponent.isNotOK(this.loginUserCopy.gender)) {
+            if (this.isDebug())
+                console.log("my-info / isOKEssential / 중단 / this.loginUserCopy.gender is not valid!");
             return false;
         }
         return true;
     };
     MyInfoComponent.prototype.checkUserInfoChanged = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / checkUserInfoChanged / init");
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / checkUserInfoChanged / this.loginUser : ", this.loginUser);
         // 필수 항목들은 반드시 유효해야합니다.
         if (this.isNotOKEssential()) {
+            if (this.isDebug())
+                console.log("my-info / checkUserInfoChanged / 중단 / this.isNotOKEssential()");
             return false;
         }
         // 검사 시작!
         if (this.loginUser.isNotSame(this.loginUserCopy)) {
             // 2. 유저정보
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / checkUserInfoChanged / 유저정보 변경됨");
             return true;
         }
         return false;
     };
     MyInfoComponent.prototype.checkUserPasswordChanged = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("my-info / checkUserPasswordChanged / init");
         var isReadyToSave = false;
         if (this.passwordsComponent.isOK(this.passwordNew) &&
             this.passwordCur !== this.passwordNew &&
             this.passwordNew === this.passwordRe) {
             // 7. password
-            if (isDebug)
+            if (this.isDebug())
                 console.log("my-info / checkUserPasswordChanged / 비밀번호 변경됨.");
             isReadyToSave = true;
         } // end if
