@@ -770,6 +770,17 @@ export class SignupComponent implements AfterViewInit {
 
   }
 
+  // @ Desc : 페이스북, 네이버, 카카오 플랫폼 로그인이 아닌 카페 클래스로 직접 회원 가입을 진행할 경우, 
+  // 플랫폼을 통한 유저 정보를 만들지 않았으므로 새로 만들어 줍니다.
+  checkEnrollCafeclass() :void {
+
+    if(null == this.user) {
+      this.user = new User();
+      this.userCopy = this.user.copy();
+    } // end if
+
+  } // end method
+
   onChangedFromChild(myEvent:MyEvent) :void {
 
     // 자식 엘리먼트들의 이벤트 처리
@@ -810,6 +821,9 @@ export class SignupComponent implements AfterViewInit {
       } // end if
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      // 카페 클래스로 가입 신청을 하는 경우, 미리 만들어 놓은 회원 정보가 없으므로 빈 회원 객체를 만들어 준다.
+      this.checkEnrollCafeclass();
 
       if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
 
