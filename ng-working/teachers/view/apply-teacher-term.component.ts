@@ -239,8 +239,16 @@ export class ApplyTeacherTermComponent implements OnInit, AfterViewInit {
 
     } // end if
 
+  } // end method  
 
+  onClickLogo(event):void {
 
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+    
   } // end method  
 
 } // end class

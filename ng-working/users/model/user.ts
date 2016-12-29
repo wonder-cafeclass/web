@@ -95,6 +95,10 @@ export class User {
 
     setJSON(json):User {
 
+    	if(null == json) {
+    		return null;
+    	}
+
         // let isDebug:boolean = true;
         let isDebug:boolean = false;
         if(isDebug) console.log("klass / setJSON / init");

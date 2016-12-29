@@ -185,6 +185,12 @@ var ValidationComponent = (function () {
             } // end if
         }); // end subscribe
     }; // end method
+    ValidationComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    }; // end method  
     ValidationComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

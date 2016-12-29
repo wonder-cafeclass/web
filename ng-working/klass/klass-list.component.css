@@ -27,6 +27,7 @@
 .cc-img-class {
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
+  cursor: pointer;
 }
 .klass-row-image {
   padding: 0px;

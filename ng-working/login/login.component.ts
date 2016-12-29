@@ -376,4 +376,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   }
 
+  onClickLogo(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    // 홈으로 이동
+    this.router.navigate(["/"]);
+  }
+
 }

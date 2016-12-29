@@ -112,6 +112,7 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     }); // end subscribe    
 
   }
+
   private subscribeLoginUser() :void {
 
       // let isDebug:boolean = true;
@@ -124,12 +125,11 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       (loginUser:User) => {
 
       if(isDebug) console.log("klass-list / subscribeLoginUser / loginUser : ",loginUser);
+      this.loginUser = loginUser;  
 
-      // 로그인한 유저 정보가 들어왔습니다.
-      this.loginUser = new User().setJSON(loginUser);;
+    }); // end service
+  } // end method
 
-    });
-  }
   private subscribeLoginTeacher() :void {
 
       // let isDebug:boolean = true;

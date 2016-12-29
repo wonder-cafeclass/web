@@ -96,11 +96,9 @@ var KlassListComponent = (function () {
         this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
             if (isDebug)
                 console.log("klass-list / subscribeLoginUser / loginUser : ", loginUser);
-            // 로그인한 유저 정보가 들어왔습니다.
-            _this.loginUser = new user_1.User().setJSON(loginUser);
-            ;
-        });
-    };
+            _this.loginUser = loginUser;
+        }); // end service
+    }; // end method
     KlassListComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
         // let isDebug:boolean = true;

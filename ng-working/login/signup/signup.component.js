@@ -841,6 +841,12 @@ var SignupComponent = (function () {
             } // end if
         }); // end service    
     }; // end method
+    SignupComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    }; // end method
     __decorate([
         core_1.ViewChild(password_component_1.PasswordComponent), 
         __metadata('design:type', password_component_1.PasswordComponent)
@@ -873,40 +879,4 @@ var SignupComponent = (function () {
     return SignupComponent;
 }());
 exports.SignupComponent = SignupComponent;
-// REMOVE ME
-// @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
-/*
-private getInput(eventKey:string) :any {
-
-  if(this.isDebug()) console.log("signup / getInput / init");
-
-  let target:DefaultComponent = null;
-
-  this.inputComponentList.forEach(function(inputComponent) {
-
-    if(this.isDebug()) console.log("signup / getInput / eventKey : ",eventKey);
-    if(this.isDebug()) console.log("signup / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
-
-    if(inputComponent.hasEventKey(eventKey)) {
-      if(this.isDebug()) console.log("signup / getInput / inputComponent : ",inputComponent);
-      target = inputComponent;
-      return;
-    }
-
-  }); // end for-each
-
-  return target;
-}
-*/
-/*
-private setDefaultComponents() :void {
-
-  if(this.isDebug()) console.log("signup / setDefaultComponents / 시작");
-
-  // DefaultComponent들을 세팅
-  this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
-  this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
-  this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
-}
-*/
 //# sourceMappingURL=signup.component.js.map

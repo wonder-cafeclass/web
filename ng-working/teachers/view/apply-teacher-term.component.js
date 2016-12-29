@@ -194,6 +194,12 @@ var ApplyTeacherTermComponent = (function () {
             this.router.navigate(['/applyteacher']);
         } // end if
     }; // end method  
+    ApplyTeacherTermComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    }; // end method  
     ApplyTeacherTermComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

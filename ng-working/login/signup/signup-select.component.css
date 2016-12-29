@@ -24,8 +24,9 @@ img.login-btn {
 	width:300px;
 }
 img.logo {
-    width: 100%;
-    padding: 35px;
+  width: 100%;
+  padding: 35px;
+  cursor: pointer;
 }
 img.login-title {
     width: 74px;

@@ -9,10 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var PrivateInfoComponent = (function () {
-    function PrivateInfoComponent() {
+    function PrivateInfoComponent(router) {
+        this.router = router;
     }
     PrivateInfoComponent.prototype.ngOnInit = function () { };
+    PrivateInfoComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    }; // end method
     PrivateInfoComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -20,9 +28,9 @@ var PrivateInfoComponent = (function () {
             templateUrl: 'private-info.component.html',
             styleUrls: ['private-info.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [router_1.Router])
     ], PrivateInfoComponent);
     return PrivateInfoComponent;
 }());
-exports.PrivateInfoComponent = PrivateInfoComponent;
+exports.PrivateInfoComponent = PrivateInfoComponent; // end class
 //# sourceMappingURL=private-info.component.js.map

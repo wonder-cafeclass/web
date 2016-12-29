@@ -50,6 +50,12 @@ var PolicyComponent = (function () {
                 console.log("policy / logActionPage / result : ", result);
         });
     };
+    PolicyComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    };
     PolicyComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

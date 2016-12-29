@@ -57,6 +57,9 @@ var User = (function () {
         this.myMobile.set(this.mobile);
     };
     User.prototype.setJSON = function (json) {
+        if (null == json) {
+            return null;
+        }
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)

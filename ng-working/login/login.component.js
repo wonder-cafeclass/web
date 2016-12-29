@@ -302,6 +302,12 @@ var LoginComponent = (function () {
         event.preventDefault();
         this.verifyEmailNPassword();
     };
+    LoginComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    };
     __decorate([
         core_1.ViewChild(email_component_1.EmailComponent), 
         __metadata('design:type', email_component_1.EmailComponent)
