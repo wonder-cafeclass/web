@@ -47,6 +47,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 					public router:Router) {
 
 		if(this.isDebug()) console.log("app-root / constructor / 시작");
+		this.watchTower.announceMyLoggerService(this.myLoggerService);
 		this.watchTower.announceMyEventService(this.myEventService);
 		this.watchTower.announceMyCheckerService(this.myCheckerService);
 

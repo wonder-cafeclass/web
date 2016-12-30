@@ -2019,118 +2019,146 @@ class MY_Sql
     public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
     {
 
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_id\", $klass_id)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"user_id\", $user_id)");
             return;
         }
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_id\", $teacher_id)");
             return;
         }
         if($this->is_not_ok("teacher_resume", $teacher_resume))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_resume\", $teacher_resume)");
             return;
         }
         if($this->is_not_ok("teacher_greeting", $teacher_greeting))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_greeting\", $teacher_greeting)");
             return;
         }
         if($this->is_not_ok("klass_title", $title))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_title\", $title)");
             return;
         }
         if($this->is_not_ok("klass_feature", $feature))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
             return;
         }
         if($this->is_not_ok("klass_target", $target))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_target\", $target)");
             return;
         }
         if($this->is_not_ok("klass_schedule", $schedule))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_schedule\", $schedule)");
             return;
         }
         if($this->is_not_ok("klass_date_begin", $date_begin))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_date_begin\", $date_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_begin))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_end))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_end)");
             return;
         }
         if($this->is_not_ok("klass_level", $level))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_level\", $level)");
             return;
         }
         if($this->is_not_ok("klass_week", $week))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_week\", $week)");
             return;
         }
         if($this->is_not_ok("klass_days", $days))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_days\", $days)");
             return;
         }
         if($this->is_not_ok("klass_price", $price))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_price\", $price)");
             return;
         }
         if($this->is_not_ok("klass_student_cnt", $student_cnt))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_student_cnt\", $student_cnt)");
             return;
         }
 
         if($this->is_not_ok("klass_venue_title", $venue_title))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_title\", $venue_title)");
             return;
         }
         if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_telephone\", $venue_telephone)");
             return;
         }
         if($this->is_not_ok("klass_venue_address", $venue_address))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_address\", $venue_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_road_address", $venue_road_address))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_road_address\", $venue_road_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_latitude", $venue_latitude))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_latitude\", $venue_latitude)");
             return;
         }
         if($this->is_not_ok("klass_venue_longitude", $venue_longitude))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_longitude\", $venue_longitude)");
             return;
         }
         if($this->is_not_ok("klass_subway_line", $subway_line))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_line\", $subway_line)");
             return;
         }
         if($this->is_not_ok("klass_subway_station", $subway_station))
         {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_station\", $subway_station)");
             return;
         }        
         if($this->is_not_ok("klass_banner_url", $banner_url))
         {
-            $klass_banner_url = "";
+            $banner_url = "";
         }        
         if($this->is_not_ok("klass_poster_url", $poster_url))
         {
-            return;
+            $poster_url = "";
         }
 
         $data = array(
@@ -2176,6 +2204,7 @@ class MY_Sql
             // $query=""
             $sql
         );
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
 
         $this->CI->db->where('id', $klass_id);
         $this->CI->db->where('teacher_id', $teacher_id);
