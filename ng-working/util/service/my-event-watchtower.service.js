@@ -17,6 +17,8 @@ var my_const_1 = require('../../util/helper/my-const');
 */
 var MyEventWatchTowerService = (function () {
     function MyEventWatchTowerService() {
+        // private isDebug:boolean = true;
+        this._isDebug = false;
         // @ Required for view
         this.isAdmin = false;
         this.apiKey = "";
@@ -38,6 +40,7 @@ var MyEventWatchTowerService = (function () {
         this.errorMsgArrSource = new Subject_1.Subject();
         this.contentHeightSource = new Subject_1.Subject();
         this.isLockedBottomFooterFlexibleSource = new Subject_1.Subject();
+        this.myLoggerServiceSource = new Subject_1.Subject();
         this.myEventServiceSource = new Subject_1.Subject();
         this.myCheckerServiceSource = new Subject_1.Subject();
         this.isEventPackReadySource = new Subject_1.Subject();
@@ -54,6 +57,7 @@ var MyEventWatchTowerService = (function () {
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.contentHeight$ = this.contentHeightSource.asObservable();
         this.isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
+        this.myLoggerService$ = this.myLoggerServiceSource.asObservable();
         this.myEventService$ = this.myEventServiceSource.asObservable();
         this.myCheckerService$ = this.myCheckerServiceSource.asObservable();
         this.isEventPackReady$ = this.isEventPackReadySource.asObservable();
@@ -70,27 +74,25 @@ var MyEventWatchTowerService = (function () {
         this.announceIsViewPackReady();
     };
     MyEventWatchTowerService.prototype.announceMyCheckerServiceReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceMyCheckerServiceReady / \uC2DC\uC791");
         if (null == checkerMap) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceMyCheckerServiceReady / checkerMap is not valid!");
             return;
         }
         if (null == constMap) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceMyCheckerServiceReady / constMap is not valid!");
             return;
         }
         if (null == dirtyWordList) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceMyCheckerServiceReady / dirtyWordList is not valid!");
             return;
         }
         if (null == apiKey || "" == apiKey) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceMyCheckerServiceReady / apiKey is not valid!");
             return;
         }
@@ -100,22 +102,20 @@ var MyEventWatchTowerService = (function () {
         this.apiKey = apiKey;
         this.myConst.setConstJSON(this.constMap);
         this.myCheckerServicePackReadySource.next(true);
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceMyCheckerServiceReady / done.");
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceMyCheckerServiceReady / apiKey : " + apiKey);
         this.announceIsViewPackReady();
     };
     // @ Desc : 뷰에 필요한 정보들이 모두 도착했는지 검사해서 알려줍니다.
     MyEventWatchTowerService.prototype.announceIsViewPackReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceIsViewPackReady / \uC2DC\uC791");
         if (null == this.isAdmin || !this.getIsMyCheckerReady()) {
             return;
         }
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceIsViewPackReady / \uC900\uBE44\uC644\uB8CC!");
         this.isViewPackReady = true;
         this.isViewPackReadySource.next(true);
@@ -126,40 +126,37 @@ var MyEventWatchTowerService = (function () {
         this.isDebuggingSource.next(isDebugging);
     };
     MyEventWatchTowerService.prototype.announceLogin = function (loginUser) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceLogin / \uC2DC\uC791");
         this.loginUser = loginUser;
         if (null != this.loginUser) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceLogin / setTeacher");
-            this.loginUser.setTeacher(this.loginTeacher);
-            this.loginUser.setIsAdmin(this.isAdmin);
+            if (null != this.loginTeacher) {
+                this.loginUser.setTeacher(this.loginTeacher);
+            } // end if
+            this.loginUser.setIsAdmin(this.isAdmin); // FIX ME
         }
         this.loginAnnouncedSource.next(loginUser);
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceLogin / \uB05D");
     };
     MyEventWatchTowerService.prototype.announceLoginTeacher = function (loginTeacher) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uC2DC\uC791");
-        if (null == this.loginUser) {
-            if (isDebug)
-                console.log("my-event-watchtower / announceLoginTeacher / \uC911\uB2E8 / null == this.loginUser");
-            return;
+        if (null != loginTeacher) {
+            this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
         }
-        this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
-        ;
-        if (null != this.loginTeacher) {
-            if (isDebug)
+        else {
+            this.loginTeacher = null;
+        }
+        if (null != this.loginUser && null != this.loginTeacher) {
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceLoginTeacher / setTeacher");
             this.loginUser.setTeacher(this.loginTeacher);
         }
         this.loginTeacherAnnouncedSource.next(loginTeacher);
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceLoginTeacher / \uB05D");
     };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
@@ -167,14 +164,12 @@ var MyEventWatchTowerService = (function () {
     };
     // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
     MyEventWatchTowerService.prototype.announceContentHeight = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / announceContentHeight / 시작");
         var body = document.body;
         var clientHeight = body.clientHeight;
         if (this.contentHeight === clientHeight) {
-            if (isDebug)
+            if (this._isDebug)
                 console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
             return;
         }
@@ -187,15 +182,15 @@ var MyEventWatchTowerService = (function () {
         /*
         // 실제 보여지는 브라우저 내의 화면 높이를 의미합니다.
         let contentHeight:number = window.innerHeight;
-        if(isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
+        if(this._isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
 
         // 위와 같습니다.
         let clientHeight:number = document.documentElement.clientHeight;
-        if(isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
+        if(this._isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
 
         // 물리적인 디스플레이의 높이를 의미합니다.
         let screenHeight:number = screen.height;
-        if(isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
+        if(this._isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
         */
     };
     // @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
@@ -207,30 +202,31 @@ var MyEventWatchTowerService = (function () {
         this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
         this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
     };
+    MyEventWatchTowerService.prototype.announceMyLoggerService = function (myLoggerService) {
+        if (this._isDebug)
+            console.log("m-e-w / announceMyLoggerService / init");
+        this.myLoggerService = myLoggerService;
+        this.myLoggerServiceSource.next(myLoggerService);
+        this.announceEventPackReady();
+    };
     MyEventWatchTowerService.prototype.announceMyEventService = function (myEventService) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / announceMyEventService / init");
         this.myEventService = myEventService;
         this.myEventServiceSource.next(myEventService);
-        if (null != this.myCheckerService) {
-            if (isDebug)
-                console.log("m-e-w / announceMyEventService / next");
-            this.isEventPackReady = true;
-            this.isEventPackReadySource.next(true);
-        } // end if
+        this.announceEventPackReady();
     };
     MyEventWatchTowerService.prototype.announceMyCheckerService = function (myCheckerService) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / announceMyCheckerService / init");
         this.myCheckerService = myCheckerService;
         this.myCheckerServiceSource.next(myCheckerService);
-        if (null != this.myEventService) {
-            if (isDebug)
-                console.log("m-e-w / announceMyCheckerService / next");
+        this.announceEventPackReady();
+    };
+    MyEventWatchTowerService.prototype.announceEventPackReady = function () {
+        if (null != this.myEventService && null != this.myCheckerService && null != this.myLoggerService) {
+            if (this._isDebug)
+                console.log("m-e-w / announceEventPackReady / next");
             this.isEventPackReady = true;
             this.isEventPackReadySource.next(true);
         } // end if
@@ -286,6 +282,9 @@ var MyEventWatchTowerService = (function () {
     MyEventWatchTowerService.prototype.getApiKey = function () {
         return this.apiKey;
     };
+    MyEventWatchTowerService.prototype.getMyLoggerService = function () {
+        return this.myLoggerService;
+    };
     MyEventWatchTowerService.prototype.getMyEventService = function () {
         return this.myEventService;
     };
@@ -300,9 +299,7 @@ var MyEventWatchTowerService = (function () {
         if (null == this.myCheckerService) {
             return null;
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / getEventOnReady / 시작");
         var myEventOnReady = this.myEventService.getMyEvent(
         // public eventName:string
@@ -315,7 +312,7 @@ var MyEventWatchTowerService = (function () {
         component, 
         // public myChecker:MyChecker
         this.myCheckerService.getFreePassChecker());
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / getEventOnReady / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
     };
@@ -329,9 +326,7 @@ var MyEventWatchTowerService = (function () {
         if (null == myChecker) {
             return null;
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventOnChange / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
@@ -356,9 +351,7 @@ var MyEventWatchTowerService = (function () {
         if (null == myChecker) {
             return null;
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventOnChange / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
@@ -383,9 +376,7 @@ var MyEventWatchTowerService = (function () {
         if (null == myChecker) {
             return null;
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventWithMeta / 시작");
         var myEvent = this.myEventService.getMyEvent(
         // public eventName:string
@@ -401,9 +392,7 @@ var MyEventWatchTowerService = (function () {
         return myEvent;
     };
     MyEventWatchTowerService.prototype.getEventOnChangeMeta = function (eventKey, value, myChecker, meta) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
         return this.getEventWithMeta(
         // eventName:string, 
@@ -418,9 +407,7 @@ var MyEventWatchTowerService = (function () {
         meta);
     };
     MyEventWatchTowerService.prototype.getEventOnAddCommentMeta = function (eventKey, value, myChecker, meta) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");
         return this.getEventWithMeta(
         // eventName:string, 
@@ -435,9 +422,7 @@ var MyEventWatchTowerService = (function () {
         meta);
     };
     MyEventWatchTowerService.prototype.getEventOnAddCommentReplyMeta = function (eventKey, value, myChecker, meta) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("my-event-watchtower / getEventOnAddCommentReplyMeta / 시작");
         return this.getEventWithMeta(
         // eventName:string, 
@@ -458,9 +443,7 @@ var MyEventWatchTowerService = (function () {
         if (null == this.myCheckerService) {
             return null;
         }
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / getEventOnLoginRequired / 시작");
         var myEventOnReady = this.myEventService.getMyEvent(
         // public eventName:string
@@ -473,9 +456,35 @@ var MyEventWatchTowerService = (function () {
         null, 
         // public myChecker:MyChecker
         this.myCheckerService.getFreePassChecker());
-        if (isDebug)
+        if (this._isDebug)
             console.log("m-e-w / getEventOnLoginRequired / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
+    };
+    MyEventWatchTowerService.prototype.logAPIError = function (msg) {
+        if (this._isDebug)
+            console.log("m-e-w / logAPIError / 시작");
+        if (!this.getIsMyCheckerReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / !this.getIsMyCheckerReady()");
+            return;
+        } // end if
+        if (!this.getIsEventPackReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / !this.getIsEventPackReady()");
+            return;
+        } // end if
+        if (null == msg || "" === msg) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / msg is not valid!");
+            return;
+        } // end if
+        this.myLoggerService.logError(
+        // apiKey:string
+        this.getApiKey(), 
+        // errorType:string
+        this.myLoggerService.errorAPIFailed, 
+        // errorMsg:string
+        msg); // end logger
     };
     MyEventWatchTowerService = __decorate([
         core_1.Injectable(), 

@@ -137,6 +137,10 @@ export class Teacher {
         let isDebug:boolean = false;
         if(isDebug) console.log("teacher / setJSON / init");
 
+        if(null == json) {
+        	return null;
+        }
+
         if(isDebug) console.log("teacher / setJSON / json : ",json);
 
         let teacher:Teacher = this._setJSON(json);

@@ -81,6 +81,13 @@ var Klass = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myFormat = new my_format_1.HelperMyFormat();
     }
+    // @ Desc : 수업없음 클래스인지 여부.
+    Klass.prototype.isNoClassBtn = function () {
+        return (-1 === this.id) ? true : false;
+    };
+    Klass.prototype.isNotNoClassBtn = function () {
+        return !this.isNoClassBtn();
+    };
     // @ Desc : 새로운 클래스를 만드는 버튼 역할의 수업인지 여부.
     Klass.prototype.isNewClassBtn = function () {
         return (-100 === this.id) ? true : false;

@@ -945,6 +945,12 @@ var ApplyTeacherComponent = (function () {
             } // end if
         }); // end service    
     }; // end method  
+    ApplyTeacherComponent.prototype.onClickLogo = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 홈으로 이동
+        this.router.navigate(["/"]);
+    }; // end method
     __decorate([
         core_1.ViewChild(mobile_component_1.MobileComponent), 
         __metadata('design:type', mobile_component_1.MobileComponent)

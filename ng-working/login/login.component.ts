@@ -2,25 +2,25 @@ import { Component,
          Input, 
          Output,
          ViewChild,
-         OnInit,
-         AfterViewInit }       from '@angular/core';
-import { Subscription }        from 'rxjs';
+         AfterViewInit }            from '@angular/core';
+import { Subscription }             from 'rxjs';
 import { Router,
          ActivatedRoute,
-         NavigationExtras }     from '@angular/router';
+         NavigationExtras }         from '@angular/router';
 
-import { AuthService }          from '../auth/auth.service';
-import { LoginService }         from './service/login.service';
-import { UserService }          from '../users/service/user.service';
+import { LoginService }             from './service/login.service';
 
-import { EmailComponent }       from '../widget/input/email/email.component';
-import { PasswordComponent }    from '../widget/input/password/password.component';
+import { UserService }              from '../users/service/user.service';
+import { User }                     from '../users/model/user';
 
-import { MyLoggerService }      from '../util/service/my-logger.service';
-import { MyCheckerService }     from '../util/service/my-checker.service';
-import { MyEventService }       from '../util/service/my-event.service';
-import { MyEvent }              from '../util/model/my-event';
-import { MyCookie }             from '../util/http/my-cookie';
+import { EmailComponent }           from '../widget/input/email/email.component';
+import { PasswordComponent }        from '../widget/input/password/password.component';
+
+import { MyLoggerService }          from '../util/service/my-logger.service';
+import { MyCheckerService }         from '../util/service/my-checker.service';
+import { MyEventService }           from '../util/service/my-event.service';
+import { MyEvent }                  from '../util/model/my-event';
+import { MyCookie }                 from '../util/http/my-cookie';
 
 import { MyEventWatchTowerService } from '../util/service/my-event-watchtower.service';
 
@@ -32,7 +32,7 @@ import { MyResponse }               from '../util/model/my-response';
   templateUrl: 'login.component.html',
   styleUrls: [ 'login.component.css' ]
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements AfterViewInit {
 
   kakaoAuthUrl: string;
   naverAuthUrl: string;
@@ -59,8 +59,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private myCookie:MyCookie;
 
-  constructor(  public authService: AuthService, 
-                public loginService: LoginService, 
+  constructor(  public loginService: LoginService, 
                 private userService:UserService,
                 public myLoggerService: MyLoggerService,
                 public myCheckerService:MyCheckerService,
@@ -73,20 +72,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngOnInit(): void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / ngOnInit / init");
-
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / ngAfterViewInit");
+    if(this.isDebug()) console.log("login / ngAfterViewInit");
 
     this.asyncViewPack();
 
@@ -94,20 +87,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private asyncViewPack(): void {
     
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("login / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(isDebug) console.log("login / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("login / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(isDebug) console.log("login / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("login / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe    
 
@@ -128,21 +119,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private checkLoginUser(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / checkLoginUser / 시작");
+    if(this.isDebug()) console.log("login / checkLoginUser / 시작");
 
     this.userService.getUserCookie(
       this.myCheckerService.getAPIKey()
     ).then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("login / checkLoginUser / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("login / checkLoginUser / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
-        if(isDebug) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.");
+        if(this.isDebug()) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 있습니다. 홈으로 이동합니다.");
         this.router.navigate([this.redirectUrl]);
       } else {
-        if(isDebug) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+        if(this.isDebug()) console.log("login / checkLoginUser / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
         this.init();
       }
     });
@@ -150,19 +139,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private getQueryString() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("kakao-callback / getQueryString / 시작");
+    if(this.isDebug()) console.log("kakao-callback / getQueryString / 시작");
 
     // 리다이렉트로 전달된 외부 쿼리 스트링 파라미터를 가져옵니다.
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
 
-        if(isDebug) console.log("kakao-callback / getQueryString / param : ",param);
+        if(this.isDebug()) console.log("kakao-callback / getQueryString / param : ",param);
 
         let redirectUrl:string = param['redirect'];
         if(null != this.redirectUrl && "" != this.redirectUrl) {
-          if(isDebug) console.log("kakao-callback / getQueryString / this.redirectUrl : ",this.redirectUrl);
+          if(this.isDebug()) console.log("kakao-callback / getQueryString / this.redirectUrl : ",this.redirectUrl);
           // 쿠키에 저장합니다.
           this.myCookie.setCookie(
             // cname
@@ -179,9 +166,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private init() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / init / 시작");
+    if(this.isDebug()) console.log("login / init / 시작");
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
@@ -203,7 +188,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     .getKakaoAuthUrl()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("login / getKakaoAuthUrl / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("login / getKakaoAuthUrl / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.kakaoAuthUrl = myResponse.getDataProp("auth_url");
@@ -215,7 +200,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     .getNaverAuthUrl()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("login / getNaverAuthUrl / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("login / getNaverAuthUrl / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.naverAuthUrl = myResponse.getDataProp("auth_url");
@@ -227,7 +212,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     .getFacebookAuthUrl()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("login / getFacebookAuthUrl / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("login / getFacebookAuthUrl / myResponse : ",myResponse);
       
       if(myResponse.isSuccess() && myResponse.hasDataProp("auth_url")) {
         this.facebookAuthUrl = myResponse.getDataProp("auth_url");
@@ -241,21 +226,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
   onChangedFromChild(myEvent:MyEvent) :void {
     // 자식 엘리먼트들의 이벤트 처리
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / onChangedFromChild / 시작");
-    if(isDebug) console.log("login / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("login / onChangedFromChild / 시작");
+    if(this.isDebug()) console.log("login / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
-      if(isDebug) console.log("login / onChangedFromChild / 중단 / null == myEvent");
+      if(this.isDebug()) console.log("login / onChangedFromChild / 중단 / null == myEvent");
       return;
     }
     if(null == myEvent.myChecker) {
-      if(isDebug) console.log("login / onChangedFromChild / 중단 / null == myEvent.myChecker");
+      if(this.isDebug()) console.log("login / onChangedFromChild / 중단 / null == myEvent.myChecker");
       return;
     }
     if(null == myEvent.value) {
-      if(isDebug) console.log("login / onChangedFromChild / 중단 / null == myEvent.value");
+      if(this.isDebug()) console.log("login / onChangedFromChild / 중단 / null == myEvent.value");
       return;
     }
 
@@ -263,7 +246,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     // myChecker로 다시 한번 더 검사, 통과해야만 사용할 수 있습니다.
     let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
     if(!isOK) {
-      if(isDebug) console.log("login / onChangedFromChild / 중단 / !isOK");
+      if(this.isDebug()) console.log("login / onChangedFromChild / 중단 / !isOK");
       return;
     }
 
@@ -273,12 +256,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
 
         this.email = myEvent.value;
-        if(isDebug) console.log("login / onChangedFromChild / this.email : ",this.email);
+        if(this.isDebug()) console.log("login / onChangedFromChild / this.email : ",this.email);
 
       } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
 
         this.password = myEvent.value;
-        if(isDebug) console.log("login / onChangedFromChild / this.password : ",this.password);
+        if(this.isDebug()) console.log("login / onChangedFromChild / this.password : ",this.password);
 
       } // end if
 
@@ -288,7 +271,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
 
         this.email = myEvent.value;
-        if(isDebug) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_EMAIL ",this.email);
+        if(this.isDebug()) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_EMAIL ",this.email);
         // 이메일 입력 칸에서 엔터키를 눌렀습니다. 
 
         // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
@@ -298,7 +281,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
 
         this.password = myEvent.value;
-        if(isDebug) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_PASSWORD ",this.password);
+        if(this.isDebug()) console.log("login / onChangedFromChild / ON_KEYUP_ENTER / KEY_USER_PASSWORD ",this.password);
         // 패스워드 입력 칸에서 엔터키를 눌렀습니다. 
 
         // 1. 이메일과 패스워드가 유효하다면 유저 확인 프로세스를 진행합니다.
@@ -309,29 +292,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     } // end if
 
-    if(isDebug) console.log("login / onChangedFromChild / done");
+    if(this.isDebug()) console.log("login / onChangedFromChild / done");
   }
 
   verifyEmailNPassword():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("login / verifyEmailNPassword / 시작");
-
+    if(this.isDebug()) console.log("login / verifyEmailNPassword / 시작");
 
     let warningMsgHead:string = "아이디 또는 비밀번호를 다시 확인하세요."; 
     let warningMsgTail:string = "카페클래스에 등록되지 않은 아이디거나, 아이디 또는 비밀번호를 잘못 입력하셨습니다."; 
     this.warningMsgHead = null;
     this.warningMsgTail = null;
     if(null == this.email || "" == this.email) {
-      if(isDebug) console.log("login / verifyEmailNPassword / 중단 / 이메일 주소에 문제가 있습니다.", this.email);
+      if(this.isDebug()) console.log("login / verifyEmailNPassword / 중단 / 이메일 주소에 문제가 있습니다.", this.email);
       this.warningMsgHead = warningMsgHead;
       this.warningMsgTail = warningMsgTail;
       return;
     }
 
     if(null == this.password || "" == this.password) {
-      if(isDebug) console.log("login / verifyEmailNPassword / 중단 / 암호에 문제가 있습니다.", this.password);
+      if(this.isDebug()) console.log("login / verifyEmailNPassword / 중단 / 암호에 문제가 있습니다.", this.password);
       this.warningMsgHead = warningMsgHead;
       this.warningMsgTail = warningMsgTail;
       return;
@@ -342,30 +322,75 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if(null != apiKey && "" != apiKey) {
       this.userService
       .confirmUserEmailPassword(apiKey, this.email, this.password)
-      .then(result=> {
+      .then((myResponse:MyResponse) => {
 
-        if(isDebug) console.log("login / confirmUserEmailPassword / result : ",result);
+        // 로그 등록 결과를 확인해볼 수 있습니다.
+        if(this.isDebug()) console.log("login / verifyEmailNPassword / myResponse : ",myResponse);
 
-        if(null == result || null == result.success || !result.success) {
-          if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
+        if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
+
+          // 저장 완료! 초기화!
+          if(myResponse.hasDataProp("user")) {
+
+            let userJSON = myResponse.getDataProp("user");
+            let user:User = new User().setJSON(userJSON);
+
+            if(this.isDebug()) console.log("login / verifyEmailNPassword / user : ",user);
+
+            this.announceLoginUser(user);
+
+            this.goRedirect();
+
+          } // end if
+
+        } else if(myResponse.isFailed()) {  
+
+          if(this.isDebug()) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
           this.warningMsgHead = warningMsgHead;
           this.warningMsgTail = warningMsgTail;
-          return;
-        }
 
-        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / 회원 인증에 성공했습니다. 리다이렉트합니다.");
+          if(null != myResponse.error) {
+            this.watchTower.announceErrorMsgArr([myResponse.error]);
+          } // end if
 
-        let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
-        if(null == redirectUrl || "" == redirectUrl) {
-          redirectUrl = '/class-center';
-        }
-        if(isDebug) console.log("login / confirmUserEmailPassword / 중단 / redirectUrl : ",redirectUrl);
-        this.router.navigate([redirectUrl]);
+          // 에러 로그 등록
+          this.watchTower.logAPIError(`login / verifyEmailNPassword / email : ${this.email}`);
+
+        } // end if
 
       });
     } // end service    
 
   }
+
+  announceLoginUser(user:User) :void {
+
+    if(this.isDebug()) console.log("login / announceLoginUser / 시작");
+
+    if(null == user) {
+      if(this.isDebug()) console.log("login / announceLoginUser / 중단 / null == user");
+      return;
+    }
+
+    this.watchTower.announceLogin(user);
+    if(user.isTeacher()) {
+      this.watchTower.announceLoginTeacher(user.getTeacher());
+    } // end if
+
+  } // end method
+
+  goRedirect() :void {
+
+    if(this.isDebug()) console.log("login / goRedirect / 시작");
+
+    let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+    if(null == redirectUrl || "" == redirectUrl) {
+      redirectUrl = '/class-center';
+    }
+    if(this.isDebug()) console.log("login / goRedirect / redirectUrl : ",redirectUrl);
+    this.router.navigate([redirectUrl]);
+
+  } // end method
 
   onClickLogin(event):void {
 

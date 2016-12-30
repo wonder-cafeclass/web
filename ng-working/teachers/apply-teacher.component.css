@@ -61,8 +61,9 @@ button.save {
   margin-bottom: 5px;  
 }
 img.logo {
-    width: 50%;
-    padding: 35px;
+  width: 50%;
+  padding: 35px;
+  cursor: pointer;
 }
 img.title-signup {
     width: 10%;
@@ -71,4 +72,13 @@ img.title-signup {
 div.my-title {
   color:#e85c41;
   padding-bottom: 10px;
+}
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor:default;
 }

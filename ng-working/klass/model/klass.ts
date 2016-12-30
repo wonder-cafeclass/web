@@ -102,6 +102,14 @@ export class Klass {
         this.myFormat = new HelperMyFormat();
     }
 
+    // @ Desc : 수업없음 클래스인지 여부.
+    isNoClassBtn() :boolean {
+        return (-1 === this.id) ? true:false;
+    }
+    isNotNoClassBtn() :boolean {
+        return !this.isNoClassBtn();
+    }
+    
     // @ Desc : 새로운 클래스를 만드는 버튼 역할의 수업인지 여부.
     isNewClassBtn() :boolean {
         return (-100 === this.id) ? true:false;

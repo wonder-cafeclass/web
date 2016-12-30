@@ -129,7 +129,11 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private subscribeLoginTeacher() :void {
 
-      if(this.isDebug()) console.log("klass-list / subscribeLoginTeacher / 시작");
+    if(this.isDebug()) console.log("klass-list / subscribeLoginTeacher / 시작");
+
+    // 이미 들어온 선생님 정보가 있는지 확인합니다.
+    this.loginTeacher = this.watchTower.getLoginTeacher();
+    if(this.isDebug()) console.log("klass-list / subscribeLoginTeacher / this.loginTeacher : ",this.loginTeacher);
 
     // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
     // Subscribe login user
@@ -142,7 +146,11 @@ export class KlassListComponent implements OnInit, AfterViewInit {
       this.loginTeacher = new Teacher().setJSON(loginTeacher);
 
       // 클래스 리스트를 다시 가져옵니다.
-      this.getKlassList(true);
+      if(null != this.loginTeacher) {
+        this.getKlassList(true);
+      } else {
+        this.getKlassList(false);
+      }
     });
   }
   private setViewPack() :void {
@@ -252,9 +260,6 @@ export class KlassListComponent implements OnInit, AfterViewInit {
         if(isTeacher) {
           // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
           let newKlassJSONList = myResponse.getDataProp("new_klass");
-
-          // REMOVE ME
-          // let newKlass:Klass = this.klassService.getKlassFromJSON(newKlassJSONList[0]);
 
           let newKlass:Klass = new Klass().setJSON(newKlassJSONList[0]);
 

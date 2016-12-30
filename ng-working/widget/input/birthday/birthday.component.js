@@ -43,6 +43,7 @@ var BirthdayComponent = (function () {
         this.tooltipHeadMsg = "";
         this.tooltipBodyMsg = "";
         this.tooltipTailMsg = "";
+        this.setDefault();
     }
     BirthdayComponent.prototype.ngOnInit = function () {
         if (this.isDebug())
@@ -165,7 +166,7 @@ var BirthdayComponent = (function () {
     // @ Desc : 부모 객체가 Birthday Component의 참조를 받아 호출하는 세팅 메서드
     BirthdayComponent.prototype.setDefault = function () {
         if (this.isDebug())
-            console.log("birthday / init / 시작");
+            console.log("birthday / setDefault / init / 시작");
         this.setBirthdayDefault();
         this.setMyChecker();
     };
