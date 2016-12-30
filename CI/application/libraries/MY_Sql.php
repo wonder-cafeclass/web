@@ -2929,7 +2929,7 @@ class MY_Sql
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
             if(empty($row->class_poster_url)) {
                 $row->class_poster_url = "";
-                $row->class_poster_url_loadable = $this->CI->my_path->get("/assets/images/class/poster/no_image.svg");
+                $row->class_poster_url_loadable = $this->CI->my_path->get("/assets/images/class/poster/no_cover_image.jpg");
             }
             else
             {
