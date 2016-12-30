@@ -57,10 +57,10 @@
 							(click)="onSelectKlass($event, klass)"
 							(error)="onLoadFailClassImage(classImage, klass)" 
 							alt={{klass.title}}>
-					<div *ngIf="klass.title && klass.isNotNewClassBtn()" class="klass-title-overlay">
+					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" class="klass-title-overlay">
 						<h5 style="text-align: center;" class="unselectable"><strong>{{klass.title}}</strong></h5>
 					</div>
-					<div *ngIf="klass.title && klass.isNotNewClassBtn()" class="klass-title-overlay-bg">
+					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" class="klass-title-overlay-bg">
 					</div>
 				</li>
 				<li 
@@ -69,7 +69,10 @@
 				class="list-group-item shim">
 				<!--  새로운 수업을 만드는 버튼의 하단. 이미지와 같은 색상으로 만듦 -->
 				</li>
-				<li *ngIf="klass.title && klass.isNotNewClassBtn()" class="list-group-item" style="padding:5px;">
+				<li
+				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+				class="list-group-item" 
+				style="padding:5px;">
 					<img 	*ngIf="klass.level_img_url" 
 							src="{{klass.level_img_url}}" 
 							alt="{{klass.level_kor}}" 
@@ -87,7 +90,9 @@
 							alt="{{klass.time_begin_name}}" 
 							class="img-circle cc-img-filter">
 				</li>
-				<li *ngIf="klass.title && klass.isNotNewClassBtn()" class="list-group-item">
+				<li 
+				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+				class="list-group-item">
 					<h4 *ngIf="klass.price_with_format=='0'" class="pull-right cc-price unselectable">&nbsp;</h4>
 					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price unselectable">{{klass.price_with_format}} &#8361;</h4>
 

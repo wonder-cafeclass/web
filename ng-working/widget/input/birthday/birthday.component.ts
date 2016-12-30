@@ -65,7 +65,10 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
                 private myEventService:MyEventService,
                 private watchTower:MyEventWatchTowerService, 
                 private myCheckerService:MyCheckerService,
-                private myBirthdayService: MyBirthdayService) {}
+                private myBirthdayService: MyBirthdayService) {
+
+    this.setDefault();
+  }
 
   ngOnInit(): void {
 
@@ -207,7 +210,7 @@ export class BirthdayComponent implements OnInit, AfterViewInit {
   // @ Desc : 부모 객체가 Birthday Component의 참조를 받아 호출하는 세팅 메서드
   setDefault() :void {
 
-    if(this.isDebug()) console.log("birthday / init / 시작");
+    if(this.isDebug()) console.log("birthday / setDefault / init / 시작");
 
     this.setBirthdayDefault();
     this.setMyChecker();

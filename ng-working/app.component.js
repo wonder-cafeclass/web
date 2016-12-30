@@ -223,29 +223,6 @@ var AppComponent = (function () {
             } // end if
         }); // end service
     }; // end method
-    // REMOVE ME
-    /*
-    private getTeacherFromUser(userId:number) :void {
-
-        if(this.isDebug()) console.log(`app-root / getTeacherFromUser / 시작`);
-        if(this.isDebug()) console.log(`app-root / getTeacherFromUser / userId : ${userId}`);
-
-        this.teacherService
-        .getTeacher(this.watchTower.getApiKey(), userId)
-        .then((myResponse:MyResponse) => {
-
-            if(this.isDebug()) console.log(`app-root / getTeacherFromUser / myResponse : `,myResponse);
-
-            let teacherFromDB = myResponse.getDataProp("teacher");
-            // 선생님 로그인 여부를 확인, 전파한다.
-            this.watchTower.announceLoginTeacher(teacherFromDB);
-
-            this.loginTeacher = this.teacherService.getTeacherFromUser(teacherFromDB);
-
-        }); // end service
-
-    } // end method
-    */
     AppComponent.prototype.onErrorThumbnail = function (event, thumbnail) {
         event.stopPropagation();
         event.preventDefault();

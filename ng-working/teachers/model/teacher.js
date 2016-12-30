@@ -96,6 +96,9 @@ var Teacher = (function () {
         var isDebug = false;
         if (isDebug)
             console.log("teacher / setJSON / init");
+        if (null == json) {
+            return null;
+        }
         if (isDebug)
             console.log("teacher / setJSON / json : ", json);
         var teacher = this._setJSON(json);
