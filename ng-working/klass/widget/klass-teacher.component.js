@@ -10,12 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var teacher_1 = require('../../teachers/model/teacher');
+var inputs_btns_rows_component_1 = require('../../widget/input-view/inputs-btns-rows.component');
+var default_meta_1 = require('../../widget/input/default/model/default-meta');
+var default_type_1 = require('../../widget/input/default/model/default-type');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_event_1 = require('../../util/model/my-event');
 var my_is_1 = require('../../util/helper/my-is');
 var my_array_1 = require('../../util/helper/my-array');
+//DefaultMeta
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
     function KlassTeacherComponent(watchTower, myEventService, myCheckerService) {
@@ -26,11 +30,28 @@ var KlassTeacherComponent = (function () {
         this.cageHeight = -1;
         this.isShowResume = false;
         this.isShowGreeting = false;
+        // @ViewChild(InputsBtnsRowsComponent)
+        // private teacherGreetingComponent: InputsBtnsRowsComponent;
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
+        this.defaultType = new default_type_1.DefaultType();
+        this.defaultMetaGreeting = this.getDefaultMetaTextAreaTeacherGreeting();
     }
+    KlassTeacherComponent.prototype.getDefaultMetaTextAreaTeacherGreeting = function () {
+        return new default_meta_1.DefaultMeta(
+        // public title:string
+        "인사말", 
+        // public placeholder:string
+        "인사말을 입력해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_TEACHER_GREETING, 
+        // public checkerKey:string
+        "teacher_greeting", 
+        // public type:string
+        this.defaultType.TYPE_TEXTAREA);
+    };
     KlassTeacherComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
     };
@@ -194,6 +215,9 @@ var KlassTeacherComponent = (function () {
         }
         if (myEvent.hasEventName(this.myEventService.ON_READY)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+                this.teacherResumeListComponent = myEvent.metaObj;
+                this.teacherResumeListComponent.setMyEventList(this.myEventListForTeacherResume);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
             } // end if
@@ -291,6 +315,10 @@ var KlassTeacherComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], KlassTeacherComponent.prototype, "klassId", void 0);
+    __decorate([
+        core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
+        __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
+    ], KlassTeacherComponent.prototype, "teacherResumeListComponent", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

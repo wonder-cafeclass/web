@@ -2,20 +2,26 @@ import { Component,
          OnInit, 
          Input, 
          Output, 
+         ViewChild,
          EventEmitter }                from '@angular/core';
 
 import { Teacher }                     from '../../teachers/model/teacher';
+
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
+import { InputsBtnsRowsComponent }     from '../../widget/input-view/inputs-btns-rows.component';
+
+import { DefaultMeta }                 from '../../widget/input/default/model/default-meta';
+import { DefaultType }                 from '../../widget/input/default/model/default-type';
 
 import { MyEventService }              from '../../util/service/my-event.service';
 import { MyCheckerService }            from '../../util/service/my-checker.service';
 import { MyEventWatchTowerService }    from '../../util/service/my-event-watchtower.service';
-
 import { MyEvent }                     from '../../util/model/my-event';
-
 import { HelperMyIs }                  from '../../util/helper/my-is';
 import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
+
+//DefaultMeta
 
 @Component({
   moduleId: module.id,
@@ -44,6 +50,16 @@ export class KlassTeacherComponent implements OnInit {
   myEventListForTeacherResume:MyEvent[];
   myEventListForTeacherGreeting:MyEvent[];
 
+  @ViewChild(InputsBtnsRowsComponent)
+  private teacherResumeListComponent: InputsBtnsRowsComponent;
+
+  defaultMetaGreeting:DefaultMeta;
+  defaultType:DefaultType;
+
+  // @ViewChild(InputsBtnsRowsComponent)
+  // private teacherGreetingComponent: InputsBtnsRowsComponent;
+
+
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
 
@@ -57,6 +73,26 @@ export class KlassTeacherComponent implements OnInit {
 
     this.myIs = new HelperMyIs();
     this.myArray = new HelperMyArray();
+
+    this.defaultType = new DefaultType();
+    this.defaultMetaGreeting = this.getDefaultMetaTextAreaTeacherGreeting();
+
+  }
+
+  getDefaultMetaTextAreaTeacherGreeting(): DefaultMeta{
+
+    return new DefaultMeta(
+      // public title:string
+      "인사말",
+      // public placeholder:string
+      "인사말을 입력해주세요",
+      // public eventKey:string
+      this.myEventService.KEY_TEACHER_GREETING,
+      // public checkerKey:string
+      "teacher_greeting",
+      // public type:string
+      this.defaultType.TYPE_TEXTAREA
+    );
 
   }
 
@@ -268,6 +304,8 @@ export class KlassTeacherComponent implements OnInit {
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
 
         // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+        this.teacherResumeListComponent = myEvent.metaObj;
+        this.teacherResumeListComponent.setMyEventList(this.myEventListForTeacherResume);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
 
