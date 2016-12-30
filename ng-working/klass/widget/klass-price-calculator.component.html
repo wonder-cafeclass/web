@@ -13,6 +13,7 @@
 	    <widget-input-default
 	    [isNoSpace]="true"
 	    [numUnit]="1"
+	    [tailPipeStr]="'명'"
 	    [meta]="defaultMetaList[3]"
 	    (emitter)="onChangedFromChild($event)">
 	    </widget-input-default>	
@@ -22,6 +23,8 @@
 	    <widget-input-default
 	    [isNoSpace]="true"
 	    [numUnit]="1000"
+	    [headPipeStr]="'₩'"
+	    [hasNumFormat]="true"
 	    [meta]="defaultMetaList[0]"
 	    (emitter)="onChangedFromChild($event)">
 	    </widget-input-default>

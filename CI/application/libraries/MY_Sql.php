@@ -2210,41 +2210,7 @@ class MY_Sql
         $this->CI->db->where('teacher_id', $teacher_id);
         $this->CI->db->update('klass', $data);
 
-    } // end method    
-
-
-    // @ Desc : 클래스의 타이틀을 가져옵니다.
-    /*
-    public function get_klass_title($klass_id=-1)
-    {
-        
-        if($this->is_not_ready())
-        {
-            return;
-        }
-        if($this->is_not_ok("klass_id", $klass_id))
-        {
-            return;
-        }
-
-        $this->CI->db->select('title');
-        $this->CI->db->where('id', $klass_id);
-        $limit = 1;
-        $offset = 0;
-        $query = $this->CI->db->get('klass', $limit, $offset);
-        $rows = $query->result();
-
-        $title = "";
-        foreach ($rows as $row) 
-        {
-            $title = $row->title;
-            break;
-        }
-        
-        return $title;
-    }
-    */
-
+    } // end method
     
     // @ Desc : 클래스의 제목을 업데이트합니다.
     public function update_klass_title($user_id=-1, $klass_id=-1, $klass_title_to_update="")

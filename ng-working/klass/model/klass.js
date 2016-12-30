@@ -122,25 +122,17 @@ var Klass = (function () {
         return "\u20A9" + priceForStudentStr;
     };
     Klass.prototype.getPriceForStudent = function () {
-        if (null == this.week || !(0 < this.week && 0 == (this.week % 4))) {
-            return -1;
-        }
         if (null == this.price || !(0 < this.price)) {
             return -1;
         }
-        var studentPrice = (this.week / 4) * this.price;
-        return studentPrice;
+        return this.price;
     }; // end method
     Klass.prototype.getPaymentForTeacherStr = function () {
-        if (null == this.week || !(0 < this.week && 0 == (this.week % 4))) {
-            return "";
-        } // end if
         if (null == this.price || !(0 < this.price)) {
             return "";
         } // end if
         var payment = this.getPayment();
-        var paymentOnWeeks = (this.week / 4) * payment;
-        var paymentOnWeeksStr = this.myFormat.numberWithCommas(paymentOnWeeks);
+        var paymentOnWeeksStr = this.myFormat.numberWithCommas(payment);
         return "\u20A9" + paymentOnWeeksStr;
     };
     Klass.prototype.getPayment = function () {

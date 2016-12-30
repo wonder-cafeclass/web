@@ -249,17 +249,26 @@ export class KlassPriceCalculatorComponent implements OnInit {
       return;
     } // end if
 
-    this.setPrice(price);
-    this.updateStudentCnt(studentCnt);
+    if(this.isDebug()) console.log("klass-price-calculator / setPriceNStudentCnt / price : ",price);
+    if(this.isDebug()) console.log("klass-price-calculator / setPriceNStudentCnt / studentCnt : ",studentCnt);
+
+    this.price = price;
+    this.studentCnt = studentCnt;
+
+    this.setPrice(this.price);
+    this.updateStudentCnt(this.studentCnt);
 
   } // end method
 
   setPrice(price:number) :void {
 
     if(this.isDebug()) console.log("klass-price-calculator / setPrice / 시작");
-
-
     if(this.isDebug()) console.log("klass-price-calculator / setPrice / price : ",price);
+
+    if(!(0 < price)) {
+      if(this.isDebug()) console.log("klass-price-calculator / setPrice / 중단 / price is not valid!");
+      return;
+    } // end if
 
     this.price = price;
     this.updatePriceForStudent(price);
@@ -270,15 +279,26 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
     if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 시작");
 
+    if(!(0 < price)) {
+      if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 중단 / price is not valid!");
+      return;
+    } // end if
+
+    // if(this.price === price) {
+    //   if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 중단 / this.price === price");
+    //   return;
+    // }
+
     if(null == this.priceForStudentComponent) {
       if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 중단 / this.priceForStudentComponent is not valid!");
       return;
     }
 
+    this.price = price;
     this.priceForStudentComponent.setInput(""+price);
     this.updateCommission(price);
-  }
 
+  }
 
   setWeeks(weeks:number) :void {
 
@@ -365,6 +385,12 @@ export class KlassPriceCalculatorComponent implements OnInit {
     if(this.isDebug()) console.log("klass-price-calculator / updateCommission / 시작");
 
     let commission:number  = this.commission = this.getcommission(price);
+
+    if(!(0 < commission)) {
+      if(this.isDebug()) console.log("klass-price-calculator / updateCommission / 중단 / commission is not valid!");
+      return;
+    } // end if
+
     let commissionStr:string = `${commission}%`;
 
     if(this.isDebug()) console.log("klass-price-calculator / updateCommission / commissionStr : ",commissionStr);
@@ -423,11 +449,20 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
     if(null == this.studentCntComponent) {
       if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / 중단 / null == this.studentCntComponent");
+      return;
     } // end if
 
-    if(studentCnt < 0) {
-      studentCnt = 3;
-    }
+    // REMOVE ME
+    // if(this.studentCnt === studentCnt) {
+    //   if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / 중단 / this.studentCnt === studentCnt");
+    //   return;
+    // } // end if
+
+    if(!(0 < studentCnt)) {
+      if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / 중단 / studentCnt is not valid!");
+      return;
+    } // end if
+
     this.studentCnt = studentCnt;
     if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / studentCnt : ",studentCnt);
 
@@ -442,26 +477,25 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / 시작");
 
+    let paymentStr:string = "₩" + this.myFormat.numberWithCommas(this.payment);
+
+    if(!(0 < this.studentCnt)) {
+      if(this.isDebug()) console.log("klass-price-calculator / updateTotal / 중단 / studentCnt is not valid!");
+      return;
+    } // end if
+
     if(null == this.totalComponent) {
       if(this.isDebug()) console.log("klass-price-calculator / updateTotal / 중단 / null == this.totalComponent");
       return;
     }
 
-    let paymentStr:string = "₩" + this.myFormat.numberWithCommas(this.payment);
-    let studentCnt:number = +this.studentCntComponent.getInput();
-    let weekCnt:number = 1;
-    if(0 < this.weeks && 0 == (this.weeks % 4)) {
-      weekCnt = (this.weeks / 4);
-    } // end if
-
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / this.payment : ",this.payment);
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / paymentStr : ",paymentStr);
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / this.studentCnt : ",this.studentCnt);
-    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / weekCnt : ",weekCnt);
 
-    let total:number = this.total = this.payment * this.studentCnt * weekCnt;
+    let total:number = this.total = this.payment * this.studentCnt;
     let totalStr:string = this.totalStr = this.myFormat.numberWithCommas(total);
-    totalStr = `${paymentStr} X ${studentCnt}명 X ${this.weeks}주 = ₩${totalStr}`;
+    totalStr = `${paymentStr} X ${this.studentCnt}명 = ₩${totalStr}`;
 
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / total : ",total);
     if(this.isDebug()) console.log("klass-price-calculator / updateTotal / totalStr : ",totalStr);
@@ -501,6 +535,7 @@ export class KlassPriceCalculatorComponent implements OnInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER)) {
 
         this.studentCntComponent = myEvent.metaObj;
+        this.updateStudentCnt(this.studentCnt);
         this.checkComponentReady();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_TOTAL)) {
@@ -520,25 +555,30 @@ export class KlassPriceCalculatorComponent implements OnInit {
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_PRICE_FOR_STUDENT)) {
 
         let price:number = +myEvent.value;
-        this.updatePriceForStudent(price);
 
-        // 가격 변경을 부모 객체에도 전달.
-        this.emitEventOnChange();
+        if(0 < price && this.price != price) {
+          this.updatePriceForStudent(price);
+          // 가격 변경을 부모 객체에도 전달.
+          this.emitEventOnChange();
+        } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_STUDENT_NUMBER)) {
 
         let studentCnt:number = +myEvent.value;
-        this.updateStudentCnt(studentCnt);
-
-        // 전체 데이터를 부모 객체에도 전달.
-        this.emitEventOnChange();
+        if(0 < studentCnt && this.studentCnt != studentCnt) {
+          this.updateStudentCnt(studentCnt);
+          // 전체 데이터를 부모 객체에도 전달.
+          this.emitEventOnChange();
+        } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC_WEEK)) {
 
-        this.updateWeeks(+myEvent.value);
-
-        // 전체 데이터를 부모 객체에도 전달.
-        this.emitEventOnChange();
+        let weeks:number = +myEvent.value;
+        if(0 < weeks && this.weeks != weeks) {
+          this.updateWeeks(+myEvent.value);
+          // 전체 데이터를 부모 객체에도 전달.
+          this.emitEventOnChange();
+        } // end if
 
       } // end if       
 
