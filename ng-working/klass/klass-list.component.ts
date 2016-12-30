@@ -268,9 +268,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
           klassList.unshift(newKlass);
         } // end if
 
-        // let klass:Klass = new_klass
-        // 1-2. 유저라면 수업 없음 칸을 노출합니다.
-        // new_klass
+        // 리스트를 가져오면 푸터를 하단 고정 해제합니다.
+        this.watchTower.announceFooterRelease();
 
       } else {
 

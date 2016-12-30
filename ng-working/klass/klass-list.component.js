@@ -221,6 +221,8 @@ var KlassListComponent = (function () {
                         console.log("klass-list / getKlassList / newKlass : ", newKlass);
                     klassList.unshift(newKlass);
                 } // end if
+                // 리스트를 가져오면 푸터를 하단 고정 해제합니다.
+                _this.watchTower.announceFooterRelease();
             }
             else {
                 if (null != myResponse.error && "" != myResponse.error) {

@@ -227,6 +227,12 @@ export class MyEventWatchTowerService {
 	    */
 		
 	}
+	// @ Desc : 강제로 푸터를 하단 고정 해제 합니다.
+	announceFooterRelease() {
+		if(this._isDebug) console.log("my-event-watchtower / announceFooterRelease / 시작");
+		this.contentHeightSource.next(3000);
+	}
+
 	// @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
 	announceErrorMsgArr(errorMsgArr: string[]) {
 		this.errorMsgArr = errorMsgArr;
