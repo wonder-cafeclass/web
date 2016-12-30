@@ -38,7 +38,7 @@
             [imageUrl]="imgUploaderImageUrlKlassPoster"
             [eventKey]="imgUploaderEventKeyKlassPoster"
             [fileSizeKBMax]="1000"
-            [fileWidth]="535"
+            [fileWidth]="600"
             [fileMinWidth]="256"
             [fileMaxWidth]="2048"
             [fileMinHeight]="256"
@@ -97,11 +97,21 @@
             </image-grid>
           </li>
           <!-- Banner Image List For Service DONE -->
-          
+
+
+          <!-- MyTitleComponent -->
+          <li *ngIf="isTeacher" 
+              class="list-group-item" 
+              style="padding:0px;border-top: 1px solid #ddd;">
+              <my-title
+              [title]="'배너 입력 타이틀 및 설명'"
+              [desc]="'음료비용 포함 여부, 상담 포함 여부'">
+              </my-title>
+          </li>
           <!-- Banner Image List For Admin INIT -->
           <li *ngIf="isTeacher" 
               class="list-group-item" 
-              style="padding:0px;border-top:0px;">
+              style="padding:0px;border-top: 1px solid #ddd;">
             <image-grid-v2
             [eventKey]="myEventService.KEY_KLASS_BANNER"
             [imageTable]="imageTableBannerList"

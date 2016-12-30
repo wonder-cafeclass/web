@@ -23,10 +23,12 @@ import { GenderComponent }         		from './input/gender/gender.component';
 import { BirthdayComponent }         	from './input/birthday/birthday.component';
 import { NicknameComponent }         	from './input/nickname/nickname.component';
 import { TooltipComponent }         	from './input/tooltip/tooltip.component';
+import { MyTitleComponent }      		from './input/title/my-title.component';
 import { ImageEntryComponent }         	from './image-grid/image-entry.component';
 import { ImageGridV2Component }         from './image-grid/image-grid-v2.component';
 import { InputBtnsRowComponent }     	from './input-view/input-btns-row.component';
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
+
 
 import { FooterComponent }         		from './footer/footer.component';
 
@@ -48,6 +50,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
+		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
@@ -73,6 +76,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
+		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,

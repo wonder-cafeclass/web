@@ -790,9 +790,9 @@ export class MyEventService {
             ),
             new DefaultMeta( // 2
             // public title:string
-            "4주당 1인당 강사 지급액",
+            "1인당 최종 전달 금액",
             // public placeholder:string
-            "4주당 1인당 강사 지급액을 입력해주세요",
+            "1인당 최종 전달 금액을 입력해주세요",
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_PAYMENT_FOR_TEACHER,
             // public checkerKey:string
@@ -814,9 +814,9 @@ export class MyEventService {
             ), 
             new DefaultMeta( // 4
             // public title:string
-            "최종 전달 금액",
+            "최대 인원시 전달 금액",
             // public placeholder:string
-            "합계를 입력해주세요",
+            "최대 인원시 전달 금액을 입력해주세요",
             // public eventKey:string
             this.KEY_KLASS_PRICE_CALC_TOTAL,
             // public checkerKey:string

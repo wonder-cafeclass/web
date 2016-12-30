@@ -1,0 +1,20 @@
+div.btn-box {
+  margin-top: 0px;
+  padding: 10px;
+  width: 100%;
+}
+div.btn-box.text-left {
+  text-align: left;
+  color:#777;
+  padding-bottom: 0px;
+}
+div.btn-box.text-left.info {
+  padding-right: 0px;
+  width: 100%;  
+}
+label.title {
+  margin:0px;
+}
+.desc {
+  color:#777;
+}

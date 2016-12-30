@@ -29,6 +29,7 @@ var gender_component_1 = require('./input/gender/gender.component');
 var birthday_component_1 = require('./input/birthday/birthday.component');
 var nickname_component_1 = require('./input/nickname/nickname.component');
 var tooltip_component_1 = require('./input/tooltip/tooltip.component');
+var my_title_component_1 = require('./input/title/my-title.component');
 var image_entry_component_1 = require('./image-grid/image-entry.component');
 var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var input_btns_row_component_1 = require('./input-view/input-btns-row.component');
@@ -55,6 +56,7 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
+                my_title_component_1.MyTitleComponent,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
@@ -80,6 +82,7 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
+                my_title_component_1.MyTitleComponent,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
