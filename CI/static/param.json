@@ -471,9 +471,9 @@
 			"error"
 		],
 		"klass_event_img_url_list":[
-			"assets/images/class/poster/new_class.svg",
+			"assets/images/class/poster/new_cover_image.jpg",
 			"assets/images/class/poster/no_class.svg",
-			"assets/images/class/poster/no_image.svg",
+			"assets/images/class/poster/no_cover_image.jpg",
 			"assets/images/class/poster/error.svg"
 		],
 

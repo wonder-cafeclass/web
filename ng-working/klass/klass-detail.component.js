@@ -853,7 +853,7 @@ var KlassDetailComponent = (function () {
         // Set image uploader props
         this.imgUploaderUploadAPIUrl = "/CI/index.php/api/upload/image";
         this.imgUploaderImagePathKlassPoster = "/assets/images/class/poster";
-        this.imgUploaderImageUrlKlassPoster = "/assets/images/class/poster/no_image.svg";
+        this.imgUploaderImageUrlKlassPoster = "/assets/images/class/poster/no_cover_image.jpg";
         this.imgUploaderEventKeyKlassPoster = this.myEventService.KEY_KLASS_POSTER;
     };
     // EVENT

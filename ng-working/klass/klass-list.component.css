@@ -85,3 +85,6 @@ li.shim {
   user-select: none;
   cursor:default;
 }
+img.new-class {
+  border-radius: 4px;
+}
