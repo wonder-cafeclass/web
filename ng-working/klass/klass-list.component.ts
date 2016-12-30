@@ -712,24 +712,74 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
     if(newClassId === +klass.id) {
       if(this.isDebug()) console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
-      this.gotoNewClassDetail(klass);
+
+      // this.gotoNewClassDetail(klass);
+
+      if(confirm("수업을 새로 만드시겠어요?")) {
+        // 1. 새로운 클래스를 만든다.
+        this.addNewKlass();
+      } // end if
+
     } else if(0 < +klass.id) {
       if(this.isDebug()) console.log("klass-list / onSelectKlass / 수업 상세 화면으로 이동하기");
       this.gotoClassDetail(klass);
     } // end if
   } // end method
-  gotoNewClassDetail(klass: Klass):void {
 
-    if(this.isDebug()) console.log("klass-list / gotoNewClassDetail / init");
+  addNewKlass():void {
 
-    if(confirm("수업을 새로 만드시겠어요?")) {
-      this.router.navigate([klass.id], { relativeTo: this.route });  
-    } // end if
-  }
+    if(this.isDebug()) console.log("klass-list / addNewKlass / init");
+
+    // 선생님인 경우에만 수업을 추가할 수 있습니다.
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-list / addNewKlass / 중단 / null == this.loginUser");
+      return;
+    }
+
+    this.klassService.addKlassEmpty(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number,
+      +this.loginUser.id,
+      // teacherId:number,
+      +this.loginTeacher.id,
+      // teacherResume:string,
+      this.loginTeacher.resume,
+      // teacherGreeting:string
+      this.loginTeacher.greeting
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("klass-list / addReview / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
+
+        let klass:Klass = new Klass().setJSON(myResponse.getDataProp("klass"));
+        if(null != klass) {
+          // 새로운 클래스가 등록되었습니다. 해당 수업 페이지로 이동합니다.
+          this.gotoClassDetail(klass);
+        } // end if
+
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+        // 에러 로그 등록
+        this.watchTower.logAPIError(`klass-list / addNewKlass / user_id : ${this.loginUser.id}`);
+
+      } // end if
+
+    }) // end service
+
+  } // end method
+
   gotoClassDetail(klass: Klass):void {
     // 수업 상세 페이지로 이동
     this.router.navigate([klass.id], { relativeTo: this.route });
-  }
+  } // end method
+
   onLoadFailClassImage(classImage, klassObj) {
     if(null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {
       classImage.src = klassObj.class_img_err_url;
