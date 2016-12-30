@@ -28,6 +28,8 @@ import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.
 import { Comment }                    from '../widget/comment/model/comment';
 import { CommentListComponent }       from '../widget/comment/comment-list.component';
 
+import { InputsBtnsRowsComponent }    from '../widget/input-view/inputs-btns-rows.component';
+
 import { Klass }                      from './model/klass';
 import { KlassQuestion }              from './model/klass-question';
 import { KlassReview }                from './model/klass-review';
@@ -66,6 +68,12 @@ export class KlassDetailNavListComponent implements OnInit {
 
   @ViewChild(KlassTeacherComponent)
   private teacherComponent: KlassTeacherComponent;
+
+  @ViewChild(InputsBtnsRowsComponent)
+  private featureListComponent: InputsBtnsRowsComponent;
+
+  @ViewChild(InputsBtnsRowsComponent)
+  private targetListComponent: InputsBtnsRowsComponent;
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
@@ -373,6 +381,8 @@ export class KlassDetailNavListComponent implements OnInit {
       } // end for      
 
     } // end if
+
+    if(this.isDebug()) console.log("k-d-n-l / updateKlassFeature / myEventKlassFeatureList : ",myEventKlassFeatureList);
 
     this.myEventListForKlassFeature = myEventKlassFeatureList;
 
@@ -1092,14 +1102,28 @@ export class KlassDetailNavListComponent implements OnInit {
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
 
-        // wonder.jung
         if(  null != myEvent.metaObj ) {
-          // 네이버 맵 장소 검색 컴포넌트가 준비됨.
           this.teacherComponent = myEvent.metaObj;
           this.setTeacher();
         } // end if
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.featureListComponent = myEvent.metaObj;
+          this.featureListComponent.setMyEventList(this.myEventListForKlassFeature);
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.targetListComponent = myEvent.metaObj;
+          this.targetListComponent.setMyEventList(this.myEventListForKlassTarget);
+        } // end if
+
       } // end if
+
+      // setMyEventList
 
     } else if(myEvent.hasEventName(this.myEventService.ON_LOGIN_REQUIRED)) {
 
@@ -1421,18 +1445,27 @@ export class KlassDetailNavListComponent implements OnInit {
   }
 
   onClickKlassFeature() :void {
+
+    if(this.isDebug()) console.log("k-d-n-l / onClickKlassFeature / init");
+
     this.isShowKlassFeatureAdmin = !this.isShowKlassFeatureAdmin;
     if(!this.isShowKlassFeatureAdmin) {
       this.shutdownKlassInfos();
     }
   }
   onClickKlassTarget() :void {
+
+    if(this.isDebug()) console.log("k-d-n-l / onClickKlassTarget / init");
+
     this.isShowKlassTargetAdmin = !this.isShowKlassTargetAdmin;
     if(!this.isShowKlassTargetAdmin) {
       this.shutdownKlassInfos();
     }
   }
   onClickKlassSchedule() :void {
+
+    if(this.isDebug()) console.log("k-d-n-l / onClickKlassSchedule / init");
+
     this.isShowKlassScheduleAdmin = !this.isShowKlassScheduleAdmin;
     if(!this.isShowKlassScheduleAdmin) {
       this.shutdownKlassInfos();

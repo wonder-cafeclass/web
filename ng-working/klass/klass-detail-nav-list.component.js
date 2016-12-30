@@ -21,6 +21,7 @@ var my_array_1 = require('../util/helper/my-array');
 var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
 var comment_1 = require('../widget/comment/model/comment');
 var comment_list_component_1 = require('../widget/comment/comment-list.component');
+var inputs_btns_rows_component_1 = require('../widget/input-view/inputs-btns-rows.component');
 var klass_1 = require('./model/klass');
 var klass_question_1 = require('./model/klass-question');
 var klass_review_1 = require('./model/klass-review');
@@ -236,6 +237,8 @@ var KlassDetailNavListComponent = (function () {
                 myEventKlassFeatureList.push(myEventKlassFeature);
             } // end for      
         } // end if
+        if (this.isDebug())
+            console.log("k-d-n-l / updateKlassFeature / myEventKlassFeatureList : ", myEventKlassFeatureList);
         this.myEventListForKlassFeature = myEventKlassFeatureList;
     }; // end method  
     KlassDetailNavListComponent.prototype.setKlassTarget = function () {
@@ -798,11 +801,21 @@ var KlassDetailNavListComponent = (function () {
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
-                // wonder.jung
                 if (null != myEvent.metaObj) {
-                    // 네이버 맵 장소 검색 컴포넌트가 준비됨.
                     this.teacherComponent = myEvent.metaObj;
                     this.setTeacher();
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {
+                if (null != myEvent.metaObj) {
+                    this.featureListComponent = myEvent.metaObj;
+                    this.featureListComponent.setMyEventList(this.myEventListForKlassFeature);
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
+                if (null != myEvent.metaObj) {
+                    this.targetListComponent = myEvent.metaObj;
+                    this.targetListComponent.setMyEventList(this.myEventListForKlassTarget);
                 } // end if
             } // end if
         }
@@ -1045,18 +1058,24 @@ var KlassDetailNavListComponent = (function () {
         } // end if
     };
     KlassDetailNavListComponent.prototype.onClickKlassFeature = function () {
+        if (this.isDebug())
+            console.log("k-d-n-l / onClickKlassFeature / init");
         this.isShowKlassFeatureAdmin = !this.isShowKlassFeatureAdmin;
         if (!this.isShowKlassFeatureAdmin) {
             this.shutdownKlassInfos();
         }
     };
     KlassDetailNavListComponent.prototype.onClickKlassTarget = function () {
+        if (this.isDebug())
+            console.log("k-d-n-l / onClickKlassTarget / init");
         this.isShowKlassTargetAdmin = !this.isShowKlassTargetAdmin;
         if (!this.isShowKlassTargetAdmin) {
             this.shutdownKlassInfos();
         }
     };
     KlassDetailNavListComponent.prototype.onClickKlassSchedule = function () {
+        if (this.isDebug())
+            console.log("k-d-n-l / onClickKlassSchedule / init");
         this.isShowKlassScheduleAdmin = !this.isShowKlassScheduleAdmin;
         if (!this.isShowKlassScheduleAdmin) {
             this.shutdownKlassInfos();
@@ -1100,6 +1119,14 @@ var KlassDetailNavListComponent = (function () {
         core_1.ViewChild(klass_teacher_component_1.KlassTeacherComponent), 
         __metadata('design:type', klass_teacher_component_1.KlassTeacherComponent)
     ], KlassDetailNavListComponent.prototype, "teacherComponent", void 0);
+    __decorate([
+        core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
+        __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
+    ], KlassDetailNavListComponent.prototype, "featureListComponent", void 0);
+    __decorate([
+        core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
+        __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
+    ], KlassDetailNavListComponent.prototype, "targetListComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
