@@ -419,7 +419,23 @@ class Klass extends MY_REST_Controller {
     // @ 수업을 업데이트합니다.
     public function update_post()
     {
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
         if($this->is_not_ok()) {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "\$this->is_not_ok()",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
 
@@ -427,6 +443,8 @@ class Klass extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_not_allowed_api_call");
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "Not allowed api call",
@@ -657,7 +675,7 @@ class Klass extends MY_REST_Controller {
             true
         );
 
-        $output = array();
+        
         $output["params"] = 
         [
             "user_id"=>$user_id,
@@ -699,6 +717,7 @@ class Klass extends MY_REST_Controller {
         {
             $is_ok = false;
         }
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok");
 
         if($is_ok) 
         {
@@ -761,6 +780,7 @@ class Klass extends MY_REST_Controller {
                 // $student_cnt
                 $klass_student_cnt
             );
+            $output["track"] = $this->my_tracker->flush();
 
             // 쿼리 가져오기
             $queries = array();
@@ -774,6 +794,7 @@ class Klass extends MY_REST_Controller {
         }
         else
         {
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 "update_post is failed!",
