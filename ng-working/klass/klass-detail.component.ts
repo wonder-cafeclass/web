@@ -888,6 +888,8 @@ export class KlassDetailComponent implements AfterViewInit {
       return;
     }
 
+    if(this.isDebug()) console.log("klass-detail / setPriceCalculator / this.klassCopy : ",this.klassCopy);
+
     this.priceCalculator.setPriceNStudentCnt(
       // price:number, 
       this.klassCopy.price,

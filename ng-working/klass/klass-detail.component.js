@@ -633,6 +633,8 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / setPriceCalculator / 중단 / this.priceCalculator is not valid!");
             return;
         }
+        if (this.isDebug())
+            console.log("klass-detail / setPriceCalculator / this.klassCopy : ", this.klassCopy);
         this.priceCalculator.setPriceNStudentCnt(
         // price:number, 
         this.klassCopy.price, 
