@@ -26,13 +26,12 @@ var KlassPriceCalculatorComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.commissionStr = "";
         this.paymentForTeacherStr = "";
-        this.isEventPackReady = false;
-        // @ Desc : 변경된 수업 주수에 따라서 가격 데이터를 다시 표시해야 합니다.
-        this.weeks = -1;
         this.price = -1;
-        this.commission = -1;
-        this.payment = -1;
         this.studentCnt = -1;
+        this.weeks = -1;
+        this.commission = -1;
+        this.isEventPackReady = false;
+        this.payment = -1;
         this.total = -1;
         this.totalStr = "";
         this.myIs = new my_is_1.HelperMyIs();
@@ -40,10 +39,11 @@ var KlassPriceCalculatorComponent = (function () {
         this.myFormat = new my_format_1.HelperMyFormat();
         this.defaultMetaList = this.myEventService.getDefaultMetaListKlassPriceCalculator();
     }
+    KlassPriceCalculatorComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     KlassPriceCalculatorComponent.prototype.ngOnInit = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / ngOnInit / init");
         if (0 < this.cageWidth) {
             this.cageWidthStr = this.cageWidth + "px";
@@ -56,12 +56,10 @@ var KlassPriceCalculatorComponent = (function () {
     };
     KlassPriceCalculatorComponent.prototype.subscribeEventPack = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ", isEventPackReady);
         if (this.watchTower.getIsEventPackReady()) {
             // 1. 이미 EventPack 로딩이 완료된 경우
@@ -71,7 +69,7 @@ var KlassPriceCalculatorComponent = (function () {
         else {
             // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
             this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
-                if (isDebug)
+                if (_this.isDebug())
                     console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ", isEventPackReady);
                 // 이벤트 관련 정보가 준비되었습니다.
                 _this.isEventPackReady = true;
@@ -80,12 +78,10 @@ var KlassPriceCalculatorComponent = (function () {
         } // end if
     }; // end method 
     KlassPriceCalculatorComponent.prototype.emitEventOnReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / emitEventOnReady / 시작");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");
             return;
         }
@@ -94,19 +90,17 @@ var KlassPriceCalculatorComponent = (function () {
         this.watchTower.getMyEventService().KEY_KLASS_PRICE_CALC, 
         // component
         this);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / emitEventOnReady / myEventOnReady : ", myEventOnReady);
         this.emitter.emit(myEventOnReady);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / emitEventOnReady / Done!");
     };
     KlassPriceCalculatorComponent.prototype.emitEventOnChange = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / emitEventOnReady / 시작");
         if (!this.watchTower.getIsEventPackReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");
             return;
         }
@@ -127,24 +121,20 @@ var KlassPriceCalculatorComponent = (function () {
         this.watchTower.getMyCheckerService().getFreePassChecker(), 
         // meta:any
         metaObj);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / emitEventOnReady / myEventOnChange : ", myEventOnChange);
         this.emitter.emit(myEventOnChange);
     };
     KlassPriceCalculatorComponent.prototype.init = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / init / 시작");
     };
     // @ Desc : 자식 컴포넌트들이 모두 준비되었는지 확인합니다. 준비되었다면 부모 객체에게 이벤트를 발송합니다.
     KlassPriceCalculatorComponent.prototype.checkComponentReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / checkComponentReady / 시작");
         if (this.isNotReady()) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / checkComponentReady / 중단 / this.isNotReady()");
             return;
         } // end if
@@ -154,64 +144,55 @@ var KlassPriceCalculatorComponent = (function () {
         return !this.isReady();
     };
     KlassPriceCalculatorComponent.prototype.isReady = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / isReady / 시작");
         if (!this.isEventPackReady) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / !this.isEventPackReady");
             return false;
         }
         else if (null == this.priceForStudentComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.priceForStudentComponent");
             return false;
         }
         else if (null == this.commissionComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.commissionComponent");
             return false;
         }
         else if (null == this.paymentForTeacherComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.paymentForTeacherComponent");
             return false;
         }
         else if (null == this.studentCntComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.studentCntComponent");
             return false;
         }
         else if (null == this.totalComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.totalComponent");
             return false;
         }
         else if (null == this.weeksComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / isReady / 중단 / null == this.weeksComponent");
             return false;
         }
         return true;
     };
     KlassPriceCalculatorComponent.prototype.setPriceNStudentCnt = function (price, studentCnt) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setPriceNStudentCnt / 시작");
-        if (this.isNotReady()) {
-            if (isDebug)
-                console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / this.isNotReady()");
-            return;
-        } // end if
         if (!(0 < price)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / price is not valid!");
             return;
         } // end if
         if (!(0 < studentCnt)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / studentCnt is not valid!");
             return;
         } // end if
@@ -219,31 +200,34 @@ var KlassPriceCalculatorComponent = (function () {
         this.updateStudentCnt(studentCnt);
     }; // end method
     KlassPriceCalculatorComponent.prototype.setPrice = function (price) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setPrice / 시작");
-        if (this.isNotReady()) {
-            if (isDebug)
-                console.log("klass-price-calculator / setPrice / 중단 / this.isNotReady()");
-            return;
-        } // end if
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setPrice / price : ", price);
+        this.price = price;
         this.updatePriceForStudent(price);
     }; // end method
+    KlassPriceCalculatorComponent.prototype.updatePriceForStudent = function (price) {
+        if (this.isDebug())
+            console.log("klass-price-calculator / updatePriceForStudent / 시작");
+        if (null == this.priceForStudentComponent) {
+            if (this.isDebug())
+                console.log("klass-price-calculator / updatePriceForStudent / 중단 / this.priceForStudentComponent is not valid!");
+            return;
+        }
+        this.priceForStudentComponent.setInput("" + price);
+        this.updateCommission(price);
+    };
     KlassPriceCalculatorComponent.prototype.setWeeks = function (weeks) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setWeeks / 시작");
         if (!(0 < weeks)) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / setWeeks / 중단 / weeks is not valid!");
             return;
         }
         if (null == this.weeksComponent) {
-            if (isDebug)
+            if (this.isDebug())
                 console.log("klass-price-calculator / setWeeks / 중단 / this.weeksComponent is not valid!");
             return;
         }
@@ -263,21 +247,20 @@ var KlassPriceCalculatorComponent = (function () {
         classWeeksList, 
         // valueFocus:string
         "" + weeks);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setWeeks / selectOptionList : ", selectOptionList);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setWeeks / weeks : ", weeks);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / setWeeks / weekKor : ", weekKor);
         this.weeksComponent.setSelectOption(selectOptionList);
         this.updateWeeks(weeks);
     };
+    // @ Desc : 변경된 수업 주수에 따라서 가격 데이터를 다시 표시해야 합니다.
     KlassPriceCalculatorComponent.prototype.updateWeeks = function (weeks) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateWeeks / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateWeeks / weeks : ", weeks);
         this.weeks = weeks;
         this.updateTotal();
@@ -296,25 +279,12 @@ var KlassPriceCalculatorComponent = (function () {
         // valueFocus:string
         valueFocus);
     }; // end method    
-    KlassPriceCalculatorComponent.prototype.updatePriceForStudent = function (price) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
-            console.log("klass-price-calculator / updatePriceForStudent / 시작");
-        if (isDebug)
-            console.log("klass-price-calculator / updatePriceForStudent / this.priceForStudentComponent : ", this.priceForStudentComponent);
-        this.price = price;
-        this.priceForStudentComponent.setInput("" + price);
-        this.updateCommission(price);
-    };
     KlassPriceCalculatorComponent.prototype.updateCommission = function (price) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateCommission / 시작");
         var commission = this.commission = this.getcommission(price);
         var commissionStr = commission + "%";
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateCommission / commissionStr : ", commissionStr);
         this.commissionComponent.setInput(commissionStr);
         this.updatePaymentForTeacher(price, commission);
@@ -337,13 +307,11 @@ var KlassPriceCalculatorComponent = (function () {
         return -1;
     };
     KlassPriceCalculatorComponent.prototype.updatePaymentForTeacher = function (price, commission) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updatePaymentForTeacher / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updatePaymentForTeacher / price : ", price);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updatePaymentForTeacher / commission : ", commission);
         var profitPercentage = (100 - this.commission);
         var priceStr = this.myFormat.numberWithCommas(price);
@@ -352,61 +320,64 @@ var KlassPriceCalculatorComponent = (function () {
         var paymentStr = this.myFormat.numberWithCommas(payment);
         // paymentStr = `₩${paymentStr}`;
         paymentStr = priceStr + " X " + profitPercentage + "% = \u20A9" + paymentStr;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updatePaymentForTeacher / payment : ", payment);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updatePaymentForTeacher / paymentStr : ", paymentStr);
         this.paymentForTeacherComponent.setInput(paymentStr);
-        this.updateStudentCnt(-1);
+        this.updateTotal();
     };
     KlassPriceCalculatorComponent.prototype.updateStudentCnt = function (studentCnt) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateStudentCnt / 시작");
+        if (null == this.studentCntComponent) {
+            if (this.isDebug())
+                console.log("klass-price-calculator / updateStudentCnt / 중단 / null == this.studentCntComponent");
+        } // end if
         if (studentCnt < 0) {
             studentCnt = 3;
         }
         this.studentCnt = studentCnt;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateStudentCnt / studentCnt : ", studentCnt);
         this.studentCntComponent.setInput("" + studentCnt);
         this.updateTotal();
-    };
+    }; // end method
     KlassPriceCalculatorComponent.prototype.updateTotal = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / 시작");
+        if (null == this.totalComponent) {
+            if (this.isDebug())
+                console.log("klass-price-calculator / updateTotal / 중단 / null == this.totalComponent");
+            return;
+        }
         var paymentStr = "₩" + this.myFormat.numberWithCommas(this.payment);
         var studentCnt = +this.studentCntComponent.getInput();
         var weekCnt = 1;
         if (0 < this.weeks && 0 == (this.weeks % 4)) {
             weekCnt = (this.weeks / 4);
         } // end if
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / this.payment : ", this.payment);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / paymentStr : ", paymentStr);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / this.studentCnt : ", this.studentCnt);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / weekCnt : ", weekCnt);
         var total = this.total = this.payment * this.studentCnt * weekCnt;
         var totalStr = this.totalStr = this.myFormat.numberWithCommas(total);
         totalStr = paymentStr + " X " + studentCnt + "\uBA85 X " + this.weeks + "\uC8FC = \u20A9" + totalStr;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / total : ", total);
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / updateTotal / totalStr : ", totalStr);
         this.totalComponent.setInput(totalStr);
     }; // end method
     KlassPriceCalculatorComponent.prototype.onChangedFromChild = function (myEvent) {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / onChangedFromChild / 시작");
-        if (isDebug)
+        if (this.isDebug())
             console.log("klass-price-calculator / onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {
             return;

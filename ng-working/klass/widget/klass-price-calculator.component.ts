@@ -49,7 +49,11 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   commissionStr:string="";
   paymentForTeacherStr:string="";
-  
+
+  private price:number=-1;
+  private studentCnt:number=-1;
+  private weeks:number=-1;
+  private commission:number =-1;
 
   private myIs:HelperMyIs;
   private myArray:HelperMyArray;
@@ -72,11 +76,13 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   }
 
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / ngOnInit / init");
+    if(this.isDebug()) console.log("klass-price-calculator / ngOnInit / init");
 
     if(0 < this.cageWidth) {
       this.cageWidthStr=`${this.cageWidth}px`;
@@ -90,12 +96,10 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   private subscribeEventPack() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / subscribeEventPack / init");
+    if(this.isDebug()) console.log("klass-price-calculator / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
-    if(isDebug) console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+    if(this.isDebug()) console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ",isEventPackReady);
 
     if(this.watchTower.getIsEventPackReady()) {
       // 1. 이미 EventPack 로딩이 완료된 경우
@@ -107,7 +111,7 @@ export class KlassPriceCalculatorComponent implements OnInit {
       this.watchTower.isEventPackReady$.subscribe(
         (isEventPackReady:boolean) => {
 
-        if(isDebug) console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+        if(this.isDebug()) console.log("klass-price-calculator / subscribeEventPack / isEventPackReady : ",isEventPackReady);
 
         // 이벤트 관련 정보가 준비되었습니다.
         this.isEventPackReady = true;
@@ -121,12 +125,10 @@ export class KlassPriceCalculatorComponent implements OnInit {
   
   private emitEventOnReady() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / 시작");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");    
+      if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -138,22 +140,20 @@ export class KlassPriceCalculatorComponent implements OnInit {
       this
     );
 
-    if(isDebug) console.log("klass-price-calculator / emitEventOnReady / myEventOnReady : ",myEventOnReady);
+    if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / myEventOnReady : ",myEventOnReady);
 
     this.emitter.emit(myEventOnReady);
 
-    if(isDebug) console.log("klass-price-calculator / emitEventOnReady / Done!");
+    if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / Done!");
 
   }
 
   private emitEventOnChange() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / 시작");
 
     if(!this.watchTower.getIsEventPackReady()) {
-      if(isDebug) console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");    
+      if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / 중단 / EventPack is not valid!");    
       return;
     }
 
@@ -178,28 +178,24 @@ export class KlassPriceCalculatorComponent implements OnInit {
       metaObj
     );
 
-    if(isDebug) console.log("klass-price-calculator / emitEventOnReady / myEventOnChange : ",myEventOnChange);
+    if(this.isDebug()) console.log("klass-price-calculator / emitEventOnReady / myEventOnChange : ",myEventOnChange);
     this.emitter.emit(myEventOnChange);
 
   }  
 
   init() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / init / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / init / 시작");
 
   }
 
   // @ Desc : 자식 컴포넌트들이 모두 준비되었는지 확인합니다. 준비되었다면 부모 객체에게 이벤트를 발송합니다.
   checkComponentReady():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / checkComponentReady / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / checkComponentReady / 시작");
 
     if(this.isNotReady()) {
-      if(isDebug) console.log("klass-price-calculator / checkComponentReady / 중단 / this.isNotReady()");
+      if(this.isDebug()) console.log("klass-price-calculator / checkComponentReady / 중단 / this.isNotReady()");
       return;
     } // end if
 
@@ -212,30 +208,28 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   isReady() :boolean {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / isReady / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / isReady / 시작");
 
     if(!this.isEventPackReady) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / !this.isEventPackReady");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / !this.isEventPackReady");
       return false;
     } else if(null == this.priceForStudentComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.priceForStudentComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.priceForStudentComponent");
       return false;
     } else if(null == this.commissionComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.commissionComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.commissionComponent");
       return false;
     } else if(null == this.paymentForTeacherComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.paymentForTeacherComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.paymentForTeacherComponent");
       return false;
     } else if(null == this.studentCntComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.studentCntComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.studentCntComponent");
       return false;
     } else if(null == this.totalComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.totalComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.totalComponent");
       return false;
     } else if(null == this.weeksComponent) {
-      if(isDebug) console.log("klass-price-calculator / isReady / 중단 / null == this.weeksComponent");
+      if(this.isDebug()) console.log("klass-price-calculator / isReady / 중단 / null == this.weeksComponent");
       return false;
     }
 
@@ -244,20 +238,14 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   setPriceNStudentCnt(price:number, studentCnt:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / setPriceNStudentCnt / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / setPriceNStudentCnt / 시작");
 
-    if(this.isNotReady()) {
-      if(isDebug) console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / this.isNotReady()");
-      return;
-    } // end if
     if(!(0 < price)) {
-      if(isDebug) console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / price is not valid!");
+      if(this.isDebug()) console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / price is not valid!");
       return;
     } // end if
     if(!(0 < studentCnt)) {
-      if(isDebug) console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / studentCnt is not valid!");
+      if(this.isDebug()) console.log("klass-price-calculator / setPriceNStudentCnt / 중단 / studentCnt is not valid!");
       return;
     } // end if
 
@@ -268,33 +256,40 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   setPrice(price:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / setPrice / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / setPrice / 시작");
 
-    if(this.isNotReady()) {
-      if(isDebug) console.log("klass-price-calculator / setPrice / 중단 / this.isNotReady()");
-      return;
-    } // end if
 
-    if(isDebug) console.log("klass-price-calculator / setPrice / price : ",price);
+    if(this.isDebug()) console.log("klass-price-calculator / setPrice / price : ",price);
 
+    this.price = price;
     this.updatePriceForStudent(price);
 
   } // end method
 
+  private updatePriceForStudent(price:number) :void {
+
+    if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 시작");
+
+    if(null == this.priceForStudentComponent) {
+      if(this.isDebug()) console.log("klass-price-calculator / updatePriceForStudent / 중단 / this.priceForStudentComponent is not valid!");
+      return;
+    }
+
+    this.priceForStudentComponent.setInput(""+price);
+    this.updateCommission(price);
+  }
+
+
   setWeeks(weeks:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / setWeeks / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / setWeeks / 시작");
 
     if(!(0 < weeks)) {
-      if(isDebug) console.log("klass-price-calculator / setWeeks / 중단 / weeks is not valid!");
+      if(this.isDebug()) console.log("klass-price-calculator / setWeeks / 중단 / weeks is not valid!");
       return;
     }
     if(null == this.weeksComponent) {
-      if(isDebug) console.log("klass-price-calculator / setWeeks / 중단 / this.weeksComponent is not valid!");
+      if(this.isDebug()) console.log("klass-price-calculator / setWeeks / 중단 / this.weeksComponent is not valid!");
       return;
     }
 
@@ -324,9 +319,9 @@ export class KlassPriceCalculatorComponent implements OnInit {
       "" + weeks
     );
 
-    if(isDebug) console.log("klass-price-calculator / setWeeks / selectOptionList : ",selectOptionList);
-    if(isDebug) console.log("klass-price-calculator / setWeeks / weeks : ",weeks);
-    if(isDebug) console.log("klass-price-calculator / setWeeks / weekKor : ",weekKor);
+    if(this.isDebug()) console.log("klass-price-calculator / setWeeks / selectOptionList : ",selectOptionList);
+    if(this.isDebug()) console.log("klass-price-calculator / setWeeks / weeks : ",weeks);
+    if(this.isDebug()) console.log("klass-price-calculator / setWeeks / weekKor : ",weekKor);
 
     this.weeksComponent.setSelectOption(selectOptionList);
 
@@ -335,15 +330,13 @@ export class KlassPriceCalculatorComponent implements OnInit {
   }
 
   // @ Desc : 변경된 수업 주수에 따라서 가격 데이터를 다시 표시해야 합니다.
-  private weeks:number = -1;
+  
   private updateWeeks(weeks:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updateWeeks / 시작");
-    if(isDebug) console.log("klass-price-calculator / updateWeeks / weeks : ",weeks);
+    if(this.isDebug()) console.log("klass-price-calculator / updateWeeks / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / updateWeeks / weeks : ",weeks);
 
-    this.weeks = weeks
+    this.weeks = weeks;
 
     this.updateTotal();
   }
@@ -366,31 +359,15 @@ export class KlassPriceCalculatorComponent implements OnInit {
     );
   } // end method    
 
-  private price:number = -1;
-  private updatePriceForStudent(price:number) :void {
-
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updatePriceForStudent / 시작");
-
-    if(isDebug) console.log("klass-price-calculator / updatePriceForStudent / this.priceForStudentComponent : ",this.priceForStudentComponent);
-
-    this.price = price;
-    this.priceForStudentComponent.setInput(""+price);
-
-    this.updateCommission(price);
-  }
-  private commission:number =-1;
+  
   private updateCommission(price:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updateCommission / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / updateCommission / 시작");
 
     let commission:number  = this.commission = this.getcommission(price);
     let commissionStr:string = `${commission}%`;
 
-    if(isDebug) console.log("klass-price-calculator / updateCommission / commissionStr : ",commissionStr);
+    if(this.isDebug()) console.log("klass-price-calculator / updateCommission / commissionStr : ",commissionStr);
 
     this.commissionComponent.setInput(commissionStr);
 
@@ -417,12 +394,10 @@ export class KlassPriceCalculatorComponent implements OnInit {
   private payment:number = -1;
   private updatePaymentForTeacher(price:number, commission:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updatePaymentForTeacher / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / updatePaymentForTeacher / 시작");
 
-    if(isDebug) console.log("klass-price-calculator / updatePaymentForTeacher / price : ",price);
-    if(isDebug) console.log("klass-price-calculator / updatePaymentForTeacher / commission : ",commission);
+    if(this.isDebug()) console.log("klass-price-calculator / updatePaymentForTeacher / price : ",price);
+    if(this.isDebug()) console.log("klass-price-calculator / updatePaymentForTeacher / commission : ",commission);
 
     let profitPercentage:number = (100 - this.commission);
     let priceStr = this.myFormat.numberWithCommas(price);
@@ -434,39 +409,43 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
     paymentStr = `${priceStr} X ${profitPercentage}% = ₩${paymentStr}`;
 
-    if(isDebug) console.log("klass-price-calculator / updatePaymentForTeacher / payment : ",payment);
-    if(isDebug) console.log("klass-price-calculator / updatePaymentForTeacher / paymentStr : ",paymentStr);
+    if(this.isDebug()) console.log("klass-price-calculator / updatePaymentForTeacher / payment : ",payment);
+    if(this.isDebug()) console.log("klass-price-calculator / updatePaymentForTeacher / paymentStr : ",paymentStr);
 
     this.paymentForTeacherComponent.setInput(paymentStr);
 
-    this.updateStudentCnt(-1);
-
+    this.updateTotal();
   }
-  private studentCnt:number = -1;
+  
   private updateStudentCnt(studentCnt:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updateStudentCnt / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / 시작");
+
+    if(null == this.studentCntComponent) {
+      if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / 중단 / null == this.studentCntComponent");
+    } // end if
 
     if(studentCnt < 0) {
       studentCnt = 3;
     }
     this.studentCnt = studentCnt;
-    if(isDebug) console.log("klass-price-calculator / updateStudentCnt / studentCnt : ",studentCnt);
+    if(this.isDebug()) console.log("klass-price-calculator / updateStudentCnt / studentCnt : ",studentCnt);
 
     this.studentCntComponent.setInput("" + studentCnt);
 
     this.updateTotal();
 
-  }
+  } // end method
   private total:Number = -1;
   private totalStr:string="";
   private updateTotal():void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / updateTotal / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / 시작");
+
+    if(null == this.totalComponent) {
+      if(this.isDebug()) console.log("klass-price-calculator / updateTotal / 중단 / null == this.totalComponent");
+      return;
+    }
 
     let paymentStr:string = "₩" + this.myFormat.numberWithCommas(this.payment);
     let studentCnt:number = +this.studentCntComponent.getInput();
@@ -475,17 +454,17 @@ export class KlassPriceCalculatorComponent implements OnInit {
       weekCnt = (this.weeks / 4);
     } // end if
 
-    if(isDebug) console.log("klass-price-calculator / updateTotal / this.payment : ",this.payment);
-    if(isDebug) console.log("klass-price-calculator / updateTotal / paymentStr : ",paymentStr);
-    if(isDebug) console.log("klass-price-calculator / updateTotal / this.studentCnt : ",this.studentCnt);
-    if(isDebug) console.log("klass-price-calculator / updateTotal / weekCnt : ",weekCnt);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / this.payment : ",this.payment);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / paymentStr : ",paymentStr);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / this.studentCnt : ",this.studentCnt);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / weekCnt : ",weekCnt);
 
     let total:number = this.total = this.payment * this.studentCnt * weekCnt;
     let totalStr:string = this.totalStr = this.myFormat.numberWithCommas(total);
     totalStr = `${paymentStr} X ${studentCnt}명 X ${this.weeks}주 = ₩${totalStr}`;
 
-    if(isDebug) console.log("klass-price-calculator / updateTotal / total : ",total);
-    if(isDebug) console.log("klass-price-calculator / updateTotal / totalStr : ",totalStr);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / total : ",total);
+    if(this.isDebug()) console.log("klass-price-calculator / updateTotal / totalStr : ",totalStr);
 
     this.totalComponent.setInput(totalStr);
 
@@ -494,11 +473,9 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   onChangedFromChild(myEvent:MyEvent) :void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-price-calculator / onChangedFromChild / 시작");
+    if(this.isDebug()) console.log("klass-price-calculator / onChangedFromChild / 시작");
 
-    if(isDebug) console.log("klass-price-calculator / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("klass-price-calculator / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
       return;
