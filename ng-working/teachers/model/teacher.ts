@@ -120,6 +120,49 @@ export class Teacher {
 
 	} // end if
 
+	setGreeting(greeting:string):void {
+
+		if(null == greeting || "" === greeting) {
+			console.log("getGreetingOnHTMLView / 중단 / greeting is not valid");
+		}
+
+		let greetingBR:string = this.myFormat.nextlineToBR(greeting);
+
+		this.greeting = greetingBR;
+
+	} // end method
+
+	// @ Desc : HTML 뷰에 표시될 문자열 배열로 인사말을 가져옵니다. <BR> 태그 기준으로 배열로 변경됩니다.
+	getGreetingArr():string[] {
+		return this.myFormat.splitWithBR(this.greeting);
+	}
+
+	// @ Desc : HTML 뷰에 표시될 문자열로 인사말을 가져옵니다. 줄바꿈이 <BR> 태그로 바뀝니다.
+	getGreetingOnHTMLView():string {
+
+		if(null == this.greeting || "" === this.greeting) {
+			console.log("getGreetingOnHTMLView / 중단 / this.greeting is not valid");
+			return "";
+		}
+
+		let greetingBR:string = this.myFormat.nextlineToBR(this.greeting);
+
+		return greetingBR;
+		
+	} // end method
+	// @ Desc : HTML Textarea 뷰에 표시될 줄바꿈 <br> 태그를 \n 으로 바꿔 줍니다.
+	getGreetingOnTextarea():string {
+
+		if(null == this.greeting || "" === this.greeting) {
+			console.log("getGreetingOnTextarea / 중단 / this.greeting is not valid");
+			return "";
+		}
+
+		let greetingNextline:string = this.myFormat.brToNextline(this.greeting);
+
+		return greetingNextline;
+	} // end method
+
     copy():Teacher {
 
         return this.myIs.copy(

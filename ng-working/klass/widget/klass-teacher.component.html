@@ -24,14 +24,14 @@
     </li>
 
 		<li class="list-group-item greeting" (click)="onClickGreeting($event)">
-			<div *ngIf="teacher">{{teacher.greeting}}</div>
+      <div *ngFor="let teacherGreeting of teacherGreetingArr">{{teacherGreeting}}</div>
 		</li>
     <!-- Admin Section -->
     <li *ngIf="isAdmin && isShowGreeting"
         class="list-group-item admin">
         <!-- Default Input : Greeting -->
         <widget-input-default
-        [width]="380"
+        [width]="750"
         [meta]="defaultMetaGreeting"
         (emitter)="onChangedFromChild($event)">
         </widget-input-default>

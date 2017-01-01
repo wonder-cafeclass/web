@@ -1420,6 +1420,10 @@ export class KlassDetailComponent implements AfterViewInit {
 
         this.updateKlassPriceCalc(myEvent.metaObj);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+
+        this.updateKlassTeacherGreeting(myEvent.value);
+
       } // end if
 
     } else if(myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
@@ -1497,6 +1501,22 @@ export class KlassDetailComponent implements AfterViewInit {
 
   } // end method
 
+  private updateKlassTeacherGreeting(greeting:string) :void {
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassTeacherGreeting / 시작");
+
+    if(null == greeting || "" === greeting) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassTeacherGreeting / 중단 / greeting is not valid!");
+      return;
+    } // end if
+
+    this.klassCopy.teacher_greeting = greeting;
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassTeacherGreeting / this.klassCopy.teacher_greeting : ",this.klassCopy.teacher_greeting);
+
+    this.updateSaveBtnStatus();
+
+  } // end method
 
   private updateKlassPriceCalc(klassPriceCalc:any) :void {
 

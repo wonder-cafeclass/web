@@ -33,6 +33,7 @@ import { DefaultMeta }                from '../widget/input/default/model/defaul
 import { DefaultService }             from '../widget/input/default/service/default.service';
 
 import { HelperMyArray }              from '../util/helper/my-array';
+import { HelperMyFormat }             from '../util/helper/my-format';
 
 
 @Component({
@@ -78,6 +79,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
   myEventListForTeacherGreeting:MyEvent[];
 
   private myArray:HelperMyArray;
+  private myFormat:HelperMyFormat;
 
   constructor(  private loginService:LoginService,
                 private myEventService:MyEventService,
@@ -91,6 +93,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
                 public router:Router) {
 
     this.myArray = new HelperMyArray();
+    this.myFormat = new HelperMyFormat();
 
     // Default Input 셋을 가져옵니다. 이름/닉네임/이메일에 사용됩니다.
     this.defaultMetaList = this.myEventService.getDefaultMetaListTeacherInfo();
@@ -546,8 +549,14 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         if(this.isDebug()) console.log("apply-teacher / onChangedFromChild / KEY_TEACHER_GREETING");
+
+        // wonder.jung
+        // 선생님의 인사말 입력시, 줄바꿈 문자를 <br> 태그로 변경해서 저장합니다.
+
+        this.updateGreeting(myEvent.value);
+
         // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
-        this.updateNewProp("greeting", myEvent.value);
+        // this.updateNewProp("greeting", myEvent.value);
         // end if - ON CHANGE - KEY_TEACHER_GREETING                
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
@@ -759,7 +768,6 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.teacher.setBirthDay(newBirthDay);
 
     // 저장 버튼 노출
-    // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
     if(this.isOKAll(false)) {
       // 아래 플래그는 저장 버튼을 활성화합니다.
       // 모든 값들이 유효해야 변경된 것으로 처리.
@@ -775,6 +783,29 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
     this.teacher.setResumeArr(resumeArr);
 
     if(this.isDebug()) console.log("apply-teacher / updateResume / this.teacher : ",this.teacher);
+
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    } // end if
+
+  } // end method
+
+  private updateGreeting(greeting:string) :void {
+
+    if(this.isDebug()) console.log("apply-teacher / updateGreeting / init");
+    if(this.isDebug()) console.log("apply-teacher / updateGreeting / greeting : ",greeting);
+
+    this.teacher.setGreeting(greeting);
+
+    if(this.isDebug()) console.log("apply-teacher / updateGreeting / this.teacher : ",this.teacher);
+
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    } // end if
 
   } // end method
 
@@ -809,19 +840,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
       if(this.isDebug()) console.log("apply-teacher / updateNewProp / this.isReadyToSave : ",this.isReadyToSave);
 
-    } 
-
-    /*
-    else {
-      // 변경되지 않았습니다.
-      if(this.checkUserInfoChanged()) {
-        // 모든 다른 항목중에 변경된 것이 없다면, 
-        // 저장 버튼을 비활성화 합니다.
-        this.isReadyToSave=false;
-      } // end if
-
     } // end if
-    */
 
   } // end method
 
@@ -878,22 +897,14 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
       return false;
     }
 
-    // FIX ME
+    // REMOVE ME
     /*
-    isOK = this.resumeComponent.isOK(this.teacher.resume);
-    if(!isOK) {
-
-      if(showTooltip) {
-        this.resumeComponent.showTooltipFailWarning(
-          // msg:string, 
-          this.resumeComponent.getErrorMsg(), 
-          // isTimeout:Boolean
-          false
-        );      
-      }
+    let hasChanged:boolean = this.resumeComponent.hasChanged();
+    if(!hasChanged) {
       return false;
     }
     */
+
     isOK = this.greetingComponent.isOK(this.teacher.greeting);
     if(!isOK) {
 

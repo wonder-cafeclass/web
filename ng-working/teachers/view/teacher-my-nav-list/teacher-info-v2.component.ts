@@ -435,7 +435,7 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
 
     if(this.isDebug()) console.log("teacher-info-v2 / setTeacherGreeting / this.greetingComponent : ",this.greetingComponent);
 
-    this.greetingComponent.setInput(this.teacher.greeting);
+    this.greetingComponent.setInput(this.teacher.getGreetingOnTextarea());
 
   } // end method
 
@@ -542,7 +542,7 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
 
         if(this.isDebug()) console.log("teacher-info-v2 / onChangedFromChild / KEY_TEACHER_GREETING");
         // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
-        this.updateNewProp("greeting", myEvent.value);
+        this.updateGreeting(myEvent.value);
         // end if - ON CHANGE - KEY_TEACHER_GREETING                
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
@@ -756,7 +756,6 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
     this.teacher.setBirthDay(newBirthDay);
 
     // 저장 버튼 노출
-    // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
     if(this.isOKAll(false)) {
       // 아래 플래그는 저장 버튼을 활성화합니다.
       // 모든 값들이 유효해야 변경된 것으로 처리.
@@ -772,6 +771,32 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
     this.teacher.setResumeArr(resumeArr);
 
     if(this.isDebug()) console.log("teacher-info-v2 / updateResume / this.teacher : ",this.teacher);
+
+    // 저장 버튼 노출
+    if(this.isOKAll(false)) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    } // end if    
+
+  } // end method
+
+  private updateGreeting(greeting:string) :void {
+
+    if(this.isDebug()) console.log("teacher-info-v2 / updateGreeting / init");
+    if(this.isDebug()) console.log("teacher-info-v2 / updateGreeting / greeting : ",greeting);
+
+    this.teacher.setGreeting(greeting);
+
+    let isOKAll:boolean = this.isOKAll(false);
+    if(this.isDebug()) console.log("teacher-info-v2 / updateGreeting / isOKAll : ",isOKAll);
+
+    // 저장 버튼 노출
+    if(isOKAll) {
+      // 아래 플래그는 저장 버튼을 활성화합니다.
+      // 모든 값들이 유효해야 변경된 것으로 처리.
+      this.isReadyToSave=true;
+    } // end if
 
   } // end method
 
@@ -857,6 +882,7 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
           false
         );
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / email is not valid!");
       return false;
     }
     isOK = this.nameComponent.isOK(this.teacher.name);
@@ -870,6 +896,7 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
           false
         );
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / name is not valid!");
       return false;
     }
     isOK = this.nicknameComponent.isOK(this.teacher.nickname);
@@ -883,25 +910,18 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
           false
         );
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / nickname is not valid!");
       return false;
     }
 
-    // FIX ME
+    // REMOVE ME
     /*
-    isOK = this.resumeComponent.isOK(this.teacher.resume);
-    if(!isOK) {
-
-      if(showTooltip) {
-        this.resumeComponent.showTooltipFailWarning(
-          // msg:string, 
-          this.resumeComponent.getErrorMsg(), 
-          // isTimeout:Boolean
-          false
-        );      
-      }
+    let hasChanged:boolean = this.resumeComponent.hasChanged();
+    if(!hasChanged) {
       return false;
     }
     */
+
     isOK = this.greetingComponent.isOK(this.teacher.greeting);
     if(!isOK) {
 
@@ -913,24 +933,28 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
           false
         );
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / greeting is not valid!");
       return false;
     }
     if(this.mobileComponent.hasNotDoneMobileHead()) {
       if(showTooltip) {
         this.mobileComponent.showWarningMobileHead();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / MobileHead is not valid!");
       return false;
     }
     if(this.mobileComponent.hasNotDoneMobileBody()) {
       if(showTooltip) {
         this.mobileComponent.showWarningMobileBody(null);
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / MobileBody is not valid!");
       return false;
     }
     if(this.mobileComponent.hasNotDoneMobileTail()) {
       if(showTooltip) {
         this.mobileComponent.showWarningMobileTail();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / MobileTail is not valid!");
       return false;
     }
     isOK = this.genderComponent.isOK(this.teacher.gender);
@@ -938,24 +962,28 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
       if(showTooltip) {
         this.genderComponent.showWarning();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / gender is not valid!");
       return false;
     }
     if(this.birthdayComponent.hasNotDoneBirthYear()) {
       if(showTooltip) {
         this.birthdayComponent.showWarningBirthYear();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / birth-year is not valid!");
       return false;
     }
     if(this.birthdayComponent.hasNotDoneBirthMonth()) {
       if(showTooltip) {
         this.birthdayComponent.showWarningBirthMonth();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / birth-month is not valid!");
       return false;
     }
     if(this.birthdayComponent.hasNotDoneBirthDay()) {
       if(showTooltip) {
         this.birthdayComponent.showWarningBirthDay();
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / birth-day is not valid!");
       return false;
     }
 
@@ -965,12 +993,14 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
       if(showTooltip) {
         this.profileImgUploadComponent.showWarning("기본이미지를 사용할 수 없습니다");
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / thumbnail is sample!");
       return false; 
     }
     if(this.profileImgUploadComponent.hasNotDone()) {
       if(showTooltip) {
         this.profileImgUploadComponent.showWarning("이미지를 확인해주세요");
       }
+      if(this.isDebug()) console.log("teacher-info-v2 / isOKAll / 중단 / thumbnail is not valid!");
       return false; 
     }
 

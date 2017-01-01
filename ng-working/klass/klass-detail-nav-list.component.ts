@@ -1165,6 +1165,10 @@ export class KlassDetailNavListComponent implements OnInit {
 
         this.emitEvent(myEvent);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+
+        this.emitEvent(myEvent);
+
       }  
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {

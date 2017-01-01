@@ -10,6 +10,7 @@ import { Teacher }                     from '../../teachers/model/teacher';
 import { CheckBoxOption }              from '../../widget/checkbox/model/checkbox-option';
 import { InputsBtnsRowsComponent }     from '../../widget/input-view/inputs-btns-rows.component';
 
+import { DefaultComponent }            from '../../widget/input/default/default.component';
 import { DefaultMeta }                 from '../../widget/input/default/model/default-meta';
 import { DefaultType }                 from '../../widget/input/default/model/default-type';
 
@@ -20,6 +21,7 @@ import { MyEvent }                     from '../../util/model/my-event';
 import { HelperMyIs }                  from '../../util/helper/my-is';
 import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
+import { HelperMyFormat }              from '../../util/helper/my-format';
 
 //DefaultMeta
 
@@ -50,21 +52,23 @@ export class KlassTeacherComponent implements OnInit {
   myEventListForTeacherResume:MyEvent[];
   myEventListForTeacherGreeting:MyEvent[];
 
+  teacherGreetingArr:string[]=[];
+
   @ViewChild(InputsBtnsRowsComponent)
   private teacherResumeListComponent: InputsBtnsRowsComponent;
 
   defaultMetaGreeting:DefaultMeta;
   defaultType:DefaultType;
 
-  // @ViewChild(InputsBtnsRowsComponent)
-  // private teacherGreetingComponent: InputsBtnsRowsComponent;
-
+  @ViewChild(DefaultComponent)
+  private teacherGreetingComponent: DefaultComponent;
 
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
 
   private myIs:HelperMyIs;
   private myArray:HelperMyArray;
+  private myFormat:HelperMyFormat;
 
   // 자신의 자식 객체에서 이벤트를 받는다.
   constructor(  private watchTower:MyEventWatchTowerService,
@@ -73,6 +77,7 @@ export class KlassTeacherComponent implements OnInit {
 
     this.myIs = new HelperMyIs();
     this.myArray = new HelperMyArray();
+    this.myFormat = new HelperMyFormat();
 
     this.defaultType = new DefaultType();
     this.defaultMetaGreeting = this.getDefaultMetaTextAreaTeacherGreeting();
@@ -195,6 +200,10 @@ export class KlassTeacherComponent implements OnInit {
     if(this.isDebug()) console.log("klass-teacher / setTeacher / teacher : ",teacher);
 
     this.teacher = teacher;
+
+    this.teacherGreetingArr = this.teacher.getGreetingArr();
+
+    if(this.isDebug()) console.log("klass-teacher / setTeacher / this.teacherGreetingArr : ",this.teacherGreetingArr);
   }
 
   setResume() :void {
@@ -242,37 +251,43 @@ export class KlassTeacherComponent implements OnInit {
     if(null == this.teacher) {
       if(this.isDebug()) console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
       return;
-    }
+    } // end if
 
-    /*
-    // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-    let greetingArr:string[] = this.teacher.getGreetingArr();
-    let myEventList:MyEvent[] = [];
-    for (var i = 0; i < greetingArr.length; ++i) {
-      let greeting:string = greetingArr[i];
+    if(null == this.teacherGreetingComponent) {
+      if(this.isDebug()) console.log("klass-teacher / setGreeting / 중단 / null == this.teacherGreetingComponent");
+      return;
+    } // end if
 
-      let myEventGreeting = 
-      new MyEvent(
-        // public id:string
-        this.myEventService.getUniqueIdx(),
-        // public eventName:string
-        this.myEventService.ANY,
-        // public key:string
-        this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST,
-        // public value:string
-        greeting,
-        // public metaObj:any
-        {klassId:+this.klassId},
-        // public myChecker:MyChecker
-        this.myCheckerService.getTitleChecker()
-      );
-
-      myEventList.push(myEventGreeting);      
-    }
-    this.myEventListForTeacherGreeting = myEventList;
-    */
+    this.teacherGreetingComponent.setInput(this.teacher.getGreetingOnTextarea());
 
   } // end method  
+
+  updateGreeting(greeting:string) :void {
+
+    if(this.isDebug()) console.log("klass-teacher / updateGreeting / 시작");
+
+    if(null == this.teacher) {
+      if(this.isDebug()) console.log("klass-teacher / updateGreeting / 중단 / null == this.teacher");
+      return;
+    } // end if
+
+    if(null == this.teacherGreetingComponent) {
+      if(this.isDebug()) console.log("klass-teacher / updateGreeting / 중단 / null == this.teacherGreetingComponent");
+      return;
+    } // end if
+
+    if(null == greeting || "" === greeting) {
+      if(this.isDebug()) console.log("klass-teacher / updateGreeting / 중단 / greeting is not valid!");
+      return;
+    } // end if
+
+    this.teacher.setGreeting(greeting);
+
+    this.teacherGreetingArr = this.teacher.getGreetingArr();
+
+    if(this.isDebug()) console.log("klass-teacher / updateGreeting / this.teacherGreetingArr : ",this.teacherGreetingArr);
+
+  }
 
   onClickResume(event) :void {
 
@@ -293,11 +308,13 @@ export class KlassTeacherComponent implements OnInit {
   }
 
   onChangedFromChild(myEvent:MyEvent) :void{
-    console.log("klass-teacher / onChangedFromChild / myEvent : ",myEvent);
+
+    if(this.isDebug()) console.log("klass-teacher / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
+      if(this.isDebug()) console.log("klass-teacher / onChangedFromChild / 중단 / null == myEvent");
       return;
-    }
+    } // end if
 
     if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
@@ -307,9 +324,11 @@ export class KlassTeacherComponent implements OnInit {
         this.teacherResumeListComponent = myEvent.metaObj;
         this.teacherResumeListComponent.setMyEventList(this.myEventListForTeacherResume);
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+        this.teacherGreetingComponent = myEvent.metaObj;
+        this.setGreeting();
 
       } // end if
 
@@ -319,9 +338,15 @@ export class KlassTeacherComponent implements OnInit {
 
         // 변경되었습니다. 부모 객체에게 전달합니다.
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+
+        this.updateGreeting(myEvent.value);
+
+        // 줄바꿈을 BR 태그로 변경한 형태로 저장합니다.
+        myEvent.value = this.teacher.greeting;
 
         // 변경되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
 
       } // end if
 
@@ -332,7 +357,7 @@ export class KlassTeacherComponent implements OnInit {
         // 추가되었습니다. 부모 객체에게 전달합니다.
         this.emitter.emit(myEvent);
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         // 추가되었습니다. 부모 객체에게 전달합니다.
         this.emitter.emit(myEvent);
@@ -350,8 +375,9 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherResume = myEvent.parentEventList;
         } // end if
-
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+// REMOVE ME
+/*
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         // 삭제되었습니다. 부모 객체에게 전달합니다.
         this.emitter.emit(myEvent);
@@ -360,7 +386,7 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherGreeting = myEvent.parentEventList;
         } // end if
-
+*/
       } // end if       
 
     } else if(myEvent.hasEventName(this.myEventService.ON_SAVE)) {
@@ -390,7 +416,7 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherResume = myEvent.parentEventList;
         } // end if
-
+/*
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
 
         // 사용자가 저장하지 않고, 창을 닫았습니다.
@@ -400,7 +426,7 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherGreeting = myEvent.parentEventList;
         } // end if
-
+*/
       } // end if      
 
     } // end if
