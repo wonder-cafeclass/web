@@ -26,6 +26,7 @@ var gender_component_1 = require('../widget/input/gender/gender.component');
 var birthday_component_1 = require('../widget/input/birthday/birthday.component');
 var default_service_1 = require('../widget/input/default/service/default.service');
 var my_array_1 = require('../util/helper/my-array');
+var my_format_1 = require('../util/helper/my-format');
 var ApplyTeacherComponent = (function () {
     function ApplyTeacherComponent(loginService, myEventService, watchTower, userService, teacherService, myLoggerService, myCheckerService, urlService, defaultService, router) {
         this.loginService = loginService;
@@ -43,6 +44,7 @@ var ApplyTeacherComponent = (function () {
         // @ Desc : 사용자가 자신의 선생님 정보를 변경했는지 확인하는 플래그
         this.isReadyToSave = false;
         this.myArray = new my_array_1.HelperMyArray();
+        this.myFormat = new my_format_1.HelperMyFormat();
         // Default Input 셋을 가져옵니다. 이름/닉네임/이메일에 사용됩니다.
         this.defaultMetaList = this.myEventService.getDefaultMetaListTeacherInfo();
     } // end function
@@ -415,8 +417,9 @@ var ApplyTeacherComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
                 if (this.isDebug())
                     console.log("apply-teacher / onChangedFromChild / KEY_TEACHER_GREETING");
-                // 1. teacher객체와 비교, 변경된 이름인지 확인합니다.
-                this.updateNewProp("greeting", myEvent.value);
+                // wonder.jung
+                // 선생님의 인사말 입력시, 줄바꿈 문자를 <br> 태그로 변경해서 저장합니다.
+                this.updateGreeting(myEvent.value);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_THUMBNAIL)) {
                 if (this.isDebug())
@@ -608,7 +611,6 @@ var ApplyTeacherComponent = (function () {
         }
         this.teacher.setBirthDay(newBirthDay);
         // 저장 버튼 노출
-        // if(this.isOKBirthday(birthYear, birthMonth, birthDay) && this.isOKAll()) {
         if (this.isOKAll(false)) {
             // 아래 플래그는 저장 버튼을 활성화합니다.
             // 모든 값들이 유효해야 변경된 것으로 처리.
@@ -623,6 +625,25 @@ var ApplyTeacherComponent = (function () {
         this.teacher.setResumeArr(resumeArr);
         if (this.isDebug())
             console.log("apply-teacher / updateResume / this.teacher : ", this.teacher);
+        if (this.isOKAll(false)) {
+            // 아래 플래그는 저장 버튼을 활성화합니다.
+            // 모든 값들이 유효해야 변경된 것으로 처리.
+            this.isReadyToSave = true;
+        } // end if
+    }; // end method
+    ApplyTeacherComponent.prototype.updateGreeting = function (greeting) {
+        if (this.isDebug())
+            console.log("apply-teacher / updateGreeting / init");
+        if (this.isDebug())
+            console.log("apply-teacher / updateGreeting / greeting : ", greeting);
+        this.teacher.setGreeting(greeting);
+        if (this.isDebug())
+            console.log("apply-teacher / updateGreeting / this.teacher : ", this.teacher);
+        if (this.isOKAll(false)) {
+            // 아래 플래그는 저장 버튼을 활성화합니다.
+            // 모든 값들이 유효해야 변경된 것으로 처리.
+            this.isReadyToSave = true;
+        } // end if
     }; // end method
     ApplyTeacherComponent.prototype.updateNewProp = function (key, newValue) {
         if (this.isDebug())
@@ -655,18 +676,7 @@ var ApplyTeacherComponent = (function () {
             this.isReadyToSave = this.isOKAll(false);
             if (this.isDebug())
                 console.log("apply-teacher / updateNewProp / this.isReadyToSave : ", this.isReadyToSave);
-        }
-        /*
-        else {
-          // 변경되지 않았습니다.
-          if(this.checkUserInfoChanged()) {
-            // 모든 다른 항목중에 변경된 것이 없다면,
-            // 저장 버튼을 비활성화 합니다.
-            this.isReadyToSave=false;
-          } // end if
-    
         } // end if
-        */
     }; // end method
     ApplyTeacherComponent.prototype.isOKAll = function (showTooltip) {
         if (this.isDebug())
@@ -710,19 +720,10 @@ var ApplyTeacherComponent = (function () {
             }
             return false;
         }
-        // FIX ME
+        // REMOVE ME
         /*
-        isOK = this.resumeComponent.isOK(this.teacher.resume);
-        if(!isOK) {
-    
-          if(showTooltip) {
-            this.resumeComponent.showTooltipFailWarning(
-              // msg:string,
-              this.resumeComponent.getErrorMsg(),
-              // isTimeout:Boolean
-              false
-            );
-          }
+        let hasChanged:boolean = this.resumeComponent.hasChanged();
+        if(!hasChanged) {
           return false;
         }
         */

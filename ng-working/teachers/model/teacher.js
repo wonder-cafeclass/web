@@ -84,6 +84,35 @@ var Teacher = (function () {
         this.resume_arr = resumeArr;
         this.resume = resumeArr.join(this.delimiter);
     }; // end if
+    Teacher.prototype.setGreeting = function (greeting) {
+        if (null == greeting || "" === greeting) {
+            console.log("getGreetingOnHTMLView / 중단 / greeting is not valid");
+        }
+        var greetingBR = this.myFormat.nextlineToBR(greeting);
+        this.greeting = greetingBR;
+    }; // end method
+    // @ Desc : HTML 뷰에 표시될 문자열 배열로 인사말을 가져옵니다. <BR> 태그 기준으로 배열로 변경됩니다.
+    Teacher.prototype.getGreetingArr = function () {
+        return this.myFormat.splitWithBR(this.greeting);
+    };
+    // @ Desc : HTML 뷰에 표시될 문자열로 인사말을 가져옵니다. 줄바꿈이 <BR> 태그로 바뀝니다.
+    Teacher.prototype.getGreetingOnHTMLView = function () {
+        if (null == this.greeting || "" === this.greeting) {
+            console.log("getGreetingOnHTMLView / 중단 / this.greeting is not valid");
+            return "";
+        }
+        var greetingBR = this.myFormat.nextlineToBR(this.greeting);
+        return greetingBR;
+    }; // end method
+    // @ Desc : HTML Textarea 뷰에 표시될 줄바꿈 <br> 태그를 \n 으로 바꿔 줍니다.
+    Teacher.prototype.getGreetingOnTextarea = function () {
+        if (null == this.greeting || "" === this.greeting) {
+            console.log("getGreetingOnTextarea / 중단 / this.greeting is not valid");
+            return "";
+        }
+        var greetingNextline = this.myFormat.brToNextline(this.greeting);
+        return greetingNextline;
+    }; // end method
     Teacher.prototype.copy = function () {
         return this.myIs.copy(
         // src:any

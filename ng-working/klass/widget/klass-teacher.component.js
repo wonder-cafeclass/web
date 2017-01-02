@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var teacher_1 = require('../../teachers/model/teacher');
 var inputs_btns_rows_component_1 = require('../../widget/input-view/inputs-btns-rows.component');
+var default_component_1 = require('../../widget/input/default/default.component');
 var default_meta_1 = require('../../widget/input/default/model/default-meta');
 var default_type_1 = require('../../widget/input/default/model/default-type');
 var my_event_service_1 = require('../../util/service/my-event.service');
@@ -19,6 +20,7 @@ var my_event_watchtower_service_1 = require('../../util/service/my-event-watchto
 var my_event_1 = require('../../util/model/my-event');
 var my_is_1 = require('../../util/helper/my-is');
 var my_array_1 = require('../../util/helper/my-array');
+var my_format_1 = require('../../util/helper/my-format');
 //DefaultMeta
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
@@ -30,12 +32,16 @@ var KlassTeacherComponent = (function () {
         this.cageHeight = -1;
         this.isShowResume = false;
         this.isShowGreeting = false;
-        // @ViewChild(InputsBtnsRowsComponent)
-        // private teacherGreetingComponent: InputsBtnsRowsComponent;
+        this.teacherGreetingArr = [];
+        this.isEditResumeBtnDisabled = false;
+        this.isEditGreetingBtnDisabled = false;
+        this.btnNameResume = "이력서 고치기";
+        this.btnNameGreeting = "인사말 고치기";
         // 이벤트를 부모에게 전달
         this.emitter = new core_1.EventEmitter();
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
+        this.myFormat = new my_format_1.HelperMyFormat();
         this.defaultType = new default_type_1.DefaultType();
         this.defaultMetaGreeting = this.getDefaultMetaTextAreaTeacherGreeting();
     }
@@ -129,6 +135,9 @@ var KlassTeacherComponent = (function () {
         if (this.isDebug())
             console.log("klass-teacher / setTeacher / teacher : ", teacher);
         this.teacher = teacher;
+        this.teacherGreetingArr = this.teacher.getGreetingArr();
+        if (this.isDebug())
+            console.log("klass-teacher / setTeacher / this.teacherGreetingArr : ", this.teacherGreetingArr);
     };
     KlassTeacherComponent.prototype.setResume = function () {
         if (this.isDebug())
@@ -167,65 +176,104 @@ var KlassTeacherComponent = (function () {
             if (this.isDebug())
                 console.log("klass-teacher / setGreeting / 중단 / null == this.teacher");
             return;
-        }
-        /*
-        // Greeting을 변경하기 위한 이벤트 리스트를 만듭니다.
-        let greetingArr:string[] = this.teacher.getGreetingArr();
-        let myEventList:MyEvent[] = [];
-        for (var i = 0; i < greetingArr.length; ++i) {
-          let greeting:string = greetingArr[i];
-    
-          let myEventGreeting =
-          new MyEvent(
-            // public id:string
-            this.myEventService.getUniqueIdx(),
-            // public eventName:string
-            this.myEventService.ANY,
-            // public key:string
-            this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST,
-            // public value:string
-            greeting,
-            // public metaObj:any
-            {klassId:+this.klassId},
-            // public myChecker:MyChecker
-            this.myCheckerService.getTitleChecker()
-          );
-    
-          myEventList.push(myEventGreeting);
-        }
-        this.myEventListForTeacherGreeting = myEventList;
-        */
+        } // end if
+        if (null == this.teacherGreetingComponent) {
+            if (this.isDebug())
+                console.log("klass-teacher / setGreeting / 중단 / null == this.teacherGreetingComponent");
+            return;
+        } // end if
+        this.teacherGreetingComponent.setInput(this.teacher.getGreetingOnTextarea());
     }; // end method  
-    KlassTeacherComponent.prototype.onClickResume = function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        this.isShowResume = !this.isShowResume;
-        console.log("klass-teacher / onClickResume / this.isShowResume : ", this.isShowResume);
+    KlassTeacherComponent.prototype.updateGreeting = function (greeting) {
+        if (this.isDebug())
+            console.log("klass-teacher / updateGreeting / 시작");
+        if (null == this.teacher) {
+            if (this.isDebug())
+                console.log("klass-teacher / updateGreeting / 중단 / null == this.teacher");
+            return;
+        } // end if
+        if (null == this.teacherGreetingComponent) {
+            if (this.isDebug())
+                console.log("klass-teacher / updateGreeting / 중단 / null == this.teacherGreetingComponent");
+            return;
+        } // end if
+        if (null == greeting || "" === greeting) {
+            if (this.isDebug())
+                console.log("klass-teacher / updateGreeting / 중단 / greeting is not valid!");
+            return;
+        } // end if
+        this.teacher.setGreeting(greeting);
+        this.teacherGreetingArr = this.teacher.getGreetingArr();
+        if (this.isDebug())
+            console.log("klass-teacher / updateGreeting / this.teacherGreetingArr : ", this.teacherGreetingArr);
     };
-    KlassTeacherComponent.prototype.onClickGreeting = function (event) {
+    KlassTeacherComponent.prototype.onToggleResume = function (event) {
+        if (this.isDebug())
+            console.log("klass-teacher / onToggleResume / 시작");
         event.stopPropagation();
         event.preventDefault();
+        if (this.isEditResumeBtnDisabled) {
+            if (this.isDebug())
+                console.log("klass-teacher / onToggleResume / 중단 / this.isEditResumeBtnDisabled");
+            return;
+        } // end if
+        this.isShowResume = !this.isShowResume;
+        if (this.isShowResume) {
+            this.btnNameResume = "이력서 닫기";
+        }
+        else {
+            this.btnNameResume = "이력서 고치기";
+        }
+    };
+    KlassTeacherComponent.prototype.onToggleGreeting = function (event) {
+        if (this.isDebug())
+            console.log("klass-teacher / onToggleGreeting / 시작");
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isEditGreetingBtnDisabled) {
+            if (this.isDebug())
+                console.log("klass-teacher / onToggleResume / 중단 / this.isEditGreetingBtnDisabled");
+            return;
+        } // end if
         this.isShowGreeting = !this.isShowGreeting;
-        console.log("klass-teacher / onClickResume / this.isShowGreeting : ", this.isShowGreeting);
+        if (this.isShowGreeting) {
+            this.btnNameGreeting = "인사말 닫기";
+        }
+        else {
+            this.btnNameGreeting = "인사말 고치기";
+        }
     };
     KlassTeacherComponent.prototype.onChangedFromChild = function (myEvent) {
-        console.log("klass-teacher / onChangedFromChild / myEvent : ", myEvent);
+        if (this.isDebug())
+            console.log("klass-teacher / onChangedFromChild / myEvent : ", myEvent);
         if (null == myEvent) {
+            if (this.isDebug())
+                console.log("klass-teacher / onChangedFromChild / 중단 / null == myEvent");
             return;
-        }
+        } // end if
         if (myEvent.hasEventName(this.myEventService.ON_READY)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
                 // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
                 this.teacherResumeListComponent = myEvent.metaObj;
                 this.teacherResumeListComponent.setMyEventList(this.myEventListForTeacherResume);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+                // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
+                this.teacherGreetingComponent = myEvent.metaObj;
+                this.setGreeting();
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                // 변경되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+                this.updateGreeting(myEvent.value);
+                // 줄바꿈을 BR 태그로 변경한 형태로 저장합니다.
+                myEvent.value = this.teacher.greeting;
+                // 변경되었습니다. 부모 객체에게 전달합니다.
+                this.emitter.emit(myEvent);
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
@@ -233,7 +281,7 @@ var KlassTeacherComponent = (function () {
                 // 추가되었습니다. 부모 객체에게 전달합니다.
                 this.emitter.emit(myEvent);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
                 // 추가되었습니다. 부모 객체에게 전달합니다.
                 this.emitter.emit(myEvent);
             } // end if      
@@ -245,14 +293,6 @@ var KlassTeacherComponent = (function () {
                 // 삭제된 데이터로 업데이트.
                 if (null != myEvent.parentEventList) {
                     this.myEventListForTeacherResume = myEvent.parentEventList;
-                } // end if
-            }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
-                // 삭제되었습니다. 부모 객체에게 전달합니다.
-                this.emitter.emit(myEvent);
-                // 삭제된 데이터로 업데이트.
-                if (null != myEvent.parentEventList) {
-                    this.myEventListForTeacherGreeting = myEvent.parentEventList;
                 } // end if
             } // end if       
         }
@@ -275,14 +315,6 @@ var KlassTeacherComponent = (function () {
                 // 이전 데이터롤 롤백.
                 if (null != myEvent.parentEventList) {
                     this.myEventListForTeacherResume = myEvent.parentEventList;
-                } // end if
-            }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
-                // 사용자가 저장하지 않고, 창을 닫았습니다.
-                this.isShowGreeting = false;
-                // 이전 데이터롤 롤백.
-                if (null != myEvent.parentEventList) {
-                    this.myEventListForTeacherGreeting = myEvent.parentEventList;
                 } // end if
             } // end if      
         } // end if
@@ -319,6 +351,10 @@ var KlassTeacherComponent = (function () {
         core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
         __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
     ], KlassTeacherComponent.prototype, "teacherResumeListComponent", void 0);
+    __decorate([
+        core_1.ViewChild(default_component_1.DefaultComponent), 
+        __metadata('design:type', default_component_1.DefaultComponent)
+    ], KlassTeacherComponent.prototype, "teacherGreetingComponent", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

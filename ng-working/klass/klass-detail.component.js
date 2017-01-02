@@ -1061,6 +1061,12 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {
                 this.updateKlassPriceCalc(myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                this.updateKlassTeacherResume(myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+                this.updateKlassTeacherGreeting(myEvent.value);
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
@@ -1075,8 +1081,7 @@ var KlassDetailComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_ADD_ROW)) {
             if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
-                this.klassCopy.setTeacherResumeList(myEvent.metaObj);
-                this.updateSaveBtnStatus();
+                this.updateKlassTeacherResume(myEvent.metaObj);
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
                 this.klassCopy.setTeacherGreetingList(myEvent.metaObj);
@@ -1114,6 +1119,30 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / onChangedFromChild / this.klassCopy : ", this.klassCopy);
         if (this.isDebug())
             console.log("klass-detail / onChangedFromChild / Done");
+    }; // end method
+    KlassDetailComponent.prototype.updateKlassTeacherResume = function (resumeList) {
+        if (this.isDebug())
+            console.log("klass-detail / updateKlassTeacherResume / 시작");
+        if (this.myArray.isNotOK(resumeList)) {
+            if (this.isDebug())
+                console.log("klass-detail / updateKlassTeacherResume / 중단 / this.myArray.isNotOK(resumeList)");
+            return;
+        } // end if
+        this.klassCopy.setTeacherResumeList(resumeList);
+        this.updateSaveBtnStatus();
+    }; // end method
+    KlassDetailComponent.prototype.updateKlassTeacherGreeting = function (greeting) {
+        if (this.isDebug())
+            console.log("klass-detail / updateKlassTeacherGreeting / 시작");
+        if (null == greeting || "" === greeting) {
+            if (this.isDebug())
+                console.log("klass-detail / updateKlassTeacherGreeting / 중단 / greeting is not valid!");
+            return;
+        } // end if
+        this.klassCopy.teacher_greeting = greeting;
+        if (this.isDebug())
+            console.log("klass-detail / updateKlassTeacherGreeting / this.klassCopy.teacher_greeting : ", this.klassCopy.teacher_greeting);
+        this.updateSaveBtnStatus();
     }; // end method
     KlassDetailComponent.prototype.updateKlassPriceCalc = function (klassPriceCalc) {
         if (this.isDebug())

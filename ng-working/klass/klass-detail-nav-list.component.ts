@@ -136,6 +136,10 @@ export class KlassDetailNavListComponent implements OnInit {
   // Question
   questionCommentList:Comment[];
 
+  btnNameKlassFeature:string="수업 특징 수정하기";
+  btnNameKlassTarget:string="수업 대상 수정하기";
+  btnNameKlassSchedule:string="수업 일정 수정하기";
+
   @Output() emitter = new EventEmitter<any>();
 
   private myIs:HelperMyIs;
@@ -1165,6 +1169,14 @@ export class KlassDetailNavListComponent implements OnInit {
 
         this.emitEvent(myEvent);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        this.emitEvent(myEvent);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
+
+        this.emitEvent(myEvent);
+
       }  
 
     } else if(myEvent.hasEventName(this.myEventService.ON_ADD_COMMENT)) {
@@ -1444,33 +1456,56 @@ export class KlassDetailNavListComponent implements OnInit {
 
   }
 
-  onClickKlassFeature() :void {
+  onToggleKlassFeature(event) :void {
 
-    if(this.isDebug()) console.log("k-d-n-l / onClickKlassFeature / init");
+    if(this.isDebug()) console.log("k-d-n-l / onToggleKlassFeature / init");
+
+    event.stopPropagation();
+    event.preventDefault();
 
     this.isShowKlassFeatureAdmin = !this.isShowKlassFeatureAdmin;
     if(!this.isShowKlassFeatureAdmin) {
       this.shutdownKlassInfos();
     }
-  }
-  onClickKlassTarget() :void {
 
-    if(this.isDebug()) console.log("k-d-n-l / onClickKlassTarget / init");
+    if(this.isShowKlassFeatureAdmin) {
+      this.btnNameKlassFeature = "닫기"
+    } else {
+      this.btnNameKlassFeature = "수업 특징 수정하기"
+    }
+  } // end method
+  onToggleKlassTarget(event) :void {
+
+    if(this.isDebug()) console.log("k-d-n-l / onToggleKlassTarget / init");
+
+    event.stopPropagation();
+    event.preventDefault();
 
     this.isShowKlassTargetAdmin = !this.isShowKlassTargetAdmin;
     if(!this.isShowKlassTargetAdmin) {
       this.shutdownKlassInfos();
     }
-  }
-  onClickKlassSchedule() :void {
 
-    if(this.isDebug()) console.log("k-d-n-l / onClickKlassSchedule / init");
+    if(this.isShowKlassTargetAdmin) {
+      this.btnNameKlassTarget = "닫기"
+    } else {
+      this.btnNameKlassTarget = "수업 대상 수정하기"
+    }
+
+  } // end method
+  onToggleKlassSchedule(event) :void {
+
+    if(this.isDebug()) console.log("k-d-n-l / onToggleKlassSchedule / init");
+
+    event.stopPropagation();
+    event.preventDefault();    
 
     this.isShowKlassScheduleAdmin = !this.isShowKlassScheduleAdmin;
     if(!this.isShowKlassScheduleAdmin) {
       this.shutdownKlassInfos();
-    }
-  }
+    } // end if
+
+  } // end method
   shutdownKlassInfos() :void {
     this.isShowKlassFeatureAdmin=false;
     this.isShowKlassTargetAdmin=false;
