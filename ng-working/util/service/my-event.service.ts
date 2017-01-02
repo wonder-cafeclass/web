@@ -79,6 +79,8 @@ export class MyEventService {
     KEY_COMMENT_REVIEW:string="KEY_COMMENT_REVIEW";       // 댓글 - 수업 리뷰 리스트
     KEY_COMMENT_QUESTION:string="KEY_COMMENT_QUESTION";   // 댓글 - 수업 문의 리스트
 
+    KEY_USER_SELECT:string="KEY_USER_SELECT";             // 유저 - 유저 선택 SELECT BOX
+
     KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
     KEY_USER_CUR_PASSWORD:string="KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
     KEY_USER_PASSWORD:string="KEY_USER_PASSWORD";         // 유저 - 비밀번호

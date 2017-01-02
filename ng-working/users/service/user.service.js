@@ -17,6 +17,7 @@ var UserService = (function () {
     function UserService(us, http) {
         this.us = us;
         this.http = http;
+        this.getUserListUrl = '/CI/index.php/api/users/list';
         this.getUserByEmailUrl = '/CI/index.php/api/users/email';
         this.getUserByFacebookIdUrl = '/CI/index.php/api/users/facebook';
         this.getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
@@ -37,6 +38,21 @@ var UserService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    UserService.prototype.getUserList = function (apiKey) {
+        // wonder.jung
+        if (this.isDebug())
+            console.log("user.service / getUserList / 시작");
+        if (this.isDebug())
+            console.log("user.service / getUserList / apiKey : ", apiKey);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.getUserListUrl);
+        var params = {};
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     UserService.prototype.setWatchTower = function (watchTower) {
         this.watchTower = watchTower;
     };

@@ -7,13 +7,17 @@
 			<div class="col-md-4 cc-div-col box">
 				
 				<div>
+					<debug-btn *ngIf="isAdmin"></debug-btn>
 					<img 
 					class="logo" 
 					src="../../assets/images/cafeclass_logo_text_only.svg"
 					(click)="onClickLogo($event)">
 				</div>
 				<div>
-					<img class="login-title" src="../../assets/images/login/login_kor.svg">
+					<img 
+					class="login-title" 
+					src="../../assets/images/login/login_kor.svg"
+					(click)="onClickTitle($event)">
 				</div>
 
 				<!-- Email -->
@@ -52,6 +56,15 @@
 			        <a class="orange" href="#" alt="...">아이디</a>
 			        <span class="orange">/</span>
 			        <a class="orange" href="#" alt="...">비밀번호찾기</a>
+				</div>
+				
+				<div *ngIf="userList" class="btn-box border"></div>				
+				<div *ngIf="userList" class="btn-box">
+				    <widget-input-default
+				    [isNoSpace]="true"
+				    [meta]="defaultMetaUserSelect"
+				    (emitter)="onChangedFromChild($event)">
+				    </widget-input-default>
 				</div>
 
 				<div class="btn-box border"></div>

@@ -16,15 +16,23 @@ import { User }                     from '../users/model/user';
 import { EmailComponent }           from '../widget/input/email/email.component';
 import { PasswordComponent }        from '../widget/input/password/password.component';
 
+import { DefaultComponent }         from '../widget/input/default/default.component';
+import { DefaultMeta }              from '../widget/input/default/model/default-meta';
+import { DefaultOption }            from '../widget/input/default/model/default-option';
+import { DefaultType }              from '../widget/input/default/model/default-type';
+
 import { MyLoggerService }          from '../util/service/my-logger.service';
 import { MyCheckerService }         from '../util/service/my-checker.service';
 import { MyEventService }           from '../util/service/my-event.service';
 import { MyEvent }                  from '../util/model/my-event';
 import { MyCookie }                 from '../util/http/my-cookie';
+import { HelperMyArray }            from '../util/helper/my-array';
 
 import { MyEventWatchTowerService } from '../util/service/my-event-watchtower.service';
 
 import { MyResponse }               from '../util/model/my-response';
+
+
 
 @Component({
   moduleId: module.id,
@@ -58,6 +66,11 @@ export class LoginComponent implements AfterViewInit {
   errorMsgArr: string[]=[];
 
   private myCookie:MyCookie;
+  private myArray:HelperMyArray;
+
+  private defaultType:DefaultType;
+  private defaultMetaUserSelect:DefaultMeta;
+  private userSelectorComponent: DefaultComponent; // 유저 선택 리스트 (운영전용)
 
   constructor(  public loginService: LoginService, 
                 private userService:UserService,
@@ -69,6 +82,10 @@ export class LoginComponent implements AfterViewInit {
                 public router: Router) {
 
     this.myCookie = new MyCookie();
+    this.myArray = new HelperMyArray();
+
+    this.defaultType = new DefaultType();
+    this.defaultMetaUserSelect = this.getMetaUserSelect();
 
   }
 
@@ -219,6 +236,8 @@ export class LoginComponent implements AfterViewInit {
       }
     });
 
+    //
+
     // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
     this.watchTower.announceToggleTopMenu(false);    
   }
@@ -250,23 +269,39 @@ export class LoginComponent implements AfterViewInit {
       return;
     }
 
-    // 정상적인 값을 가진 이벤트입니다.
-    if(this.myEventService.ON_CHANGE === myEvent.eventName) {
+    // KEY_USER_SELECT
 
-      if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
+    // 정상적인 값을 가진 이벤트입니다.
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_USER_SELECT)) {
+        this.userSelectorComponent = myEvent.metaObj;
+        this.updateUserSelector();
+      }
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_USER_EMAIL)) {
 
         this.email = myEvent.value;
         if(this.isDebug()) console.log("login / onChangedFromChild / this.email : ",this.email);
 
-      } else if(this.myEventService.KEY_USER_PASSWORD === myEvent.key) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_PASSWORD)) {
 
         this.password = myEvent.value;
         if(this.isDebug()) console.log("login / onChangedFromChild / this.password : ",this.password);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_SELECT)) {
+
+        let userId:number = parseInt(myEvent.value);
+        this.loginWithSelectedUser(userId);
+
+
       } // end if
 
-    } else if(  this.myEventService.ON_KEYUP_ENTER === myEvent.eventName || 
-                this.myEventService.ON_SUBMIT === myEvent.eventName  ) {
+
+    } else if(  myEvent.hasEventName(this.myEventService.ON_KEYUP_ENTER) || 
+                myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
 
       if(this.myEventService.KEY_USER_EMAIL === myEvent.key) {
 
@@ -293,6 +328,105 @@ export class LoginComponent implements AfterViewInit {
     } // end if
 
     if(this.isDebug()) console.log("login / onChangedFromChild / done");
+  }
+
+  private loginWithSelectedUser(userId:number):void {
+
+    if(this.isDebug()) console.log("login / loginWithSelectedUser / 시작");
+
+    if(!(0 < userId)) {
+      if(this.isDebug()) console.log("login / loginWithSelectedUser / 중단 / userId is not valid!");
+      return;
+    } // end if
+
+    if(null == this.userMap) {
+      if(this.isDebug()) console.log("login / loginWithSelectedUser / 중단 / this.userMap is not valid!");
+      return;
+    } // end if
+
+    let user:User = this.userMap[""+userId];
+
+    if(null == user) {
+      if(this.isDebug()) console.log("login / loginWithSelectedUser / 중단 / user is not valid!");
+      return;
+    }
+
+    if(this.isDebug()) console.log("login / loginWithSelectedUser / userId : ",userId);
+
+    // 유저 데이터를 선택했다면, 선택된 유저의 이메일 주소로 해당 유저 데이터를 한번 더 받아옵니다. 
+    // 유저의 선생님 데이터도 포함됩니다.
+
+    this.getUserByEmail(user.email);
+
+  }
+
+  private getUserByEmail(email:string):void {
+
+    if(this.isDebug()) console.log("login / getUserByEmail / 시작");
+
+    if(null == email || "" === email) {
+      if(this.isDebug()) console.log("login / getUserByEmail / 중단 / email is not valid!");
+      return;
+    } // end if
+
+    this.userService
+    .getUserByEmail(email)
+    .then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("login / getUserByEmail / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess() && myResponse.hasDataProp("user")) {
+
+        // 저장 완료! 초기화!
+        if(myResponse.hasDataProp("user")) {
+
+          let userJSON = myResponse.getDataProp("user");
+          let user:User = new User().setJSON(userJSON);
+
+          if(this.isDebug()) console.log("login / getUserByEmail / user : ",user);
+
+          this.announceLoginUser(user);
+          this.goRedirect();
+
+        } // end if
+
+      } else if(myResponse.isFailed()) {  
+
+        if(this.isDebug()) console.log("login / getUserByEmail / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
+        this.warningMsgHead = warningMsgHead;
+        this.warningMsgTail = warningMsgTail;
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+        // 에러 로그 등록
+        this.watchTower.logAPIError(`login / getUserByEmail / email : ${this.email}`);
+
+      } // end if
+
+    }); // end service
+
+  } // end method
+
+  private updateUserSelector():void {
+
+    if(this.isDebug()) console.log("login / updateUserSelector / 시작");
+
+    if(null == this.userSelectorComponent) {
+      if(this.isDebug()) console.log("login / updateUserSelector / 중단 / null != this.userSelectorComponent");
+      return;
+    } // end if
+
+    if(this.myArray.isNotOK(this.userList)) {
+      if(this.isDebug()) console.log("login / updateUserSelector / 중단 / this.myArray.isNotOK(this.userList)");
+      return;
+    } // end if
+
+    let defaultOptonList:DefaultOption[] = this.getDefaultOptionUserList(this.userList);
+    this.userSelectorComponent.setSelectOption(defaultOptonList);
+
   }
 
   verifyEmailNPassword():void {
@@ -409,5 +543,136 @@ export class LoginComponent implements AfterViewInit {
     // 홈으로 이동
     this.router.navigate(["/"]);
   }
+
+  private hitCnt:number=0;
+  onClickTitle(event):void {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(this.isDebug()) console.log("login / goRedirect / 시작");
+
+    if(!this.isAdmin) {
+      return;
+    }
+
+    this.hitCnt++;
+    if(this.isDebug()) console.log("login / goRedirect / this.hitCnt : ",this.hitCnt);
+
+    // 3번 이상 클릭시, 유저 리스트를 노출합니다.
+    if(this.hitCnt == 3) {
+      this.getUserList();
+    } // end if
+
+  } // end method
+
+  private userList:User[];
+  private userMap:any;
+  getUserList() :void {
+
+    if(this.isDebug()) console.log("login / getUserList / 시작");
+
+    if(!this.isAdmin) {
+      if(this.isDebug()) console.log("login / getUserList / 중단 / 운영 서버가 아닙니다.");
+      return;
+    }
+
+    let apiKey:string = this.myCheckerService.getAPIKey();
+    if(null == apiKey || "" === apiKey) {
+      if(this.isDebug()) console.log("login / getUserList / 중단 / apiKey is not valid!");
+      return;
+    }
+
+    // 최대 100개의 유저 정보를 가져옵니다.
+    this.userService
+    .getUserList(apiKey)
+    .then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("login / getUserList / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess() && myResponse.hasDataProp("user_list")) {
+
+        let userJSONList:any[] = myResponse.getDataProp("user_list");
+        let userList:User[] = [];
+        this.userMap = {};
+        for (var i = 0; i < userJSONList.length; ++i) {
+          let userJSON:any = userJSONList[i];
+          let user:User = new User().setJSON(userJSON); 
+          userList.push(user);
+          this.userMap[""+user.id] = user;
+        }
+
+        this.userList = userList;
+        if(this.isDebug()) console.log("login / getUserList / userList : ",userList);
+
+        this.updateUserSelector();
+
+      } else if(myResponse.isFailed()) {  
+
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+        // 에러 로그 등록
+        this.watchTower.logAPIError(`login / verifyEmailNPassword / email : ${this.email}`);
+
+      } // end if
+
+    }); // end service
+
+  } // end method
+
+  private getMetaUserSelect():DefaultMeta{
+    return new DefaultMeta( // 5
+      // public title:string
+      "사용자리스트",
+      // public placeholder:string
+      "사용자를 선택해주세요",
+      // public eventKey:string
+      this.myEventService.KEY_USER_SELECT,
+      // public checkerKey:string
+      "user_id",
+      // public type:string
+      this.defaultType.TYPE_SELECT
+    );
+  }  
+
+  private getDefaultOptionUserList(userList:User[]):DefaultOption[] {
+    let keyList:string[] = [];  
+    let valueList:string[] = [];
+
+    keyList.push("사용자를 선택해주세요.");
+    valueList.push("");
+
+    for (var i = 0; i < userList.length; ++i) {
+      let user:User = userList[i];
+
+      keyList.push(`${user.name} (${user.nickname})`);
+      valueList.push("" + user.id);
+
+    }
+
+    return this.getDefaultOptionList(keyList, valueList, "");
+  } // end method
+
+  private getDefaultOptionList(keyList:string[],valueList:string[],valueFocus:string) :DefaultOption[] {
+
+    if(null == this.watchTower) {
+      return [];
+    }
+
+    return this.watchTower
+    .getMyConst()
+    .getDefaultOptionList(
+      // keyList:string[], 
+      keyList,
+      // valueList:string[],
+      valueList,
+      // valueFocus:string
+      valueFocus
+    );
+  } // end method   
+
 
 }
