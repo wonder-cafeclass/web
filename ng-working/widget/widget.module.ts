@@ -28,6 +28,7 @@ import { ImageEntryComponent }         	from './image-grid/image-entry.component
 import { ImageGridV2Component }         from './image-grid/image-grid-v2.component';
 import { InputBtnsRowComponent }     	from './input-view/input-btns-row.component';
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
+import { DebugBtnComponent }      		from './debug/debug-btn.component';
 
 
 import { FooterComponent }         		from './footer/footer.component';
@@ -50,6 +51,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
+		DebugBtnComponent,
 		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,
@@ -76,6 +78,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
+		DebugBtnComponent,
 		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,

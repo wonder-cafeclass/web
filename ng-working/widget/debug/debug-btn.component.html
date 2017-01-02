@@ -1,0 +1,14 @@
+<div>
+	<img 
+	*ngIf="isDebugging"
+	(click)="onToggleDebugging($event)"
+	class="watchtower" 
+	src={{imageService.get(imageService.watchTowerUrl)}}>
+
+	<img 
+	*ngIf="!isDebugging" 
+	(click)="onToggleDebugging($event)"
+	class="watchtower" 
+	src={{imageService.get(imageService.watchTowerGrayUrl)}}>
+
+</div>
