@@ -233,7 +233,6 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     if(this.isDebug()) console.log("klass-list / getKlassList / 시작");
     if(this.isDebug()) console.log("klass-list / getKlassList / isTeacher : ",isTeacher);
 
-    // 1. 선생님인 경우, 자신의 수업을 추가한 리스트를 가져와야 합니다.
     this.klassService
     .getKlasses()
     .then((myResponse:MyResponse) => {

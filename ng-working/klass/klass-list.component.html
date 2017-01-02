@@ -74,24 +74,24 @@
 							src="{{klass.level_img_url}}" 
 							alt="{{klass.level_kor}}" 
 							class="img-circle cc-img-filter">
-					<img 	*ngIf="klass.venue_subway_station_img_url" 
-							src="{{klass.venue_subway_station_img_url}}" 
-							alt="{{klass.venue_subway_station}}" 
-							class="img-circle cc-img-filter">
-					<img 	*ngIf="klass.days_img_url" 
-							src="{{klass.days_img_url}}" 
-							alt="{{klass.days_kor}}" 
+					<img 	*ngIf="klass.subway_station_img" 
+							src="{{klass.subway_station_img}}" 
+							alt="{{klass.subway_station}}" 
 							class="img-circle cc-img-filter">
 					<img 	*ngIf="klass.time_begin_img_url" 
 							src="{{klass.time_begin_img_url}}" 
 							alt="{{klass.time_begin_name}}" 
 							class="img-circle cc-img-filter">
+					<img 	*ngFor="let days_img_url of klass.days_img_url_list" 
+							src="{{days_img_url}}"
+							alt="{{klass.days}}" 
+							class="img-circle cc-img-filter">
 				</li>
 				<li 
 				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
-				class="list-group-item">
+				class="list-group-item my-style">
 					<h4 *ngIf="klass.price_with_format=='0'" class="pull-right cc-price unselectable">&nbsp;</h4>
-					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price unselectable">{{klass.price_with_format}} &#8361;</h4>
+					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price unselectable">&#8361;{{klass.price_with_format}}</h4>
 
 					<a 	*ngIf="klass.level_img_url" 
 						(click)="onSelectKlass($event, klass)"

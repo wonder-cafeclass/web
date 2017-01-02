@@ -1448,6 +1448,9 @@ class MY_Sql
 
     public function select_klass_list($offset=-1, $limit=-1)
     {
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
         if(!(0 < $offset)) 
         {
             $offset = 0;
@@ -1457,17 +1460,16 @@ class MY_Sql
             $limit = 20;
         }
 
-        $this->CI->db->limit($offset, $limit);  // Produces: LIMIT 20, 10
+        // TODO : A 상태인 수업만 노출해야 합니다.
+
         $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        $sql = $this->CI->db->get_compiled_select('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
-        $sql = $this->CI->db->get_compiled_select('klass');
-        $this->set_last_query($sql);
-
-        $query = $this->CI->db->get('klass');
-
-        $klass_list = $this->decorate_klass($query);
-
-        return $klass_list;
+        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        return $this->CI->db->get('klass');
     }
 
     public function select_klass_question_list($klass_id=-1)
@@ -2137,8 +2139,7 @@ class MY_Sql
         }
         if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_telephone\", $venue_telephone)");
-            return;
+            $venue_telephone = "";
         }
         if($this->is_not_ok("klass_venue_address", $venue_address))
         {
@@ -2880,15 +2881,19 @@ class MY_Sql
         $limit = 1;
         $offset = 0;
         $query = $this->CI->db->get('klass', $limit, $offset);
+
+        /*
         $klass_list = $this->decorate_klass($query);
+
         $klass = null;
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
             $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
         }
+        */
 
-        return $klass;
+        return $query;
     }
     public function select_klass_by_teacher($teacher_id=-1) 
     {
@@ -2918,14 +2923,18 @@ class MY_Sql
     }    
     private function decorate_klass($query=null) 
     {
-        if(is_null($query)) {
-            return;
-        }
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
+        if(is_null($query)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$query)");
+            return;
+        } // end if
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
-        }
+        } // end if
         $rows = $query->custom_result_object('KlassCourse');
         $output = array();
         foreach ($rows as $row)
@@ -2934,14 +2943,22 @@ class MY_Sql
             $row->time_begin_img_url($const_map, $this->CI->my_path);
             $row->level_img_url($const_map, $this->CI->my_path);
             $row->set_days_list($const_map);
+
             $row->days_img_url($const_map, $this->CI->my_path);
+            
             $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
-            $row->venue_cafe_logo_img_url($const_map, $this->CI->my_path);
+
+            // REMOVE ME
+            // $row->venue_cafe_logo_img_url($const_map, $this->CI->my_path);
+            // $row->set_klass_price_list();
+
             $row->price_with_format();
-            $row->set_klass_price_list();
             $row->weeks_to_months();
 
+            // REMOVE ME
+            /*
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
+
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
             if(empty($row->class_poster_url)) {
                 $row->class_poster_url = "";
@@ -2951,6 +2968,7 @@ class MY_Sql
             {
                 $row->class_poster_url_loadable = $this->CI->my_path->get_loadable_url_class_poster($row->class_poster_url);   
             }
+            */
 
             // Set number type
             $row->id = intval($row->id);
@@ -2961,17 +2979,20 @@ class MY_Sql
             $row->time_duration_minutes = intval($row->time_duration_minutes);
             $row->week = intval($row->week);
 
+            // REMOVE ME
+            /*
+            $price = $row->price = intval($row->price);
+
             // 주당 수업 가격에 대해 계산한다.
             // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
             // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
-            $price = $row->price = intval($row->price);
-            $week_max = $row->week_max = intval($row->week_max);
-            $week_min = $row->week_min = intval($row->week_min);
-            $week_unit_cnt = ($week_max / $week_min);
+            // $week_max = $row->week_max = intval($row->week_max);
+            // $week_min = $row->week_min = intval($row->week_min);
+            // $week_unit_cnt = ($week_max / $week_min);
 
             // 주당 가격 산정은 다음과 같다. 
             // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
-            $fee_per_a_week = $price/$week_min;
+            // $fee_per_a_week = $price/$week_min;
 
             $row->week_list = array();
             $row->price_list = array();
@@ -2988,6 +3009,7 @@ class MY_Sql
                 ];
                 array_push($row->weekly_price_list, $weeky_price);
             }
+            */
             
             array_push($output, $row);
         }
