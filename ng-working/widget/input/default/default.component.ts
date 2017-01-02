@@ -1008,8 +1008,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     if(this.isDebug()) console.log("default / onKeyup / init");
 
-    if(this.isDebug()) console.log("default / onKeyup / elementInput : ",elementInput);
-    if(this.isDebug()) console.log("default / onKeyup / value : ",value);
+    if(this.isDebug()) console.log("default / onKeyup / this.ngModelInput : ",this.ngModelInput);
 
     event.stopPropagation();
     event.preventDefault();    
@@ -1017,14 +1016,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     // 1. 숫자 입력
 
     // 2. 문자 입력 
-
-    let inputStr:string = "";
-    if(null != value && "" != value) {
-      inputStr = value;
-    } else {
-      // 직접 엘리먼트에서 값을 가져오면, 커서가 마지막으로 배치되는 문제가 있습니다.
-      inputStr = elementInput.value;
-    }
+    let inputStr:string = this.ngModelInput;
 
     if(inputStr == this.inputStrPrev) {
       if(this.isDebug()) console.log("default / onKeyup / 중단 / 동일한 내용이라면 중단합니다.");

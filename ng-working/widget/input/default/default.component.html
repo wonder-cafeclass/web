@@ -20,14 +20,13 @@
 	(keydown.tab)="onKeydownTab($event)"
 	(keydown.shift.tab)="onKeydownTabShift($event)"
 	[(ngModel)]="ngModelInput"
-	value={{inputStrPrev}}
 	class="form-control input-glass" 
 	placeholder={{meta.placeholder}}>
 	<!-- input-disabled -->
 	<input 	
 	*ngIf="isDisabled && meta.type == defaultType.TYPE_INPUT"
+	[(ngModel)]="ngModelInput"
 	disabled="disabled" 
-	value={{inputStrPrev}}
 	class="form-control input-glass disabled" 
 	placeholder={{meta.placeholder}}>
 
@@ -45,7 +44,6 @@
 	(keydown.tab)="onKeydownTab($event)"
 	(keydown.shift.tab)="onKeydownTabShift($event)"
 	[(ngModel)]="ngModelInput"
-	value={{inputStrPrev}}
 	class="form-control input-glass my-style" 
 	placeholder={{meta.placeholder}}>
 	</textarea>
@@ -55,7 +53,7 @@
 	cols="50"
 	*ngIf="isDisabled && meta.type == defaultType.TYPE_TEXTAREA"
 	disabled="disabled" 
-	value={{inputStrPrev}}
+	[(ngModel)]="ngModelInput"
 	class="form-control input-glass my-style disabled"
 	placeholder={{meta.placeholder}}>
 	</textarea>
@@ -85,7 +83,6 @@
 		(keydown.tab)="onKeydownTab($event)"
 		(keydown.shift.tab)="onKeydownTabShift($event)"
 		[(ngModel)]="ngModelInput"
-		value={{inputStrPrev}}
 		class="form-control input-glass input-num" 
 		placeholder={{meta.placeholder}}>
 	</div>
@@ -119,7 +116,6 @@
 		(keydown.tab)="onKeydownTab($event)"
 		(keydown.shift.tab)="onKeydownTabShift($event)"
 		[(ngModel)]="ngModelInput"
-		value={{inputStrPrev}}
 		class="form-control input-glass input-num" 
 		placeholder={{meta.placeholder}}>
 	</div>
