@@ -299,8 +299,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.router.navigate(['/user/my']);
 	}
 
+	// REMOVE ME
 	// 디버깅 모드로 전환하는 방법은 2가지
 	// 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
+	/*
 	onClickToggleDebugging(event) :void {
 		event.stopPropagation();
 		event.preventDefault();
@@ -313,6 +315,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 	    this.watchTower.announceIsDebugging(this.isDebugging);
 	}
+	*/
 
 	onClickLogo(event) :void {
 
