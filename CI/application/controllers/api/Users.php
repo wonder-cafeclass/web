@@ -905,9 +905,26 @@ class Users extends MY_REST_Controller {
                 $mobile_tail
             ); // end insert
             $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user");
-        } 
+        }
+        else 
+        {
+            // 실패!
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "User update failed!",
+                // $function=""
+                __FUNCTION__,
+                // $file=""
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+        } // end if
+
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
-        
         if($is_ok) {
             // 등록한 유저 정보를 가져옵니다.
             $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "등록한 유저 정보를 가져옵니다.");

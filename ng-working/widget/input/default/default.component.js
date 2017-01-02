@@ -183,7 +183,8 @@ var DefaultComponent = (function () {
         if (this.isOK(input)) {
             if (this.isDebug())
                 console.log("default / setInput / updated!");
-            this.ngModelInput = this.inputStrPrev = input;
+            this.inputStrPrev = input;
+            this.setInputNgModel(input);
             if (this.meta.type == this.defaultType.TYPE_NUMBER) {
                 // 숫자 포맷인 경우, 숫자 관련 추가 처리를 해준다.
                 this.updateInputNum(0);
@@ -378,9 +379,8 @@ var DefaultComponent = (function () {
             var nextNumStr = this.decorateRawNumber(nextNum);
             if (this.isDebug())
                 console.log("default / updateInputNum / nextNumStr : ", nextNumStr);
-            this.ngModelInput = this.inputStrPrev = nextNumStr;
-            // wonder.jung
-            // this.emitEventOnChange(this.ngModelInput);
+            this.inputStrPrev = nextNumStr;
+            this.setInputNgModel(nextNumStr);
             this.emitEventOnChange("" + nextNum);
         } // end if
     }; // end method
@@ -422,7 +422,8 @@ var DefaultComponent = (function () {
         }
         this.hideWarningTooptip();
         // UPDATE!
-        this.ngModelInput = this.inputStrPrev = nextHHMM;
+        this.inputStrPrev = nextHHMM;
+        this.setInputNgModel(nextHHMM);
         this.emitEventOnChange(this.ngModelInput);
     }; // end method  
     DefaultComponent.prototype.onFocus = function (event, element) {
@@ -841,14 +842,25 @@ var DefaultComponent = (function () {
             return true;
         } // end if
     }; // end method
-    DefaultComponent.prototype.onKeyup = function (event, elementInput) {
+    DefaultComponent.prototype.onKeyup = function (event, elementInput, value) {
         if (this.isDebug())
             console.log("default / onKeyup / init");
+        if (this.isDebug())
+            console.log("default / onKeyup / elementInput : ", elementInput);
+        if (this.isDebug())
+            console.log("default / onKeyup / value : ", value);
         event.stopPropagation();
         event.preventDefault();
         // 1. 숫자 입력
         // 2. 문자 입력 
-        var inputStr = elementInput.value;
+        var inputStr = "";
+        if (null != value && "" != value) {
+            inputStr = value;
+        }
+        else {
+            // 직접 엘리먼트에서 값을 가져오면, 커서가 마지막으로 배치되는 문제가 있습니다.
+            inputStr = elementInput.value;
+        }
         if (inputStr == this.inputStrPrev) {
             if (this.isDebug())
                 console.log("default / onKeyup / 중단 / 동일한 내용이라면 중단합니다.");
@@ -873,11 +885,21 @@ var DefaultComponent = (function () {
         else {
             if (this.isDebug())
                 console.log("default / onKeyup / 입력이 유효하지 않습니다. 이전으로 되돌립니다.");
-            this.ngModelInput = this.inputStrPrev;
+            this.setInputNgModel(this.inputStrPrev);
             if (this.isDebug())
                 console.log("default / onKeyup / 입력이 유효하지 않습니다. 이전으로 되돌립니다. / Done");
-        }
+        } // end if
     }; // end method - keyup
+    DefaultComponent.prototype.setInputNgModel = function (newInput) {
+        if (this.isDebug())
+            console.log("default / setInputNgModel / init");
+        if (this.ngModelInput === newInput) {
+            if (this.isDebug())
+                console.log("default / setInputNgModel / 중단 / this.ngModelInput === newInput");
+            return;
+        }
+        this.ngModelInput = newInput;
+    }; // end method
     DefaultComponent.prototype.getEventKey = function () {
         if (this.meta.hasEventKey()) {
             return this.meta.eventKey;

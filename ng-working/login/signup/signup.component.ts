@@ -405,7 +405,7 @@ export class SignupComponent implements AfterViewInit {
 
     // @ Required
     if(this.emailComponent.hasNotDone()) {
-      this.nicknameComponent.showTooltipFailWarning(
+      this.emailComponent.showTooltipFailWarning(
         // msg:string,
         "이메일을 다시 확인해주세요",
         // isTimeout:Boolean
@@ -511,6 +511,7 @@ export class SignupComponent implements AfterViewInit {
   updateUser() :void {
 
     if(this.isDebug()) console.log("signup / updateUser / 시작");
+
     if(this.isDebug()) console.log("signup / updateUser / this.user.id : ",this.userCopy.id);
     if(this.isDebug()) console.log("signup / updateUser / this.email : ",this.userCopy.email);
     if(this.isDebug()) console.log("signup / updateUser / this.password : ",this.userCopy.password);
@@ -523,7 +524,12 @@ export class SignupComponent implements AfterViewInit {
     if(this.isDebug()) console.log("signup / updateUser / this.thumbnail : ",this.userCopy.thumbnail);
     if(this.isDebug()) console.log("signup / updateUser / this.mobileNumHead : ",this.userCopy.getMobileHead());
     if(this.isDebug()) console.log("signup / updateUser / this.mobileNumBody : ",this.userCopy.getMobileBody());
-    if(this.isDebug()) console.log("signup / updateUser / this.mobileNumTail : ",this.userCopy.getMobileTail());
+    if(this.isDebug()) console.log("signup / updateUser / this.mobileNumTail : ",this.userCopy.getMobileTail());    
+
+    if(this.userCopy.isNotOK()) {
+      if(this.isDebug()) console.log("signup / updateUser / 중단 / this.userCopy.isNotOK()");
+      return;
+    } // end method
 
     this.userService
     .updateUser(
@@ -602,9 +608,26 @@ export class SignupComponent implements AfterViewInit {
   }
   addUser(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
     if(this.isDebug()) console.log("signup / addUser / 시작");
+
+    if(this.isDebug()) console.log("signup / addUser / this.user.id : ",this.userCopy.id);
+    if(this.isDebug()) console.log("signup / addUser / this.email : ",this.userCopy.email);
+    if(this.isDebug()) console.log("signup / addUser / this.password : ",this.userCopy.password);
+    if(this.isDebug()) console.log("signup / addUser / this.name : ",this.userCopy.name);
+    if(this.isDebug()) console.log("signup / addUser / this.nickname : ",this.userCopy.nickname);
+    if(this.isDebug()) console.log("signup / addUser / this.gender : ",this.userCopy.gender);
+    if(this.isDebug()) console.log("signup / addUser / this.birthYear : ",this.userCopy.getBirthYear());
+    if(this.isDebug()) console.log("signup / addUser / this.birthMonth : ",this.userCopy.getBirthMonth());
+    if(this.isDebug()) console.log("signup / addUser / this.birthDay : ",this.userCopy.getBirthDay());
+    if(this.isDebug()) console.log("signup / addUser / this.thumbnail : ",this.userCopy.thumbnail);
+    if(this.isDebug()) console.log("signup / addUser / this.mobileNumHead : ",this.userCopy.getMobileHead());
+    if(this.isDebug()) console.log("signup / addUser / this.mobileNumBody : ",this.userCopy.getMobileBody());
+    if(this.isDebug()) console.log("signup / addUser / this.mobileNumTail : ",this.userCopy.getMobileTail());        
+
+    if(this.userCopy.isNotOK()) {
+      if(this.isDebug()) console.log("signup / addUser / 중단 / this.userCopy.isNotOK()");
+      return;
+    } // end method
 
     this.userService
     .addUser(
@@ -684,8 +707,6 @@ export class SignupComponent implements AfterViewInit {
 
   sendMailUserValidation(userId:number, email:string) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
     if(this.isDebug()) console.log("signup / sendMailUserValidation / 시작");
 
     this.userService
@@ -732,8 +753,6 @@ export class SignupComponent implements AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
     if(this.isDebug()) console.log("signup / onClickTerms / 시작");
 
     // 이용약관 페이지로 이동.
@@ -902,13 +921,27 @@ export class SignupComponent implements AfterViewInit {
 
   private checkEmailUnique(email:string): void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
     if(this.isDebug()) console.log("signup / checkEmailUnique / 시작");
 
     if(null == email || "" === email) {
+      if(this.isDebug()) console.log("signup / checkEmailUnique / 중단 / email is not valid!");
+      return;
+    } else if(null == this.user) {
+      if(this.isDebug()) console.log("signup / checkEmailUnique / 중단 / this.user is not valid!");
+      return;
+    } else if(null == this.userCopy) {
+      if(this.isDebug()) console.log("signup / checkEmailUnique / 중단 / this.userCopy is not valid!");
       return;
     }
+
+    // 이미 이전에 등록된 이메일로 다시 바꾸었다면 중단. 중복은 아님.
+    if( null != this.user.email && 
+        "" != this.user.email && 
+        this.user.email === email) {
+      this.userCopy.isDuplicatedEmail = false;
+      if(this.isDebug()) console.log("signup / checkEmailUnique / 중단 / this.user.email === this.userCopy.email");
+      return;
+    } // end if
 
     // DB Unique test
     this.userService
@@ -925,18 +958,28 @@ export class SignupComponent implements AfterViewInit {
         if(null != userJSON) {
           user = new User().setJSON(userJSON);
         }
+        if(this.isDebug()) console.log("signup / checkEmailUnique / user : ",user);
+
         if(null == user) {
           // 해당 이메일로 등록된 유저는 없습니다. 
           // email 등록이 가능합니다.
-          if(null == this.user) {
-            this.user = new User();
-            this.userCopy = this.user.copy();
-          }
+          if(this.isDebug()) console.log("signup / checkEmailUnique / 해당 이메일로 등록된 유저는 없습니다. email 등록이 가능합니다.");
           this.userCopy.email = email;
-        } // end if
-
-        if(this.isDebug()) console.log("signup / checkEmailUnique / email 등록이 가능합니다.");
-        if(this.isDebug()) console.log("signup / checkEmailUnique / this.userCopy.email : ",this.userCopy.email);
+          this.userCopy.isDuplicatedEmail = false;
+          this.emailComponent.hideWarningTooptip();
+          if(this.isDebug()) console.log("signup / checkEmailUnique / this.userCopy.email : ",this.userCopy.email);
+        } else {
+          // 해당 이메일로 이미 등록된 유저가 있습니다. 
+          // 경고 창을 노출합니다.
+          if(this.isDebug()) console.log("signup / checkEmailUnique / 해당 이메일로 이미 등록된 유저가 있습니다. 경고 창을 노출합니다.");
+          this.emailComponent.showTooltipFailWarning(
+            // msg:string,
+            "이메일이 이미 등록되어 있습니다.",
+            // isTimeout:Boolean
+            false
+          );
+          this.userCopy.isDuplicatedEmail = true;
+        }// end if
         
       } // end if
     }); // end service
@@ -945,11 +988,27 @@ export class SignupComponent implements AfterViewInit {
 
   private checkMobileUnique(mobile:string): void{
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
     if(this.isDebug()) console.log("signup / checkMobileUnique / 시작");
 
     if(null == mobile || "" === mobile) {
+      if(this.isDebug()) console.log("signup / checkMobileUnique / 중단 / mobile is not valid!");
+      return;
+    } else if(null == this.user) {
+      if(this.isDebug()) console.log("signup / checkMobileUnique / 중단 / this.user is not valid!");
+      return;
+    } else if(null == this.userCopy) {
+      if(this.isDebug()) console.log("signup / checkMobileUnique / 중단 / this.userCopy is not valid!");
+      return;
+    }
+
+
+    // 이미 이전에 등록된 전화번호로 다시 바꾸었다면 중단. 중복은 아님.
+    if( null != this.user.mobile && 
+        "" != this.user.mobile && 
+        this.user.mobile === mobile) {
+
+      this.userCopy.isDuplicatedMobile = false;
+      if(this.isDebug()) console.log("signup / checkMobileUnique / 중단 / this.user.mobile === mobile!");
       return;
     }
 
@@ -974,12 +1033,15 @@ export class SignupComponent implements AfterViewInit {
         let userJSON = myResponse.getDataProp("user");
         if(this.isDebug()) console.log("signup / checkMobileUnique / userJSON : ",userJSON);
         if(null != userJSON) {
+          this.userCopy.isDuplicatedMobile = true;
           this.mobileComponent.showWarningMobileBody("이미 등록된 번호입니다");
         } else {
           // 해당 전화번호로 등록된 유저는 없습니다. 
           if(this.isDebug()) console.log("signup / checkMobileUnique / mobile 등록이 가능합니다.");
           if(this.isDebug()) console.log("signup / checkMobileUnique / this.userCopy.mobile : ",this.userCopy.mobile);
-        }
+          this.userCopy.isDuplicatedMobile = false;
+          this.mobileComponent.hideTooltipBody(0);
+        } // end method
         
       } else {
 
