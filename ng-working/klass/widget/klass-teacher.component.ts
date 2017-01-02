@@ -63,6 +63,12 @@ export class KlassTeacherComponent implements OnInit {
   @ViewChild(DefaultComponent)
   private teacherGreetingComponent: DefaultComponent;
 
+  isEditResumeBtnDisabled:boolean=false;
+  isEditGreetingBtnDisabled:boolean=false;
+
+  btnNameResume:string="이력서 고치기";
+  btnNameGreeting:string="인사말 고치기";
+
   // 이벤트를 부모에게 전달
   @Output() emitter = new EventEmitter<any>(); 
 
@@ -204,6 +210,7 @@ export class KlassTeacherComponent implements OnInit {
     this.teacherGreetingArr = this.teacher.getGreetingArr();
 
     if(this.isDebug()) console.log("klass-teacher / setTeacher / this.teacherGreetingArr : ",this.teacherGreetingArr);
+
   }
 
   setResume() :void {
@@ -289,22 +296,47 @@ export class KlassTeacherComponent implements OnInit {
 
   }
 
-  onClickResume(event) :void {
+  onToggleResume(event) :void {
+
+    if(this.isDebug()) console.log("klass-teacher / onToggleResume / 시작");
 
     event.stopPropagation();
     event.preventDefault();
+
+    if(this.isEditResumeBtnDisabled) {
+      if(this.isDebug()) console.log("klass-teacher / onToggleResume / 중단 / this.isEditResumeBtnDisabled");
+      return;
+    } // end if
 
     this.isShowResume = !this.isShowResume;
-    console.log("klass-teacher / onClickResume / this.isShowResume : ",this.isShowResume);
+
+    if(this.isShowResume) {
+      this.btnNameResume = "이력서 닫기";
+    } else {
+      this.btnNameResume = "이력서 고치기";
+    }
   }
 
-  onClickGreeting(event) :void {
+  onToggleGreeting(event) :void {
+
+    if(this.isDebug()) console.log("klass-teacher / onToggleGreeting / 시작");
 
     event.stopPropagation();
     event.preventDefault();
 
+    if(this.isEditGreetingBtnDisabled) {
+      if(this.isDebug()) console.log("klass-teacher / onToggleResume / 중단 / this.isEditGreetingBtnDisabled");
+      return;
+    } // end if
+
     this.isShowGreeting = !this.isShowGreeting;
-    console.log("klass-teacher / onClickResume / this.isShowGreeting : ",this.isShowGreeting);
+
+    if(this.isShowGreeting) {
+      this.btnNameGreeting = "인사말 닫기";
+    } else {
+      this.btnNameGreeting = "인사말 고치기";
+    }
+
   }
 
   onChangedFromChild(myEvent:MyEvent) :void{
@@ -337,6 +369,7 @@ export class KlassTeacherComponent implements OnInit {
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
 
         // 변경되었습니다. 부모 객체에게 전달합니다.
+        this.emitter.emit(myEvent);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
@@ -375,18 +408,7 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherResume = myEvent.parentEventList;
         } // end if
-// REMOVE ME
-/*
-      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
-        // 삭제되었습니다. 부모 객체에게 전달합니다.
-        this.emitter.emit(myEvent);
-
-        // 삭제된 데이터로 업데이트.
-        if(null != myEvent.parentEventList) {
-          this.myEventListForTeacherGreeting = myEvent.parentEventList;
-        } // end if
-*/
       } // end if       
 
     } else if(myEvent.hasEventName(this.myEventService.ON_SAVE)) {
@@ -416,17 +438,7 @@ export class KlassTeacherComponent implements OnInit {
         if(null != myEvent.parentEventList) {
           this.myEventListForTeacherResume = myEvent.parentEventList;
         } // end if
-/*
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
 
-        // 사용자가 저장하지 않고, 창을 닫았습니다.
-        this.isShowGreeting = false;
-
-        // 이전 데이터롤 롤백.
-        if(null != myEvent.parentEventList) {
-          this.myEventListForTeacherGreeting = myEvent.parentEventList;
-        } // end if
-*/
       } // end if      
 
     } // end if

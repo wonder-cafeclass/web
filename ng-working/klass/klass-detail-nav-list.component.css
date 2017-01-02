@@ -1,7 +1,7 @@
 li.first {
 	border-top-left-radius: 0px;
     border-top-right-radius: 0px;
-    border-top: 0px;	
+    border-top: 0px;
 }
 li.last-temp {
 	border-bottom-left-radius: 4px;
@@ -32,6 +32,9 @@ div.klass-feature-text {
 	color: #7a7469;
     font-size: 14px;
     font-weight: normal;
+}
+div.toggle-btn {
+	padding-left: 28px;
 }
 div.klass-feature-text.empty {
 	color: #f00;
@@ -75,6 +78,7 @@ li.list-group-item.klass-desc {
 li.list-group-item.admin {
 	padding: 0px;
 	border: 0px;
+	margin-bottom: 5px;
 }
 li.list-group-item.iframe {
 	padding: 0px;

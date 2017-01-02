@@ -59,6 +59,9 @@ var KlassDetailNavListComponent = (function () {
         this.isShowKlassTargetAdmin = false;
         this.isShowKlassScheduleAdmin = false;
         this.isPreviewKlassSchedule = false;
+        this.btnNameKlassFeature = "수업 특징 수정하기";
+        this.btnNameKlassTarget = "수업 대상 수정하기";
+        this.btnNameKlassSchedule = "수업 일정 수정하기";
         this.emitter = new core_1.EventEmitter();
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
@@ -843,6 +846,9 @@ var KlassDetailNavListComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
                 this.emitEvent(myEvent);
             }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+                this.emitEvent(myEvent);
+            }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
                 this.emitEvent(myEvent);
             }
@@ -1060,30 +1066,48 @@ var KlassDetailNavListComponent = (function () {
             } // end inner if
         } // end if
     };
-    KlassDetailNavListComponent.prototype.onClickKlassFeature = function () {
+    KlassDetailNavListComponent.prototype.onToggleKlassFeature = function (event) {
         if (this.isDebug())
-            console.log("k-d-n-l / onClickKlassFeature / init");
+            console.log("k-d-n-l / onToggleKlassFeature / init");
+        event.stopPropagation();
+        event.preventDefault();
         this.isShowKlassFeatureAdmin = !this.isShowKlassFeatureAdmin;
         if (!this.isShowKlassFeatureAdmin) {
             this.shutdownKlassInfos();
         }
-    };
-    KlassDetailNavListComponent.prototype.onClickKlassTarget = function () {
+        if (this.isShowKlassFeatureAdmin) {
+            this.btnNameKlassFeature = "닫기";
+        }
+        else {
+            this.btnNameKlassFeature = "수업 특징 수정하기";
+        }
+    }; // end method
+    KlassDetailNavListComponent.prototype.onToggleKlassTarget = function (event) {
         if (this.isDebug())
-            console.log("k-d-n-l / onClickKlassTarget / init");
+            console.log("k-d-n-l / onToggleKlassTarget / init");
+        event.stopPropagation();
+        event.preventDefault();
         this.isShowKlassTargetAdmin = !this.isShowKlassTargetAdmin;
         if (!this.isShowKlassTargetAdmin) {
             this.shutdownKlassInfos();
         }
-    };
-    KlassDetailNavListComponent.prototype.onClickKlassSchedule = function () {
+        if (this.isShowKlassTargetAdmin) {
+            this.btnNameKlassTarget = "닫기";
+        }
+        else {
+            this.btnNameKlassTarget = "수업 대상 수정하기";
+        }
+    }; // end method
+    KlassDetailNavListComponent.prototype.onToggleKlassSchedule = function (event) {
         if (this.isDebug())
-            console.log("k-d-n-l / onClickKlassSchedule / init");
+            console.log("k-d-n-l / onToggleKlassSchedule / init");
+        event.stopPropagation();
+        event.preventDefault();
         this.isShowKlassScheduleAdmin = !this.isShowKlassScheduleAdmin;
         if (!this.isShowKlassScheduleAdmin) {
             this.shutdownKlassInfos();
-        }
-    };
+        } // end if
+    }; // end method
     KlassDetailNavListComponent.prototype.shutdownKlassInfos = function () {
         this.isShowKlassFeatureAdmin = false;
         this.isShowKlassTargetAdmin = false;

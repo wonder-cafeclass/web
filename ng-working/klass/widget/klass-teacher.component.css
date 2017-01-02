@@ -21,4 +21,13 @@ li.list-group-item.greeting {
 li.list-group-item.admin {
 	padding: 0px;
 	border: 0px;
+	margin-bottom: 0px;
+}
+button.my-style {
+
+}
+div.my-box {
+    border: 1px solid #ddd;
+	border-radius: 4px; 
+    padding-bottom: 5px;
 }

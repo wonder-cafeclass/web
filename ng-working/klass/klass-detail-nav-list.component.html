@@ -15,12 +15,12 @@
             <li   
             #klassDesc
             class="list-group-item klass-info first" 
+            style="padding-bottom: 1px;"
             [ngClass]="{'focus':isFocusKlassDesc}">
 
               <ul class="list-group" style="margin-bottom:0px;">
 
-                <li *ngIf="myEventListForKlassFeature" 
-                    (click)="onClickKlassFeature()"
+                <li *ngIf="myEventListForKlassFeature"
                     class="list-group-item klass-desc klass-feature">
 
                     <!-- 입력제한 기준 : 42자 - 공백포함? -->
@@ -31,6 +31,13 @@
                     <div  *ngFor="let myEvent of myEventListForKlassFeature"
                           class="klass-feature-text" 
                           [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
+                    <div *ngIf="isAdmin" class="toggle-btn">
+                        <button   
+                        (click)="onToggleKlassFeature($event)"
+                        type="button" 
+                        class="btn btn-default btn-xs">{{btnNameKlassFeature}}
+                        </button>
+                    </div>
                 </li>
                 <!-- Admin Section -->
                 <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
@@ -39,6 +46,7 @@
                   [eventKey]="myEventService.KEY_KLASS_FEATURE_LIST"
                   [rowType]="'fixed'"
                   [maxRowCnt]="3"
+                  [hasButton]="false"
                   [myEventList]="myEventListForKlassFeature" 
                   (emitter)="onChangedFromInputRow($event)"
                   [placeholderForNewRow]="'수업의 특징을 입력해주세요'">
@@ -46,7 +54,6 @@
                 </li>
 
                 <li *ngIf="myEventListForKlassTarget" 
-                    (click)="onClickKlassTarget()"
                     class="list-group-item klass-target">
                   
                   <!-- 입력제한 기준 : 42자 - 공백포함? -->
@@ -58,7 +65,13 @@
                   <div  *ngFor="let myEvent of myEventListForKlassTarget"
                         class="klass-target-text" 
                         [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
-
+                  <div *ngIf="isAdmin" class="toggle-btn">
+                      <button   
+                      (click)="onToggleKlassTarget($event)"
+                      type="button" 
+                      class="btn btn-default btn-xs">{{btnNameKlassTarget}}
+                      </button>
+                  </div>
                 </li>
                 <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
                     class="list-group-item admin">
@@ -66,6 +79,7 @@
                   [eventKey]="myEventService.KEY_KLASS_TARGET_LIST"
                   [rowType]="'removable'"
                   [maxRowCnt]="5"
+                  [hasButton]="false"
                   [myEventList]="myEventListForKlassTarget"
                   (emitter)="onChangedFromInputRow($event)"
                   [placeholderForNewRow]="'수업의 대상을 입력해주세요'">
@@ -73,16 +87,23 @@
                 </li>
 
                 <li *ngIf="klassSchedule && (!isShowKlassScheduleAdmin || isPreviewKlassSchedule)"
-                    (click)="onClickKlassSchedule()"
                     [ngClass]="{'last-temp':!isPreviewKlassSchedule}"
                     class="list-group-item klass-schedule">
 
-                      <!-- 입력제한 기준 : 42자 - 공백포함? -->
-                      <div class="klass-target-title">
-                        <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
-                        이렇게 진행됩니다.
-                      </div>
-                      <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
+                    <!-- 입력제한 기준 : 42자 - 공백포함? -->
+                    <div class="klass-target-title">
+                      <span class="glyphicon glyphicon-stop orange" aria-hidden="true"></span>
+                      이렇게 진행됩니다.
+                    </div>
+                    <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
+
+                    <div *ngIf="isAdmin" class="toggle-btn">
+                        <button   
+                        (click)="onToggleKlassSchedule($event)"
+                        type="button" 
+                        class="btn btn-default btn-xs">{{btnNameKlassSchedule}}
+                        </button>
+                    </div>
                 </li>
                 <li class="list-group-item admin">
                   <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"

@@ -1420,6 +1420,10 @@ export class KlassDetailComponent implements AfterViewInit {
 
         this.updateKlassPriceCalc(myEvent.metaObj);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
+
+        this.updateKlassTeacherResume(myEvent.metaObj);
+
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         this.updateKlassTeacherGreeting(myEvent.value);
@@ -1446,8 +1450,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
       if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
 
-        this.klassCopy.setTeacherResumeList(myEvent.metaObj);
-        this.updateSaveBtnStatus();
+        this.updateKlassTeacherResume(myEvent.metaObj);
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_GREETING_LIST)) {
 
@@ -1498,6 +1501,20 @@ export class KlassDetailComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-detail / onChangedFromChild / this.klassCopy : ",this.klassCopy);
     if(this.isDebug()) console.log("klass-detail / onChangedFromChild / Done");
+
+  } // end method
+
+  private updateKlassTeacherResume(resumeList:string[]) :void {
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassTeacherResume / 시작");
+
+    if(this.myArray.isNotOK(resumeList)) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassTeacherResume / 중단 / this.myArray.isNotOK(resumeList)");
+      return;
+    } // end if
+
+    this.klassCopy.setTeacherResumeList(resumeList);
+    this.updateSaveBtnStatus();
 
   } // end method
 
