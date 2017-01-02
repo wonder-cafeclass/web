@@ -846,21 +846,12 @@ var DefaultComponent = (function () {
         if (this.isDebug())
             console.log("default / onKeyup / init");
         if (this.isDebug())
-            console.log("default / onKeyup / elementInput : ", elementInput);
-        if (this.isDebug())
-            console.log("default / onKeyup / value : ", value);
+            console.log("default / onKeyup / this.ngModelInput : ", this.ngModelInput);
         event.stopPropagation();
         event.preventDefault();
         // 1. 숫자 입력
         // 2. 문자 입력 
-        var inputStr = "";
-        if (null != value && "" != value) {
-            inputStr = value;
-        }
-        else {
-            // 직접 엘리먼트에서 값을 가져오면, 커서가 마지막으로 배치되는 문제가 있습니다.
-            inputStr = elementInput.value;
-        }
+        var inputStr = this.ngModelInput;
         if (inputStr == this.inputStrPrev) {
             if (this.isDebug())
                 console.log("default / onKeyup / 중단 / 동일한 내용이라면 중단합니다.");
