@@ -994,6 +994,25 @@ class MY_Sql
 
 	}
 
+    public function get_user_list() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        $limit = 100;
+        $offset = 0;
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        // 유효한 상태의 유저들만 가져옴.
+        $this->CI->db->where('status', "A");
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        $query = $this->CI->db->get('user', $limit, $offset);
+
+        return $query->custom_result_object('User');
+    }    
+
     public function get_user_by_email($email="") 
     {
         if(empty($email))
@@ -2019,7 +2038,6 @@ class MY_Sql
     public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
     {
 
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
@@ -2922,8 +2940,6 @@ class MY_Sql
             $row->price_with_format();
             $row->set_klass_price_list();
             $row->weeks_to_months();
-
-            // wonder.jung
 
             // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
             $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");

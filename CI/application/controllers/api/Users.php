@@ -71,7 +71,7 @@ class Users extends MY_REST_Controller {
         $output["user"] = $user;
         $output["email"] = $email;
         $this->respond_200($output);
-    }
+    }   
 
     public function mobile_post()
     {
@@ -196,46 +196,58 @@ class Users extends MY_REST_Controller {
         $this->respond_200($output);
     }    
 
-    public function list_get()
+    // @ Desc : 모든 유저 리스트를 가져온다. 유효한 유저들의 리스트를 100개를 가져옴. 차후에는 유저숫자가 많아지므로 일부만 가져올 수 있어야 함.
+    public function list_post()
     {
+        
+        $output = array();
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
         if($this->is_not_ok())
         {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
         }
 
-        // TEST - PHPUnit test로 검증해야 함!
-        $check_result = $this->my_paramchecker->is_ok("user_id", 0);
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {   
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_not_allowed_api_call");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "Not allowed api call",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;            
+        }   
 
-        // Users from a data store e.g. database
-        $query = $this->db->query('SELECT id, name FROM z_test_user');
-        $users = $query->result();
 
-        if (!empty($users))
-        {
-            // TODO response body 만들어주는 custom helper 만들기.
-            $response_body = [
-                'status' => TRUE,
-                'message' => 'Success',
-                'check_result' => $check_result,
-                'data' => $users
-            ];
+        $user_list = $this->my_sql->get_user_list();
+        $output["user_list"] = $user_list;
+        $output["track"] = $this->my_tracker->flush();
+        $this->respond_200($output);
 
-            // OK (200) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
-        }
-        else
-        {
-            // TODO response body 만들어주는 custom helper 만들기.
-            $response_body = [
-                'status' => FALSE,
-                'message' => 'User could not be found',
-                'check_result' => $check_result,
-                'data' => $users
-            ];
-
-            // NOT_FOUND (404) being the HTTP response code
-            $this->set_response($response_body, REST_Controller::HTTP_NOT_FOUND); 
-        }
     }
 
     // @ Desc : 비밀 번호를 해싱해서 돌려줍니다.
@@ -1690,8 +1702,6 @@ class Users extends MY_REST_Controller {
             $user = $this->my_sql->get_user_by_id($user_id);
             $output["user"] = $user;
         }
-
-        // wonder.jung
 
         $this->respond_200($output);
     }

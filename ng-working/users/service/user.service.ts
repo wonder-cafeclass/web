@@ -15,6 +15,8 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class UserService {
 
+  private getUserListUrl = '/CI/index.php/api/users/list';
+
   private getUserByEmailUrl = '/CI/index.php/api/users/email';
   private getUserByFacebookIdUrl = '/CI/index.php/api/users/facebook';
   private getUserByKakaoIdUrl = '/CI/index.php/api/users/kakao';
@@ -52,6 +54,24 @@ export class UserService {
 
   }
 
+  getUserList (apiKey:string): Promise<MyResponse> {
+
+    // wonder.jung
+    if(this.isDebug()) console.log("user.service / getUserList / 시작");
+    if(this.isDebug()) console.log("user.service / getUserList / apiKey : ",apiKey);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.getUserListUrl);
+    let params = {}
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  }  
+
   setWatchTower(watchTower:MyEventWatchTowerService):void {
     this.watchTower = watchTower;
   }
@@ -63,6 +83,8 @@ export class UserService {
 
     return this.watchTower.isDebug();
   }  
+
+
 
   getUserByEmail (email:string): Promise<MyResponse> {
 

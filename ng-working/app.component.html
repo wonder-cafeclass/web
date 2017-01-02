@@ -8,20 +8,6 @@
 	      	<!-- 운영툴에서만 노출되는 아이콘 -->
 	      	<debug-btn *ngIf="isAdmin"></debug-btn>
 
-	      	<!-- REMOVE ME
-	      	<img 
-	      	*ngIf="isDebugging"
-	      	(click)="onClickToggleDebugging($event)"
-	      	class="watchtower" 
-	      	src={{imageService.get(imageService.watchTowerUrl)}}>
-
-	      	<img 
-	      	*ngIf="isAdmin===true && !isDebugging" 
-	      	(click)="onClickToggleDebugging($event)"
-	      	class="watchtower" 
-	      	src={{imageService.get(imageService.watchTowerGrayUrl)}}>
-	      	-->
-
 			<a class="navbar-brand cc-logo-anchor" href="#">
 
 				<img 
