@@ -28,6 +28,9 @@ export class User {
 	private myBirthday:HelperMyBirthday=null;
 	private myIs:HelperMyIs=null;
 
+	public isDuplicatedMobile:boolean = false;
+	public isDuplicatedEmail:boolean = false;
+
 	constructor() {
 		this.myMobile = new HelperMyMobile();
 		this.myBirthday = new HelperMyBirthday();
@@ -442,5 +445,40 @@ export class User {
 		}
 
 		return true;
-	}	
+	}
+
+	isNotOK() :boolean {
+		return !this.isOK();
+	}
+
+	isOK() :boolean {
+
+		if(null == this.name || "" === this.name) {
+			return false;
+		}
+		if(null == this.email || "" === this.email) {
+			return false;
+		}
+		if(this.isDuplicatedEmail) {
+			return false;
+		}
+		if(null == this.nickname || "" === this.nickname) {
+			return false;
+		}
+		if(null == this.gender || "" === this.gender) {
+			return false;
+		}
+		if(null == this.thumbnail || "" === this.thumbnail) {
+			return false;
+		}
+		if(null == this.mobile || "" === this.mobile) {
+			return false;
+		}
+		if(this.isDuplicatedMobile) {
+			return false;
+		}
+
+		return true;		
+
+	} // end method
 }

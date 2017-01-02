@@ -586,9 +586,12 @@ export class MobileComponent implements OnInit, AfterViewInit {
 
   hideTooltipBody(sec:number) :void {
 
-    if(null == sec || !(0 < sec)) {
+    if(0 === sec) {
+      this.tooltipBodyMsg = null;
+      return;
+    } else if(null == sec) {
       sec = 3;
-    }
+    } // end if
 
     let _self = this;
     setTimeout(function() {
@@ -596,7 +599,7 @@ export class MobileComponent implements OnInit, AfterViewInit {
       _self.tooltipBodyMsg = null;
     }, 1000 * sec);        
 
-  }   
+  } // end method
 
   hideTooltipTail(sec:number) :void {
 

@@ -481,15 +481,19 @@ var MobileComponent = (function () {
         }, 1000 * sec);
     };
     MobileComponent.prototype.hideTooltipBody = function (sec) {
-        if (null == sec || !(0 < sec)) {
-            sec = 3;
+        if (0 === sec) {
+            this.tooltipBodyMsg = null;
+            return;
         }
+        else if (null == sec) {
+            sec = 3;
+        } // end if
         var _self = this;
         setTimeout(function () {
             // 메시지를 3초 뒤에 화면에서 지웁니다.
             _self.tooltipBodyMsg = null;
         }, 1000 * sec);
-    };
+    }; // end method
     MobileComponent.prototype.hideTooltipTail = function (sec) {
         if (null == sec || !(0 < sec)) {
             sec = 3;

@@ -24,6 +24,8 @@ var User = (function () {
         this.myMobile = null;
         this.myBirthday = null;
         this.myIs = null;
+        this.isDuplicatedMobile = false;
+        this.isDuplicatedEmail = false;
         this.isAdmin = false;
         this.myMobile = new my_mobile_1.HelperMyMobile();
         this.myBirthday = new my_birthday_1.HelperMyBirthday();
@@ -349,6 +351,36 @@ var User = (function () {
         }
         return true;
     };
+    User.prototype.isNotOK = function () {
+        return !this.isOK();
+    };
+    User.prototype.isOK = function () {
+        if (null == this.name || "" === this.name) {
+            return false;
+        }
+        if (null == this.email || "" === this.email) {
+            return false;
+        }
+        if (this.isDuplicatedEmail) {
+            return false;
+        }
+        if (null == this.nickname || "" === this.nickname) {
+            return false;
+        }
+        if (null == this.gender || "" === this.gender) {
+            return false;
+        }
+        if (null == this.thumbnail || "" === this.thumbnail) {
+            return false;
+        }
+        if (null == this.mobile || "" === this.mobile) {
+            return false;
+        }
+        if (this.isDuplicatedMobile) {
+            return false;
+        }
+        return true;
+    }; // end method
     return User;
 }());
 exports.User = User;
