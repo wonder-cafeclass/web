@@ -301,10 +301,6 @@ var LoginComponent = (function () {
                 } // end if
             }
             else if (myResponse.isFailed()) {
-                if (_this.isDebug())
-                    console.log("login / getUserByEmail / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
-                _this.warningMsgHead = warningMsgHead;
-                _this.warningMsgTail = warningMsgTail;
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 } // end if

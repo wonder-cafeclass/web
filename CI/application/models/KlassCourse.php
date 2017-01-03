@@ -143,6 +143,7 @@ class KlassCourse {
 
         private $delimiter="|||";
 
+        // @ Deprecated
         public function time_begin_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -211,6 +212,7 @@ class KlassCourse {
                 }
         }
 
+        // @ Deprecated
         public function level_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -280,7 +282,7 @@ class KlassCourse {
                         $this->level_img_url = $my_path->get($this->level_img_url);
                 }
         } 
-
+        // @ Deprecated
         public function set_days_list($const_map=null)
         {
                 if(empty($this->days))
@@ -300,7 +302,7 @@ class KlassCourse {
                 $class_days_list = $const_map->{"class_days_list"};
 
                 // "|"로 구분된 요일 정보를 분리해서 전달한다.
-                $days_list = explode("|", $class_days);
+                $days_list = explode($this->delimiter, $class_days);
 
                 // 요일들의 유효성을 검사한다.
                 $class_day_map = array();
@@ -369,6 +371,7 @@ class KlassCourse {
                 return $this->days_list;
         }
 
+        // @ Deprecated
         // @ Desc : 수업 요일 검색을 위한 맵 객체를 만들어 반환합니다.
         public function get_days_map()
         {
@@ -387,6 +390,7 @@ class KlassCourse {
                 return $days_map;
         }
 
+        // @ Deprecated
         public function days_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -462,6 +466,7 @@ class KlassCourse {
 
         }  
 
+        // @ Deprecated
         public function venue_subway_station_img_url($const_map=null, $my_path=null)
         {
                 if(!isset($const_map)) 
@@ -594,7 +599,7 @@ class KlassCourse {
                         return;
                 }
 
-                $discounts = explode("|",$this->discount);
+                $discounts = explode($this->delimiter,$this->discount);
                 if(empty($discounts))
                 {
                         return;

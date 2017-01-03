@@ -29,6 +29,13 @@
   border-top-left-radius: 4px;
   cursor: pointer;
 }
+.img-teacher {
+  position: absolute;
+  margin: 10px;
+  height: 60px;
+  border: 2px solid #f5f5f5;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+}
 .klass-row-image {
   padding: 0px;
   border: 0px;
@@ -47,7 +54,7 @@
   bottom: 0%;
   left: 0px;
   width: 100%;
-  height: 20%;
+  height: 45px;
   background-color: #000;
   opacity: .8;
 }
@@ -75,6 +82,9 @@ li.shim {
   border: 0px;
   background-color: #f9f9f9;  
   cursor: pointer;
+}
+li.my-style {
+  padding-left: 10px;
 }
 .unselectable {
   -webkit-touch-callout: none;

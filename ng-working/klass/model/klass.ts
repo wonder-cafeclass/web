@@ -354,36 +354,6 @@ export class Klass {
         return this.klassVenue;
     }
 
-
-    /*
-    // @ Desc : 수업의 특징을 1열 추가합니다.
-    addFeature(feature:string):void {
-
-        if(null == feature || "" === feature) {
-            return;
-        }
-
-        let featureList:string[] = this.getFeatureList();
-        if(null == featureList) {
-            featureList = [];
-        }
-
-        featureList.push(feature);
-
-        this.feature = featureList.join(this.delimiter);
-
-    } // end method
-    removeFeature(feature:string):void {
-
-        if(null == feature || "" === feature) {
-            return;
-        }
-
-        // Do somthing...
-
-    }
-    */
-
     // @ Desc : 수업이 있는 요일을 추가합니다.
     addDay(day:string, imgUrl:string) :void {
 

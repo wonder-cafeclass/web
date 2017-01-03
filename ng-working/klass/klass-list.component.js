@@ -46,8 +46,8 @@ var KlassListComponent = (function () {
         this.prevSelectileMap = null;
     }
     KlassListComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -191,7 +191,6 @@ var KlassListComponent = (function () {
             console.log("klass-list / getKlassList / 시작");
         if (this.isDebug())
             console.log("klass-list / getKlassList / isTeacher : ", isTeacher);
-        // 1. 선생님인 경우, 자신의 수업을 추가한 리스트를 가져와야 합니다.
         this.klassService
             .getKlasses()
             .then(function (myResponse) {
@@ -632,5 +631,5 @@ var KlassListComponent = (function () {
     ], KlassListComponent);
     return KlassListComponent;
 }());
-exports.KlassListComponent = KlassListComponent;
+exports.KlassListComponent = KlassListComponent; // end class
 //# sourceMappingURL=klass-list.component.js.map

@@ -257,18 +257,59 @@ export class KlassDetailComponent implements AfterViewInit {
       (loginTeacher:Teacher) => {
 
       if(this.isDebug()) console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ",loginTeacher);
-    
-      // 로그인한 선생님 정보가 들어왔습니다.
-      this.loginTeacher = new Teacher().setJSON(loginTeacher);
 
       this.loginUser = this.watchTower.getLoginUser();
       if(null != this.loginUser) {
         this.isAdmin = this.loginUser.getIsAdmin();
-        this.isTeacher = this.loginUser.isTeacher();
       } // end if
+
+      // 로그인한 선생님 정보가 들어왔습니다.
+      this.loginTeacher = new Teacher().setJSON(loginTeacher);
+      this.updateIsTeacher();
 
     }); // end subscribe
   }   
+
+  private updateIsTeacher() :void {
+
+    if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 시작");
+
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / this.loginUser is not valid!");
+      return;
+    }
+    if(null == this.loginTeacher) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / this.loginTeacher is not valid!");
+      return;
+    }
+    if(null == this.klass) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / this.klass is not valid!");
+      return;
+    }
+    if(null == this.klass.teacher_id) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / this.klass.teacher_id is not valid!");
+      return;
+    }
+
+    let teacherIdLogin:number = this.loginTeacher.id;
+    if(!(0 < teacherIdLogin)) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / teacherIdLogin is not valid!");
+      return;
+    }
+    let teacherIdKlass:number = this.klass.teacher_id;
+    if(!(0 < teacherIdKlass)) {
+      if(this.isDebug()) console.log("klass-detail / updateIsTeacher / 중단 / teacherIdKlass is not valid!");
+      return;
+    }
+
+    if(this.isDebug()) console.log("klass-detail / updateIsTeacher / teacherIdLogin : ",teacherIdLogin);
+    if(this.isDebug()) console.log("klass-detail / updateIsTeacher / teacherIdKlass : ",teacherIdKlass);
+
+    this.isTeacher = (teacherIdLogin === teacherIdKlass)?true:false;
+
+    if(this.isDebug()) console.log("klass-detail / updateIsTeacher / this.isTeacher : ",this.isTeacher);
+
+  }
 
   private init():void {
 
@@ -290,17 +331,17 @@ export class KlassDetailComponent implements AfterViewInit {
     if(null != this.loginUser) {
       // 1-1. 이미 등록되어 있는 로그인 정보가 있는 경우.
       this.isAdmin = this.loginUser.getIsAdmin();
-      this.isTeacher = this.loginUser.isTeacher();
-    }
-
-    this.loginTeacher = this.watchTower.getLoginTeacher();
+      this.loginTeacher = this.loginUser.getTeacher();
+      this.updateIsTeacher();
+    } // end if
+    
     if(null == this.loginTeacher) {
       // 1-2. 선생님 로그인 정보가 없다!
       // 2. 선생님 로그인 정보가 업데이트 되는 것을 비동기로 기다린다.
       this.subscribeLoginTeacher();
-    }
+    } // end if
 
-  }
+  } // end method
 
   private setDefaultComponents() :void {
 
@@ -1131,6 +1172,8 @@ export class KlassDetailComponent implements AfterViewInit {
     this.setKlassDateEnrollmentView();
     this.setKlassDateEnrollmentInput();
 
+    this.updateIsTeacher();
+
     // set image-grid service
     let classBannerUrlArr:string[] = this.klassCopy.class_banner_url_arr;
     if(null != classBannerUrlArr && 0 < classBannerUrlArr.length) {
@@ -1141,8 +1184,7 @@ export class KlassDetailComponent implements AfterViewInit {
       } // end for
     } // end if
 
-
-  }
+  } // end method
 
   private setKlassBannerImageUploader():void {
     // Set image uploader props

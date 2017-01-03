@@ -1448,6 +1448,8 @@ class MY_Sql
 
     public function select_klass_list($offset=-1, $limit=-1)
     {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
         if(!(0 < $offset)) 
         {
             $offset = 0;
@@ -1457,18 +1459,79 @@ class MY_Sql
             $limit = 20;
         }
 
-        $this->CI->db->limit($offset, $limit);  // Produces: LIMIT 20, 10
-        $this->CI->db->order_by('id', 'DESC');
+        // wonder.jung
 
-        $sql = $this->CI->db->get_compiled_select('klass');
-        $this->set_last_query($sql);
+        // TODO : A 상태인 수업만 노출해야 합니다.
 
-        $query = $this->CI->db->get('klass');
+        $select_query = 
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
 
-        $klass_list = $this->decorate_klass($query);
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
 
-        return $klass_list;
-    }
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+        'klass.venue_longitude AS klass_venue_longitude,'.
+
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+        'klass.class_banner_url AS klass_class_banner_url,'.
+
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.
+
+        'teacher.id AS teacher_id,'.
+        'teacher.user_id AS teacher_user_id,'.
+        'teacher.nickname AS teacher_nickname,'.
+        'teacher.name AS teacher_name,'.
+        'teacher.gender AS teacher_gender,'.
+        'teacher.birthday AS teacher_birthday,'.
+        'teacher.thumbnail AS teacher_thumbnail,'.
+        'teacher.status AS teacher_status,'.
+        'teacher.mobile AS teacher_mobile,'.
+        'teacher.email AS teacher_email,'.
+        'teacher.resume AS teacher_resume,'.
+        'teacher.greeting AS teacher_greeting,'.
+        'teacher.memo AS teacher_memo,'.
+        'teacher.date_created AS teacher_date_created,'.
+        'teacher.date_updated AS teacher_date_updated'
+        ;
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        $query = $this->CI->db->get();
+
+        return $query->result_object();
+
+    } // end method
 
     public function select_klass_question_list($klass_id=-1)
     {
@@ -2137,8 +2200,7 @@ class MY_Sql
         }
         if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_telephone\", $venue_telephone)");
-            return;
+            $venue_telephone = "";
         }
         if($this->is_not_ok("klass_venue_address", $venue_address))
         {
@@ -2880,15 +2942,19 @@ class MY_Sql
         $limit = 1;
         $offset = 0;
         $query = $this->CI->db->get('klass', $limit, $offset);
+
+        /*
         $klass_list = $this->decorate_klass($query);
+
         $klass = null;
         if(!empty($klass_list)) 
         {
             $klass = $klass_list[0];
             $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
         }
+        */
 
-        return $klass;
+        return $query;
     }
     public function select_klass_by_teacher($teacher_id=-1) 
     {
@@ -2918,14 +2984,17 @@ class MY_Sql
     }    
     private function decorate_klass($query=null) 
     {
-        if(is_null($query)) {
-            return;
-        }
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
+        if(is_null($query)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$query)");
+            return;
+        } // end if
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
-        }
+        } // end if
         $rows = $query->custom_result_object('KlassCourse');
         $output = array();
         foreach ($rows as $row)
@@ -2934,23 +3003,13 @@ class MY_Sql
             $row->time_begin_img_url($const_map, $this->CI->my_path);
             $row->level_img_url($const_map, $this->CI->my_path);
             $row->set_days_list($const_map);
-            $row->days_img_url($const_map, $this->CI->my_path);
-            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
-            $row->venue_cafe_logo_img_url($const_map, $this->CI->my_path);
-            $row->price_with_format();
-            $row->set_klass_price_list();
-            $row->weeks_to_months();
 
-            // 이미지 주소가 http|https로 시작되지 않을 경우는 내부 주소로 파악, web root domain을 찾아 추가해준다.
-            $row->class_img_err_url = $this->CI->my_path->get("/assets/images/event/error.svg");
-            if(empty($row->class_poster_url)) {
-                $row->class_poster_url = "";
-                $row->class_poster_url_loadable = $this->CI->my_path->get("/assets/images/class/poster/no_cover_image.jpg");
-            }
-            else
-            {
-                $row->class_poster_url_loadable = $this->CI->my_path->get_loadable_url_class_poster($row->class_poster_url);   
-            }
+            $row->days_img_url($const_map, $this->CI->my_path);
+            
+            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
+
+            $row->price_with_format();
+            $row->weeks_to_months();
 
             // Set number type
             $row->id = intval($row->id);
@@ -2961,34 +3020,6 @@ class MY_Sql
             $row->time_duration_minutes = intval($row->time_duration_minutes);
             $row->week = intval($row->week);
 
-            // 주당 수업 가격에 대해 계산한다.
-            // 기본 4주/8주/12주 단위로 제공된다. 수업 기간에 따라 가격표가 최대 3개까지 표시될 수 있다.
-            // 최소 주당 단위가 수업 주수를 결정하는 단위가 된다.
-            $price = $row->price = intval($row->price);
-            $week_max = $row->week_max = intval($row->week_max);
-            $week_min = $row->week_min = intval($row->week_min);
-            $week_unit_cnt = ($week_max / $week_min);
-
-            // 주당 가격 산정은 다음과 같다. 
-            // 최소 수업 단위 가격 =  수업가격 / 최소 주 수업
-            $fee_per_a_week = $price/$week_min;
-
-            $row->week_list = array();
-            $row->price_list = array();
-            $row->weekly_price_list = array();
-            for ($i=1; $i <= $week_unit_cnt; $i++) { 
-                $next_weeks = $week_min * $i;
-                array_push($row->week_list, $next_weeks);
-                $next_price = $fee_per_a_week * $week_min * $i;
-                array_push($row->price_list, $next_price);
-
-                $weeky_price = [
-                    'weeks'=>$next_weeks,
-                    'price'=>$next_price
-                ];
-                array_push($row->weekly_price_list, $weeky_price);
-            }
-            
             array_push($output, $row);
         }
 

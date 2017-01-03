@@ -393,10 +393,6 @@ export class LoginComponent implements AfterViewInit {
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("login / getUserByEmail / 중단 / 회원 인증에 실패했습니다. 메시지를 화면에 노출합니다.");
-        this.warningMsgHead = warningMsgHead;
-        this.warningMsgTail = warningMsgTail;
-
         if(null != myResponse.error) {
           this.watchTower.announceErrorMsgArr([myResponse.error]);
         } // end if
