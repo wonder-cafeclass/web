@@ -384,27 +384,24 @@ var Klass = (function () {
             var klassCalDayList = klassCalendar.getDayList();
             for (var j = 0; j < klassCalDayList.length; ++j) {
                 var klassCalDay = klassCalDayList[j];
+                if (isDebug)
+                    console.log("klass / getEnrollmentDateList / klassCalDay : ", klassCalDay);
                 if (null === klassCalDay) {
+                    if (isDebug)
+                        console.log("klass / getEnrollmentDateList / 중단 / null === klassCalDay");
                     continue;
                 }
                 if (klassCalDay.isExpired) {
+                    if (isDebug)
+                        console.log("klass / getEnrollmentDateList / 중단 / klassCalDay.isExpired");
                     continue;
                 }
                 if (!klassCalDay.hasKlass) {
+                    if (isDebug)
+                        console.log("klass / getEnrollmentDateList / 중단 / !klassCalDay.hasKlass");
                     continue;
                 }
-                if (4 == +this.enrollment_interval_week && !klassCalDay.isEnrollment4weeks) {
-                    continue;
-                }
-                else if (2 == +this.enrollment_interval_week && !klassCalDay.isEnrollment2weeks) {
-                    continue;
-                }
-                else if (1 == +this.enrollment_interval_week && !klassCalDay.isEnrollmentWeek) {
-                    continue;
-                }
-                if (klassCalDay.isEnrollment) {
-                    enrollmentDateList.push(klassCalDay);
-                } // end if
+                enrollmentDateList.push(klassCalDay);
             } // end for
         } // end for
         if (isDebug)
@@ -413,7 +410,13 @@ var Klass = (function () {
     };
     // @ Desc : 가장 최근 수업 등록 가능한 날짜(수업 시작 날짜) 를 가져옵니다.
     Klass.prototype.getEnrollmentDate = function () {
+        // let isDebug:boolean = true;
+        var isDebug = false;
+        if (isDebug)
+            console.log("klass / getEnrollmentDate / 시작");
         var enrollmentDateList = this.getEnrollmentDateList();
+        if (isDebug)
+            console.log("klass / getEnrollmentDate / enrollmentDateList : ", enrollmentDateList);
         if (null == enrollmentDateList || 0 == enrollmentDateList.length) {
             return "";
         } // end if
