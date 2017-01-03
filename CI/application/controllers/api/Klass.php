@@ -279,8 +279,6 @@ class Klass extends MY_REST_Controller {
 
     public function list_get()
     {
-        // wonder.jung
-
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1835,235 +1833,60 @@ class Klass extends MY_REST_Controller {
         } // end if
     }
 
-    /*
-    public function addbanner_post() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $output = array();
-        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
-        if($is_not_allowed_api_call) 
-        {   
-            $this->respond_200_Failed(
-                // $msg=""
-                "Not allowed api call",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );
-            return;
-        }
-
-        $user_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "user_id",
-            // $key_filter=""
-            "user_id"
-        );
-        $klass_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_id",
-            // $key_filter=""
-            "klass_id"
-        );
-        $klass_banner_url = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_banner_url",
-            // $key_filter=""
-            "klass_banner_url"
-        );
-
-        $output = array();
-        $output["params"] = 
-        [
-            "klass_id"=>$klass_id,
-            "klass_banner_url"=>$klass_banner_url
-        ];
-
-        $is_ok = true;
-        $check_list = 
-        $this->my_paramchecker->get_check_list();
-        $output["check_list"] = $check_list;
-        if($this->my_paramchecker->has_check_list_failed())
-        {
-            $is_ok = false;
-        }
-        
-        if($is_ok) {
-
-            $this->my_sql->add_klass_banner(
-                // $user_id=-1, 
-                $user_id,
-                // $klass_id=-1, 
-                $klass_id,
-                // $klass_banner_url_to_add=""
-                $klass_banner_url
-            );
-            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
-            $this->respond_200($output);
-
-        } else {
-            $this->respond_200_Failed(
-                // $msg=""
-                "addbanner_post is failed!",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );            
-        } // end if
-    }
-
-    public function removebanner_post() 
-    {
-        if($this->is_not_ok()) {
-            return;
-        }
-
-        $output = array();
-        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
-        if($is_not_allowed_api_call) 
-        {   
-            $this->respond_200_Failed(
-                // $msg=""
-                "Not allowed api call",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );
-            return;
-        }
-
-        $user_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "user_id",
-            // $key_filter=""
-            "user_id"
-        );
-        $klass_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_id",
-            // $key_filter=""
-            "klass_id"
-        );
-        $klass_banner_url = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_banner_url",
-            // $key_filter=""
-            "klass_banner_url"
-        );
-
-        $output = array();
-        $output["params"] = 
-        [
-            "user_id"=>$user_id,
-            "klass_id"=>$klass_id,
-            "klass_banner_url"=>$klass_banner_url
-        ];
-
-        $is_ok = true;
-        $check_list = 
-        $this->my_paramchecker->get_check_list();
-        $output["check_list"] = $check_list;
-        if($this->my_paramchecker->has_check_list_failed())
-        {
-            $is_ok = false;
-        }
-        
-        if($is_ok) {
-
-            $this->my_sql->remove_klass_banner(
-                // $user_id=-1, 
-                $user_id,
-                // $klass_id=-1, 
-                $klass_id,
-                // $klass_banner_url_to_add=""
-                $klass_banner_url
-            );
-            $output["query"] = $this->my_sql->get_last_query();
-
-            // 해당 파일을 삭제합니다.
-            $this->my_thumbnail->delete_thumbnail_klass_banner($klass_banner_url);
-
-            $output["klass_banner_list"] = $this->my_sql->get_klass_banner_list($klass_id);
-            $this->respond_200($output);
-
-        } else {
-            $this->respond_200_Failed(
-                // $msg=""
-                "removebanner_post is failed!",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );            
-        } // end if
-    }
-    */
-
     public function search_get() 
     {
-        if($this->is_not_ok()) {
-            return;
-        }
-
         $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "\$this->is_not_ok()",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
+            return;
+        } // end if        
+
         $q = 
-        $this->my_paramchecker->post(
+        $this->my_paramchecker->get(
             // $key=""
             "q",
             // $key_filter=""
             "klass_query"
         );
         $level = 
-        $this->my_paramchecker->post(
+        $this->my_paramchecker->get(
             // $key=""
             "level",
             // $key_filter=""
             "klass_level"
         );
         $station = 
-        $this->my_paramchecker->post(
+        $this->my_paramchecker->get(
             // $key=""
             "station",
             // $key_filter=""
             "klass_station"
         );
         $day = 
-        $this->my_paramchecker->post(
+        $this->my_paramchecker->get(
             // $key=""
             "day",
             // $key_filter=""
             "klass_day"
         );
         $time = 
-        $this->my_paramchecker->post(
+        $this->my_paramchecker->get(
             // $key=""
             "time",
             // $key_filter=""
@@ -2090,18 +1913,24 @@ class Klass extends MY_REST_Controller {
             // $time=""
             $time
         );
+
+        // wonder.jung
+        $klass_list = $this->decorate_klass($klass_list);
         $output["klass_list"] = $klass_list;
+
         $new_klass = $this->get_klass_course_new_class();
         $output["new_klass"] = [$new_klass];
 
         if (empty($klass_list))
         {
-            // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "조회한 결과가 없는 경우, \"수업없음\" 클래스 정보를 내려준다.");
             $no_klass = $this->get_klass_course_no_class();
             $output["klass_list"] = [$no_klass];
         }
+
+        $output["track"] = $this->my_tracker->flush();
         $this->respond_200($output);
-    }
+    } // end method
     private function get_class_img_default() 
     {
         return $this->my_paramchecker->get_const_from_list(
@@ -2518,7 +2347,6 @@ class Klass extends MY_REST_Controller {
         {
             // join으로 가져온 klass와 teacher의 정보를 나눕니다.
 
-            // wonder.jung
             $klassCourse = new KlassCourse();
             $klassCourse->id = intval($klass->klass_id);
             $klassCourse->title = $klass->klass_title;

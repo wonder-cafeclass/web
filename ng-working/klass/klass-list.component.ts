@@ -1,5 +1,4 @@
 import {  Component, 
-          OnInit, 
           EventEmitter, 
           AfterViewInit,
           Output }                         from '@angular/core';
@@ -23,6 +22,7 @@ import { MyEventWatchTowerService }        from '../util/service/my-event-watcht
 import { MyCheckerService }                from '../util/service/my-checker.service';
 import { MyResponse }                      from '../util/model/my-response';
 import { HelperMyIs }                      from '../util/helper/my-is';
+import { HelperMyArray }                   from '../util/helper/my-array';
 
 import { UserService }                     from '../users/service/user.service';
 import { User }                            from '../users/model/user';
@@ -34,7 +34,7 @@ import { Teacher }                         from '../teachers/model/teacher';
   styleUrls: ['klass-list.component.css'],
   templateUrl: 'klass-list.component.html',
 })
-export class KlassListComponent implements OnInit, AfterViewInit {
+export class KlassListComponent implements AfterViewInit {
 
   klasses: Klass[];
   public selectedId: number;
@@ -51,7 +51,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   isAdmin:boolean=false;
   errorMsgArr: string[]=[];
 
-  private helperMyIs:HelperMyIs;
+  private myIs:HelperMyIs;
+  private myArray:HelperMyArray;
 
   constructor(
     private klassService:KlassService,
@@ -63,7 +64,14 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     private myCheckerService:MyCheckerService,
     private route:ActivatedRoute,
     private router:Router
-  ) { }
+  ) { 
+
+    this.myIs = new HelperMyIs();
+    this.myArray = new HelperMyArray();
+
+    this.klassService.setWatchTower(this.watchTower);
+
+  }
 
   private isDebug():boolean {
     // return true;
@@ -72,12 +80,6 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   isSelected(klass: Klass): boolean {
     return klass.id === this.selectedId;
-  }
-
-  ngOnInit(): void {
-
-    if(this.isDebug()) console.log("klass-list / ngOnInit / 시작");
-
   }
 
   ngAfterViewInit(): void {
@@ -341,21 +343,38 @@ export class KlassListComponent implements OnInit, AfterViewInit {
     ).then((myResponse:MyResponse) => {
       if(this.isDebug()) console.log("klass-list / search / myResponse : ",myResponse);
 
-      if(myResponse.isSuccess()) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
 
         // 성공!
 
-      } else {
+        let klassJSONList:any[] = myResponse.getDataProp("klass_list");
+        let klassListNext:Klass[] = [];
+        for (var i = 0; i < klassJSONList.length; ++i) {
+          let klassJSON:any = klassJSONList[i];
+          let klass:Klass = new Klass().setJSON(klassJSON);
+          klassListNext.push(klass);
+        }
+
+        if(this.myArray.isOK(klassListNext)) {
+          if(this.isDebug()) console.log("klass-list / search / klassListNext : ",klassListNext);
+          this.klasses = klassListNext;
+        } // end if
+
+      } else if(myResponse.isFailed()){
+
         if(null != myResponse.error && "" != myResponse.error) {
           // 에러 내용은 화면에 표시한다.
           this.watchTower.announceErrorMsgArr([myResponse.error]);
         }
-      } // end if      
-      // wonder.jung
-      // this.klasses = klasses 
-    });
 
-  }
+        // 에러 로그 등록
+        this.watchTower.logAPIError(`klass-list / searchKlassList`);
+
+      } // end if
+
+    }); // end service
+
+  } // end method
 
   // EVENT
   private isOverMagnifier: boolean=false;
@@ -384,14 +403,19 @@ export class KlassListComponent implements OnInit, AfterViewInit {
 
   private prevSelectileMap = null;
   onChangedSelectile(selectileMap, searchBox) {
+
+    if(this.isDebug()) console.log("klass-list / onChangedSelectile / 시작");
+
     // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
-    // this.isSearchEnabled = true;
+    this.isSearchEnabled = true;
 
     if(null == selectileMap) {
       // error report
-      console.log("!Error! / onChangedSelectile");
+      if(this.isDebug()) console.log("klass-list / onChangedSelectile / 중단 / selectileMap is not valid!");
       return;
     }
+
+    if(this.isDebug()) console.log("klass-list / onChangedSelectile / selectileMap : ",selectileMap);
 
     this.search(
       selectileMap.level,
