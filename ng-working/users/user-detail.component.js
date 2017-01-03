@@ -9,13 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var router_1 = require('@angular/router');
-var user_service_1 = require('./user.service');
 var UserDetailComponent = (function () {
-    function UserDetailComponent(route, router, service) {
-        this.route = route;
-        this.router = router;
-        this.service = service;
+    function UserDetailComponent() {
     }
     Object.defineProperty(UserDetailComponent.prototype, "routeAnimation", {
         get: function () {
@@ -38,19 +33,6 @@ var UserDetailComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    UserDetailComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.route.params.forEach(function (params) {
-            var id = +params['id']; // (+) converts string 'id' to a number
-            _this.service.getUser(id).then(function (user) { return _this.user = user; });
-        });
-    };
-    UserDetailComponent.prototype.gotoUsers = function () {
-        var userId = this.user ? this.user.id : null;
-        // Pass along the user id if available
-        // so that the userList component can select that user.
-        this.router.navigate(['/users', { id: userId, foo: 'foo' }]);
-    };
     __decorate([
         core_1.HostBinding('@routeAnimation'), 
         __metadata('design:type', Object)
@@ -88,15 +70,9 @@ var UserDetailComponent = (function () {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, (typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [])
     ], UserDetailComponent);
     return UserDetailComponent;
-    var _a;
 }());
 exports.UserDetailComponent = UserDetailComponent;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=user-detail.component.js.map

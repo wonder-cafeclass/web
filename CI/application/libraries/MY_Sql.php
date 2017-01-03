@@ -994,6 +994,68 @@ class MY_Sql
 
 	}
 
+    public function get_admin_user_cnt() 
+    {
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method    
+
+    public function get_admin_user_list($limit=-1, $offset=-1) 
+    {
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('User');
+
+    } // end method
+
     public function get_user_list() 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);

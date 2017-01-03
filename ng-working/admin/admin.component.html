@@ -1,0 +1,38 @@
+<div class="container">
+	
+	<!-- Search Input Component -->
+	<div class="row">
+		<div class="col-lg-2">
+
+			<div class="list-group">
+
+				<a 
+				routerLink="./" 
+				routerLinkActive="my-active" 
+				[routerLinkActiveOptions]="{ exact: true }"
+				class="list-group-item">대쉬보드</a>
+
+				<a 
+				routerLink="./users" 
+				routerLinkActive="my-active" 
+				class="list-group-item">사용자</a>
+
+				<a 
+				routerLink="./klasses" 
+				routerLinkActive="my-active" 
+				class="list-group-item">수업</a>
+
+			</div>
+
+		</div>
+		<div class="col-lg-10">
+			<router-outlet></router-outlet>
+		</div>
+
+		<!-- <div class="col-lg-1"></div> -->
+
+	</div>
+</div>
+
+
+

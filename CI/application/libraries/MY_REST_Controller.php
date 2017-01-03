@@ -70,7 +70,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         // init MyLogger
         $this->load->library('MY_Logger');
 
-        // init MyLogger
+        // init MyTracker
         $this->load->library('MY_Tracker');
 
     }
@@ -87,6 +87,10 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
 
         $is_ok = true;
         if($this->my_error->hasError()) {
+
+            $data = [];
+            $data["track"] = $this->my_tracker->flush();
+
             $response_body = 
             $this->my_response->getResBodyFail(
                 // $message=""
@@ -94,7 +98,7 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
                 // $query="" 
                 "", 
                 // $data=null 
-                null, 
+                $data, 
                 // $error=null 
                 $this->my_error->get(),
                 // $extra=null
@@ -221,7 +225,20 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
             // $error_msg=""
             $error_msg
         );
-    }     
+    }   
+
+    // @ Desc : 200 응답 객체에 tracker 정보를 추가합니다.
+    public function respond_200_v2($data=null) 
+    {
+        if(is_null($data))
+        {
+            $data = [];
+        } 
+        $this->my_tracker->add_stopped($file, $function, $line, "respond_200_Failed_v2");
+        $data["track"] = $this->my_tracker->flush();
+
+        $this->respond_200($data);
+    }
 
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 성공.
@@ -239,6 +256,33 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
             $this->set_response($response_body, REST_Controller::HTTP_OK);
         }
     } 
+
+    public function respond_200_Failed_v2($file="", $function="", $line="", $data=null, $msg="", $error_msg="", $extra=null)
+    {
+        if(is_null($data))
+        {
+            $data = [];
+        } 
+        $this->my_tracker->add_stopped($file, $function, $line, $msg);
+        $data["track"] = $this->my_tracker->flush();
+
+        $this->respond_200_Failed(
+            // $msg="", 
+            $msg,
+            // $function="", 
+            $function,
+            // $file="", 
+            $file,
+            // $line="", 
+            $line,
+            // $data=null, 
+            $data,
+            // $error_msg="", 
+            $error_msg,
+            // $extra=null
+            $extra
+        );
+    }
 
     /*
     *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method. 결과는 유저 파라미터에 의한 실패.

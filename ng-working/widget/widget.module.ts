@@ -30,6 +30,7 @@ import { InputBtnsRowComponent }     	from './input-view/input-btns-row.componen
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
 import { DebugBtnComponent }      		from './debug/debug-btn.component';
 
+import { CheckBoxComponent }      		from './checkbox/checkbox.component';
 
 import { FooterComponent }         		from './footer/footer.component';
 
@@ -52,6 +53,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
+		CheckBoxComponent,
 		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,
@@ -79,6 +81,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
+		CheckBoxComponent,
 		MyTitleComponent,
 		HiddenUploaderComponent,
 		PasswordComponent,

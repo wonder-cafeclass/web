@@ -35,7 +35,8 @@ var AppComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.activatedRoute = activatedRoute;
         this.router = router;
-        this.isAdmin = false;
+        this.isAdminServer = false;
+        this.isAdminUser = false;
         this.toggleTopMenu = true;
         this.isDebugging = false;
         this.errorMsgArr = [];
@@ -46,8 +47,8 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
@@ -63,6 +64,18 @@ var AppComponent = (function () {
             console.log("app-root / ngAfterViewChecked / 시작");
         this.watchTower.announceContentHeight();
     };
+    AppComponent.prototype.updateLoginUser = function (user) {
+        if (this.isDebug())
+            console.log("app-root / updateLoginUser / 시작");
+        // 로그인한 유저 정보가 들어왔습니다.
+        this.loginUser = user;
+        if (null != user) {
+            // 운영자 유저인지 확인합니다.
+            this.isAdminUser = user.isAdminUser();
+        } // end if
+        if (this.isDebug())
+            console.log("app-root / updateLoginUser / this.isAdminUser : ", this.isAdminUser);
+    }; // end method
     AppComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
         if (this.isDebug())
@@ -93,10 +106,9 @@ var AppComponent = (function () {
                 thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
             }
             */
-            // 로그인한 유저 정보가 들어왔습니다.
-            _this.loginUser = loginUser;
-        });
-    };
+            _this.updateLoginUser(loginUser);
+        }); // end subscribe
+    }; // end method
     AppComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
         if (this.isDebug())
@@ -155,8 +167,8 @@ var AppComponent = (function () {
             if (_this.isDebug())
                 console.log("app-root / setIsAdmin / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
-                _this.isAdmin = myResponse.getDataProp("is_admin");
-                _this.watchTower.announceIsAdmin(_this.isAdmin);
+                _this.isAdminServer = myResponse.getDataProp("is_admin");
+                _this.watchTower.announceIsAdminServer(_this.isAdminServer);
             }
             else {
                 // 에러 로그 등록

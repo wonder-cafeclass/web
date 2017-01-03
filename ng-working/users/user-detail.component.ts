@@ -3,8 +3,6 @@ import { Component, OnInit, HostBinding,
          style, state } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { User, UserService }  from './user.service';
-
 @Component({
   template: `
   <h2>Users</h2>
@@ -45,7 +43,7 @@ import { User, UserService }  from './user.service';
     ])
   ]
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent {
   @HostBinding('@routeAnimation') get routeAnimation() {
     return true;
   }
@@ -58,31 +56,6 @@ export class UserDetailComponent implements OnInit {
     return 'absolute';
   }
 
-  user: User;
+  constructor() {}
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private service: UserService) {}
-
-  ngOnInit() {
-    this.route.params.forEach((params: Params) => {
-       let id = +params['id']; // (+) converts string 'id' to a number
-       this.service.getUser(id).then(user => this.user = user);
-     });
-  }
-
-  gotoUsers() {
-    let userId = this.user ? this.user.id : null;
-    // Pass along the user id if available
-    // so that the userList component can select that user.
-    this.router.navigate(['/users', { id: userId, foo: 'foo' }]);
-  }
 }
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

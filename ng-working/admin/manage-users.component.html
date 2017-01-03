@@ -1,0 +1,53 @@
+<div>
+	<ul class="list-group">
+		<li class="list-group-item">사용자 리스트</li>
+		<li class="list-group-item">검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용</li>
+		<li class="list-group-item my-style-table">
+			
+<table class="table table-bordered table-hover my-style"> 
+	<thead> 
+		<tr>
+			<th>
+				<checkbox-single 
+				[eventKey]="myEventService.KEY_CHECKBOX_ALL"
+				[metaObj]="userList"
+				(emitter)="onChangedFromChild($event)">
+				</checkbox-single>
+			</th>
+			<th>ID</th>
+			<th>섬네일</th> 
+			<th>이름</th> 
+			<th>닉네임</th> 
+			<th>이메일</th> 
+			<th>연락처</th> 
+			<th>상태</th> 
+			<th>성별</th> 
+		</tr> 
+	</thead> 
+	<tbody> 
+		<tr *ngFor="let user of userList">
+			<th scope="row">
+				<checkbox-single 
+				[eventKey]="myEventService.KEY_CHECKBOX"
+				[metaObj]="user"
+				(emitter)="onChangedFromChild($event)">
+				</checkbox-single>
+			</th> 
+			<td>{{user.id}}</td>
+			<td>
+				<img class="img-rounded my-style" src={{user.thumbnail}}>
+			</td> 
+			<td>{{user.name}}</td> 
+			<td>{{user.nickname}}</td> 
+			<td>{{user.email}}</td> 
+			<td>{{user.mobile}}</td> 
+			<td>{{user.status}}</td> <!-- 상태 한글 표시 및 수정 가능해야 함. -->
+			<td>{{user.gender}}</td>
+		</tr> 
+	</tbody> 
+</table>			
+
+		</li>
+		<li class="list-group-item">페이지네이션</li>
+	</ul>
+</div>

@@ -3,105 +3,78 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
-require APPPATH . '/libraries/REST_Controller.php';
-require APPPATH . '/libraries/MY_Class.php';
+/*
+    !Caution/주의!
 
-/**
- * Admin API
- *
- * @package         controllers
- * @subpackage      api
- * @category        Controller
- * @author          Wonder Jung
- * @license         MIT
- */
-class Admin extends REST_Controller implements MY_Class{
+    require APPPATH . '${your-class-path}';
+    ...
+    $this->load->library(${your-class-path});
+
+    // 위의 경우처럼 2번 동일한 클래스를 호출하게 되면 $this->${your-class-path} 의 경우, null을 돌려주게 됩니다.
+
+*/
+
+require APPPATH . '/libraries/MY_REST_Controller.php';
+
+/*
+*   @ Author : Wonder Jung
+*   @ Desc : 카페클래스 운영자가 사용하는 API 클래스.
+*/
+
+class Admin extends MY_REST_Controller {
 
     function __construct()
     {
         // Construct the parent class
         parent::__construct();
 
-        // Set time zone as Seoul
+        // Library Loaded from parent - MY_REST_Controller
+        /*
         date_default_timezone_set('Asia/Seoul');
-
-        // init database
         $this->load->database();
-
-        // init error logger
         $this->load->library('MY_Error');
-
-        // init path util
         $this->load->library('MY_Path');
-        
-        // init param checker
+        $this->load->library('MY_KeyValue');
         $this->load->library('MY_ParamChecker');
-
-        // init MyReponse
         $this->load->library('MY_Response');
+        $this->load->library('MY_Time');
+        $this->load->library('MY_Curl');
+        $this->load->library('MY_ApiKey');
+        $this->load->library('MY_Sql');
+        $this->load->library('user_agent');
+        $this->load->library('MY_Logger');
+        */
 
         // init Admin
         $this->load->library('MY_Auth');
+        $this->load->library('MY_Pagination');
     }
 
-    public function is_not_ok() {
-        return !$this->is_ok();
-    }
-    public function is_ok() {
+    public function auth_get() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
 
-        $is_ok = true;
-        if($this->my_error->hasError()) {
-            $response_body = 
-            $this->my_response->getResBodyFail(
-                // $message=""
-                MY_Response::$EVENT_UNKNOWN_ERROR_OCCURED, 
-                // $query="" 
-                "", 
-                // $data=null 
-                null, 
-                // $error=null 
-                $this->my_error->get(),
-                // $extra=null
-                null
-            );
-            $this->set_response($response_body, REST_Controller::HTTP_OK); 
-            $is_ok = false;
-        }
-
-        return $is_ok;
-    }
-
-    public function auth_get() {
-
-        if($this->is_not_ok()) {
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         }
 
-        $output = array();
         $output["is_admin"] = $this->my_auth->is_admin();
-        $this->respond_200($output);
 
-        // REMOVE ME
-        /*
-        $is_ok = true;
-        $response_body = 
-        $this->my_response->getResBodySuccess(
-            // $query="" 
-            "", 
-            // $data=null 
-            $output, 
-            // $error=null 
-            $this->my_error->get(),
-            // $extra=null
-            null
-        );
+        $this->respond_200_v2($output);
 
-        $this->set_response($response_body, REST_Controller::HTTP_OK);
-        */
     } 
 
-    public function checker_get() {
-        if($this->is_not_ok()) {
+    public function checker_get() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         }
         
@@ -111,46 +84,199 @@ class Admin extends REST_Controller implements MY_Class{
         $output["dirty_word_list"] = $this->my_paramchecker->get_dirty_word_list();
         $output["api_key"] = $this->my_paramchecker->get_api_key();
 
-        $this->respond_200($output);
-    } 
+        $this->respond_200_v2($output);
+    } // end method
 
-
-    /*
-    *   @ Desc : 서버 내부 에러 응답 객체를 만드는 helper method
-    */
-    public function respond_500($msg="")
+    // @ Desc : 운영자 유저를 검색합니다.
+    public function searchusersadmin_post() 
     {
-        if(empty($msg)) 
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
         {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
-        if(method_exists($this, 'set_response') && isset($this->my_response))
+        $search_query = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "search_query",
+            // $key_filter=""
+            "search_query",
+            // $is_no_record=false
+            true
+        );
+
+        $is_ok = true;
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+        if($this->my_paramchecker->has_check_list_failed())
         {
-            $this->set_response(
-                // $response_body
-                $this->my_response->getResBodyFailMsg($msg),
-                // status code
-                REST_Controller::HTTP_INTERNAL_SERVER_ERROR
+            $is_ok = false;
+        }
+
+        if($is_ok) {
+
+            // TODO - 입력된 검색어로 운영자를 찾습니다.
+
+            /*
+            $queries = array();
+
+            // 새로운 수업 질문을 추가합니다.
+            $this->my_sql->remove_klass_question(
+                // $user_id=-1, 
+                $user_id,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_question_id=-1
+                $klass_question_id
             );
-        }
-    } 
 
-    /*
-    *   @ Desc : 서버 내부 200 정상 응답 객체를 만드는 helper method
-    */
-    public function respond_200($data=null)
+            // 쿼리 가져오기
+            array_push($queries, $this->my_sql->get_last_query());
+
+            // 수업의 질문 리스트를 가져옵니다.
+            $removed_klass_question = 
+            $this->my_sql->select_klass_question_by_id(
+                // $klass_question_id=-1, 
+                $klass_question_id
+            );
+            */
+
+            $output["removed_klass_question"] = $removed_klass_question;
+            $this->respond_200_v2($output);
+        } else {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"searchadminusers_post is failed!");
+        } // end if
+    }
+
+    // @ Desc : 운영자 유저의 전체 갯수를 가져옵니다. pagination 정보도 함께 줍니다.
+    public function usersadminpagination_post()
     {
-        if(is_null($data)) 
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
         {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } // end if
+
+        $admin_user_cnt = $this->my_sql->get_admin_user_cnt();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "$admin_user_cnt");
+
+        $pagination = $this->my_pagination->get($admin_user_cnt);
+        $output["pagination"] = $pagination;
+
+        $this->respond_200_v2($output);
+    } // end method
+
+
+    // @ Desc : 운영자 유저 리스트를 가져옵니다. pagination 정보도 함께 줍니다.
+    public function usersadmin_post() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
-        if(method_exists($this, 'set_response') && isset($this->my_response))
-        {
-            $response_body = $this->my_response->getResBodySuccessData($data);
-            $this->set_response($response_body, REST_Controller::HTTP_OK);
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
         }
-    } 
+
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );        
+
+        $output = array();
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset
+        ];
+
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+
+        $admin_user_list = 
+        $this->my_sql->get_admin_user_list(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1
+            $offset
+        );
+
+        $output["admin_user_list"] = $admin_user_list;
+        $this->respond_200_v2($output);
+
+    } // end method
+
+
+
+
 
 }

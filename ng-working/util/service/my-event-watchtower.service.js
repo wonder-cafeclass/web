@@ -20,7 +20,7 @@ var MyEventWatchTowerService = (function () {
         // private isDebug:boolean = true;
         this._isDebug = false;
         // @ Required for view
-        this.isAdmin = false;
+        this.isAdminServer = false;
         this.apiKey = "";
         this.isViewPackReady = false;
         // @ Optional for view
@@ -29,7 +29,7 @@ var MyEventWatchTowerService = (function () {
         this.isEventPackReady = false;
         // Observable sources
         // @ Required for view
-        this.isAdminSource = new Subject_1.Subject();
+        this.isAdminServerSource = new Subject_1.Subject();
         this.myCheckerServicePackReadySource = new Subject_1.Subject();
         this.isViewPackReadySource = new Subject_1.Subject();
         // @ Optional for view
@@ -46,7 +46,7 @@ var MyEventWatchTowerService = (function () {
         this.isEventPackReadySource = new Subject_1.Subject();
         // Observable streams
         // @ Required for view
-        this.isAdmin$ = this.isAdminSource.asObservable();
+        this.isAdminServer$ = this.isAdminServerSource.asObservable();
         this.myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
         this.isViewPackReady$ = this.isViewPackReadySource.asObservable();
         // @ Optional for view
@@ -65,12 +65,9 @@ var MyEventWatchTowerService = (function () {
     }
     // Service message commands
     // @ Required for view
-    MyEventWatchTowerService.prototype.announceIsAdmin = function (isAdmin) {
-        this.isAdmin = isAdmin;
-        if (null != this.loginUser) {
-            this.loginUser.setIsAdmin(this.isAdmin);
-        }
-        this.isAdminSource.next(isAdmin);
+    MyEventWatchTowerService.prototype.announceIsAdminServer = function (isAdminServer) {
+        this.isAdminServer = isAdminServer;
+        this.isAdminServerSource.next(isAdminServer);
         this.announceIsViewPackReady();
     };
     MyEventWatchTowerService.prototype.announceMyCheckerServiceReady = function (checkerMap, constMap, dirtyWordList, apiKey) {
@@ -112,7 +109,7 @@ var MyEventWatchTowerService = (function () {
     MyEventWatchTowerService.prototype.announceIsViewPackReady = function () {
         if (this._isDebug)
             console.log("my-event-watchtower / announceIsViewPackReady / \uC2DC\uC791");
-        if (null == this.isAdmin || !this.getIsMyCheckerReady()) {
+        if (null == this.isAdminServer || !this.getIsMyCheckerReady()) {
             return;
         }
         if (this._isDebug)
@@ -135,7 +132,6 @@ var MyEventWatchTowerService = (function () {
             if (null != this.loginTeacher) {
                 this.loginUser.setTeacher(this.loginTeacher);
             } // end if
-            this.loginUser.setIsAdmin(this.isAdmin); // FIX ME
         }
         this.loginAnnouncedSource.next(loginUser);
         if (this._isDebug)
@@ -243,8 +239,8 @@ var MyEventWatchTowerService = (function () {
     MyEventWatchTowerService.prototype.getLoginTeacher = function () {
         return this.loginTeacher;
     };
-    MyEventWatchTowerService.prototype.getIsAdmin = function () {
-        return this.isAdmin;
+    MyEventWatchTowerService.prototype.getIsAdminServer = function () {
+        return this.isAdminServer;
     };
     MyEventWatchTowerService.prototype.getIsDebugging = function () {
         return this.isDebugging;

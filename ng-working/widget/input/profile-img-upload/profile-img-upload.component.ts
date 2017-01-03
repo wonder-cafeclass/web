@@ -110,7 +110,7 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
   }
   private setViewPack() :void {
-    this.isAdmin = this.watchTower.getIsAdmin();
+    this.isAdmin = this.watchTower.getIsAdminServer();
     this.myCheckerService.setReady(
       // checkerMap:any
       this.watchTower.getCheckerMap(),

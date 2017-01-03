@@ -9,21 +9,67 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+var my_event_service_1 = require('../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var AdminComponent = (function () {
-    function AdminComponent() {
+    function AdminComponent(myEventService, watchTower, router) {
+        this.myEventService = myEventService;
+        this.watchTower = watchTower;
+        this.router = router;
+        this.subscribeLoginUser();
+        this.subscribeEventPack();
     }
+    AdminComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
+    AdminComponent.prototype.subscribeLoginUser = function () {
+        if (this.isDebug())
+            console.log("admin-home / subscribeLoginUser / init");
+        this.loginUser = this.watchTower.getLoginUser();
+        if (null == this.loginUser || !this.loginUser.isAdminUser()) {
+            this.goHome();
+        } // end if
+        this.init();
+    }; // end method
+    AdminComponent.prototype.goHome = function () {
+        if (this.isDebug())
+            console.log("admin-home / goHome / init");
+        this.router.navigate(["/"]);
+    };
+    AdminComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("admin-home / subscribeEventPack / init");
+        var isEventPackReady = this.watchTower.getIsEventPackReady();
+        if (this.isDebug())
+            console.log("admin-home / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+        if (this.watchTower.getIsEventPackReady()) {
+            this.init();
+        }
+        else {
+            // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+            this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
+                if (_this.isDebug())
+                    console.log("admin-home / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                _this.init();
+            }); // end subscribe
+        } // end if
+    }; // end method
+    AdminComponent.prototype.init = function () {
+        if (this.isDebug())
+            console.log("admin-home / init / 시작");
+    };
     AdminComponent = __decorate([
         core_1.Component({
-            template: "\n    <h3>ADMIN</h3>\n    <nav>\n      <a routerLink=\"./\" routerLinkActive=\"active\"\n        [routerLinkActiveOptions]=\"{ exact: true }\">Dashboard</a>\n      <a routerLink=\"./crises\" routerLinkActive=\"active\">Manage Crises</a>\n      <a routerLink=\"./heroes\" routerLinkActive=\"active\">Manage Heroes</a>\n    </nav>\n    <router-outlet></router-outlet>\n  "
+            moduleId: module.id,
+            selector: 'admin-home',
+            templateUrl: 'admin.component.html',
+            styleUrls: ['admin.component.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], AdminComponent);
     return AdminComponent;
 }());
 exports.AdminComponent = AdminComponent;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=admin.component.js.map

@@ -178,6 +178,9 @@ export class MyEventService {
     // 수업시간 뷰
     KEY_KLASS_CLOCK_VIEW:string="KEY_KLASS_CLOCK_VIEW";
 
+    KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";
+    KEY_CHECKBOX:string="KEY_CHECKBOX";
+
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

@@ -133,15 +133,14 @@ export class User {
         );
 
     } // end method	
-
-	setIsAdmin(isAdmin:boolean) :void {
-		if(null == isAdmin) {
-			return;
+	
+	// @ Desc : 사용자의 권한이 운영자인지 여부를 알려줍니다.
+	isAdminUser():boolean {
+		if(null == this.permission && "" === this.permission) {
+			return false;
 		}
-		this.isAdmin = isAdmin;
-	}
-	getIsAdmin() :boolean {
-		return this.isAdmin;
+
+		return ("A" === this.permission)?true:false;
 	}
 
 	isTeacher():boolean {

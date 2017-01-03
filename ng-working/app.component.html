@@ -6,7 +6,7 @@
 	    <div class="navbar-header">
 
 	      	<!-- 운영툴에서만 노출되는 아이콘 -->
-	      	<debug-btn *ngIf="isAdmin"></debug-btn>
+	      	<debug-btn *ngIf="isAdminServer"></debug-btn>
 
 			<a class="navbar-brand cc-logo-anchor" href="#">
 
@@ -20,6 +20,13 @@
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse">
+
+			<!-- 운영자에게 노출되는 운영탭 -->
+			<ul *ngIf="isAdminServer && isAdminUser" class="nav navbar-nav navbar-left">
+				<li>
+					<a routerLink="/admin" routerLinkActive="active">Admin</a>
+				</li>
+			</ul>
 
 			<!-- 버튼 / 로그인,가입하기 -->
 			<ul *ngIf="!loginUser" class="nav navbar-nav navbar-right">
@@ -78,7 +85,7 @@
 -->
 
 <!-- PHP Error Display For Debug -->
-<div *ngIf="isAdmin" class="row">
+<div *ngIf="isAdminServer" class="row">
 	<div *ngFor="let errorMsg of errorMsgArr">
 		<div [innerHTML]="errorMsg | safeHtml"></div>
 	</div>

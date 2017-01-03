@@ -35,6 +35,7 @@ var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var input_btns_row_component_1 = require('./input-view/input-btns-row.component');
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
 var debug_btn_component_1 = require('./debug/debug-btn.component');
+var checkbox_component_1 = require('./checkbox/checkbox.component');
 var footer_component_1 = require('./footer/footer.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
@@ -58,6 +59,7 @@ var WidgetModule = (function () {
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
+                checkbox_component_1.CheckBoxComponent,
                 my_title_component_1.MyTitleComponent,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
@@ -85,6 +87,7 @@ var WidgetModule = (function () {
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
+                checkbox_component_1.CheckBoxComponent,
                 my_title_component_1.MyTitleComponent,
                 hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,

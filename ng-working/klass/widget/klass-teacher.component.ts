@@ -23,8 +23,6 @@ import { HelperMyTime }                from '../../util/helper/my-time';
 import { HelperMyArray }               from '../../util/helper/my-array';
 import { HelperMyFormat }              from '../../util/helper/my-format';
 
-//DefaultMeta
-
 @Component({
   moduleId: module.id,
   selector: 'klass-teacher',

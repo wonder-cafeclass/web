@@ -511,34 +511,4 @@ var UserService = (function () {
     return UserService;
 }());
 exports.UserService = UserService; // end class
-// REMOVE ME
-/*
-  public getUserEmpty():User {
-    return new User();
-  }
-  public getUserFromJSON(userJSON):User {
-
-    if(null == userJSON) {
-      return null;
-    }
-
-    return new User().setJSON(userJSON);
-  }
-  public copyUser(user:User):User {
-
-    if(null == user) {
-      return;
-    }
-
-    return user.copy();
-  }
-  public isSameUser(userHead:User, userTail:User) :boolean {
-
-    if(null == userHead || null == userTail) {
-      return false;
-    }
-
-    return userHead.isSame(userTail);
-  }
-*/
 //# sourceMappingURL=user.service.js.map

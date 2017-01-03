@@ -86,14 +86,12 @@ var User = (function () {
         // json
         json);
     }; // end method	
-    User.prototype.setIsAdmin = function (isAdmin) {
-        if (null == isAdmin) {
-            return;
+    // @ Desc : 사용자의 권한이 운영자인지 여부를 알려줍니다.
+    User.prototype.isAdminUser = function () {
+        if (null == this.permission && "" === this.permission) {
+            return false;
         }
-        this.isAdmin = isAdmin;
-    };
-    User.prototype.getIsAdmin = function () {
-        return this.isAdmin;
+        return ("A" === this.permission) ? true : false;
     };
     User.prototype.isTeacher = function () {
         return (null != this.teacher) ? true : false;

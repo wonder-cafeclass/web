@@ -1,30 +1,30 @@
-import { NgModule }       from '@angular/core';
-import { CommonModule }   from '@angular/common';
+import { NgModule }                 from '@angular/core';
+import { CommonModule }             from '@angular/common';
 
 import { AdminComponent }           from './admin.component';
 import { AdminDashboardComponent }  from './admin-dashboard.component';
-import { ManageCrisesComponent }    from './manage-crises.component';
-import { ManageHeroesComponent }    from './manage-heroes.component';
+import { ManageUsersComponent }     from './manage-users.component';
+import { ManageKlassesComponent }   from './manage-klasses.component';
 
-import { adminRouting } from './admin.routing';
+import { AdminService }             from './service/admin.service';
+import { adminRouting }             from './admin.routing';
+
+import { WidgetModule }              from '../widget/widget.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    adminRouting
+    adminRouting,
+    WidgetModule
   ],
   declarations: [
     AdminComponent,
     AdminDashboardComponent,
-    ManageCrisesComponent,
-    ManageHeroesComponent
-  ]
+    ManageUsersComponent,
+    ManageKlassesComponent
+  ],
+  providers: [
+    AdminService
+  ]  
 })
 export class AdminModule {}
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

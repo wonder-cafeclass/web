@@ -10,33 +10,72 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-require('rxjs/add/operator/map');
+var my_event_service_1 = require('../util/service/my-event.service');
+var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
+var my_is_1 = require('../util/helper/my-is');
+var my_array_1 = require('../util/helper/my-array');
+var my_format_1 = require('../util/helper/my-format');
 var AdminDashboardComponent = (function () {
-    function AdminDashboardComponent(route) {
-        this.route = route;
+    function AdminDashboardComponent(myEventService, watchTower, router) {
+        this.myEventService = myEventService;
+        this.watchTower = watchTower;
+        this.router = router;
+        this.myIs = new my_is_1.HelperMyIs();
+        this.myArray = new my_array_1.HelperMyArray();
+        this.myFormat = new my_format_1.HelperMyFormat();
+        this.subscribeLoginUser();
+        this.subscribeEventPack();
     }
-    AdminDashboardComponent.prototype.ngOnInit = function () {
-        // Capture the session ID if available
-        this.sessionId = this.route
-            .queryParams
-            .map(function (params) { return params['session_id'] || 'None'; });
-        // Capture the fragment if available
-        this.token = this.route
-            .fragment
-            .map(function (fragment) { return fragment || 'None'; });
+    AdminDashboardComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
+    AdminDashboardComponent.prototype.subscribeLoginUser = function () {
+        if (this.isDebug())
+            console.log("admin-dashboard / subscribeLoginUser / init");
+        this.loginUser = this.watchTower.getLoginUser();
+        if (null == this.loginUser || !this.loginUser.isAdminUser()) {
+            this.goHome();
+        } // end if
+        this.init();
+    }; // end method
+    AdminDashboardComponent.prototype.goHome = function () {
+        if (this.isDebug())
+            console.log("admin-dashboard / goHome / init");
+        this.router.navigate(["/"]);
+    };
+    AdminDashboardComponent.prototype.subscribeEventPack = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("admin-dashboard / subscribeEventPack / init");
+        var isEventPackReady = this.watchTower.getIsEventPackReady();
+        if (this.isDebug())
+            console.log("admin-dashboard / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+        if (this.watchTower.getIsEventPackReady()) {
+            this.init();
+        }
+        else {
+            // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+            this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
+                if (_this.isDebug())
+                    console.log("admin-dashboard / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                _this.init();
+            }); // end subscribe
+        } // end if
+    }; // end method
+    AdminDashboardComponent.prototype.init = function () {
+        if (this.isDebug())
+            console.log("admin-dashboard / init / 시작");
     };
     AdminDashboardComponent = __decorate([
         core_1.Component({
-            template: "\n    <p>Dashboard</p>\n\n    <p>Session ID: {{ sessionId | async }}</p>\n    <a id=\"anchor\"></a>\n    <p>Token: {{ token | async }}</p>\n  "
+            moduleId: module.id,
+            selector: 'admin-dashboard',
+            templateUrl: 'admin-dashboard.component.html',
+            styleUrls: ['admin-dashboard.component.css']
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], AdminDashboardComponent);
     return AdminDashboardComponent;
 }());
 exports.AdminDashboardComponent = AdminDashboardComponent;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=admin-dashboard.component.js.map

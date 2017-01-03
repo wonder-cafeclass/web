@@ -162,6 +162,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE_CALC_WEEK = "KEY_KLASS_PRICE_CALC_WEEK";
         // 수업시간 뷰
         this.KEY_KLASS_CLOCK_VIEW = "KEY_KLASS_CLOCK_VIEW";
+        this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
+        this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();
