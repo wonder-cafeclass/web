@@ -255,7 +255,6 @@ class Klass extends MY_REST_Controller {
 
     public function list_get()
     {
-        // wonder.jung
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -298,6 +297,8 @@ class Klass extends MY_REST_Controller {
         );
 
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
+        $output["klass_list_src"] = $klass_list;
+
         $klass_list = $this->decorate_klass($klass_list);
         $output["klass_list"] = $klass_list;
 
@@ -314,7 +315,7 @@ class Klass extends MY_REST_Controller {
         $output["track"] = $this->my_tracker->flush();
         $this->respond_200($output);
 
-    }
+    } // end method
 
 
     public function test_get()
@@ -2469,46 +2470,98 @@ class Klass extends MY_REST_Controller {
     }
 
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
-    private function decorate_klass($query=null) 
+    private function decorate_klass($klass_list=null) 
     {
-        // wonder.jung
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
-        if(is_null($query)) {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$query)");
+        if(empty($klass_list)) {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass_list)");
             return;
         } // end if
+
         $const_map = $this->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
             $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
-        $rows = $query->custom_result_object('KlassCourse');
-        $output = array();
-        foreach ($rows as $row)
-        {
-            // 추가할 정보들을 넣는다.
-            $row = $this->get_class_poster_img_url($row);
-            $row = $this->get_time_begin_img_url($row);
-            $row = $this->get_level_img_url($row);
-            $row = $this->get_days_list($row);
-            $row = $this->get_days_img_url($row);
-            $row = $this->get_subway_station_img_url($row);
-            $row = $this->get_price_with_format($row);
 
-            // Set number type
-            $row->id = intval($row->id);
-            $row->student_cnt = intval($row->student_cnt);
-            $row->discount = intval($row->discount);
-            $row->teacher_id = intval($row->teacher_id);
-            $row->time_duration_minutes = intval($row->time_duration_minutes);
-            $row->week = intval($row->week);
+        // $rows = $query->custom_result_object('KlassCourse');
+
+        $klass_list_next = array();
+        foreach ($klass_list as $klass)
+        {
+            // join으로 가져온 klass와 teacher의 정보를 나눕니다.
+
+            // wonder.jung
+            $klassCourse = new KlassCourse();
+            $klassCourse->id = intval($klass->klass_id);
+            $klassCourse->title = $klass->klass_title;
+            $klassCourse->desc = $klass->klass_desc;
+            $klassCourse->feature = $klass->klass_feature;
+            $klassCourse->target = $klass->klass_target;
+            $klassCourse->schedule = $klass->klass_schedule;
+            $klassCourse->date_begin = $klass->klass_date_begin;
+            $klassCourse->time_begin = $klass->klass_time_begin;
+            $klassCourse->time_duration_minutes = intval($klass->klass_time_duration_minutes);
+            $klassCourse->time_end = $klass->klass_time_end;
+            $klassCourse->level = $klass->klass_level;
+            $klassCourse->week = intval($klass->klass_week);
+            $klassCourse->days = $klass->klass_days;
+
+            $klassCourse->subway_line = $klass->klass_subway_line;
+            $klassCourse->subway_station = $klass->klass_subway_station;
+
+            $klassCourse->venue_title = $klass->klass_venue_title;
+            $klassCourse->venue_telephone = $klass->klass_venue_telephone;
+            $klassCourse->venue_address = $klass->klass_venue_address;
+            $klassCourse->venue_road_address = $klass->klass_venue_road_address;
+            $klassCourse->venue_latitude = $klass->klass_venue_latitude;
+            $klassCourse->venue_longitude = $klass->klass_venue_longitude;
+
+            $klassCourse->status = $klass->klass_status;
+            $klassCourse->price = intval($klass->klass_price);
+            $klassCourse->student_cnt = intval($klass->klass_student_cnt);
+            $klassCourse->class_poster_url = $klass->klass_class_poster_url;
+            $klassCourse->class_banner_url = $klass->klass_class_banner_url;
+
+            $klassCourse->date_created = $klass->klass_date_created;
+            $klassCourse->date_updated = $klass->klass_date_updated;
+
+            $teacher = new Teacher();
+            $teacher->id = intval($klass->teacher_id);
+            $teacher->user_id = intval($klass->teacher_user_id);
+            $teacher->nickname = $klass->teacher_nickname;
+            $teacher->name = $klass->teacher_name;
+            $teacher->gender = $klass->teacher_gender;
+            $teacher->birthday = $klass->teacher_birthday;
+            $teacher->thumbnail = $klass->teacher_thumbnail;
+            $teacher->status = $klass->teacher_status;
+            $teacher->mobile = $klass->teacher_mobile;
+            $teacher->email = $klass->teacher_email;
+            $teacher->resume = $klass->teacher_resume;
+            $teacher->greeting = $klass->teacher_greeting;
+            $teacher->memo = $klass->teacher_memo;
+            $teacher->date_created = $klass->teacher_date_created;
+            $teacher->date_updated = $klass->teacher_date_updated;
+
+            $klassCourse->teacher = $teacher;
+
+            // 추가할 정보들을 넣는다.
+            $klassCourse = $this->get_class_poster_img_url($klassCourse);
+            $klassCourse = $this->get_time_begin_img_url($klassCourse);
+            $klassCourse = $this->get_level_img_url($klassCourse);
+            $klassCourse = $this->get_days_list($klassCourse);
+            $klassCourse = $this->get_days_img_url($klassCourse);
+            $klassCourse = $this->get_subway_station_img_url($klassCourse);
+            $klassCourse = $this->get_price_with_format($klassCourse);
             
-            array_push($output, $row);
+            array_push($klass_list_next, $klassCourse);
         }
 
-        return $output;
-    }
+        return $klass_list_next;
+        
+    } // end method
+
     private function get_class_poster_img_url($klass=null)
     {
         if(is_null($klass)) 
@@ -2716,7 +2769,6 @@ class Klass extends MY_REST_Controller {
             return;
         } // end if
 
-        // wonder.jung
         $days_list = $klass->days_list;
         $days_map = $this->get_days_map($days_list);
 

@@ -29,6 +29,13 @@
   border-top-left-radius: 4px;
   cursor: pointer;
 }
+.img-teacher {
+  position: absolute;
+  margin: 10px;
+  height: 60px;
+  border: 2px solid #f5f5f5;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+}
 .klass-row-image {
   padding: 0px;
   border: 0px;
