@@ -46,8 +46,8 @@ var KlassListComponent = (function () {
         this.prevSelectileMap = null;
     }
     KlassListComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
