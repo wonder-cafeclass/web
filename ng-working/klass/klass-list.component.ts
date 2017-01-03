@@ -66,8 +66,8 @@ export class KlassListComponent implements OnInit, AfterViewInit {
   ) { }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   isSelected(klass: Klass): boolean {

@@ -180,21 +180,42 @@ class Klass extends MY_REST_Controller {
 
     public function course_get()
     {
+        // wonder.jung
+
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
         if($this->is_not_ok()) 
         {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $output["track"] = $this->my_tracker->flush();
+            $this->respond_200_Failed(
+                // $msg=""
+                "\$this->is_not_ok()",
+                // $function=""
+                __FUNCTION__,
+                // $file="" 
+                __FILE__,
+                // $line=""
+                __LINE__,
+                // $data=null
+                $output
+            );
             return;
-        }
+        } // end if        
 
-        $extra = array();
-        $extra['id'] = $id = $this->my_paramchecker->get('id','klass_id');
-
-        $extra['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
+        $param = array();
+        $param['id'] = $id = $this->my_paramchecker->get('id','klass_id');
+        $output['check_list'] = $check_list = $this->my_paramchecker->get_check_list();
+        $output['param'] = $param;
 
         $query_arr = array();
         
         // 수업 - klass 정보를 가져옵니다.
         $klass = $this->get_klass($id);
+        $output["klass_src"] = $klass;
 
+        /*
         // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
         $teacher = null;
         if(isset($klass) && isset($klass->teacher_id))
@@ -206,6 +227,7 @@ class Klass extends MY_REST_Controller {
         {
             $klass->teacher = $teacher;
         }
+        */
 
         // 수업의 리뷰를 가져옵니다.
         // $review_list = null;
@@ -230,14 +252,16 @@ class Klass extends MY_REST_Controller {
         }
 
         // 조회 결과를 가져옵니다.
-        $output = [];
         if (!empty($klass))
         {
             $output["klass"] = $klass;
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200($output);
         }
         else
         {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass)");
+            $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
                 'Klass could not be found',
@@ -255,6 +279,8 @@ class Klass extends MY_REST_Controller {
 
     public function list_get()
     {
+        // wonder.jung
+
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 

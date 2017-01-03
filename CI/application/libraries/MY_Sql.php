@@ -2938,23 +2938,72 @@ class MY_Sql
             return;
         }
 
-        $this->CI->db->where('id', $klass_id);
-        $limit = 1;
-        $offset = 0;
-        $query = $this->CI->db->get('klass', $limit, $offset);
+        $select_query = 
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
 
-        /*
-        $klass_list = $this->decorate_klass($query);
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
 
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-            $klass->calendar_table_monthly = $this->CI->my_klasscalendar->getMonthly($klass);
-        }
-        */
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+        'klass.venue_longitude AS klass_venue_longitude,'.
 
-        return $query;
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+        'klass.class_banner_url AS klass_class_banner_url,'.
+
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.
+
+        'teacher.id AS teacher_id,'.
+        'teacher.user_id AS teacher_user_id,'.
+        'teacher.nickname AS teacher_nickname,'.
+        'teacher.name AS teacher_name,'.
+        'teacher.gender AS teacher_gender,'.
+        'teacher.birthday AS teacher_birthday,'.
+        'teacher.thumbnail AS teacher_thumbnail,'.
+        'teacher.status AS teacher_status,'.
+        'teacher.mobile AS teacher_mobile,'.
+        'teacher.email AS teacher_email,'.
+        'teacher.resume AS teacher_resume,'.
+        'teacher.greeting AS teacher_greeting,'.
+        'teacher.memo AS teacher_memo,'.
+        'teacher.date_created AS teacher_date_created,'.
+        'teacher.date_updated AS teacher_date_updated'
+        ;
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.id', $klass_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.id', $klass_id);
+        $query = $this->CI->db->get();
+
+        return $query->result_object();        
+
     }
     public function select_klass_by_teacher($teacher_id=-1) 
     {
