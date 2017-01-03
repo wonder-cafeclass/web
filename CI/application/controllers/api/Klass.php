@@ -2553,6 +2553,10 @@ class Klass extends MY_REST_Controller {
             $klassCourse->date_created = $klass->klass_date_created;
             $klassCourse->date_updated = $klass->klass_date_updated;
 
+            $klassCourse->teacher_id = intval($klass->teacher_id);
+            $klassCourse->teacher_resume = $klass->teacher_resume;
+            $klassCourse->teacher_greeting = $klass->teacher_greeting;
+
             $teacher = new Teacher();
             $teacher->id = intval($klass->teacher_id);
             $teacher->user_id = intval($klass->teacher_user_id);
