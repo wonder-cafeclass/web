@@ -21,6 +21,8 @@ var klass_time_1 = require('./model/klass-time');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var my_is_1 = require('../util/helper/my-is');
+var my_array_1 = require('../util/helper/my-array');
 var user_service_1 = require('../users/service/user.service');
 var user_1 = require('../users/model/user');
 var teacher_service_1 = require('../teachers/service/teacher.service');
@@ -44,6 +46,9 @@ var KlassListComponent = (function () {
         // EVENT
         this.isOverMagnifier = false;
         this.prevSelectileMap = null;
+        this.myIs = new my_is_1.HelperMyIs();
+        this.myArray = new my_array_1.HelperMyArray();
+        this.klassService.setWatchTower(this.watchTower);
     }
     KlassListComponent.prototype.isDebug = function () {
         // return true;
@@ -51,10 +56,6 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
-    };
-    KlassListComponent.prototype.ngOnInit = function () {
-        if (this.isDebug())
-            console.log("klass-list / ngOnInit / 시작");
     };
     KlassListComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -278,18 +279,31 @@ var KlassListComponent = (function () {
         searchKeywordSafe).then(function (myResponse) {
             if (_this.isDebug())
                 console.log("klass-list / search / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
+                // 성공!
+                var klassJSONList = myResponse.getDataProp("klass_list");
+                var klassListNext = [];
+                for (var i = 0; i < klassJSONList.length; ++i) {
+                    var klassJSON = klassJSONList[i];
+                    var klass = new klass_1.Klass().setJSON(klassJSON);
+                    klassListNext.push(klass);
+                }
+                if (_this.myArray.isOK(klassListNext)) {
+                    if (_this.isDebug())
+                        console.log("klass-list / search / klassListNext : ", klassListNext);
+                    _this.klasses = klassListNext;
+                } // end if
             }
-            else {
+            else if (myResponse.isFailed()) {
                 if (null != myResponse.error && "" != myResponse.error) {
                     // 에러 내용은 화면에 표시한다.
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 }
-            } // end if      
-            // wonder.jung
-            // this.klasses = klasses 
-        });
-    };
+                // 에러 로그 등록
+                _this.watchTower.logAPIError("klass-list / searchKlassList");
+            } // end if
+        }); // end service
+    }; // end method
     KlassListComponent.prototype.onMouseenterMagnifier = function () {
         if (!this.isSearchEnabled) {
             return;
@@ -307,13 +321,18 @@ var KlassListComponent = (function () {
         }
     };
     KlassListComponent.prototype.onChangedSelectile = function (selectileMap, searchBox) {
+        if (this.isDebug())
+            console.log("klass-list / onChangedSelectile / 시작");
         // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
-        // this.isSearchEnabled = true;
+        this.isSearchEnabled = true;
         if (null == selectileMap) {
             // error report
-            console.log("!Error! / onChangedSelectile");
+            if (this.isDebug())
+                console.log("klass-list / onChangedSelectile / 중단 / selectileMap is not valid!");
             return;
         }
+        if (this.isDebug())
+            console.log("klass-list / onChangedSelectile / selectileMap : ", selectileMap);
         this.search(selectileMap.level, selectileMap.station, selectileMap.day, selectileMap.time, searchBox.value);
     };
     KlassListComponent.prototype.onClickSearchInput = function (event, searchBox) {

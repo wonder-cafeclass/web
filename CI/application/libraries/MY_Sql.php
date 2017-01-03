@@ -1356,8 +1356,7 @@ class MY_Sql
         return $row;
     } 
 
-
-    public function search_klass($q="", $level="", $station="", $day="", $time="")
+    private function set_where_on_search_klass($q="", $level="", $station="", $day="", $time="")
     {
         // 유효한 파라미터들만 검색에 사용한다.
         $where_conditions = array();
@@ -1367,42 +1366,14 @@ class MY_Sql
         }
         if($this->is_ok("klass_station", $station))
         {
-            $this->CI->db->where('venue_subway_station', $station);
+            $this->CI->db->where('subway_station', $station);
         }
         if($this->is_ok("klass_day", $day))
         {
-            $this->CI->db->where('days', $day);
+            // $this->CI->db->where('days', $day); // TODO 검색 속도를 높일 수 있는 방법은?
+            $this->CI->db->like('days', $day);
         }
-        if($this->is_ok("klass_query", $q))
-        {
-            $keyword_list = explode("|",$q);
-            $extra['keyword_list'] = $keyword_list;
 
-            $like_cnt = 0;
-            for ($i=0; $i < count($keyword_list); $i++) 
-            { 
-                $keyword = $keyword_list[$i];
-
-                if(empty($keyword)) 
-                {
-                    continue;
-                }
-
-                if(0 === $like_cnt) 
-                {
-                    // escaped automatically in 'like' or 'or_like'
-                    $this->CI->db->like('title', $keyword);
-                    $this->CI->db->or_like('desc', $keyword);
-                }
-                else
-                {
-                    $this->CI->db->or_like('title', $keyword);
-                    $this->CI->db->or_like('desc', $keyword);
-                }
-
-                $like_cnt++;
-            }
-        }
         // Set time range
         // 시간 관련 검색은 범위를 가져와야 한다.
         $extra['time_begin'] = 
@@ -1432,37 +1403,72 @@ class MY_Sql
         {
             $this->CI->db->where('time_begin >=', $time_begin_HHmm);
             $this->CI->db->where('time_end <=', $time_end_HHmm);
-        }
-        $this->CI->db->order_by('id', 'DESC');
+        } 
 
-        // DB WORKS
-        $limit = 30;
-        $offset = 0;
-        $query = $this->CI->db->get('klass', $limit, $offset);
+        if($this->is_ok("klass_query", $q))
+        {
+            $keyword_list = explode("|",$q);
+            $extra['keyword_list'] = $keyword_list;
 
-        // RESULT
-        $klass_list = $query->result();
+            $like_cnt = 0;
+            for ($i=0; $i < count($keyword_list); $i++) 
+            { 
+                $keyword = $keyword_list[$i];
 
-        return $klass_list;
-    }
+                if(empty($keyword)) 
+                {
+                    continue;
+                }
 
-    public function select_klass_list($offset=-1, $limit=-1)
+                if(0 === $like_cnt) 
+                {
+                    // escaped automatically in 'like' or 'or_like'
+                    $this->CI->db->like('title', $keyword);
+                }
+                else
+                {
+                    // OR 조건은 맨 마지막에 배치.
+                    $this->CI->db->or_like('title', $keyword);
+                }
+
+                $like_cnt++;
+            } // end for
+        } // end if
+    } // end method
+
+    public function search_klass($q="", $level="", $station="", $day="", $time="")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
-        if(!(0 < $offset)) 
-        {
-            $offset = 0;
-        }
-        if(!(0 < $limit)) 
-        {
-            $limit = 20;
-        }
-
         // wonder.jung
+        $limit = 30;
+        $offset = 0;
 
-        // TODO : A 상태인 수업만 노출해야 합니다.
+        $select_query = $this->get_select_query_klass();
 
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->set_where_on_search_klass($q, $level, $station, $day, $time);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        // $this->CI->db->limit($offset, $limit);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->set_where_on_search_klass($q, $level, $station, $day, $time);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        // $this->CI->db->limit($offset, $limit);
+        $query = $this->CI->db->get();
+
+        return $query->result_object();
+
+    }
+
+    private function get_select_query_klass() 
+    {
         $select_query = 
         'klass.id AS klass_id,' .
         'klass.title AS klass_title,'.
@@ -1513,6 +1519,28 @@ class MY_Sql
         'teacher.date_created AS teacher_date_created,'.
         'teacher.date_updated AS teacher_date_updated'
         ;
+
+        return $select_query;
+    }
+
+    public function select_klass_list($offset=-1, $limit=-1)
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if(!(0 < $offset)) 
+        {
+            $offset = 0;
+        }
+        if(!(0 < $limit)) 
+        {
+            $limit = 20;
+        }
+
+        // wonder.jung
+
+        // TODO : A 상태인 수업만 노출해야 합니다.
+
+        $select_query = $this->get_select_query_klass();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -2938,56 +2966,7 @@ class MY_Sql
             return;
         }
 
-        $select_query = 
-        'klass.id AS klass_id,' .
-        'klass.title AS klass_title,'.
-        'klass.desc AS klass_desc,'.
-        'klass.feature AS klass_feature,'.
-        'klass.target AS klass_target,'.
-        'klass.schedule AS klass_schedule,'.
-        'klass.date_begin AS klass_date_begin,'.
-        'klass.time_begin AS klass_time_begin,'.
-        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
-        'klass.time_end AS klass_time_end,'.
-        'klass.level AS klass_level,'.
-        'klass.week AS klass_week,'.
-        'klass.days AS klass_days,'.
-
-        'klass.subway_line AS klass_subway_line,'.
-        'klass.subway_station AS klass_subway_station,'.
-
-        'klass.venue_title AS klass_venue_title,'.
-        'klass.venue_telephone AS klass_venue_telephone,'.
-        'klass.venue_address AS klass_venue_address,'.
-        'klass.venue_road_address AS klass_venue_road_address,'.
-        'klass.venue_latitude AS klass_venue_latitude,'.
-        'klass.venue_longitude AS klass_venue_longitude,'.
-
-        'klass.status AS klass_status,'.
-        'klass.price AS klass_price,'.
-        'klass.student_cnt AS klass_student_cnt,'.
-        'klass.class_poster_url AS klass_class_poster_url,'.
-        'klass.class_banner_url AS klass_class_banner_url,'.
-
-        'klass.date_created AS klass_date_created,'.
-        'klass.date_updated AS klass_date_updated,'.
-
-        'teacher.id AS teacher_id,'.
-        'teacher.user_id AS teacher_user_id,'.
-        'teacher.nickname AS teacher_nickname,'.
-        'teacher.name AS teacher_name,'.
-        'teacher.gender AS teacher_gender,'.
-        'teacher.birthday AS teacher_birthday,'.
-        'teacher.thumbnail AS teacher_thumbnail,'.
-        'teacher.status AS teacher_status,'.
-        'teacher.mobile AS teacher_mobile,'.
-        'teacher.email AS teacher_email,'.
-        'teacher.resume AS teacher_resume,'.
-        'teacher.greeting AS teacher_greeting,'.
-        'teacher.memo AS teacher_memo,'.
-        'teacher.date_created AS teacher_date_created,'.
-        'teacher.date_updated AS teacher_date_updated'
-        ;
+        $select_query = $this->get_select_query_klass();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
