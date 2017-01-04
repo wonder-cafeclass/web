@@ -15,11 +15,15 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private updateUserUrl = '/CI/index.php/api/admin/updateuser';
+
+  private fetchUserListPaginationUrl = '/CI/index.php/api/admin/userlistpagination';
+  private fetchUserListUrl = '/CI/index.php/api/admin/userlist';
+
   private updateTeacherUrl = '/CI/index.php/api/admin/updateteacher';
   private fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
   private fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
 
-  private updateUserUrl = '/CI/index.php/api/admin/updateuser';
   private fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
   private fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
   private searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
@@ -48,6 +52,47 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+  fetchUserList (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchUserList / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchUserList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchUserList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchUserList / pageSize : ",pageSize);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchUserListUrl);
+
+    let params = {
+      page_num:pageNum,
+      page_size:pageSize,
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
+
+  fetchUserListPagination (apiKey:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchUserListPagination / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchUserListPagination / apiKey : ",apiKey);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchUserListPaginationUrl);
+
+    let params = {};
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }   
 
   updateTeacher ( apiKey:string, 
                   userIdAdmin:number, 

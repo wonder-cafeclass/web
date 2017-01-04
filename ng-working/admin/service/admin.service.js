@@ -17,10 +17,12 @@ var AdminService = (function () {
     function AdminService(us, http) {
         this.us = us;
         this.http = http;
+        this.updateUserUrl = '/CI/index.php/api/admin/updateuser';
+        this.fetchUserListPaginationUrl = '/CI/index.php/api/admin/userlistpagination';
+        this.fetchUserListUrl = '/CI/index.php/api/admin/userlist';
         this.updateTeacherUrl = '/CI/index.php/api/admin/updateteacher';
         this.fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
         this.fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
-        this.updateUserUrl = '/CI/index.php/api/admin/updateuser';
         this.fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
         this.fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
         this.searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
@@ -36,6 +38,41 @@ var AdminService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method
+    AdminService.prototype.fetchUserList = function (apiKey, pageNum, pageSize) {
+        if (this.isDebug())
+            console.log("admin.service / fetchUserList / 시작");
+        if (this.isDebug())
+            console.log("admin.service / fetchUserList / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("admin.service / fetchUserList / pageNum : ", pageNum);
+        if (this.isDebug())
+            console.log("admin.service / fetchUserList / pageSize : ", pageSize);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.fetchUserListUrl);
+        var params = {
+            page_num: pageNum,
+            page_size: pageSize,
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    AdminService.prototype.fetchUserListPagination = function (apiKey) {
+        if (this.isDebug())
+            console.log("admin.service / fetchUserListPagination / 시작");
+        if (this.isDebug())
+            console.log("admin.service / fetchUserListPagination / apiKey : ", apiKey);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.fetchUserListPaginationUrl);
+        var params = {};
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     AdminService.prototype.updateTeacher = function (apiKey, userIdAdmin, teacherId, teacherStatus) {
         if (this.isDebug())
             console.log("admin.service / updateUser / 시작");

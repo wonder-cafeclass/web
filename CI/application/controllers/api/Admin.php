@@ -85,6 +85,123 @@ class Admin extends MY_REST_Controller {
         $output["api_key"] = $this->my_paramchecker->get_api_key();
 
         $this->respond_200_v2($output);
+    } // end method 
+    
+
+
+
+    // @ Desc : 일반 유저(학생) 리스트를 가져옵니다. pagination 정보도 함께 줍니다.
+    public function userlist_post() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );        
+
+        $output = array();
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset
+        ];
+
+        $check_list = 
+        $this->my_paramchecker->get_check_list();
+        $output["check_list"] = $check_list;
+
+        $admin_user_list = 
+        $this->my_sql->get_user_student_list(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1
+            $offset
+        );
+
+        $output["admin_user_list"] = $admin_user_list;
+        $this->respond_200_v2($output);
+
+    } // end method
+
+    // @ Desc : 운영자 유저의 전체 갯수를 가져옵니다. pagination 정보도 함께 줍니다.
+    public function userlistpagination_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } // end if
+
+        $user_cnt = $this->my_sql->get_user_cnt();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "$user_cnt");
+
+        $pagination = $this->my_pagination->get($user_cnt);
+        $output["pagination"] = $pagination;
+
+        $this->respond_200_v2($output);
     } // end method
 
     // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.

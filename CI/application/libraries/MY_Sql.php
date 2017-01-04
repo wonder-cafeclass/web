@@ -1176,7 +1176,30 @@ class MY_Sql
 
         return $query->custom_result_object('Teacher');
 
-    } // end method        
+    } // end method  
+
+    public function get_user_cnt() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method 
 
     public function get_admin_user_cnt() 
     {
@@ -1199,7 +1222,30 @@ class MY_Sql
 
         return $cnt;
 
-    } // end method    
+    } // end method  
+
+    private function get_query_field_user()
+    {
+        $query_field = 
+        "id,".
+        "facebook_id,".
+        "kakao_id,".
+        "naver_id,".
+        "nickname,".
+        "email,".
+        "name,".
+        "mobile,".
+        "gender,".
+        "birthday,".
+        "thumbnail,".
+        "permission,".
+        "status,".
+        "date_created,".
+        "date_updated"
+        ;
+
+        return $query_field;
+    }  
 
     public function get_admin_user_list($limit=-1, $offset=-1) 
     {
@@ -1222,13 +1268,15 @@ class MY_Sql
             return;
         }
 
-        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $query_field = $this->get_query_field_user();
+
+        $this->CI->db->select($query_field);
         $this->CI->db->from('user');
         $this->CI->db->where('permission', "A");
         $this->CI->db->limit($limit, $offset);
         $query = $this->CI->db->get();
 
-        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
+        $this->CI->db->select($query_field);
         $this->CI->db->from('user');
         $this->CI->db->where('permission', "A");
         $this->CI->db->limit($limit, $offset);
@@ -1238,6 +1286,46 @@ class MY_Sql
         return $query->custom_result_object('User');
 
     } // end method
+
+    public function get_user_student_list($limit=-1, $offset=-1) 
+    {
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_field = $this->get_query_field_user();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('User');
+
+    } // end method    
 
     public function get_user_list() 
     {

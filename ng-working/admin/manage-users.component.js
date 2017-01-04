@@ -106,7 +106,7 @@ var ManageUsersComponent = (function () {
         if (this.isDebug())
             console.log("manage-users / init / 시작");
         // 1. 운영자 유저의 pagination을 가져옵니다.
-        this.fetchUsersAdminPagination();
+        this.fetchUserListPagination();
         // 2. 선생님 유저의 pagination을 가져옵니다.
         // 3. 학생 유저의 pagination을 가져옵니다.
     };
@@ -151,40 +151,40 @@ var ManageUsersComponent = (function () {
         return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, user.permission, user);
     }; // end method    
     // @ Desc : 운영자 유저리스트의 페이지 네이션을 가져옵니다.
-    ManageUsersComponent.prototype.fetchUsersAdminPagination = function () {
+    ManageUsersComponent.prototype.fetchUserListPagination = function () {
         var _this = this;
         if (this.isDebug())
-            console.log("manage-users / fetchUsersAdminPagination / 시작");
+            console.log("manage-users / fetchUserListPagination / 시작");
         this.adminService
-            .fetchUsersAdminPagination(this.watchTower.getApiKey())
+            .fetchUserListPagination(this.watchTower.getApiKey())
             .then(function (myResponse) {
             if (_this.isDebug())
-                console.log("manage-users / fetchUsersAdminPagination / myResponse : ", myResponse);
+                console.log("manage-users / fetchUserListPagination / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
                 if (_this.isDebug())
-                    console.log("manage-users / fetchUsersAdminPagination / success");
+                    console.log("manage-users / fetchUserListPagination / success");
                 // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
                 var json = myResponse.getDataProp("pagination");
                 _this.pagination.setJSON(json);
                 // 2. 유저 리스트를 가져옵니다. 
-                _this.fetchUserAdminList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
+                _this.fetchUserList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
-                    console.log("manage-users / fetchUsersAdminPagination / failed");
-                _this.watchTower.logAPIError("fetchUsersAdminPagination has been failed!");
+                    console.log("manage-users / fetchUserListPagination / failed");
+                _this.watchTower.logAPIError("fetchUserListPagination has been failed!");
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 } // end if
             } // end if
         }); // end service    
     };
-    ManageUsersComponent.prototype.updateAdminList = function (userJSONList) {
+    ManageUsersComponent.prototype.updateUserList = function (userJSONList) {
         if (this.isDebug())
-            console.log("manage-users / updateAdminList / 시작");
+            console.log("manage-users / updateUserList / 시작");
         if (this.myArray.isNotOK(userJSONList)) {
             if (this.isDebug())
-                console.log("manage-users / updateAdminList / 중단 / this.myArray.isNotOK(userJSONList)");
+                console.log("manage-users / updateUserList / 중단 / this.myArray.isNotOK(userJSONList)");
             return;
         }
         var userList = [];
@@ -210,36 +210,36 @@ var ManageUsersComponent = (function () {
             // targetKey:string
             "user_gender_kor_list");
             if (this.isDebug())
-                console.log("manage-users / updateAdminList / genderReadable : ", genderReadable);
+                console.log("manage-users / updateUserList / genderReadable : ", genderReadable);
             user.gender_readable = genderReadable;
             userList.push(user);
         } // end for
         if (this.isDebug())
-            console.log("manage-users / updateAdminList / userList : ", userList);
+            console.log("manage-users / updateUserList / userList : ", userList);
         this.userList = userList;
     };
     // @ Desc : 운영자 유저 리스트를 가져옵니다.
-    ManageUsersComponent.prototype.fetchUserAdminList = function (pageNum, pageSize) {
+    ManageUsersComponent.prototype.fetchUserList = function (pageNum, pageSize) {
         // 유저 리스트는 아래 카테고리별로 나누어 가져옵니다.
         // a. 운영자
         // b. 선생님
         // c. 학생
         var _this = this;
         this.adminService
-            .fetchUsersAdmin(this.watchTower.getApiKey(), pageNum, pageSize)
+            .fetchUserList(this.watchTower.getApiKey(), pageNum, pageSize)
             .then(function (myResponse) {
             if (_this.isDebug())
-                console.log("manage-users / fetchUserAdminList / myResponse : ", myResponse);
+                console.log("manage-users / fetchUserList / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("admin_user_list")) {
                 var userJSONList = myResponse.getDataProp("admin_user_list");
                 if (_this.isDebug())
-                    console.log("manage-users / fetchUserAdminList / userJSONList : ", userJSONList);
-                _this.updateAdminList(userJSONList);
+                    console.log("manage-users / fetchUserList / userJSONList : ", userJSONList);
+                _this.updateUserList(userJSONList);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
-                    console.log("manage-users / fetchUserAdminList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
-                _this.watchTower.logAPIError("fetchUserAdminList has been failed!");
+                    console.log("manage-users / fetchUserList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+                _this.watchTower.logAPIError("fetchUserList has been failed!");
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
                 } // end if
