@@ -16,6 +16,7 @@ import { DefaultComponent }            from '../widget/input/default/default.com
 import { DefaultMeta }                 from '../widget/input/default/model/default-meta';
 import { DefaultType }                 from '../widget/input/default/model/default-type';
 import { CheckBoxComponent }           from '../widget/checkbox/checkbox.component';
+import { Pagination }                  from '../widget/pagination/model/pagination';
 
 import { MyEventService }              from '../util/service/my-event.service';
 import { MyCheckerService }            from '../util/service/my-checker.service';
@@ -27,6 +28,8 @@ import { HelperMyIs }                  from '../util/helper/my-is';
 import { HelperMyTime }                from '../util/helper/my-time';
 import { HelperMyArray }               from '../util/helper/my-array';
 import { HelperMyFormat }              from '../util/helper/my-format';
+
+
 
 
 @Component({
@@ -43,11 +46,11 @@ export class ManageUsersComponent implements OnInit {
 
   private loginUser:User;
 
-  private pagination:any;
-
   private checkBoxList:CheckBoxComponent[]=[];
 
   userList:User[];
+
+  pagination:Pagination;
 
   // 자신의 자식 객체에서 이벤트를 받는다.
   constructor(  private adminService:AdminService,
@@ -58,6 +61,8 @@ export class ManageUsersComponent implements OnInit {
     this.myIs = new HelperMyIs();
     this.myArray = new HelperMyArray();
     this.myFormat = new HelperMyFormat();
+
+    this.pagination = new Pagination();
 
     this.subscribeLoginUser();
     this.subscribeEventPack();
@@ -138,8 +143,9 @@ export class ManageUsersComponent implements OnInit {
       if(myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
         if(this.isDebug()) console.log("manage-users / fetchUsersAdminPagination / success");
 
-        // 1. 페이지네이션 데이터를 저장합니다.
-        this.pagination = myResponse.getDataProp("pagination");
+        // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
+        let json = myResponse.getDataProp("pagination");
+        this.pagination.setJSON(json);
 
         // 2. 유저 리스트를 가져옵니다. 
         this.fetchUserAdminList(this.pagination["PAGE_NUM"], this.pagination["PAGE_RANGE"]);
@@ -230,32 +236,23 @@ export class ManageUsersComponent implements OnInit {
     if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_CHECKBOX_ALL)) {
+
         // this.checkBoxList.push(myEvent.metaObj);
+
       } else if(myEvent.hasKey(this.myEventService.KEY_CHECKBOX)) {
+
         this.checkBoxList.push(myEvent.metaObj);
+
       }
-
-      /*
-      if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_RESUME_LIST)) {
-
-        // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
-        this.teacherResumeListComponent = myEvent.metaObj;
-        this.teacherResumeListComponent.setMyEventList(this.myEventListForTeacherResume);
-
-      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
-
-        // 객체가 준비되었습니다. 부모 객체에게 전달합니다.
-        this.teacherGreetingComponent = myEvent.metaObj;
-        this.setGreeting();
-
-      } // end if
-      */
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
       if(myEvent.hasKey(this.myEventService.KEY_CHECKBOX_ALL)) {
-        this.updateCheckBoxes(myEvent.value);
-      }
+
+        let isChecked:boolean = ("true" === myEvent.value)?true:false;
+        this.updateCheckBoxes(isChecked);
+
+      } // end if
 
       // Do someting ...     
 

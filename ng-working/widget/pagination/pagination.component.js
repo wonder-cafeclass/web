@@ -11,33 +11,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var pagination_1 = require('./model/pagination');
 /*
 *
-*	@ Desc : 하나의 체크박스만을 나타내는 컴포넌트. 컴포넌트 내부에서 다수의 checkbox 참조를 제어할 수 없어 만든 래핑 컴포넌트.
+*	@ Desc : 페이지네이션 컴포넌트.
 *	@ Author : Wonder Jung
 */
-var CheckBoxComponent = (function () {
-    function CheckBoxComponent(myCheckerService, watchTower) {
+var PaginationComponent = (function () {
+    function PaginationComponent(myCheckerService, watchTower) {
         this.myCheckerService = myCheckerService;
         this.watchTower = watchTower;
         this.emitter = new core_1.EventEmitter();
         this.eventKey = "";
-        this.metaObj = null;
-        this.isChecked = false;
+        this.pagination = null;
     }
-    CheckBoxComponent.prototype.isDebug = function () {
+    PaginationComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
     };
-    CheckBoxComponent.prototype.ngOnInit = function () {
+    PaginationComponent.prototype.ngOnInit = function () {
         this.subscribeEventPack();
+        if (this.isDebug())
+            console.log("pagination / ngOnInit / pagination : ", this.pagination);
     };
-    CheckBoxComponent.prototype.subscribeEventPack = function () {
+    PaginationComponent.prototype.subscribeEventPack = function () {
         var _this = this;
         if (this.isDebug())
-            console.log("checkbox / subscribeEventPack / init");
+            console.log("pagination / subscribeEventPack / init");
         var isEventPackReady = this.watchTower.getIsEventPackReady();
         if (this.isDebug())
-            console.log("checkbox / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+            console.log("pagination / subscribeEventPack / isEventPackReady : ", isEventPackReady);
         if (this.watchTower.getIsEventPackReady()) {
             this.init();
         }
@@ -45,23 +47,23 @@ var CheckBoxComponent = (function () {
             // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
             this.watchTower.isEventPackReady$.subscribe(function (isEventPackReady) {
                 if (_this.isDebug())
-                    console.log("checkbox / subscribeEventPack / isEventPackReady : ", isEventPackReady);
+                    console.log("pagination / subscribeEventPack / isEventPackReady : ", isEventPackReady);
                 _this.init();
             }); // end subscribe
         } // end if
     }; // end method  
-    CheckBoxComponent.prototype.init = function () {
+    PaginationComponent.prototype.init = function () {
         if (this.isDebug())
-            console.log("checkbox / init / 시작");
+            console.log("pagination / init / 시작");
         if (this.isDebug())
-            console.log("checkbox / init / this.eventKey : ", this.eventKey);
+            console.log("pagination / init / this.eventKey : ", this.eventKey);
         this.emitEventOnReady(this.eventKey);
-    };
-    CheckBoxComponent.prototype.emitEventOnReady = function (eventKey) {
+    }; // end method
+    PaginationComponent.prototype.emitEventOnReady = function (eventKey) {
         if (this.isDebug())
-            console.log("checkbox / emitEventOnReady / 시작");
+            console.log("pagination / emitEventOnReady / 시작");
         if (this.isDebug())
-            console.log("checkbox / emitEventOnReady / eventKey : ", eventKey);
+            console.log("pagination / emitEventOnReady / eventKey : ", eventKey);
         var myEvent = this.watchTower.getEventOnReady(
         // eventKey:string, 
         eventKey, 
@@ -69,58 +71,59 @@ var CheckBoxComponent = (function () {
         this);
         this.emitter.emit(myEvent);
         if (this.isDebug())
-            console.log("checkbox / emitEventOnReady / Done!");
-    };
-    CheckBoxComponent.prototype.onChange = function (event, value) {
+            console.log("pagination / emitEventOnReady / Done!");
+    }; // end method
+    PaginationComponent.prototype.onClick = function (event, pageNumSelected) {
         event.preventDefault();
         event.stopPropagation();
         if (this.isDebug())
-            console.log("checkbox / onChange / 시작");
+            console.log("pagination / onClick / 시작");
         if (this.isDebug())
-            console.log("checkbox / onChange / value : ", value);
-        this.isChecked = value;
-        this.emitEventOnChange(value);
-    };
-    CheckBoxComponent.prototype.getIsChecked = function () {
-        return this.isChecked;
-    };
-    CheckBoxComponent.prototype.setIsChecked = function (isChecked) {
-        this.isChecked = isChecked;
-    };
-    CheckBoxComponent.prototype.emitEventOnChange = function (value) {
-        var myEvent = this.watchTower.getEventOnChangeMeta(
+            console.log("pagination / onClick / value : ", pageNumSelected);
+        if (null == this.pagination) {
+            if (this.isDebug())
+                console.log("pagination / onClick / 중단 / null == this.pagination");
+            return;
+        } // end if
+        if (pageNumSelected === this.pagination.pageNum) {
+            if (this.isDebug())
+                console.log("pagination / onClick / 중단 / pageNumSelected === this.pagination.pageNum");
+            return;
+        } // end if
+        this.emitEventOnChange("" + pageNumSelected);
+    }; // end method
+    PaginationComponent.prototype.emitEventOnChange = function (value) {
+        var myEvent = this.watchTower.getEventOnChange(
         // eventKey:string, 
         this.eventKey, 
         // value:string, 
         value, 
         // myChecker:MyChecker, 
-        this.myCheckerService.getFreePassChecker(), 
-        // meta:any
-        this.metaObj);
+        this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEvent);
-    };
+    }; // end method
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], CheckBoxComponent.prototype, "emitter", void 0);
+    ], PaginationComponent.prototype, "emitter", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], CheckBoxComponent.prototype, "eventKey", void 0);
+    ], PaginationComponent.prototype, "eventKey", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', Object)
-    ], CheckBoxComponent.prototype, "metaObj", void 0);
-    CheckBoxComponent = __decorate([
+        __metadata('design:type', pagination_1.Pagination)
+    ], PaginationComponent.prototype, "pagination", void 0);
+    PaginationComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'checkbox-single',
-            templateUrl: 'checkbox.component.html',
-            styleUrls: ['checkbox.component.css']
+            selector: 'pagination',
+            templateUrl: 'pagination.component.html',
+            styleUrls: ['pagination.component.css']
         }), 
         __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService])
-    ], CheckBoxComponent);
-    return CheckBoxComponent;
+    ], PaginationComponent);
+    return PaginationComponent;
 }());
-exports.CheckBoxComponent = CheckBoxComponent;
-//# sourceMappingURL=checkbox.component.js.map
+exports.PaginationComponent = PaginationComponent;
+//# sourceMappingURL=pagination.component.js.map

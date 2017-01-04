@@ -1,0 +1,59 @@
+<nav *ngIf="pagination" class="my-style">
+	<ul class="pagination my-style">
+
+		<!-- pagination / Arrow / Prev -->
+		<li *ngIf="0 < pagination.pageNumJumpToPrev">
+			<a (click)="onClick($event, pagination.pageNumJumpToPrev)" href="#" aria-label="Previous">
+				<span aria-hidden="true">&laquo;</span>
+			</a>
+		</li>
+		
+		<!-- pagination / Pages -->
+		<li *ngFor="let pageNumFromList of pagination.pageNumList">
+			<a 
+			[ngClass]="{'my-active':pageNumFromList == pagination.pageNum}"
+			(click)="onClick($event, pageNumFromList)" href="#">{{pageNumFromList}}</a>
+		</li>
+
+		<!-- pagination / Arrow / Next -->
+		<li *ngIf="0 < pagination.pageNumJumpToNext">
+			<a (click)="onClick($event, pagination.pageNumJumpToNext)" href="#" aria-label="Next">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+<!--
+		// pagination bootstrap html tag
+		$html_bootstrap_tag = ""
+		. "<nav style=\"text-align:center;\"><ul class=\"pagination\">"
+		;
+
+		// pagination / Arrow / Prev
+		if(0 < $pagination_std->PAGE_NUM_JUMP_TO_PREV) {
+			$html_bootstrap_tag .= ""
+			. "<li page=\"$pagination_std->PAGE_NUM_JUMP_TO_PREV\"><a href=\"#\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>";	
+		}
+
+		for($idx = $pagination_std->PAGE_NUM_BEGIN_ON_VIEW; $idx < $pagination_std->PAGE_NUM_END_ON_VIEW; $idx++) {
+			if($cursor_page_num == $idx) {
+				$html_bootstrap_tag .= ""
+				. "<li class=\"active\" page=\"$idx\"><a href=\"#\">$idx</a></li>"
+				;
+			} else {
+				$html_bootstrap_tag .= ""
+				. "<li page=\"$idx\"><a href=\"#\">$idx</a></li>"
+				;	
+			}
+		}
+
+		// pagination / Arrow / Next
+		if(0 < $pagination_std->PAGE_NUM_JUMP_TO_NEXT) {
+			$html_bootstrap_tag .= ""
+			. "<li page=\"$pagination_std->PAGE_NUM_JUMP_TO_NEXT\"><a href=\"#\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>";	
+		}
+		$html_bootstrap_tag .= ""
+		. "</ul></nav>";
+
+		$pagination_std->{$param->BOOTSTRAP_TAG} = $html_bootstrap_tag;
+-->

@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var admin_service_1 = require('./service/admin.service');
 var user_1 = require('../users/model/user');
+var pagination_1 = require('../widget/pagination/model/pagination');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_is_1 = require('../util/helper/my-is');
@@ -28,6 +29,7 @@ var ManageUsersComponent = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
+        this.pagination = new pagination_1.Pagination();
         this.subscribeLoginUser();
         this.subscribeEventPack();
     }
@@ -90,8 +92,9 @@ var ManageUsersComponent = (function () {
             if (myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
                 if (_this.isDebug())
                     console.log("manage-users / fetchUsersAdminPagination / success");
-                // 1. 페이지네이션 데이터를 저장합니다.
-                _this.pagination = myResponse.getDataProp("pagination");
+                // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
+                var json = myResponse.getDataProp("pagination");
+                _this.pagination.setJSON(json);
                 // 2. 유저 리스트를 가져옵니다. 
                 _this.fetchUserAdminList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
             }
@@ -170,8 +173,9 @@ var ManageUsersComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_CHECKBOX_ALL)) {
-                this.updateCheckBoxes(myEvent.value);
-            }
+                var isChecked = ("true" === myEvent.value) ? true : false;
+                this.updateCheckBoxes(isChecked);
+            } // end if
         } // end if
     }; // end method
     ManageUsersComponent = __decorate([
