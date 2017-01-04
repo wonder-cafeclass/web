@@ -92,7 +92,7 @@ NOW()
 "wonder13662test5@gmail.com",
 "$2y$10$YgRwpPLBAHKE4B2qXqkEyOvigB93fubtVMg7YQpkDT4sI9VKauAba",
 NOW()
-)
+),
 (
 "학생조이",
 "조이",
@@ -158,7 +158,6 @@ NOW()
 "$2y$10$Rnq3wNS4L4JXHX7g/lgRPe0auQZSBOrUgi3vje3K6O9LHSb2gJyXm",
 NOW()
 )
-
 ;
 
 INSERT INTO `cafeclass`.`teacher`
