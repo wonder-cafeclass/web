@@ -1,10 +1,10 @@
 <div>
 	<ul class="list-group">
-		<li class="list-group-item">학생(사용자) 리스트</li>
+		<li class="list-group-item">운영자 리스트</li>
 		<li class="list-group-item">검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용</li>
 		<li class="list-group-item my-style-table">
 			
-<table class="table table-bordered table-hover my-style"> 
+<table *ngIf="userList" class="table table-bordered table-hover my-style"> 
 	<thead> 
 		<tr>
 			<th>

@@ -12,6 +12,8 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var admin_component_1 = require('./admin.component');
 var admin_dashboard_component_1 = require('./admin-dashboard.component');
+var manage_admin_users_component_1 = require('./manage-admin-users.component');
+var manage_teachers_component_1 = require('./manage-teachers.component');
 var manage_users_component_1 = require('./manage-users.component');
 var manage_klasses_component_1 = require('./manage-klasses.component');
 var admin_service_1 = require('./service/admin.service');
@@ -30,6 +32,8 @@ var AdminModule = (function () {
             declarations: [
                 admin_component_1.AdminComponent,
                 admin_dashboard_component_1.AdminDashboardComponent,
+                manage_admin_users_component_1.ManageAdminUsersComponent,
+                manage_teachers_component_1.ManageTeachersComponent,
                 manage_users_component_1.ManageUsersComponent,
                 manage_klasses_component_1.ManageKlassesComponent
             ],

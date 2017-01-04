@@ -15,6 +15,9 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
+  private fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
+
   private fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
   private fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
   private searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
@@ -44,6 +47,47 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+  fetchTeacherList (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / pageSize : ",pageSize);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchTeacherListUrl);
+
+    let params = {
+      page_num:pageNum,
+      page_size:pageSize,
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
+
+  fetchTeachersPagination (apiKey:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / apiKey : ",apiKey);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchTeacherTotalCntUrl);
+
+    let params = {};
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }  
 
   updateUser (  apiKey:string, 
                 userIdAdmin:number, 

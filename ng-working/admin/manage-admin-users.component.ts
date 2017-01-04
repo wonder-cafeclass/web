@@ -35,11 +35,11 @@ import { HelperMyFormat }              from '../util/helper/my-format';
 
 @Component({
   moduleId: module.id,
-  selector: 'manage-users',
-  templateUrl: 'manage-users.component.html',
-  styleUrls: [ 'manage-users.component.css' ]
+  selector: 'manage-admin-users',
+  templateUrl: 'manage-admin-users.component.html',
+  styleUrls: [ 'manage-admin-users.component.css' ]
 })
-export class ManageUsersComponent implements OnInit {
+export class ManageAdminUsersComponent implements OnInit {
 
   private myIs:HelperMyIs;
   private myArray:HelperMyArray;
@@ -116,7 +116,7 @@ export class ManageUsersComponent implements OnInit {
 
   private subscribeLoginUser() :void {
 
-    if(this.isDebug()) console.log("manage-users / subscribeLoginUser / init");
+    if(this.isDebug()) console.log("manage-admin-users / subscribeLoginUser / init");
 
     this.loginUser = this.watchTower.getLoginUser();
 
@@ -128,16 +128,16 @@ export class ManageUsersComponent implements OnInit {
   } // end method
 
   private goHome() :void {
-    if(this.isDebug()) console.log("manage-users / goHome / init");
+    if(this.isDebug()) console.log("manage-admin-users / goHome / init");
     this.router.navigate(["/"]);
   }
 
   private subscribeEventPack() :void {
 
-    if(this.isDebug()) console.log("manage-users / subscribeEventPack / init");
+    if(this.isDebug()) console.log("manage-admin-users / subscribeEventPack / init");
 
     let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
-    if(this.isDebug()) console.log("manage-users / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+    if(this.isDebug()) console.log("manage-admin-users / subscribeEventPack / isEventPackReady : ",isEventPackReady);
 
     if(this.watchTower.getIsEventPackReady()) {
       this.init();
@@ -146,7 +146,7 @@ export class ManageUsersComponent implements OnInit {
       this.watchTower.isEventPackReady$.subscribe(
         (isEventPackReady:boolean) => {
 
-        if(this.isDebug()) console.log("manage-users / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+        if(this.isDebug()) console.log("manage-admin-users / subscribeEventPack / isEventPackReady : ",isEventPackReady);
         this.init();
 
       }); // end subscribe
@@ -157,7 +157,7 @@ export class ManageUsersComponent implements OnInit {
 
   init() :void {
 
-    if(this.isDebug()) console.log("manage-users / init / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / init / 시작");
 
     // 1. 운영자 유저의 pagination을 가져옵니다.
     this.fetchUsersAdminPagination();
@@ -169,10 +169,10 @@ export class ManageUsersComponent implements OnInit {
 
   private getDefaultOptionUserListStatus(user:User):DefaultOption[] {
 
-    if(this.isDebug()) console.log("manage-users / getDefaultOptionUserList / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / getDefaultOptionUserList / 시작");
 
     if(null == user) {
-      if(this.isDebug()) console.log("manage-users / getDefaultOptionUserList / 중단 / null == user");
+      if(this.isDebug()) console.log("manage-admin-users / getDefaultOptionUserList / 중단 / null == user");
       return;
     }
 
@@ -195,10 +195,10 @@ export class ManageUsersComponent implements OnInit {
 
   private getDefaultOptionUserListPermission(user:User):DefaultOption[] {
 
-    if(this.isDebug()) console.log("manage-users / getDefaultOptionUserListPermission / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / getDefaultOptionUserListPermission / 시작");
 
     if(null == user) {
-      if(this.isDebug()) console.log("manage-users / getDefaultOptionUserListPermission / 중단 / null == user");
+      if(this.isDebug()) console.log("manage-admin-users / getDefaultOptionUserListPermission / 중단 / null == user");
       return;
     }
 
@@ -224,16 +224,16 @@ export class ManageUsersComponent implements OnInit {
   // @ Desc : 운영자 유저리스트의 페이지 네이션을 가져옵니다.
   private fetchUsersAdminPagination() :void {
 
-    if(this.isDebug()) console.log("manage-users / fetchUsersAdminPagination / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / fetchUsersAdminPagination / 시작");
 
     this.adminService
     .fetchUsersAdminPagination(this.watchTower.getApiKey())
     .then((myResponse:MyResponse) => {
 
-      if(this.isDebug()) console.log("manage-users / fetchUsersAdminPagination / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("manage-admin-users / fetchUsersAdminPagination / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
-        if(this.isDebug()) console.log("manage-users / fetchUsersAdminPagination / success");
+        if(this.isDebug()) console.log("manage-admin-users / fetchUsersAdminPagination / success");
 
         // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
         let json = myResponse.getDataProp("pagination");
@@ -243,7 +243,7 @@ export class ManageUsersComponent implements OnInit {
         this.fetchUserAdminList(this.pagination["PAGE_NUM"], this.pagination["PAGE_RANGE"]);
         
       } else if(myResponse.isFailed()){
-        if(this.isDebug()) console.log("manage-users / fetchUsersAdminPagination / failed");
+        if(this.isDebug()) console.log("manage-admin-users / fetchUsersAdminPagination / failed");
 
         this.watchTower.logAPIError("fetchUsersAdminPagination has been failed!");
         if(null != myResponse.error) {
@@ -258,10 +258,10 @@ export class ManageUsersComponent implements OnInit {
 
   private updateAdminList(userJSONList:any[]) :void {
 
-    if(this.isDebug()) console.log("manage-users / updateAdminList / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / updateAdminList / 시작");
 
     if(this.myArray.isNotOK(userJSONList)) {
-      if(this.isDebug()) console.log("manage-users / updateAdminList / 중단 / this.myArray.isNotOK(userJSONList)");
+      if(this.isDebug()) console.log("manage-admin-users / updateAdminList / 중단 / this.myArray.isNotOK(userJSONList)");
       return;
     }
 
@@ -294,7 +294,7 @@ export class ManageUsersComponent implements OnInit {
         "user_gender_kor_list"
       );
 
-      if(this.isDebug()) console.log("manage-users / updateAdminList / genderReadable : ",genderReadable);
+      if(this.isDebug()) console.log("manage-admin-users / updateAdminList / genderReadable : ",genderReadable);
 
       user.gender_readable = genderReadable;
 
@@ -302,7 +302,7 @@ export class ManageUsersComponent implements OnInit {
 
     } // end for
 
-    if(this.isDebug()) console.log("manage-users / updateAdminList / userList : ",userList);
+    if(this.isDebug()) console.log("manage-admin-users / updateAdminList / userList : ",userList);
 
     this.userList = userList;
   }
@@ -319,17 +319,17 @@ export class ManageUsersComponent implements OnInit {
     .fetchUsersAdmin(this.watchTower.getApiKey(), pageNum, pageSize)
     .then((myResponse:MyResponse) => {
 
-      if(this.isDebug()) console.log("manage-users / fetchUserAdminList / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("manage-admin-users / fetchUserAdminList / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("admin_user_list")) {
 
         let userJSONList:any[] = myResponse.getDataProp("admin_user_list");
-        if(this.isDebug()) console.log("manage-users / fetchUserAdminList / userJSONList : ",userJSONList);
+        if(this.isDebug()) console.log("manage-admin-users / fetchUserAdminList / userJSONList : ",userJSONList);
 
         this.updateAdminList(userJSONList);
         
       } else if(myResponse.isFailed()){
-        if(this.isDebug()) console.log("manage-users / fetchUserAdminList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+        if(this.isDebug()) console.log("manage-admin-users / fetchUserAdminList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
 
         this.watchTower.logAPIError("fetchUserAdminList has been failed!");
         if(null != myResponse.error) {
@@ -344,11 +344,11 @@ export class ManageUsersComponent implements OnInit {
 
   updateCheckBoxes(checked:boolean) :void {
 
-    if(this.isDebug()) console.log("manage-users / updateCheckBoxes / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / updateCheckBoxes / 시작");
 
-    if(this.isDebug()) console.log("manage-users / updateCheckBoxes / this.checkBoxList : ",this.checkBoxList);    
+    if(this.isDebug()) console.log("manage-admin-users / updateCheckBoxes / this.checkBoxList : ",this.checkBoxList);    
 
-    if(this.isDebug()) console.log("manage-users / updateCheckBoxes / checked : ",checked);
+    if(this.isDebug()) console.log("manage-admin-users / updateCheckBoxes / checked : ",checked);
 
     for (var i = 0; i < this.checkBoxList.length; ++i) {
       let checkBox:CheckBoxComponent = this.checkBoxList[i];
@@ -359,19 +359,19 @@ export class ManageUsersComponent implements OnInit {
 
   updateUserStatus(value:string, user:User) :void {
 
-    if(this.isDebug()) console.log("manage-users / updateUserStatus / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / 시작");
 
     if(null == value || "" === value) {
-      if(this.isDebug()) console.log("manage-users / updateUserStatus / 중단 / value is not valid!");
+      if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / 중단 / value is not valid!");
       return;
     }
     if(null == user) {
-      if(this.isDebug()) console.log("manage-users / updateUserStatus / 중단 / user is not valid!");
+      if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / 중단 / user is not valid!");
       return;
     }
 
-    if(this.isDebug()) console.log("manage-users / updateUserStatus / value : ",value);
-    if(this.isDebug()) console.log("manage-users / updateUserStatus / user : ",user);
+    if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / value : ",value);
+    if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / user : ",user);
 
     this.adminService
     .updateUser(
@@ -388,13 +388,13 @@ export class ManageUsersComponent implements OnInit {
     )
     .then((myResponse:MyResponse) => {
 
-      if(this.isDebug()) console.log("manage-users / updateUserStatus / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
-        if(this.isDebug()) console.log("manage-users / updateUserStatus / success");
+        if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / success");
 
       } else if(myResponse.isFailed()){
-        if(this.isDebug()) console.log("manage-users / updateUserStatus / failed");
+        if(this.isDebug()) console.log("manage-admin-users / updateUserStatus / failed");
 
         this.watchTower.logAPIError("updateUserStatus has been failed!");
         if(null != myResponse.error) {
@@ -409,19 +409,19 @@ export class ManageUsersComponent implements OnInit {
 
   updateUserPermission(value:string, user:User) :void {
 
-    if(this.isDebug()) console.log("manage-users / updateUserPermission / 시작");
+    if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / 시작");
 
     if(null == value || "" === value) {
-      if(this.isDebug()) console.log("manage-users / updateUserPermission / 중단 / value is not valid!");
+      if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / 중단 / value is not valid!");
       return;
     }
     if(null == user) {
-      if(this.isDebug()) console.log("manage-users / updateUserPermission / 중단 / user is not valid!");
+      if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / 중단 / user is not valid!");
       return;
     }
 
-    if(this.isDebug()) console.log("manage-users / updateUserPermission / value : ",value);
-    if(this.isDebug()) console.log("manage-users / updateUserPermission / user : ",user);
+    if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / value : ",value);
+    if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / user : ",user);
 
     this.adminService
     .updateUser(
@@ -438,13 +438,13 @@ export class ManageUsersComponent implements OnInit {
     )
     .then((myResponse:MyResponse) => {
 
-      if(this.isDebug()) console.log("manage-users / updateUserPermission / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / myResponse : ",myResponse);
 
       if(myResponse.isSuccess()) {
-        if(this.isDebug()) console.log("manage-users / updateUserPermission / success");
+        if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / success");
 
       } else if(myResponse.isFailed()){
-        if(this.isDebug()) console.log("manage-users / updateUserPermission / failed");
+        if(this.isDebug()) console.log("manage-admin-users / updateUserPermission / failed");
 
         this.watchTower.logAPIError("updateUserPermission has been failed!");
         if(null != myResponse.error) {
@@ -459,10 +459,10 @@ export class ManageUsersComponent implements OnInit {
 
   onChangedFromChild(myEvent:MyEvent) :void{
 
-    if(this.isDebug()) console.log("manage-users / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("manage-admin-users / onChangedFromChild / myEvent : ",myEvent);
 
     if(null == myEvent) {
-      if(this.isDebug()) console.log("manage-users / onChangedFromChild / 중단 / null == myEvent");
+      if(this.isDebug()) console.log("manage-admin-users / onChangedFromChild / 중단 / null == myEvent");
       return;
     } // end if
 

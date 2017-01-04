@@ -85,7 +85,13 @@ var CheckBoxComponent = (function () {
         return this.isChecked;
     };
     CheckBoxComponent.prototype.setIsChecked = function (isChecked) {
-        this.isChecked = isChecked;
+        if (this.isDebug())
+            console.log("checkbox / onChange / 시작");
+        if (this.isChecked != isChecked) {
+            this.isChecked = isChecked;
+        }
+        if (this.isDebug())
+            console.log("checkbox / onChange / isChecked : ", this.isChecked);
     };
     CheckBoxComponent.prototype.emitEventOnChange = function (value) {
         var myEvent = this.watchTower.getEventOnChangeMeta(

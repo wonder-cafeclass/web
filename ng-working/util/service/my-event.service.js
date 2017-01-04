@@ -104,6 +104,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
+        this.KEY_TEACHER_STATUS = "KEY_TEACHER_STATUS"; // 선생님 - 상태
         this.KEY_KLASS_TITLE = "KEY_KLASS_TITLE"; // 수업 - 수업 이름
         this.KEY_KLASS_PRICE = "KEY_KLASS_PRICE"; // 수업 - 수업 가격
         this.KEY_KLASS_PRICE_VIEW = "KEY_KLASS_PRICE_VIEW"; // 수업 - 수업 가격 뷰

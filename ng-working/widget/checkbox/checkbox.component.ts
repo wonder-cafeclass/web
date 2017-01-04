@@ -110,7 +110,14 @@ export class CheckBoxComponent implements OnInit {
   }
 
   setIsChecked(isChecked:boolean):void{
-    this.isChecked = isChecked;
+
+    if(this.isDebug()) console.log("checkbox / onChange / 시작");
+
+    if(this.isChecked != isChecked) {
+      this.isChecked = isChecked;
+    }
+
+    if(this.isDebug()) console.log("checkbox / onChange / isChecked : ",this.isChecked);
   }
 
   private emitEventOnChange(value:string) :void {

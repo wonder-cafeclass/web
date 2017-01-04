@@ -3,6 +3,8 @@ import { CommonModule }             from '@angular/common';
 
 import { AdminComponent }           from './admin.component';
 import { AdminDashboardComponent }  from './admin-dashboard.component';
+import { ManageAdminUsersComponent }from './manage-admin-users.component';
+import { ManageTeachersComponent }  from './manage-teachers.component';
 import { ManageUsersComponent }     from './manage-users.component';
 import { ManageKlassesComponent }   from './manage-klasses.component';
 
@@ -20,6 +22,8 @@ import { WidgetModule }              from '../widget/widget.module';
   declarations: [
     AdminComponent,
     AdminDashboardComponent,
+    ManageAdminUsersComponent,
+    ManageTeachersComponent,
     ManageUsersComponent,
     ManageKlassesComponent
   ],

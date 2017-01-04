@@ -118,6 +118,8 @@ export class MyEventService {
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
 
+    KEY_TEACHER_STATUS:string="KEY_TEACHER_STATUS";             // 선생님 - 상태
+
     KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
     KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
     KEY_KLASS_PRICE_VIEW:string="KEY_KLASS_PRICE_VIEW";         // 수업 - 수업 가격 뷰

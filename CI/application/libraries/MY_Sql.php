@@ -1048,9 +1048,90 @@ class MY_Sql
 
 	}
 
-    public function get_admin_user_cnt() 
+    public function get_teacher_cnt() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('teacher');
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('teacher');
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method 
+
+    private function get_query_teacher_field()
+    {
+        $query_fields = 
+        "id,". 
+        "user_id,". 
+        "email,". 
+        "name,". 
+        "nickname,". 
+        "mobile,". 
+        "gender,". 
+        "birthday,". 
+        "thumbnail,". 
+        "status,". 
+        "resume,". 
+        "greeting,". 
+        "memo,". 
+        "date_created,". 
+        "date_updated"
+        ;
+
+        return $query_fields;
+    }
+
+    public function get_teacher_list($limit=-1, $offset=-1) 
     {
         // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_fields = $this->get_query_teacher_field();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('teacher');
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('teacher');
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('Teacher');
+
+    } // end method        
+
+    public function get_admin_user_cnt() 
+    {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
