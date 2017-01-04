@@ -32,6 +32,8 @@ export class User {
 	public isDuplicatedMobile:boolean = false;
 	public isDuplicatedEmail:boolean = false;
 
+	public isMe:boolean = false;
+
 	constructor() {
 		this.myMobile = new HelperMyMobile();
 		this.myBirthday = new HelperMyBirthday();

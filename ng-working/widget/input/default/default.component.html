@@ -140,7 +140,14 @@
 	</div>
 	<!-- SELECT BOX / Disabled -->
 	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT">
-		Select Controller - Disabled
+		<select 
+		class="form-control" 
+		disabled>
+			<option 	
+			*ngFor="let option of selectOptionList" 
+			[selected]="option.isFocus"
+			value={{option.value}}>{{option.key}}</option>
+		</select>
 	</div>
 
 

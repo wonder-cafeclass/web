@@ -27,6 +27,7 @@ var User = (function () {
         this.myIs = null;
         this.isDuplicatedMobile = false;
         this.isDuplicatedEmail = false;
+        this.isMe = false;
         this.isAdmin = false;
         this.myMobile = new my_mobile_1.HelperMyMobile();
         this.myBirthday = new my_birthday_1.HelperMyBirthday();

@@ -276,6 +276,11 @@ export class ManageUsersComponent implements OnInit {
       let defaultOptionListPermission:DefaultOption[] = this.getDefaultOptionUserListPermission(user);
       user["selectOptionListPermission"] = defaultOptionListPermission;
 
+      // 자신의 데이터인지 확인한다.
+      if(this.loginUser.id === user.id) {
+        user.isMe = true;
+      }
+
       // 성별을 보기 쉽게 변경 
       let genderReadable:string =
       this.watchTower

@@ -147,9 +147,9 @@
 		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
 		"user_status_kor_list":["정상","블럭","휴면","중지"],
 
-		"user_permission_list":["U","T","A"],
-		"user_permission_eng_list":["User","Teacher","Admin"],
-		"user_permission_kor_list":["사용자","강사","운영자"],
+		"user_permission_list":["U","A"],
+		"user_permission_eng_list":["User","Admin"],
+		"user_permission_kor_list":["사용자","운영자"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],
