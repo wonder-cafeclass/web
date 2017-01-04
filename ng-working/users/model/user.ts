@@ -11,6 +11,7 @@ export class User {
 	public nickname:string="";
 	public name:string="";
 	public gender:string="";
+	public gender_readable:string="";
 	public birthday:string="";
 	public thumbnail:string="";
 	public status:string="";

@@ -12,6 +12,8 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var admin_service_1 = require('./service/admin.service');
 var user_1 = require('../users/model/user');
+var default_meta_1 = require('../widget/input/default/model/default-meta');
+var default_type_1 = require('../widget/input/default/model/default-type');
 var pagination_1 = require('../widget/pagination/model/pagination');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
@@ -29,6 +31,9 @@ var ManageUsersComponent = (function () {
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
+        this.defaultType = new default_type_1.DefaultType();
+        this.defaultMetaUserStatus = this.getMetaSelectUserStatus();
+        this.defaultMetaUserPermission = this.getMetaSelectUserPermission();
         this.pagination = new pagination_1.Pagination();
         this.subscribeLoginUser();
         this.subscribeEventPack();
@@ -37,6 +42,32 @@ var ManageUsersComponent = (function () {
     };
     ManageUsersComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
+    };
+    ManageUsersComponent.prototype.getMetaSelectUserStatus = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "사용자 상태", 
+        // public placeholder:string
+        "사용자 상태를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_USER_STATUS, 
+        // public checkerKey:string
+        "user_status", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageUsersComponent.prototype.getMetaSelectUserPermission = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "사용자 권한", 
+        // public placeholder:string
+        "사용자 권한를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_USER_PERMISSION, 
+        // public checkerKey:string
+        "user_permission", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
     };
     ManageUsersComponent.prototype.subscribeLoginUser = function () {
         if (this.isDebug())
@@ -79,6 +110,46 @@ var ManageUsersComponent = (function () {
         // 2. 선생님 유저의 pagination을 가져옵니다.
         // 3. 학생 유저의 pagination을 가져옵니다.
     };
+    ManageUsersComponent.prototype.getDefaultOptionUserListStatus = function (user) {
+        if (this.isDebug())
+            console.log("manage-users / getDefaultOptionUserList / 시작");
+        if (null == user) {
+            if (this.isDebug())
+                console.log("manage-users / getDefaultOptionUserList / 중단 / null == user");
+            return;
+        }
+        var keyList = [];
+        var valueList = [];
+        var userStatusList = this.watchTower.getMyConst().getList("user_status_list");
+        var userStatusKorList = this.watchTower.getMyConst().getList("user_status_kor_list");
+        for (var i = 0; i < userStatusList.length; ++i) {
+            var userStatusKor = userStatusKorList[i];
+            var userStatus = userStatusList[i];
+            keyList.push(userStatusKor);
+            valueList.push(userStatus);
+        }
+        return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, user.status, user);
+    }; // end method
+    ManageUsersComponent.prototype.getDefaultOptionUserListPermission = function (user) {
+        if (this.isDebug())
+            console.log("manage-users / getDefaultOptionUserListPermission / 시작");
+        if (null == user) {
+            if (this.isDebug())
+                console.log("manage-users / getDefaultOptionUserListPermission / 중단 / null == user");
+            return;
+        }
+        var keyList = [];
+        var valueList = [];
+        var userPermissionList = this.watchTower.getMyConst().getList("user_permission_list");
+        var userPermissionKorList = this.watchTower.getMyConst().getList("user_permission_kor_list");
+        for (var i = 0; i < userPermissionList.length; ++i) {
+            var userPermissionKor = userPermissionKorList[i];
+            var userPermission = userPermissionList[i];
+            keyList.push(userPermissionKor);
+            valueList.push(userPermission);
+        }
+        return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, user.permission, user);
+    }; // end method    
     // @ Desc : 운영자 유저리스트의 페이지 네이션을 가져옵니다.
     ManageUsersComponent.prototype.fetchUsersAdminPagination = function () {
         var _this = this;
@@ -108,6 +179,41 @@ var ManageUsersComponent = (function () {
             } // end if
         }); // end service    
     };
+    ManageUsersComponent.prototype.updateAdminList = function (userJSONList) {
+        if (this.isDebug())
+            console.log("manage-users / updateAdminList / 시작");
+        if (this.myArray.isNotOK(userJSONList)) {
+            if (this.isDebug())
+                console.log("manage-users / updateAdminList / 중단 / this.myArray.isNotOK(userJSONList)");
+            return;
+        }
+        var userList = [];
+        for (var i = 0; i < userJSONList.length; ++i) {
+            var userJSON = userJSONList[i];
+            var user = new user_1.User().setJSON(userJSON);
+            var defaultOptionListStatus = this.getDefaultOptionUserListStatus(user);
+            user["selectOptionListStatus"] = defaultOptionListStatus;
+            var defaultOptionListPermission = this.getDefaultOptionUserListPermission(user);
+            user["selectOptionListPermission"] = defaultOptionListPermission;
+            // 성별을 보기 쉽게 변경 
+            var genderReadable = this.watchTower
+                .getMyConst()
+                .getValue(
+            // srcKey:string, 
+            "user_gender_list", 
+            // srcValue:string, 
+            user.gender, 
+            // targetKey:string
+            "user_gender_kor_list");
+            if (this.isDebug())
+                console.log("manage-users / updateAdminList / genderReadable : ", genderReadable);
+            user.gender_readable = genderReadable;
+            userList.push(user);
+        } // end for
+        if (this.isDebug())
+            console.log("manage-users / updateAdminList / userList : ", userList);
+        this.userList = userList;
+    };
     // @ Desc : 운영자 유저 리스트를 가져옵니다.
     ManageUsersComponent.prototype.fetchUserAdminList = function (pageNum, pageSize) {
         // 유저 리스트는 아래 카테고리별로 나누어 가져옵니다.
@@ -124,15 +230,7 @@ var ManageUsersComponent = (function () {
                 var userJSONList = myResponse.getDataProp("admin_user_list");
                 if (_this.isDebug())
                     console.log("manage-users / fetchUserAdminList / userJSONList : ", userJSONList);
-                var userList = [];
-                for (var i = 0; i < userJSONList.length; ++i) {
-                    var userJSON = userJSONList[i];
-                    var user = new user_1.User().setJSON(userJSON);
-                    userList.push(user);
-                } // end for
-                if (_this.isDebug())
-                    console.log("manage-users / fetchUserAdminList / userList : ", userList);
-                _this.userList = userList;
+                _this.updateAdminList(userJSONList);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -156,6 +254,100 @@ var ManageUsersComponent = (function () {
             checkBox.setIsChecked(checked);
         } // end for
     }; // end method
+    ManageUsersComponent.prototype.updateUserStatus = function (value, user) {
+        var _this = this;
+        if (this.isDebug())
+            console.log("manage-users / updateUserStatus / 시작");
+        if (null == value || "" === value) {
+            if (this.isDebug())
+                console.log("manage-users / updateUserStatus / 중단 / value is not valid!");
+            return;
+        }
+        if (null == user) {
+            if (this.isDebug())
+                console.log("manage-users / updateUserStatus / 중단 / user is not valid!");
+            return;
+        }
+        if (this.isDebug())
+            console.log("manage-users / updateUserStatus / value : ", value);
+        if (this.isDebug())
+            console.log("manage-users / updateUserStatus / user : ", user);
+        this.adminService
+            .updateUser(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userIdAdmin:number, 
+        this.loginUser.id, 
+        // userId:number, 
+        user.id, 
+        // userStatus:string, 
+        value, 
+        // userPermission:string      
+        user.permission)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("manage-users / updateUserStatus / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                if (_this.isDebug())
+                    console.log("manage-users / updateUserStatus / success");
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("manage-users / updateUserStatus / failed");
+                _this.watchTower.logAPIError("updateUserStatus has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
+    };
+    ManageUsersComponent.prototype.updateUserPermission = function (value, user) {
+        var _this = this;
+        if (this.isDebug())
+            console.log("manage-users / updateUserPermission / 시작");
+        if (null == value || "" === value) {
+            if (this.isDebug())
+                console.log("manage-users / updateUserPermission / 중단 / value is not valid!");
+            return;
+        }
+        if (null == user) {
+            if (this.isDebug())
+                console.log("manage-users / updateUserPermission / 중단 / user is not valid!");
+            return;
+        }
+        if (this.isDebug())
+            console.log("manage-users / updateUserPermission / value : ", value);
+        if (this.isDebug())
+            console.log("manage-users / updateUserPermission / user : ", user);
+        this.adminService
+            .updateUser(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userIdAdmin:number, 
+        this.loginUser.id, 
+        // userId:number, 
+        user.id, 
+        // userStatus:string, 
+        user.status, 
+        // userPermission:string      
+        value)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("manage-users / updateUserPermission / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                if (_this.isDebug())
+                    console.log("manage-users / updateUserPermission / success");
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("manage-users / updateUserPermission / failed");
+                _this.watchTower.logAPIError("updateUserPermission has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
+    };
     ManageUsersComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
             console.log("manage-users / onChangedFromChild / myEvent : ", myEvent);
@@ -175,6 +367,12 @@ var ManageUsersComponent = (function () {
             if (myEvent.hasKey(this.myEventService.KEY_CHECKBOX_ALL)) {
                 var isChecked = ("true" === myEvent.value) ? true : false;
                 this.updateCheckBoxes(isChecked);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_STATUS)) {
+                this.updateUserStatus(myEvent.value, myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_PERMISSION)) {
+                this.updateUserPermission(myEvent.value, myEvent.metaObj);
             } // end if
         } // end if
     }; // end method

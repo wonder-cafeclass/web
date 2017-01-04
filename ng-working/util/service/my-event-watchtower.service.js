@@ -462,6 +462,41 @@ var MyEventWatchTowerService = (function () {
             console.log("m-e-w / getEventOnLoginRequired / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
     };
+    MyEventWatchTowerService.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
+        if (null == this.getMyConst()) {
+            return [];
+        }
+        var defaultOptionList = this.getMyConst().getDefaultOptionList(
+        // keyList:string[], 
+        keyList, 
+        // valueList:string[],
+        valueList, 
+        // valueFocus:string
+        valueFocus);
+        return defaultOptionList;
+    }; // end method 
+    MyEventWatchTowerService.prototype.getDefaultOptionListWithMeta = function (keyList, valueList, valueFocus, metaObj) {
+        if (null == this.getMyConst()) {
+            return [];
+        }
+        /*
+        let defaultOptionList:DefaultOption[] =
+        this.getMyConst().getDefaultOptionList(
+            // keyList:string[],
+            keyList,
+            // valueList:string[],
+            valueList,
+            // valueFocus:string
+            valueFocus
+        );
+        */
+        var defaultOptionList = this.getDefaultOptionList(keyList, valueList, valueFocus);
+        for (var i = 0; i < defaultOptionList.length; ++i) {
+            var defaultOption = defaultOptionList[i];
+            defaultOption.metaObj = metaObj;
+        }
+        return defaultOptionList;
+    }; // end method 	 	
     MyEventWatchTowerService.prototype.logAPIError = function (msg) {
         if (this._isDebug)
             console.log("m-e-w / logAPIError / 시작");

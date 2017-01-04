@@ -81,6 +81,9 @@ export class MyEventService {
 
     KEY_USER_SELECT:string="KEY_USER_SELECT";             // 유저 - 유저 선택 SELECT BOX
 
+    KEY_USER_STATUS:string="KEY_USER_STATUS";             // 유저 - 상태
+    KEY_USER_PERMISSION:string="KEY_USER_PERMISSION";     // 유저 - 권한
+
     KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
     KEY_USER_CUR_PASSWORD:string="KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
     KEY_USER_PASSWORD:string="KEY_USER_PASSWORD";         // 유저 - 비밀번호

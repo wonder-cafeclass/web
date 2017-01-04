@@ -43,6 +43,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   @Input() meta:DefaultMeta;
   @Input() isDisabled:boolean=false;
   @Input() isNoSpace:boolean=false;
+  @Input() isNoBorder:boolean=false;
   @Input() isShowTitle:boolean=true;
   @Input() width:number=-1;
   @Input() numUnit:number=-1;           // 숫자 변경시 최소 변경 단위.
@@ -55,7 +56,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   private myTime:HelperMyTime;
   private myFormat:HelperMyFormat;
 
-  selectOptionList:DefaultOption[];   // 셀렉 박스 선택 정보로 사용.
+  @Input() selectOptionList:DefaultOption[];   // 셀렉 박스 선택 정보로 사용.
   checkOptionTable:DefaultOption[][]; // 바둑판 형태의 checkbox 테이블 데이터로 사용
 
   constructor(  private myCheckerService:MyCheckerService,
@@ -598,13 +599,23 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       this.isFocus = false;
     } // end if
 
-    let isValidInput:boolean = this.onCheckInputValid(selectedValue, true);
+    // wonder.jung - 선택된 DefaultOption을 가져와서 metaObj로 전달해줍니다.
+    let defaultOption:DefaultOption = this.getSelectedDefaultOption();
+    if(this.isDebug()) console.log("default / onSelect / defaultOption : ",defaultOption);
+
+    let isValidInput:boolean = this.onCheckInputValidNoEmit(selectedValue, true);
     if(this.isDebug()) console.log("default / onSelect / isValidInput : ",isValidInput);
 
     if(isValidInput) {
       if(this.isDebug()) console.log("default / onSelect / 입력이 문제없습니다.");
       this.hideWarningTooptip();
-      this.emitEventOnChange(selectedValue);
+
+      if(null != defaultOption && null != defaultOption.metaObj) {
+        this.emitEventOnChangeWithMeta(selectedValue, defaultOption.metaObj);
+      } else {
+        this.emitEventOnChange(selectedValue);
+      }
+
     } else {
       // 포커싱을 잃었으므로 사용자가 입력을 완료했다고 판단합니다. 
       // 그 결과에 문제가 있으므로 부모 객체에게 실패원인을 전달합니다.
@@ -675,7 +686,6 @@ export class DefaultComponent implements OnInit, AfterViewInit {
 
     if(this.isDebug()) console.log("default / getCheckedDefaultOptionList / this.checkOptionTable : ",this.checkOptionTable);
 
-    // wonder.jung
     let checkedOptionList:DefaultOption[] = [];
     for (var i = 0; i < this.checkOptionTable.length; ++i) {
       let row:DefaultOption[] = this.checkOptionTable[i];
@@ -1002,6 +1012,71 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     } // end if
 
   } // end method
+
+  // @ Desc : 새로 입력받은 값이 문제가 없는지 확인합니다.
+  // 입력받은 모든 값은 문자열입니다.
+  private onCheckInputValidNoEmit(input:string, isBlur:boolean) :boolean {
+
+    if(this.isDebug()) console.log("default / onCheckInputValid / init");
+    if(this.isDebug()) console.log("default / onCheckInputValid / input : ",input);
+
+    // 여기서 유저가 설정한 조건이 필요합니다.
+
+    // Blur가 아니라면, 비어있는 문자열이라면 검사하지 않습니다.
+    if(!isBlur && (null == input || "" == input)) {
+      if(this.isDebug()) console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+      return true;
+    }
+
+    // MyChecker로 검사, 예외 사항에 대한 처리.
+    let isNotOK:boolean = this.isNotOK(input);
+    if(isNotOK) {
+
+      // 원인을 찾아봅니다.
+      let history = this.myCheckerService.getLastHistory();
+      if( null != history && 
+          null != history.key && 
+          null != history.msg ) {
+
+        // 문제가 있습니다!
+
+        // 문제 원인 별로 처리해줍니다.
+        if("max" === history.key) {
+
+          // 최대 문자 갯수보다 많은 경우.
+          if(this.isDebug()) console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우.");
+          this.showTooltipFailWarning(history.msg, false);
+
+          // 넘는 문자열은 지웁니다.
+          this.inputStrPrev = input = input.slice(0, history.value);
+
+          if(this.isDebug()) console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ",history);
+
+        } else if("min" === history.key) {
+
+          // 최소 문자 갯수보다 적은 경우.
+          if(this.isDebug()) console.log("default / onCheckInputValid / 최소 문자 갯수보다 적은 경우.");
+
+          if(isBlur) {
+
+            // Blur 모드에서는 사용자가 입력을 완료했다고 판단합니다
+            // 그러므로 최소 글자수보다 작으면 경고를 표시해야 합니다.
+            this.showTooltipFailWarning(history.msg, false);
+
+          } else {
+            // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
+            // 예외적으로 true 반환.
+            return true;
+          }
+
+        } // end if
+      } // end if
+      return false;
+    } // end if
+
+    return true;
+
+  } // end method  
 
   
   onKeyup(event, elementInput, value) :void {

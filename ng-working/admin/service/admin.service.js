@@ -20,6 +20,7 @@ var AdminService = (function () {
         this.fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
         this.fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
         this.searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
+        this.updateUserUrl = '/CI/index.php/api/admin/updateuser';
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
@@ -32,6 +33,25 @@ var AdminService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method
+    AdminService.prototype.updateUser = function (apiKey, userIdAdmin, userId, userStatus, userPermission) {
+        if (this.isDebug())
+            console.log("admin.service / updateUser / 시작");
+        if (this.isDebug())
+            console.log("admin.service / updateUser / apiKey : ", apiKey);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.updateUserUrl);
+        var params = {
+            user_id_admin: userIdAdmin,
+            user_id: userId,
+            user_status: userStatus,
+            user_permission: userPermission
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     AdminService.prototype.fetchUsersAdminPagination = function (apiKey) {
         if (this.isDebug())
             console.log("admin.service / fetchUsersAdminPagination / 시작");

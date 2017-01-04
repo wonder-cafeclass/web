@@ -9,6 +9,7 @@ var User = (function () {
         this.nickname = "";
         this.name = "";
         this.gender = "";
+        this.gender_readable = "";
         this.birthday = "";
         this.thumbnail = "";
         this.status = "";

@@ -188,6 +188,96 @@ class Admin extends MY_REST_Controller {
         $this->respond_200_v2($output);
     } // end method
 
+    // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.
+    public function updateuser_post() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        $user_id_admin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id_admin",
+            // $key_filter=""
+            "user_id"
+        );
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $user_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_status",
+            // $key_filter=""
+            "user_status"
+        );
+        $user_permission = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_permission",
+            // $key_filter=""
+            "user_permission"
+        );
+
+        $params = array(
+            "user_id"=>$user_id,
+            "user_status"=>$user_status,
+            "user_permission"=>$user_permission
+        );
+        $output["params"] = $params;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if($is_ok) {
+
+            $is_ok = 
+            $this->my_sql->update_user_on_admin(
+                // $user_id_admin=-1, 
+                $user_id_admin,
+                // $user_id=-1, 
+                $user_id,
+                // $status="",
+                $user_status,
+                // $permission=""
+                $user_permission
+            );
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
+        }
+        else 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
+            return;
+        } // end if       
+
+        // 변경된 유저 정보를 가져옵니다.
+        $user = $this->my_sql->get_user_by_id($user_id);
+        $output["user"] = $user;
+        $this->respond_200_v2($output);
+
+    } // end method
+
+
 
     // @ Desc : 운영자 유저 리스트를 가져옵니다. pagination 정보도 함께 줍니다.
     public function usersadmin_post() 

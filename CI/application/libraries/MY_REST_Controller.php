@@ -336,6 +336,16 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         }
     } 
 
+    public function has_check_list_success() 
+    {
+        return !$this->my_paramchecker->has_check_list_failed();
+    }
+
+    public function get_check_list()
+    {
+        return $this->my_paramchecker->get_check_list();
+    }
+
 
     /*
     *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.

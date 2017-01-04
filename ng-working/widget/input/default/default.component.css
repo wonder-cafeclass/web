@@ -12,6 +12,14 @@ div.btn-box.text-left.info {
   padding-right: 0px;
   width: 390px;  
 }
+div.no-border {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;  
+}
+div.selectbox {
+  padding-left: 10px;
+}
 label.title {
   margin:0px;
 }

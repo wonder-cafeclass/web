@@ -19,6 +19,8 @@ export class AdminService {
   private fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
   private searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
 
+  private updateUserUrl = '/CI/index.php/api/admin/updateuser';
+
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
 
@@ -42,6 +44,33 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+  updateUser (  apiKey:string, 
+                userIdAdmin:number, 
+                userId:number, 
+                userStatus:string, 
+                userPermission:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / updateUser / 시작");
+    if(this.isDebug()) console.log("admin.service / updateUser / apiKey : ",apiKey);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updateUserUrl);
+
+    let params = {
+      user_id_admin:userIdAdmin,
+      user_id:userId,
+      user_status:userStatus,
+      user_permission:userPermission
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
 
   fetchUsersAdminPagination (apiKey:string): Promise<MyResponse> {
 

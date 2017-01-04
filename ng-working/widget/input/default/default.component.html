@@ -4,9 +4,9 @@
 		class="btn-box text-left info">
 	<label class="title">{{meta.title}}</label>
 </div>
-<div 	[ngClass]="{'rb-focus':isFocus,'rb-blur':!isFocus,'no-l':isNoSpace,'no-tb':meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM,'disabled':isDisabled}"
+<div 	[ngClass]="{'no-border':isNoBorder,'radius-border':!isNoBorder,'rb-focus':isFocus,'rb-blur':!isFocus,'no-l':isNoSpace,'no-tb':meta.type == defaultType.TYPE_NUMBER || meta.type == defaultType.TYPE_HHMM,'disabled':isDisabled}"
 		[style.width]="widthStr"
-		class="btn-box radius-border">
+		class="btn-box">
 
 	<!-- input -->
 	<input 	
@@ -128,7 +128,7 @@
 
 
 	<!-- SELECT BOX -->
-	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" style="padding-left: 10px;">
+	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" [ngClass]="{'selectbox':!isNoBorder}">
 		<select 
 		class="form-control" 
 		(change)="onSelect($event, $event.target.value)">

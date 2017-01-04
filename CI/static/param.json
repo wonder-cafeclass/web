@@ -141,8 +141,9 @@
 	}
 	, "const":{
 		"user_gender_list":["M","F","U"],
-		"user_status_list":["A","B","F","N"],
+		"user_gender_kor_list":["남성","여성","모름"],
 
+		"user_status_list":["A","B","F","N"],
 		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
 		"user_status_kor_list":["정상","블럭","휴면","중지"],
 

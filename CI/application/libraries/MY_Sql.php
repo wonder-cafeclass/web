@@ -935,6 +935,60 @@ class MY_Sql
         return true;
     }
 
+    public function update_user_on_admin($user_id_admin=-1, $user_id=-1, $user_status="", $user_permission="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return false;
+        }
+        if($this->is_not_ok("user_id", $user_id_admin))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return false;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            return false;
+        }
+        if($this->is_not_ok("user_status", $user_status))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_status:$user_status)");
+            return false;
+        }
+        if($this->is_not_ok("user_permission", $user_permission))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_permission:$user_permission)");
+            return false;
+        }
+        
+        $data = array(
+            'status' => $user_status,
+            'permission' => $user_permission
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $user_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('user');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id_admin),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $user_id);
+        $this->CI->db->update('user', $data);
+
+        return true;
+    }    
+
     public function update_user_pw($email="", $password_hashed="")
     {
         if($this->is_not_ready())

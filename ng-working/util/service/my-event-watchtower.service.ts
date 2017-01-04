@@ -6,6 +6,8 @@ import { Teacher }    			from '../../teachers/model/teacher';
 
 import { HelperMyConst }		from '../../util/helper/my-const';
 
+import { DefaultOption }        from '../../widget/input/default/model/default-option';
+
 import { MyLoggerService }		from './my-logger.service';
 import { MyEventService }		from './my-event.service';
 import { MyCheckerService }		from './my-checker.service';
@@ -541,6 +543,54 @@ export class MyEventWatchTowerService {
 
 		return myEventOnReady;
 	}
+
+	getDefaultOptionList(keyList:string[],valueList:string[],valueFocus:string) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
+
+		let defaultOptionList:DefaultOption[] = 
+		this.getMyConst().getDefaultOptionList(
+			// keyList:string[], 
+			keyList,
+			// valueList:string[],
+			valueList,
+			// valueFocus:string
+			valueFocus
+		);
+
+		return defaultOptionList;
+	} // end method 
+
+	getDefaultOptionListWithMeta(keyList:string[],valueList:string[],valueFocus:string,metaObj:any) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
+
+		/*
+		let defaultOptionList:DefaultOption[] = 
+		this.getMyConst().getDefaultOptionList(
+			// keyList:string[], 
+			keyList,
+			// valueList:string[],
+			valueList,
+			// valueFocus:string
+			valueFocus
+		);
+		*/
+		
+		let defaultOptionList:DefaultOption[] = 
+		this.getDefaultOptionList(keyList,valueList,valueFocus);
+
+		for (var i = 0; i < defaultOptionList.length; ++i) {
+			let defaultOption:DefaultOption = defaultOptionList[i];
+			defaultOption.metaObj = metaObj;
+		}
+
+		return defaultOptionList;
+	} // end method 	 	
 
 	logAPIError(msg:string) :void	{
 
