@@ -17,12 +17,13 @@ var AdminService = (function () {
     function AdminService(us, http) {
         this.us = us;
         this.http = http;
+        this.updateTeacherUrl = '/CI/index.php/api/admin/updateteacher';
         this.fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
         this.fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
+        this.updateUserUrl = '/CI/index.php/api/admin/updateuser';
         this.fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
         this.fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
         this.searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
-        this.updateUserUrl = '/CI/index.php/api/admin/updateuser';
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
@@ -35,6 +36,30 @@ var AdminService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method
+    AdminService.prototype.updateTeacher = function (apiKey, userIdAdmin, teacherId, teacherStatus) {
+        if (this.isDebug())
+            console.log("admin.service / updateUser / 시작");
+        if (this.isDebug())
+            console.log("admin.service / updateUser / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("admin.service / updateUser / userIdAdmin : ", userIdAdmin);
+        if (this.isDebug())
+            console.log("admin.service / updateUser / teacherId : ", teacherId);
+        if (this.isDebug())
+            console.log("admin.service / updateUser / teacherStatus : ", teacherStatus);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.updateTeacherUrl);
+        var params = {
+            user_id_admin: userIdAdmin,
+            teacher_id: teacherId,
+            teacher_status: teacherStatus
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     AdminService.prototype.fetchTeacherList = function (apiKey, pageNum, pageSize) {
         if (this.isDebug())
             console.log("admin.service / fetchTeachersPagination / 시작");

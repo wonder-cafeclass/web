@@ -322,8 +322,6 @@ export class ManageTeachersComponent implements OnInit {
     if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / value : ",value);
     if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / teacher : ",teacher);
 
-    // wonder.jung
-    /*
     this.adminService
     .updateTeacher(
       // apiKey:string, 
@@ -353,7 +351,6 @@ export class ManageTeachersComponent implements OnInit {
       } // end if
 
     }); // end service
-    */
   }
 
   onChangedFromChild(myEvent:MyEvent) :void{
@@ -384,7 +381,7 @@ export class ManageTeachersComponent implements OnInit {
         let isChecked:boolean = ("true" == ""+myEvent.value)?true:false;
         this.updateCheckBoxes(isChecked);
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_USER_STATUS)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_STATUS)) {
 
         this.updateTeacherStatus(myEvent.value, myEvent.metaObj);
 

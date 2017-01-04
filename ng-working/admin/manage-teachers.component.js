@@ -219,6 +219,7 @@ var ManageTeachersComponent = (function () {
         } // end for
     }; // end method
     ManageTeachersComponent.prototype.updateTeacherStatus = function (value, teacher) {
+        var _this = this;
         if (this.isDebug())
             console.log("manage-teachers / updateTeacherStatus / 시작");
         if (null == value || "" === value) {
@@ -235,38 +236,32 @@ var ManageTeachersComponent = (function () {
             console.log("manage-teachers / updateTeacherStatus / value : ", value);
         if (this.isDebug())
             console.log("manage-teachers / updateTeacherStatus / teacher : ", teacher);
-        // wonder.jung
-        /*
         this.adminService
-        .updateTeacher(
-          // apiKey:string,
-          this.watchTower.getApiKey(),
-          // userIdAdmin:number,
-          this.loginUser.id,
-          // teacherId:number,
-          teacher.id,
-          // teacherStatus:string
-          value
-        )
-        .then((myResponse:MyResponse) => {
-    
-          if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / myResponse : ",myResponse);
-    
-          if(myResponse.isSuccess()) {
-            if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / success");
-    
-          } else if(myResponse.isFailed()){
-            if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / failed");
-    
-            this.watchTower.logAPIError("updateTeacherStatus has been failed!");
-            if(null != myResponse.error) {
-              this.watchTower.announceErrorMsgArr([myResponse.error]);
+            .updateTeacher(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userIdAdmin:number, 
+        this.loginUser.id, 
+        // teacherId:number, 
+        teacher.id, 
+        // teacherStatus:string 
+        value)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("manage-teachers / updateTeacherStatus / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                if (_this.isDebug())
+                    console.log("manage-teachers / updateTeacherStatus / success");
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("manage-teachers / updateTeacherStatus / failed");
+                _this.watchTower.logAPIError("updateTeacherStatus has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
             } // end if
-            
-          } // end if
-    
         }); // end service
-        */
     };
     ManageTeachersComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
@@ -288,7 +283,7 @@ var ManageTeachersComponent = (function () {
                 var isChecked = ("true" == "" + myEvent.value) ? true : false;
                 this.updateCheckBoxes(isChecked);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_USER_STATUS)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_STATUS)) {
                 this.updateTeacherStatus(myEvent.value, myEvent.metaObj);
             } // end if
         } // end if

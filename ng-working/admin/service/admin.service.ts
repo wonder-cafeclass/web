@@ -15,14 +15,15 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private updateTeacherUrl = '/CI/index.php/api/admin/updateteacher';
   private fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
   private fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
 
+  private updateUserUrl = '/CI/index.php/api/admin/updateuser';
   private fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
   private fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
   private searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
 
-  private updateUserUrl = '/CI/index.php/api/admin/updateuser';
 
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
@@ -47,6 +48,34 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+  updateTeacher ( apiKey:string, 
+                  userIdAdmin:number, 
+                  teacherId:number, 
+                  teacherStatus:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / updateUser / 시작");
+    if(this.isDebug()) console.log("admin.service / updateUser / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / updateUser / userIdAdmin : ",userIdAdmin);
+    if(this.isDebug()) console.log("admin.service / updateUser / teacherId : ",teacherId);
+    if(this.isDebug()) console.log("admin.service / updateUser / teacherStatus : ",teacherStatus);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updateTeacherUrl);
+
+    let params = {
+      user_id_admin:userIdAdmin,
+      teacher_id:teacherId,
+      teacher_status:teacherStatus
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }  
 
   fetchTeacherList (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
 
