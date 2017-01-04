@@ -33,7 +33,7 @@ CREATE TABLE `user` (
   `birthday` char(16) NOT NULL DEFAULT 0 COMMENT 'Optional ex) 1980-03-22, 2001-03-22, 1976-03-22, ...', 
   `thumbnail` varchar(255) NOT NULL DEFAULT "Optional",
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "C" COMMENT 'user status. A(Available)/B(Blocked)/F(Frozen)/N(Not in action)/C(Candidate/회원등록후, 인증메일 확인이 필요한 상황)',
-  `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/T(Teacher)/A(Administrator)',
+  `permission` char(1) COLLATE utf8_bin NOT NULL DEFAULT "U" COMMENT 'user permission. U(User)/A(Administrator)',
   `kakao_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `naver_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",
   `facebook_id` char(255) COLLATE utf8_bin NOT NULL DEFAULT "",

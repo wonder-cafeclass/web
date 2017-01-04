@@ -113,7 +113,7 @@ var HiddenUploaderComponent = (function () {
         }); // end subscribe
     };
     HiddenUploaderComponent.prototype.setViewPack = function () {
-        this.isAdmin = this.watchTower.getIsAdmin();
+        this.isAdmin = this.watchTower.getIsAdminServer();
         this.myCheckerService.setReady(
         // checkerMap:any
         this.watchTower.getCheckerMap(), 

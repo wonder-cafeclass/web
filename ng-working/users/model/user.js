@@ -9,6 +9,7 @@ var User = (function () {
         this.nickname = "";
         this.name = "";
         this.gender = "";
+        this.gender_readable = "";
         this.birthday = "";
         this.thumbnail = "";
         this.status = "";
@@ -26,6 +27,7 @@ var User = (function () {
         this.myIs = null;
         this.isDuplicatedMobile = false;
         this.isDuplicatedEmail = false;
+        this.isMe = false;
         this.isAdmin = false;
         this.myMobile = new my_mobile_1.HelperMyMobile();
         this.myBirthday = new my_birthday_1.HelperMyBirthday();
@@ -86,14 +88,12 @@ var User = (function () {
         // json
         json);
     }; // end method	
-    User.prototype.setIsAdmin = function (isAdmin) {
-        if (null == isAdmin) {
-            return;
+    // @ Desc : 사용자의 권한이 운영자인지 여부를 알려줍니다.
+    User.prototype.isAdminUser = function () {
+        if (null == this.permission && "" === this.permission) {
+            return false;
         }
-        this.isAdmin = isAdmin;
-    };
-    User.prototype.getIsAdmin = function () {
-        return this.isAdmin;
+        return ("A" === this.permission) ? true : false;
     };
     User.prototype.isTeacher = function () {
         return (null != this.teacher) ? true : false;

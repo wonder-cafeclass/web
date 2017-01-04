@@ -12,6 +12,7 @@ var Teacher = (function () {
         this.nickname = "";
         this.name = "";
         this.gender = "";
+        this.gender_readable = "";
         this.birthday = "";
         this.thumbnail = "";
         this.thumbnail_url = ""; // @ Deprecated

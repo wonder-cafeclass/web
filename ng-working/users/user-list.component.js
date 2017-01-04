@@ -11,38 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 // TODO SOMEDAY: Feature Componetized like CrisisCenter
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var user_service_1 = require('./user.service');
 var UserListComponent = (function () {
-    function UserListComponent(service, route, router) {
-        this.service = service;
+    function UserListComponent(route, router) {
         this.route = route;
         this.router = router;
     }
-    UserListComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.route.params.forEach(function (params) {
-            _this.selectedId = +params['id'];
-            _this.service.getUsers()
-                .then(function (users) { return _this.users = users; });
-        });
-    };
-    UserListComponent.prototype.isSelected = function (user) { return user.id === this.selectedId; };
-    UserListComponent.prototype.onSelect = function (user) {
-        this.router.navigate(['/user', user.id]);
-    };
     UserListComponent = __decorate([
         core_1.Component({
             template: "\n    <h2>Users</h2>\n    <ul class=\"items\">\n      <li *ngFor=\"let user of users\"\n        [class.selected]=\"isSelected(user)\"\n        (click)=\"onSelect(user)\">\n        <span class=\"badge\">{{user.id}}</span> {{user.name}}\n      </li>\n    </ul>\n  "
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router])
     ], UserListComponent);
     return UserListComponent;
-    var _a;
 }());
 exports.UserListComponent = UserListComponent;
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 //# sourceMappingURL=user-list.component.js.map

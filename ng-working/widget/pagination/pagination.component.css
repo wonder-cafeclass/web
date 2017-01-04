@@ -1,0 +1,17 @@
+nav.my-style {
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    height: 34px;
+}	
+ul.my-style {
+    padding: 0px;
+    margin: 0px;
+}
+a.my-active {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #e85c41;
+    border-color: #e85c41;	
+}

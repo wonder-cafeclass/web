@@ -1,39 +1,96 @@
-import { Component, OnInit }  from '@angular/core';
-import { ActivatedRoute }     from '@angular/router';
-import { Observable }         from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { Component, OnInit }           from '@angular/core';
+import { Router }                      from '@angular/router';
+
+import { MyEventService }              from '../util/service/my-event.service';
+import { MyCheckerService }            from '../util/service/my-checker.service';
+import { MyEventWatchTowerService }    from '../util/service/my-event-watchtower.service';
+import { MyEvent }                     from '../util/model/my-event';
+import { MyResponse }                  from '../util/model/my-response';
+
+import { HelperMyIs }                  from '../util/helper/my-is';
+import { HelperMyTime }                from '../util/helper/my-time';
+import { HelperMyArray }               from '../util/helper/my-array';
+import { HelperMyFormat }              from '../util/helper/my-format';
+
+import { User }                        from '../users/model/user';
+
 
 @Component({
-  template:  `
-    <p>Dashboard</p>
-
-    <p>Session ID: {{ sessionId | async }}</p>
-    <a id="anchor"></a>
-    <p>Token: {{ token | async }}</p>
-  `
+  moduleId: module.id,
+  selector: 'admin-dashboard',
+  templateUrl: 'admin-dashboard.component.html',
+  styleUrls: [ 'admin-dashboard.component.css' ]
 })
-export class AdminDashboardComponent implements OnInit {
-  sessionId: Observable<string>;
-  token: Observable<string>;
+export class AdminDashboardComponent {
 
-  constructor(private route: ActivatedRoute) {}
+  private myIs:HelperMyIs;
+  private myArray:HelperMyArray;
+  private myFormat:HelperMyFormat;
 
-  ngOnInit() {
-    // Capture the session ID if available
-    this.sessionId = this.route
-      .queryParams
-      .map(params => params['session_id'] || 'None');
+  private loginUser:User;
 
-    // Capture the fragment if available
-    this.token = this.route
-      .fragment
-      .map(fragment => fragment || 'None');
+  constructor(  private myEventService:MyEventService,
+                private watchTower:MyEventWatchTowerService,
+                private router:Router) {
+
+    this.myIs = new HelperMyIs();
+    this.myArray = new HelperMyArray();
+    this.myFormat = new HelperMyFormat();
+
+    this.subscribeLoginUser();
+    this.subscribeEventPack();
+
   }
+
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
+  private subscribeLoginUser() :void {
+
+    if(this.isDebug()) console.log("admin-dashboard / subscribeLoginUser / init");
+
+    this.loginUser = this.watchTower.getLoginUser();
+
+    if(null == this.loginUser || !this.loginUser.isAdminUser()) {
+      this.goHome();
+    } // end if
+
+    this.init();
+  } // end method
+
+  private goHome() :void {
+    if(this.isDebug()) console.log("admin-dashboard / goHome / init");
+    this.router.navigate(["/"]);
+  }
+
+  private subscribeEventPack() :void {
+
+    if(this.isDebug()) console.log("admin-dashboard / subscribeEventPack / init");
+
+    let isEventPackReady:boolean = this.watchTower.getIsEventPackReady();
+    if(this.isDebug()) console.log("admin-dashboard / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+
+    if(this.watchTower.getIsEventPackReady()) {
+      this.init();
+    } else {
+      // 2. EventPack 로딩이 완료되지 않았습니다. 로딩을 기다립니다.
+      this.watchTower.isEventPackReady$.subscribe(
+        (isEventPackReady:boolean) => {
+
+        if(this.isDebug()) console.log("admin-dashboard / subscribeEventPack / isEventPackReady : ",isEventPackReady);
+        this.init();
+
+      }); // end subscribe
+
+    } // end if
+
+  } // end method
+
+  init() :void {
+
+    if(this.isDebug()) console.log("admin-dashboard / init / 시작");
+
+  }  
+
 }
-
-
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

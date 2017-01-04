@@ -2,8 +2,10 @@
 var router_1 = require('@angular/router');
 var admin_component_1 = require('./admin.component');
 var admin_dashboard_component_1 = require('./admin-dashboard.component');
-var manage_crises_component_1 = require('./manage-crises.component');
-var manage_heroes_component_1 = require('./manage-heroes.component');
+var manage_admin_users_component_1 = require('./manage-admin-users.component');
+var manage_teachers_component_1 = require('./manage-teachers.component');
+var manage_users_component_1 = require('./manage-users.component');
+var manage_klasses_component_1 = require('./manage-klasses.component');
 var auth_guard_service_1 = require('../auth/auth-guard.service');
 var adminRoutes = [
     {
@@ -15,8 +17,10 @@ var adminRoutes = [
                 path: '',
                 canActivateChild: [auth_guard_service_1.AuthGuard],
                 children: [
-                    { path: 'crises', component: manage_crises_component_1.ManageCrisesComponent },
-                    { path: 'heroes', component: manage_heroes_component_1.ManageHeroesComponent },
+                    { path: 'adminusers', component: manage_admin_users_component_1.ManageAdminUsersComponent },
+                    { path: 'teachers', component: manage_teachers_component_1.ManageTeachersComponent },
+                    { path: 'users', component: manage_users_component_1.ManageUsersComponent },
+                    { path: 'klasses', component: manage_klasses_component_1.ManageKlassesComponent },
                     { path: '', component: admin_dashboard_component_1.AdminDashboardComponent }
                 ]
             }

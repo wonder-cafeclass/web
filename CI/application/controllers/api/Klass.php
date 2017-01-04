@@ -180,8 +180,6 @@ class Klass extends MY_REST_Controller {
 
     public function course_get()
     {
-        // wonder.jung
-
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 

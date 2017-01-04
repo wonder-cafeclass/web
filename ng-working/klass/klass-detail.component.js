@@ -119,9 +119,7 @@ var KlassDetailComponent = (function () {
             if (_this.isDebug())
                 console.log("klass-detail / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             _this.loginUser = _this.watchTower.getLoginUser();
-            if (null != _this.loginUser) {
-                _this.isAdmin = _this.loginUser.getIsAdmin();
-            } // end if
+            _this.isAdmin = _this.watchTower.getIsAdminServer();
             // 로그인한 선생님 정보가 들어왔습니다.
             _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
             _this.updateIsTeacher();
@@ -183,10 +181,10 @@ var KlassDetailComponent = (function () {
         if (this.isDebug())
             console.log("klass-detail / setUserInfo / 시작");
         // 1. 로그인 정보를 가져온다
+        this.isAdmin = this.watchTower.getIsAdminServer();
         this.loginUser = this.watchTower.getLoginUser();
         if (null != this.loginUser) {
             // 1-1. 이미 등록되어 있는 로그인 정보가 있는 경우.
-            this.isAdmin = this.loginUser.getIsAdmin();
             this.loginTeacher = this.loginUser.getTeacher();
             this.updateIsTeacher();
         } // end if

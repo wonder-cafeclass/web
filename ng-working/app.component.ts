@@ -54,11 +54,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		// return true;
-		return this.watchTower.isDebug();
+		return true;
+		// return this.watchTower.isDebug();
 	}
 
-	isAdmin:boolean=false;
+	isAdminServer:boolean=false;
+	isAdminUser:boolean=false;
 	loginUser:User;
 	loginTeacher:Teacher;
 	toggleTopMenu:boolean=true;
@@ -85,6 +86,21 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.watchTower.announceContentHeight();
 		
 	}
+
+	private updateLoginUser(user:User) :void {
+
+		if(this.isDebug()) console.log("app-root / updateLoginUser / 시작");
+
+		// 로그인한 유저 정보가 들어왔습니다.
+		this.loginUser = user;
+		if(null != user) {
+			// 운영자 유저인지 확인합니다.
+			this.isAdminUser = user.isAdminUser();
+		} // end if
+
+		if(this.isDebug()) console.log("app-root / updateLoginUser / this.isAdminUser : ",this.isAdminUser);
+
+	} // end method
 
 	private subscribeLoginUser() :void {
 
@@ -118,11 +134,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
 				thumbnail: "assets/images/user/2016-11-29|23|11|53|640151.jpg"
 			}
 			*/			
-			// 로그인한 유저 정보가 들어왔습니다.
-			this.loginUser = loginUser;
 
-		});
-	}
+			this.updateLoginUser(loginUser);
+
+		}); // end subscribe
+
+	} // end method
 	private subscribeLoginTeacher() :void {
 
 	    if(this.isDebug()) console.log("app-root / subscribeLoginTeacher / 시작");
@@ -191,8 +208,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 				if(this.isDebug()) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
 
 				if(myResponse.isSuccess()) {
-					this.isAdmin = myResponse.getDataProp("is_admin");
-					this.watchTower.announceIsAdmin(this.isAdmin);
+					this.isAdminServer = myResponse.getDataProp("is_admin");
+					this.watchTower.announceIsAdminServer(this.isAdminServer);
 				} else {
 			        // 에러 로그 등록
 			        this.myLoggerService.logError(

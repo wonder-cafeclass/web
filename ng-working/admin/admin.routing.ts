@@ -1,10 +1,12 @@
-import { ModuleWithProviders }   from '@angular/core';
-import { Routes, RouterModule }  from '@angular/router';
+import { ModuleWithProviders }      from '@angular/core';
+import { Routes, RouterModule }     from '@angular/router';
 
 import { AdminComponent }           from './admin.component';
 import { AdminDashboardComponent }  from './admin-dashboard.component';
-import { ManageCrisesComponent }    from './manage-crises.component';
-import { ManageHeroesComponent }    from './manage-heroes.component';
+import { ManageAdminUsersComponent }from './manage-admin-users.component';
+import { ManageTeachersComponent }  from './manage-teachers.component';
+import { ManageUsersComponent }     from './manage-users.component';
+import { ManageKlassesComponent }   from './manage-klasses.component';
 
 import { AuthGuard }                from '../auth/auth-guard.service';
 
@@ -18,8 +20,10 @@ const adminRoutes: Routes = [
         path: '',
         canActivateChild: [AuthGuard],
         children: [
-          { path: 'crises', component: ManageCrisesComponent },
-          { path: 'heroes', component: ManageHeroesComponent },
+          { path: 'adminusers', component: ManageAdminUsersComponent },
+          { path: 'teachers', component: ManageTeachersComponent },
+          { path: 'users', component: ManageUsersComponent },
+          { path: 'klasses', component: ManageKlassesComponent },
           { path: '', component: AdminDashboardComponent }
         ]
       }

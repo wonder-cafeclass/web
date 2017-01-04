@@ -6,6 +6,8 @@ import { Teacher }    			from '../../teachers/model/teacher';
 
 import { HelperMyConst }		from '../../util/helper/my-const';
 
+import { DefaultOption }        from '../../widget/input/default/model/default-option';
+
 import { MyLoggerService }		from './my-logger.service';
 import { MyEventService }		from './my-event.service';
 import { MyCheckerService }		from './my-checker.service';
@@ -22,7 +24,7 @@ export class MyEventWatchTowerService {
     private _isDebug:boolean = false;
 
 	// @ Required for view
-	private isAdmin:boolean = false;
+	private isAdminServer:boolean = false;
     private checkerMap;
     private constMap;
     private dirtyWordList;
@@ -42,7 +44,7 @@ export class MyEventWatchTowerService {
 
 	// Observable sources
 	// @ Required for view
-	private isAdminSource = new Subject<boolean>();
+	private isAdminServerSource = new Subject<boolean>();
 	private myCheckerServicePackReadySource = new Subject<boolean>();
 	private isViewPackReadySource = new Subject<boolean>();
 	// @ Optional for view
@@ -60,7 +62,7 @@ export class MyEventWatchTowerService {
 
 	// Observable streams
 	// @ Required for view
-	isAdmin$ = this.isAdminSource.asObservable();
+	isAdminServer$ = this.isAdminServerSource.asObservable();
 	myCheckerServicePackReady$ = this.myCheckerServicePackReadySource.asObservable();
 	isViewPackReady$ = this.isViewPackReadySource.asObservable();
 	// @ Optional for view
@@ -85,13 +87,9 @@ export class MyEventWatchTowerService {
 
 	// Service message commands
 	// @ Required for view
-	announceIsAdmin(isAdmin: boolean) {
-		this.isAdmin = isAdmin;
-		if(null != this.loginUser) {
-			this.loginUser.setIsAdmin(this.isAdmin);
-		}
-
-		this.isAdminSource.next(isAdmin);
+	announceIsAdminServer(isAdminServer: boolean) {
+		this.isAdminServer = isAdminServer;
+		this.isAdminServerSource.next(isAdminServer);
 
 		this.announceIsViewPackReady();
 	}	
@@ -137,7 +135,7 @@ export class MyEventWatchTowerService {
 
 	    if(this._isDebug) console.log(`my-event-watchtower / announceIsViewPackReady / 시작`);
 
-		if(null == this.isAdmin || !this.getIsMyCheckerReady()) {
+		if(null == this.isAdminServer || !this.getIsMyCheckerReady()) {
 			return;
 		}
 
@@ -158,11 +156,9 @@ export class MyEventWatchTowerService {
 		this.loginUser = loginUser;
 		if(null != this.loginUser) {
 			if(this._isDebug) console.log(`my-event-watchtower / announceLogin / setTeacher`);
-
 			if(null != this.loginTeacher) {
 				this.loginUser.setTeacher(this.loginTeacher);
 			} // end if
-			this.loginUser.setIsAdmin(this.isAdmin); // FIX ME
 		}
 		this.loginAnnouncedSource.next(loginUser);
 
@@ -289,8 +285,8 @@ export class MyEventWatchTowerService {
 	getLoginTeacher() :Teacher {
 		return this.loginTeacher;
 	}
-	getIsAdmin() :boolean {
-		return this.isAdmin;
+	getIsAdminServer() :boolean {
+		return this.isAdminServer;
 	}
 	getIsDebugging() :boolean {
 		return this.isDebugging;
@@ -547,6 +543,54 @@ export class MyEventWatchTowerService {
 
 		return myEventOnReady;
 	}
+
+	getDefaultOptionList(keyList:string[],valueList:string[],valueFocus:string) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
+
+		let defaultOptionList:DefaultOption[] = 
+		this.getMyConst().getDefaultOptionList(
+			// keyList:string[], 
+			keyList,
+			// valueList:string[],
+			valueList,
+			// valueFocus:string
+			valueFocus
+		);
+
+		return defaultOptionList;
+	} // end method 
+
+	getDefaultOptionListWithMeta(keyList:string[],valueList:string[],valueFocus:string,metaObj:any) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
+
+		/*
+		let defaultOptionList:DefaultOption[] = 
+		this.getMyConst().getDefaultOptionList(
+			// keyList:string[], 
+			keyList,
+			// valueList:string[],
+			valueList,
+			// valueFocus:string
+			valueFocus
+		);
+		*/
+		
+		let defaultOptionList:DefaultOption[] = 
+		this.getDefaultOptionList(keyList,valueList,valueFocus);
+
+		for (var i = 0; i < defaultOptionList.length; ++i) {
+			let defaultOption:DefaultOption = defaultOptionList[i];
+			defaultOption.metaObj = metaObj;
+		}
+
+		return defaultOptionList;
+	} // end method 	 	
 
 	logAPIError(msg:string) :void	{
 

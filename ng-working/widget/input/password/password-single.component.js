@@ -79,7 +79,7 @@ var PasswordSingleComponent = (function () {
         }); // end subscribe
     };
     PasswordSingleComponent.prototype.setViewPack = function () {
-        this.isAdmin = this.watchTower.getIsAdmin();
+        this.isAdmin = this.watchTower.getIsAdminServer();
         this.myCheckerService.setReady(
         // checkerMap:any
         this.watchTower.getCheckerMap(), 

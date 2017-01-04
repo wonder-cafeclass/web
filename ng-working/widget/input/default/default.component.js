@@ -30,6 +30,7 @@ var DefaultComponent = (function () {
         this.isValid = true;
         this.isDisabled = false;
         this.isNoSpace = false;
+        this.isNoBorder = false;
         this.isShowTitle = true;
         this.width = -1;
         this.numUnit = -1; // 숫자 변경시 최소 변경 단위.
@@ -507,14 +508,23 @@ var DefaultComponent = (function () {
         if (this.isFocus) {
             this.isFocus = false;
         } // end if
-        var isValidInput = this.onCheckInputValid(selectedValue, true);
+        // wonder.jung - 선택된 DefaultOption을 가져와서 metaObj로 전달해줍니다.
+        var defaultOption = this.getSelectedDefaultOption();
+        if (this.isDebug())
+            console.log("default / onSelect / defaultOption : ", defaultOption);
+        var isValidInput = this.onCheckInputValidNoEmit(selectedValue, true);
         if (this.isDebug())
             console.log("default / onSelect / isValidInput : ", isValidInput);
         if (isValidInput) {
             if (this.isDebug())
                 console.log("default / onSelect / 입력이 문제없습니다.");
             this.hideWarningTooptip();
-            this.emitEventOnChange(selectedValue);
+            if (null != defaultOption && null != defaultOption.metaObj) {
+                this.emitEventOnChangeWithMeta(selectedValue, defaultOption.metaObj);
+            }
+            else {
+                this.emitEventOnChange(selectedValue);
+            }
         }
         else {
         }
@@ -563,7 +573,6 @@ var DefaultComponent = (function () {
         } // end if
         if (this.isDebug())
             console.log("default / getCheckedDefaultOptionList / this.checkOptionTable : ", this.checkOptionTable);
-        // wonder.jung
         var checkedOptionList = [];
         for (var i = 0; i < this.checkOptionTable.length; ++i) {
             var row = this.checkOptionTable[i];
@@ -842,6 +851,60 @@ var DefaultComponent = (function () {
             return true;
         } // end if
     }; // end method
+    // @ Desc : 새로 입력받은 값이 문제가 없는지 확인합니다.
+    // 입력받은 모든 값은 문자열입니다.
+    DefaultComponent.prototype.onCheckInputValidNoEmit = function (input, isBlur) {
+        if (this.isDebug())
+            console.log("default / onCheckInputValid / init");
+        if (this.isDebug())
+            console.log("default / onCheckInputValid / input : ", input);
+        // 여기서 유저가 설정한 조건이 필요합니다.
+        // Blur가 아니라면, 비어있는 문자열이라면 검사하지 않습니다.
+        if (!isBlur && (null == input || "" == input)) {
+            if (this.isDebug())
+                console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
+            return true;
+        }
+        // MyChecker로 검사, 예외 사항에 대한 처리.
+        var isNotOK = this.isNotOK(input);
+        if (isNotOK) {
+            // 원인을 찾아봅니다.
+            var history_4 = this.myCheckerService.getLastHistory();
+            if (null != history_4 &&
+                null != history_4.key &&
+                null != history_4.msg) {
+                // 문제가 있습니다!
+                // 문제 원인 별로 처리해줍니다.
+                if ("max" === history_4.key) {
+                    // 최대 문자 갯수보다 많은 경우.
+                    if (this.isDebug())
+                        console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우.");
+                    this.showTooltipFailWarning(history_4.msg, false);
+                    // 넘는 문자열은 지웁니다.
+                    this.inputStrPrev = input = input.slice(0, history_4.value);
+                    if (this.isDebug())
+                        console.log("default / onCheckInputValid / 최대 문자 갯수보다 많은 경우. / history : ", history_4);
+                }
+                else if ("min" === history_4.key) {
+                    // 최소 문자 갯수보다 적은 경우.
+                    if (this.isDebug())
+                        console.log("default / onCheckInputValid / 최소 문자 갯수보다 적은 경우.");
+                    if (isBlur) {
+                        // Blur 모드에서는 사용자가 입력을 완료했다고 판단합니다
+                        // 그러므로 최소 글자수보다 작으면 경고를 표시해야 합니다.
+                        this.showTooltipFailWarning(history_4.msg, false);
+                    }
+                    else {
+                        // 사용자의 입력을 기다려야 하므로 해야하는 일이 없습니다.
+                        // 예외적으로 true 반환.
+                        return true;
+                    }
+                } // end if
+            } // end if
+            return false;
+        } // end if
+        return true;
+    }; // end method  
     DefaultComponent.prototype.onKeyup = function (event, elementInput, value) {
         if (this.isDebug())
             console.log("default / onKeyup / init");
@@ -929,6 +992,10 @@ var DefaultComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
+    ], DefaultComponent.prototype, "isNoBorder", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
     ], DefaultComponent.prototype, "isShowTitle", void 0);
     __decorate([
         core_1.Input(), 
@@ -958,6 +1025,10 @@ var DefaultComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Boolean)
     ], DefaultComponent.prototype, "hasNumFormat", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], DefaultComponent.prototype, "selectOptionList", void 0);
     DefaultComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -11,6 +11,7 @@ export class User {
 	public nickname:string="";
 	public name:string="";
 	public gender:string="";
+	public gender_readable:string="";
 	public birthday:string="";
 	public thumbnail:string="";
 	public status:string="";
@@ -30,6 +31,8 @@ export class User {
 
 	public isDuplicatedMobile:boolean = false;
 	public isDuplicatedEmail:boolean = false;
+
+	public isMe:boolean = false;
 
 	constructor() {
 		this.myMobile = new HelperMyMobile();
@@ -133,15 +136,14 @@ export class User {
         );
 
     } // end method	
-
-	setIsAdmin(isAdmin:boolean) :void {
-		if(null == isAdmin) {
-			return;
+	
+	// @ Desc : 사용자의 권한이 운영자인지 여부를 알려줍니다.
+	isAdminUser():boolean {
+		if(null == this.permission && "" === this.permission) {
+			return false;
 		}
-		this.isAdmin = isAdmin;
-	}
-	getIsAdmin() :boolean {
-		return this.isAdmin;
+
+		return ("A" === this.permission)?true:false;
 	}
 
 	isTeacher():boolean {

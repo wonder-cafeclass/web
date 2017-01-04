@@ -35,6 +35,7 @@
 		"teacher_resume":"is_str|||min_length[10]|||max_length[255]",
 		"teacher_resume_row":"is_str|||min_length[5]|||max_length[40]",
 		"teacher_greeting":"is_str|||min_length[10]|||max_length[255]",
+		"teacher_status":"is_str|||exact_length[1]|||matches[teacher_status_list]",
 
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 
@@ -117,8 +118,13 @@
 		"logger_error_type":"is_str|||matches[logger_error_type]",
 		"logger_error_msg":"is_str",
 
-		"offset":"is_natural_no_zero",
+		"offset":"is_number|||greater_than_equal_to[0]",
 		"limit":"is_natural_no_zero",
+
+		"page_num":"is_natural_no_zero",
+		"page_size":"is_natural_no_zero",
+
+		"search_query":"is_str|||min_length[1]|||regex_match_include[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
 		"uploading_image_min_width":"is_natural_no_zero",
 		"uploading_image_min_height":"is_natural_no_zero",
@@ -136,14 +142,19 @@
 	}
 	, "const":{
 		"user_gender_list":["M","F","U"],
-		"user_status_list":["A","B","F","N"],
+		"user_gender_kor_list":["남성","여성","모름"],
 
+		"user_status_list":["A","B","F","N"],
 		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
 		"user_status_kor_list":["정상","블럭","휴면","중지"],
 
-		"user_permission_list":["U","T","A"],
-		"user_permission_eng_list":["User","Teacher","Admin"],
-		"user_permission_kor_list":["사용자","강사","운영자"],
+		"user_permission_list":["U","A"],
+		"user_permission_eng_list":["User","Admin"],
+		"user_permission_kor_list":["사용자","운영자"],
+
+		"teacher_status_list":["A","B","F","N"],
+		"teacher_status_eng_list":["Available","Block","Frozen","Not in action"],
+		"teacher_status_kor_list":["정상","블럭","휴면","중지"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],

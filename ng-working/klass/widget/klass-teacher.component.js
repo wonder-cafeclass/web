@@ -21,7 +21,6 @@ var my_event_1 = require('../../util/model/my-event');
 var my_is_1 = require('../../util/helper/my-is');
 var my_array_1 = require('../../util/helper/my-array');
 var my_format_1 = require('../../util/helper/my-format');
-//DefaultMeta
 var KlassTeacherComponent = (function () {
     // 자신의 자식 객체에서 이벤트를 받는다.
     function KlassTeacherComponent(watchTower, myEventService, myCheckerService) {
