@@ -15,6 +15,9 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private updateKlassUrl = '/CI/index.php/api/admin/updateklass';
+  private fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
+
   private updateTeacherUrl = '/CI/index.php/api/admin/updateteacher';
   private fetchTeacherListV2Url = '/CI/index.php/api/admin/fetchteacherlist';
 
@@ -44,6 +47,61 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+
+  updateKlass ( apiKey:string, 
+                  userIdAdmin:number, 
+                  klassId:number, 
+                  klassStatus:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / updateKlass / 시작");
+    if(this.isDebug()) console.log("admin.service / updateKlass / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / updateKlass / userIdAdmin : ",userIdAdmin);
+    if(this.isDebug()) console.log("admin.service / updateKlass / klassId : ",klassId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.updateKlassUrl);
+
+    let params = {
+      user_id_admin:userIdAdmin,
+      klass_id:klassId,
+      klass_status:klassStatus
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }
+
+  fetchKlassList (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, klassStatus:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchKlassListUrl);
+
+    let params = {
+      page_num:pageNum,
+      page_size:pageSize,
+      search_query:searchQuery,
+      klass_status:klassStatus
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }  
 
 
   updateTeacher ( apiKey:string, 

@@ -186,6 +186,11 @@ export class MyEventService {
     // 수업시간 뷰
     KEY_KLASS_CLOCK_VIEW:string="KEY_KLASS_CLOCK_VIEW";
 
+    // 수업 상태
+    KEY_KLASS_STATUS:string="KEY_KLASS_STATUS";
+    // 수업 상태 - 검색
+    KEY_KLASS_STATUS_FOR_SEARCH:string="KEY_KLASS_STATUS_FOR_SEARCH";
+
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";
     KEY_CHECKBOX:string="KEY_CHECKBOX";
 

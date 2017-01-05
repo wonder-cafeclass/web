@@ -102,7 +102,7 @@ CREATE TABLE `klass` (
   `teacher_greeting` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT "Required 선생님 인사말.",
 
   `title` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업이름',
-  `desc` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업설명',
+  `desc` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '@ Deprecated - 수업설명',
   `feature` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업특징',
   `target` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업대상',
   `schedule` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업일정',

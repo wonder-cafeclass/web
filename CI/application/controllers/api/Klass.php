@@ -2322,6 +2322,7 @@ class Klass extends MY_REST_Controller {
         return $klass;
     }
 
+    // REFACTOR ME - 컨트롤러마다 나뉘어있음. Klass.php, Admin.php 두곳. 라이브러리 클래스로 해결할 것.
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
     private function decorate_klass($klass_list=null) 
     {

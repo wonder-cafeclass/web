@@ -76,8 +76,11 @@ export class Klass {
     // 수업 참여 학생수
     public student_cnt: number=-1;
 
-    public class_status: string="";
-    public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
+    public status: string="";
+
+    // REMOVE ME
+    // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
+    
     public class_banner_url:string="";
     public class_banner_url_arr:string[]=[];
     public class_poster_url:string="";
@@ -849,8 +852,8 @@ export class Klass {
             if(isDebug) console.log(`klass / isSame / student_cnt has been changed! / this.student_cnt:${this.student_cnt} != target.student_cnt:${target.student_cnt}`);
             return false;
         }
-        if(this.class_status != target.class_status) {
-            if(isDebug) console.log(`klass / isSame / class_status has been changed! / this.class_status:${this.class_status} != target.class_status:${target.class_status}`);
+        if(this.status != target.status) {
+            if(isDebug) console.log(`klass / isSame / status has been changed! / this.status:${this.status} != target.status:${target.status}`);
             return false;
         }
 

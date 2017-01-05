@@ -86,6 +86,8 @@
 		"klass_price":"is_number|||is_natural_no_zero|||greater_than_equal_to[45000]|||less_than_equal_to[1000000]",
 		"klass_price_calc_commission_str":"is_str|||regex_match_include[/^[0-9]+%$/]",
 		"klass_price_calc_payment_str":"is_str",
+
+		"klass_status":"is_str|||min_length[1]|||max_length[3]|||matches[class_status_list]",
 		
 		"klass_banner_url":"is_str",
 		"klass_poster_url":"is_str|||regex_match_include[/(jpg|png)$/]",
@@ -178,9 +180,9 @@
 			"assets/images/level/advanced.svg"
 		],
 
-		"class_status_list":["N","O","S","C"],
-		"class_status_eng_list":["New","Open","Suspended","Closed"],
-		"class_status_kor_list":["신규","개강","중단","종료"],
+		"class_status_list":["ALL", "N","O","S","C"],
+		"class_status_eng_list":["All", "New","Open","Suspended","Closed"],
+		"class_status_kor_list":["모든 상태", "신규","개강","중단","종료"],
 
 		"class_times_list":["always","morning","noon","afternoon","evening"],
 		"class_times_range_list":[0,7,12,14,19],

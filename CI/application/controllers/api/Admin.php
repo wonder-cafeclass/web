@@ -85,7 +85,234 @@ class Admin extends MY_REST_Controller {
         $output["api_key"] = $this->my_paramchecker->get_api_key();
 
         $this->respond_200_v2($output);
-    } // end method 
+    } // end method
+
+    // @ Desc : 운영툴에서 수업 정보를 업데이트합니다.
+    public function updateklass_post() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        $user_id_admin = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id_admin",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status"
+        );
+
+        $params = array(
+            "user_id_admin"=>$user_id_admin,
+            "klass_id"=>$klass_id,
+            "klass_status"=>$klass_status
+        );
+        $output["params"] = $params;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if($is_ok) {
+
+            /*
+            $is_ok = 
+            $this->my_sql->update_klass_on_admin(
+                // $user_id_admin=-1, 
+                $user_id_admin,
+                // $klass_id=-1, 
+                $klass_id,
+                // $klass_status="",
+                $klass_status
+            );
+            */
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
+        }
+        else 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
+            return;
+        } // end if       
+
+        // 변경된 유저 정보를 가져옵니다.
+        // $klass = $this->my_sql->select_klass($klass_id);
+        // $output["klass"] = $klass;
+        $this->respond_200_v2($output);
+
+    } // end method     
+
+    // @ Desc : 수업 리스트를 가져옵니다. 검색어, 권한, 상태등의 조회 조건을 줄수 있습니다.
+    public function fetchklasslist_post() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // Pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if 
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        ); 
+
+        // Where condition
+        $search_query = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "search_query",
+            // $key_filter=""
+            "search_query",
+            // $is_no_record=false
+            true
+        );
+
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status",
+            // $is_no_record=false
+            true
+        );        
+
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset,
+            "search_query"=>$search_query,
+            "klass_status"=>$klass_status
+        ];
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");        
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklasslist_post is failed!");
+            return;
+        } // end if
+
+        // 검색어에 해당하는 전체 결과수를 가져옵니다.
+        // 이 데이터로 pagination을 새로 만듭니다.
+        $klass_cnt = 
+        $this->my_sql->select_klass_cnt_on_admin(
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status
+        );
+        $output["klass_cnt"] = $klass_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $klass_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_size
+        );
+        $output["pagination"] = $pagination;
+
+        // 검색어로 유저를 찾습니다.
+        $klass_list =
+        $this->my_sql->select_klass_on_admin(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1, 
+            $offset,
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status
+            // $level="", 
+            // $station="", 
+            // $day="", 
+            // $time=""
+        );
+        $output["klass_list"] = $klass_list;
+        $this->respond_200_v2($output);        
+    }      
 
     // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.
     public function updateteacher_post() 

@@ -168,6 +168,10 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE_CALC_WEEK = "KEY_KLASS_PRICE_CALC_WEEK";
         // 수업시간 뷰
         this.KEY_KLASS_CLOCK_VIEW = "KEY_KLASS_CLOCK_VIEW";
+        // 수업 상태
+        this.KEY_KLASS_STATUS = "KEY_KLASS_STATUS";
+        // 수업 상태 - 검색
+        this.KEY_KLASS_STATUS_FOR_SEARCH = "KEY_KLASS_STATUS_FOR_SEARCH";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

@@ -1145,6 +1145,208 @@ class MY_Sql
         return $query_field;
     }  
 
+    private function get_query_klass_field() 
+    {
+        $select_query = 
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+        'klass.venue_longitude AS klass_venue_longitude,'.
+
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+        'klass.class_banner_url AS klass_class_banner_url,'.
+
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.
+
+        'teacher.id AS teacher_id,'.
+        'teacher.user_id AS teacher_user_id,'.
+        'teacher.nickname AS teacher_nickname,'.
+        'teacher.name AS teacher_name,'.
+        'teacher.gender AS teacher_gender,'.
+        'teacher.birthday AS teacher_birthday,'.
+        'teacher.thumbnail AS teacher_thumbnail,'.
+        'teacher.status AS teacher_status,'.
+        'teacher.mobile AS teacher_mobile,'.
+        'teacher.email AS teacher_email,'.
+        'teacher.resume AS teacher_resume,'.
+        'teacher.greeting AS teacher_greeting,'.
+        'teacher.memo AS teacher_memo,'.
+        'teacher.date_created AS teacher_date_created,'.
+        'teacher.date_updated AS teacher_date_updated'
+        ;
+
+        return $select_query;
+    }    
+
+    private function get_query_search_like_klass($search_query="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return "";
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            return "";
+        } // end if
+
+        $search_query_like = 
+        '('.
+        '`title` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`feature` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`target` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`schedule` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`venue_address` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ')'
+        ;        
+
+        return $search_query_like;
+    }
+
+    public function select_klass_cnt_on_admin($search_query="", $klass_status="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        // Query Execution
+        $this->CI->db->from('klass');
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('status', $klass_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        // Query Logging
+        $this->CI->db->from('klass');
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('status', $klass_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+        }
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method 
+
+    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $level="", $station="", $day="", $time="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if        
+
+        // Query Execution
+        $query_field = $this->get_query_klass_field();
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass("", $level, $station, $day, $time);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('status', $klass_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+        }
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass("", $level, $station, $day, $time);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('status', $klass_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+        }
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+
+        return $query->result_object();
+
+    } // end method        
+
 
 
     private function get_query_search_like($search_query="")
@@ -1888,7 +2090,7 @@ class MY_Sql
         $limit = 30;
         $offset = 0;
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -1911,62 +2113,6 @@ class MY_Sql
 
     }
 
-    private function get_select_query_klass() 
-    {
-        $select_query = 
-        'klass.id AS klass_id,' .
-        'klass.title AS klass_title,'.
-        'klass.desc AS klass_desc,'.
-        'klass.feature AS klass_feature,'.
-        'klass.target AS klass_target,'.
-        'klass.schedule AS klass_schedule,'.
-        'klass.date_begin AS klass_date_begin,'.
-        'klass.time_begin AS klass_time_begin,'.
-        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
-        'klass.time_end AS klass_time_end,'.
-        'klass.level AS klass_level,'.
-        'klass.week AS klass_week,'.
-        'klass.days AS klass_days,'.
-
-        'klass.subway_line AS klass_subway_line,'.
-        'klass.subway_station AS klass_subway_station,'.
-
-        'klass.venue_title AS klass_venue_title,'.
-        'klass.venue_telephone AS klass_venue_telephone,'.
-        'klass.venue_address AS klass_venue_address,'.
-        'klass.venue_road_address AS klass_venue_road_address,'.
-        'klass.venue_latitude AS klass_venue_latitude,'.
-        'klass.venue_longitude AS klass_venue_longitude,'.
-
-        'klass.status AS klass_status,'.
-        'klass.price AS klass_price,'.
-        'klass.student_cnt AS klass_student_cnt,'.
-        'klass.class_poster_url AS klass_class_poster_url,'.
-        'klass.class_banner_url AS klass_class_banner_url,'.
-
-        'klass.date_created AS klass_date_created,'.
-        'klass.date_updated AS klass_date_updated,'.
-
-        'teacher.id AS teacher_id,'.
-        'teacher.user_id AS teacher_user_id,'.
-        'teacher.nickname AS teacher_nickname,'.
-        'teacher.name AS teacher_name,'.
-        'teacher.gender AS teacher_gender,'.
-        'teacher.birthday AS teacher_birthday,'.
-        'teacher.thumbnail AS teacher_thumbnail,'.
-        'teacher.status AS teacher_status,'.
-        'teacher.mobile AS teacher_mobile,'.
-        'teacher.email AS teacher_email,'.
-        'teacher.resume AS teacher_resume,'.
-        'teacher.greeting AS teacher_greeting,'.
-        'teacher.memo AS teacher_memo,'.
-        'teacher.date_created AS teacher_date_created,'.
-        'teacher.date_updated AS teacher_date_updated'
-        ;
-
-        return $select_query;
-    }
-
     public function select_klass_list($offset=-1, $limit=-1)
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -1982,7 +2128,7 @@ class MY_Sql
 
         // TODO : A 상태인 수업만 노출해야 합니다.
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -3408,7 +3554,7 @@ class MY_Sql
             return;
         }
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
