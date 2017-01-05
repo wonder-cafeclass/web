@@ -1,16 +1,49 @@
 <div>
 	<ul class="list-group">
-		<li class="list-group-item">선생님 리스트</li>
-		<li class="list-group-item">검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용</li>
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 -->
+		<li class="list-group-item">
+			<!-- 검색 - 선생님 상태 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListTeacherStatus"
+	            [meta]="defaultMetaTeacherStatusForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>       		
+			<!-- 검색 -->
+			<div class="my-search-box">
+		        <widget-input-default
+		        [width]="300"
+		        [isNoSpace]="true"
+		        [isShowTitle]="false"
+		        [meta]="defaultMetaSearchQuery"
+		        (emitter)="onChangedFromChild($event)">
+		        </widget-input-default>
+			</div>
+	        <button 
+	        (click)="onClickSearch($event)"
+	        type="button" 
+	        class="btn btn-default btn-lg my-search">검색</button>
+
+		</li>
 		<li *ngIf="pagination" class="list-group-item">
 			<pagination 
 			(emitter)="onChangedFromChild($event)"
 			[eventKey]="myEventService.KEY_PAGE_NUM"
-			[pagination]="pagination">
-			</pagination>
-		</li>		
+			[pagination]="pagination"></pagination>
+		</li>
+		
 		<li class="list-group-item my-style-table">
-			
+
+<div *ngIf="!teacherList" style="text-align:center;">
+	<h3 style="margin-bottom:20px;color: #999;">검색 결과가 없습니다.</h3>
+</div>
+
 <table *ngIf="teacherList" class="table table-bordered table-hover my-style"> 
 	<thead> 
 		<tr>
@@ -62,12 +95,13 @@
 </table>			
 
 		</li>
+
 		<li *ngIf="pagination" class="list-group-item">
-			<pagination 
+			<pagination
 			(emitter)="onChangedFromChild($event)"
 			[eventKey]="myEventService.KEY_PAGE_NUM"
-			[pagination]="pagination">
-			</pagination>
+			[pagination]="pagination"></pagination>
 		</li>
+
 	</ul>
 </div>

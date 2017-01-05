@@ -35,7 +35,7 @@
 		"teacher_resume":"is_str|||min_length[10]|||max_length[255]",
 		"teacher_resume_row":"is_str|||min_length[5]|||max_length[40]",
 		"teacher_greeting":"is_str|||min_length[10]|||max_length[255]",
-		"teacher_status":"is_str|||exact_length[1]|||matches[teacher_status_list]",
+		"teacher_status":"is_str|||min_length[1]|||max_length[3]|||matches[teacher_status_list]",
 
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 

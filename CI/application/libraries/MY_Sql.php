@@ -1316,6 +1316,116 @@ class MY_Sql
         return $search_query_like;
     }
 
+    public function select_teacher_cnt_on_admin($search_query="", $teacher_status="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("teacher_status", $teacher_status))
+        {
+            $teacher_status = "";
+        } // end if
+
+        // Query Execution
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        // Query Logging
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method 
+
+    public function select_teacher_on_admin($search_query="", $teacher_status="", $limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("teacher_status", $teacher_status))
+        {
+            $teacher_status = "";
+        } // end if
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if        
+
+        $query_field = $this->get_query_teacher_field();
+
+        // Query Execution
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+
+        return $query->custom_result_object('Teacher');
+
+    } // end method       
+
     public function select_user_cnt_on_admin($search_query="", $user_status="", $user_permission="") 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);

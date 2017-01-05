@@ -9,10 +9,8 @@ import { Router }                      from '@angular/router';
 
 import { AdminService }                from './service/admin.service';
 
-import { Teacher }                     from '../teachers/model/teacher';
 import { User }                        from '../users/model/user';
 
-import { DefaultComponent }            from '../widget/input/default/default.component';
 import { DefaultMeta }                 from '../widget/input/default/model/default-meta';
 import { DefaultType }                 from '../widget/input/default/model/default-type';
 import { DefaultOption }               from '../widget/input/default/model/default-option';
@@ -54,8 +52,6 @@ export class ManageUsersComponent implements OnInit {
   private loginUser:User;
 
   private checkBoxList:CheckBoxComponent[]=[];
-
-  private selectStatusComponent:DefaultComponent;
 
   userList:User[];
 
