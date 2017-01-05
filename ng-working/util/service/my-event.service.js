@@ -172,6 +172,16 @@ var MyEventService = (function () {
         this.KEY_KLASS_STATUS = "KEY_KLASS_STATUS";
         // 수업 상태 - 검색
         this.KEY_KLASS_STATUS_FOR_SEARCH = "KEY_KLASS_STATUS_FOR_SEARCH";
+        // 수업 레벨 - 검색
+        this.KEY_KLASS_LEVEL_FOR_SEARCH = "KEY_KLASS_LEVEL_FOR_SEARCH";
+        // 지하철 노선 - 검색
+        this.KEY_KLASS_SUBWAY_LINE_FOR_SEARCH = "KEY_KLASS_SUBWAY_LINE_FOR_SEARCH";
+        // 지하철 역 - 검색
+        this.KEY_KLASS_SUBWAY_STATION_FOR_SEARCH = "KEY_KLASS_SUBWAY_STATION_FOR_SEARCH";
+        // 수업 요일 - 검색
+        this.KEY_KLASS_DAYS_FOR_SEARCH = "KEY_KLASS_DAYS_FOR_SEARCH";
+        // 수업 시간 - 검색
+        this.KEY_KLASS_TIME_FOR_SEARCH = "KEY_KLASS_TIME_FOR_SEARCH";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

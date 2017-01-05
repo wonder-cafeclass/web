@@ -1043,6 +1043,11 @@ var DefaultComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Array)
     ], DefaultComponent.prototype, "selectOptionList", void 0);
+    __decorate([
+        // 셀렉 박스 선택 정보로 사용.
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], DefaultComponent.prototype, "checkOptionTable", void 0);
     DefaultComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

@@ -60,7 +60,7 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   private myFormat:HelperMyFormat;
 
   @Input() selectOptionList:DefaultOption[];   // 셀렉 박스 선택 정보로 사용.
-  checkOptionTable:DefaultOption[][]; // 바둑판 형태의 checkbox 테이블 데이터로 사용
+  @Input() checkOptionTable:DefaultOption[][]; // 바둑판 형태의 checkbox 테이블 데이터로 사용
 
   constructor(  private myCheckerService:MyCheckerService,
                 private myEventService:MyEventService,

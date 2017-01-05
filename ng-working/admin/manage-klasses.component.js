@@ -36,11 +36,20 @@ var ManageKlassesComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
         this.defaultType = new default_type_1.DefaultType();
-        this.defaultMetaKlassStatus = this.getMetaSelectKlassStatus();
-        this.defaultMetaKlassStatusForSearch = this.getMetaSelectKlassStatusForSearch();
         this.defaultMetaSearchQuery = this.getMetaSearchInput();
         this.pagination = new pagination_1.Pagination();
-        this.selectOptionListKlassStatus = this.getDefaultOptionKlassListStatusForSearch();
+        this.defaultMetaStatus = this.getMetaSelectKlassStatus();
+        this.defaultMetaStatusForSearch = this.getMetaStatusForSearch();
+        this.defaultMetaLevelForSearch = this.getMetaLevelForSearch();
+        this.defaultMetaSubwayLineForSearch = this.getMetaSubwayLineForSearch();
+        this.defaultMetaSubwayStationForSearch = this.getMetaSubwayStationForSearch();
+        this.defaultMetaDaysForSearch = this.getMetaDaysForSearch();
+        this.defaultMetaTimeForSearch = this.getMetaTimeForSearch();
+        this.selectOptionListStatus = this.getDefaultOptionStatusForSearch();
+        this.selectOptionListLevel = this.getDefaultOptionLevelForSearch();
+        this.selectOptionListSubwayLine = this.getDefaultOptionSubwayLineForSearch();
+        this.checkOptionTableDays = this.getDefaultOptionDaysForSearch();
+        this.selectOptionListTime = this.getDefaultOptionTimeForSearch();
         this.subscribeLoginUser();
         this.subscribeEventPack();
     } // end constructor
@@ -62,19 +71,6 @@ var ManageKlassesComponent = (function () {
         // public type:string
         this.defaultType.TYPE_SELECT);
     };
-    ManageKlassesComponent.prototype.getMetaSelectKlassStatusForSearch = function () {
-        return new default_meta_1.DefaultMeta(// 5
-        // public title:string
-        "검색 조건 - 수업 상태", 
-        // public placeholder:string
-        "검색 조건 - 수업 상태를 선택해주세요", 
-        // public eventKey:string
-        this.myEventService.KEY_KLASS_STATUS_FOR_SEARCH, 
-        // public checkerKey:string
-        "klass_status", 
-        // public type:string
-        this.defaultType.TYPE_SELECT);
-    };
     ManageKlassesComponent.prototype.getMetaSearchInput = function () {
         return new default_meta_1.DefaultMeta(// 2
         // public title:string
@@ -87,6 +83,84 @@ var ManageKlassesComponent = (function () {
         "search_query", 
         // public type:string
         this.defaultType.TYPE_INPUT);
+    };
+    ManageKlassesComponent.prototype.getMetaStatusForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 수업 상태", 
+        // public placeholder:string
+        "검색 조건 - 수업 상태를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_STATUS_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_status", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageKlassesComponent.prototype.getMetaLevelForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 수업 레벨", 
+        // public placeholder:string
+        "검색 조건 - 수업 레벨을 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_LEVEL_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_level_for_search", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageKlassesComponent.prototype.getMetaSubwayLineForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 지하철 노선", 
+        // public placeholder:string
+        "검색 조건 - 지하철 노선을 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_SUBWAY_LINE_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_subway_line", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageKlassesComponent.prototype.getMetaSubwayStationForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 지하철 역", 
+        // public placeholder:string
+        "검색 조건 - 지하철 역을 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_SUBWAY_STATION_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_subway_station", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageKlassesComponent.prototype.getMetaDaysForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 요일", 
+        // public placeholder:string
+        "검색 조건 - 요일을 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_subway_station", 
+        // public type:string
+        this.defaultType.TYPE_CHECKBOX);
+    };
+    ManageKlassesComponent.prototype.getMetaTimeForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 시간", 
+        // public placeholder:string
+        "검색 조건 - 시간을 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH, 
+        // public checkerKey:string
+        "klass_subway_station", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
     };
     ManageKlassesComponent.prototype.subscribeLoginUser = function () {
         if (this.isDebug())
@@ -155,14 +229,67 @@ var ManageKlassesComponent = (function () {
         return defaultOptionList;
     }; // end method
     // @ Desc : 검색을 위한 유저 상태 default option list - select box 
-    ManageKlassesComponent.prototype.getDefaultOptionKlassListStatusForSearch = function () {
+    ManageKlassesComponent.prototype.getDefaultOptionStatusForSearch = function () {
         if (this.isDebug())
-            console.log("manage-klasses / getDefaultOptionKlassListStatusForSearch / 시작");
+            console.log("manage-klasses / getDefaultOptionStatusForSearch / 시작");
         return this.watchTower.getDefaultOptionListByKeys(
         // keyListName:string,
         "class_status_kor_list", 
         // valueListName:string,
         "class_status_list", 
+        // valueFocus:string
+        "");
+    }; // end method
+    ManageKlassesComponent.prototype.getDefaultOptionLevelForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-klasses / getDefaultOptionLevelForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "class_level_kor_list", 
+        // valueListName:string,
+        "class_level_list", 
+        // valueFocus:string
+        "");
+    }; // end method
+    ManageKlassesComponent.prototype.getDefaultOptionSubwayLineForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-klasses / getDefaultOptionSubwayLineForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "subway_line_kor_list", 
+        // valueListName:string,
+        "subway_line_list", 
+        // valueFocus:string
+        "");
+    }; // end method
+    ManageKlassesComponent.prototype.getDefaultOptionDaysForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-klasses / getDefaultOptionDaysForSearch / 시작");
+        var optionList = this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "class_days_kor_list", 
+        // valueListName:string,
+        "class_days_list", 
+        // valueFocus:string
+        "");
+        if (this.myArray.isOK(optionList)) {
+            optionList.shift();
+        }
+        // 기본 값은 모든 요일을 조회. 모두 선택되도록 변경.
+        for (var i = 0; i < optionList.length; ++i) {
+            var option = optionList[i];
+            option.isFocus = true;
+        }
+        return [optionList];
+    }; // end method
+    ManageKlassesComponent.prototype.getDefaultOptionTimeForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-klasses / getDefaultOptionDaysForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "class_times_kor_list", 
+        // valueListName:string,
+        "class_times_list", 
         // valueFocus:string
         "");
     }; // end method
@@ -342,10 +469,10 @@ var ManageKlassesComponent = (function () {
         if (null == status || "" === status) {
             return false;
         }
-        if (this.myArray.isNotOK(this.selectOptionListKlassStatus)) {
+        if (this.myArray.isNotOK(this.selectOptionListStatus)) {
             return false;
         } // end if
-        var defaultOption = this.selectOptionListKlassStatus[0];
+        var defaultOption = this.selectOptionListStatus[0];
         if (null == defaultOption) {
             return false;
         } // end if

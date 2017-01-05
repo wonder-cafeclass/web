@@ -2,7 +2,7 @@
 	<ul class="list-group">
 		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 -->
 		<li class="list-group-item">
-			<!-- 검색 - 선생님 상태 -->
+			<!-- 검색 - 수업 상태 -->
 	        <div class="my-status-box">
 	            <widget-input-default
 	            [height]="50"
@@ -10,11 +10,71 @@
 	            [isNoSpace]="true"
 	            [isNoBorder]="true"
 	            [isShowTitle]="false"
-	            [selectOptionList]="selectOptionListKlassStatus"
-	            [meta]="defaultMetaKlassStatusForSearch"
+	            [selectOptionList]="selectOptionListStatus"
+	            [meta]="defaultMetaStatusForSearch"
 	            (emitter)="onChangedFromChild($event)">
 	            </widget-input-default>	        	
 	        </div>       		
+			<!-- 검색 - 수업 레벨 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListLevel"
+	            [meta]="defaultMetaLevelForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>  
+			<!-- 검색 - 지하철 노선 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListSubwayLine"
+	            [meta]="defaultMetaSubwayLineForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>
+	        <!-- 검색 - 지하철 역 / 정말 필요할까? -->
+
+			<!-- 검색 - 수업 시간 -->
+			<div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [meta]="defaultMetaTimeForSearch"
+	            [selectOptionList]="selectOptionListTime"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+            </div>
+			<!-- 검색 - 수업 요일 -->
+			<div class="my-status-box" style="margin-top: -4px;">
+	            <widget-input-default
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [meta]="defaultMetaDaysForSearch"
+	            [checkOptionTable]="checkOptionTableDays"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+            </div>
+
+	        <button 
+	        style="opacity: 0;"
+	        type="button" 
+	        class="btn btn-default btn-lg my-search">X</button>
+
+		</li>
+		<li class="list-group-item">
 			<!-- 검색 -->
 			<div class="my-search-box">
 		        <widget-input-default
@@ -84,7 +144,7 @@
 	            [isNoBorder]="true"
 	            [isShowTitle]="false"
 	            [selectOptionList]="klass.selectOptionListStatus"
-	            [meta]="defaultMetaKlassStatus"
+	            [meta]="defaultMetaStatus"
 	            (emitter)="onChangedFromChild($event)">
 	            </widget-input-default>
 			</td>
