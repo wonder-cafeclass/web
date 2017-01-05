@@ -19,7 +19,7 @@ export class Pagination {
 
 	pageNumList:number[]=[];
 
-	setJSON(json):void {
+	setJSON(json):Pagination {
 
 		if(null == json) {
 			return;
@@ -49,6 +49,8 @@ export class Pagination {
 		for (var i = this.pageNumBeginOnView; i < this.pageNumEndOnView; ++i) {
 			this.pageNumList.push(i);
 		} // end for
+
+		return this;
 
 	} // end method
 

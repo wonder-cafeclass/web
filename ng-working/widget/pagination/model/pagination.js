@@ -46,6 +46,7 @@ var Pagination = (function () {
         for (var i = this.pageNumBeginOnView; i < this.pageNumEndOnView; ++i) {
             this.pageNumList.push(i);
         } // end for
+        return this;
     }; // end method
     return Pagination;
 }());

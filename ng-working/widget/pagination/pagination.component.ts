@@ -95,10 +95,14 @@ export class PaginationComponent implements OnInit {
 
   } // end method
 
-  onClick(event, pageNumSelected:number) {
+  onClick(event, pageNumSelected:number, pageBtn) {
 
     event.preventDefault();
     event.stopPropagation();
+
+    if(null != pageBtn) {
+      pageBtn.blur();
+    } // end if
 
     if(this.isDebug()) console.log("pagination / onClick / 시작");
     if(this.isDebug()) console.log("pagination / onClick / value : ",pageNumSelected);
@@ -112,6 +116,8 @@ export class PaginationComponent implements OnInit {
       return;
     } // end if
 
+    // 사용자가 선택한 페이지 번호로 보여줍니다.
+    this.pagination.pageNum = pageNumSelected;
     this.emitEventOnChange(""+pageNumSelected);
 
   } // end method

@@ -2,6 +2,13 @@
 	<ul class="list-group">
 		<li class="list-group-item">선생님 리스트</li>
 		<li class="list-group-item">검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용</li>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination">
+			</pagination>
+		</li>		
 		<li class="list-group-item my-style-table">
 			
 <table *ngIf="teacherList" class="table table-bordered table-hover my-style"> 
@@ -55,8 +62,12 @@
 </table>			
 
 		</li>
-		<li class="list-group-item">
-			<pagination [pagination]="pagination"></pagination>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination">
+			</pagination>
 		</li>
 	</ul>
 </div>

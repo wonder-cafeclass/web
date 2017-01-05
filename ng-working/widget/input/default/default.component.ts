@@ -46,12 +46,15 @@ export class DefaultComponent implements OnInit, AfterViewInit {
   @Input() isNoBorder:boolean=false;
   @Input() isShowTitle:boolean=true;
   @Input() width:number=-1;
+  @Input() height:number=-1;            // 일부 엘리먼트만 지원됩니다.
   @Input() numUnit:number=-1;           // 숫자 변경시 최소 변경 단위.
   @Input() minutesUnit:number=-1;       // 시간 변경시 최소 변경 분 단위.
   @Input() tailPipeStr:string="";       // 숫자 뒤에 들어가는 기호. ex) 10 --> 10명
   @Input() headPipeStr:string="";       // 숫자 앞에 들어가는 기호. ex) 100000 --> ₩100000
   @Input() hasNumFormat:boolean=true;   // 3자리 단위 표시 여부. ex) 100000 --> 100,000
+
   widthStr:string="";
+  heightStr:string="";
 
   private myTime:HelperMyTime;
   private myFormat:HelperMyFormat;
@@ -105,6 +108,10 @@ export class DefaultComponent implements OnInit, AfterViewInit {
       this.widthStr = this.width + "px";
     } else {
       this.widthStr = "100%";
+    }
+
+    if(0 < this.height) {
+      this.heightStr = this.height + "px";
     }
 
     this.asyncViewPack();
@@ -920,13 +927,17 @@ export class DefaultComponent implements OnInit, AfterViewInit {
     if(this.isDebug()) console.log("default / onCheckInputValid / init");
     if(this.isDebug()) console.log("default / onCheckInputValid / input : ",input);
 
-    // 여기서 유저가 설정한 조건이 필요합니다.
+    if("" === input) {
+      // 빈 문자열도 부모 객체에게 모두 지워진 것을 알려줍니다.
+      this.emitEventOnChange(input);
+      return true;
+    } // end if
 
     // Blur가 아니라면, 비어있는 문자열이라면 검사하지 않습니다.
-    if(!isBlur && (null == input || "" == input)) {
+    if(!isBlur && null == input) {
       if(this.isDebug()) console.log("default / onCheckInputValid / 중단 / 비어있는 문자열이라면 검사하지 않습니다.");
       return true;
-    }
+    } // end if
 
     // MyChecker로 검사, 예외 사항에 대한 처리.
     let isNotOK:boolean = this.isNotOK(input);

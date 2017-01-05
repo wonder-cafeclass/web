@@ -81,8 +81,10 @@ export class MyEventService {
 
     KEY_USER_SELECT:string="KEY_USER_SELECT";             // 유저 - 유저 선택 SELECT BOX
 
-    KEY_USER_STATUS:string="KEY_USER_STATUS";             // 유저 - 상태
-    KEY_USER_PERMISSION:string="KEY_USER_PERMISSION";     // 유저 - 권한
+    KEY_USER_STATUS:string="KEY_USER_STATUS";                                  // 유저 - 상태
+    KEY_USER_STATUS_FOR_SEARCH:string="KEY_USER_STATUS_FOR_SEARCH";            // 유저 - 유저 검색을 위한 상태 조건 값
+    KEY_USER_PERMISSION:string="KEY_USER_PERMISSION";                          // 유저 - 권한
+    KEY_USER_PERMISSION_FOR_SEARCH:string="KEY_USER_PERMISSION_FOR_SEARCH";    // 유저 - 권한
 
     KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
     KEY_USER_CUR_PASSWORD:string="KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
@@ -185,6 +187,10 @@ export class MyEventService {
 
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";
     KEY_CHECKBOX:string="KEY_CHECKBOX";
+
+    KEY_PAGE_NUM:string="KEY_PAGE_NUM";
+
+    KEY_SEARCH_QUERY:string="KEY_SEARCH_QUERY";
 
 
     private uniqueIdx:number=0;

@@ -37,6 +37,7 @@ var MyEventWatchTowerService = (function () {
         this.loginAnnouncedSource = new Subject_1.Subject();
         this.loginTeacherAnnouncedSource = new Subject_1.Subject();
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
+        this.toggleFooterAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
         this.contentHeightSource = new Subject_1.Subject();
         this.isLockedBottomFooterFlexibleSource = new Subject_1.Subject();
@@ -54,6 +55,7 @@ var MyEventWatchTowerService = (function () {
         this.loginAnnounced$ = this.loginAnnouncedSource.asObservable();
         this.loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
+        this.toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.contentHeight$ = this.contentHeightSource.asObservable();
         this.isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
@@ -157,6 +159,9 @@ var MyEventWatchTowerService = (function () {
     };
     MyEventWatchTowerService.prototype.announceToggleTopMenu = function (toggleTopMenu) {
         this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
+    };
+    MyEventWatchTowerService.prototype.announceToggleFooter = function (toggleFooter) {
+        this.toggleFooterAnnouncedSource.next(toggleFooter);
     };
     // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
     MyEventWatchTowerService.prototype.announceContentHeight = function () {
@@ -357,7 +362,7 @@ var MyEventWatchTowerService = (function () {
             console.log("my-event-watchtower / getEventOnChange / 시작");
         var myEventOnChange = this.myEventService.getMyEvent(
         // public eventName:string
-        this.myEventService.ON_READY, 
+        this.myEventService.ON_CHANGE, 
         // public key:string
         eventKey, 
         // public value:string
@@ -462,6 +467,26 @@ var MyEventWatchTowerService = (function () {
             console.log("m-e-w / getEventOnLoginRequired / myEventOnReady : ", myEventOnReady);
         return myEventOnReady;
     };
+    MyEventWatchTowerService.prototype.getDefaultOptionListByKeys = function (keyListName, valueListName, valueFocus) {
+        if (null == this.getMyConst()) {
+            return [];
+        }
+        if (null == keyListName || "" === keyListName) {
+            return [];
+        }
+        if (this.getMyConst().hasNotList(keyListName)) {
+            return [];
+        }
+        if (null == valueListName || "" === valueListName) {
+            return [];
+        }
+        if (this.getMyConst().hasNotList(valueListName)) {
+            return [];
+        }
+        var keyList = this.getMyConst().getList(keyListName);
+        var valueList = this.getMyConst().getList(valueListName);
+        return this.getDefaultOptionList(keyList, valueList, valueFocus);
+    };
     MyEventWatchTowerService.prototype.getDefaultOptionList = function (keyList, valueList, valueFocus) {
         if (null == this.getMyConst()) {
             return [];
@@ -475,21 +500,30 @@ var MyEventWatchTowerService = (function () {
         valueFocus);
         return defaultOptionList;
     }; // end method 
+    MyEventWatchTowerService.prototype.getDefaultOptionListWithMetaByKeys = function (keyListName, valueListName, valueFocus, metaObj) {
+        if (null == this.getMyConst()) {
+            return [];
+        }
+        if (null == keyListName || "" === keyListName) {
+            return [];
+        }
+        if (this.getMyConst().hasNotList(keyListName)) {
+            return [];
+        }
+        if (null == valueListName || "" === valueListName) {
+            return [];
+        }
+        if (this.getMyConst().hasNotList(valueListName)) {
+            return [];
+        }
+        var keyList = this.getMyConst().getList(keyListName);
+        var valueList = this.getMyConst().getList(valueListName);
+        return this.getDefaultOptionListWithMeta(keyList, valueList, valueFocus, metaObj);
+    }; // end method
     MyEventWatchTowerService.prototype.getDefaultOptionListWithMeta = function (keyList, valueList, valueFocus, metaObj) {
         if (null == this.getMyConst()) {
             return [];
         }
-        /*
-        let defaultOptionList:DefaultOption[] =
-        this.getMyConst().getDefaultOptionList(
-            // keyList:string[],
-            keyList,
-            // valueList:string[],
-            valueList,
-            // valueFocus:string
-            valueFocus
-        );
-        */
         var defaultOptionList = this.getDefaultOptionList(keyList, valueList, valueFocus);
         for (var i = 0; i < defaultOptionList.length; ++i) {
             var defaultOption = defaultOptionList[i];

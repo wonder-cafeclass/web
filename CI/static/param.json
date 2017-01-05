@@ -14,8 +14,8 @@
 		"user_birth_day":"is_str|||regex_match_include[/^([0]{1}[1-9]{1}|[12]{1}[0-9]{1}|[3]{1}[0-1]{1})$/]",
 
 		"user_thumbnail":"is_str|||regex_match_include[/(jpg|png)$/]",
-		"user_status":"is_str|||exact_length[1]|||matches[user_status_list]",
-		"user_permission":"is_str|||exact_length[1]|||matches[user_permission_list]",
+		"user_status":"is_str|||min_length[1]|||max_length[3]|||matches[user_status_list]",
+		"user_permission":"is_str|||min_length[1]|||max_lengths[3]|||matches[user_permission_list]",
 
 		"user_mobile":"valid_mobile_kor|||is_unique[user.mobile]",
 		"user_mobile_kor_head":"is_str|||exact_length[3]|||regex_match_include[/^01[0-9]$/]",
@@ -124,7 +124,7 @@
 		"page_num":"is_natural_no_zero",
 		"page_size":"is_natural_no_zero",
 
-		"search_query":"is_str|||min_length[1]|||regex_match_include[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
+		"search_query":"is_str|||min_length[1]|||regex_match_include[/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\\-_\\s|]+$/]",
 
 		"uploading_image_min_width":"is_natural_no_zero",
 		"uploading_image_min_height":"is_natural_no_zero",
@@ -144,17 +144,17 @@
 		"user_gender_list":["M","F","U"],
 		"user_gender_kor_list":["남성","여성","모름"],
 
-		"user_status_list":["A","B","F","N"],
-		"user_status_eng_list":["Available","Block","Frozen","Not in action"],
-		"user_status_kor_list":["정상","블럭","휴면","중지"],
+		"user_status_list":["ALL", "A","B","F","N"],
+		"user_status_eng_list":["All", "Available","Block","Frozen","Not in action"],
+		"user_status_kor_list":["모든 상태", "정상","블럭","휴면","탈퇴"],
 
-		"user_permission_list":["U","A"],
-		"user_permission_eng_list":["User","Admin"],
-		"user_permission_kor_list":["사용자","운영자"],
+		"user_permission_list":["ALL","U","A"],
+		"user_permission_eng_list":["All","User","Admin"],
+		"user_permission_kor_list":["모든 권한","사용자","운영자"],
 
-		"teacher_status_list":["A","B","F","N"],
-		"teacher_status_eng_list":["Available","Block","Frozen","Not in action"],
-		"teacher_status_kor_list":["정상","블럭","휴면","중지"],
+		"teacher_status_list":["ALL", "A","B","F","N"],
+		"teacher_status_eng_list":["All", "Available","Block","Frozen","Not in action"],
+		"teacher_status_kor_list":["모든 상태", "정상","블럭","휴면","탈퇴"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],

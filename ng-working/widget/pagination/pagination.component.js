@@ -73,9 +73,12 @@ var PaginationComponent = (function () {
         if (this.isDebug())
             console.log("pagination / emitEventOnReady / Done!");
     }; // end method
-    PaginationComponent.prototype.onClick = function (event, pageNumSelected) {
+    PaginationComponent.prototype.onClick = function (event, pageNumSelected, pageBtn) {
         event.preventDefault();
         event.stopPropagation();
+        if (null != pageBtn) {
+            pageBtn.blur();
+        } // end if
         if (this.isDebug())
             console.log("pagination / onClick / 시작");
         if (this.isDebug())
@@ -90,6 +93,8 @@ var PaginationComponent = (function () {
                 console.log("pagination / onClick / 중단 / pageNumSelected === this.pagination.pageNum");
             return;
         } // end if
+        // 사용자가 선택한 페이지 번호로 보여줍니다.
+        this.pagination.pageNum = pageNumSelected;
         this.emitEventOnChange("" + pageNumSelected);
     }; // end method
     PaginationComponent.prototype.emitEventOnChange = function (value) {

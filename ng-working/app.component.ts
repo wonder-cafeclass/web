@@ -54,8 +54,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		return true;
-		// return this.watchTower.isDebug();
+		// return true;
+		return this.watchTower.isDebug();
 	}
 
 	isAdminServer:boolean=false;
@@ -64,6 +64,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	loginTeacher:Teacher;
 	toggleTopMenu:boolean=true;
 	isDebugging:boolean=false;
+	toggleFooter:boolean=true;
 
 	errorMsgArr: string[]=[];
 
@@ -73,6 +74,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.subscribeLoginUser();
 		this.subscribeLoginTeacher();
 		this.subscribeToggleTopMenu();
+		this.subscribeToggleFooter();
 
 		this.setIsAdmin();
 		this.setMyChecker();
@@ -168,6 +170,20 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			this.toggleTopMenu = toggleTopMenu;
 		});
 	}
+	private subscribeToggleFooter() :void {
+
+	    if(this.isDebug()) console.log(`app-root / subscribeToggleFooter / 시작`);
+
+		// 최상단 메뉴를 보이거나 감춥니다.
+		this.watchTower.toggleFooterAnnounced$.subscribe(
+			(toggleFooter:boolean) => {
+
+			if(this.isDebug()) console.log(`app-root / subscribeToggleFooter / toggleFooter : ${toggleFooter}`);
+
+			this.toggleFooter = toggleFooter;
+		});
+	}
+
 	private subscribeAllErrors() :void {
 
 	    if(this.isDebug()) console.log(`app-root / subscribeAllErrors / 시작`);

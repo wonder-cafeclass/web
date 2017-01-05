@@ -36,6 +36,7 @@ var ApplyTeacherTermComponent = (function () {
             console.log("apply-teacher-term / ngOnInit / 시작");
         // 선생님 등록화면에서는 상,하단 메뉴를 가립니다.
         this.watchTower.announceToggleTopMenu(false);
+        this.watchTower.announceToggleFooter(false);
     }; // end function
     ApplyTeacherTermComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.

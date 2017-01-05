@@ -133,7 +133,7 @@ var ManageTeachersComponent = (function () {
                 var json = myResponse.getDataProp("pagination");
                 _this.pagination.setJSON(json);
                 // 2. 선생님 리스트를 가져옵니다. 
-                _this.fetchTeacherList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
+                _this.fetchTeacherList(_this.pagination.pageNum, _this.pagination.pageRange);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -285,6 +285,9 @@ var ManageTeachersComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_STATUS)) {
                 this.updateTeacherStatus(myEvent.value, myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+                this.fetchTeacherList(this.pagination.pageNum, this.pagination.pageRange);
             } // end if
         } // end if
     }; // end method

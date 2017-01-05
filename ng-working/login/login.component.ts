@@ -240,6 +240,7 @@ export class LoginComponent implements AfterViewInit {
 
     // 로그인, 회원 등록의 경우, 최상단 메뉴를 가립니다.
     this.watchTower.announceToggleTopMenu(false);    
+    this.watchTower.announceToggleFooter(false);    
   }
 
   onChangedFromChild(myEvent:MyEvent) :void {

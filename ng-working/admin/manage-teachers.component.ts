@@ -197,7 +197,7 @@ export class ManageTeachersComponent implements OnInit {
         this.pagination.setJSON(json);
 
         // 2. 선생님 리스트를 가져옵니다. 
-        this.fetchTeacherList(this.pagination["PAGE_NUM"], this.pagination["PAGE_RANGE"]);
+        this.fetchTeacherList(this.pagination.pageNum, this.pagination.pageRange);
         
       } else if(myResponse.isFailed()){
         if(this.isDebug()) console.log("manage-teachers / fetchTeachersPagination / failed");
@@ -385,7 +385,12 @@ export class ManageTeachersComponent implements OnInit {
 
         this.updateTeacherStatus(myEvent.value, myEvent.metaObj);
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+
+        this.fetchTeacherList(this.pagination.pageNum, this.pagination.pageRange);
+
       } // end if
+
 
       // Do someting ...     
 

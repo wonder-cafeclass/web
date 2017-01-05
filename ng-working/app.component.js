@@ -39,6 +39,7 @@ var AppComponent = (function () {
         this.isAdminUser = false;
         this.toggleTopMenu = true;
         this.isDebugging = false;
+        this.toggleFooter = true;
         this.errorMsgArr = [];
         if (this.isDebug())
             console.log("app-root / constructor / 시작");
@@ -47,14 +48,15 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
         this.subscribeLoginUser();
         this.subscribeLoginTeacher();
         this.subscribeToggleTopMenu();
+        this.subscribeToggleFooter();
         this.setIsAdmin();
         this.setMyChecker();
         // this.checkExternalAdmin();
@@ -131,6 +133,17 @@ var AppComponent = (function () {
             if (_this.isDebug())
                 console.log("app-root / subscribeToggleTopMenu / toggleTopMenu : " + toggleTopMenu);
             _this.toggleTopMenu = toggleTopMenu;
+        });
+    };
+    AppComponent.prototype.subscribeToggleFooter = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("app-root / subscribeToggleFooter / \uC2DC\uC791");
+        // 최상단 메뉴를 보이거나 감춥니다.
+        this.watchTower.toggleFooterAnnounced$.subscribe(function (toggleFooter) {
+            if (_this.isDebug())
+                console.log("app-root / subscribeToggleFooter / toggleFooter : " + toggleFooter);
+            _this.toggleFooter = toggleFooter;
         });
     };
     AppComponent.prototype.subscribeAllErrors = function () {

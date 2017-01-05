@@ -28,16 +28,26 @@ var ManageUsersComponent = (function () {
         this.watchTower = watchTower;
         this.router = router;
         this.checkBoxList = [];
+        this.searchQuery = "";
+        this.userStatus = "";
+        this.userPermission = "";
+        this.pageNum = 1;
+        this.pageRange = 5;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
         this.defaultType = new default_type_1.DefaultType();
         this.defaultMetaUserStatus = this.getMetaSelectUserStatus();
+        this.defaultMetaUserStatusForSearch = this.getMetaSelectUserStatusForSearch();
         this.defaultMetaUserPermission = this.getMetaSelectUserPermission();
+        this.defaultMetaUserPermissionForSearch = this.getMetaSelectUserPermissionForSearch();
+        this.defaultMetaSearchQuery = this.getMetaSearchInput();
         this.pagination = new pagination_1.Pagination();
+        this.selectOptionListUserStatus = this.getDefaultOptionUserListStatusForSearch();
+        this.selectOptionListUserPermission = this.getDefaultOptionUserListPermissionForSearch();
         this.subscribeLoginUser();
         this.subscribeEventPack();
-    }
+    } // end constructor
     ManageUsersComponent.prototype.ngOnInit = function () {
     };
     ManageUsersComponent.prototype.isDebug = function () {
@@ -56,6 +66,19 @@ var ManageUsersComponent = (function () {
         // public type:string
         this.defaultType.TYPE_SELECT);
     };
+    ManageUsersComponent.prototype.getMetaSelectUserStatusForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 사용자 상태", 
+        // public placeholder:string
+        "검색 조건 - 사용자 상태를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_USER_STATUS_FOR_SEARCH, 
+        // public checkerKey:string
+        "user_status", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
     ManageUsersComponent.prototype.getMetaSelectUserPermission = function () {
         return new default_meta_1.DefaultMeta(// 5
         // public title:string
@@ -68,6 +91,32 @@ var ManageUsersComponent = (function () {
         "user_permission", 
         // public type:string
         this.defaultType.TYPE_SELECT);
+    };
+    ManageUsersComponent.prototype.getMetaSelectUserPermissionForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 사용자 권한", 
+        // public placeholder:string
+        "검색 조건 - 사용자 권한를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_USER_PERMISSION_FOR_SEARCH, 
+        // public checkerKey:string
+        "user_permission", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageUsersComponent.prototype.getMetaSearchInput = function () {
+        return new default_meta_1.DefaultMeta(// 2
+        // public title:string
+        "검색", 
+        // public placeholder:string
+        "검색어를 입력해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_SEARCH_QUERY, 
+        // public checkerKey:string
+        "search_query", 
+        // public type:string
+        this.defaultType.TYPE_INPUT);
     };
     ManageUsersComponent.prototype.subscribeLoginUser = function () {
         if (this.isDebug())
@@ -105,30 +154,61 @@ var ManageUsersComponent = (function () {
     ManageUsersComponent.prototype.init = function () {
         if (this.isDebug())
             console.log("manage-users / init / 시작");
-        // 1. 운영자 유저의 pagination을 가져옵니다.
-        this.fetchUserListPagination();
-        // 2. 선생님 유저의 pagination을 가져옵니다.
-        // 3. 학생 유저의 pagination을 가져옵니다.
-    };
+        this.fetchUserList(
+        // pageNum:number, 
+        this.pageNum, 
+        // pageSize:number, 
+        this.pageRange, 
+        // searchQuery:string, 
+        this.searchQuery, 
+        // userStatus:string, 
+        this.userStatus, 
+        // userPermission:string      
+        this.userPermission);
+    }; // end method
     ManageUsersComponent.prototype.getDefaultOptionUserListStatus = function (user) {
         if (this.isDebug())
-            console.log("manage-users / getDefaultOptionUserList / 시작");
-        if (null == user) {
-            if (this.isDebug())
-                console.log("manage-users / getDefaultOptionUserList / 중단 / null == user");
-            return;
+            console.log("manage-users / getDefaultOptionUserListStatus / 시작");
+        var defaultOptionList = this.watchTower.getDefaultOptionListWithMetaByKeys(
+        // keyListName:string,
+        "user_status_kor_list", 
+        // valueListName:string,
+        "user_status_list", 
+        // valueFocus:string,
+        user.status, 
+        // metaObj:any
+        user);
+        if (this.myArray.isOK(defaultOptionList)) {
+            // "모든 상태" - 기본값 을 제거함.
+            defaultOptionList.shift();
         }
-        var keyList = [];
-        var valueList = [];
-        var userStatusList = this.watchTower.getMyConst().getList("user_status_list");
-        var userStatusKorList = this.watchTower.getMyConst().getList("user_status_kor_list");
-        for (var i = 0; i < userStatusList.length; ++i) {
-            var userStatusKor = userStatusKorList[i];
-            var userStatus = userStatusList[i];
-            keyList.push(userStatusKor);
-            valueList.push(userStatus);
-        }
-        return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, user.status, user);
+        if (this.isDebug())
+            console.log("manage-users / getDefaultOptionUserListStatus / defaultOptionList : ", defaultOptionList);
+        return defaultOptionList;
+    }; // end method
+    // @ Desc : 검색을 위한 유저 상태 default option list - select box 
+    ManageUsersComponent.prototype.getDefaultOptionUserListStatusForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-users / getDefaultOptionUserListStatusForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "user_status_kor_list", 
+        // valueListName:string,
+        "user_status_list", 
+        // valueFocus:string
+        "");
+    }; // end method
+    // @ Desc : 검색을 위한 유저 권한 default option list - select box 
+    ManageUsersComponent.prototype.getDefaultOptionUserListPermissionForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-users / getDefaultOptionUserListPermissionForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "user_permission_kor_list", 
+        // valueListName:string,
+        "user_permission_list", 
+        // valueFocus:string
+        "");
     }; // end method
     ManageUsersComponent.prototype.getDefaultOptionUserListPermission = function (user) {
         if (this.isDebug())
@@ -138,100 +218,134 @@ var ManageUsersComponent = (function () {
                 console.log("manage-users / getDefaultOptionUserListPermission / 중단 / null == user");
             return;
         }
-        var keyList = [];
-        var valueList = [];
-        var userPermissionList = this.watchTower.getMyConst().getList("user_permission_list");
-        var userPermissionKorList = this.watchTower.getMyConst().getList("user_permission_kor_list");
-        for (var i = 0; i < userPermissionList.length; ++i) {
-            var userPermissionKor = userPermissionKorList[i];
-            var userPermission = userPermissionList[i];
-            keyList.push(userPermissionKor);
-            valueList.push(userPermission);
-        }
-        return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, user.permission, user);
-    }; // end method    
-    // @ Desc : 운영자 유저리스트의 페이지 네이션을 가져옵니다.
-    ManageUsersComponent.prototype.fetchUserListPagination = function () {
-        var _this = this;
+        var defaultOptionList = this.watchTower.getDefaultOptionListWithMetaByKeys(
+        // keyListName:string,
+        "user_permission_kor_list", 
+        // valueListName:string,
+        "user_permission_list", 
+        // valueFocus:string,
+        user.permission, 
+        // metaObj:any
+        user);
+        if (this.myArray.isOK(defaultOptionList)) {
+            // "모든 권한" - 기본값 을 제거함.
+            defaultOptionList.shift();
+        } // end if
         if (this.isDebug())
-            console.log("manage-users / fetchUserListPagination / 시작");
-        this.adminService
-            .fetchUserListPagination(this.watchTower.getApiKey())
-            .then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("manage-users / fetchUserListPagination / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
-                if (_this.isDebug())
-                    console.log("manage-users / fetchUserListPagination / success");
-                // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
-                var json = myResponse.getDataProp("pagination");
-                _this.pagination.setJSON(json);
-                // 2. 유저 리스트를 가져옵니다. 
-                _this.fetchUserList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
-            }
-            else if (myResponse.isFailed()) {
-                if (_this.isDebug())
-                    console.log("manage-users / fetchUserListPagination / failed");
-                _this.watchTower.logAPIError("fetchUserListPagination has been failed!");
-                if (null != myResponse.error) {
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                } // end if
-            } // end if
-        }); // end service    
+            console.log("manage-users / getDefaultOptionUserListPermission / defaultOptionList : ", defaultOptionList);
+        return defaultOptionList;
+    }; // end method    
+    ManageUsersComponent.prototype.updatePagination = function (jsonPagination) {
+        if (this.isDebug())
+            console.log("manage-users / updatePagination / 시작");
+        if (this.isDebug())
+            console.log("manage-users / updatePagination / jsonPagination : ", jsonPagination);
+        if (null == jsonPagination) {
+            this.pagination = null;
+        }
+        else {
+            this.pagination = new pagination_1.Pagination().setJSON(jsonPagination);
+        }
     };
-    ManageUsersComponent.prototype.updateUserList = function (userJSONList) {
+    ManageUsersComponent.prototype.updateUserList = function (jsonUserList) {
         if (this.isDebug())
             console.log("manage-users / updateUserList / 시작");
-        if (this.myArray.isNotOK(userJSONList)) {
-            if (this.isDebug())
-                console.log("manage-users / updateUserList / 중단 / this.myArray.isNotOK(userJSONList)");
-            return;
+        if (this.myArray.isNotOK(jsonUserList)) {
+            // 검색 결과가 없습니다.
+            this.userList = null;
         }
-        var userList = [];
-        for (var i = 0; i < userJSONList.length; ++i) {
-            var userJSON = userJSONList[i];
-            var user = new user_1.User().setJSON(userJSON);
-            var defaultOptionListStatus = this.getDefaultOptionUserListStatus(user);
-            user["selectOptionListStatus"] = defaultOptionListStatus;
-            var defaultOptionListPermission = this.getDefaultOptionUserListPermission(user);
-            user["selectOptionListPermission"] = defaultOptionListPermission;
-            // 자신의 데이터인지 확인한다.
-            if (this.loginUser.id === user.id) {
-                user.isMe = true;
-            }
-            // 성별을 보기 쉽게 변경 
-            var genderReadable = this.watchTower
-                .getMyConst()
-                .getValue(
-            // srcKey:string, 
-            "user_gender_list", 
-            // srcValue:string, 
-            user.gender, 
-            // targetKey:string
-            "user_gender_kor_list");
+        else {
+            var userList = [];
+            for (var i = 0; i < jsonUserList.length; ++i) {
+                var userJSON = jsonUserList[i];
+                var user = new user_1.User().setJSON(userJSON);
+                var defaultOptionListStatus = this.getDefaultOptionUserListStatus(user);
+                user["selectOptionListStatus"] = defaultOptionListStatus;
+                var defaultOptionListPermission = this.getDefaultOptionUserListPermission(user);
+                user["selectOptionListPermission"] = defaultOptionListPermission;
+                // 자신의 데이터인지 확인한다.
+                if (this.loginUser.id === user.id) {
+                    user.isMe = true;
+                }
+                // 성별을 보기 쉽게 변경 
+                var genderReadable = this.watchTower
+                    .getMyConst()
+                    .getValue(
+                // srcKey:string, 
+                "user_gender_list", 
+                // srcValue:string, 
+                user.gender, 
+                // targetKey:string
+                "user_gender_kor_list");
+                if (this.isDebug())
+                    console.log("manage-users / updateUserList / genderReadable : ", genderReadable);
+                user.gender_readable = genderReadable;
+                userList.push(user);
+            } // end for
             if (this.isDebug())
-                console.log("manage-users / updateUserList / genderReadable : ", genderReadable);
-            user.gender_readable = genderReadable;
-            userList.push(user);
-        } // end for
-        if (this.isDebug())
-            console.log("manage-users / updateUserList / userList : ", userList);
-        this.userList = userList;
-    };
-    // @ Desc : 운영자 유저 리스트를 가져옵니다.
-    ManageUsersComponent.prototype.fetchUserList = function (pageNum, pageSize) {
-        // 유저 리스트는 아래 카테고리별로 나누어 가져옵니다.
-        // a. 운영자
-        // b. 선생님
-        // c. 학생
+                console.log("manage-users / updateUserList / userList : ", userList);
+            this.userList = userList;
+        } // end if
+    }; // end method
+    // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
+    ManageUsersComponent.prototype.doFetchUserList = function () {
+        if (null == this.pagination) {
+            this.fetchUserList(
+            // pageNum:number, 
+            this.pageNum, 
+            // pageSize:number, 
+            this.pageRange, 
+            // searchQuery:string, 
+            this.searchQuery, 
+            // userStatus:string, 
+            this.userStatus, 
+            // userPermission:string      
+            this.userPermission);
+        }
+        else {
+            this.fetchUserList(
+            // pageNum:number, 
+            this.pagination.pageNum, 
+            // pageSize:number, 
+            this.pagination.pageRange, 
+            // searchQuery:string, 
+            this.searchQuery, 
+            // userStatus:string, 
+            this.userStatus, 
+            // userPermission:string      
+            this.userPermission);
+        }
+    }; // end method
+    // @ Desc : 유저 리스트를 가져옵니다.
+    ManageUsersComponent.prototype.fetchUserList = function (pageNum, pageSize, searchQuery, userStatus, userPermission) {
         var _this = this;
         this.adminService
-            .fetchUserList(this.watchTower.getApiKey(), pageNum, pageSize)
+            .fetchUserListV2(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // pageNum:number, 
+        pageNum, 
+        // pageSize:number, 
+        pageSize, 
+        // searchQuery:string, 
+        searchQuery, 
+        // userStatus:string, 
+        userStatus, 
+        // userPermission:string
+        userPermission)
             .then(function (myResponse) {
             if (_this.isDebug())
                 console.log("manage-users / fetchUserList / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("admin_user_list")) {
-                var userJSONList = myResponse.getDataProp("admin_user_list");
+            if (myResponse.isSuccess() &&
+                myResponse.hasDataProp("pagination") &&
+                myResponse.hasDataProp("user_list")) {
+                // 1. Pagination 재설정
+                var jsonPagination = myResponse.getDataProp("pagination");
+                if (_this.isDebug())
+                    console.log("manage-users / fetchUserList / jsonPagination : ", jsonPagination);
+                _this.updatePagination(jsonPagination);
+                // 2. User List 재설정 
+                var userJSONList = myResponse.getDataProp("user_list");
                 if (_this.isDebug())
                     console.log("manage-users / fetchUserList / userJSONList : ", userJSONList);
                 _this.updateUserList(userJSONList);
@@ -351,6 +465,52 @@ var ManageUsersComponent = (function () {
                 } // end if
             } // end if
         }); // end service
+    }; // end method
+    ManageUsersComponent.prototype.onClickSearch = function (event) {
+        if (this.isDebug())
+            console.log("manage-users / onClickSearch / 시작");
+        event.stopPropagation();
+        event.preventDefault();
+        // 새로운 검색어라면 첫 검색 결과 페이지 노출
+        // pagination 내의 이동이라면, 검색어와 pageNum, pageRange를 모두 사용한다.
+        // this.searchUser(this.searchQuery, 1, this.pagination.pageRange);
+        this.fetchUserList(
+        // pageNum:number,
+        1, 
+        // pageSize:number,
+        this.pagination.pageRange, 
+        // searchQuery:string,
+        this.searchQuery, 
+        // userStatus:string, 
+        "", 
+        // userPermission:string
+        this.userPermission);
+    }; // end method
+    ManageUsersComponent.prototype.isDefaultStatus = function (status) {
+        if (null == status || "" === status) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListUserStatus)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListUserStatus[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === status) ? true : false;
+    };
+    ManageUsersComponent.prototype.isDefaultPermission = function (permission) {
+        if (null == permission || "" === permission) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListUserPermission)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListUserPermission[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === permission) ? true : false;
     };
     ManageUsersComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
@@ -377,6 +537,31 @@ var ManageUsersComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_PERMISSION)) {
                 this.updateUserPermission(myEvent.value, myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+                this.pagination.pageNum = +myEvent.value;
+                this.doFetchUserList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_SEARCH_QUERY)) {
+                this.searchQuery = myEvent.value;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_STATUS_FOR_SEARCH)) {
+                if (this.isDefaultStatus(myEvent.value)) {
+                    this.userStatus = "";
+                }
+                else {
+                    this.userStatus = myEvent.value;
+                } // end if
+                this.doFetchUserList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_USER_PERMISSION_FOR_SEARCH)) {
+                if (this.isDefaultPermission(myEvent.value)) {
+                    this.userPermission = "";
+                }
+                else {
+                    this.userPermission = myEvent.value;
+                } // end if
+                this.doFetchUserList();
             } // end if
         } // end if
     }; // end method

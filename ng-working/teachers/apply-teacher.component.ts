@@ -110,6 +110,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
     // 선생님 등록화면에서는 상,하단 메뉴를 가립니다.
     this.watchTower.announceToggleTopMenu(false);
+    this.watchTower.announceToggleFooter(false);
 
   } // end function
 

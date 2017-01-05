@@ -11,8 +11,9 @@
 		<!-- pagination / Pages -->
 		<li *ngFor="let pageNumFromList of pagination.pageNumList">
 			<a 
-			[ngClass]="{'my-active':pageNumFromList == pagination.pageNum}"
-			(click)="onClick($event, pageNumFromList)" href="#">{{pageNumFromList}}</a>
+			#pageBtn
+			[ngClass]="{'my-active':pageNumFromList == pagination.pageNum,'my-deactive':pageNumFromList != pagination.pageNum}"
+			(click)="onClick($event, pageNumFromList, pageBtn)" href="#">{{pageNumFromList}}</a>
 		</li>
 
 		<!-- pagination / Arrow / Next -->
