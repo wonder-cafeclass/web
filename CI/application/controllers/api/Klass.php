@@ -59,6 +59,7 @@ class Klass extends MY_REST_Controller {
         $this->load->library('MY_Calendar');
         $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
         $this->load->library('MY_Thumbnail');
+        $this->load->library('MY_Decorator');
     }
 
     public function selectile_get() {
@@ -321,7 +322,7 @@ class Klass extends MY_REST_Controller {
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
         $output["klass_list_src"] = $klass_list;
 
-        $klass_list = $this->decorate_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
         $output["klass_list"] = $klass_list;
 
         $new_klass = $this->get_klass_course_new_class();
@@ -1913,7 +1914,7 @@ class Klass extends MY_REST_Controller {
         );
 
         // wonder.jung
-        $klass_list = $this->decorate_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
         $output["klass_list"] = $klass_list;
 
         $new_klass = $this->get_klass_course_new_class();
@@ -2310,7 +2311,7 @@ class Klass extends MY_REST_Controller {
         } // end if
 
         $klass_list = $this->my_sql->select_klass($klass_id);
-        $klass_list = $this->decorate_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
 
         $klass = null;
         if(!empty($klass_list)) 
@@ -2322,6 +2323,8 @@ class Klass extends MY_REST_Controller {
         return $klass;
     }
 
+    // REMOVE ME
+    /*
     // REFACTOR ME - 컨트롤러마다 나뉘어있음. Klass.php, Admin.php 두곳. 라이브러리 클래스로 해결할 것.
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
     private function decorate_klass($klass_list=null) 
@@ -2744,5 +2747,6 @@ class Klass extends MY_REST_Controller {
 
         return $klass;
     } 
+    */
 
 }

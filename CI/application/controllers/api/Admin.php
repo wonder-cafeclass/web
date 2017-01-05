@@ -48,6 +48,7 @@ class Admin extends MY_REST_Controller {
         // init Admin
         $this->load->library('MY_Auth');
         $this->load->library('MY_Pagination');
+        $this->load->library('MY_Decorator');
     }
 
     public function auth_get() 
@@ -310,6 +311,9 @@ class Admin extends MY_REST_Controller {
             // $day="", 
             // $time=""
         );
+
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        
         $output["klass_list"] = $klass_list;
         $this->respond_200_v2($output);        
     }      

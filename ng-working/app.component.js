@@ -48,8 +48,8 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
@@ -183,16 +183,13 @@ var AppComponent = (function () {
                 _this.isAdminServer = myResponse.getDataProp("is_admin");
                 _this.watchTower.announceIsAdminServer(_this.isAdminServer);
             }
-            else {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.watchTower.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errorMsg:string
-                "app-root / setIsAdmin / Failed!");
-            }
+            else if (myResponse.isFailed()) {
+                _this.watchTower.logAPIError("app-root / setIsAdmin / Failed!");
+                if (null != myResponse.error) {
+                    _this.isAdminServer = true;
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
         });
     };
     AppComponent.prototype.setMyChecker = function () {

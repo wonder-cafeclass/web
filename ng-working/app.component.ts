@@ -54,8 +54,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		// return true;
-		return this.watchTower.isDebug();
+		return true;
+		// return this.watchTower.isDebug();
 	}
 
 	isAdminServer:boolean=false;
@@ -221,24 +221,23 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		.getAdminAuth()
 		.then((myResponse:MyResponse) => {
 
-				if(this.isDebug()) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
+			if(this.isDebug()) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
 
-				if(myResponse.isSuccess()) {
-					this.isAdminServer = myResponse.getDataProp("is_admin");
-					this.watchTower.announceIsAdminServer(this.isAdminServer);
-				} else {
-			        // 에러 로그 등록
-			        this.myLoggerService.logError(
-			          // apiKey:string
-			          this.watchTower.getApiKey(),
-			          // errorType:string
-			          this.myLoggerService.errorAPIFailed,
-			          // errorMsg:string
-			          `app-root / setIsAdmin / Failed!`
-			        );
-				}
-			}
-		);		
+			if(myResponse.isSuccess()) {
+				this.isAdminServer = myResponse.getDataProp("is_admin");
+				this.watchTower.announceIsAdminServer(this.isAdminServer);
+
+			} else if(myResponse.isFailed()){
+
+				this.watchTower.logAPIError(`app-root / setIsAdmin / Failed!`);
+				if(null != myResponse.error) {
+					this.isAdminServer = true;
+					this.watchTower.announceErrorMsgArr([myResponse.error]);
+				} // end if
+
+			} // end if
+
+		});		
 	}
 	private setMyChecker() :void {
 
