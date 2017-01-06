@@ -275,9 +275,9 @@ class Admin extends MY_REST_Controller {
         $klass_days = 
         $this->my_paramchecker->post(
             // $key=""
-            "klass_days_for_search",
-            // $key_filter=""
             "klass_days",
+            // $key_filter=""
+            "klass_days_for_search",
             // $is_no_record=false
             true
         );        
