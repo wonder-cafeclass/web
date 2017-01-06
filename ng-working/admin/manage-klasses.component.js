@@ -337,7 +337,8 @@ var ManageKlassesComponent = (function () {
             for (var i = 0; i < checkboxList.length; ++i) {
                 var checkbox = checkboxList[i];
                 if (0 < i) {
-                    klassDays += "|||" + checkbox.value; // REFACTOR ME
+                    // klassDays += this.watchTower.getDelimiter() + checkbox.value;
+                    klassDays += "|||" + checkbox.value;
                 }
                 else {
                     klassDays = checkbox.value;
@@ -624,13 +625,6 @@ var ManageKlassesComponent = (function () {
                 this.doFetchKlassList();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH)) {
-                /*
-                if(this.isDefaultDay(myEvent.value)) {
-                  this.klassDays = "";
-                } else {
-                  this.klassDays = myEvent.value;
-                } // end if
-                */
                 this.updateKlassDays();
                 this.doFetchKlassList();
             }

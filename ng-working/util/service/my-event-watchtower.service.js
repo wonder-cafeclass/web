@@ -530,7 +530,20 @@ var MyEventWatchTowerService = (function () {
             defaultOption.metaObj = metaObj;
         }
         return defaultOptionList;
-    }; // end method 	 	
+    }; // end method 
+    /*
+    getDelimiter():string {
+        return this.getSingleValue("delimiter");
+    }
+    private getSingleValue(key:string):string {
+
+        if(null == this.getMyConst()) {
+            return "";
+        }
+
+        return this.getMyConst().getSingleValue(key);
+    }
+    */
     MyEventWatchTowerService.prototype.logAPIError = function (msg) {
         if (this._isDebug)
             console.log("m-e-w / logAPIError / 시작");

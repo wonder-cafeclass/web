@@ -50,9 +50,9 @@ export class AdminService {
 
 
   updateKlass ( apiKey:string, 
-                  userIdAdmin:number, 
-                  klassId:number, 
-                  klassStatus:string): Promise<MyResponse> {
+                userIdAdmin:number, 
+                klassId:number, 
+                klassStatus:string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / updateKlass / 시작");
     if(this.isDebug()) console.log("admin.service / updateKlass / apiKey : ",apiKey);

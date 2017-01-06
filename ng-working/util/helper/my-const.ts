@@ -26,6 +26,15 @@ export class HelperMyConst {
     	this.constJSON = constJSON;
     }
 
+    getSingleValue(key:string):string {
+        
+        if(null == key || "" === key) {
+            return null;
+        } // end if
+
+        return this.constJSON[key];
+    }
+
     getList(key:string):any {
 
     	if(null == key || "" === key) {
