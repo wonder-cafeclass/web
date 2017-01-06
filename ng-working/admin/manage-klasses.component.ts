@@ -88,6 +88,8 @@ export class ManageKlassesComponent implements OnInit {
                 private watchTower:MyEventWatchTowerService,
                 private router:Router ) {
 
+    this.adminService.setWatchTower(this.watchTower);
+
     this.myIs = new HelperMyIs();
     this.myArray = new HelperMyArray();
     this.myFormat = new HelperMyFormat();

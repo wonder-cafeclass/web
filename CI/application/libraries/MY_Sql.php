@@ -1285,8 +1285,30 @@ class MY_Sql
         }
         if(!empty($klass_days))
         {
-            // $this->CI->db->where('klass.days', $klass_days);
-            // TODO 날짜 범위조건으로 변경. WHERE IN
+            // REFACTOR ME - delimiter를 const에서 가져오도록 변경.
+            $klass_days_list = explode("|||", $klass_days);
+
+            $search_query_like = "";
+            if(!empty($klass_days_list)) {
+                $search_query_like .= "(";
+                for ($i=0; $i < count($klass_days_list); $i++) 
+                { 
+                    $search_query = $klass_days_list[$i];
+                    if(0 == $i) 
+                    {
+                        // 첫번째 요일
+                        $search_query_like .= '`days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
+                    }
+                    else 
+                    {
+                        // 그 이후의 요일들
+                        $search_query_like .= ' OR `days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
+                    }
+                    
+                }
+                $search_query_like .= ")";
+            }
+            $this->CI->db->where($search_query_like, NULL, FALSE);
         }
         if(!empty($klass_time))
         {

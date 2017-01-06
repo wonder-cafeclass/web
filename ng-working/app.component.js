@@ -48,8 +48,8 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();

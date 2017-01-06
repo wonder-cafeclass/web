@@ -38,6 +38,7 @@ var ManageKlassesComponent = (function () {
         this.pageNum = 1;
         // @ Immutable
         this.pageRange = 5;
+        this.adminService.setWatchTower(this.watchTower);
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
