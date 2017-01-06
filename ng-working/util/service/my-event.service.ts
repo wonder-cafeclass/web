@@ -81,8 +81,10 @@ export class MyEventService {
 
     KEY_USER_SELECT:string="KEY_USER_SELECT";             // 유저 - 유저 선택 SELECT BOX
 
-    KEY_USER_STATUS:string="KEY_USER_STATUS";             // 유저 - 상태
-    KEY_USER_PERMISSION:string="KEY_USER_PERMISSION";     // 유저 - 권한
+    KEY_USER_STATUS:string="KEY_USER_STATUS";                                  // 유저 - 상태
+    KEY_USER_STATUS_FOR_SEARCH:string="KEY_USER_STATUS_FOR_SEARCH";            // 유저 - 유저 검색을 위한 상태 조건 값
+    KEY_USER_PERMISSION:string="KEY_USER_PERMISSION";                          // 유저 - 권한
+    KEY_USER_PERMISSION_FOR_SEARCH:string="KEY_USER_PERMISSION_FOR_SEARCH";    // 유저 - 권한
 
     KEY_USER_EMAIL:string="KEY_USER_EMAIL";               // 유저 - 이메일주소
     KEY_USER_CUR_PASSWORD:string="KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
@@ -118,7 +120,8 @@ export class MyEventService {
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
 
-    KEY_TEACHER_STATUS:string="KEY_TEACHER_STATUS";             // 선생님 - 상태
+    KEY_TEACHER_STATUS:string="KEY_TEACHER_STATUS";                         // 선생님 - 상태
+    KEY_TEACHER_STATUS_FOR_SEARCH:string="KEY_TEACHER_STATUS_FOR_SEARCH"    // 선생님 - 상태 (검색)
 
     KEY_KLASS_TITLE:string="KEY_KLASS_TITLE";                   // 수업 - 수업 이름
     KEY_KLASS_PRICE:string="KEY_KLASS_PRICE";                   // 수업 - 수업 가격
@@ -183,8 +186,28 @@ export class MyEventService {
     // 수업시간 뷰
     KEY_KLASS_CLOCK_VIEW:string="KEY_KLASS_CLOCK_VIEW";
 
+    // 수업 상태
+    KEY_KLASS_STATUS:string="KEY_KLASS_STATUS";
+    // 수업 상태 - 검색
+    KEY_KLASS_STATUS_FOR_SEARCH:string="KEY_KLASS_STATUS_FOR_SEARCH";
+    // 수업 레벨 - 검색
+    KEY_KLASS_LEVEL_FOR_SEARCH:string="KEY_KLASS_LEVEL_FOR_SEARCH";
+    // 지하철 노선 - 검색
+    KEY_KLASS_SUBWAY_LINE_FOR_SEARCH:string="KEY_KLASS_SUBWAY_LINE_FOR_SEARCH";
+    // 지하철 역 - 검색
+    KEY_KLASS_SUBWAY_STATION_FOR_SEARCH:string="KEY_KLASS_SUBWAY_STATION_FOR_SEARCH";
+    // 수업 요일 - 검색
+    KEY_KLASS_DAYS_FOR_SEARCH:string="KEY_KLASS_DAYS_FOR_SEARCH";
+    // 수업 시간 - 검색
+    KEY_KLASS_TIME_FOR_SEARCH:string="KEY_KLASS_TIME_FOR_SEARCH";
+
+
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";
     KEY_CHECKBOX:string="KEY_CHECKBOX";
+
+    KEY_PAGE_NUM:string="KEY_PAGE_NUM";
+
+    KEY_SEARCH_QUERY:string="KEY_SEARCH_QUERY";
 
 
     private uniqueIdx:number=0;

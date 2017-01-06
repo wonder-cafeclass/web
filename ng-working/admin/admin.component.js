@@ -19,6 +19,7 @@ var AdminComponent = (function () {
         this.router = router;
         this.subscribeLoginUser();
         this.subscribeEventPack();
+        this.watchTower.announceToggleFooter(false);
     }
     AdminComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();

@@ -28,6 +28,8 @@ export class AdminComponent {
     this.subscribeLoginUser();
     this.subscribeEventPack();
 
+    this.watchTower.announceToggleFooter(false);
+
   }
 
   private isDebug():boolean {

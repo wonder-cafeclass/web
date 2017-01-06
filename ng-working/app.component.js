@@ -39,6 +39,7 @@ var AppComponent = (function () {
         this.isAdminUser = false;
         this.toggleTopMenu = true;
         this.isDebugging = false;
+        this.toggleFooter = true;
         this.errorMsgArr = [];
         if (this.isDebug())
             console.log("app-root / constructor / 시작");
@@ -55,6 +56,7 @@ var AppComponent = (function () {
         this.subscribeLoginUser();
         this.subscribeLoginTeacher();
         this.subscribeToggleTopMenu();
+        this.subscribeToggleFooter();
         this.setIsAdmin();
         this.setMyChecker();
         // this.checkExternalAdmin();
@@ -133,6 +135,17 @@ var AppComponent = (function () {
             _this.toggleTopMenu = toggleTopMenu;
         });
     };
+    AppComponent.prototype.subscribeToggleFooter = function () {
+        var _this = this;
+        if (this.isDebug())
+            console.log("app-root / subscribeToggleFooter / \uC2DC\uC791");
+        // 최상단 메뉴를 보이거나 감춥니다.
+        this.watchTower.toggleFooterAnnounced$.subscribe(function (toggleFooter) {
+            if (_this.isDebug())
+                console.log("app-root / subscribeToggleFooter / toggleFooter : " + toggleFooter);
+            _this.toggleFooter = toggleFooter;
+        });
+    };
     AppComponent.prototype.subscribeAllErrors = function () {
         var _this = this;
         if (this.isDebug())
@@ -170,16 +183,13 @@ var AppComponent = (function () {
                 _this.isAdminServer = myResponse.getDataProp("is_admin");
                 _this.watchTower.announceIsAdminServer(_this.isAdminServer);
             }
-            else {
-                // 에러 로그 등록
-                _this.myLoggerService.logError(
-                // apiKey:string
-                _this.watchTower.getApiKey(), 
-                // errorType:string
-                _this.myLoggerService.errorAPIFailed, 
-                // errorMsg:string
-                "app-root / setIsAdmin / Failed!");
-            }
+            else if (myResponse.isFailed()) {
+                _this.watchTower.logAPIError("app-root / setIsAdmin / Failed!");
+                if (null != myResponse.error) {
+                    _this.isAdminServer = true;
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
         });
     };
     AppComponent.prototype.setMyChecker = function () {

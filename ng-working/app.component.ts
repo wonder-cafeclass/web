@@ -64,6 +64,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	loginTeacher:Teacher;
 	toggleTopMenu:boolean=true;
 	isDebugging:boolean=false;
+	toggleFooter:boolean=true;
 
 	errorMsgArr: string[]=[];
 
@@ -73,6 +74,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.subscribeLoginUser();
 		this.subscribeLoginTeacher();
 		this.subscribeToggleTopMenu();
+		this.subscribeToggleFooter();
 
 		this.setIsAdmin();
 		this.setMyChecker();
@@ -168,6 +170,20 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			this.toggleTopMenu = toggleTopMenu;
 		});
 	}
+	private subscribeToggleFooter() :void {
+
+	    if(this.isDebug()) console.log(`app-root / subscribeToggleFooter / 시작`);
+
+		// 최상단 메뉴를 보이거나 감춥니다.
+		this.watchTower.toggleFooterAnnounced$.subscribe(
+			(toggleFooter:boolean) => {
+
+			if(this.isDebug()) console.log(`app-root / subscribeToggleFooter / toggleFooter : ${toggleFooter}`);
+
+			this.toggleFooter = toggleFooter;
+		});
+	}
+
 	private subscribeAllErrors() :void {
 
 	    if(this.isDebug()) console.log(`app-root / subscribeAllErrors / 시작`);
@@ -205,24 +221,23 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		.getAdminAuth()
 		.then((myResponse:MyResponse) => {
 
-				if(this.isDebug()) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
+			if(this.isDebug()) console.log(`app-root / setIsAdmin / myResponse : `,myResponse);
 
-				if(myResponse.isSuccess()) {
-					this.isAdminServer = myResponse.getDataProp("is_admin");
-					this.watchTower.announceIsAdminServer(this.isAdminServer);
-				} else {
-			        // 에러 로그 등록
-			        this.myLoggerService.logError(
-			          // apiKey:string
-			          this.watchTower.getApiKey(),
-			          // errorType:string
-			          this.myLoggerService.errorAPIFailed,
-			          // errorMsg:string
-			          `app-root / setIsAdmin / Failed!`
-			        );
-				}
-			}
-		);		
+			if(myResponse.isSuccess()) {
+				this.isAdminServer = myResponse.getDataProp("is_admin");
+				this.watchTower.announceIsAdminServer(this.isAdminServer);
+
+			} else if(myResponse.isFailed()){
+
+				this.watchTower.logAPIError(`app-root / setIsAdmin / Failed!`);
+				if(null != myResponse.error) {
+					this.isAdminServer = true;
+					this.watchTower.announceErrorMsgArr([myResponse.error]);
+				} // end if
+
+			} // end if
+
+		});		
 	}
 	private setMyChecker() :void {
 

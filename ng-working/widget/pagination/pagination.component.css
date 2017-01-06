@@ -15,3 +15,21 @@ a.my-active {
     background-color: #e85c41;
     border-color: #e85c41;	
 }
+a.my-active:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #e85c41;
+    border-color: #e85c41;
+}
+a.my-deactive {
+    color: #e85c41;
+    border-color: #e85c41;
+}
+a.my-deactive:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: rgba(232, 92, 65, 0.5);
+    border-color: #e85c41;  
+}

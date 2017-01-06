@@ -66,6 +66,7 @@ var KlassListComponent = (function () {
         this.subscribeLoginTeacher();
         // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
         this.watchTower.announceToggleTopMenu(true);
+        this.watchTower.announceToggleFooter(true);
     };
     KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;

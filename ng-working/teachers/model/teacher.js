@@ -25,6 +25,7 @@ var Teacher = (function () {
         this.memo = "";
         this.date_created = "";
         this.date_updated = "";
+        this.isMe = false;
         this.delimiter = "|||";
         this.myArray = null;
         this.myIs = null;

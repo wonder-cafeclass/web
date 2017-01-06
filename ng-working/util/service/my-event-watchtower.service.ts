@@ -52,6 +52,7 @@ export class MyEventWatchTowerService {
 	private loginAnnouncedSource = new Subject<User>();
 	private loginTeacherAnnouncedSource = new Subject<Teacher>();
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
+	private toggleFooterAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
 	private contentHeightSource = new Subject<number>();
 	private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
@@ -70,6 +71,7 @@ export class MyEventWatchTowerService {
 	loginAnnounced$ = this.loginAnnouncedSource.asObservable();
 	loginTeacherAnnounced$ = this.loginTeacherAnnouncedSource.asObservable();
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
+	toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 	contentHeight$ = this.contentHeightSource.asObservable();
 	isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
@@ -187,6 +189,11 @@ export class MyEventWatchTowerService {
 	announceToggleTopMenu(toggleTopMenu: boolean) {
 		this.toggleTopMenuAnnouncedSource.next(toggleTopMenu);
 	}
+
+	announceToggleFooter(toggleFooter: boolean) {
+		this.toggleFooterAnnouncedSource.next(toggleFooter);
+	}
+
 	// @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
 	announceContentHeight() {
 
@@ -419,7 +426,7 @@ export class MyEventWatchTowerService {
 	    let myEventOnChange:MyEvent =
 	    this.myEventService.getMyEvent(
 	      // public eventName:string
-	      this.myEventService.ON_READY,
+	      this.myEventService.ON_CHANGE,
 	      // public key:string
 	      eventKey,
 	      // public value:string
@@ -544,6 +551,31 @@ export class MyEventWatchTowerService {
 		return myEventOnReady;
 	}
 
+	getDefaultOptionListByKeys(keyListName:string,valueListName:string,valueFocus:string) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
+		if(null == keyListName || "" === keyListName) {
+			return [];
+		}
+		if(this.getMyConst().hasNotList(keyListName)) {
+			return [];
+		}
+		if(null == valueListName || "" === valueListName) {
+			return [];
+		}
+		if(this.getMyConst().hasNotList(valueListName)) {
+			return [];
+		}
+
+	    let keyList:string[] = this.getMyConst().getList(keyListName);
+	    let valueList:string[] = this.getMyConst().getList(valueListName);
+
+	    return this.getDefaultOptionList(keyList, valueList, valueFocus);
+	    
+	}
+
 	getDefaultOptionList(keyList:string[],valueList:string[],valueFocus:string) :DefaultOption[] {
 
 		if(null == this.getMyConst()) {
@@ -563,23 +595,37 @@ export class MyEventWatchTowerService {
 		return defaultOptionList;
 	} // end method 
 
-	getDefaultOptionListWithMeta(keyList:string[],valueList:string[],valueFocus:string,metaObj:any) :DefaultOption[] {
+	getDefaultOptionListWithMetaByKeys(keyListName:string,valueListName:string,valueFocus:string,metaObj:any) :DefaultOption[] {
 
 		if(null == this.getMyConst()) {
 			return [];
 		}
 
-		/*
-		let defaultOptionList:DefaultOption[] = 
-		this.getMyConst().getDefaultOptionList(
-			// keyList:string[], 
-			keyList,
-			// valueList:string[],
-			valueList,
-			// valueFocus:string
-			valueFocus
-		);
-		*/
+		if(null == keyListName || "" === keyListName) {
+			return [];
+		}
+		if(this.getMyConst().hasNotList(keyListName)) {
+			return [];
+		}
+		if(null == valueListName || "" === valueListName) {
+			return [];
+		}
+		if(this.getMyConst().hasNotList(valueListName)) {
+			return [];
+		}
+
+	    let keyList:string[] = this.getMyConst().getList(keyListName);
+	    let valueList:string[] = this.getMyConst().getList(valueListName);
+
+	    return this.getDefaultOptionListWithMeta(keyList, valueList, valueFocus, metaObj);
+
+	} // end method
+
+	getDefaultOptionListWithMeta(keyList:string[],valueList:string[],valueFocus:string,metaObj:any) :DefaultOption[] {
+
+		if(null == this.getMyConst()) {
+			return [];
+		}
 		
 		let defaultOptionList:DefaultOption[] = 
 		this.getDefaultOptionList(keyList,valueList,valueFocus);

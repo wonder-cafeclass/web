@@ -93,6 +93,7 @@ export class KlassListComponent implements AfterViewInit {
 
     // 홈화면인 수업 리스트에서는 상단 메뉴를 보여줍니다.
     this.watchTower.announceToggleTopMenu(true);
+    this.watchTower.announceToggleFooter(true);
 
   } 
   private asyncViewPack(): void {

@@ -26,6 +26,8 @@ export class Teacher {
 	public date_created:string="";
 	public date_updated:string="";
 
+	public isMe:boolean=false;
+
 	private delimiter:string="|||";
 
     private myArray:HelperMyArray=null;

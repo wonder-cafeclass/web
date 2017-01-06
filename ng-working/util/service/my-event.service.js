@@ -77,7 +77,9 @@ var MyEventService = (function () {
         this.KEY_COMMENT_QUESTION = "KEY_COMMENT_QUESTION"; // 댓글 - 수업 문의 리스트
         this.KEY_USER_SELECT = "KEY_USER_SELECT"; // 유저 - 유저 선택 SELECT BOX
         this.KEY_USER_STATUS = "KEY_USER_STATUS"; // 유저 - 상태
+        this.KEY_USER_STATUS_FOR_SEARCH = "KEY_USER_STATUS_FOR_SEARCH"; // 유저 - 유저 검색을 위한 상태 조건 값
         this.KEY_USER_PERMISSION = "KEY_USER_PERMISSION"; // 유저 - 권한
+        this.KEY_USER_PERMISSION_FOR_SEARCH = "KEY_USER_PERMISSION_FOR_SEARCH"; // 유저 - 권한
         this.KEY_USER_EMAIL = "KEY_USER_EMAIL"; // 유저 - 이메일주소
         this.KEY_USER_CUR_PASSWORD = "KEY_USER_CUR_PASSWORD"; // 유저 - 현재 유저의 비밀번호
         this.KEY_USER_PASSWORD = "KEY_USER_PASSWORD"; // 유저 - 비밀번호
@@ -105,6 +107,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
         this.KEY_TEACHER_STATUS = "KEY_TEACHER_STATUS"; // 선생님 - 상태
+        this.KEY_TEACHER_STATUS_FOR_SEARCH = "KEY_TEACHER_STATUS_FOR_SEARCH"; // 선생님 - 상태 (검색)
         this.KEY_KLASS_TITLE = "KEY_KLASS_TITLE"; // 수업 - 수업 이름
         this.KEY_KLASS_PRICE = "KEY_KLASS_PRICE"; // 수업 - 수업 가격
         this.KEY_KLASS_PRICE_VIEW = "KEY_KLASS_PRICE_VIEW"; // 수업 - 수업 가격 뷰
@@ -165,8 +168,24 @@ var MyEventService = (function () {
         this.KEY_KLASS_PRICE_CALC_WEEK = "KEY_KLASS_PRICE_CALC_WEEK";
         // 수업시간 뷰
         this.KEY_KLASS_CLOCK_VIEW = "KEY_KLASS_CLOCK_VIEW";
+        // 수업 상태
+        this.KEY_KLASS_STATUS = "KEY_KLASS_STATUS";
+        // 수업 상태 - 검색
+        this.KEY_KLASS_STATUS_FOR_SEARCH = "KEY_KLASS_STATUS_FOR_SEARCH";
+        // 수업 레벨 - 검색
+        this.KEY_KLASS_LEVEL_FOR_SEARCH = "KEY_KLASS_LEVEL_FOR_SEARCH";
+        // 지하철 노선 - 검색
+        this.KEY_KLASS_SUBWAY_LINE_FOR_SEARCH = "KEY_KLASS_SUBWAY_LINE_FOR_SEARCH";
+        // 지하철 역 - 검색
+        this.KEY_KLASS_SUBWAY_STATION_FOR_SEARCH = "KEY_KLASS_SUBWAY_STATION_FOR_SEARCH";
+        // 수업 요일 - 검색
+        this.KEY_KLASS_DAYS_FOR_SEARCH = "KEY_KLASS_DAYS_FOR_SEARCH";
+        // 수업 시간 - 검색
+        this.KEY_KLASS_TIME_FOR_SEARCH = "KEY_KLASS_TIME_FOR_SEARCH";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
+        this.KEY_PAGE_NUM = "KEY_PAGE_NUM";
+        this.KEY_SEARCH_QUERY = "KEY_SEARCH_QUERY";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

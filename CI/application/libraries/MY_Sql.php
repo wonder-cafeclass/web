@@ -935,6 +935,54 @@ class MY_Sql
         return true;
     }
 
+    public function update_teacher_on_admin($user_id_admin=-1, $teacher_id=-1, $teacher_status="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return false;
+        }
+        if($this->is_not_ok("user_id", $user_id_admin))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return false;
+        }
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            return false;
+        }
+        if($this->is_not_ok("teacher_status", $teacher_status))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_status:$teacher_status)");
+            return false;
+        }
+        
+        $data = array(
+            'status' => $teacher_status
+        );
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $teacher_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            intval($user_id_admin),
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('id', $teacher_id);
+        $this->CI->db->update('teacher', $data);
+
+        return true;
+    }     
+
     public function update_user_on_admin($user_id_admin=-1, $user_id=-1, $user_status="", $user_permission="")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -1048,26 +1096,7 @@ class MY_Sql
 
 	}
 
-    public function get_teacher_cnt() 
-    {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
-        if($this->is_not_ready())
-        {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
-            return;
-        }
-
-        $this->CI->db->from('teacher');
-        $cnt = $this->CI->db->count_all_results();
-
-        $this->CI->db->from('teacher');
-        $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
-
-        return $cnt;
-
-    } // end method 
 
     private function get_query_teacher_field()
     {
@@ -1092,9 +1121,221 @@ class MY_Sql
         return $query_fields;
     }
 
-    public function get_teacher_list($limit=-1, $offset=-1) 
+
+    private function get_query_field_user()
     {
-        // wonder.jung
+        $query_field = 
+        "id,".
+        "facebook_id,".
+        "kakao_id,".
+        "naver_id,".
+        "nickname,".
+        "email,".
+        "name,".
+        "mobile,".
+        "gender,".
+        "birthday,".
+        "thumbnail,".
+        "permission,".
+        "status,".
+        "date_created,".
+        "date_updated"
+        ;
+
+        return $query_field;
+    }  
+
+    private function get_query_klass_field() 
+    {
+        $select_query = 
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+        'klass.venue_longitude AS klass_venue_longitude,'.
+
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+        'klass.class_banner_url AS klass_class_banner_url,'.
+
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.
+
+        'teacher.id AS teacher_id,'.
+        'teacher.user_id AS teacher_user_id,'.
+        'teacher.nickname AS teacher_nickname,'.
+        'teacher.name AS teacher_name,'.
+        'teacher.gender AS teacher_gender,'.
+        'teacher.birthday AS teacher_birthday,'.
+        'teacher.thumbnail AS teacher_thumbnail,'.
+        'teacher.status AS teacher_status,'.
+        'teacher.mobile AS teacher_mobile,'.
+        'teacher.email AS teacher_email,'.
+        'teacher.resume AS teacher_resume,'.
+        'teacher.greeting AS teacher_greeting,'.
+        'teacher.memo AS teacher_memo,'.
+        'teacher.date_created AS teacher_date_created,'.
+        'teacher.date_updated AS teacher_date_updated'
+        ;
+
+        return $select_query;
+    }    
+
+    private function set_like_klass($search_query="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return "";
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            return "";
+        } // end if
+
+        $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+
+    }
+    private function get_query_search_like_klass($search_query="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return "";
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            return "";
+        } // end if
+
+        $search_query_like = 
+        '('.
+        '`title` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`feature` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`target` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`schedule` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`venue_address` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ')'
+        ;        
+
+        return $search_query_like;
+    }
+    private function set_where_klass($klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="")
+    {
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+        if($this->is_not_ok("klass_level", $klass_level))
+        {
+            $klass_level = "";
+        } // end if
+        if($this->is_not_ok("klass_subway_line", $klass_subway_line))
+        {
+            $klass_subway_line = "";
+        } // end if
+        if($this->is_not_ok("klass_days", $klass_days))
+        {
+            $klass_days = "";
+        } // end if
+        if($this->is_not_ok("klass_time", $klass_time))
+        {
+            $klass_time = "";
+        } // end if
+
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        if(!empty($klass_level))
+        {
+            $this->CI->db->where('klass.level', $klass_level);
+        }
+        if(!empty($klass_subway_line))
+        {
+            $this->CI->db->where('klass.subway_line', $klass_subway_line);
+        }
+        if(!empty($klass_days))
+        {
+            // $this->CI->db->where('klass.days', $klass_days);
+            // TODO 날짜 범위조건으로 변경. WHERE IN
+        }
+        if(!empty($klass_time))
+        {
+            $this->set_where_klass_time($klass_time);
+        } // end if
+    } // end method
+
+    private function set_where_klass_time($klass_time="")
+    {
+        if($this->is_not_ok("klass_time", $klass_time))
+        {
+            return;
+        } // end if
+
+        // Set time range
+        // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra = [];
+        $extra['time_begin'] = 
+        $time_begin = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $klass_time, 
+            'class_times_list', 
+            'class_times_range_list'
+        );
+        $extra['time_end'] = 
+        $time_end = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $klass_time, 
+            'class_times_list', 
+            'class_times_range_list', 
+            1
+        );
+        $time_begin_HHmm = "";
+        $time_end_HHmm = "";
+        if(is_numeric($time_begin) && is_numeric($time_end))
+        {
+            $time_begin_HHmm = $this->CI->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->CI->my_time->digit_to_HHmm($time_end, true);
+        }
+        if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
+            $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
+        {
+            $this->CI->db->where('time_begin >=', $time_begin_HHmm);
+            $this->CI->db->where('time_end <=', $time_end_HHmm);
+        }
+    }
+
+    public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
+    {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
@@ -1102,60 +1343,52 @@ class MY_Sql
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
-        if($this->is_not_ok("limit", $limit))
+        if($this->is_not_ok("search_query", $search_query))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
-            return;
-        }
-        if($this->is_not_ok("offset", $offset))
-        {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
-            return;
-        }
+            $search_query = "";
+        } // end if
 
-        $query_fields = $this->get_query_teacher_field();
-
-        $this->CI->db->select($query_fields);
-        $this->CI->db->from('teacher');
-        $this->CI->db->limit($limit, $offset);
-        $query = $this->CI->db->get();
-
-        $this->CI->db->select($query_fields);
-        $this->CI->db->from('teacher');
-        $this->CI->db->limit($limit, $offset);
-        $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
-
-        return $query->custom_result_object('Teacher');
-
-    } // end method        
-
-    public function get_admin_user_cnt() 
-    {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
-
-        if($this->is_not_ready())
-        {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
-            return;
-        }
-
-        $this->CI->db->from('user');
-        $this->CI->db->where('permission', "A");
+        // Query Execution
+        $this->CI->db->from('klass');
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );
+        $this->set_like_klass($search_query);
         $cnt = $this->CI->db->count_all_results();
 
-        $this->CI->db->from('user');
-        $this->CI->db->where('permission', "A");
+        // Query Logging
+        $this->CI->db->from('klass');
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );        
+        $this->set_like_klass($search_query);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
-    } // end method    
+    } // end method 
 
-    public function get_admin_user_list($limit=-1, $offset=-1) 
+    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
     {
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
@@ -1163,33 +1396,363 @@ class MY_Sql
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
-        }
+        } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
-        }
+        } // end if        
 
-        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
-        $this->CI->db->from('user');
-        $this->CI->db->where('permission', "A");
+        // Query Execution
+        $query_field = $this->get_query_klass_field();
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass("", $level, $station, $day, $time);
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );        
+        $this->set_like_klass($search_query);
+        $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $query = $this->CI->db->get();
 
-        $this->CI->db->select('id, facebook_id, kakao_id, naver_id, nickname, email, name, mobile, gender, birthday, thumbnail, permission, status, date_created, date_updated');
-        $this->CI->db->from('user');
-        $this->CI->db->where('permission', "A");
+        // Query Logging
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass("", $level, $station, $day, $time);
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );
+        $this->set_like_klass($search_query);
+        $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+
+        return $query->result_object();
+
+    } // end method        
+
+
+
+    private function get_query_search_like($search_query="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return "";
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            return "";
+        } // end if
+
+        $search_query_like = 
+        '('.
+        '`name` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`nickname` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`email` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ' OR '.
+        '`mobile` LIKE \'%'.$search_query.'%\' ESCAPE \'!\''.
+        ')'
+        ;        
+
+        return $search_query_like;
+    }
+
+    public function select_teacher_cnt_on_admin($search_query="", $teacher_status="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("teacher_status", $teacher_status))
+        {
+            $teacher_status = "";
+        } // end if
+
+        // Query Execution
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        // Query Logging
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method 
+
+    public function select_teacher_on_admin($search_query="", $teacher_status="", $limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("teacher_status", $teacher_status))
+        {
+            $teacher_status = "";
+        } // end if
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if        
+
+        $query_field = $this->get_query_teacher_field();
+
+        // Query Execution
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('teacher');
+        if(!empty($teacher_status))
+        {
+            $this->CI->db->where('status', $teacher_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+
+        return $query->custom_result_object('Teacher');
+
+    } // end method       
+
+    public function select_user_cnt_on_admin($search_query="", $user_status="", $user_permission="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("user_status", $user_status))
+        {
+            $user_status = "";
+        } // end if
+        if($this->is_not_ok("user_permission", $user_permission))
+        {
+            $user_permission = "";
+        } // end if
+
+        // Query Execution
+        $this->CI->db->from('user');
+        if(!empty($user_permission))
+        {
+            $this->CI->db->where('permission', $user_permission);
+        }
+        if(!empty($user_status))
+        {
+            $this->CI->db->where('status', $user_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        // Query Logging
+        $this->CI->db->from('user');
+        if(!empty($user_permission))
+        {
+            $this->CI->db->where('permission', $user_permission);
+        }
+        if(!empty($user_status))
+        {
+            $this->CI->db->where('status', $user_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+            // $this->CI->db->like('name', $search_query);
+            // $this->CI->db->or_like('nickname', $search_query);
+            // $this->CI->db->or_like('email', $search_query);
+            // $this->CI->db->or_like('mobile', $search_query);
+        }
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method
+
+    public function select_user_on_admin($search_query="", $user_status="", $user_permission="", $limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $search_query = "";
+        } // end if
+        if($this->is_not_ok("user_status", $user_status))
+        {
+            $user_status = "";
+        } // end if
+        if($this->is_not_ok("user_permission", $user_permission))
+        {
+            $user_permission = "";
+        } // end if        
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if        
+
+        $query_field = $this->get_query_field_user();
+
+        // Query Execution
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        if(!empty($user_permission))
+        {
+            $this->CI->db->where('permission', $user_permission);
+        }
+        if(!empty($user_status))
+        {
+            $this->CI->db->where('status', $user_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+            // $this->CI->db->like('name', $search_query);
+            // $this->CI->db->or_like('nickname', $search_query);
+            // $this->CI->db->or_like('email', $search_query);
+            // $this->CI->db->or_like('mobile', $search_query);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        if(!empty($user_permission))
+        {
+            $this->CI->db->where('permission', $user_permission);
+        }
+        if(!empty($user_status))
+        {
+            $this->CI->db->where('status', $user_status);
+        }
+        if(!empty($search_query))
+        {
+            $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
+            // $this->CI->db->like('name', $search_query);
+            // $this->CI->db->or_like('nickname', $search_query);
+            // $this->CI->db->or_like('email', $search_query);
+            // $this->CI->db->or_like('mobile', $search_query);
+        }
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->custom_result_object('User');
 
     } // end method
+
+
+
+  
+
+  
 
     public function get_user_list() 
     {
@@ -1573,6 +2136,7 @@ class MY_Sql
 
         // Set time range
         // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra = [];
         $extra['time_begin'] = 
         $time_begin = 
         $this->CI->my_paramchecker->get_const_from_list(
@@ -1637,11 +2201,10 @@ class MY_Sql
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
-        // wonder.jung
         $limit = 30;
         $offset = 0;
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -1664,62 +2227,6 @@ class MY_Sql
 
     }
 
-    private function get_select_query_klass() 
-    {
-        $select_query = 
-        'klass.id AS klass_id,' .
-        'klass.title AS klass_title,'.
-        'klass.desc AS klass_desc,'.
-        'klass.feature AS klass_feature,'.
-        'klass.target AS klass_target,'.
-        'klass.schedule AS klass_schedule,'.
-        'klass.date_begin AS klass_date_begin,'.
-        'klass.time_begin AS klass_time_begin,'.
-        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
-        'klass.time_end AS klass_time_end,'.
-        'klass.level AS klass_level,'.
-        'klass.week AS klass_week,'.
-        'klass.days AS klass_days,'.
-
-        'klass.subway_line AS klass_subway_line,'.
-        'klass.subway_station AS klass_subway_station,'.
-
-        'klass.venue_title AS klass_venue_title,'.
-        'klass.venue_telephone AS klass_venue_telephone,'.
-        'klass.venue_address AS klass_venue_address,'.
-        'klass.venue_road_address AS klass_venue_road_address,'.
-        'klass.venue_latitude AS klass_venue_latitude,'.
-        'klass.venue_longitude AS klass_venue_longitude,'.
-
-        'klass.status AS klass_status,'.
-        'klass.price AS klass_price,'.
-        'klass.student_cnt AS klass_student_cnt,'.
-        'klass.class_poster_url AS klass_class_poster_url,'.
-        'klass.class_banner_url AS klass_class_banner_url,'.
-
-        'klass.date_created AS klass_date_created,'.
-        'klass.date_updated AS klass_date_updated,'.
-
-        'teacher.id AS teacher_id,'.
-        'teacher.user_id AS teacher_user_id,'.
-        'teacher.nickname AS teacher_nickname,'.
-        'teacher.name AS teacher_name,'.
-        'teacher.gender AS teacher_gender,'.
-        'teacher.birthday AS teacher_birthday,'.
-        'teacher.thumbnail AS teacher_thumbnail,'.
-        'teacher.status AS teacher_status,'.
-        'teacher.mobile AS teacher_mobile,'.
-        'teacher.email AS teacher_email,'.
-        'teacher.resume AS teacher_resume,'.
-        'teacher.greeting AS teacher_greeting,'.
-        'teacher.memo AS teacher_memo,'.
-        'teacher.date_created AS teacher_date_created,'.
-        'teacher.date_updated AS teacher_date_updated'
-        ;
-
-        return $select_query;
-    }
-
     public function select_klass_list($offset=-1, $limit=-1)
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -1733,11 +2240,9 @@ class MY_Sql
             $limit = 20;
         }
 
-        // wonder.jung
-
         // TODO : A 상태인 수업만 노출해야 합니다.
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -2097,7 +2602,7 @@ class MY_Sql
             return;
         }
 
-        $rows = $query->custom_result_object('KlassTeacher');
+        $rows = $query->custom_result_object('Teacher');
         $teacher = null;
         if(!empty($rows))
         {
@@ -3163,7 +3668,7 @@ class MY_Sql
             return;
         }
 
-        $select_query = $this->get_select_query_klass();
+        $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -3503,6 +4008,275 @@ class MY_Sql
 
         return $row;
     } 
+
+
+// REMOVE ME
+/*
+    public function get_teacher_list($limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_fields = $this->get_query_teacher_field();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('teacher');
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('teacher');
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('Teacher');
+
+    } // end method  
+
+    public function get_teacher_cnt() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('teacher');
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('teacher');
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method     
+
+    public function get_admin_user_list($limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_field = $this->get_query_field_user();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('User');
+
+    } // end method    
+
+    public function get_admin_user_cnt() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "A");
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method      
+
+    public function search_user_student_list($search_query="", $limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"search_query\", \$search_query)");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_field = $this->get_query_field_user();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->like('name', $search_query);
+        $this->CI->db->or_like('nickname', $search_query);
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->like('name', $search_query);
+        $this->CI->db->or_like('nickname', $search_query);
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('User');
+
+    } // end method       
+
+
+    // @ Deprecated
+    public function search_user_student_cnt($search_query="") 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"search_query\", \$search_query)");
+            return;
+        } // end if
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->like('name', $search_query);
+        $this->CI->db->or_like('nickname', $search_query);
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->like('name', $search_query);
+        $this->CI->db->or_like('nickname', $search_query);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method    
+
+    public function get_user_student_list($limit=-1, $offset=-1) 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        }
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        }
+
+        $query_field = $this->get_query_field_user();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $this->CI->db->limit($limit, $offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $query->custom_result_object('User');
+
+    } // end method      
+
+    public function get_user_cnt() 
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $cnt = $this->CI->db->count_all_results();
+
+        $this->CI->db->from('user');
+        $this->CI->db->where('permission', "U");
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+
+        return $cnt;
+
+    } // end method     
+*/
+
 
 }
 

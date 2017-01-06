@@ -24,7 +24,7 @@
 			<!-- 운영자에게 노출되는 운영탭 -->
 			<ul *ngIf="isAdminServer && isAdminUser" class="nav navbar-nav navbar-left">
 				<li>
-					<a routerLink="/admin" routerLinkActive="active">Admin</a>
+					<a routerLink="/admin" routerLinkActive="active">운영툴</a>
 				</li>
 			</ul>
 
@@ -77,7 +77,7 @@
 	<router-outlet></router-outlet>
 </section>
 
-<div *ngIf="toggleTopMenu">
+<div *ngIf="toggleFooter">
 	<my-footer></my-footer>
 </div>
 <!--

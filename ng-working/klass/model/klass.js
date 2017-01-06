@@ -60,8 +60,9 @@ var Klass = (function () {
         this.price_with_format = "";
         // 수업 참여 학생수
         this.student_cnt = -1;
-        this.class_status = "";
-        this.enrollment_interval_week = -1; // @ Deprecated / REMOVE ME
+        this.status = "";
+        // REMOVE ME
+        // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
         this.class_banner_url = "";
         this.class_banner_url_arr = [];
         this.class_poster_url = "";
@@ -729,9 +730,9 @@ var Klass = (function () {
                 console.log("klass / isSame / student_cnt has been changed! / this.student_cnt:" + this.student_cnt + " != target.student_cnt:" + target.student_cnt);
             return false;
         }
-        if (this.class_status != target.class_status) {
+        if (this.status != target.status) {
             if (isDebug)
-                console.log("klass / isSame / class_status has been changed! / this.class_status:" + this.class_status + " != target.class_status:" + target.class_status);
+                console.log("klass / isSame / status has been changed! / this.status:" + this.status + " != target.status:" + target.status);
             return false;
         }
         if (this.class_banner_url != target.class_banner_url) {

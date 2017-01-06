@@ -28,15 +28,22 @@ var ManageTeachersComponent = (function () {
         this.watchTower = watchTower;
         this.router = router;
         this.checkBoxList = [];
+        this.searchQuery = "";
+        this.teacherStatus = "";
+        this.pageNum = 1;
+        this.pageRange = 5;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
         this.defaultType = new default_type_1.DefaultType();
         this.defaultMetaTeacherStatus = this.getMetaSelectTeacherStatus();
+        this.defaultMetaTeacherStatusForSearch = this.getMetaSelectTeacherStatusForSearch();
+        this.defaultMetaSearchQuery = this.getMetaSearchInput();
         this.pagination = new pagination_1.Pagination();
+        this.selectOptionListTeacherStatus = this.getDefaultOptionTeacherListStatusForSearch();
         this.subscribeLoginUser();
         this.subscribeEventPack();
-    }
+    } // end constructor
     ManageTeachersComponent.prototype.ngOnInit = function () {
     };
     ManageTeachersComponent.prototype.isDebug = function () {
@@ -54,6 +61,32 @@ var ManageTeachersComponent = (function () {
         "teacher_status", 
         // public type:string
         this.defaultType.TYPE_SELECT);
+    };
+    ManageTeachersComponent.prototype.getMetaSelectTeacherStatusForSearch = function () {
+        return new default_meta_1.DefaultMeta(// 5
+        // public title:string
+        "검색 조건 - 선생님 상태", 
+        // public placeholder:string
+        "검색 조건 - 선생님 상태를 선택해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_TEACHER_STATUS_FOR_SEARCH, 
+        // public checkerKey:string
+        "teacher_status", 
+        // public type:string
+        this.defaultType.TYPE_SELECT);
+    };
+    ManageTeachersComponent.prototype.getMetaSearchInput = function () {
+        return new default_meta_1.DefaultMeta(// 2
+        // public title:string
+        "검색", 
+        // public placeholder:string
+        "검색어를 입력해주세요", 
+        // public eventKey:string
+        this.myEventService.KEY_SEARCH_QUERY, 
+        // public checkerKey:string
+        "search_query", 
+        // public type:string
+        this.defaultType.TYPE_INPUT);
     };
     ManageTeachersComponent.prototype.subscribeLoginUser = function () {
         if (this.isDebug())
@@ -91,106 +124,150 @@ var ManageTeachersComponent = (function () {
     ManageTeachersComponent.prototype.init = function () {
         if (this.isDebug())
             console.log("manage-teachers / init / 시작");
-        // 1. 운영자 유저의 pagination을 가져옵니다.
-        this.fetchTeachersPagination();
-        // 2. 선생님 유저의 pagination을 가져옵니다.
-        // 3. 학생 유저의 pagination을 가져옵니다.
-    };
+        this.fetchTeacherList(
+        // pageNum:number, 
+        this.pageNum, 
+        // pageSize:number, 
+        this.pageRange, 
+        // searchQuery:string, 
+        this.searchQuery, 
+        // teacherStatus:string, 
+        this.teacherStatus);
+    }; // end method
     ManageTeachersComponent.prototype.getDefaultOptionTeacherListStatus = function (teacher) {
         if (this.isDebug())
             console.log("manage-teachers / getDefaultOptionTeacherListStatus / 시작");
-        if (null == teacher) {
-            if (this.isDebug())
-                console.log("manage-teachers / getDefaultOptionTeacherListStatus / 중단 / null == teacher");
-            return;
+        var defaultOptionList = this.watchTower.getDefaultOptionListWithMetaByKeys(
+        // keyListName:string,
+        "teacher_status_kor_list", 
+        // valueListName:string,
+        "teacher_status_list", 
+        // valueFocus:string,
+        teacher.status, 
+        // metaObj:any
+        teacher);
+        if (this.myArray.isOK(defaultOptionList)) {
+            // "모든 상태" - 기본값 을 제거함.
+            defaultOptionList.shift();
         }
-        var keyList = [];
-        var valueList = [];
-        var teacherStatusList = this.watchTower.getMyConst().getList("teacher_status_list");
-        var teacherStatusKorList = this.watchTower.getMyConst().getList("teacher_status_kor_list");
-        for (var i = 0; i < teacherStatusList.length; ++i) {
-            var teacherStatusKor = teacherStatusKorList[i];
-            var teacherStatus = teacherStatusList[i];
-            keyList.push(teacherStatusKor);
-            valueList.push(teacherStatus);
-        }
-        return this.watchTower.getDefaultOptionListWithMeta(keyList, valueList, teacher.status, teacher);
-    }; // end method
-    // @ Desc : 운영자 유저리스트의 페이지 네이션을 가져옵니다.
-    ManageTeachersComponent.prototype.fetchTeachersPagination = function () {
-        var _this = this;
         if (this.isDebug())
-            console.log("manage-teachers / fetchTeachersPagination / 시작");
-        this.adminService
-            .fetchTeachersPagination(this.watchTower.getApiKey())
-            .then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("manage-teachers / fetchTeachersPagination / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("pagination")) {
-                if (_this.isDebug())
-                    console.log("manage-teachers / fetchTeachersPagination / success");
-                // 1. 페이지네이션 데이터를 저장합니다. 가져온 데이터로 페이지네이션을 표시.
-                var json = myResponse.getDataProp("pagination");
-                _this.pagination.setJSON(json);
-                // 2. 선생님 리스트를 가져옵니다. 
-                _this.fetchTeacherList(_this.pagination["PAGE_NUM"], _this.pagination["PAGE_RANGE"]);
-            }
-            else if (myResponse.isFailed()) {
-                if (_this.isDebug())
-                    console.log("manage-teachers / fetchTeachersPagination / failed");
-                _this.watchTower.logAPIError("fetchTeachersPagination has been failed!");
-                if (null != myResponse.error) {
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                } // end if
-            } // end if
-        }); // end service    
+            console.log("manage-teachers / getDefaultOptionTeacherListStatus / defaultOptionList : ", defaultOptionList);
+        return defaultOptionList;
+    }; // end method
+    // @ Desc : 검색을 위한 유저 상태 default option list - select box 
+    ManageTeachersComponent.prototype.getDefaultOptionTeacherListStatusForSearch = function () {
+        if (this.isDebug())
+            console.log("manage-teachers / getDefaultOptionTeacherListStatusForSearch / 시작");
+        return this.watchTower.getDefaultOptionListByKeys(
+        // keyListName:string,
+        "teacher_status_kor_list", 
+        // valueListName:string,
+        "teacher_status_list", 
+        // valueFocus:string
+        "");
+    }; // end method
+    ManageTeachersComponent.prototype.updatePagination = function (jsonPagination) {
+        if (this.isDebug())
+            console.log("manage-teachers / updatePagination / 시작");
+        if (this.isDebug())
+            console.log("manage-teachers / updatePagination / jsonPagination : ", jsonPagination);
+        if (null == jsonPagination) {
+            this.pagination = null;
+        }
+        else {
+            this.pagination = new pagination_1.Pagination().setJSON(jsonPagination);
+        }
     };
-    ManageTeachersComponent.prototype.updateTeacherList = function (teacherJSONList) {
+    ManageTeachersComponent.prototype.updateTeacherList = function (jsonTeacherList) {
         if (this.isDebug())
             console.log("manage-teachers / updateTeacherList / 시작");
-        if (this.myArray.isNotOK(teacherJSONList)) {
-            if (this.isDebug())
-                console.log("manage-teachers / updateTeacherList / 중단 / this.myArray.isNotOK(teacherJSONList)");
-            return;
+        if (this.myArray.isNotOK(jsonTeacherList)) {
+            // 검색 결과가 없습니다.
+            this.teacherList = null;
         }
-        var teacherList = [];
-        for (var i = 0; i < teacherJSONList.length; ++i) {
-            var teacherJSON = teacherJSONList[i];
-            var teacher = new teacher_1.Teacher().setJSON(teacherJSON);
-            var defaultOptionListStatus = this.getDefaultOptionTeacherListStatus(teacher);
-            teacher["selectOptionListStatus"] = defaultOptionListStatus;
-            // 성별을 보기 쉽게 변경 
-            var genderReadable = this.watchTower
-                .getMyConst()
-                .getValue(
-            // srcKey:string, 
-            "user_gender_list", 
-            // srcValue:string, 
-            teacher.gender, 
-            // targetKey:string
-            "user_gender_kor_list");
+        else {
+            var teacherList = [];
+            for (var i = 0; i < jsonTeacherList.length; ++i) {
+                var teacherJSON = jsonTeacherList[i];
+                var teacher = new teacher_1.Teacher().setJSON(teacherJSON);
+                var defaultOptionListStatus = this.getDefaultOptionTeacherListStatus(teacher);
+                teacher["selectOptionListStatus"] = defaultOptionListStatus;
+                // 자신의 데이터인지 확인한다.
+                if (this.loginUser.id === teacher.user_id) {
+                    teacher.isMe = true;
+                }
+                // 성별을 보기 쉽게 변경 
+                var genderReadable = this.watchTower
+                    .getMyConst()
+                    .getValue(
+                // srcKey:string, 
+                "teacher_gender_list", 
+                // srcValue:string, 
+                teacher.gender, 
+                // targetKey:string
+                "teacher_gender_kor_list");
+                if (this.isDebug())
+                    console.log("manage-teachers / updateTeacherList / genderReadable : ", genderReadable);
+                teacher.gender_readable = genderReadable;
+                teacherList.push(teacher);
+            } // end for
             if (this.isDebug())
-                console.log("manage-teachers / updateTeacherList / genderReadable : ", genderReadable);
-            teacher.gender_readable = genderReadable;
-            teacherList.push(teacher);
-        } // end for
-        if (this.isDebug())
-            console.log("manage-teachers / updateTeacherList / teacherList : ", teacherList);
-        this.teacherList = teacherList;
-    };
-    // @ Desc : 운영자 유저 리스트를 가져옵니다.
-    ManageTeachersComponent.prototype.fetchTeacherList = function (pageNum, pageSize) {
-        // 유저 리스트는 아래 카테고리별로 나누어 가져옵니다.
-        // a. 운영자
-        // b. 선생님
-        // c. 학생
+                console.log("manage-teachers / updateTeacherList / teacherList : ", teacherList);
+            this.teacherList = teacherList;
+        } // end if
+    }; // end method
+    // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
+    ManageTeachersComponent.prototype.dofetchTeacherList = function () {
+        if (null == this.pagination) {
+            this.fetchTeacherList(
+            // pageNum:number, 
+            this.pageNum, 
+            // pageSize:number, 
+            this.pageRange, 
+            // searchQuery:string, 
+            this.searchQuery, 
+            // teacherStatus:string, 
+            this.teacherStatus);
+        }
+        else {
+            this.fetchTeacherList(
+            // pageNum:number, 
+            this.pagination.pageNum, 
+            // pageSize:number, 
+            this.pagination.pageRange, 
+            // searchQuery:string, 
+            this.searchQuery, 
+            // teacherStatus:string, 
+            this.teacherStatus);
+        }
+    }; // end method
+    // @ Desc : 유저 리스트를 가져옵니다.
+    ManageTeachersComponent.prototype.fetchTeacherList = function (pageNum, pageSize, searchQuery, teacherStatus) {
         var _this = this;
         this.adminService
-            .fetchTeacherList(this.watchTower.getApiKey(), pageNum, pageSize)
+            .fetchTeacherListV2(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // pageNum:number, 
+        pageNum, 
+        // pageSize:number, 
+        pageSize, 
+        // searchQuery:string, 
+        searchQuery, 
+        // teacherStatus:string, 
+        teacherStatus)
             .then(function (myResponse) {
             if (_this.isDebug())
                 console.log("manage-teachers / fetchTeacherList / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("teacher_list")) {
+            if (myResponse.isSuccess() &&
+                myResponse.hasDataProp("pagination") &&
+                myResponse.hasDataProp("teacher_list")) {
+                // 1. Pagination 재설정
+                var jsonPagination = myResponse.getDataProp("pagination");
+                if (_this.isDebug())
+                    console.log("manage-teachers / fetchTeacherList / jsonPagination : ", jsonPagination);
+                _this.updatePagination(jsonPagination);
+                // 2. Teacher List 재설정 
                 var teacherJSONList = myResponse.getDataProp("teacher_list");
                 if (_this.isDebug())
                     console.log("manage-teachers / fetchTeacherList / teacherJSONList : ", teacherJSONList);
@@ -218,55 +295,78 @@ var ManageTeachersComponent = (function () {
             checkBox.setIsChecked(checked);
         } // end for
     }; // end method
-    ManageTeachersComponent.prototype.updateTeacherStatus = function (value, teacher) {
+    ManageTeachersComponent.prototype.updateteacherStatus = function (value, teacher) {
+        var _this = this;
         if (this.isDebug())
-            console.log("manage-teachers / updateTeacherStatus / 시작");
+            console.log("manage-teachers / updateteacherStatus / 시작");
         if (null == value || "" === value) {
             if (this.isDebug())
-                console.log("manage-teachers / updateTeacherStatus / 중단 / value is not valid!");
+                console.log("manage-teachers / updateteacherStatus / 중단 / value is not valid!");
             return;
         }
         if (null == teacher) {
             if (this.isDebug())
-                console.log("manage-teachers / updateTeacherStatus / 중단 / teacher is not valid!");
+                console.log("manage-teachers / updateteacherStatus / 중단 / teacher is not valid!");
             return;
         }
         if (this.isDebug())
-            console.log("manage-teachers / updateTeacherStatus / value : ", value);
+            console.log("manage-teachers / updateteacherStatus / value : ", value);
         if (this.isDebug())
-            console.log("manage-teachers / updateTeacherStatus / teacher : ", teacher);
-        // wonder.jung
-        /*
+            console.log("manage-teachers / updateteacherStatus / teacher : ", teacher);
         this.adminService
-        .updateTeacher(
-          // apiKey:string,
-          this.watchTower.getApiKey(),
-          // userIdAdmin:number,
-          this.loginUser.id,
-          // teacherId:number,
-          teacher.id,
-          // teacherStatus:string
-          value
-        )
-        .then((myResponse:MyResponse) => {
-    
-          if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / myResponse : ",myResponse);
-    
-          if(myResponse.isSuccess()) {
-            if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / success");
-    
-          } else if(myResponse.isFailed()){
-            if(this.isDebug()) console.log("manage-teachers / updateTeacherStatus / failed");
-    
-            this.watchTower.logAPIError("updateTeacherStatus has been failed!");
-            if(null != myResponse.error) {
-              this.watchTower.announceErrorMsgArr([myResponse.error]);
+            .updateTeacher(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userIdAdmin:number, 
+        this.loginUser.id, 
+        // teacherId:number, 
+        teacher.id, 
+        // teacherStatus:string, 
+        value)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("manage-teachers / updateteacherStatus / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                if (_this.isDebug())
+                    console.log("manage-teachers / updateteacherStatus / success");
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("manage-teachers / updateteacherStatus / failed");
+                _this.watchTower.logAPIError("updateteacherStatus has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
             } // end if
-            
-          } // end if
-    
         }); // end service
-        */
+    };
+    ManageTeachersComponent.prototype.onClickSearch = function (event) {
+        if (this.isDebug())
+            console.log("manage-teachers / onClickSearch / 시작");
+        event.stopPropagation();
+        event.preventDefault();
+        this.fetchTeacherList(
+        // pageNum:number,
+        1, 
+        // pageSize:number,
+        this.pagination.pageRange, 
+        // searchQuery:string,
+        this.searchQuery, 
+        // teacherStatus:string, 
+        "");
+    }; // end method
+    ManageTeachersComponent.prototype.isDefaultStatus = function (status) {
+        if (null == status || "" === status) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListTeacherStatus)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListTeacherStatus[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === status) ? true : false;
     };
     ManageTeachersComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
@@ -288,8 +388,24 @@ var ManageTeachersComponent = (function () {
                 var isChecked = ("true" == "" + myEvent.value) ? true : false;
                 this.updateCheckBoxes(isChecked);
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_USER_STATUS)) {
-                this.updateTeacherStatus(myEvent.value, myEvent.metaObj);
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_STATUS)) {
+                this.updateteacherStatus(myEvent.value, myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+                this.pagination.pageNum = +myEvent.value;
+                this.dofetchTeacherList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_SEARCH_QUERY)) {
+                this.searchQuery = myEvent.value;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_STATUS_FOR_SEARCH)) {
+                if (this.isDefaultStatus(myEvent.value)) {
+                    this.teacherStatus = "";
+                }
+                else {
+                    this.teacherStatus = myEvent.value;
+                } // end if
+                this.dofetchTeacherList();
             } // end if
         } // end if
     }; // end method

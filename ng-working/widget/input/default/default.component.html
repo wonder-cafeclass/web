@@ -131,6 +131,7 @@
 	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" [ngClass]="{'selectbox':!isNoBorder}">
 		<select 
 		class="form-control" 
+		[style.height]="heightStr"
 		(change)="onSelect($event, $event.target.value)">
 			<option 	
 			*ngFor="let option of selectOptionList" 

@@ -1,8 +1,195 @@
 <div>
 	<ul class="list-group">
-		<li class="list-group-item">수업 리스트</li>
-		<li class="list-group-item">검색 및 컨트롤</li>
-		<li class="list-group-item">결과리스트 - 테이블</li>
-		<li class="list-group-item">페이지네이션</li>
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 -->
+		<li class="list-group-item">
+			<!-- 검색 - 수업 상태 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListStatus"
+	            [meta]="defaultMetaStatusForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>       		
+			<!-- 검색 - 수업 레벨 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListLevel"
+	            [meta]="defaultMetaLevelForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>  
+			<!-- 검색 - 지하철 노선 -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListSubwayLine"
+	            [meta]="defaultMetaSubwayLineForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>
+	        <!-- 검색 - 지하철 역 / 정말 필요할까? -->
+
+			<!-- 검색 - 수업 시간 -->
+			<div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [meta]="defaultMetaTimeForSearch"
+	            [selectOptionList]="selectOptionListTime"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+            </div>
+			<!-- 검색 - 수업 요일 -->
+			<div class="my-status-box" style="margin-top: -4px;">
+	            <widget-input-default
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [meta]="defaultMetaDaysForSearch"
+	            [checkOptionTable]="checkOptionTableDays"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+            </div>
+
+	        <button 
+	        style="opacity: 0;"
+	        type="button" 
+	        class="btn btn-default btn-lg my-search">X</button>
+
+		</li>
+		<li class="list-group-item">
+			<!-- 검색 -->
+			<div class="my-search-box">
+		        <widget-input-default
+		        [width]="300"
+		        [isNoSpace]="true"
+		        [isShowTitle]="false"
+		        [meta]="defaultMetaSearchQuery"
+		        (emitter)="onChangedFromChild($event)">
+		        </widget-input-default>
+			</div>
+	        <button 
+	        (click)="onClickSearch($event)"
+	        type="button" 
+	        class="btn btn-default btn-lg my-search">검색</button>
+
+		</li>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+		
+		<li class="list-group-item my-style-table">
+
+<div *ngIf="!klassList" style="text-align:center;">
+	<h3 style="margin-bottom:20px;color: #999;">검색 결과가 없습니다.</h3>
+</div>
+
+<table *ngIf="klassList" class="table table-bordered table-hover my-style"> 
+	<thead> 
+		<tr>
+			<th>
+				<checkbox-single 
+				[eventKey]="myEventService.KEY_CHECKBOX_ALL"
+				[metaObj]="klassList"
+				(emitter)="onChangedFromChild($event)">
+				</checkbox-single>
+			</th>
+			<th>ID</th>
+			<th>선생님</th>
+			<th>커버</th>
+			<th>수업제목</th>
+			<th>상태</th>
+		</tr> 
+	</thead> 
+	<tbody> 
+		<tr *ngFor="let klass of klassList">
+			<th scope="row">
+				<div>
+					<checkbox-single 
+					[eventKey]="myEventService.KEY_CHECKBOX"
+					[metaObj]="klass"
+					(emitter)="onChangedFromChild($event)">
+					</checkbox-single>
+				</div>
+			</th> 
+			<!-- 수업 아이디 -->
+			<td>{{klass.id}}</td>
+			<!-- 선생님 thumbnail-->
+			<td>
+				<div>
+					<img class="img-rounded my-style" src={{klass.teacher.thumbnail}}>
+				</div>
+				<div style="color:#777;">
+					<small>{{klass.teacher.nickname}}</small>
+				</div>
+			</td>
+			<!-- 수업 이미지 -->
+			<td>
+				<img class="img-rounded my-style" src={{klass.class_poster_url_loadable}}>
+			</td> 
+			<td>
+				<div>
+					<small>{{klass.title}}</small>
+				</div>
+				<div>
+					<!-- 수업 레벨 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.level_img_url}}>
+					<!-- 지하철역 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.subway_station_img}}>
+					<!-- 시간 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.time_begin_img_url}}>
+					<!-- 요일 -->
+					<img 
+					*ngFor="let days_img_url of klass.days_img_url_list"
+					class="img-rounded my-style-klass-info" 
+					src={{days_img_url}}>
+				</div>
+
+			</td> 
+			<td>
+	            <widget-input-default
+	            [width]="60"
+	            [isDisabled]="klass.isMe"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="klass.selectOptionListStatus"
+	            [meta]="defaultMetaStatus"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+			</td>
+		</tr> 
+	</tbody> 
+</table>			
+
+		</li>
+
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+
 	</ul>
 </div>
