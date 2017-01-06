@@ -57,7 +57,7 @@ var AdminService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageSize, searchQuery, klassStatus) {
+    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassDays, klassTime) {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / 시작");
         if (this.isDebug())
@@ -70,6 +70,14 @@ var AdminService = (function () {
             console.log("admin.service / fetchKlassList / searchQuery : ", searchQuery);
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / klassStatus : ", klassStatus);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassLevel : ", klassLevel);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassSubwayLine : ", klassSubwayLine);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassDays : ", klassDays);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassTime : ", klassTime);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.us.get(this.fetchKlassListUrl);
@@ -77,7 +85,11 @@ var AdminService = (function () {
             page_num: pageNum,
             page_size: pageSize,
             search_query: searchQuery,
-            klass_status: klassStatus
+            klass_status: klassStatus,
+            klass_level: klassLevel,
+            klass_subway_line: klassSubwayLine,
+            klass_days: klassDays,
+            klass_time: klassTime
         };
         return this.http.post(req_url, params, options)
             .toPromise()

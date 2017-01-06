@@ -9,6 +9,9 @@ li.my-style-table {
 img.my-style {
 	width: 60px;
 }
+img.my-style-klass-info {
+    width: 40px;
+}
 div.my-search-box {
     float: left;
     margin-top: -6px;

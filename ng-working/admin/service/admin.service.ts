@@ -76,14 +76,27 @@ export class AdminService {
 
   }
 
-  fetchKlassList (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, klassStatus:string): Promise<MyResponse> {
+  fetchKlassList (  apiKey:string, 
+                    pageNum:number, 
+                    pageSize:number, 
+                    searchQuery:string, 
+                    klassStatus:string,
+                    klassLevel:string,
+                    klassSubwayLine:string,
+                    klassDays:string,
+                    klassTime:string ): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
     if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
+
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassLevel : ",klassLevel);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayLine : ",klassSubwayLine);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassDays : ",klassDays);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassTime : ",klassTime);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -93,7 +106,11 @@ export class AdminService {
       page_num:pageNum,
       page_size:pageSize,
       search_query:searchQuery,
-      klass_status:klassStatus
+      klass_status:klassStatus,
+      klass_level:klassLevel,
+      klass_subway_line:klassSubwayLine,
+      klass_days:klassDays,
+      klass_time:klassTime
     };
     
     return this.http.post(req_url, params, options)

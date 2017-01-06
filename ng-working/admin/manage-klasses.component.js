@@ -30,7 +30,13 @@ var ManageKlassesComponent = (function () {
         this.checkBoxList = [];
         this.searchQuery = "";
         this.klassStatus = "";
+        this.klassLevel = "";
+        this.klassSubwayLine = "";
+        this.klassDays = "";
+        this.klassTime = "";
+        // @ Immutable
         this.pageNum = 1;
+        // @ Immutable
         this.pageRange = 5;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
@@ -156,7 +162,7 @@ var ManageKlassesComponent = (function () {
         // public placeholder:string
         "검색 조건 - 시간을 선택해주세요", 
         // public eventKey:string
-        this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH, 
+        this.myEventService.KEY_KLASS_TIME_FOR_SEARCH, 
         // public checkerKey:string
         "klass_subway_station", 
         // public type:string
@@ -198,15 +204,7 @@ var ManageKlassesComponent = (function () {
     ManageKlassesComponent.prototype.init = function () {
         if (this.isDebug())
             console.log("manage-klasses / init / 시작");
-        this.fetchKlassList(
-        // pageNum:number, 
-        this.pageNum, 
-        // pageSize:number, 
-        this.pageRange, 
-        // searchQuery:string, 
-        this.searchQuery, 
-        // klassStatus:string, 
-        this.klassStatus);
+        this.doFetchKlassList();
     }; // end method
     ManageKlassesComponent.prototype.getDefaultOptionKlassListStatus = function (klass) {
         if (this.isDebug())
@@ -326,33 +324,57 @@ var ManageKlassesComponent = (function () {
             this.klassList = klassList;
         } // end if
     }; // end method
+    ManageKlassesComponent.prototype.updateKlassDays = function () {
+        if (this.isDebug())
+            console.log("manage-klasses / updateKlassDays / 시작");
+        var checkboxList = [];
+        if (null != this.checkboxKlassDays) {
+            checkboxList = this.checkboxKlassDays.getCheckedDefaultOptionList();
+        }
+        var klassDays = "";
+        if (this.myArray.isOK(checkboxList)) {
+            for (var i = 0; i < checkboxList.length; ++i) {
+                var checkbox = checkboxList[i];
+                if (0 < i) {
+                    klassDays += "|||" + checkbox.value; // REFACTOR ME
+                }
+                else {
+                    klassDays = checkbox.value;
+                } // end if
+            } // end for
+        }
+        this.klassDays = klassDays;
+        if (this.isDebug())
+            console.log("manage-klasses / updateKlassDays / klassDays : ", klassDays);
+    };
     // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
     ManageKlassesComponent.prototype.doFetchKlassList = function () {
-        if (null == this.pagination) {
-            this.fetchKlassList(
-            // pageNum:number, 
-            this.pageNum, 
-            // pageSize:number, 
-            this.pageRange, 
-            // searchQuery:string, 
-            this.searchQuery, 
-            // klassStatus:string, 
-            this.klassStatus);
+        var pageNum = this.pageNum;
+        var pageRange = this.pageRange;
+        if (null != this.pagination) {
+            pageNum = this.pagination.pageNum;
+            pageRange = this.pagination.pageRange;
         }
-        else {
-            this.fetchKlassList(
-            // pageNum:number, 
-            this.pagination.pageNum, 
-            // pageSize:number, 
-            this.pagination.pageRange, 
-            // searchQuery:string, 
-            this.searchQuery, 
-            // klassStatus:string, 
-            this.klassStatus);
-        }
+        this.fetchKlassList(
+        // pageNum:number, 
+        pageNum, 
+        // pageSize:number, 
+        pageRange, 
+        // searchQuery:string, 
+        this.searchQuery, 
+        // klassStatus:string, 
+        this.klassStatus, 
+        // klassLevel:string="",
+        this.klassLevel, 
+        // klassSubwayLine:string="",
+        this.klassSubwayLine, 
+        // klassDays:string="",
+        this.klassDays, 
+        // klassTime:string=""
+        this.klassTime);
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageSize, searchQuery, klassStatus) {
+    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassDays, klassTime) {
         var _this = this;
         this.adminService
             .fetchKlassList(
@@ -365,7 +387,15 @@ var ManageKlassesComponent = (function () {
         // searchQuery:string, 
         searchQuery, 
         // klassStatus:string, 
-        klassStatus)
+        klassStatus, 
+        // klassLevel:string="",
+        klassLevel, 
+        // klassSubwayLine:string="",
+        klassSubwayLine, 
+        // klassDays:string="",
+        klassDays, 
+        // klassTime:string=""
+        klassTime)
             .then(function (myResponse) {
             if (_this.isDebug())
                 console.log("manage-klasses / fetchKlassList / myResponse : ", myResponse);
@@ -455,24 +485,78 @@ var ManageKlassesComponent = (function () {
             console.log("manage-klasses / onClickSearch / 시작");
         event.stopPropagation();
         event.preventDefault();
-        this.fetchKlassList(
-        // pageNum:number,
-        1, 
-        // pageSize:number,
-        this.pagination.pageRange, 
-        // searchQuery:string,
-        this.searchQuery, 
-        // klassStatus:string, 
-        "");
+        if (null != this.pagination) {
+            this.pagination.pageNum = 1;
+        }
+        this.doFetchKlassList();
     }; // end method
-    ManageKlassesComponent.prototype.isDefaultStatus = function (status) {
-        if (null == status || "" === status) {
+    ManageKlassesComponent.prototype.isDefaultStatus = function (value) {
+        if (null == value || "" === value) {
             return false;
         }
         if (this.myArray.isNotOK(this.selectOptionListStatus)) {
             return false;
         } // end if
         var defaultOption = this.selectOptionListStatus[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === value) ? true : false;
+    };
+    ManageKlassesComponent.prototype.isDefaultLevel = function (value) {
+        if (null == value || "" === value) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListLevel)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListLevel[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === value) ? true : false;
+    };
+    ManageKlassesComponent.prototype.isDefaultSubwayLine = function (value) {
+        if (null == value || "" === value) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListSubwayLine)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListSubwayLine[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === value) ? true : false;
+    };
+    // REMOVE ME
+    /*
+      isDefaultDay(value:string):boolean {
+    
+        if(null == value || "" === value) {
+          return false;
+        }
+    
+        if(this.myArray.isNotOK(this.selectOptionListDay)) {
+          return false;
+        } // end if
+    
+        let defaultOption:DefaultOption = this.selectOptionListDay[0];
+        if(null == defaultOption) {
+          return false;
+        } // end if
+    
+        return (defaultOption.value === value)?true:false;
+      }
+      */
+    ManageKlassesComponent.prototype.isDefaultTime = function (time) {
+        if (null == time || "" === time) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListTime)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListTime[0];
         if (null == defaultOption) {
             return false;
         } // end if
@@ -491,6 +575,9 @@ var ManageKlassesComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_CHECKBOX)) {
                 this.checkBoxList.push(myEvent.metaObj);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH)) {
+                this.checkboxKlassDays = myEvent.metaObj;
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
@@ -514,6 +601,44 @@ var ManageKlassesComponent = (function () {
                 }
                 else {
                     this.klassStatus = myEvent.value;
+                } // end if
+                this.doFetchKlassList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_LEVEL_FOR_SEARCH)) {
+                if (this.isDefaultLevel(myEvent.value)) {
+                    this.klassLevel = "";
+                }
+                else {
+                    this.klassLevel = myEvent.value;
+                } // end if
+                this.doFetchKlassList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SUBWAY_LINE_FOR_SEARCH)) {
+                if (this.isDefaultSubwayLine(myEvent.value)) {
+                    this.klassSubwayLine = "";
+                }
+                else {
+                    this.klassSubwayLine = myEvent.value;
+                } // end if
+                this.doFetchKlassList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH)) {
+                /*
+                if(this.isDefaultDay(myEvent.value)) {
+                  this.klassDays = "";
+                } else {
+                  this.klassDays = myEvent.value;
+                } // end if
+                */
+                this.updateKlassDays();
+                this.doFetchKlassList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_FOR_SEARCH)) {
+                if (this.isDefaultTime(myEvent.value)) {
+                    this.klassTime = "";
+                }
+                else {
+                    this.klassTime = myEvent.value;
                 } // end if
                 this.doFetchKlassList();
             } // end if

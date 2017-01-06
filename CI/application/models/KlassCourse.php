@@ -125,7 +125,9 @@ class KlassCourse {
         public $student_cnt;
 
         // 수업운영상태
-        public $class_status;
+        public $class_status; // @ Deprecated
+        public $status; // @ Recommended
+
         // 수업 신청 타입
         public $enrollment_interval_week;
         // 이미지 링크

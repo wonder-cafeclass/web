@@ -55,6 +55,9 @@ class MY_Decorator
             $klassCourse->week = intval($klass->klass_week);
             $klassCourse->days = $klass->klass_days;
 
+            // $klassCourse->status = $klass->status;
+            $klassCourse->status = $klass->klass_status;
+
             $klassCourse->subway_line = $klass->klass_subway_line;
             $klassCourse->subway_station = $klass->klass_subway_station;
 
@@ -64,8 +67,7 @@ class MY_Decorator
             $klassCourse->venue_road_address = $klass->klass_venue_road_address;
             $klassCourse->venue_latitude = $klass->klass_venue_latitude;
             $klassCourse->venue_longitude = $klass->klass_venue_longitude;
-
-            $klassCourse->status = $klass->klass_status;
+            
             $klassCourse->price = intval($klass->klass_price);
             $klassCourse->student_cnt = intval($klass->klass_student_cnt);
             $klassCourse->class_poster_url = $klass->klass_class_poster_url;

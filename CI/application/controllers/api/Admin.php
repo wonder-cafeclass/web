@@ -252,6 +252,46 @@ class Admin extends MY_REST_Controller {
             true
         );        
 
+        $klass_level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_level",
+            // $key_filter=""
+            "klass_level",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_subway_line = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_line",
+            // $key_filter=""
+            "klass_subway_line",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_days = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_days_for_search",
+            // $key_filter=""
+            "klass_days",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_time = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time",
+            // $key_filter=""
+            "klass_time",
+            // $is_no_record=false
+            true
+        );        
+
         $output["params"] = 
         [
             "page_num"=>$page_num,
@@ -259,7 +299,11 @@ class Admin extends MY_REST_Controller {
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
-            "klass_status"=>$klass_status
+            "klass_status"=>$klass_status,
+            "klass_level"=>$klass_level,
+            "klass_subway_line"=>$klass_subway_line,
+            "klass_days"=>$klass_days,
+            "klass_time"=>$klass_time
         ];
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");        
 
@@ -281,7 +325,15 @@ class Admin extends MY_REST_Controller {
             // $search_query="", 
             $search_query,
             // $klass_status="", 
-            $klass_status
+            $klass_status,
+            // $level="", 
+            $klass_level,
+            // $station="", 
+            $klass_subway_line,
+            // $day="", 
+            $klass_days,
+            // $time=""
+            $klass_time
         );
         $output["klass_cnt"] = $klass_cnt;
         $pagination = 
@@ -305,11 +357,15 @@ class Admin extends MY_REST_Controller {
             // $search_query="", 
             $search_query,
             // $klass_status="", 
-            $klass_status
+            $klass_status,
             // $level="", 
+            $klass_level,
             // $station="", 
+            $klass_subway_line,
             // $day="", 
+            $klass_days,
             // $time=""
+            $klass_time
         );
 
         $klass_list = $this->my_decorator->deco_klass($klass_list);

@@ -115,7 +115,8 @@
 				</checkbox-single>
 			</th>
 			<th>ID</th>
-			<th>커버</th> 
+			<th>선생님</th>
+			<th>커버</th>
 			<th>수업제목</th>
 			<th>상태</th>
 		</tr> 
@@ -131,11 +132,40 @@
 					</checkbox-single>
 				</div>
 			</th> 
+			<!-- 수업 아이디 -->
 			<td>{{klass.id}}</td>
+			<!-- 선생님 thumbnail-->
+			<td>
+				<div>
+					<img class="img-rounded my-style" src={{klass.teacher.thumbnail}}>
+				</div>
+				<div style="color:#777;">
+					<small>{{klass.teacher.nickname}}</small>
+				</div>
+			</td>
+			<!-- 수업 이미지 -->
 			<td>
 				<img class="img-rounded my-style" src={{klass.class_poster_url_loadable}}>
 			</td> 
-			<td><small>{{klass.title}}</small></td> 
+			<td>
+				<div>
+					<small>{{klass.title}}</small>
+				</div>
+				<div>
+					<!-- 수업 레벨 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.level_img_url}}>
+					<!-- 지하철역 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.subway_station_img}}>
+					<!-- 시간 -->
+					<img class="img-rounded my-style-klass-info" src={{klass.time_begin_img_url}}>
+					<!-- 요일 -->
+					<img 
+					*ngFor="let days_img_url of klass.days_img_url_list"
+					class="img-rounded my-style-klass-info" 
+					src={{days_img_url}}>
+				</div>
+
+			</td> 
 			<td>
 	            <widget-input-default
 	            [width]="60"

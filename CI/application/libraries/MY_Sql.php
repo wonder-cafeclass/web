@@ -1201,6 +1201,23 @@ class MY_Sql
         return $select_query;
     }    
 
+    private function set_like_klass($search_query="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return "";
+        }
+        if($this->is_not_ok("search_query", $search_query))
+        {
+            return "";
+        } // end if
+
+        $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+
+    }
     private function get_query_search_like_klass($search_query="")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -1231,8 +1248,93 @@ class MY_Sql
 
         return $search_query_like;
     }
+    private function set_where_klass($klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="")
+    {
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+        if($this->is_not_ok("klass_level", $klass_level))
+        {
+            $klass_level = "";
+        } // end if
+        if($this->is_not_ok("klass_subway_line", $klass_subway_line))
+        {
+            $klass_subway_line = "";
+        } // end if
+        if($this->is_not_ok("klass_days", $klass_days))
+        {
+            $klass_days = "";
+        } // end if
+        if($this->is_not_ok("klass_time", $klass_time))
+        {
+            $klass_time = "";
+        } // end if
 
-    public function select_klass_cnt_on_admin($search_query="", $klass_status="") 
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        if(!empty($klass_level))
+        {
+            $this->CI->db->where('klass.level', $klass_level);
+        }
+        if(!empty($klass_subway_line))
+        {
+            $this->CI->db->where('klass.subway_line', $klass_subway_line);
+        }
+        if(!empty($klass_days))
+        {
+            // $this->CI->db->where('klass.days', $klass_days);
+            // TODO 날짜 범위조건으로 변경. WHERE IN
+        }
+        if(!empty($klass_time))
+        {
+            $this->set_where_klass_time($klass_time);
+        } // end if
+    } // end method
+
+    private function set_where_klass_time($klass_time="")
+    {
+        if($this->is_not_ok("klass_time", $klass_time))
+        {
+            return;
+        } // end if
+
+        // Set time range
+        // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra = [];
+        $extra['time_begin'] = 
+        $time_begin = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $klass_time, 
+            'class_times_list', 
+            'class_times_range_list'
+        );
+        $extra['time_end'] = 
+        $time_end = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            $klass_time, 
+            'class_times_list', 
+            'class_times_range_list', 
+            1
+        );
+        $time_begin_HHmm = "";
+        $time_end_HHmm = "";
+        if(is_numeric($time_begin) && is_numeric($time_end))
+        {
+            $time_begin_HHmm = $this->CI->my_time->digit_to_HHmm($time_begin);
+            $time_end_HHmm = $this->CI->my_time->digit_to_HHmm($time_end, true);
+        }
+        if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
+            $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
+        {
+            $this->CI->db->where('time_begin >=', $time_begin_HHmm);
+            $this->CI->db->where('time_end <=', $time_end_HHmm);
+        }
+    }
+
+    public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1245,33 +1347,39 @@ class MY_Sql
         {
             $search_query = "";
         } // end if
-        if($this->is_not_ok("klass_status", $klass_status))
-        {
-            $klass_status = "";
-        } // end if
 
         // Query Execution
         $this->CI->db->from('klass');
-        if(!empty($klass_status))
-        {
-            $this->CI->db->where('status', $klass_status);
-        }
-        if(!empty($search_query))
-        {
-            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
-        }
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );
+        $this->set_like_klass($search_query);
         $cnt = $this->CI->db->count_all_results();
 
         // Query Logging
         $this->CI->db->from('klass');
-        if(!empty($klass_status))
-        {
-            $this->CI->db->where('status', $klass_status);
-        }
-        if(!empty($search_query))
-        {
-            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
-        }
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );        
+        $this->set_like_klass($search_query);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
 
@@ -1279,7 +1387,7 @@ class MY_Sql
 
     } // end method 
 
-    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $level="", $station="", $day="", $time="") 
+    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1291,10 +1399,6 @@ class MY_Sql
         if($this->is_not_ok("search_query", $search_query))
         {
             $search_query = "";
-        } // end if
-        if($this->is_not_ok("klass_status", $klass_status))
-        {
-            $klass_status = "";
         } // end if
         if($this->is_not_ok("limit", $limit))
         {
@@ -1313,14 +1417,19 @@ class MY_Sql
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         // $this->set_where_on_search_klass("", $level, $station, $day, $time);
-        if(!empty($klass_status))
-        {
-            $this->CI->db->where('status', $klass_status);
-        }
-        if(!empty($search_query))
-        {
-            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
-        }
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );        
+        $this->set_like_klass($search_query);
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $query = $this->CI->db->get();
@@ -1330,14 +1439,19 @@ class MY_Sql
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         // $this->set_where_on_search_klass("", $level, $station, $day, $time);
-        if(!empty($klass_status))
-        {
-            $this->CI->db->where('status', $klass_status);
-        }
-        if(!empty($search_query))
-        {
-            $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
-        }
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );
+        $this->set_like_klass($search_query);
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
@@ -2022,6 +2136,7 @@ class MY_Sql
 
         // Set time range
         // 시간 관련 검색은 범위를 가져와야 한다.
+        $extra = [];
         $extra['time_begin'] = 
         $time_begin = 
         $this->CI->my_paramchecker->get_const_from_list(
@@ -2086,7 +2201,6 @@ class MY_Sql
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
-        // wonder.jung
         $limit = 30;
         $offset = 0;
 
@@ -3900,7 +4014,6 @@ class MY_Sql
 /*
     public function get_teacher_list($limit=-1, $offset=-1) 
     {
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
@@ -3959,7 +4072,6 @@ class MY_Sql
 
     public function get_admin_user_list($limit=-1, $offset=-1) 
     {
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
@@ -4022,7 +4134,6 @@ class MY_Sql
 
     public function search_user_student_list($search_query="", $limit=-1, $offset=-1) 
     {
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
@@ -4105,7 +4216,6 @@ class MY_Sql
 
     public function get_user_student_list($limit=-1, $offset=-1) 
     {
-        // wonder.jung
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())

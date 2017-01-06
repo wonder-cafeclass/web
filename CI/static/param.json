@@ -57,7 +57,13 @@
 		"klass_query":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9|]+$/]",
 		"klass_level":"is_str|||matches[class_level_list]|||exclude[class_level_list|0]",
 		"klass_level_for_search":"is_str|||matches[class_level_list]",
+
+		"klass_subway_line":"is_str|||matches[subway_line_list]|||exclude[subway_line_list|0]",
+
 		"klass_station":"is_str|||matches[class_venue_subway_station_list]|||exclude[class_venue_subway_station_list|0]",
+
+		"klass_days_for_search":"is_str",
+
 		"klass_day":"is_str|||matches[class_days_list]|||exclude[class_days_list|0]",
 		"klass_date_begin":"is_str|||regex_match_include[/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1})$/]",
 		"klass_time_hhmm":"is_str|||regex_match_include[/^([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
@@ -144,6 +150,9 @@
 		"EOL":""
 	}
 	, "const":{
+
+		"delimiter":"|||",
+
 		"user_gender_list":["M","F","U"],
 		"user_gender_kor_list":["남성","여성","모름"],
 
