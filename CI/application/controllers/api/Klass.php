@@ -283,23 +283,10 @@ class Klass extends MY_REST_Controller {
 
         if($this->is_not_ok()) 
         {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
-            $output["track"] = $this->my_tracker->flush();
-            $this->respond_200_Failed(
-                // $msg=""
-                "\$this->is_not_ok()",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
-        
+
         $offset = 
         $this->my_paramchecker->post(
             // $key=""
@@ -333,19 +320,11 @@ class Klass extends MY_REST_Controller {
             // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
             $no_klass = $this->get_klass_course_no_class();
             $output["klass_list"] = [$no_klass];
-        }
+        } // end if
 
-        $output["track"] = $this->my_tracker->flush();
-        $this->respond_200($output);
+        $this->respond_200_v2($output);
 
     } // end method
-
-
-    public function test_get()
-    {
-        $result = $this->my_sql->test();
-        echo $result;
-    }
 
     // @ 새로운 빈 수업을 추가합니다.
     public function addklassempty_post()
@@ -2071,11 +2050,16 @@ class Klass extends MY_REST_Controller {
 
     }   
 
-    private function get_klass_course_no_class() {
+    private function get_klass_course_no_class() 
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
-        if($this->is_not_ok()) {
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
-        }
+        } // end if
         
         $klass_course = new KlassCourse();
         $klass_course->id = -1;
@@ -2088,11 +2072,17 @@ class Klass extends MY_REST_Controller {
 
         return $klass_course;
     }
-    private function get_klass_course_new_class() {
+    private function get_klass_course_new_class() 
+    {
 
-        if($this->is_not_ok()) {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
-        }
+        } // end if
 
         $klass_course = new KlassCourse();
         $klass_course->id = -100;

@@ -2297,7 +2297,7 @@ class MY_Sql
 
     }
 
-    public function select_klass_list($offset=-1, $limit=-1)
+    public function select_klass_list($offset=-1, $limit=-1, $klass_status="O")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -2310,13 +2310,15 @@ class MY_Sql
             $limit = 20;
         }
 
-        // TODO : A 상태인 수업만 노출해야 합니다.
-
         $select_query = $this->get_query_klass_field();
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($offset, $limit);
         $sql = $this->CI->db->get_compiled_select();
@@ -2325,6 +2327,10 @@ class MY_Sql
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($offset, $limit);
         $query = $this->CI->db->get();
