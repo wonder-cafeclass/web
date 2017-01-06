@@ -624,7 +624,7 @@ export class MyEventWatchTowerService {
 	getDefaultOptionListWithMeta(keyList:string[],valueList:string[],valueFocus:string,metaObj:any) :DefaultOption[] {
 
 		if(null == this.getMyConst()) {
-			return [];
+			return [];	
 		}
 		
 		let defaultOptionList:DefaultOption[] = 
@@ -636,7 +636,21 @@ export class MyEventWatchTowerService {
 		}
 
 		return defaultOptionList;
-	} // end method 	 	
+	} // end method 
+
+	/*
+	getDelimiter():string {
+		return this.getSingleValue("delimiter");
+	}
+	private getSingleValue(key:string):string {
+
+		if(null == this.getMyConst()) {
+			return "";
+		}
+
+		return this.getMyConst().getSingleValue(key);
+	}
+	*/
 
 	logAPIError(msg:string) :void	{
 

@@ -469,7 +469,8 @@ export class ManageKlassesComponent implements OnInit {
         let checkbox:DefaultOption = checkboxList[i];
 
         if(0 < i) {
-          klassDays += "|||" + checkbox.value; // REFACTOR ME
+          // klassDays += this.watchTower.getDelimiter() + checkbox.value;
+          klassDays += "|||" + checkbox.value;
         } else {
           klassDays = checkbox.value;
         } // end if
@@ -786,7 +787,6 @@ export class ManageKlassesComponent implements OnInit {
 
         this.updateKlassStatus(myEvent.value, myEvent.metaObj);
 
-
       } else if(myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
 
         this.pagination.pageNum = +myEvent.value;
@@ -828,13 +828,6 @@ export class ManageKlassesComponent implements OnInit {
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH)) {
 
-        /*
-        if(this.isDefaultDay(myEvent.value)) {
-          this.klassDays = "";
-        } else {
-          this.klassDays = myEvent.value;  
-        } // end if
-        */
         this.updateKlassDays();
 
         this.doFetchKlassList();

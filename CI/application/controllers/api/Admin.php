@@ -89,8 +89,10 @@ class Admin extends MY_REST_Controller {
     } // end method
 
     // @ Desc : 운영툴에서 수업 정보를 업데이트합니다.
+    
     public function updateklass_post() 
     {
+        
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -107,6 +109,7 @@ class Admin extends MY_REST_Controller {
             return;
         }
 
+        
         $user_id_admin = 
         $this->my_paramchecker->post(
             // $key=""
@@ -141,10 +144,9 @@ class Admin extends MY_REST_Controller {
         $is_ok = $this->has_check_list_success();
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
+        if($is_ok) 
+        {
 
-        if($is_ok) {
-
-            /*
             $is_ok = 
             $this->my_sql->update_klass_on_admin(
                 // $user_id_admin=-1, 
@@ -154,25 +156,26 @@ class Admin extends MY_REST_Controller {
                 // $klass_status="",
                 $klass_status
             );
-            */
             $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
         }
-        else 
+
+        if(!$is_ok)
         {
             $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
             return;
         } // end if       
 
-        // 변경된 유저 정보를 가져옵니다.
-        // $klass = $this->my_sql->select_klass($klass_id);
-        // $output["klass"] = $klass;
+        // 변경된 수업 정보를 가져옵니다.
+        $klass = $this->my_sql->select_klass($klass_id);
+        $output["klass"] = $klass;
         $this->respond_200_v2($output);
 
-    } // end method     
-
+    } // end method  
+ 
     // @ Desc : 수업 리스트를 가져옵니다. 검색어, 권한, 상태등의 조회 조건을 줄수 있습니다.
     public function fetchklasslist_post() 
     {
+
         $output = [];
         $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -371,7 +374,7 @@ class Admin extends MY_REST_Controller {
         $klass_list = $this->my_decorator->deco_klass($klass_list);
         
         $output["klass_list"] = $klass_list;
-        $this->respond_200_v2($output);        
+        $this->respond_200_v2($output); 
     }      
 
     // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.

@@ -17,6 +17,12 @@ var HelperMyConst = (function () {
     HelperMyConst.prototype.setConstJSON = function (constJSON) {
         this.constJSON = constJSON;
     };
+    HelperMyConst.prototype.getSingleValue = function (key) {
+        if (null == key || "" === key) {
+            return null;
+        } // end if
+        return this.constJSON[key];
+    };
     HelperMyConst.prototype.getList = function (key) {
         if (null == key || "" === key) {
             return null;
