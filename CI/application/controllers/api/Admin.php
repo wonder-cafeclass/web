@@ -64,7 +64,7 @@ class Admin extends MY_REST_Controller {
 
         $output["is_admin"] = $this->my_auth->is_admin();
 
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } 
 
@@ -85,7 +85,7 @@ class Admin extends MY_REST_Controller {
         $output["dirty_word_list"] = $this->my_paramchecker->get_dirty_word_list();
         $output["api_key"] = $this->my_paramchecker->get_api_key();
 
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
     } // end method
 
     // @ Desc : 운영툴에서 수업 정보를 업데이트합니다.
@@ -168,7 +168,7 @@ class Admin extends MY_REST_Controller {
         // 변경된 수업 정보를 가져옵니다.
         $klass = $this->my_sql->select_klass($klass_id);
         $output["klass"] = $klass;
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } // end method  
  
@@ -273,7 +273,17 @@ class Admin extends MY_REST_Controller {
             "klass_subway_line",
             // $is_no_record=false
             true
-        );        
+        );       
+
+        $klass_subway_station = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_station",
+            // $key_filter=""
+            "klass_subway_station",
+            // $is_no_record=false
+            true
+        );
 
         $klass_days = 
         $this->my_paramchecker->post(
@@ -331,8 +341,10 @@ class Admin extends MY_REST_Controller {
             $klass_status,
             // $level="", 
             $klass_level,
-            // $station="", 
+            // $klass_subway_line="", 
             $klass_subway_line,
+            // $klass_subway_station="", 
+            $klass_subway_station,
             // $day="", 
             $klass_days,
             // $time=""
@@ -363,8 +375,10 @@ class Admin extends MY_REST_Controller {
             $klass_status,
             // $level="", 
             $klass_level,
-            // $station="", 
+            // $klass_subway_line="", 
             $klass_subway_line,
+            // $klass_subway_station="", 
+            $klass_subway_station,
             // $day="", 
             $klass_days,
             // $time=""
@@ -374,7 +388,7 @@ class Admin extends MY_REST_Controller {
         $klass_list = $this->my_decorator->deco_klass($klass_list);
         
         $output["klass_list"] = $klass_list;
-        $this->respond_200_v2($output); 
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
     }      
 
     // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.
@@ -453,7 +467,7 @@ class Admin extends MY_REST_Controller {
         // 변경된 유저 정보를 가져옵니다.
         $teacher = $this->my_sql->select_teacher($teacher_id);
         $output["teacher"] = $teacher;
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } // end method 
 
@@ -595,7 +609,7 @@ class Admin extends MY_REST_Controller {
             $offset
         );
         $output["teacher_list"] = $teacher_list;
-        $this->respond_200_v2($output);        
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);        
     }      
 
     // @ Desc : 운영툴에서 유저 정보를 업데이트합니다.
@@ -683,7 +697,7 @@ class Admin extends MY_REST_Controller {
         // 변경된 유저 정보를 가져옵니다.
         $user = $this->my_sql->get_user_by_id($user_id);
         $output["user"] = $user;
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } // end method
 
@@ -840,7 +854,7 @@ class Admin extends MY_REST_Controller {
             $offset
         );
         $output["user_list"] = $user_list;
-        $this->respond_200_v2($output);        
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);        
     }
 
 

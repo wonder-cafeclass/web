@@ -21,12 +21,14 @@ var KlassService = (function () {
     function KlassService(http, urlService) {
         this.http = http;
         this.urlService = urlService;
-        this.klassesUrl = '/CI/index.php/api/klass/list';
+        // REMOVE ME
+        // private klassesUrl = '/CI/index.php/api/klass/list';
+        // private klassSearchUrl = '/CI/index.php/api/klass/search';
+        this.fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassUpdateUrl = '/CI/index.php/api/klass/update';
         this.klassNewUrl = '/CI/index.php/api/klass/coursenew';
         this.klassSelectileUrl = '/CI/index.php/api/klass/selectile';
-        this.klassSearchUrl = '/CI/index.php/api/klass/search';
         this.klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
         this.klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
         this.addKlassEmptyUrl = '/CI/index.php/api/klass/addklassempty';
@@ -450,25 +452,50 @@ var KlassService = (function () {
         }
         return klassVenue;
     };
-    KlassService.prototype.searchKlassList = function (level, station, day, time, q) {
+    KlassService.prototype.fetchKlassList = function (apiKey, loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / 시작");
+            console.log("admin.service / fetchKlassList / 시작");
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / level : ", level);
+            console.log("admin.service / fetchKlassList / apiKey : ", apiKey);
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / station : ", station);
+            console.log("admin.service / fetchKlassList / loginUserId : ", loginUserId);
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / day : ", day);
+            console.log("admin.service / fetchKlassList / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / time : ", time);
+            console.log("admin.service / fetchKlassList / pageSize : ", pageSize);
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / q : ", q);
-        var qEncoded = encodeURIComponent(q);
-        var req_url = this.urlService.get(this.klassSearchUrl);
-        req_url = req_url + "?level=" + level + "&station=" + station + "&day=" + day + "&time=" + time + "&q=" + qEncoded;
+            console.log("admin.service / fetchKlassList / searchQuery : ", searchQuery);
         if (this.isDebug())
-            console.log("klass.service / searchKlassList / req_url : ", req_url);
-        return this.http.get(req_url)
+            console.log("admin.service / fetchKlassList / klassStatus : ", klassStatus);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassLevel : ", klassLevel);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassSubwayLine : ", klassSubwayLine);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassSubwayStation : ", klassSubwayStation);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassDays : ", klassDays);
+        if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassTime : ", klassTime);
+        if ("" === klassStatus) {
+            klassStatus = "O"; // Open - 개강
+        }
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.fetchKlassListUrl);
+        var params = {
+            login_user_id: loginUserId,
+            page_num: pageNum,
+            page_size: pageSize,
+            search_query: searchQuery,
+            klass_status: klassStatus,
+            klass_level: klassLevel,
+            klass_subway_line: klassSubwayLine,
+            klass_subway_station: klassSubwayStation,
+            klass_days: klassDays,
+            klass_time: klassTime
+        };
+        return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
@@ -487,17 +514,6 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    KlassService.prototype.getKlasses = function () {
-        if (this.isDebug())
-            console.log("klass.service / getKlasses / 시작");
-        var req_url = this.urlService.get(this.klassesUrl);
-        if (this.isDebug())
-            console.log("klass.service / getKlasses / req_url : ", req_url);
-        return this.http.get(req_url)
-            .toPromise()
-            .then(this.myExtractor.extractData)
-            .catch(this.myExtractor.handleError);
-    }; // end getKlasses
     KlassService.prototype.getKlassSelectile = function () {
         if (this.isDebug())
             console.log("klass.service / getKlassSelectile / 시작");

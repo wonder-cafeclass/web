@@ -10,14 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var Subject_1 = require('rxjs/Subject');
 var klass_service_1 = require('./service/klass.service');
-var url_service_1 = require('../util/url.service');
 var klass_1 = require('./model/klass');
 var klass_level_1 = require('./model/klass-level');
-var klass_station_1 = require('./model/klass-station');
 var klass_day_1 = require('./model/klass-day');
 var klass_time_1 = require('./model/klass-time');
+var pagination_1 = require('../widget/pagination/model/pagination');
+var url_service_1 = require('../util/url.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
@@ -40,19 +39,18 @@ var KlassListComponent = (function () {
         this.router = router;
         // 검색상태 관련
         this.isSearchEnabled = false;
-        this.searchTerms = new Subject_1.Subject();
         this.isAdmin = false;
-        this.errorMsgArr = [];
         // EVENT
         this.isOverMagnifier = false;
         this.prevSelectileMap = null;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.klassService.setWatchTower(this.watchTower);
+        this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -112,13 +110,6 @@ var KlassListComponent = (function () {
                 console.log("klass-list / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
             _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
-            // 클래스 리스트를 다시 가져옵니다.
-            if (null != _this.loginTeacher) {
-                _this.getKlassList(true);
-            }
-            else {
-                _this.getKlassList(false);
-            }
         });
     };
     KlassListComponent.prototype.setViewPack = function () {
@@ -146,21 +137,7 @@ var KlassListComponent = (function () {
         if (null != loginUser) {
             this.loginUser = loginUser;
         }
-        this.setLoginTeacher();
-    };
-    KlassListComponent.prototype.setLoginTeacher = function () {
-        if (this.isDebug())
-            console.log("klass-list / setLoginTeacher / 시작");
-        // 로그인 선생님 데이터를 가져옵니다.
-        var isTeacher = false;
-        var loginTeacher = this.watchTower.getLoginTeacher();
-        if (null != loginTeacher) {
-            this.loginTeacher = loginTeacher;
-            isTeacher = true;
-        }
-        // 기본 유저 정보를 모두 가져왔습니다.
-        // 수업 리스트를 가져옵니다.
-        this.getKlassList(isTeacher);
+        this.getKlassListOnInit();
     };
     KlassListComponent.prototype.logActionPage = function () {
         var _this = this;
@@ -186,124 +163,189 @@ var KlassListComponent = (function () {
         this.setLoginUser();
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
-    };
-    KlassListComponent.prototype.getKlassList = function (isTeacher) {
-        var _this = this;
+    }; // end method
+    // @ Desc : 초기화시 1번만 수업 리스트를 가져옴. 
+    KlassListComponent.prototype.getKlassListOnInit = function () {
+        if (this.myArray.isOK(this.klassList)) {
+            // 이미 리스트가 있다면 로딩하지 않습니다.
+            return;
+        }
         if (this.isDebug())
-            console.log("klass-list / getKlassList / 시작");
-        if (this.isDebug())
-            console.log("klass-list / getKlassList / isTeacher : ", isTeacher);
-        this.klassService
-            .getKlasses()
-            .then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("klass-list / getKlassList / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
-                // 성공!
-                var klassJSONList = myResponse.getDataProp("klass_list");
-                if (_this.isDebug())
-                    console.log("klass-list / getKlassList / klassJSONList : ", klassJSONList);
-                var klassList = [];
-                if (null != klassJSONList) {
-                    klassList = _this.klassService.getKlassListFromJSON(klassJSONList);
-                    if (_this.isDebug())
-                        console.log("klass-list / getKlassList / klassList : ", klassList);
-                }
-                if (null != klassList && 0 < klassList.length) {
-                    // 1. 클래스 리스트를 가져왔습니다.
-                    _this.klasses = klassList;
-                }
-                // wonder.jung
-                if (isTeacher) {
-                    // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
-                    var newKlassJSONList = myResponse.getDataProp("new_klass");
-                    var newKlass = new klass_1.Klass().setJSON(newKlassJSONList[0]);
-                    if (_this.isDebug())
-                        console.log("klass-list / getKlassList / newKlass : ", newKlass);
-                    klassList.unshift(newKlass);
-                } // end if
-                // 리스트를 가져오면 푸터를 하단 고정 해제합니다.
-                _this.watchTower.announceFooterRelease();
-            }
-            else {
-                if (null != myResponse.error && "" != myResponse.error) {
-                    // 에러 내용은 화면에 표시한다.
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                }
-            } // end if
-        }); // end service    
-    };
+            console.log("klass-list / getKlassListOnInit / 시작");
+        var loginUserId = -1;
+        if (null != this.loginUser) {
+            loginUserId = this.loginUser.id;
+        }
+        this.fetchKlassList(
+        // userId:Number, 
+        loginUserId, 
+        // pageNum:number, 
+        this.pagination.pageNum, 
+        // pageSize:number, 
+        this.pagination.pageRange, 
+        // searchQuery:string, 
+        "", 
+        // klassStatus:string, 
+        "O", 
+        // klassLevel:string, 
+        "", 
+        // klassSubwayLine:string, 
+        "", 
+        // klassSubwayStation:string, 
+        "", 
+        // klassDays:string, 
+        "", 
+        // klassTime:string  
+        "");
+    }; // end method
     KlassListComponent.prototype.onInitKlassFilterTile = function (searchBox) {
         searchBox.focus();
     };
-    KlassListComponent.prototype.search = function (level, station, day, time, searchKeyword) {
+    KlassListComponent.prototype.updatePagination = function (jsonPagination) {
+        if (this.isDebug())
+            console.log("klass-list / updatePagination / 시작");
+        if (this.isDebug())
+            console.log("klass-list / updatePagination / jsonPagination : ", jsonPagination);
+        if (null == jsonPagination) {
+            this.pagination = new pagination_1.Pagination(); // 기본 값으로 설정
+        }
+        else {
+            this.pagination = new pagination_1.Pagination().setJSON(jsonPagination);
+        }
+    };
+    KlassListComponent.prototype.updateKlassList = function (jsonKlassList) {
+        if (this.isDebug())
+            console.log("klass-list / updateKlassList / 시작");
+        if (this.myArray.isNotOK(jsonKlassList)) {
+            // 검색 결과가 없습니다.
+            this.klassList = null;
+        }
+        else {
+            var klassList = [];
+            for (var i = 0; i < jsonKlassList.length; ++i) {
+                var klassJSON = jsonKlassList[i];
+                var klass = new klass_1.Klass().setJSON(klassJSON);
+                klassList.push(klass);
+            } // end for
+            if (this.isDebug())
+                console.log("klass-list / updateKlassList / klassList : ", klassList);
+            // 1. 스크롤로 추가적인 수업읇 보여준다면, 교체가 아닌 리스트에 덧붙이는 형식으로 표현.
+            // 리스트 추가.
+            // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
+            this.klassList = klassList; // 리스트 교체.
+        } // end if
+    }; // end method    
+    KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
+        this.klassService.fetchKlassList(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // userId:number, 
+        loginUserId, 
+        // pageNum:number, 
+        this.pagination.pageNum, 
+        // pageSize:number, 
+        this.pagination.pageRange, 
+        // searchQuery:string, 
+        searchQuery, 
+        // klassStatus:string,
+        klassStatus, 
+        // klassLevel:string,
+        klassLevel, 
+        // klassSubwayLine:string,
+        klassSubwayLine, 
+        // klassSubwayStation:string,
+        klassSubwayStation, 
+        // klassDays:string,
+        klassDays, 
+        // klassTime:string
+        klassTime).then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
+            if (_this.isDebug())
+                console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
+            if (myResponse.isSuccess() &&
+                myResponse.hasDataProp("pagination") &&
+                myResponse.hasDataProp("klass_list")) {
+                // 1. Pagination 재설정
+                var jsonPagination = myResponse.getDataProp("pagination");
+                if (_this.isDebug())
+                    console.log("klass-list / fetchKlassList / jsonPagination : ", jsonPagination);
+                _this.updatePagination(jsonPagination);
+                // 2. Klass List 재설정 
+                var klassJSONList = myResponse.getDataProp("klass_list");
+                if (_this.isDebug())
+                    console.log("klass-list / fetchKlassList / klassJSONList : ", klassJSONList);
+                _this.updateKlassList(klassJSONList);
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("klass-list / fetchKlassList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+                _this.watchTower.logAPIError("fetchKlassList has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service    
+    }; // end method
+    KlassListComponent.prototype.search = function (level, subwayLine, subwayStation, day, time, searchQuery) {
         if (this.isDebug())
             console.log("klass-list / search / 시작");
         // 항목별 filter 만들기
         var levelKey = "";
         if (null != level && null != level.key) {
-            levelKey = level.key;
+            levelKey = level.getKeyNotDefault();
         }
-        var stationKey = "";
-        if (null != station && null != station.key) {
-            stationKey = station.key;
-        }
+        var subwayLineKey = "";
+        if (null != subwayLine && null != subwayLine.key) {
+            subwayLineKey = subwayLine.getKeyNotDefault();
+        } // end if
+        var subwayStationKey = "";
+        if (null != subwayStation && null != subwayStation.key) {
+            subwayStationKey = subwayStation.getKeyNotDefault();
+        } // end if
         var dayKey = "";
         if (null != day && null != day.key) {
-            dayKey = day.key;
-        }
+            dayKey = day.getKeyNotDefault();
+        } // end if
         var timeKey = "";
         if (null != time && null != time.key) {
-            timeKey = time.key;
+            timeKey = time.getKeyNotDefault();
+        } // end if
+        // 입력한 키워드중, 첫번째 단어만 검색에 사용합니다. 
+        var keywordList = searchQuery.split(" ");
+        var searchQuerySafe = "";
+        if (this.myArray.isOK(keywordList)) {
+            searchQuerySafe = keywordList[0];
+        } // end if
+        var loginUserId = -1;
+        if (null != this.loginUser) {
+            loginUserId = this.loginUser.id;
+        } // end if
+        if (null == this.pagination) {
+            this.pagination = new pagination_1.Pagination();
         }
-        var keywordList = searchKeyword.split(" ");
-        var searchKeywordSafe = "";
-        for (var i = 0; i < keywordList.length; ++i) {
-            var keyword = keywordList[i];
-            var keywordSafe = this.getKeywordSafe(keyword);
-            if (null == keywordSafe || "" === keywordSafe) {
-                continue;
-            }
-            searchKeywordSafe += keywordSafe + "|";
-        }
-        this.klassService.searchKlassList(
-        // level:string, 
+        this.fetchKlassList(
+        // userId:number, 
+        loginUserId, 
+        // pageNum:number, 
+        this.pagination.pageNum, 
+        // pageSize:number, 
+        this.pagination.pageRange, 
+        // searchQuery:string, 
+        searchQuerySafe, 
+        // klassStatus:string, 
+        "O", 
+        // klassLevel:string, 
         levelKey, 
-        // station:string, 
-        stationKey, 
-        // day:string, 
+        // klassSubwayLine:string, 
+        subwayLineKey, 
+        // klassSubwayStation:string, 
+        subwayStationKey, 
+        // klassDays:string, 
         dayKey, 
-        // time:string,
-        timeKey, 
-        // q:string
-        searchKeywordSafe).then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("klass-list / search / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
-                // 성공!
-                var klassJSONList = myResponse.getDataProp("klass_list");
-                var klassListNext = [];
-                for (var i = 0; i < klassJSONList.length; ++i) {
-                    var klassJSON = klassJSONList[i];
-                    var klass = new klass_1.Klass().setJSON(klassJSON);
-                    klassListNext.push(klass);
-                }
-                if (_this.myArray.isOK(klassListNext)) {
-                    if (_this.isDebug())
-                        console.log("klass-list / search / klassListNext : ", klassListNext);
-                    _this.klasses = klassListNext;
-                } // end if
-            }
-            else if (myResponse.isFailed()) {
-                if (null != myResponse.error && "" != myResponse.error) {
-                    // 에러 내용은 화면에 표시한다.
-                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
-                }
-                // 에러 로그 등록
-                _this.watchTower.logAPIError("klass-list / searchKlassList");
-            } // end if
-        }); // end service
+        // klassTime:string  
+        timeKey);
     }; // end method
     KlassListComponent.prototype.onMouseenterMagnifier = function () {
         if (!this.isSearchEnabled) {
@@ -334,7 +376,7 @@ var KlassListComponent = (function () {
         }
         if (this.isDebug())
             console.log("klass-list / onChangedSelectile / selectileMap : ", selectileMap);
-        this.search(selectileMap.level, selectileMap.station, selectileMap.day, selectileMap.time, searchBox.value);
+        this.search(selectileMap.level, selectileMap.subwayLine, selectileMap.subwayStation, selectileMap.day, selectileMap.time, searchBox.value);
     };
     KlassListComponent.prototype.onClickSearchInput = function (event, searchBox) {
         event.stopPropagation();
@@ -351,7 +393,7 @@ var KlassListComponent = (function () {
             searchBox.value = keywordsSafe;
         }
         var selectileList = null;
-        this.search(selectile.klassLevelSelected, selectile.klassStationSelected, selectile.klassDaySelected, selectile.klassTimeSelected, searchBox.value);
+        this.search(selectile.klassLevelSelected, selectile.klassSubwayLineSelected, selectile.klassSubwayStationSelected, selectile.klassDaySelected, selectile.klassTimeSelected, searchBox.value);
     };
     KlassListComponent.prototype.isSafeSelectile = function (selectile) {
         if (null == selectile) {
@@ -425,7 +467,7 @@ var KlassListComponent = (function () {
         for (var i = 0; i < klassStations.length; ++i) {
             // wonder.jung
             var curObj = klassStations[i];
-            var klassStation = new klass_station_1.KlassStation(
+            var klassStation = new KlassStation(
             // public key: string,
             curObj["key"], 
             // public name_eng: string,
@@ -500,7 +542,7 @@ var KlassListComponent = (function () {
             this.keywordsFromUserPrev !== keywordsFromUser) {
             // 공백일 경우는, 필터만을 이용해서 검색하는 것으로 가정합니다.
             this.keywordsFromUserPrev = keywordsFromUser;
-            this.search(selectile.klassLevelSelected, selectile.klassStationSelected, selectile.klassDaySelected, selectile.klassTimeSelected, "");
+            this.search(selectile.klassLevelSelected, selectile.klassSubwayLineSelected, selectile.klassSubwayStationSelected, selectile.klassDaySelected, selectile.klassTimeSelected, "");
             return;
         }
         if (null === keywordsFromUser || keywordsFromUser.length < 2) {

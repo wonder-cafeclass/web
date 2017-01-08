@@ -9,49 +9,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @license   MIT
  */
 
-require APPPATH . '/models/Teacher.php';
-require APPPATH . '/models/User.php';
-require APPPATH . '/models/UserValidation.php';
-require APPPATH . '/models/UserCookie.php';
+require_once APPPATH . '/libraries/MY_Library.php';
 
-/*
-require APPPATH . '/models/SelectTile.php';
-require APPPATH . '/models/KlassCourse.php';
-require APPPATH . '/models/KlassKeyword.php';
-require APPPATH . '/models/KlassLevel.php';
-require APPPATH . '/models/KlassStation.php';
-require APPPATH . '/models/KlassDay.php';
-require APPPATH . '/models/KlassTime.php';
-require APPPATH . '/models/KlassCalendar.php';
-require APPPATH . '/models/KlassReview.php';
-require APPPATH . '/models/KlassQuestion.php';
-*/
-
-class MY_Sql
+class MY_Sql extends MY_Library
 {
-	private $CI=null;
-    private $query="";
-
     function __construct()
     {
-        // get singleton object.
-        $this->CI =& get_instance();
-        if(!isset($this->CI)) 
-        {
-            return;
-        }
+        // Construct the parent class
+        parent::__construct();
+    } // end method
 
-        if(!isset($this->CI->my_error)) 
-        {
-            return;
-        }
-
-        if(!isset($this->CI->my_paramchecker)) 
-        {
-            return;
-        }
-    }
-
+    private $query="";
     public function get_last_query()
     {
         return $this->query;
@@ -62,104 +30,24 @@ class MY_Sql
         {
             $this->query = $query;
         } // end if
-    }
-
-    /*
-    *   @ Desc : 이 클래스를 실행하기 전에 준비해야 하는 사전 정보들에 대한 검사.
-    */
-    private function is_not_ready()
-    {
-        return !$this->is_ready();
-    }
-    private function is_ready()
-    {
-        if(is_null($this->CI->my_error)) 
-        {
-            return false;
-        }
-        if(is_null($this->CI->my_paramchecker)) 
-        {
-            return false;
-        }
-        if(is_null($this->CI->my_logger))
-        {
-            return false;   
-        }
-
-        return true;
-    }  
+    } // end method
 
 
-    private function add_track($class_name="", $method_name="", $line_num=-1, $msg="")
-    {
-        if(is_null($this->CI->my_tracker)) {
-            return;
-        }
-
-        $this->CI->my_tracker->add($class_name, $method_name, $line_num, $msg);
-    }  
-    private function add_track_init($class_name="", $method_name="", $line_num=-1)
-    {
-        if(is_null($this->CI->my_tracker)) {
-            return;
-        }
-
-        $this->CI->my_tracker->add_init($class_name, $method_name, $line_num);
-    }
-    private function add_track_stopped($class_name="", $method_name="", $line_num=-1, $msg)
-    {
-        if(is_null($this->CI->my_tracker)) {
-            return;
-        }
-
-        $this->CI->my_tracker->add_stopped($class_name, $method_name, $line_num, $msg);
-    }
 
 
-    private function is_not_ok($key=null, $value=null) 
-    {   
-        return !$this->is_ok($key, $value);
-    }
 
-    private function is_ok($key=null, $value=null) 
-    {
-        if(is_null($key)) 
-        {
-            return false;
-        }
-        if(is_null($value)) 
-        {
-            return false;
-        }
-        if(!isset($this->CI->my_paramchecker)) 
-        {
-            return false;
-        }
 
-        $result = $this->CI->my_paramchecker->is_ok($key, $value);
-        if(isset($result) && ($result["success"] === true)) 
-        {
-            return true;
-        }
-        return false;
-    }
 
-    /*
-    *   @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
-    */
-    private function get_const($key="") 
-    {
-        if(empty($key)) 
-        {
-            return null;
-        }
-        if(!isset($this->CI->my_paramchecker)) 
-        {
-            return null;
-        }
 
-        return $this->CI->my_paramchecker->get_const($key);
-    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1249,7 +1137,7 @@ class MY_Sql
         return $select_query;
     }    
 
-    private function set_like_klass($search_query="")
+    private function set_where_klass_search($search_query="")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1263,10 +1151,10 @@ class MY_Sql
             return "";
         } // end if
 
-        $this->CI->db->where($this->get_query_search_like_klass($search_query), NULL, FALSE);
+        $this->CI->db->where($this->get_where_klass_search($search_query), NULL, FALSE);
 
     }
-    private function get_query_search_like_klass($search_query="")
+    private function get_where_klass_search($search_query="")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1296,7 +1184,7 @@ class MY_Sql
 
         return $search_query_like;
     }
-    private function set_where_klass($klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="")
+    private function set_where_klass($klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="")
     {
         if($this->is_not_ok("klass_status", $klass_status))
         {
@@ -1309,6 +1197,10 @@ class MY_Sql
         if($this->is_not_ok("klass_subway_line", $klass_subway_line))
         {
             $klass_subway_line = "";
+        } // end if
+        if($this->is_not_ok("klass_subway_station", $klass_subway_station))
+        {
+            $klass_subway_station = "";
         } // end if
         if($this->is_not_ok("klass_days", $klass_days))
         {
@@ -1331,38 +1223,53 @@ class MY_Sql
         {
             $this->CI->db->where('klass.subway_line', $klass_subway_line);
         }
+        if(!empty($klass_subway_station))
+        {
+            $this->CI->db->where('klass.subway_station', $klass_subway_station);
+        }
         if(!empty($klass_days))
         {
-            // REFACTOR ME - delimiter를 const에서 가져오도록 변경.
-            $klass_days_list = explode("|||", $klass_days);
-
-            $search_query_like = "";
-            if(!empty($klass_days_list)) {
-                $search_query_like .= "(";
-                for ($i=0; $i < count($klass_days_list); $i++) 
-                { 
-                    $search_query = $klass_days_list[$i];
-                    if(0 == $i) 
-                    {
-                        // 첫번째 요일
-                        $search_query_like .= '`days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
-                    }
-                    else 
-                    {
-                        // 그 이후의 요일들
-                        $search_query_like .= ' OR `days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
-                    }
-                    
-                }
-                $search_query_like .= ")";
-            }
-            $this->CI->db->where($search_query_like, NULL, FALSE);
+            $this->set_where_klass_days($klass_days);
         }
         if(!empty($klass_time))
         {
             $this->set_where_klass_time($klass_time);
         } // end if
     } // end method
+
+    private function set_where_klass_days($klass_days="")
+    {
+        if($this->is_not_ok("klass_days", $klass_days))
+        {
+            return;
+        } // end if
+
+        // REFACTOR ME - delimiter를 const에서 가져오도록 변경.
+        $klass_days_list = explode("|||", $klass_days);
+
+        $search_query_like = "";
+        if(!empty($klass_days_list)) {
+            $search_query_like .= "(";
+            for ($i=0; $i < count($klass_days_list); $i++) 
+            { 
+                $search_query = $klass_days_list[$i];
+                if(0 == $i) 
+                {
+                    // 첫번째 요일
+                    $search_query_like .= '`days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
+                }
+                else 
+                {
+                    // 그 이후의 요일들
+                    $search_query_like .= ' OR `days` LIKE \'%'.$search_query.'%\' ESCAPE \'!\'';
+                }
+                
+            }
+            $search_query_like .= ")";
+        }
+        $this->CI->db->where($search_query_like, NULL, FALSE);        
+
+    }
 
     private function set_where_klass_time($klass_time="")
     {
@@ -1404,7 +1311,7 @@ class MY_Sql
         }
     }
 
-    public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
+    public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1427,12 +1334,14 @@ class MY_Sql
             $klass_level, 
             // $klass_subway_line="",
             $klass_subway_line,
+            // $klass_subway_station="",
+            $klass_subway_station,
             // $klass_days="",
             $klass_days,
             // $klass_time=""
             $klass_time
         );
-        $this->set_like_klass($search_query);
+        $this->set_where_klass_search($search_query);
         $cnt = $this->CI->db->count_all_results();
 
         // Query Logging
@@ -1444,12 +1353,14 @@ class MY_Sql
             $klass_level, 
             // $klass_subway_line="",
             $klass_subway_line,
+            // $klass_subway_station="",
+            $klass_subway_station,            
             // $klass_days="",
             $klass_days,
             // $klass_time=""
             $klass_time
         );        
-        $this->set_like_klass($search_query);
+        $this->set_where_klass_search($search_query);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
 
@@ -1457,7 +1368,7 @@ class MY_Sql
 
     } // end method 
 
-    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_days="", $klass_time="") 
+    public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
 
@@ -1479,7 +1390,9 @@ class MY_Sql
         {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
-        } // end if        
+        } // end if  
+
+        // wonder.jung      
 
         // Query Execution
         $query_field = $this->get_query_klass_field();
@@ -1494,12 +1407,14 @@ class MY_Sql
             $klass_level, 
             // $klass_subway_line="",
             $klass_subway_line,
+            // $klass_subway_station="",
+            $klass_subway_station,
             // $klass_days="",
             $klass_days,
             // $klass_time=""
             $klass_time
         );        
-        $this->set_like_klass($search_query);
+        $this->set_where_klass_search($search_query);
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $query = $this->CI->db->get();
@@ -1516,12 +1431,14 @@ class MY_Sql
             $klass_level, 
             // $klass_subway_line="",
             $klass_subway_line,
+            // $klass_subway_station="",
+            $klass_subway_station,            
             // $klass_days="",
             $klass_days,
             // $klass_time=""
             $klass_time
         );
-        $this->set_like_klass($search_query);
+        $this->set_where_klass_search($search_query);
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
@@ -2186,116 +2103,6 @@ class MY_Sql
         return $row;
     } 
 
-    private function set_where_on_search_klass($q="", $level="", $station="", $day="", $time="")
-    {
-        // 유효한 파라미터들만 검색에 사용한다.
-        $where_conditions = array();
-        if($this->is_ok("klass_level", $level))
-        {
-            $this->CI->db->where('level', $level);
-        }
-        if($this->is_ok("klass_station", $station))
-        {
-            $this->CI->db->where('subway_station', $station);
-        }
-        if($this->is_ok("klass_day", $day))
-        {
-            // $this->CI->db->where('days', $day); // TODO 검색 속도를 높일 수 있는 방법은?
-            $this->CI->db->like('days', $day);
-        }
-
-        // Set time range
-        // 시간 관련 검색은 범위를 가져와야 한다.
-        $extra = [];
-        $extra['time_begin'] = 
-        $time_begin = 
-        $this->CI->my_paramchecker->get_const_from_list(
-            $time, 
-            'class_times_list', 
-            'class_times_range_list'
-        );
-        $extra['time_end'] = 
-        $time_end = 
-        $this->CI->my_paramchecker->get_const_from_list(
-            $time, 
-            'class_times_list', 
-            'class_times_range_list', 
-            1
-        );
-        $time_begin_HHmm = "";
-        $time_end_HHmm = "";
-        if(is_numeric($time_begin) && is_numeric($time_end))
-        {
-            $time_begin_HHmm = $this->CI->my_time->digit_to_HHmm($time_begin);
-            $time_end_HHmm = $this->CI->my_time->digit_to_HHmm($time_end, true);
-        }
-        if( $this->CI->my_time->is_valid_HHmm($time_begin_HHmm) && 
-            $this->CI->my_time->is_valid_HHmm($time_end_HHmm)) 
-        {
-            $this->CI->db->where('time_begin >=', $time_begin_HHmm);
-            $this->CI->db->where('time_end <=', $time_end_HHmm);
-        } 
-
-        if($this->is_ok("klass_query", $q))
-        {
-            $keyword_list = explode("|",$q);
-            $extra['keyword_list'] = $keyword_list;
-
-            $like_cnt = 0;
-            for ($i=0; $i < count($keyword_list); $i++) 
-            { 
-                $keyword = $keyword_list[$i];
-
-                if(empty($keyword)) 
-                {
-                    continue;
-                }
-
-                if(0 === $like_cnt) 
-                {
-                    // escaped automatically in 'like' or 'or_like'
-                    $this->CI->db->like('title', $keyword);
-                }
-                else
-                {
-                    // OR 조건은 맨 마지막에 배치.
-                    $this->CI->db->or_like('title', $keyword);
-                }
-
-                $like_cnt++;
-            } // end for
-        } // end if
-    } // end method
-
-    public function search_klass($q="", $level="", $station="", $day="", $time="")
-    {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
-
-        $limit = 30;
-        $offset = 0;
-
-        $select_query = $this->get_query_klass_field();
-
-        $this->CI->db->select($select_query);
-        $this->CI->db->from('klass');
-        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
-        $this->set_where_on_search_klass($q, $level, $station, $day, $time);
-        $this->CI->db->order_by('klass.id', 'DESC');
-        // $this->CI->db->limit($offset, $limit);
-        $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
-
-        $this->CI->db->select($select_query);
-        $this->CI->db->from('klass');
-        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
-        $this->set_where_on_search_klass($q, $level, $station, $day, $time);
-        $this->CI->db->order_by('klass.id', 'DESC');
-        // $this->CI->db->limit($offset, $limit);
-        $query = $this->CI->db->get();
-
-        return $query->result_object();
-
-    }
 
     public function select_klass_list($offset=-1, $limit=-1, $klass_status="O")
     {
@@ -2672,6 +2479,21 @@ class MY_Sql
         $teacher = $this->add_klass_teacher_extra_info($query);
         return $teacher;
     }
+    public function select_teacher_by_user_id($user_id=-1)
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+
+        $this->CI->db->where('user_id', $user_id);
+        $limit = 1;
+        $offset = 0;
+        $query = $this->CI->db->get('teacher', $limit, $offset);
+
+        $teacher = $this->add_klass_teacher_extra_info($query);
+        return $teacher;
+    }    
     private function add_klass_teacher_extra_info($query=null)
     {
         if(is_null($query)) {
@@ -3612,88 +3434,6 @@ class MY_Sql
 
     }       
 
-    /*
-    // @ Desc : 클래스의 특정 배너를 추가한다.
-    public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
-    {
-        if($this->is_not_ready())
-        {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
-        }
-        if($this->is_not_ok("klass_id", $klass_id))
-        {
-            return;
-        }
-        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_add))
-        {
-            return;
-        }
-
-        // 1. 해당 수업의 배너 정보를 가져옵니다.
-        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
-        $class_banner_url_next = "";
-        if(empty($klass_banner_arr)) {
-            $class_banner_url_next = $klass_banner_url_to_add;
-        }
-        else
-        {
-            $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr) . $this->delimiter_klass_banner . $klass_banner_url_to_add;
-        }
-
-        // 새로운 배너 주소를 추가한다.
-        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
-    }
-
-    // @ Desc : 클래스의 특정 배너를 삭제한다.
-    public function remove_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_delete="")
-    {
-        if($this->is_not_ready())
-        {
-            return;
-        }
-        if($this->is_not_ok("user_id", $user_id))
-        {
-            return;
-        }
-        if($this->is_not_ok("klass_id", $klass_id))
-        {
-            return;
-        }
-        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_delete))
-        {
-            return;
-        } 
-
-        // 1. 해당 수업의 배너 정보를 가져옵니다.
-        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
-        if(empty($klass_banner_arr)) 
-        {
-            // Error Report
-            return;
-        }
-
-        $klass_banner_arr_next = [];
-        for ($i=0; $i < count($klass_banner_arr); $i++) { 
-            $klass_banner = $klass_banner_arr[$i];
-
-            if( empty($klass_banner) || 
-                $klass_banner === $klass_banner_url_to_delete) 
-            {
-                // 삭제함.
-                continue;
-            }
-
-            array_push($klass_banner_arr_next, $klass_banner);
-        }
-        $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr_next);
-
-        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
-    }
-    */
     public function update_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_update="")
     {
         if($this->is_not_ready())
@@ -4083,7 +3823,14 @@ class MY_Sql
         $row = $query->custom_row_object(0, 'Teacher');
 
         return $row;
-    } 
+    }
+
+
+
+
+
+
+
 
 
 // REMOVE ME
@@ -4353,6 +4100,310 @@ class MY_Sql
     } // end method     
 */
 
+// REMOVE ME - MY_Library 상속으로 해결
+/*
+    private function add_track($class_name="", $method_name="", $line_num=-1, $msg="")
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
 
+        $this->CI->my_tracker->add($class_name, $method_name, $line_num, $msg);
+    }  
+    private function add_track_init($class_name="", $method_name="", $line_num=-1)
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
+
+        $this->CI->my_tracker->add_init($class_name, $method_name, $line_num);
+    }
+    private function add_track_stopped($class_name="", $method_name="", $line_num=-1, $msg)
+    {
+        if(is_null($this->CI->my_tracker)) {
+            return;
+        }
+
+        $this->CI->my_tracker->add_stopped($class_name, $method_name, $line_num, $msg);
+    }
+
+
+    private function is_not_ok($key=null, $value=null) 
+    {   
+        return !$this->is_ok($key, $value);
+    }
+
+    private function is_ok($key=null, $value=null) 
+    {
+        if(is_null($key)) 
+        {
+            return false;
+        }
+        if(is_null($value)) 
+        {
+            return false;
+        }
+        if(!isset($this->CI->my_paramchecker)) 
+        {
+            return false;
+        }
+
+        $result = $this->CI->my_paramchecker->is_ok($key, $value);
+        if(isset($result) && ($result["success"] === true)) 
+        {
+            return true;
+        }
+        return false;
+    }
+    */    
+
+    // @ Desc : 이 클래스를 실행하기 전에 준비해야 하는 사전 정보들에 대한 검사.
+    /*
+    private function is_not_ready()
+    {
+        return !$this->is_ready();
+    }
+    private function is_ready()
+    {
+        if(is_null($this->CI->my_error)) 
+        {
+            return false;
+        }
+        if(is_null($this->CI->my_paramchecker)) 
+        {
+            return false;
+        }
+        if(is_null($this->CI->my_logger))
+        {
+            return false;   
+        }
+
+        return true;
+    }  
+
+
+    // @ Desc : my_paramchecker가 가지고 있는 상수값 리스트를 키 이름에 맞게 줍니다.
+    private function get_const($key="") 
+    {
+        if(empty($key)) 
+        {
+            return null;
+        }
+        if(!isset($this->CI->my_paramchecker)) 
+        {
+            return null;
+        }
+
+        return $this->CI->my_paramchecker->get_const($key);
+    }
+
+    */
+
+
+    /*
+    // @ Desc : 클래스의 특정 배너를 추가한다.
+    public function add_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_add="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_add))
+        {
+            return;
+        }
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        $class_banner_url_next = "";
+        if(empty($klass_banner_arr)) {
+            $class_banner_url_next = $klass_banner_url_to_add;
+        }
+        else
+        {
+            $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr) . $this->delimiter_klass_banner . $klass_banner_url_to_add;
+        }
+
+        // 새로운 배너 주소를 추가한다.
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
+    }
+
+    // @ Desc : 클래스의 특정 배너를 삭제한다.
+    public function remove_klass_banner($user_id=-1, $klass_id=-1, $klass_banner_url_to_delete="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_banner_url", $klass_banner_url_to_delete))
+        {
+            return;
+        } 
+
+        // 1. 해당 수업의 배너 정보를 가져옵니다.
+        $klass_banner_arr = $this->get_klass_banner_list($klass_id);
+        if(empty($klass_banner_arr)) 
+        {
+            // Error Report
+            return;
+        }
+
+        $klass_banner_arr_next = [];
+        for ($i=0; $i < count($klass_banner_arr); $i++) { 
+            $klass_banner = $klass_banner_arr[$i];
+
+            if( empty($klass_banner) || 
+                $klass_banner === $klass_banner_url_to_delete) 
+            {
+                // 삭제함.
+                continue;
+            }
+
+            array_push($klass_banner_arr_next, $klass_banner);
+        }
+        $class_banner_url_next = join($this->delimiter_klass_banner, $klass_banner_arr_next);
+
+        $this->update_klass_banner($user_id, $klass_id, $class_banner_url_next);
+    }
+    */    
+
+
+    // REMOVE ME
+    /*
+    private function set_where_on_search_klass($q="", $level="", $station="", $day="", $time="", $status="O")
+    {
+        // 유효한 파라미터들만 검색에 사용한다.
+        $where_conditions = array();
+        if($this->is_ok("klass_level", $level))
+        {
+            $this->CI->db->where('level', $level);
+        }
+        if($this->is_ok("klass_station", $station))
+        {
+            $this->CI->db->where('subway_station', $station);
+        }
+        if($this->is_ok("klass_day", $day))
+        {
+            $this->CI->db->like('days', $day);
+        }
+        if($this->is_ok("klass_status", $status))
+        {
+            $this->CI->db->like('status', $status);
+        }
+
+        $this->set_where_klass_time($time);
+
+        if($this->is_ok("klass_query", $q))
+        {
+            $keyword_list = explode("|",$q);
+            $extra['keyword_list'] = $keyword_list;
+
+            $like_cnt = 0;
+            for ($i=0; $i < count($keyword_list); $i++) 
+            { 
+                $keyword = $keyword_list[$i];
+
+                if(empty($keyword)) 
+                {
+                    continue;
+                }
+
+                if(0 === $like_cnt) 
+                {
+                    // escaped automatically in 'like' or 'or_like'
+                    $this->CI->db->like('title', $keyword);
+                }
+                else
+                {
+                    // OR 조건은 맨 마지막에 배치.
+                    $this->CI->db->or_like('title', $keyword);
+                }
+
+                $like_cnt++;
+            } // end for
+        } // end if
+    } // end method
+    */
+    /*
+    public function search_klass($limit=-1, $offset=-1, $q="", $level="", $station="", $day="", $time="", $status="")
+    {
+        // wonder.jung
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if  
+
+        $select_query = $this->get_query_klass_field();
+
+        // Execution
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass($q, $level, $station, $day, $time, $status);
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );        
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        // $this->set_where_on_search_klass($q, $level, $station, $day, $time, $status);
+        $this->set_where_klass(
+            // $klass_status="",
+            $klass_status, 
+            // $klass_level="",
+            $klass_level, 
+            // $klass_subway_line="",
+            $klass_subway_line,
+            // $klass_days="",
+            $klass_days,
+            // $klass_time=""
+            $klass_time
+        );
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($offset, $limit);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_object();
+    }
+    */    
 }
 

@@ -71,20 +71,34 @@ class Klass extends MY_REST_Controller {
         $output = array();
         $is_ok = true;
 
-        $output['levels'] = $this->get_levels();
-        if(is_null($output['levels']) || empty($output['levels'])) {
+        $output['levels'] = 
+        $this->my_decorator->get_levels();
+        if( is_null($output['levels']) || 
+            empty($output['levels'])) {
             $is_ok = false;
         }
-        $output['stations'] = $this->get_stations();
-        if(is_null($output['stations']) || empty($output['stations'])) {
+        $output['subway_line'] = 
+        $this->my_decorator->get_subway_lines();
+        if( is_null($output['subway_line']) || 
+            empty($output['subway_line'])) {
             $is_ok = false;
         }
-        $output['days'] = $this->get_days();
-        if(is_null($output['days']) || empty($output['days'])) {
+        $output['subway_station'] = 
+        $this->my_decorator->get_subway_stations();
+        if( is_null($output['subway_station']) || 
+            empty($output['subway_station'])) {
             $is_ok = false;
         }
-        $output['times'] = $this->get_times();
-        if(is_null($output['times']) || empty($output['times'])) {
+        $output['days'] = 
+        $this->my_decorator->get_days();
+        if( is_null($output['days']) || 
+            empty($output['days'])) {
+            $is_ok = false;
+        }
+        $output['times'] = 
+        $this->my_decorator->get_times();
+        if( is_null($output['times']) || 
+            empty($output['times'])) {
             $is_ok = false;
         }
 
@@ -145,7 +159,8 @@ class Klass extends MY_REST_Controller {
 
             // 새로 입력하는 수업 관련 기본 정보를 돌려줍니다.
             // 수업 - 새로운 klass 정보를 가져옵니다.
-            $new_klass = $this->get_klass_course_new_class();
+            $new_klass = 
+            $this->my_decorator->get_klass_course_new_class();
 
             // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
             $teacher = $this->my_sql->select_teacher($teacher_id);
@@ -312,17 +327,19 @@ class Klass extends MY_REST_Controller {
         $klass_list = $this->my_decorator->deco_klass($klass_list);
         $output["klass_list"] = $klass_list;
 
-        $new_klass = $this->get_klass_course_new_class();
+        $new_klass = 
+        $this->my_decorator->get_klass_course_new_class();
         $output["new_klass"] = [$new_klass];
 
         if (empty($klass_list))
         {
             // 조회한 결과가 없는 경우, "수업없음" 클래스 정보를 내려준다.
-            $no_klass = $this->get_klass_course_no_class();
+            $no_klass = 
+            $this->my_decorator->get_klass_course_no_class();
             $output["klass_list"] = [$no_klass];
         } // end if
 
-        $this->respond_200_v2($output);
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } // end method
 
@@ -1811,6 +1828,492 @@ class Klass extends MY_REST_Controller {
         } // end if
     }
 
+    // @ Desc : 낱개의 수업을 가져옵니다.
+    private function get_klass($klass_id=-1)
+    {
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if(!(0 < $klass_id)) {
+            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$klass_id is not valid!");
+            return;
+        } // end if
+
+        $klass_list = $this->my_sql->select_klass($klass_id);
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
+
+        $klass = null;
+        if(!empty($klass_list)) 
+        {
+            $klass = $klass_list[0];
+            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
+        }
+
+        return $klass;
+    }    
+
+    // @ Desc : 수업 리스트를 가져옵니다. 검색어, 권한, 상태등의 조회 조건을 줄수 있습니다.
+    public function fetchklasslist_post() 
+    {
+        $output = [];
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // login user id - 로그인한 유저의 아이디. 선생님 여부를 판별하는데 사용합니다. 선생님이라면, 수업 추가 탭이 제일 앞에 들어갑니다.
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id",
+            // $is_no_record=false
+            true
+        );
+
+        // Pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if 
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        ); 
+
+        // Where condition
+        $search_query = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "search_query",
+            // $key_filter=""
+            "search_query",
+            // $is_no_record=false
+            true
+        );
+
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status",
+            // $is_no_record=false
+            true
+        );     
+
+        $klass_level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_level",
+            // $key_filter=""
+            "klass_level",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_subway_line = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_line",
+            // $key_filter=""
+            "klass_subway_line",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_subway_station = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_station",
+            // $key_filter=""
+            "klass_subway_station",
+            // $is_no_record=false
+            true
+        );
+
+        $klass_days = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_days",
+            // $key_filter=""
+            "klass_days_for_search",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_time = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time",
+            // $key_filter=""
+            "klass_time",
+            // $is_no_record=false
+            true
+        );        
+
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset,
+            "search_query"=>$search_query,
+            "klass_status"=>$klass_status,
+            "klass_level"=>$klass_level,
+            "klass_subway_line"=>$klass_subway_line,
+            "klass_subway_station"=>$klass_subway_station,
+            "klass_days"=>$klass_days,
+            "klass_time"=>$klass_time
+        ];
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklasslist_post is failed!");
+            return;
+        } // end if
+
+        // 검색어에 해당하는 전체 결과수를 가져옵니다.
+        // 이 데이터로 pagination을 새로 만듭니다.
+        $klass_cnt = 
+        $this->my_sql->select_klass_cnt_on_admin(
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status,
+            // $level="", 
+            $klass_level,
+            // $klass_subway_line="", 
+            $klass_subway_line,
+            // $klass_subway_station="", 
+            $klass_subway_station,
+            // $day="", 
+            $klass_days,
+            // $time=""
+            $klass_time
+        );
+        $output["klass_cnt"] = $klass_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $klass_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_size
+        );
+        $output["pagination"] = $pagination;
+
+        // 검색어로 유저를 찾습니다.
+        $klass_list =
+        $this->my_sql->select_klass_on_admin(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1, 
+            $offset,
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status,
+            // $level="", 
+            $klass_level,
+            // $klass_subway_line="", 
+            $klass_subway_line,
+            // $klass_subway_station="", 
+            $klass_subway_station,
+            // $day="", 
+            $klass_days,
+            // $time=""
+            $klass_time
+        );
+
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        // 비어있는 수업이라면 '수업 없음' 탭을 가져옵니다.
+        if (empty($klass_list))
+        {
+            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "조회한 결과가 없는 경우, \"수업없음\" 클래스 정보를 내려준다.");
+            $no_klass = 
+            $this->my_decorator->get_klass_course_no_class();
+            $output["klass_list"] = [$no_klass];
+        } // end if
+
+        // 해당 $login_user_id로 선생님 정보를 가져옵니다.
+        $teacher = null;
+        if(0 < $login_user_id) 
+        {
+            $teacher = $this->my_sql->select_teacher_by_user_id($login_user_id);
+        } // end if
+        if((1 === $page_num) && isset($teacher))
+        {
+            // 첫번째 페이지이면서 선생님일 경우, 새로운 클래스 만들기 탭을 가져옵니다.
+            $new_klass = 
+            $this->my_decorator->get_klass_course_new_class();
+            // 새로운 클래스를 수업 리스트 가장 앞에 추가합니다.
+            array_unshift($klass_list,$new_klass);
+        } // end if
+        
+        $output["klass_list"] = $klass_list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
+    }    
+
+    // REMOVE ME
+    /*
+    public function search_post() 
+    {
+        // wonder.jung
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // Pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if 
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        ); 
+
+        // Where condition
+        $search_query = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "search_query",
+            // $key_filter=""
+            "search_query",
+            // $is_no_record=false
+            true
+        );
+
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status",
+            // $is_no_record=false
+            true
+        );  
+        if(empty($klass_status))
+        {
+            // 기본값은 개강('O' - Open) 입니다.
+            $klass_status = "O";
+        }
+
+        $klass_level = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_level",
+            // $key_filter=""
+            "klass_level",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_subway_line = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_subway_line",
+            // $key_filter=""
+            "klass_subway_line",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_days = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_days",
+            // $key_filter=""
+            "klass_days_for_search",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_time = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_time",
+            // $key_filter=""
+            "klass_time",
+            // $is_no_record=false
+            true
+        );        
+
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset,
+            "search_query"=>$search_query,
+            "klass_status"=>$klass_status,
+            "klass_level"=>$klass_level,
+            "klass_subway_line"=>$klass_subway_line,
+            "klass_days"=>$klass_days,
+            "klass_time"=>$klass_time
+        ];
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");        
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklasslist_post is failed!");
+            return;
+        } // end if
+
+        // 검색어에 해당하는 전체 결과수를 가져옵니다.
+        // 이 데이터로 pagination을 새로 만듭니다.
+        $klass_cnt = 
+        $this->my_sql->select_klass_cnt_on_admin(
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status,
+            // $level="", 
+            $klass_level,
+            // $station="", 
+            $klass_subway_line,
+            // $day="", 
+            $klass_days,
+            // $time=""
+            $klass_time
+        );
+        $output["klass_cnt"] = $klass_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $klass_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_size
+        );
+        $output["pagination"] = $pagination;
+
+        // 검색어로 유저를 찾습니다.
+        $klass_list =
+        $this->my_sql->select_klass_on_admin(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1, 
+            $offset,
+            // $search_query="", 
+            $search_query,
+            // $klass_status="", 
+            $klass_status,
+            // $level="", 
+            $klass_level,
+            // $station="", 
+            $klass_subway_line,
+            // $day="", 
+            $klass_days,
+            // $time=""
+            $klass_time
+        );
+
+        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        
+        $output["klass_list"] = $klass_list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);         
+    }
+    */
+
+    /*
     public function search_get() 
     {
         $output = [];
@@ -1818,22 +2321,9 @@ class Klass extends MY_REST_Controller {
 
         if($this->is_not_ok()) 
         {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
-            $output["track"] = $this->my_tracker->flush();
-            $this->respond_200_Failed(
-                // $msg=""
-                "\$this->is_not_ok()",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
-        } // end if        
+        } // end if
 
         $q = 
         $this->my_paramchecker->get(
@@ -1905,9 +2395,12 @@ class Klass extends MY_REST_Controller {
             $output["klass_list"] = [$no_klass];
         }
 
-        $output["track"] = $this->my_tracker->flush();
-        $this->respond_200($output);
+        $this->respond_200_v2($output);
     } // end method
+    */
+
+    // MOVE TO Decorator
+    /*
     private function get_class_img_default() 
     {
         return $this->my_paramchecker->get_const_from_list(
@@ -2288,29 +2781,9 @@ class Klass extends MY_REST_Controller {
 
         return $klass_time_list;
     }
+    */
 
-    // @ Desc : 낱개의 수업을 가져옵니다.
-    private function get_klass($klass_id=-1)
-    {
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
 
-        if(!(0 < $klass_id)) {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$klass_id is not valid!");
-            return;
-        } // end if
-
-        $klass_list = $this->my_sql->select_klass($klass_id);
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
-
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-        }
-
-        return $klass;
-    }
 
     // REMOVE ME
     /*

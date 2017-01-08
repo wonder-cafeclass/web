@@ -228,13 +228,13 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
     }   
 
     // @ Desc : 200 응답 객체에 tracker 정보를 추가합니다.
-    public function respond_200_v2($data=null) 
+    public function respond_200_v2($file="", $function="", $line="", $data=null) 
     {
         if(is_null($data))
         {
             $data = [];
         } 
-        $this->my_tracker->add_stopped($file, $function, $line, "respond_200_Failed_v2");
+        $this->my_tracker->add_stopped($file, $function, $line, "respond_200_v2");
         $data["track"] = $this->my_tracker->flush();
 
         $this->respond_200($data);

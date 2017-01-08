@@ -9,8 +9,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @license   MIT
  */
 
+require_once APPPATH . '/libraries/MY_Library.php';
 
-class MY_ParamChecker {
+class MY_ParamChecker extends MY_Library 
+{
 
 	private $json_obj;
 	private $json_path_param="static/param.json";
@@ -18,82 +20,45 @@ class MY_ParamChecker {
     private $json_path_dirty_word="static/dirty-word.json";
     private $json_obj_api;
     private $json_path_api="static/api.json";
-	private $CI=null;
 
 	public static $mysql_int_max = 2147483647;
 
     public function __construct($params=null)
     {
+        // Construct the parent class
+        parent::__construct();
 
-        // get singleton object.
-        $this->CI =& get_instance();
-        if(!isset($this->CI)) {
-            return;
-        }
+        $this->init();
+    }
 
-        if(!isset($this->CI->my_error)) {
-            return;
-        }
+    private function init()
+    {
+        // Fetch CI/static/ParamChecker.json
+        $param_check_json_str = "";
+        $target_path = FCPATH . $this->json_path_param;
 
-    	// Fetch CI/static/ParamChecker.json
-    	$param_check_json_str = "";
-    	$target_path = FCPATH . $this->json_path_param;
-
-    	if(file_exists($target_path)) 
-    	{
-			$param_check_json_str = file_get_contents($target_path);
-    	} 
+        if(file_exists($target_path)) 
+        {
+            $param_check_json_str = file_get_contents($target_path);
+        } 
         else 
         {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_FILE_NOT_EXIST,
-                // $message=""
-                $target_path, 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_FILE_NOT_EXIST, $target_path);
             return;
         }
 
-    	if(!empty($param_check_json_str)) 
-    	{
-    		$this->json_obj = json_decode($param_check_json_str);
-    	} 
-    	else 
-    	{
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_PARAM_IS_EMPTY,
-                // $message=""
-                "\$param_check_json_str", 
-                // $extra=null
-                null
-            );
+        if(!empty($param_check_json_str)) 
+        {
+            $this->json_obj = json_decode($param_check_json_str);
+        } 
+        else 
+        {
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_PARAM_IS_EMPTY, "\$param_check_json_str");
             return;
-    	} // end if
+        } // end if
 
         if(is_null($this->json_obj) || empty($this->json_obj)) {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
-                // $message=""
-                "json_obj", 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_JSON_DECODING_IS_FAILED, "json_obj");
             return;            
         }
 
@@ -107,18 +72,7 @@ class MY_ParamChecker {
         } 
         else 
         {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_FILE_NOT_EXIST,
-                // $message=""
-                $target_path, 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_FILE_NOT_EXIST, $target_path);
             return;
         }
         
@@ -129,34 +83,12 @@ class MY_ParamChecker {
         } 
         else 
         {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_PARAM_IS_EMPTY,
-                // $message=""
-                "\$param_check_json_str", 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_PARAM_IS_EMPTY, "\$param_check_json_str");
             return;
         } // end if
 
         if(is_null($this->json_obj_dirty_word) || empty($this->json_obj_dirty_word)) {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
-                // $message=""
-                "json_obj_dirty_word", 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_JSON_DECODING_IS_FAILED, "json_obj_dirty_word");
             return;            
         }
 
@@ -171,18 +103,7 @@ class MY_ParamChecker {
         } 
         else 
         {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_FILE_NOT_EXIST,
-                // $message=""
-                $target_path, 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_FILE_NOT_EXIST, $target_path);
             return;
         }
         
@@ -193,37 +114,14 @@ class MY_ParamChecker {
         } 
         else 
         {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_PARAM_IS_EMPTY,
-                // $message=""
-                "\$json_str_api", 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_PARAM_IS_EMPTY, "\$json_str_api");
             return;
         } // end if
 
         if(is_null($this->json_obj_api) || empty($this->json_obj_api)) {
-            $this->CI->my_error->add(
-                // $class_name=""
-                static::class,
-                // $method_name=""
-                __FUNCTION__,
-                // $event=""
-                MY_Error::$EVENT_JSON_DECODING_IS_FAILED,
-                // $message=""
-                "json_obj_api", 
-                // $extra=null
-                null
-            );
+            $this->add_error(static::class, __FUNCTION__, MY_Error::$EVENT_JSON_DECODING_IS_FAILED, "json_obj_api");
             return;            
-        }        
-
+        } // end if
     }
 
 
@@ -447,6 +345,104 @@ class MY_ParamChecker {
         return $this->CI->input->get_request_header($this->api_key, TRUE);
     }
 
+    // wonder.jung - TODO : 상수 값들을 모두 검사한다. 
+    // 1. 배열들의 길이가 같아야 하는 경우에 대한 검사.
+    public function is_not_ok_const() 
+    {   
+        return !$this->is_ok_const();
+    }
+    public function is_ok_const() {
+
+        $class_level_list = $this->get_const("class_level_list");
+        $class_level_eng_list = $this->get_const("class_level_eng_list");
+        $class_level_kor_list = $this->get_const("class_level_kor_list");
+        $class_level_img_url_list = $this->get_const("class_level_img_url_list");
+
+        if(count($class_level_list) !== count($class_level_eng_list)) 
+        {
+            return false;
+        } 
+        else if(count($class_level_list) !== count($class_level_kor_list)) 
+        {
+            return false;
+        } 
+        else if(count($class_level_list) !== count($class_level_img_url_list)) 
+        {
+            return false;
+        } // end if
+
+
+        $class_days_list = $this->get_const("class_days_list");
+        $class_days_eng_list = $this->get_const("class_days_eng_list");
+        $class_days_kor_list = $this->get_const("class_days_kor_list");
+        $class_days_img_url_list = $this->get_const("class_days_img_url_list");
+
+        if(count($class_days_list) !== count($class_days_eng_list)) 
+        {
+            return false;
+        }
+        else if(count($class_days_list) !== count($class_days_kor_list)) 
+        {
+            return false;
+        }
+        else if(count($class_days_list) !== count($class_days_img_url_list)) 
+        {
+            return false;
+        } // end if
+
+        $class_times_list = 
+        $this->get_const("class_times_list");
+        $class_times_eng_list = 
+        $this->get_const("class_times_eng_list");
+        $class_times_kor_list = 
+        $this->get_const("class_times_kor_list");
+        $class_times_hh_mm_list = 
+        $this->get_const("class_times_hh_mm_list");
+        $class_times_img_url_list = 
+        $this->get_const("class_times_img_url_list");
+
+        if(count($class_times_list) !== count($class_times_eng_list)) 
+        {
+            return false;
+        }
+        else if(count($class_times_list) !== count($class_times_kor_list)) 
+        {
+            return false;
+        }
+        else if(count($class_times_list) !== count($class_times_hh_mm_list)) 
+        {
+            return false;
+        }
+        else if(count($class_times_list) !== count($class_times_img_url_list)) 
+        {
+            return false;
+        } // end if
+
+        $subway_station_list = 
+        $this->get_const("subway_station_list");
+        $subway_station_eng_list = 
+        $this->get_const("subway_station_eng_list");
+        $subway_station_kor_list = 
+        $this->get_const("subway_station_kor_list");
+        $subway_station_img_url_list = 
+        $this->get_const("subway_station_img_list");
+
+        if(count($subway_station_list) !== count($subway_station_eng_list)) 
+        {
+            return false;
+        }
+        else if(count($subway_station_list) !== count($subway_station_kor_list)) 
+        {
+            return false;
+        }
+        else if(count($subway_station_list) !== count($subway_station_img_url_list)) 
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public function get_const($key="") {
         if(empty($key)) 
         {
@@ -576,17 +572,6 @@ class MY_ParamChecker {
 		$output["extracted_value"] = $extracted_value;
 		return $output;
     }
-
-    // REMOVE ME
-    /*
-    public function is_not_ok($key="", $value="")
-    {
-        $result = $this->is_ok($key, $value);
-        $is_ok = $result["success"];
-
-        return !$is_ok;
-    }
-    */
 
     public function is_ok($key="", $value="")
     {
