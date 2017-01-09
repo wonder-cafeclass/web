@@ -383,7 +383,7 @@ class MY_Decorator extends MY_Library
     {
         if(empty($klass_list)) {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass_list)");
-            return;
+            return array();
         } // end if
 
         $klass_list_next = array();

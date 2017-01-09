@@ -40,26 +40,30 @@ export class KlassFilterTileComponent implements OnInit {
   // Observable Selectile 
   klassSelectileSubject = new Subject();
 
-
   // Level
   klassLevels: KlassLevel[];
-  klassLevelSelected: KlassLevel; // 사용자가 선택한 클래스 레벨
+  // 사용자가 선택한 클래스 레벨
+  klassLevelSelected: KlassLevel;
   focusIdxKlassLevel:number = 0;
   // Subway Line
   klassSubwayLines: KlassSubwayLine[];
-  klassSubwayLineSelected: KlassSubwayLine; // 사용자가 선택한 지하철 노선
+  // 사용자가 선택한 지하철 노선
+  klassSubwayLineSelected: KlassSubwayLine; 
   focusIdxKlassSubwayLine:number = 1;
   // Subway Station
   klassSubwayStations: KlassSubwayStation[];
-  klassSubwayStationSelected: KlassSubwayStation; // 사용자가 선택한 지하철 노선
+  // 사용자가 선택한 지하철 노선
+  klassSubwayStationSelected: KlassSubwayStation; 
   focusIdxKlassSubwayStation:number = 2;
   // Day
   klassDays: KlassDay[];
-  klassDaySelected: KlassDay; // 사용자가 선택한 클래스 레벨
+  // 사용자가 선택한 클래스 레벨
+  klassDaySelected: KlassDay; 
   focusIdxKlassDay:number = 3;
   // Time
   klassTimes: KlassTime[];
-  klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
+  // 사용자가 선택한 클래스 레벨 
+  klassTimeSelected: KlassTime; 
   focusIdxKlassTime:number = 4;
 
   @Output() emitter = new EventEmitter<MyEvent>();
@@ -80,9 +84,6 @@ export class KlassFilterTileComponent implements OnInit {
 
   private myChecker:MyChecker;
   private myArray:HelperMyArray;
-
-  // REMOVE ME
-  // private constMap:any;
 
   constructor(
     private myCheckerService:MyCheckerService,
@@ -141,7 +142,6 @@ export class KlassFilterTileComponent implements OnInit {
     this.klassSelectileSubject.subscribe(
       function (x) {
         _self.updateShowingSelectile(x);
-        if(this.isDebug()) console.log("TEST - 002");
       },
       function (err) {
         // error report
@@ -290,7 +290,6 @@ export class KlassFilterTileComponent implements OnInit {
       subwayLineNameSelected = subwayLineSelected.key;
     } // end if
     
-    if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / subwayLineSelected : ",subwayLineSelected);
     if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / subwayLineNameSelected : ",subwayLineNameSelected);
 
     let subwayStationList:any =
@@ -504,11 +503,6 @@ export class KlassFilterTileComponent implements OnInit {
       return;
     }
 
-    if(selectile instanceof KlassSubwayLine) {
-      if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 지하철 노선도가 변경되었다면, 지하철 역 리스트도 변경되어야 합니다.");
-      this.setSubwayStation(selectile.key);
-    } // end if
-
     if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / selectile : ",selectile);
     if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / selectableList : ",selectableList);
 
@@ -574,35 +568,35 @@ export class KlassFilterTileComponent implements OnInit {
     for (var i = 0; i < this.klassLevels.length; ++i) {
       let target:KlassLevel = this.klassLevels[i];
       if(target.isSharing("key", klassLevel)) {
-        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / target : ",target);
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassLevel : ",target);
         this.klassLevelSelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassSubwayLines.length; ++i) {
       let target:KlassSubwayLine = this.klassSubwayLines[i];
       if(target.isSharing("key", klassSubwayLine)) {
-        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / target : ",target);
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayLine : ",target);
         this.klassSubwayLineSelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassSubwayStations.length; ++i) {
       let target:KlassSubwayStation = this.klassSubwayStations[i];
       if(target.isSharing("key", klassSubwayStation)) {
-        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / target : ",target);
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayStation : ",target);
         this.klassSubwayStationSelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassDays.length; ++i) {
       let target:KlassDay = this.klassDays[i];
       if(target.isSharing("key", klassDay)) {
-        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / target : ",target);
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassDay : ",target);
         this.klassDaySelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassTimes.length; ++i) {
       let target:KlassTime = this.klassTimes[i];
       if(target.isSharing("key", klassTime)) {
-        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ",target);
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassTime : ",target);
         this.klassTimeSelected = target;
       }
     } // end for
@@ -629,6 +623,10 @@ export class KlassFilterTileComponent implements OnInit {
       if(null == this.klassSubwayLineSelected || this.klassSubwayLineSelected.key !== selectile.key) {
         this.klassSubwayLineSelected = selectile;  
         hasChanged = true;
+
+        // wonder.jung
+        // 지하철 노선이 변경되었습니다. 이에 맞게 지하철 역 리스트가 변경되어야 합니다.
+        this.setSubwayStation(selectile.key);
       }
 
     } else if(selectile instanceof KlassSubwayStation) {

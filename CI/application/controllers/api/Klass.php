@@ -53,6 +53,8 @@ class Klass extends MY_REST_Controller {
         $this->load->library('MY_Sql');
         $this->load->library('user_agent');
         $this->load->library('MY_Logger');
+        $this->load->library('MY_Tracker');
+        $this->load->library('MY_Pagination');
         */
 
         // Please add library you need here!
@@ -2079,7 +2081,8 @@ class Klass extends MY_REST_Controller {
             $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "조회한 결과가 없는 경우, \"수업없음\" 클래스 정보를 내려준다.");
             $no_klass = 
             $this->my_decorator->get_klass_course_no_class();
-            $output["klass_list"] = [$no_klass];
+            $klass_list = array();
+            array_unshift($klass_list,$no_klass);
         } // end if
 
         // 해당 $login_user_id로 선생님 정보를 가져옵니다.

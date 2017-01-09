@@ -12,9 +12,6 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var klass_service_1 = require('./service/klass.service');
 var klass_1 = require('./model/klass');
-var klass_level_1 = require('./model/klass-level');
-var klass_day_1 = require('./model/klass-day');
-var klass_time_1 = require('./model/klass-time');
 var pagination_1 = require('../widget/pagination/model/pagination');
 var url_service_1 = require('../util/url.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
@@ -27,6 +24,7 @@ var user_1 = require('../users/model/user');
 var teacher_service_1 = require('../teachers/service/teacher.service');
 var teacher_1 = require('../teachers/model/teacher');
 var KlassListComponent = (function () {
+    // private keywordMap;
     function KlassListComponent(klassService, urlService, userService, teacherService, myLoggerService, watchTower, myCheckerService, route, router) {
         this.klassService = klassService;
         this.urlService = urlService;
@@ -423,110 +421,6 @@ var KlassListComponent = (function () {
         }
         return true;
     };
-    KlassListComponent.prototype.setKeywordMap = function (selectile) {
-        if (!this.isSafeSelectile(selectile)) {
-            return;
-        }
-        else if (null != this.keywordMap) {
-            return;
-        }
-        this.keywordMap = {};
-        var klassDays = selectile.klassDays;
-        for (var i = 0; i < klassDays.length; ++i) {
-            // wonder.jung
-            var curObj = klassDays[i];
-            var klassDay = new klass_day_1.KlassDay(
-            // public key: string,
-            curObj["key"], 
-            // public name_eng: string,
-            curObj["name_eng"], 
-            // public name_kor: string,
-            curObj["name_kor"], 
-            // public img_url: string
-            curObj["img_url"]);
-            this.keywordMap[klassDay.name_kor] = klassDay;
-            this.keywordMap[klassDay.name_eng] = klassDay;
-        }
-        var klassLevels = selectile.klassLevels;
-        for (var i = 0; i < klassLevels.length; ++i) {
-            // wonder.jung
-            var curObj = klassLevels[i];
-            var klassLevel = new klass_level_1.KlassLevel(
-            // public key: string,
-            curObj["key"], 
-            // public name_eng: string,
-            curObj["name_eng"], 
-            // public name_kor: string,
-            curObj["name_kor"], 
-            // public img_url: string
-            curObj["img_url"]);
-            this.keywordMap[klassLevel.name_kor] = klassLevel;
-            this.keywordMap[klassLevel.name_eng] = klassLevel;
-        }
-        var klassStations = selectile.klassStations;
-        for (var i = 0; i < klassStations.length; ++i) {
-            // wonder.jung
-            var curObj = klassStations[i];
-            var klassStation = new KlassStation(
-            // public key: string,
-            curObj["key"], 
-            // public name_eng: string,
-            curObj["name_eng"], 
-            // public name_kor: string,
-            curObj["name_kor"], 
-            // public img_url: string
-            curObj["img_url"]);
-            this.keywordMap[klassStation.name_kor] = klassStation;
-            this.keywordMap[klassStation.name_eng] = klassStation;
-        }
-        var klassTimes = selectile.klassTimes;
-        for (var i = 0; i < klassTimes.length; ++i) {
-            // wonder.jung
-            var curObj = klassTimes[i];
-            var klassTime = new klass_time_1.KlassTime(
-            // public key: string,
-            curObj["key"], 
-            // public name_eng: string,
-            curObj["name_eng"], 
-            // public name_kor: string,
-            curObj["name_kor"], 
-            // public hh_mm: string,
-            curObj["hh_mm"], 
-            // public img_url: string
-            curObj["img_url"]);
-            this.keywordMap[klassTime.name_kor] = klassTime;
-            this.keywordMap[klassTime.name_eng] = klassTime;
-        }
-    };
-    KlassListComponent.prototype.searchKeywordMap = function (keyword) {
-        if (!this.keywordMap) {
-            return;
-        }
-        if (!(1 < keyword.length)) {
-            // 대조하는 글자는 2글자 이상이어야 한다.
-            return;
-        }
-        var selectileObj = null;
-        for (var key in this.keywordMap) {
-            var keyNoEmpty = key.replace(" ", "");
-            var isOK = false;
-            if (2 == keyNoEmpty.length && 2 == keyword.length) {
-                isOK = true;
-            }
-            else if (2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length) {
-                isOK = true;
-            }
-            if (!isOK) {
-                continue;
-            }
-            if (0 === keyNoEmpty.indexOf(keyword)) {
-                // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
-                selectileObj = this.keywordMap[key];
-                break;
-            } // end if
-        } // end for
-        return selectileObj;
-    };
     KlassListComponent.prototype.getKeywordSafe = function (keyword) {
         var regex = new RegExp("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\x20]+", "gi");
         var keywordsSafe = keyword.replace(regex, "");
@@ -559,7 +453,8 @@ var KlassListComponent = (function () {
         }
         // 다르다면 키워드를 등록.
         this.keywordsFromUserPrev = keywordsFromUser;
-        this.setKeywordMap(selectile);
+        // REMOVE ME
+        // this.setKeywordMap(selectile);
         // 안전한 문자열만 받습니다. 
         // 허용 문자열은 알파벳,한글,숫자입니다. 
         // 특수문자는 검색어로 허용하지 않습니다.
@@ -577,20 +472,25 @@ var KlassListComponent = (function () {
             return;
         }
         // 유효한 검색 키워드를 찾았습니다.
-        // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
         var selectileMatchList = [];
         var keywordFoundList = [];
-        var keywordNotFoundList = [];
+        // REMOVE ME
+        // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
+        /*
+        var keywordNotFoundList:string[] = [];
         for (var i = 0; i < keywordListSafe.length; ++i) {
-            var keywordSafe = keywordListSafe[i];
-            var selectileObj = this.searchKeywordMap(keywordSafe);
-            if (null == selectileObj) {
-                keywordNotFoundList.push(keywordSafe);
-                continue;
-            }
-            selectileMatchList.push(selectileObj);
-            keywordFoundList.push(keywordSafe);
+          let keywordSafe = keywordListSafe[i];
+          let selectileObj:any = this.searchKeywordMap(keywordSafe);
+    
+          if(null == selectileObj) {
+            keywordNotFoundList.push(keywordSafe);
+            continue;
+          }
+    
+          selectileMatchList.push(selectileObj);
+          keywordFoundList.push(keywordSafe);
         }
+        */
         // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
         // 사용자가 입력한 키워드는 검색창에서 제외합니다.
         for (var i = 0; i < selectileMatchList.length; ++i) {

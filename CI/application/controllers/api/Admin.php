@@ -43,11 +43,13 @@ class Admin extends MY_REST_Controller {
         $this->load->library('MY_Sql');
         $this->load->library('user_agent');
         $this->load->library('MY_Logger');
+        $this->load->library('MY_Tracker');
+        $this->load->library('MY_Pagination');
         */
 
         // init Admin
         $this->load->library('MY_Auth');
-        $this->load->library('MY_Pagination');
+        
         $this->load->library('MY_Decorator');
     }
 

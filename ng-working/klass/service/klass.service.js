@@ -24,7 +24,7 @@ var KlassService = (function () {
         // REMOVE ME
         // private klassesUrl = '/CI/index.php/api/klass/list';
         // private klassSearchUrl = '/CI/index.php/api/klass/search';
-        this.fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
+        this.fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassUpdateUrl = '/CI/index.php/api/klass/update';
         this.klassNewUrl = '/CI/index.php/api/klass/coursenew';

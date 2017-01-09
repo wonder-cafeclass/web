@@ -73,6 +73,9 @@ class MY_REST_Controller extends REST_Controller implements MY_Class{
         // init MyTracker
         $this->load->library('MY_Tracker');
 
+        // init MyPagination
+        $this->load->library('MY_Pagination');
+
     }
 
     // @ Required : MyClass interface

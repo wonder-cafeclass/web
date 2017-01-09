@@ -23,8 +23,6 @@ var my_event_service_1 = require('../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_array_1 = require('../util/helper/my-array');
 var KlassFilterTileComponent = (function () {
-    // REMOVE ME
-    // private constMap:any;
     function KlassFilterTileComponent(myCheckerService, myEventService, watchTower, klassService, location) {
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
@@ -83,8 +81,6 @@ var KlassFilterTileComponent = (function () {
         var _self = this;
         this.klassSelectileSubject.subscribe(function (x) {
             _self.updateShowingSelectile(x);
-            if (this.isDebug())
-                console.log("TEST - 002");
         }, function (err) {
             // error report
             console.log('Error: ' + err);
@@ -199,8 +195,6 @@ var KlassFilterTileComponent = (function () {
             var subwayLineSelected = this.klassSubwayLines[0];
             subwayLineNameSelected = subwayLineSelected.key;
         } // end if
-        if (this.isDebug())
-            console.log("klass-filter-tile / setSubwayStation / subwayLineSelected : ", subwayLineSelected);
         if (this.isDebug())
             console.log("klass-filter-tile / setSubwayStation / subwayLineNameSelected : ", subwayLineNameSelected);
         var subwayStationList = this.watchTower.getMyConst().getNestedChildList(
@@ -373,11 +367,6 @@ var KlassFilterTileComponent = (function () {
             this.leaveTable();
             return;
         }
-        if (selectile instanceof klass_subway_line_1.KlassSubwayLine) {
-            if (this.isDebug())
-                console.log("klass-filter-tile / enterSelectile / 지하철 노선도가 변경되었다면, 지하철 역 리스트도 변경되어야 합니다.");
-            this.setSubwayStation(selectile.key);
-        } // end if
         if (this.isDebug())
             console.log("klass-filter-tile / enterSelectile / selectile : ", selectile);
         if (this.isDebug())
@@ -441,7 +430,7 @@ var KlassFilterTileComponent = (function () {
             var target = this.klassLevels[i];
             if (target.isSharing("key", klassLevel)) {
                 if (this.isDebug())
-                    console.log("klass-filter-tile / updateShowingSelectilesAll / target : ", target);
+                    console.log("klass-filter-tile / updateShowingSelectilesAll / KlassLevel : ", target);
                 this.klassLevelSelected = target;
             }
         } // end for
@@ -449,7 +438,7 @@ var KlassFilterTileComponent = (function () {
             var target = this.klassSubwayLines[i];
             if (target.isSharing("key", klassSubwayLine)) {
                 if (this.isDebug())
-                    console.log("klass-filter-tile / updateShowingSelectilesAll / target : ", target);
+                    console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayLine : ", target);
                 this.klassSubwayLineSelected = target;
             }
         } // end for
@@ -457,7 +446,7 @@ var KlassFilterTileComponent = (function () {
             var target = this.klassSubwayStations[i];
             if (target.isSharing("key", klassSubwayStation)) {
                 if (this.isDebug())
-                    console.log("klass-filter-tile / updateShowingSelectilesAll / target : ", target);
+                    console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayStation : ", target);
                 this.klassSubwayStationSelected = target;
             }
         } // end for
@@ -465,7 +454,7 @@ var KlassFilterTileComponent = (function () {
             var target = this.klassDays[i];
             if (target.isSharing("key", klassDay)) {
                 if (this.isDebug())
-                    console.log("klass-filter-tile / updateShowingSelectilesAll / target : ", target);
+                    console.log("klass-filter-tile / updateShowingSelectilesAll / KlassDay : ", target);
                 this.klassDaySelected = target;
             }
         } // end for
@@ -473,7 +462,7 @@ var KlassFilterTileComponent = (function () {
             var target = this.klassTimes[i];
             if (target.isSharing("key", klassTime)) {
                 if (this.isDebug())
-                    console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ", target);
+                    console.log("klass-filter-tile / updateShowingSelectilesAll / KlassTime : ", target);
                 this.klassTimeSelected = target;
             }
         } // end for
@@ -495,6 +484,9 @@ var KlassFilterTileComponent = (function () {
             if (null == this.klassSubwayLineSelected || this.klassSubwayLineSelected.key !== selectile.key) {
                 this.klassSubwayLineSelected = selectile;
                 hasChanged = true;
+                // wonder.jung
+                // 지하철 노선이 변경되었습니다. 이에 맞게 지하철 역 리스트가 변경되어야 합니다.
+                this.setSubwayStation(selectile.key);
             }
         }
         else if (selectile instanceof klass_subway_station_1.KlassSubwayStation) {

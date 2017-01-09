@@ -54,6 +54,7 @@ export class KlassListComponent implements AfterViewInit {
   private myArray:HelperMyArray;
 
   private pagination:Pagination;
+  // private keywordMap;
 
   constructor(
     private klassService:KlassService,
@@ -521,7 +522,7 @@ export class KlassListComponent implements AfterViewInit {
       searchBox.value
     );
   }
-  private keywordMap;
+  
   private isSafeSelectile(selectile) {
 
     if(null == selectile) {
@@ -549,133 +550,7 @@ export class KlassListComponent implements AfterViewInit {
     return true;
 
   }
-  private setKeywordMap(selectile) {
 
-    if(!this.isSafeSelectile(selectile)) {
-      return;
-    } else if(null != this.keywordMap) {
-      return;
-    }
-
-    this.keywordMap = {};
-    
-    let klassDays = selectile.klassDays;
-    for (let i = 0; i < klassDays.length; ++i) {
-      // wonder.jung
-      let curObj = klassDays[i];
-      let klassDay:KlassDay = 
-      new KlassDay(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );
-
-      this.keywordMap[klassDay.name_kor] = klassDay;
-      this.keywordMap[klassDay.name_eng] = klassDay;
-    }
-    let klassLevels = selectile.klassLevels;
-    for (let i = 0; i < klassLevels.length; ++i) {
-      // wonder.jung
-      let curObj = klassLevels[i];
-      let klassLevel:KlassLevel =
-      new KlassLevel(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );      
-
-      this.keywordMap[klassLevel.name_kor] = klassLevel;
-      this.keywordMap[klassLevel.name_eng] = klassLevel;
-    }
-    let klassStations = selectile.klassStations;
-    for (let i = 0; i < klassStations.length; ++i) {
-      // wonder.jung
-      let curObj = klassStations[i];
-      let klassStation:KlassStation =
-      new KlassStation(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );      
-
-      this.keywordMap[klassStation.name_kor] = klassStation;
-      this.keywordMap[klassStation.name_eng] = klassStation;
-    }
-
-    let klassTimes = selectile.klassTimes;
-    for (let i = 0; i < klassTimes.length; ++i) {
-      // wonder.jung
-      let curObj = klassTimes[i];
-      let klassTime:KlassTime = 
-      new KlassTime(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public hh_mm: string,
-        curObj["hh_mm"],
-        // public img_url: string
-        curObj["img_url"]
-      ); 
-
-      this.keywordMap[klassTime.name_kor] = klassTime;
-      this.keywordMap[klassTime.name_eng] = klassTime;
-    }
-
-  }
-  private searchKeywordMap(keyword:string):any {
-
-    if(!this.keywordMap) {
-      return;
-    }
-
-    if(!(1 < keyword.length)) {
-      // 대조하는 글자는 2글자 이상이어야 한다.
-      return;
-    }
-
-    var selectileObj = null;
-    for (let key in this.keywordMap) {
-
-      let keyNoEmpty = key.replace(" ","");
-
-      let isOK = false;
-      if( 2 == keyNoEmpty.length && 2 == keyword.length ) {
-        isOK = true;
-      } else if( 2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length ) {
-        isOK = true;
-      }
-
-      if(!isOK) {
-        continue;
-      }
-
-      if(0 === keyNoEmpty.indexOf(keyword)) {
-        // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
-        selectileObj = this.keywordMap[key];
-        break;        
-      } // end if
-    } // end for
-
-    return selectileObj; 
-  }
   private getKeywordSafe(keyword:string) {
     let regex = new RegExp("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\x20]+", "gi");
     let keywordsSafe = keyword.replace(regex, "");
@@ -725,7 +600,8 @@ export class KlassListComponent implements AfterViewInit {
     // 다르다면 키워드를 등록.
     this.keywordsFromUserPrev = keywordsFromUser;
 
-    this.setKeywordMap(selectile);
+    // REMOVE ME
+    // this.setKeywordMap(selectile);
 
     // 안전한 문자열만 받습니다. 
     // 허용 문자열은 알파벳,한글,숫자입니다. 
@@ -747,10 +623,14 @@ export class KlassListComponent implements AfterViewInit {
       return;
     }
 
+
     // 유효한 검색 키워드를 찾았습니다.
-    // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
     var selectileMatchList = [];
     var keywordFoundList:string[] = [];
+
+    // REMOVE ME
+    // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
+    /*
     var keywordNotFoundList:string[] = [];
     for (var i = 0; i < keywordListSafe.length; ++i) {
       let keywordSafe = keywordListSafe[i];
@@ -764,6 +644,7 @@ export class KlassListComponent implements AfterViewInit {
       selectileMatchList.push(selectileObj);
       keywordFoundList.push(keywordSafe);
     }
+    */
 
     // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
     // 사용자가 입력한 키워드는 검색창에서 제외합니다.
@@ -876,4 +757,101 @@ export class KlassListComponent implements AfterViewInit {
       classImage.src = klassObj.class_img_err_url;
     }
   } // end functions
+
+  // REMOVE ME
+  /*
+  private setKeywordMap(selectile) {
+
+    // wonder.jung
+    if(this.isDebug()) console.log("klass-list / setKeywordMap / 시작");
+    if(this.isDebug()) console.log("klass-list / setKeywordMap / 시작");
+
+    if(!this.isSafeSelectile(selectile)) {
+      return;
+    } else if(null != this.keywordMap) {
+      return;
+    }
+
+    this.keywordMap = {};
+
+    let klassDayList:KlassDay[] = selectile.klassDays;
+    for (let i = 0; i < klassDayList.length; ++i) {
+      // wonder.jung
+      let klassDay:KlassDay = klassDayList[i];
+
+      this.keywordMap[klassDay.name_kor] = klassDay;
+      this.keywordMap[klassDay.name_eng] = klassDay;
+    }
+    let klassLevelList:KlassLevel[] = selectile.klassLevels;
+    for (let i = 0; i < klassLevelList.length; ++i) {
+      // wonder.jung
+      let klassLevel:KlassLevel = klassLevelList[i];
+
+      this.keywordMap[klassLevel.name_kor] = klassLevel;
+      this.keywordMap[klassLevel.name_eng] = klassLevel;
+    }
+    let klassSubwayLineList:KlassSubwayLine[] = selectile.klassSubwayLines;
+    for (let i = 0; i < klassSubwayLineList.length; ++i) {
+      // wonder.jung
+      let klassSubwayLine:KlassSubwayLine = klassSubwayLineList[i];
+
+      this.keywordMap[klassSubwayLine.name_kor] = klassSubwayLine;
+      this.keywordMap[klassSubwayLine.name_eng] = klassSubwayLine;
+    }
+    let klassSubwayStationList:KlassSubwayStation[] = selectile.klassSubwayStations;
+    for (let i = 0; i < klassSubwayStationList.length; ++i) {
+      // wonder.jung
+      let klassSubwayStation:KlassSubwayStation = klassSubwayStationList[i];
+
+      this.keywordMap[klassSubwayStation.name_kor] = klassSubwayStation;
+      this.keywordMap[klassSubwayStation.name_eng] = klassSubwayStation;
+    }
+    let klassTimeList:KlassTime[] = selectile.klassTimes;
+    for (let i = 0; i < klassTimeList.length; ++i) {
+      // wonder.jung
+      let klassTime:KlassTime = klassTimeList[i];
+
+      this.keywordMap[klassTime.name_kor] = klassTime;
+      this.keywordMap[klassTime.name_eng] = klassTime;
+    }
+
+  }
+  private searchKeywordMap(keyword:string):any {
+
+    if(!this.keywordMap) {
+      return;
+    }
+
+    if(!(1 < keyword.length)) {
+      // 대조하는 글자는 2글자 이상이어야 한다.
+      return;
+    }
+
+    var selectileObj = null;
+    for (let key in this.keywordMap) {
+
+      let keyNoEmpty = key.replace(" ","");
+
+      let isOK = false;
+      if( 2 == keyNoEmpty.length && 2 == keyword.length ) {
+        isOK = true;
+      } else if( 2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length ) {
+        isOK = true;
+      }
+
+      if(!isOK) {
+        continue;
+      }
+
+      if(0 === keyNoEmpty.indexOf(keyword)) {
+        // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
+        selectileObj = this.keywordMap[key];
+        break;        
+      } // end if
+    } // end for
+
+    return selectileObj; 
+  }
+  */
+
 } // end class

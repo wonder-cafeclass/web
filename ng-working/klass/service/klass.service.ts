@@ -30,7 +30,7 @@ export class KlassService {
   // REMOVE ME
   // private klassesUrl = '/CI/index.php/api/klass/list';
   // private klassSearchUrl = '/CI/index.php/api/klass/search';
-  private fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
+  private fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
   private klassUrl = '/CI/index.php/api/klass/course';
   
   private klassUpdateUrl = '/CI/index.php/api/klass/update';
