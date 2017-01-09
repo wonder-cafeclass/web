@@ -320,7 +320,7 @@
 
 		"recommended_subways:":[],
 		"subway_line_list":[
-			"Everywhere",
+			"everyline",
 			"line1",
 			"line2",
 			"line3",
@@ -331,8 +331,45 @@
 			"line8",
 			"line9"
 		],		
+		"subway_line_eng_list":[
+			"everyline",
+			"Line1",
+			"Line2",
+			"Line3",
+			"Line4",
+			"Line5",
+			"Line6",
+			"Line7",
+			"Line8",
+			"Line9"
+		],		
 		"subway_line_kor_list":[
-			"모든노선",
+			"모든 노선",
+			"1호선",
+			"2호선",
+			"3호선",
+			"4호선",
+			"5호선",
+			"6호선",
+			"7호선",
+			"8호선",
+			"9호선"
+		],		
+		"subway_line_img_list":[
+			"assets/images/subway/lines/everyline.svg",
+			"assets/images/subway/lines/line1.svg",
+			"assets/images/subway/lines/line2.svg",
+			"assets/images/subway/lines/line3.svg",
+			"assets/images/subway/lines/line4.svg",
+			"assets/images/subway/lines/line5.svg",
+			"assets/images/subway/lines/line6.svg",
+			"assets/images/subway/lines/line7.svg",
+			"assets/images/subway/lines/line8.svg",
+			"assets/images/subway/lines/line9.svg"
+		],				
+
+		"subway_line_kor_list":[
+			"모든 노선",
 			"1호선",
 			"2호선",
 			"3호선",
@@ -345,12 +382,14 @@
 		],
 		"subway_station_list":[
 			[
-				"everywhere"
+				"everystation"
 			],
 			[
+				"everystation",
 				"seoul"
 			],
 			[
+				"everystation",
 				"jamsil",
 				"sincheon",
 				"seolleung",
@@ -360,6 +399,7 @@
 			[],
 			[],
 			[
+				"everystation",
 				"bangi",
 				"gaerong",
 				"ogeum"
@@ -367,6 +407,7 @@
 			[],
 			[],
 			[
+				"everystation",
 				"seokchon",
 				"songpa"
 			],
@@ -374,12 +415,14 @@
 		],
 		"subway_station_eng_list":[
 			[
-				"Everywhere"
+				"EveryStation"
 			],
 			[
+				"EveryStation",
 				"Seoul"
 			],
 			[
+				"EveryStation",
 				"Jamsil",
 				"Sincheon",
 				"Seolleung",
@@ -389,6 +432,7 @@
 			[],
 			[],
 			[
+				"EveryStation",
 				"Bangi",
 				"Gaerong",
 				"Ogeum"
@@ -396,6 +440,7 @@
 			[],
 			[],
 			[
+				"EveryStation",
 				"Seokchon",
 				"Songpa"
 			],
@@ -403,12 +448,14 @@
 		],	
 		"subway_station_kor_list":[
 			[
-				"모든 장소"
+				"모든 역"
 			],
 			[
+				"모든 역",
 				"서울역"
 			],
 			[
+				"모든 역",
 				"잠실역",
 				"신천역",
 				"선릉역",
@@ -418,6 +465,7 @@
 			[],
 			[],
 			[
+				"모든 역",
 				"방이역",
 				"개롱역",
 				"오금역"
@@ -425,6 +473,7 @@
 			[],
 			[],
 			[
+				"모든 역",
 				"석촌역",
 				"송파역"
 			],
@@ -432,36 +481,40 @@
 		],
 		"subway_station_img_list":[
 			[
-				"assets/images/subway/everywhere.svg"
+				"assets/images/subway/stations/everystation.svg"
 			],
 			[
-				"assets/images/subway/line_2_jamsil.svg"
+				"assets/images/subway/stations/everystation.svg",
+				"assets/images/subway/stations/line1_seoul.svg"
 			],
 			[
-				"assets/images/subway/line_2_jamsil.svg",
-				"assets/images/subway/line_2_sincheon.svg",
-				"assets/images/subway/line_2_seolleung.svg",
-				"assets/images/subway/line_2_samseong.svg",
-				"assets/images/subway/line_2_seongsu.svg"
-			],
-			[],
-			[],
-			[
-				"assets/images/subway/line_5_bangi.svg",
-				"assets/images/subway/line_5_gaerong.svg",
-				"assets/images/subway/line_5_ogeum.svg"
+				"assets/images/subway/stations/everystation.svg",
+				"assets/images/subway/stations/line2_jamsil.svg",
+				"assets/images/subway/stations/line2_sincheon.svg",
+				"assets/images/subway/stations/line2_seolleung.svg",
+				"assets/images/subway/stations/line2_samseong.svg",
+				"assets/images/subway/stations/line2_seongsu.svg"
 			],
 			[],
 			[],
 			[
-				"assets/images/subway/line_8_seokchon.svg",
-				"assets/images/subway/line_8_songpa.svg"
+				"assets/images/subway/stations/everystation.svg",
+				"assets/images/subway/stations/line5_bangi.svg",
+				"assets/images/subway/stations/line5_gaerong.svg",
+				"assets/images/subway/stations/line5_ogeum.svg"
+			],
+			[],
+			[],
+			[
+				"assets/images/subway/stations/everystation.svg",
+				"assets/images/subway/stations/line8_seokchon.svg",
+				"assets/images/subway/stations/line8_songpa.svg"
 			],
 			[]
 		],					
 
 		
-
+		"deprecated_cafes":[],
 		"class_venue_cafe_list":[
 			"할리스",
 			"탐앤탐스",

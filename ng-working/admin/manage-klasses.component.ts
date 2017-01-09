@@ -65,6 +65,7 @@ export class ManageKlassesComponent implements OnInit {
   private klassStatus:string="";
   private klassLevel:string="";
   private klassSubwayLine:string="";
+  private klassSubwayStation:string="";
   private klassDays:string="";
   private klassTime:string="";
   // @ Immutable
@@ -111,6 +112,7 @@ export class ManageKlassesComponent implements OnInit {
     this.selectOptionListStatus = this.getDefaultOptionStatusForSearch();
     this.selectOptionListLevel = this.getDefaultOptionLevelForSearch();
     this.selectOptionListSubwayLine = this.getDefaultOptionSubwayLineForSearch();
+    this.selectOptionListSubwayStation = this.getDefaultOptionSubwayStationForSearch("");
     this.checkOptionTableDays = this.getDefaultOptionDaysForSearch();
     this.selectOptionListTime = this.getDefaultOptionTimeForSearch();
 
@@ -355,16 +357,85 @@ export class ManageKlassesComponent implements OnInit {
 
     if(this.isDebug()) console.log("manage-klasses / getDefaultOptionSubwayLineForSearch / 시작");
 
-    return this.watchTower.getDefaultOptionListByKeys(
-      // keyListName:string,
-      "subway_line_kor_list",
-      // valueListName:string,
-      "subway_line_list",
+    let subwayLineList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_list");
+    let subwayLineKorList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_kor_list");
+
+    let subwayLineListValid:string[] = [];
+    let subwayLineKorListValid:string[] = [];
+
+    for (var i = 0; i < subwayLineList.length; ++i) {
+      let subwayLine:string = subwayLineList[i];
+      let subwayLineKor:string = subwayLineKorList[i];
+      let subwayStationList:any = 
+      this.watchTower.getMyConst().getNestedChildList(
+        // parentKey:string,
+        "subway_line_list",
+        // parentValue:string,
+        subwayLine,
+        // childKey:string
+        "subway_station_list"
+      );
+
+      if(this.myArray.isOK(subwayStationList)) {
+        subwayLineListValid.push(subwayLine);
+        subwayLineKorListValid.push(subwayLineKor);
+      } // end if
+    } // end for
+
+    return this.watchTower.getDefaultOptionList(
+      // keyList:string[],
+      subwayLineKorListValid,
+      // valueList:string[],
+      subwayLineListValid,
       // valueFocus:string
       ""
     );
 
   } // end method
+
+  private getDefaultOptionSubwayStationForSearch(subwayLine:string):DefaultOption[] {
+
+    if(this.isDebug()) console.log("manage-klasses / getDefaultOptionSubwayStationForSearch / 시작");
+
+    let subwayLineList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_list");
+    if(null == subwayLine || "" === subwayLine) {
+      subwayLine = subwayLineList[0];
+    } // end if
+
+    let subwayStationList:any = 
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string,
+      "subway_line_list",
+      // parentValue:string,
+      subwayLine,
+      // childKey:string
+      "subway_station_list"
+    );
+
+    let subwayStationKorList:any = 
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string,
+      "subway_line_list",
+      // parentValue:string,
+      subwayLine,
+      // childKey:string
+      "subway_station_kor_list"
+    );
+
+    return this.watchTower.getDefaultOptionList(
+      // keyList:string[],
+      subwayStationKorList,
+      // valueList:string[],
+      subwayStationList,
+      // valueFocus:string
+      ""
+    );
+
+  } // end method
+
 
   private getDefaultOptionDaysForSearch():DefaultOption[][] {
 
@@ -482,6 +553,14 @@ export class ManageKlassesComponent implements OnInit {
     if(this.isDebug()) console.log("manage-klasses / updateKlassDays / klassDays : ",klassDays);
   }
 
+  private updateSubwayStation(subwayLine:string):void {
+
+    if(this.isDebug()) console.log("manage-klasses / updateSubwayStation / 시작");
+
+    this.selectOptionListSubwayStation = this.getDefaultOptionSubwayStationForSearch(subwayLine);
+
+  } // end method
+
   // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
   private doFetchKlassList():void {
 
@@ -505,6 +584,8 @@ export class ManageKlassesComponent implements OnInit {
       this.klassLevel,
       // klassSubwayLine:string="",
       this.klassSubwayLine,
+      // klassSubwayStation:string="",
+      this.klassSubwayStation,
       // klassDays:string="",
       this.klassDays,
       // klassTime:string=""
@@ -520,6 +601,7 @@ export class ManageKlassesComponent implements OnInit {
                           klassStatus:string,
                           klassLevel:string,
                           klassSubwayLine:string,
+                          klassSubwayStation:string,
                           klassDays:string,
                           klassTime:string  ) :void {
 
@@ -539,6 +621,8 @@ export class ManageKlassesComponent implements OnInit {
       klassLevel,
       // klassSubwayLine:string="",
       klassSubwayLine,
+      // klassSubwayStation:string="",
+      klassSubwayStation,
       // klassDays:string="",
       klassDays,
       // klassTime:string=""
@@ -710,7 +794,26 @@ export class ManageKlassesComponent implements OnInit {
     } // end if
 
     return (defaultOption.value === value)?true:false;
-  }  
+  }
+
+  isDefaultSubwayStation(value:string):boolean {
+
+    if(null == value || "" === value) {
+      return false;
+    }
+
+    if(this.myArray.isNotOK(this.selectOptionListSubwayStation)) {
+      return false;
+    } // end if
+
+    let defaultOption:DefaultOption = this.selectOptionListSubwayStation[0];
+    if(null == defaultOption) {
+      return false;
+    } // end if
+
+    return (defaultOption.value === value)?true:false;
+
+  }    
 
 // REMOVE ME
 /*
@@ -821,7 +924,18 @@ export class ManageKlassesComponent implements OnInit {
         if(this.isDefaultSubwayLine(myEvent.value)) {
           this.klassSubwayLine = "";
         } else {
-          this.klassSubwayLine = myEvent.value;  
+          this.klassSubwayLine = myEvent.value;
+          this.updateSubwayStation(this.klassSubwayLine);
+        } // end if
+
+        this.doFetchKlassList();
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SUBWAY_STATION_FOR_SEARCH)) {
+
+        if(this.isDefaultSubwayStation(myEvent.value)) {
+          this.klassSubwayStation = "";
+        } else {
+          this.klassSubwayStation = myEvent.value;
         } // end if
 
         this.doFetchKlassList();
@@ -829,7 +943,6 @@ export class ManageKlassesComponent implements OnInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DAYS_FOR_SEARCH)) {
 
         this.updateKlassDays();
-
         this.doFetchKlassList();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TIME_FOR_SEARCH)) {

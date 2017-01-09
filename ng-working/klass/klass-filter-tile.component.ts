@@ -10,7 +10,9 @@ import { Subject }              from 'rxjs/Subject';
 import { KlassService }         from './service/klass.service';
 
 import { KlassLevel }           from './model/klass-level';
-import { KlassStation }         from './model/klass-station';
+// import { KlassStation }         from './model/klass-station';
+import { KlassSubwayLine }      from './model/klass-subway-line';
+import { KlassSubwayStation }   from './model/klass-subway-station';
 import { KlassDay }             from './model/klass-day';
 import { KlassTime }            from './model/klass-time';
 
@@ -25,6 +27,8 @@ import { MyEventService }       from '../util/service/my-event.service';
 import { MyEvent }              from '../util/model/my-event';
 import { MyEventWatchTowerService } from '../util/service/my-event-watchtower.service';
 
+import { HelperMyArray }        from '../util/helper/my-array';
+
 @Component({
   moduleId: module.id,
   selector: 'klass-filter-tile',
@@ -38,16 +42,29 @@ export class KlassFilterTileComponent implements OnInit {
 
   // Level
   klassLevels: KlassLevel[];
-  klassLevelSelected: KlassLevel; // 사용자가 선택한 클래스 레벨
-  // Station
-  klassStations: KlassStation[];
-  klassStationSelected: KlassStation; // 사용자가 선택한 클래스 레벨
+  // 사용자가 선택한 클래스 레벨
+  klassLevelSelected: KlassLevel;
+  focusIdxKlassLevel:number = 0;
+  // Subway Line
+  klassSubwayLines: KlassSubwayLine[];
+  // 사용자가 선택한 지하철 노선
+  klassSubwayLineSelected: KlassSubwayLine; 
+  focusIdxKlassSubwayLine:number = 1;
+  // Subway Station
+  klassSubwayStations: KlassSubwayStation[];
+  // 사용자가 선택한 지하철 노선
+  klassSubwayStationSelected: KlassSubwayStation; 
+  focusIdxKlassSubwayStation:number = 2;
   // Day
   klassDays: KlassDay[];
-  klassDaySelected: KlassDay; // 사용자가 선택한 클래스 레벨
+  // 사용자가 선택한 클래스 레벨
+  klassDaySelected: KlassDay; 
+  focusIdxKlassDay:number = 3;
   // Time
   klassTimes: KlassTime[];
-  klassTimeSelected: KlassTime; // 사용자가 선택한 클래스 레벨 
+  // 사용자가 선택한 클래스 레벨 
+  klassTimeSelected: KlassTime; 
+  focusIdxKlassTime:number = 4;
 
   @Output() emitter = new EventEmitter<MyEvent>();
 
@@ -57,17 +74,16 @@ export class KlassFilterTileComponent implements OnInit {
   // 컴포넌트 로딩 완료 이벤트 발사!
   @Output() emitOnInitKlassList = new EventEmitter<void>();
 
+  // stColCntPerRow:number = 5; // selectile에 선택지를 열(Row)당 n개씩 노출
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
-
-  stColCntPerRow:number = 4; // selectile에 선택지를 열(Row)당 4개씩 노출
 
   @Input() elementWidth:number=50;
   elementWidthStr:string="";
   rowWidthStr:string="";
 
   private myChecker:MyChecker;
-  private constMap:any;
+  private myArray:HelperMyArray;
 
   constructor(
     private myCheckerService:MyCheckerService,
@@ -75,36 +91,48 @@ export class KlassFilterTileComponent implements OnInit {
     private watchTower:MyEventWatchTowerService,    
     private klassService: KlassService,
     private location: Location
-  ) {}
+  ) {
+    this.myArray = new HelperMyArray();
+  }
+
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
+  setSelectileProps():void {
+
+    if(this.isDebug()) console.log("klass-filter-tile / setSelectileProps / 시작");
+
+    // watchTower에서 checker의 정보를 가져옵니다.
+    this.setLevel();
+    this.setDay();
+    this.setTime();
+    this.setSubwayLine();
+    this.setSubwayStation("");
+
+    this.showSelectile(null, null, -1);
+
+  }
 
   ngOnInit(): void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-tile / ngOnInit / 시작");
+    if(this.isDebug()) console.log("klass-filter-tile / ngOnInit / 시작");
 
-    this.klassService
-    .getKlassSelectile()
-    .then((myReponse:MyResponse) => {
+    if(this.watchTower.getIsViewPackReady()) {
 
-      if(isDebug) console.log("klass-filter-tile / ngOnInit / myReponse : ",myReponse);
+      this.setSelectileProps();
 
-      if(myReponse.isSuccess()) {
-        this.setLevel(myReponse.getDataProp("levels"));
-        this.setStation(myReponse.getDataProp("stations"));
-        this.setDay(myReponse.getDataProp("days"));
-        this.setTime(myReponse.getDataProp("times"));
+    } else {
 
-        this.showSelectile(null, null, -1);
+      this.watchTower.isViewPackReady$.subscribe(
+        (isViewPackReady:boolean) => {
+        if(this.isDebug()) console.log("klass-filter-tile / ngOnInit / subscribe / isViewPackReady : ",isViewPackReady);
 
-        // @ Recommended
-        this.emitEventOnReady();
+        this.setSelectileProps();
+        
+      }); // end subscribe       
 
-        if(isDebug) console.log("TEST - 001");
-
-      } // end if
-
-    }); // end service
+    } // end if
 
     // @ Deprecated
     this.emitOnInitKlassList.emit();
@@ -113,7 +141,6 @@ export class KlassFilterTileComponent implements OnInit {
     this.klassSelectileSubject.subscribe(
       function (x) {
         _self.updateShowingSelectile(x);
-        if(isDebug) console.log("TEST - 002");
       },
       function (err) {
         // error report
@@ -124,160 +151,306 @@ export class KlassFilterTileComponent implements OnInit {
       }
     );
 
+  } // end method
+
+  updateLayout(stColCntPerRow:number):void {
+
+    if(!(0 < stColCntPerRow)) {
+      return;
+    }
+
     this.elementWidthStr="100%";
     this.rowWidthStr="198px";
     if(0  < this.elementWidth) {
       this.elementWidthStr = this.elementWidth + "px";
-      let rowWidth:number = this.elementWidth * this.stColCntPerRow;
-      if(isDebug) console.log("klass-filter-tile / ngOnInit / rowWidth : ",rowWidth);
+      let rowWidth:number = this.elementWidth * stColCntPerRow;
+      if(this.isDebug()) console.log("klass-filter-tile / ngOnInit / rowWidth : ",rowWidth);
       this.rowWidthStr = rowWidth + "px";
-    }
-
-    this.subscribeConstMap();
-
+    }    
   }
 
-  private subscribeConstMap() {
+  private setLevel() {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-tile / subscribeConstMap / 시작");
+    if(this.isDebug()) console.log("klass-filter-tile / setLevel / 시작");
 
-    this.constMap = this.watchTower.getConstMap();
-    if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / this.constMap : ",this.constMap);
-
-    // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
-    // Subscribe login user
-    this.watchTower.isViewPackReady$.subscribe(
-      (isViewPackReady:boolean) => {
-
-      if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / isViewPackReady : ",isViewPackReady);
-    
-      // 뷰 패키징 정보가 도착!
-      this.constMap = this.watchTower.getConstMap();
-
-      if(isDebug) console.log("klass-filter-tile / subscribeLoginTeacher / this.constMap : ",this.constMap);
-
-    }); // end subscribe    
-
-  }
-
-  private setTime(times:any[]) {
-
-    var nextObjList:KlassTime[] = [];
-    for (var i = 0; i < times.length; ++i) {
-      var nextObj = times[i];
-      var klassTime = 
-      new KlassTime(
-        nextObj.key, 
-        nextObj.name_eng, 
-        nextObj.name_kor, 
-        nextObj.hh_mm,
-        nextObj.img_url
-      );
-      nextObjList.push(klassTime);
-    }
-    this.klassTimes = nextObjList;
-
-    // 부모 리스트 참조
-    for (var i = 0; i < this.klassTimes.length; ++i) {
-      let nextObj:KlassTime = this.klassTimes[i];
-      nextObj.parentList = this.klassTimes;
-      nextObj["focusIdx"] = 3;
+    if(!this.watchTower.getIsViewPackReady()) {
+      if(this.isDebug()) console.log("klass-filter-tile / setLevel / 중단 / !IsViewPackReady() : ",!this.watchTower.getIsViewPackReady());
+      return;
     }
 
-    if(this.klassTimes && !this.klassTimeSelected) {
-      // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
-      this.klassTimeSelected = this.klassTimes[0];
+    // klass Level
+    let klassLevelList:string[] = 
+    this.watchTower.getMyConst().getList("class_level_list");
+    let klassLevelEngList:string[] = 
+    this.watchTower.getMyConst().getList("class_level_eng_list");
+    let klassLevelKorList:string[] = 
+    this.watchTower.getMyConst().getList("class_level_kor_list");
+    let klassLevelImgList:string[] = 
+    this.watchTower.getMyConst().getList("class_level_img_url_list");
+
+    let klassLevelObjList:KlassLevel[] = [];
+    for (var i = 0; i < klassLevelList.length; ++i) {
+      // code...
+      let key:string = klassLevelList[i];
+      let name_eng:string = klassLevelEngList[i];
+      let name_kor:string = klassLevelKorList[i];
+      let img_url:string = klassLevelImgList[i];
+
+      let klassLevel:KlassLevel = 
+      new KlassLevel(key,name_eng,name_kor,img_url);
+
+      klassLevelObjList.push(klassLevel);
     }
-  }    
-  private setDay(days:any[]) {
+    this.klassLevels = klassLevelObjList;
 
-    var nextObjList:KlassDay[] = [];
-    for (var i = 0; i < days.length; ++i) {
-      var nextObj = days[i];
-      var klassDay = 
-      new KlassDay(
-        nextObj.key, 
-        nextObj.name_eng, 
-        nextObj.name_kor, 
-        nextObj.img_url
-      );
-      nextObjList.push(klassDay);
-    }
-    this.klassDays = nextObjList;
-
-    // 부모 리스트 참조
-    for (var i = 0; i < this.klassDays.length; ++i) {
-      let nextObj:KlassDay = this.klassDays[i];
-      nextObj.parentList = this.klassDays;
-      nextObj["focusIdx"] = 2;
-    }
-
-    if(this.klassDays && !this.klassDaySelected) {
-      // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
-      this.klassDaySelected = this.klassDays[0];
-    }
-  }  
-  private setStation(stations:any[]) {
-
-    var nextObjList:KlassStation[] = [];
-    for (var i = 0; i < stations.length; ++i) {
-      var nextObj = stations[i];
-
-      var klassStation = 
-      new KlassStation(
-        nextObj.key, 
-        nextObj.name_eng, 
-        nextObj.name_kor, 
-        nextObj.img_url
-      );
-      nextObjList.push(klassStation);
-    }
-    this.klassStations = nextObjList;
-
-    // 부모 리스트 참조
-    for (var i = 0; i < this.klassStations.length; ++i) {
-      let nextObj:KlassStation = this.klassStations[i];
-      nextObj.parentList = this.klassStations;
-      nextObj["focusIdx"] = 1;
-    }
-
-    if(this.klassStations && !this.klassStationSelected) {
-      // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
-      this.klassStationSelected = this.klassStations[0];
-    }
-
-  }
-  private setLevel(levels:any[]) {
-
-    var nextObjList:KlassLevel[] = [];
-    for (var i = 0; i < levels.length; ++i) {
-      var nextObj = levels[i];
-      var klassLevel = 
-      new KlassLevel(
-        nextObj.key, 
-        nextObj.name_eng, 
-        nextObj.name_kor, 
-        nextObj.img_url
-      );
-      nextObjList.push(klassLevel);
-    }
-    this.klassLevels = nextObjList;
-
-    // 부모 리스트 참조
-    for (var i = 0; i < this.klassLevels.length; ++i) {
-      let nextObj:KlassLevel = this.klassLevels[i];
-      nextObj.parentList = this.klassLevels;
-      nextObj["focusIdx"] = 0;
-    }
-
-    if(this.klassLevels && !this.klassLevelSelected) {
-      // 선택된 클래스 레벨이 없다면 '모든 레벨'로 표시.
+    if(this.myArray.isOK(this.klassLevels)) {
+      // 선택할 수 있는 selectile 리스트 참조를 각 selectile 객체에 줍니다.
+      for (var i = 0; i < this.klassLevels.length; ++i) {
+        let nextObj:KlassLevel = this.klassLevels[i];
+        nextObj.selectableList = this.klassLevels;
+        nextObj.focusIdx = this.focusIdxKlassLevel;
+      }
       this.klassLevelSelected = this.klassLevels[0];
     }
-
   }
+
+
+  private setSubwayLine():void {
+
+    if(this.isDebug()) console.log("klass-filter-tile / setSubwayLine / 시작");
+
+    if(!this.watchTower.getIsViewPackReady()) {
+      if(this.isDebug()) console.log("klass-filter-tile / setSubwayLine / 중단 / !IsViewPackReady() : ",!this.watchTower.getIsViewPackReady());
+      return;
+    }
+
+    // klass Subway Line
+    let klassSubwayLineList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_list");
+    let klassSubwayLineEngList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_eng_list");
+    let klassSubwayLineKorList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_kor_list");
+    let klassSubwayLineImgList:string[] = 
+    this.watchTower.getMyConst().getList("subway_line_img_list");
+
+    let klassSubwayLineObjList:KlassSubwayLine[] = [];
+    for (var i = 0; i < klassSubwayLineList.length; ++i) {
+      // code...
+      let key:string = klassSubwayLineList[i];
+      let name_eng:string = klassSubwayLineEngList[i];
+      let name_kor:string = klassSubwayLineKorList[i];
+      let img_url:string = klassSubwayLineImgList[i];
+
+      // 해당 노선에 역이 등록되어 있지 않다면 선택 리스트에 노출되지 않습니다.
+      let subwayStationList:any =
+      this.watchTower.getMyConst().getNestedChildList(
+        // parentKey:string, 
+        "subway_line_list",
+        // parentValue:string, 
+        key,
+        // childKey:string
+        "subway_station_list"
+      );
+      if(this.myArray.isNotOK(subwayStationList)) {
+        continue;
+      } // end if
+
+      let klassSubwayLine:KlassSubwayLine = 
+      new KlassSubwayLine(key,name_eng,name_kor,img_url);
+      klassSubwayLineObjList.push(klassSubwayLine);
+    } 
+    this.klassSubwayLines = klassSubwayLineObjList;
+    if(this.myArray.isOK(this.klassSubwayLines)) {
+      // 선택할 수 있는 selectile 리스트 참조를 각 selectile 객체에 줍니다.
+      for (var i = 0; i < this.klassSubwayLines.length; ++i) {
+        let nextObj:KlassSubwayLine = this.klassSubwayLines[i];
+        nextObj.selectableList = this.klassSubwayLines;
+        nextObj.focusIdx = this.focusIdxKlassSubwayLine;
+      }      
+      this.klassSubwayLineSelected = this.klassSubwayLines[0];
+    } // end if
+
+  } // end method
+
+  private setSubwayStation(subwayLineNameSelected:string):void {
+
+    if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / 시작");
+
+    if(!this.watchTower.getIsViewPackReady()) {
+      if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / 중단 / !IsViewPackReady() : ",!this.watchTower.getIsViewPackReady());
+      return;
+    } // end if
+
+    // Klass Subway Station
+    if(null == subwayLineNameSelected || "" === subwayLineNameSelected) {
+      // 지하철 노선이 선택되지 않았다면 지하철 역도 선택되지 않음.
+      let subwayLineSelected:KlassSubwayLine = this.klassSubwayLines[0];
+      subwayLineNameSelected = subwayLineSelected.key;
+    } // end if
+    
+    if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / subwayLineNameSelected : ",subwayLineNameSelected);
+
+    let subwayStationList:any =
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string, 
+      "subway_line_list",
+      // parentValue:string, 
+      subwayLineNameSelected,
+      // childKey:string
+      "subway_station_list"
+    );
+
+    if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / subwayStationList : ",subwayStationList);
+
+    let subwayStationEngList:any =
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string, 
+      "subway_line_list",
+      // parentValue:string, 
+      subwayLineNameSelected,
+      // childKey:string
+      "subway_station_eng_list"
+    );
+    let subwayStationKorList:any =
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string, 
+      "subway_line_list",
+      // parentValue:string, 
+      subwayLineNameSelected,
+      // childKey:string
+      "subway_station_kor_list"
+    );
+    let subwayStationImgList:any =
+    this.watchTower.getMyConst().getNestedChildList(
+      // parentKey:string, 
+      "subway_line_list",
+      // parentValue:string, 
+      subwayLineNameSelected,
+      // childKey:string
+      "subway_station_img_list"
+    );
+
+    let klassSubwayStationObjList:KlassSubwayStation[] = [];
+    for (var i = 0; i < subwayStationList.length; ++i) {
+      // code...
+      let key:string = subwayStationList[i];
+      let name_eng:string = subwayStationEngList[i];
+      let name_kor:string = subwayStationKorList[i];
+      let img_url:string = subwayStationImgList[i];
+
+      let klassSubwayStation:KlassSubwayStation = 
+      new KlassSubwayStation(key,name_eng,name_kor,img_url);
+
+      klassSubwayStationObjList.push(klassSubwayStation);
+    }
+    this.klassSubwayStations = klassSubwayStationObjList;
+
+    if(this.isDebug()) console.log("klass-filter-tile / setSubwayStation / this.klassSubwayStations : ",this.klassSubwayStations);
+
+    if(this.myArray.isOK(this.klassSubwayStations)) {
+      // 선택할 수 있는 selectile 리스트 참조를 각 selectile 객체에 줍니다.
+      for (var i = 0; i < this.klassSubwayStations.length; ++i) {
+        let nextObj:KlassSubwayStation = this.klassSubwayStations[i];
+        nextObj.selectableList = this.klassSubwayStations;
+        nextObj.focusIdx = this.focusIdxKlassSubwayStation;
+      } // end for      
+      this.klassSubwayStationSelected = this.klassSubwayStations[0];
+    }
+  }  
+
+  private setDay() {
+
+    if(this.isDebug()) console.log("klass-filter-tile / setDay / 시작");
+
+    if(!this.watchTower.getIsViewPackReady()) {
+      if(this.isDebug()) console.log("klass-filter-tile / setDay / 중단 / !IsViewPackReady() : ",!this.watchTower.getIsViewPackReady());
+      return;
+    }
+
+    // klass Day
+    let klassDayList:string[] = 
+    this.watchTower.getMyConst().getList("class_days_list");
+    let klassDayEngList:string[] = 
+    this.watchTower.getMyConst().getList("class_days_eng_list");
+    let klassDayKorList:string[] = 
+    this.watchTower.getMyConst().getList("class_days_kor_list");
+    let klassDayImgList:string[] = 
+    this.watchTower.getMyConst().getList("class_days_img_url_list");
+
+    let klassDayObjList:KlassDay[] = [];
+    for (var i = 0; i < klassDayList.length; ++i) {
+      // code...
+      let key:string = klassDayList[i];
+      let name_eng:string = klassDayEngList[i];
+      let name_kor:string = klassDayKorList[i];
+      let img_url:string = klassDayImgList[i];
+
+      let klassDay:KlassDay = 
+      new KlassDay(key,name_eng,name_kor,img_url);
+
+      klassDayObjList.push(klassDay);
+    }  
+    this.klassDays = klassDayObjList;
+    if(this.myArray.isOK(this.klassDays)) {
+      // 선택할 수 있는 selectile 리스트 참조를 각 selectile 객체에 줍니다.
+      for (var i = 0; i < this.klassDays.length; ++i) {
+        let nextObj:KlassDay = this.klassDays[i];
+        nextObj.selectableList = this.klassDays;
+        nextObj.focusIdx = this.focusIdxKlassDay;
+      }
+      this.klassDaySelected = this.klassDays[0];
+    }
+  } // end method
+
+  private setTime():void {
+
+    if(this.isDebug()) console.log("klass-filter-tile / setTime / 시작");
+
+    if(!this.watchTower.getIsViewPackReady()) {
+      if(this.isDebug()) console.log("klass-filter-tile / setTime / 중단 / !IsViewPackReady() : ",!this.watchTower.getIsViewPackReady());
+      return;
+    }
+
+    // klass Time
+    let klassTimeList:string[] = 
+    this.watchTower.getMyConst().getList("class_times_list");
+    let klassTimeEngList:string[] = 
+    this.watchTower.getMyConst().getList("class_times_eng_list");
+    let klassTimeKorList:string[] = 
+    this.watchTower.getMyConst().getList("class_times_kor_list");
+    let klassTimeHHMMList:string[] = 
+    this.watchTower.getMyConst().getList("class_times_hh_mm_list");
+    let klassTimeImgList:string[] = 
+    this.watchTower.getMyConst().getList("class_times_img_url_list");
+
+    let klassTimeObjList:KlassTime[] = [];
+    for (var i = 0; i < klassTimeList.length; ++i) {
+      // code...
+      let key:string = klassTimeList[i];
+      let name_eng:string = klassTimeEngList[i];
+      let name_kor:string = klassTimeKorList[i];
+      let hh_mm:string = klassTimeHHMMList[i];
+      let img_url:string = klassTimeImgList[i];
+
+      let klassTime:KlassTime = 
+      new KlassTime(key,name_eng,name_kor,hh_mm,img_url);
+
+      klassTimeObjList.push(klassTime);
+    }
+    this.klassTimes = klassTimeObjList;
+    if(this.myArray.isOK(this.klassTimes)) {
+      // 선택할 수 있는 selectile 리스트 참조를 각 selectile 객체에 줍니다.
+      for (var i = 0; i < this.klassTimes.length; ++i) {
+        let nextObj:KlassTime = this.klassTimes[i];
+        nextObj.selectableList = this.klassTimes;
+        nextObj.focusIdx = this.focusIdxKlassTime;
+      }
+      this.klassTimeSelected = this.klassTimes[0];
+    } // end if
+
+  } // end method
+   
 
   private getSelectedIdx(targetList:any[], key:string, value:string):number {
 
@@ -305,13 +478,38 @@ export class KlassFilterTileComponent implements OnInit {
 
   isEnterST:boolean=false;
   enterSelectile(selectile) :void {
-    if(selectile.class_name !== "empty" || this.isEnterST) {
+
+    if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 시작");
+
+    if(selectile.class_name !== "empty") {
+      if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 중단 / selectile.class_name !== \"empty\"");
       return;
     }
-    this.isEnterST = true;
-    if(selectile && selectile["parentList"]) {
-      this.showSelectile(selectile["parentList"], selectile, selectile["focusIdx"]);
+    if(this.isEnterST) {
+      if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 중단 / 이미 selectile에 들어왔습니다.");
+      return;
     }
+
+    let selectableList:any = selectile["selectableList"];
+    if(this.myArray.isNotOK(selectableList)) {
+      if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 중단 / this.myArray.isNotOK(selectableList)");
+      this.leaveTable();
+      return;
+    }
+    if(selectableList.length < 2) {
+      if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / 중단 / selectableList.length < 2");
+      this.leaveTable();
+      return;
+    }
+
+    if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / selectile : ",selectile);
+    if(this.isDebug()) console.log("klass-filter-tile / enterSelectile / selectableList : ",selectableList);
+
+    this.isEnterST = true;
+    if(selectile && selectableList) {
+      this.showSelectile(selectile["selectableList"], selectile, selectile["focusIdx"]);
+    }
+
   }
   leaveSelectile(selectile) :void {
     // selectile 내부의 버튼에 mouseover시 leave로 판정. 이것을 막는 방법은?
@@ -334,26 +532,32 @@ export class KlassFilterTileComponent implements OnInit {
     this.updateShowingSelectile(selectile);
   }
   // REFACTOR ME - widget으로 옮겨져야 할 엘리먼트.
-  updateShowingSelectilesAll(klassLevel:KlassLevel, klassStation:KlassStation, klassDay:KlassDay, klassTime:KlassTime):void {
+  updateShowingSelectilesAll( klassLevel:KlassLevel, 
+                              klassSubwayLine:KlassSubwayLine, 
+                              klassSubwayStation:KlassSubwayStation, 
+                              klassDay:KlassDay, 
+                              klassTime:KlassTime):void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 시작");
+    if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 시작");
 
     if(null == klassLevel){
-      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassLevel is not valid!");
+      if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassLevel is not valid!");
       return;
     } 
-    if(null == klassStation){
-      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassStation is not valid!");
+    if(null == klassSubwayLine){
+      if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassSubwayLine is not valid!");
       return;
     } 
+    if(null == klassSubwayStation){
+      if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassSubwayStation is not valid!");
+      return;
+    }
     if(null == klassDay){
-      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassDay is not valid!");
+      if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassDay is not valid!");
       return;
     } 
     if(null == klassTime){
-      if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassTime is not valid!");
+      if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / 중단 / klassTime is not valid!");
       return;
     } 
 
@@ -361,31 +565,38 @@ export class KlassFilterTileComponent implements OnInit {
 
     // 선택된 필드들을 검색, 지정한다.
     for (var i = 0; i < this.klassLevels.length; ++i) {
-      let klassLevelFromList:KlassLevel = this.klassLevels[i];
-      if(klassLevelFromList.isSharing("key", klassLevel)) {
-        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassLevelFromList : ",klassLevelFromList);
-        this.klassLevelSelected = klassLevelFromList;
+      let target:KlassLevel = this.klassLevels[i];
+      if(target.isSharing("key", klassLevel)) {
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassLevel : ",target);
+        this.klassLevelSelected = target;
       }
     } // end for
-    for (var i = 0; i < this.klassStations.length; ++i) {
-      let klassStationFromList:KlassStation = this.klassStations[i];
-      if(klassStationFromList.isSharing("key", klassStation)) {
-        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassStationFromList : ",klassStationFromList);
-        this.klassStationSelected = klassStationFromList;
+    for (var i = 0; i < this.klassSubwayLines.length; ++i) {
+      let target:KlassSubwayLine = this.klassSubwayLines[i];
+      if(target.isSharing("key", klassSubwayLine)) {
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayLine : ",target);
+        this.klassSubwayLineSelected = target;
+      }
+    } // end for
+    for (var i = 0; i < this.klassSubwayStations.length; ++i) {
+      let target:KlassSubwayStation = this.klassSubwayStations[i];
+      if(target.isSharing("key", klassSubwayStation)) {
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassSubwayStation : ",target);
+        this.klassSubwayStationSelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassDays.length; ++i) {
-      let klassDayFromList:KlassDay = this.klassDays[i];
-      if(klassDayFromList.isSharing("key", klassDay)) {
-        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassDayFromList : ",klassDayFromList);
-        this.klassDaySelected = klassDayFromList;
+      let target:KlassDay = this.klassDays[i];
+      if(target.isSharing("key", klassDay)) {
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassDay : ",target);
+        this.klassDaySelected = target;
       }
     } // end for
     for (var i = 0; i < this.klassTimes.length; ++i) {
-      let klassTimeFromList:KlassTime = this.klassTimes[i];
-      if(klassTimeFromList.isSharing("key", klassTime)) {
-        if(isDebug) console.log("klass-filter-tile / updateShowingSelectilesAll / klassTimeFromList : ",klassTimeFromList);
-        this.klassTimeSelected = klassTimeFromList;
+      let target:KlassTime = this.klassTimes[i];
+      if(target.isSharing("key", klassTime)) {
+        if(this.isDebug()) console.log("klass-filter-tile / updateShowingSelectilesAll / KlassTime : ",target);
+        this.klassTimeSelected = target;
       }
     } // end for
 
@@ -406,10 +617,21 @@ export class KlassFilterTileComponent implements OnInit {
         hasChanged = true;
       }
       
-    } else if(selectile instanceof KlassStation) {
+    } else if(selectile instanceof KlassSubwayLine) {
 
-      if(null == this.klassStationSelected || this.klassStationSelected.key !== selectile.key) {
-        this.klassStationSelected = selectile;  
+      if(null == this.klassSubwayLineSelected || this.klassSubwayLineSelected.key !== selectile.key) {
+        this.klassSubwayLineSelected = selectile;  
+        hasChanged = true;
+
+        // wonder.jung
+        // 지하철 노선이 변경되었습니다. 이에 맞게 지하철 역 리스트가 변경되어야 합니다.
+        this.setSubwayStation(selectile.key);
+      }
+
+    } else if(selectile instanceof KlassSubwayStation) {
+
+      if(null == this.klassSubwayStationSelected || this.klassSubwayStationSelected.key !== selectile.key) {
+        this.klassSubwayStationSelected = selectile;  
         hasChanged = true;
       }
 
@@ -449,15 +671,13 @@ export class KlassFilterTileComponent implements OnInit {
   }
   private emitEventOnChange(value:string, metaObj:any) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 시작");
+    if(this.isDebug()) console.log("klass-filter-tile / emitEventOnChange / 시작");
     if(null == value) {
-      if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 중단 / value is not valid!");
+      if(this.isDebug()) console.log("klass-filter-tile / emitEventOnChange / 중단 / value is not valid!");
       return;
     }
     if(null == metaObj) {
-      if(isDebug) console.log("klass-filter-tile / emitEventOnChange / 중단 / metaObj is not valid!");
+      if(this.isDebug()) console.log("klass-filter-tile / emitEventOnChange / 중단 / metaObj is not valid!");
       return;
     }
 
@@ -476,14 +696,12 @@ export class KlassFilterTileComponent implements OnInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / Done!");
+    if(this.isDebug()) console.log("klass-filter-tile / emitEventOnChange / Done!");
 
   } 
   private emitEventOnReady() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-tile / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("klass-filter-tile / emitEventOnReady / 시작");
 
     let myEventOnChange:MyEvent =
     this.myEventService.getMyEvent(
@@ -500,7 +718,7 @@ export class KlassFilterTileComponent implements OnInit {
     );
     this.emitter.emit(myEventOnChange);
 
-    if(isDebug) console.log("klass-filter-tile / emitEventOnChange / Done!");
+    if(this.isDebug()) console.log("klass-filter-tile / emitEventOnChange / Done!");
 
   }    
   // emitOnChangedSelectile
@@ -508,7 +726,8 @@ export class KlassFilterTileComponent implements OnInit {
     var selectileMap = 
     {
       level:this.klassLevelSelected,
-      station:this.klassStationSelected,
+      subwayLine:this.klassSubwayLineSelected,
+      subwayStation:this.klassSubwayStationSelected,
       day:this.klassDaySelected,
       time:this.klassTimeSelected
     };
@@ -524,14 +743,13 @@ export class KlassFilterTileComponent implements OnInit {
   }
   private showSelectile(targetList:any[], targetObj:any, focusIdx:number) :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("klass-filter-file / constructor / init");
+    if(this.isDebug()) console.log("klass-filter-file / constructor / init");
 
-    if(isDebug) console.log("klass-filter-file / constructor / this.klassLevelSelected : ",this.klassLevelSelected);
-    if(isDebug) console.log("klass-filter-file / constructor / this.klassStationSelected : ",this.klassStationSelected);
-    if(isDebug) console.log("klass-filter-file / constructor / this.klassDaySelected : ",this.klassDaySelected);
-    if(isDebug) console.log("klass-filter-file / constructor / this.klassTimeSelected : ",this.klassTimeSelected);
+    if(this.isDebug()) console.log("klass-filter-file / constructor / this.klassLevelSelected : ",this.klassLevelSelected);
+    if(this.isDebug()) console.log("klass-filter-file / constructor / this.klassSubwayLineSelected : ",this.klassSubwayLineSelected);
+    if(this.isDebug()) console.log("klass-filter-file / constructor / this.klassSubwayStationSelected : ",this.klassSubwayStationSelected);
+    if(this.isDebug()) console.log("klass-filter-file / constructor / this.klassDaySelected : ",this.klassDaySelected);
+    if(this.isDebug()) console.log("klass-filter-file / constructor / this.klassTimeSelected : ",this.klassTimeSelected);
 
     // 사용자가 선택한 필터를 보여주는 열(Row)
     let nextSelectileTable:any[] = [];
@@ -539,14 +757,27 @@ export class KlassFilterTileComponent implements OnInit {
 
     this.klassLevelSelected["class_name"] = "empty";
     row.push(this.klassLevelSelected);
-    this.klassStationSelected["class_name"] = "empty";
-    row.push(this.klassStationSelected);
+    this.klassSubwayLineSelected["class_name"] = "empty";
+    row.push(this.klassSubwayLineSelected);
+    this.klassSubwayStationSelected["class_name"] = "empty";
+    row.push(this.klassSubwayStationSelected);
     this.klassDaySelected["class_name"] = "empty";
     row.push(this.klassDaySelected);
     this.klassTimeSelected["class_name"] = "empty";
     row.push(this.klassTimeSelected);
 
     nextSelectileTable.push(row);
+
+    // 화면에 보여줄 column 갯수를 결정
+    let stColCntPerRow:number = row.length;
+    if(!(0 < stColCntPerRow)) {
+      if(this.isDebug()) console.log("klass-filter-file / constructor / 중단 / !(0 < stColCntPerRow)");
+      return;
+    }
+
+    if(this.isDebug()) console.log("klass-filter-file / constructor / stColCntPerRow : ",stColCntPerRow);
+
+    this.updateLayout(stColCntPerRow);
 
     if(!targetList || null == targetObj || !(-1 < focusIdx)) {
       this.selectileTable = nextSelectileTable;
@@ -566,14 +797,14 @@ export class KlassFilterTileComponent implements OnInit {
 
     // 사용자가 선택할 수 있는 필터를 보여주는 열(Row)
     let elementCnt:number = targetListValid.length;
-    let rowCnt = Math.ceil(elementCnt/this.stColCntPerRow);
+    let rowCnt = Math.ceil(elementCnt/stColCntPerRow);
 
     for (var rowIdx = 0; rowIdx < rowCnt; rowIdx++) {
 
       var row:any[] = [];
-      for (var colIdx = 0; colIdx < this.stColCntPerRow; colIdx++) {
+      for (var colIdx = 0; colIdx < stColCntPerRow; colIdx++) {
 
-        let curIdx = this.stColCntPerRow * (rowIdx) + colIdx;
+        let curIdx = stColCntPerRow * (rowIdx) + colIdx;
         if((targetListValid.length - 1) < curIdx) {
           // 표시할 수 있는 선택지가 더 이상 없습니다. Empty 영역을 표시할 객체들로 채워줍니다.
           row.push({});
@@ -590,16 +821,27 @@ export class KlassFilterTileComponent implements OnInit {
       nextSelectileTable.push(row);
     } // end outer for
 
-    nextSelectileTable = this.setSelectileType(nextSelectileTable, focusIdx);
+    nextSelectileTable = this.setSelectileType(nextSelectileTable, focusIdx, stColCntPerRow);
 
     this.selectileTable = nextSelectileTable;
     this.setShadowRows(this.selectileTable);
   }
-  private setSelectileType(targetList:any[], curSelectileIdx:number) :any[] {
+  private setSelectileType(targetList:any[], curSelectileIdx:number, stColCntPerRow:number) :any[] {
+
+    if(this.isDebug()) console.log("klass-filter-file / setSelectileType / 시작");
 
     if(!targetList) {
+      if(this.isDebug()) console.log("klass-filter-file / setSelectileType / 중단 / !targetList");
       return;
     }
+
+    if(!(0 < stColCntPerRow)) {
+      if(this.isDebug()) console.log("klass-filter-file / setSelectileType / 중단 / !(0 < stColCntPerRow)");
+      return;
+    }
+
+    if(this.isDebug()) console.log("klass-filter-file / setSelectileType / curSelectileIdx : ",curSelectileIdx);
+    if(this.isDebug()) console.log("klass-filter-file / setSelectileType / stColCntPerRow : ",stColCntPerRow);
 
     let rowCnt = targetList.length;
     for (var rowIdx = 0; rowIdx < targetList.length; rowIdx++) {
@@ -609,6 +851,7 @@ export class KlassFilterTileComponent implements OnInit {
 
         var field = row[colIdx];
         if(0 === rowIdx) {
+
           // 1. 첫번째 열은 현재 선택한 값을 보여줍니다.
           if(curSelectileIdx === colIdx) {
             // 사용자가 mouseover한 선택 카테고리입니다.
@@ -626,14 +869,17 @@ export class KlassFilterTileComponent implements OnInit {
           } else if(colIdx === 0) {
             // 2-1. 첫번째 컬럼인가?
             field["class_name"] = "left-round";
-          } else if(colIdx === (this.stColCntPerRow - 1) && curSelectileIdx === colIdx) {
+          } else if(colIdx === (stColCntPerRow - 1) && curSelectileIdx === colIdx) {
             // 2-2. 마지막 컬럼이면서 knob이 연결되어 있는가?
             field["class_name"] = "right-round-knob";
-          } else if(colIdx === (this.stColCntPerRow - 1)) {
+          } else if(colIdx === (stColCntPerRow - 1)) {
             // 2-3. 마지막 컬럼인가?
             field["class_name"] = "right-round";
+          } else if(curSelectileIdx === colIdx) {
+            // 2-4. 첫번째와 마지막 컬럼이 아니지만 knob과 연결되어 있는가?
+            field["class_name"] = "top-knob-single";
           } else {
-            // 2-4. 다른 타일에 둘러싸여있는 타일인가?
+            // 2-5. 다른 타일에 둘러싸여있는 타일인가?
             field["class_name"] = "center-round";
           }
 
@@ -655,11 +901,11 @@ export class KlassFilterTileComponent implements OnInit {
               // 첫번째 컬럼에 knob이 없는 경우, 첫번째 컬럼은 top-left
               field["class_name"] = "top-left";
 
-            } else if(curSelectileIdx == colIdx && colIdx === (this.stColCntPerRow - 1)) {
+            } else if(curSelectileIdx == colIdx && colIdx === (stColCntPerRow - 1)) {
               // 마지막 컬럼에 knob이 있는 경우, 첫번째 컬럼은 center
               field["class_name"] = "center";
               
-            } else if(colIdx === (this.stColCntPerRow - 1)) {
+            } else if(colIdx === (stColCntPerRow - 1)) {
               // 2-2. 마지막 컬럼인가?
               field["class_name"] = "top-right";
             } else {
@@ -671,7 +917,7 @@ export class KlassFilterTileComponent implements OnInit {
             if(colIdx === 0) {
               // 2-1. 첫번째 컬럼인가?
               field["class_name"] = "bottom-left";
-            } else if(colIdx === (this.stColCntPerRow - 1)) {
+            } else if(colIdx === (stColCntPerRow - 1)) {
               // 2-2. 마지막 컬럼인가?
               field["class_name"] = "bottom-right";
             } else {
@@ -683,7 +929,7 @@ export class KlassFilterTileComponent implements OnInit {
             // 첫번재 열인경우.
             if(0 == colIdx) {
               field["class_name"] = "left-single";
-            } else if(colIdx === (this.stColCntPerRow - 1)) {
+            } else if(colIdx === (stColCntPerRow - 1)) {
               field["class_name"] = "right-single";
             } else {
               // 3-2. 마지막 열보다 이전인가?

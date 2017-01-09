@@ -83,6 +83,7 @@ export class AdminService {
                     klassStatus:string,
                     klassLevel:string,
                     klassSubwayLine:string,
+                    klassSubwayStation:string,
                     klassDays:string,
                     klassTime:string ): Promise<MyResponse> {
 
@@ -95,6 +96,7 @@ export class AdminService {
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassLevel : ",klassLevel);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayLine : ",klassSubwayLine);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayStation : ",klassSubwayStation);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassDays : ",klassDays);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassTime : ",klassTime);
 
@@ -109,6 +111,7 @@ export class AdminService {
       klass_status:klassStatus,
       klass_level:klassLevel,
       klass_subway_line:klassSubwayLine,
+      klass_subway_station:klassSubwayStation,
       klass_days:klassDays,
       klass_time:klassTime
     };

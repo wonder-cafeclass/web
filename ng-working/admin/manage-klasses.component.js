@@ -32,6 +32,7 @@ var ManageKlassesComponent = (function () {
         this.klassStatus = "";
         this.klassLevel = "";
         this.klassSubwayLine = "";
+        this.klassSubwayStation = "";
         this.klassDays = "";
         this.klassTime = "";
         // @ Immutable
@@ -55,6 +56,7 @@ var ManageKlassesComponent = (function () {
         this.selectOptionListStatus = this.getDefaultOptionStatusForSearch();
         this.selectOptionListLevel = this.getDefaultOptionLevelForSearch();
         this.selectOptionListSubwayLine = this.getDefaultOptionSubwayLineForSearch();
+        this.selectOptionListSubwayStation = this.getDefaultOptionSubwayStationForSearch("");
         this.checkOptionTableDays = this.getDefaultOptionDaysForSearch();
         this.selectOptionListTime = this.getDefaultOptionTimeForSearch();
         this.subscribeLoginUser();
@@ -253,11 +255,59 @@ var ManageKlassesComponent = (function () {
     ManageKlassesComponent.prototype.getDefaultOptionSubwayLineForSearch = function () {
         if (this.isDebug())
             console.log("manage-klasses / getDefaultOptionSubwayLineForSearch / 시작");
-        return this.watchTower.getDefaultOptionListByKeys(
-        // keyListName:string,
-        "subway_line_kor_list", 
-        // valueListName:string,
+        var subwayLineList = this.watchTower.getMyConst().getList("subway_line_list");
+        var subwayLineKorList = this.watchTower.getMyConst().getList("subway_line_kor_list");
+        var subwayLineListValid = [];
+        var subwayLineKorListValid = [];
+        for (var i = 0; i < subwayLineList.length; ++i) {
+            var subwayLine = subwayLineList[i];
+            var subwayLineKor = subwayLineKorList[i];
+            var subwayStationList = this.watchTower.getMyConst().getNestedChildList(
+            // parentKey:string,
+            "subway_line_list", 
+            // parentValue:string,
+            subwayLine, 
+            // childKey:string
+            "subway_station_list");
+            if (this.myArray.isOK(subwayStationList)) {
+                subwayLineListValid.push(subwayLine);
+                subwayLineKorListValid.push(subwayLineKor);
+            } // end if
+        } // end for
+        return this.watchTower.getDefaultOptionList(
+        // keyList:string[],
+        subwayLineKorListValid, 
+        // valueList:string[],
+        subwayLineListValid, 
+        // valueFocus:string
+        "");
+    }; // end method
+    ManageKlassesComponent.prototype.getDefaultOptionSubwayStationForSearch = function (subwayLine) {
+        if (this.isDebug())
+            console.log("manage-klasses / getDefaultOptionSubwayStationForSearch / 시작");
+        var subwayLineList = this.watchTower.getMyConst().getList("subway_line_list");
+        if (null == subwayLine || "" === subwayLine) {
+            subwayLine = subwayLineList[0];
+        } // end if
+        var subwayStationList = this.watchTower.getMyConst().getNestedChildList(
+        // parentKey:string,
         "subway_line_list", 
+        // parentValue:string,
+        subwayLine, 
+        // childKey:string
+        "subway_station_list");
+        var subwayStationKorList = this.watchTower.getMyConst().getNestedChildList(
+        // parentKey:string,
+        "subway_line_list", 
+        // parentValue:string,
+        subwayLine, 
+        // childKey:string
+        "subway_station_kor_list");
+        return this.watchTower.getDefaultOptionList(
+        // keyList:string[],
+        subwayStationKorList, 
+        // valueList:string[],
+        subwayStationList, 
         // valueFocus:string
         "");
     }; // end method
@@ -349,6 +399,11 @@ var ManageKlassesComponent = (function () {
         if (this.isDebug())
             console.log("manage-klasses / updateKlassDays / klassDays : ", klassDays);
     };
+    ManageKlassesComponent.prototype.updateSubwayStation = function (subwayLine) {
+        if (this.isDebug())
+            console.log("manage-klasses / updateSubwayStation / 시작");
+        this.selectOptionListSubwayStation = this.getDefaultOptionSubwayStationForSearch(subwayLine);
+    }; // end method
     // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
     ManageKlassesComponent.prototype.doFetchKlassList = function () {
         var pageNum = this.pageNum;
@@ -370,13 +425,15 @@ var ManageKlassesComponent = (function () {
         this.klassLevel, 
         // klassSubwayLine:string="",
         this.klassSubwayLine, 
+        // klassSubwayStation:string="",
+        this.klassSubwayStation, 
         // klassDays:string="",
         this.klassDays, 
         // klassTime:string=""
         this.klassTime);
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassDays, klassTime) {
+    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.adminService
             .fetchKlassList(
@@ -394,6 +451,8 @@ var ManageKlassesComponent = (function () {
         klassLevel, 
         // klassSubwayLine:string="",
         klassSubwayLine, 
+        // klassSubwayStation:string="",
+        klassSubwayStation, 
         // klassDays:string="",
         klassDays, 
         // klassTime:string=""
@@ -531,6 +590,19 @@ var ManageKlassesComponent = (function () {
         } // end if
         return (defaultOption.value === value) ? true : false;
     };
+    ManageKlassesComponent.prototype.isDefaultSubwayStation = function (value) {
+        if (null == value || "" === value) {
+            return false;
+        }
+        if (this.myArray.isNotOK(this.selectOptionListSubwayStation)) {
+            return false;
+        } // end if
+        var defaultOption = this.selectOptionListSubwayStation[0];
+        if (null == defaultOption) {
+            return false;
+        } // end if
+        return (defaultOption.value === value) ? true : false;
+    };
     // REMOVE ME
     /*
       isDefaultDay(value:string):boolean {
@@ -621,6 +693,16 @@ var ManageKlassesComponent = (function () {
                 }
                 else {
                     this.klassSubwayLine = myEvent.value;
+                    this.updateSubwayStation(this.klassSubwayLine);
+                } // end if
+                this.doFetchKlassList();
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SUBWAY_STATION_FOR_SEARCH)) {
+                if (this.isDefaultSubwayStation(myEvent.value)) {
+                    this.klassSubwayStation = "";
+                }
+                else {
+                    this.klassSubwayStation = myEvent.value;
                 } // end if
                 this.doFetchKlassList();
             }

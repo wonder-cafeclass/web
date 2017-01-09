@@ -3,9 +3,9 @@
 */
 export class Pagination {
 
-	pageNum:number=-1; // 사용자가 선택한 페이지 번호
+	pageNum:number=1; // 사용자가 선택한 페이지 번호
 	rowCnt:number=-1;
-	pageRange:number=-1;
+	pageRange:number=5;
 	totalRowCnt:number=-1;
 	cursorPageNum:number=-1;
 	rowCntPerPage:number=-1;

@@ -1,39 +1,390 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once APPPATH . '/models/KlassCourse.php';
 require_once APPPATH . '/models/Teacher.php';
+require_once APPPATH . '/models/KlassSubwayLine.php';
+require_once APPPATH . '/models/KlassSubwayStation.php';
+require_once APPPATH . '/libraries/MY_Library.php';
 
-class MY_Decorator
+class MY_Decorator extends MY_Library
 {
-	private $CI=null;
-
     function __construct()
     {
-        // get singleton object.
-        $this->CI =& get_instance();
-        if(!isset($this->CI)) 
+        // Construct the parent class
+        parent::__construct();
+    } // end method
+
+    // wonder.jung
+    // @ Desc : 수업 관련 기본값 설정 로직들.
+    private function get_class_img_default() 
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'no_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
+    }
+    private function get_class_img_new() 
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'new_class', 
+            'klass_event_img_list', 
+            'klass_event_img_url_list'
+        );
+    }
+    private function get_level_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
+        );
+    }
+    private function get_level_img_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_days_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_list'
+        );
+    }
+    private function get_days_img_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'ALL', 
+            'class_level_list', 
+            'class_level_img_url_list'
+        );
+    }
+    private function get_time_begin_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_list'
+        );    
+    }
+    private function get_time_begin_img_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'always',
+            'class_times_list',
+            'class_times_img_url_list'
+        );    
+    }
+    private function get_subway_line_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_line_list'
+        );
+    }
+    private function get_subway_station_default()
+    {
+        $subway_station_list = 
+        $this->CI->my_paramchecker->get_const_from_list(
+            'line2',
+            'subway_line_list',
+            'subway_station_list'
+        );
+
+        return $subway_station_list[0];
+    } 
+    private function get_subway_station_img_default()
+    {
+        return $this->CI->my_paramchecker->get_const_from_list(
+            'everywhere',
+            'class_venue_subway_station_list',
+            'class_venue_subway_station_img_url_list'
+        );
+    }
+    private function set_default_klass_course($klass_course) 
+    {
+        if(is_null($klass_course)) 
         {
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass_course)");
+            return null;
         }
-    }	
+
+        $klass_course->price = $klass_course->price_with_format = "0";
+
+        // 기본 이미지 설정.
+        $klass_course->level =  
+        $this->get_level_default();
+        $klass_course->level_img_url =  
+        $this->get_level_img_default();
+
+        $klass_course->days = 
+        $this->get_days_default();
+        $klass_course->days_img_url = 
+        $this->get_days_img_default();
+
+        $klass_course->time_begin = 
+        $this->get_time_begin_default();
+        $klass_course->time_begin_img_url = 
+        $this->get_time_begin_img_default();
+
+        $klass_course->subway_line = 
+        $this->get_subway_line_default();
+        $klass_course->subway_station = 
+        $this->get_subway_station_default();
+        $klass_course->subway_station_img = 
+        $this->get_subway_station_img_default();
+
+        return $klass_course;
+
+    }   
+
+    public function get_klass_course_no_class() 
+    {
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if
+        
+        $klass_course = new KlassCourse();
+        $klass_course->id = -1;
+        $klass_course->class_poster_url_loadable = 
+        $this->get_class_img_default();
+        $klass_course->title="수업이 없습니다.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
+
+        return $klass_course;
+    }
+    public function get_klass_course_new_class() 
+    {
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if
+
+        $klass_course = new KlassCourse();
+        $klass_course->id = -100;
+        $klass_course->class_poster_url_loadable = 
+        $this->get_class_img_new();
+        $klass_course->title="새로운 수업을 만들어요.";
+
+        $klass_course = 
+        $this->set_default_klass_course($klass_course);
+
+        return $klass_course;
+    }
+    public function get_levels() {
+
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if        
+
+        $class_level_list = $this->get_const("class_level_list");
+        $class_level_eng_list = $this->get_const("class_level_eng_list");
+        $class_level_kor_list = $this->get_const("class_level_kor_list");
+        $class_level_img_url_list = $this->get_const("class_level_img_url_list");
+
+        // check list is valid
+        $klass_level_list = array();
+        for ($i=0; $i < count($class_level_list); $i++) { 
+
+            $key = $class_level_list[$i];
+            $name_eng = $class_level_eng_list[$i];
+            $name_kor = $class_level_kor_list[$i];
+            $img_url = $class_level_img_url_list[$i];
+
+            $level_obj = new KlassLevel($key, $name_eng, $name_kor, $img_url);
+
+            array_push($klass_level_list, $level_obj);
+
+        }  
+        
+        return $klass_level_list;    
+    }
+    public function get_days() {
+
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if
+
+        $class_days_list = $this->get_const("class_days_list");
+        $class_days_eng_list = $this->get_const("class_days_eng_list");
+        $class_days_kor_list = $this->get_const("class_days_kor_list");
+        $class_days_img_url_list = $this->get_const("class_days_img_url_list");
+
+        // check list is valid
+        $klass_day_list = array();        
+        for ($i=0; $i < count($class_days_list); $i++) { 
+
+            $key = $class_days_list[$i];
+            $name_eng = $class_days_eng_list[$i];
+            $name_kor = $class_days_kor_list[$i];
+            $img_url = $class_days_img_url_list[$i];
+
+            $day_obj = new KlassDay($key, $name_eng, $name_kor, $img_url);
+
+            array_push($klass_day_list, $day_obj);
+
+        }  
+
+        return $klass_day_list;
+    }
+    public function get_times() {
+
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if        
+
+        $class_times_list = $this->get_const("class_times_list");
+        $class_times_eng_list = $this->get_const("class_times_eng_list");
+        $class_times_kor_list = $this->get_const("class_times_kor_list");
+        $class_times_hh_mm_list = $this->get_const("class_times_hh_mm_list");
+        $class_times_img_url_list = $this->get_const("class_times_img_url_list");
+
+        $klass_time_list = array();
+        for ($i=0; $i < count($class_times_list); $i++) 
+        {
+            $key = $class_times_list[$i];
+            $name_eng = $class_times_eng_list[$i];
+            $name_kor = $class_times_kor_list[$i];
+            $img_url = $class_times_img_url_list[$i];
+            $hh_mm = $class_times_hh_mm_list[$i];
+
+            $time_obj = 
+            new KlassTime(
+                $key, 
+                $name_eng, 
+                $name_kor, 
+                $img_url, 
+                $hh_mm
+            );
+
+            array_push($klass_time_list, $time_obj);
+        }
+
+        return $klass_time_list;
+    } // end method
+    public function get_subway_lines() {
+
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if  
+
+        $subway_line_list = 
+        $this->get_const("subway_line_list");
+        $subway_line_eng_list = 
+        $this->get_const("subway_line_eng_list");
+        $subway_line_kor_list = 
+        $this->get_const("subway_line_kor_list");
+        $subway_line_img_list = 
+        $this->get_const("subway_line_img_list");
+
+        $klass_subway_line_list = array();
+        for ($i=0; $i < count($subway_line_list); $i++) 
+        { 
+
+            $key = $subway_line_list[$i];
+            $name_eng = $subway_line_eng_list[$i];
+            $name_kor = $subway_line_kor_list[$i];
+            $img_url = $subway_line_img_list[$i];
+
+            $subway_line_obj = 
+            new KlassSubwayLine(
+                $key, 
+                $name_eng, 
+                $name_kor, 
+                $img_url
+            );
+
+            array_push(
+                $klass_subway_line_list, 
+                $subway_line_obj
+            );
+
+        } // end for
+
+        return $klass_subway_line_list;
+
+    }
+    // @ Legacy : get_stations
+    public function get_subway_stations() {
+
+        if($this->is_not_ready()) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if        
+
+        $subway_station_list = 
+        $this->get_const("subway_station_list");
+        $subway_station_eng_list = 
+        $this->get_const("subway_station_eng_list");
+        $subway_station_kor_list = 
+        $this->get_const("subway_station_kor_list");
+        $subway_station_img_url_list = 
+        $this->get_const("subway_station_img_list");
+
+        $klass_subway_station_list = array();
+        for ($i=0; $i < count($subway_station_list); $i++) 
+        { 
+
+            $key = $subway_station_list[$i];
+            $name_eng = $subway_station_eng_list[$i];
+            $name_kor = $subway_station_kor_list[$i];
+            $img_url = $subway_station_img_url_list[$i];
+
+            $subway_station_obj = 
+            new KlassSubwayStation(
+                $key, 
+                $name_eng, 
+                $name_kor, 
+                $img_url
+            );
+
+            array_push(
+                $klass_subway_station_list, 
+                $subway_station_obj
+            );
+
+        } // end for
+
+        return $klass_subway_station_list;       
+    }    
+
+
+
+
+
+
+
+
+
 
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
     public function deco_klass($klass_list=null) 
     {
-        $this->CI->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
-
         if(empty($klass_list)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass_list)");
-            return;
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass_list)");
+            return array();
         } // end if
-
-        $const_map = $this->CI->my_paramchecker->get_const_map();
-        if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
-            return;
-        } // end if
-
-        // $rows = $query->custom_result_object('KlassCourse');
 
         $klass_list_next = array();
         foreach ($klass_list as $klass)
@@ -119,7 +470,7 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
@@ -139,20 +490,20 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
         $time_begin = $klass->time_begin;
         if(empty($time_begin))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$time_begin)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$time_begin)");
             return;
         } // end if
 
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
 
@@ -200,20 +551,20 @@ class MY_Decorator
 
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
         $class_level = $klass->level;
         if(empty($class_level))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$class_level)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$class_level)");
             return;
         } // end if
 
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
 
@@ -256,20 +607,20 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
         $class_days = $klass->days;
         if(empty($class_days))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$class_days)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$class_days)");
             return;
         } // end if
 
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
 
@@ -287,7 +638,7 @@ class MY_Decorator
     {
         if(empty($days_list))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$days_list)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$days_list)");
             return;
         } // end if
 
@@ -305,20 +656,20 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
         $days_list = $klass->days_list;
         if(empty($days_list))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$days_list)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$days_list)");
             return;
         } // end if
 
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
 
@@ -368,27 +719,27 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
 
         $subway_line = $klass->subway_line;
         if(empty($subway_line))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$subway_line)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$subway_line)");
             return;
         } // end if
 
         $subway_station = $klass->subway_station;
         if(empty($subway_line))
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$subway_station)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$subway_station)");
             return;
         } // end if
 
         $const_map = $this->CI->my_paramchecker->get_const_map();
         if(is_null($const_map)) {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
             return;
         } // end if
 
@@ -428,14 +779,14 @@ class MY_Decorator
     {
         if(is_null($klass)) 
         {
-            $this->CI->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            return;
+        }
+        else if(is_null($klass->price)) 
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass->price)");
             return;
         } // end if
-
-        if(!isset($klass->price)) 
-        {
-                return;
-        }
         $klass->price_with_format = number_format($klass->price);
 
         return $klass;

@@ -44,7 +44,8 @@ var LoginComponent = (function () {
         this.defaultMetaUserSelect = this.getMetaUserSelect();
     }
     LoginComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     LoginComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
@@ -423,6 +424,8 @@ var LoginComponent = (function () {
         if (this.isDebug())
             console.log("login / goRedirect / 시작");
         if (!this.isAdmin) {
+            if (this.isDebug())
+                console.log("login / goRedirect / 중단 / this.isAdmin : ", this.isAdmin);
             return;
         }
         this.hitCnt++;

@@ -9,14 +9,17 @@ import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
 import { KlassService }                    from './service/klass.service';
-import { UrlService }                      from '../util/url.service';
 
 import { Klass }                           from './model/klass';
 import { KlassLevel }                      from './model/klass-level';
-import { KlassStation }                    from './model/klass-station';
+import { KlassSubwayLine }                 from './model/klass-subway-line';
+import { KlassSubwayStation }              from './model/klass-subway-station';
 import { KlassDay }                        from './model/klass-day';
 import { KlassTime }                       from './model/klass-time';
 
+import { Pagination }                      from '../widget/pagination/model/pagination';
+
+import { UrlService }                      from '../util/url.service';
 import { MyLoggerService }                 from '../util/service/my-logger.service';
 import { MyEventWatchTowerService }        from '../util/service/my-event-watchtower.service';
 import { MyCheckerService }                from '../util/service/my-checker.service';
@@ -36,23 +39,22 @@ import { Teacher }                         from '../teachers/model/teacher';
 })
 export class KlassListComponent implements AfterViewInit {
 
-  klasses: Klass[];
+  klassList: Klass[];
   public selectedId: number;
 
   // 검색상태 관련
   isSearchEnabled: boolean = false;
 
-  private searchTerms = new Subject<string>();
-
   loginUser:User;
   loginTeacher:Teacher;
 
-  private apiKey:string;
   isAdmin:boolean=false;
-  errorMsgArr: string[]=[];
 
   private myIs:HelperMyIs;
   private myArray:HelperMyArray;
+
+  private pagination:Pagination;
+  // private keywordMap;
 
   constructor(
     private klassService:KlassService,
@@ -71,10 +73,11 @@ export class KlassListComponent implements AfterViewInit {
 
     this.klassService.setWatchTower(this.watchTower);
 
+    this.pagination = new Pagination();
+
   }
 
   private isDebug():boolean {
-    // return true;
     return this.watchTower.isDebug();
   }
 
@@ -148,12 +151,6 @@ export class KlassListComponent implements AfterViewInit {
       // 로그인한 선생님 정보가 들어왔습니다.
       this.loginTeacher = new Teacher().setJSON(loginTeacher);
 
-      // 클래스 리스트를 다시 가져옵니다.
-      if(null != this.loginTeacher) {
-        this.getKlassList(true);
-      } else {
-        this.getKlassList(false);
-      }
     });
   }
   private setViewPack() :void {
@@ -183,25 +180,10 @@ export class KlassListComponent implements AfterViewInit {
     if(null != loginUser) {
       this.loginUser = loginUser;
     }
-    this.setLoginTeacher();
+
+    this.getKlassListOnInit();
 
   } 
-  private setLoginTeacher() :void {
-
-    if(this.isDebug()) console.log("klass-list / setLoginTeacher / 시작");
-
-    // 로그인 선생님 데이터를 가져옵니다.
-    let isTeacher:boolean = false;
-    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
-    if(null != loginTeacher) {
-      this.loginTeacher = loginTeacher;
-      isTeacher = true;
-    }
-
-    // 기본 유저 정보를 모두 가져왔습니다.
-    // 수업 리스트를 가져옵니다.
-    this.getKlassList(isTeacher);
-  }
   private logActionPage() :void {
 
     if(this.isDebug()) console.log("klass-list / logActionPage / 시작");
@@ -229,151 +211,234 @@ export class KlassListComponent implements AfterViewInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.logActionPage();
 
-  }
+  } // end method
 
-  private getKlassList(isTeacher:boolean) :void {
+  // @ Desc : 초기화시 1번만 수업 리스트를 가져옴. 
+  private getKlassListOnInit() :void {
 
-    if(this.isDebug()) console.log("klass-list / getKlassList / 시작");
-    if(this.isDebug()) console.log("klass-list / getKlassList / isTeacher : ",isTeacher);
+    if(this.myArray.isOK(this.klassList)) {
+      // 이미 리스트가 있다면 로딩하지 않습니다.
+      return;
+    }
 
-    this.klassService
-    .getKlasses()
-    .then((myResponse:MyResponse) => {
+    if(this.isDebug()) console.log("klass-list / getKlassListOnInit / 시작");
 
-      if(this.isDebug()) console.log("klass-list / getKlassList / myResponse : ",myResponse);
+    let loginUserId:number = -1;
+    if(null != this.loginUser) {
+      loginUserId = this.loginUser.id;
+    }
 
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
+    this.fetchKlassList(
+      // userId:Number, 
+      loginUserId,
+      // pageNum:number, 
+      this.pagination.pageNum,
+      // pageSize:number, 
+      this.pagination.pageRange,
+      // searchQuery:string, 
+      "",
+      // klassStatus:string, 
+      "O",
+      // klassLevel:string, 
+      "",
+      // klassSubwayLine:string, 
+      "",
+      // klassSubwayStation:string, 
+      "",
+      // klassDays:string, 
+      "",
+      // klassTime:string  
+      ""
+    );
 
-        // 성공!
-        let klassJSONList = myResponse.getDataProp("klass_list");
-        if(this.isDebug()) console.log("klass-list / getKlassList / klassJSONList : ",klassJSONList);
-
-        let klassList:Klass[] = [];
-        if(null != klassJSONList) {
-          klassList = this.klassService.getKlassListFromJSON(klassJSONList);
-          if(this.isDebug()) console.log("klass-list / getKlassList / klassList : ",klassList);
-        }
-        if(null != klassList && 0 < klassList.length) {
-          // 1. 클래스 리스트를 가져왔습니다.
-          this.klasses = klassList;
-        }
-
-        // wonder.jung
-        if(isTeacher) {
-          // 1-1. 선생님이라면 새로 수업 만들기를 노출합니다.
-          let newKlassJSONList = myResponse.getDataProp("new_klass");
-
-          let newKlass:Klass = new Klass().setJSON(newKlassJSONList[0]);
-
-          if(this.isDebug()) console.log("klass-list / getKlassList / newKlass : ",newKlass);
-
-          klassList.unshift(newKlass);
-        } // end if
-
-        // 리스트를 가져오면 푸터를 하단 고정 해제합니다.
-        this.watchTower.announceFooterRelease();
-
-      } else {
-
-        if(null != myResponse.error && "" != myResponse.error) {
-          // 에러 내용은 화면에 표시한다.
-          this.watchTower.announceErrorMsgArr([myResponse.error]);
-        }
-        
-      } // end if
-    }); // end service    
-
-
-  }
-
+  } // end method
 
   onInitKlassFilterTile(searchBox) {
     searchBox.focus();
   }
 
+
+  private updatePagination(jsonPagination:any) :void {
+
+    if(this.isDebug()) console.log("klass-list / updatePagination / 시작");
+
+    if(this.isDebug()) console.log("klass-list / updatePagination / jsonPagination : ",jsonPagination);
+
+    if(null == jsonPagination) {
+      this.pagination = new Pagination(); // 기본 값으로 설정
+    } else {
+      this.pagination = new Pagination().setJSON(jsonPagination);
+    }
+  }
+
+  private updateKlassList(jsonKlassList:any[]) :void {
+
+    if(this.isDebug()) console.log("klass-list / updateKlassList / 시작");
+
+    if(this.myArray.isNotOK(jsonKlassList)) {
+
+      // 검색 결과가 없습니다.
+      this.klassList = null;
+
+    } else {
+
+      let klassList:Klass[] = [];
+      for (var i = 0; i < jsonKlassList.length; ++i) {
+        let klassJSON = jsonKlassList[i];
+        let klass:Klass = new Klass().setJSON(klassJSON);
+
+        klassList.push(klass);
+
+      } // end for
+
+      if(this.isDebug()) console.log("klass-list / updateKlassList / klassList : ",klassList);
+
+      // 1. 스크롤로 추가적인 수업읇 보여준다면, 교체가 아닌 리스트에 덧붙이는 형식으로 표현.
+      // 리스트 추가.
+      // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
+      this.klassList = klassList; // 리스트 교체.
+      
+    } // end if
+
+  } // end method    
+
+  private fetchKlassList( loginUserId:number,
+                          pageNum:number, 
+                          pageSize:number, 
+                          searchQuery:string, 
+                          klassStatus:string, 
+                          klassLevel:string, 
+                          klassSubwayLine:string, 
+                          klassSubwayStation:string, 
+                          klassDays:string, 
+                          klassTime:string ) {
+
+    this.klassService.fetchKlassList(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // userId:number, 
+      loginUserId,
+      // pageNum:number, 
+      this.pagination.pageNum,
+      // pageSize:number, 
+      this.pagination.pageRange,
+      // searchQuery:string, 
+      searchQuery,
+      // klassStatus:string,
+      klassStatus,
+      // klassLevel:string,
+      klassLevel,
+      // klassSubwayLine:string,
+      klassSubwayLine,
+      // klassSubwayStation:string,
+      klassSubwayStation,
+      // klassDays:string,
+      klassDays,
+      // klassTime:string
+      klassTime
+    ).then((myResponse:MyResponse) => {
+
+      if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
+
+      if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
+
+      if( myResponse.isSuccess() && 
+          myResponse.hasDataProp("pagination") &&
+          myResponse.hasDataProp("klass_list")) {
+
+        // 1. Pagination 재설정
+        let jsonPagination = myResponse.getDataProp("pagination");
+        if(this.isDebug()) console.log("klass-list / fetchKlassList / jsonPagination : ",jsonPagination);
+        this.updatePagination(jsonPagination);
+
+        // 2. Klass List 재설정 
+        let klassJSONList:any[] = myResponse.getDataProp("klass_list");
+        if(this.isDebug()) console.log("klass-list / fetchKlassList / klassJSONList : ",klassJSONList);
+        this.updateKlassList(klassJSONList);
+        
+      } else if(myResponse.isFailed()){
+        if(this.isDebug()) console.log("klass-list / fetchKlassList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+
+        this.watchTower.logAPIError("fetchKlassList has been failed!");
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+        
+      } // end if
+
+    }); // end service    
+
+  } // end method
+
   search( level:KlassLevel, 
-          station:KlassStation, 
+          subwayLine:KlassSubwayLine, 
+          subwayStation:KlassSubwayStation, 
           day:KlassDay, 
           time:KlassTime, 
-          searchKeyword:string): void {
+          searchQuery:string): void {
 
     if(this.isDebug()) console.log("klass-list / search / 시작");
 
     // 항목별 filter 만들기
     var levelKey = "";
     if(null != level && null != level.key) {
-      levelKey = level.key;
+      levelKey = level.getKeyNotDefault();
     }
-    var stationKey = "";
-    if(null != station && null != station.key) {
-      stationKey = station.key;
-    }
+    var subwayLineKey = "";
+    if(null != subwayLine && null != subwayLine.key) {
+      subwayLineKey = subwayLine.getKeyNotDefault();
+    } // end if
+    var subwayStationKey = "";
+    if(null != subwayStation && null != subwayStation.key) {
+      subwayStationKey = subwayStation.getKeyNotDefault();
+    } // end if
     var dayKey = "";
     if(null != day && null != day.key) {
-      dayKey = day.key;
-    }
+      dayKey = day.getKeyNotDefault();
+    } // end if
     var timeKey = "";
     if(null != time && null != time.key) {
-      timeKey = time.key;
+      timeKey = time.getKeyNotDefault();
+    } // end if
+
+    // 입력한 키워드중, 첫번째 단어만 검색에 사용합니다. 
+    let keywordList:string[] = searchQuery.split(" ");
+    let searchQuerySafe:string = "";
+    if(this.myArray.isOK(keywordList)) {
+      searchQuerySafe = keywordList[0];
+    } // end if
+
+    let loginUserId:number = -1;
+    if(null != this.loginUser) {
+      loginUserId = this.loginUser.id;
+    } // end if
+
+    if(null == this.pagination) {
+      this.pagination = new Pagination();
     }
 
-    let keywordList:string[] = searchKeyword.split(" ");
-    let searchKeywordSafe = "";
-
-    for (var i = 0; i < keywordList.length; ++i) {
-      let keyword = keywordList[i];
-      let keywordSafe = this.getKeywordSafe(keyword);
-
-      if(null == keywordSafe || "" === keywordSafe) {
-        continue;
-      }
-      searchKeywordSafe += `${keywordSafe}|`;
-    }
-
-    this.klassService.searchKlassList(
-      // level:string, 
+    this.fetchKlassList(
+      // userId:number, 
+      loginUserId,
+      // pageNum:number, 
+      this.pagination.pageNum,
+      // pageSize:number, 
+      this.pagination.pageRange,
+      // searchQuery:string, 
+      searchQuerySafe,
+      // klassStatus:string, 
+      "O",
+      // klassLevel:string, 
       levelKey,
-      // station:string, 
-      stationKey,
-      // day:string, 
+      // klassSubwayLine:string, 
+      subwayLineKey,
+      // klassSubwayStation:string, 
+      subwayStationKey,
+      // klassDays:string, 
       dayKey,
-      // time:string,
-      timeKey, 
-      // q:string
-      searchKeywordSafe
-    ).then((myResponse:MyResponse) => {
-      if(this.isDebug()) console.log("klass-list / search / myResponse : ",myResponse);
-
-      if(myResponse.isSuccess() && myResponse.hasDataProp("klass_list")) {
-
-        // 성공!
-
-        let klassJSONList:any[] = myResponse.getDataProp("klass_list");
-        let klassListNext:Klass[] = [];
-        for (var i = 0; i < klassJSONList.length; ++i) {
-          let klassJSON:any = klassJSONList[i];
-          let klass:Klass = new Klass().setJSON(klassJSON);
-          klassListNext.push(klass);
-        }
-
-        if(this.myArray.isOK(klassListNext)) {
-          if(this.isDebug()) console.log("klass-list / search / klassListNext : ",klassListNext);
-          this.klasses = klassListNext;
-        } // end if
-
-      } else if(myResponse.isFailed()){
-
-        if(null != myResponse.error && "" != myResponse.error) {
-          // 에러 내용은 화면에 표시한다.
-          this.watchTower.announceErrorMsgArr([myResponse.error]);
-        }
-
-        // 에러 로그 등록
-        this.watchTower.logAPIError(`klass-list / searchKlassList`);
-
-      } // end if
-
-    }); // end service
+      // klassTime:string  
+      timeKey    
+    );
 
   } // end method
 
@@ -420,7 +485,8 @@ export class KlassListComponent implements AfterViewInit {
 
     this.search(
       selectileMap.level,
-      selectileMap.station,
+      selectileMap.subwayLine,
+      selectileMap.subwayStation,
       selectileMap.day,
       selectileMap.time,
       searchBox.value
@@ -448,13 +514,14 @@ export class KlassListComponent implements AfterViewInit {
 
     this.search(
       selectile.klassLevelSelected,
-      selectile.klassStationSelected,
+      selectile.klassSubwayLineSelected,
+      selectile.klassSubwayStationSelected,
       selectile.klassDaySelected,
       selectile.klassTimeSelected,
       searchBox.value
     );
   }
-  private keywordMap;
+  
   private isSafeSelectile(selectile) {
 
     if(null == selectile) {
@@ -482,133 +549,7 @@ export class KlassListComponent implements AfterViewInit {
     return true;
 
   }
-  private setKeywordMap(selectile) {
 
-    if(!this.isSafeSelectile(selectile)) {
-      return;
-    } else if(null != this.keywordMap) {
-      return;
-    }
-
-    this.keywordMap = {};
-    
-    let klassDays = selectile.klassDays;
-    for (let i = 0; i < klassDays.length; ++i) {
-      // wonder.jung
-      let curObj = klassDays[i];
-      let klassDay:KlassDay = 
-      new KlassDay(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );
-
-      this.keywordMap[klassDay.name_kor] = klassDay;
-      this.keywordMap[klassDay.name_eng] = klassDay;
-    }
-    let klassLevels = selectile.klassLevels;
-    for (let i = 0; i < klassLevels.length; ++i) {
-      // wonder.jung
-      let curObj = klassLevels[i];
-      let klassLevel:KlassLevel =
-      new KlassLevel(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );      
-
-      this.keywordMap[klassLevel.name_kor] = klassLevel;
-      this.keywordMap[klassLevel.name_eng] = klassLevel;
-    }
-    let klassStations = selectile.klassStations;
-    for (let i = 0; i < klassStations.length; ++i) {
-      // wonder.jung
-      let curObj = klassStations[i];
-      let klassStation:KlassStation =
-      new KlassStation(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public img_url: string
-        curObj["img_url"]
-      );      
-
-      this.keywordMap[klassStation.name_kor] = klassStation;
-      this.keywordMap[klassStation.name_eng] = klassStation;
-    }
-
-    let klassTimes = selectile.klassTimes;
-    for (let i = 0; i < klassTimes.length; ++i) {
-      // wonder.jung
-      let curObj = klassTimes[i];
-      let klassTime:KlassTime = 
-      new KlassTime(
-        // public key: string,
-        curObj["key"],
-        // public name_eng: string,
-        curObj["name_eng"],
-        // public name_kor: string,
-        curObj["name_kor"],
-        // public hh_mm: string,
-        curObj["hh_mm"],
-        // public img_url: string
-        curObj["img_url"]
-      ); 
-
-      this.keywordMap[klassTime.name_kor] = klassTime;
-      this.keywordMap[klassTime.name_eng] = klassTime;
-    }
-
-  }
-  private searchKeywordMap(keyword:string):any {
-
-    if(!this.keywordMap) {
-      return;
-    }
-
-    if(!(1 < keyword.length)) {
-      // 대조하는 글자는 2글자 이상이어야 한다.
-      return;
-    }
-
-    var selectileObj = null;
-    for (let key in this.keywordMap) {
-
-      let keyNoEmpty = key.replace(" ","");
-
-      let isOK = false;
-      if( 2 == keyNoEmpty.length && 2 == keyword.length ) {
-        isOK = true;
-      } else if( 2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length ) {
-        isOK = true;
-      }
-
-      if(!isOK) {
-        continue;
-      }
-
-      if(0 === keyNoEmpty.indexOf(keyword)) {
-        // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
-        selectileObj = this.keywordMap[key];
-        break;        
-      } // end if
-    } // end for
-
-    return selectileObj; 
-  }
   private getKeywordSafe(keyword:string) {
     let regex = new RegExp("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\x20]+", "gi");
     let keywordsSafe = keyword.replace(regex, "");
@@ -632,7 +573,8 @@ export class KlassListComponent implements AfterViewInit {
 
       this.search(
         selectile.klassLevelSelected,
-        selectile.klassStationSelected,
+        selectile.klassSubwayLineSelected,
+        selectile.klassSubwayStationSelected,
         selectile.klassDaySelected,
         selectile.klassTimeSelected,
         ""
@@ -657,7 +599,8 @@ export class KlassListComponent implements AfterViewInit {
     // 다르다면 키워드를 등록.
     this.keywordsFromUserPrev = keywordsFromUser;
 
-    this.setKeywordMap(selectile);
+    // REMOVE ME
+    // this.setKeywordMap(selectile);
 
     // 안전한 문자열만 받습니다. 
     // 허용 문자열은 알파벳,한글,숫자입니다. 
@@ -679,10 +622,14 @@ export class KlassListComponent implements AfterViewInit {
       return;
     }
 
+
     // 유효한 검색 키워드를 찾았습니다.
-    // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
     var selectileMatchList = [];
     var keywordFoundList:string[] = [];
+
+    // REMOVE ME
+    // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
+    /*
     var keywordNotFoundList:string[] = [];
     for (var i = 0; i < keywordListSafe.length; ++i) {
       let keywordSafe = keywordListSafe[i];
@@ -696,6 +643,7 @@ export class KlassListComponent implements AfterViewInit {
       selectileMatchList.push(selectileObj);
       keywordFoundList.push(keywordSafe);
     }
+    */
 
     // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
     // 사용자가 입력한 키워드는 검색창에서 제외합니다.
@@ -808,4 +756,101 @@ export class KlassListComponent implements AfterViewInit {
       classImage.src = klassObj.class_img_err_url;
     }
   } // end functions
+
+  // REMOVE ME
+  /*
+  private setKeywordMap(selectile) {
+
+    // wonder.jung
+    if(this.isDebug()) console.log("klass-list / setKeywordMap / 시작");
+    if(this.isDebug()) console.log("klass-list / setKeywordMap / 시작");
+
+    if(!this.isSafeSelectile(selectile)) {
+      return;
+    } else if(null != this.keywordMap) {
+      return;
+    }
+
+    this.keywordMap = {};
+
+    let klassDayList:KlassDay[] = selectile.klassDays;
+    for (let i = 0; i < klassDayList.length; ++i) {
+      // wonder.jung
+      let klassDay:KlassDay = klassDayList[i];
+
+      this.keywordMap[klassDay.name_kor] = klassDay;
+      this.keywordMap[klassDay.name_eng] = klassDay;
+    }
+    let klassLevelList:KlassLevel[] = selectile.klassLevels;
+    for (let i = 0; i < klassLevelList.length; ++i) {
+      // wonder.jung
+      let klassLevel:KlassLevel = klassLevelList[i];
+
+      this.keywordMap[klassLevel.name_kor] = klassLevel;
+      this.keywordMap[klassLevel.name_eng] = klassLevel;
+    }
+    let klassSubwayLineList:KlassSubwayLine[] = selectile.klassSubwayLines;
+    for (let i = 0; i < klassSubwayLineList.length; ++i) {
+      // wonder.jung
+      let klassSubwayLine:KlassSubwayLine = klassSubwayLineList[i];
+
+      this.keywordMap[klassSubwayLine.name_kor] = klassSubwayLine;
+      this.keywordMap[klassSubwayLine.name_eng] = klassSubwayLine;
+    }
+    let klassSubwayStationList:KlassSubwayStation[] = selectile.klassSubwayStations;
+    for (let i = 0; i < klassSubwayStationList.length; ++i) {
+      // wonder.jung
+      let klassSubwayStation:KlassSubwayStation = klassSubwayStationList[i];
+
+      this.keywordMap[klassSubwayStation.name_kor] = klassSubwayStation;
+      this.keywordMap[klassSubwayStation.name_eng] = klassSubwayStation;
+    }
+    let klassTimeList:KlassTime[] = selectile.klassTimes;
+    for (let i = 0; i < klassTimeList.length; ++i) {
+      // wonder.jung
+      let klassTime:KlassTime = klassTimeList[i];
+
+      this.keywordMap[klassTime.name_kor] = klassTime;
+      this.keywordMap[klassTime.name_eng] = klassTime;
+    }
+
+  }
+  private searchKeywordMap(keyword:string):any {
+
+    if(!this.keywordMap) {
+      return;
+    }
+
+    if(!(1 < keyword.length)) {
+      // 대조하는 글자는 2글자 이상이어야 한다.
+      return;
+    }
+
+    var selectileObj = null;
+    for (let key in this.keywordMap) {
+
+      let keyNoEmpty = key.replace(" ","");
+
+      let isOK = false;
+      if( 2 == keyNoEmpty.length && 2 == keyword.length ) {
+        isOK = true;
+      } else if( 2 < keyNoEmpty.length && (keyNoEmpty.length - 1) == keyword.length ) {
+        isOK = true;
+      }
+
+      if(!isOK) {
+        continue;
+      }
+
+      if(0 === keyNoEmpty.indexOf(keyword)) {
+        // 첫글자부터 시작, 2글자 이상 매칭되는 경우만 허용.(공백은 제거합니다.)
+        selectileObj = this.keywordMap[key];
+        break;        
+      } // end if
+    } // end for
+
+    return selectileObj; 
+  }
+  */
+
 } // end class

@@ -4,9 +4,9 @@
 */
 var Pagination = (function () {
     function Pagination() {
-        this.pageNum = -1; // 사용자가 선택한 페이지 번호
+        this.pageNum = 1; // 사용자가 선택한 페이지 번호
         this.rowCnt = -1;
-        this.pageRange = -1;
+        this.pageRange = 5;
         this.totalRowCnt = -1;
         this.cursorPageNum = -1;
         this.rowCntPerPage = -1;

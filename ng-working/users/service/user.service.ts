@@ -38,9 +38,6 @@ export class UserService {
   private updatePasswordUrl = '/CI/index.php/api/users/updatepw';
   private addUserUrl = '/CI/index.php/api/users/add';
 
-  // http://devcafeclass.co.uk/CI/index.php/api/users/email?q=wonder13662@gmail.com
-  // http://devcafeclass.co.uk/CI/index.php/api/users/cookie
-
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
 

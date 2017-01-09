@@ -27,12 +27,17 @@ import { MyEventWatchTowerService }  from '../../util/service/my-event-watchtowe
 @Injectable()
 export class KlassService {
 
-  private klassesUrl = '/CI/index.php/api/klass/list';
+  // REMOVE ME
+  // private klassesUrl = '/CI/index.php/api/klass/list';
+  // private klassSearchUrl = '/CI/index.php/api/klass/search';
+  private fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
   private klassUrl = '/CI/index.php/api/klass/course';
+  
   private klassUpdateUrl = '/CI/index.php/api/klass/update';
   private klassNewUrl = '/CI/index.php/api/klass/coursenew';
   private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
-  private klassSearchUrl = '/CI/index.php/api/klass/search';
+
+
   private klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
   private klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
 
@@ -542,32 +547,59 @@ export class KlassService {
     return klassVenue;
   }
 
-  searchKlassList ( level:string, 
-                    station:string, 
-                    day:string, 
-                    time:string, 
-                    q:string): Promise<MyResponse> {
+  fetchKlassList (  apiKey:string, 
+                    loginUserId:number, 
+                    pageNum:number, 
+                    pageSize:number, 
+                    searchQuery:string, 
+                    klassStatus:string,
+                    klassLevel:string,
+                    klassSubwayLine:string,
+                    klassSubwayStation:string,
+                    klassDays:string,
+                    klassTime:string ): Promise<MyResponse> {
 
-    if(this.isDebug()) console.log("klass.service / searchKlassList / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
 
-    if(this.isDebug()) console.log("klass.service / searchKlassList / level : ",level);
-    if(this.isDebug()) console.log("klass.service / searchKlassList / station : ",station);
-    if(this.isDebug()) console.log("klass.service / searchKlassList / day : ",day);
-    if(this.isDebug()) console.log("klass.service / searchKlassList / time : ",time);
-    if(this.isDebug()) console.log("klass.service / searchKlassList / q : ",q);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassLevel : ",klassLevel);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayLine : ",klassSubwayLine);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayStation : ",klassSubwayStation);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassDays : ",klassDays);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassTime : ",klassTime);
 
-    let qEncoded = encodeURIComponent(q);
-    let req_url = this.urlService.get(this.klassSearchUrl);
+    if("" === klassStatus) {
+      klassStatus = "O"; // Open - 개강
+    }
 
-    req_url = `${ req_url }?level=${ level }&station=${ station }&day=${ day }&time=${ time }&q=${ qEncoded }`;
-    if(this.isDebug()) console.log("klass.service / searchKlassList / req_url : ",req_url);
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchKlassListUrl);
 
-    return this.http.get(req_url)
-                  .toPromise()
-                  .then(this.myExtractor.extractData)
-                  .catch(this.myExtractor.handleError);
+    let params = {
+      login_user_id:loginUserId,
+      page_num:pageNum,
+      page_size:pageSize,
+      search_query:searchQuery,
+      klass_status:klassStatus,
+      klass_level:klassLevel,
+      klass_subway_line:klassSubwayLine,
+      klass_subway_station:klassSubwayStation,
+      klass_days:klassDays,
+      klass_time:klassTime
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
 
-  }
+  }   
 
   getKlass (id: number | string): Promise<MyResponse> {
 
@@ -584,20 +616,6 @@ export class KlassService {
                   .catch(this.myExtractor.handleError);
   }
 
-  getKlasses (): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("klass.service / getKlasses / 시작");
-
-    let req_url = this.urlService.get(this.klassesUrl);
-
-    if(this.isDebug()) console.log("klass.service / getKlasses / req_url : ",req_url);
-
-    return this.http.get(req_url)
-                  .toPromise()
-                  .then(this.myExtractor.extractData)
-                  .catch(this.myExtractor.handleError);
-
-  } // end getKlasses
   
   getKlassSelectile(): Promise<MyResponse> {
 
@@ -652,5 +670,62 @@ export class KlassService {
 
     return imgUrl.replace(/[\/]?assets\/images\/class\/banner/gi,"").replace(/[\/]+/gi,"");
   }
+
+// REMOVE ME
+/*
+  getKlasses (): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("klass.service / getKlasses / 시작");
+
+    let req_url = this.urlService.get(this.klassesUrl);
+
+    if(this.isDebug()) console.log("klass.service / getKlasses / req_url : ",req_url);
+
+    return this.http.get(req_url)
+                  .toPromise()
+                  .then(this.myExtractor.extractData)
+                  .catch(this.myExtractor.handleError);
+
+  } // end getKlasses
+*/  
+  /*
+  searchKlassList ( apiKey:string, 
+                    klassLevel:string, 
+                    klassSubwayStation:string, 
+                    klassDay:string, 
+                    klassTime:string, 
+                    searchQuery:string): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("klass.service / searchKlassList / 시작");
+
+    if(this.isDebug()) console.log("klass.service / searchKlassList / klassLevel : ",klassLevel);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / klassSubwayStation : ",klassSubwayStation);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / klassDay : ",klassDay);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / klassTime : ",klassTime);
+    if(this.isDebug()) console.log("klass.service / searchKlassList / searchQuery : ",searchQuery);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.klassSearchUrl);
+
+    // wonder.jung - 페이징 처리는 어떻게 할 것인지?
+    // 하단 스크롤이 발생할때마다 수업이 추가되는 구조. - UI 구조상, 덧붙이는 형식으로 표현. 
+    // pagination은 가지고 있어야 함. page를 넘기는 구조로 다음 리스트를 가져옴.
+
+    let params = {
+      klass_level:klassLevel,
+      klass_subway_station:klassSubwayStation,
+      klass_day:klassDay,
+      klass_time:klassTime,
+      search_query:searchQuery,
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  }
+  */
 
 } // end class

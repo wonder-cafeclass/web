@@ -142,6 +142,12 @@
     height: 50px;
     background-color: #fff; 
 }
+.st_top_knob_single {
+    border-bottom: 1px solid #e85c41;
+    width: 50px;
+    height: 50px;
+    background-color: #fff; 
+}
 
 .st_top_right {
     border-top-right-radius: 4px;
