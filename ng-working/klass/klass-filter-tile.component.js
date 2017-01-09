@@ -713,8 +713,8 @@ var KlassFilterTileComponent = (function () {
                         field["class_name"] = "right-round";
                     }
                     else if (curSelectileIdx === colIdx) {
-                        // 2-3. 첫번째와 마지막 컬럼이 아니지만 knob과 연결되어 있는가?
-                        field["class_name"] = "top-knob";
+                        // 2-4. 첫번째와 마지막 컬럼이 아니지만 knob과 연결되어 있는가?
+                        field["class_name"] = "top-knob-single";
                     }
                     else {
                         // 2-5. 다른 타일에 둘러싸여있는 타일인가?
