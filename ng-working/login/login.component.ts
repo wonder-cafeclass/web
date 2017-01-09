@@ -90,7 +90,8 @@ export class LoginComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
@@ -550,6 +551,7 @@ export class LoginComponent implements AfterViewInit {
     if(this.isDebug()) console.log("login / goRedirect / 시작");
 
     if(!this.isAdmin) {
+      if(this.isDebug()) console.log("login / goRedirect / 중단 / this.isAdmin : ",this.isAdmin);
       return;
     }
 

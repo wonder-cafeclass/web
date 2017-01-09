@@ -48,8 +48,7 @@ var KlassFilterTileComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
     }
     KlassFilterTileComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.this.isDebug();
+        return this.watchTower.isDebug();
     };
     KlassFilterTileComponent.prototype.setSelectileProps = function () {
         if (this.isDebug())

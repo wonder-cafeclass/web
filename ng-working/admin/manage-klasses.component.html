@@ -42,6 +42,18 @@
 	            </widget-input-default>	        	
 	        </div>
 	        <!-- 검색 - 지하철 역 / 필요함(피터님 피드백) -->
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListSubwayStation"
+	            [meta]="defaultMetaSubwayStationForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>	        
 
 			<!-- 검색 - 수업 시간 -->
 			<div class="my-status-box">

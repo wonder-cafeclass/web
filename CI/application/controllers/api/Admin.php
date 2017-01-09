@@ -317,6 +317,7 @@ class Admin extends MY_REST_Controller {
             "klass_status"=>$klass_status,
             "klass_level"=>$klass_level,
             "klass_subway_line"=>$klass_subway_line,
+            "klass_subway_station"=>$klass_subway_station,
             "klass_days"=>$klass_days,
             "klass_time"=>$klass_time
         ];

@@ -47,8 +47,7 @@ var KlassListComponent = (function () {
         this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;

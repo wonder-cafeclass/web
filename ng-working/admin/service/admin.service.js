@@ -57,7 +57,7 @@ var AdminService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassDays, klassTime) {
+    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / 시작");
         if (this.isDebug())
@@ -75,6 +75,8 @@ var AdminService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / klassSubwayLine : ", klassSubwayLine);
         if (this.isDebug())
+            console.log("admin.service / fetchKlassList / klassSubwayStation : ", klassSubwayStation);
+        if (this.isDebug())
             console.log("admin.service / fetchKlassList / klassDays : ", klassDays);
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / klassTime : ", klassTime);
@@ -88,6 +90,7 @@ var AdminService = (function () {
             klass_status: klassStatus,
             klass_level: klassLevel,
             klass_subway_line: klassSubwayLine,
+            klass_subway_station: klassSubwayStation,
             klass_days: klassDays,
             klass_time: klassTime
         };

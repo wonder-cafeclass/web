@@ -96,8 +96,7 @@ export class KlassFilterTileComponent implements OnInit {
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.this.isDebug();
+    return this.watchTower.isDebug();
   }
 
   setSelectileProps():void {
