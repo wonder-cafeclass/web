@@ -266,7 +266,7 @@ VALUES
 "N",
 "70000",
 "5",
-"class_workplace_600x600.png",
+"class_workplace_600x600.jpg",
 "",
 NOW()
 ),
@@ -297,7 +297,7 @@ NOW()
 "N",
 "65000",
 "3",
-"class_cafe_600x600.png",
+"class_cafe_600x600.jpg",
 "help.png",
 NOW()
 ),
@@ -328,7 +328,7 @@ NOW()
 "N",
 "100000",
 "3",
-"class_travel_selfie_600x600.png",
+"class_travel_selfie_600x600.jpg",
 "drinks_o.png",
 NOW()
 ),
@@ -359,7 +359,7 @@ NOW()
 "N",
 "65000",
 "3",
-"class_restaurant_order_600x600.png",
+"class_restaurant_order_600x600.jpg",
 "drinks_x.png",
 NOW()
 ),
@@ -390,7 +390,7 @@ NOW()
 "N",
 "65000",
 "3",
-"class_restaurant_order_meat_600x600.png",
+"class_restaurant_order_meat_600x600.jpg",
 "drinks_x.png",
 NOW()
 ),
@@ -421,7 +421,7 @@ NOW()
 "N",
 "65000",
 "3",
-"class_cafe_order_600x600.png",
+"class_cafe_order_600x600.jpg",
 "",
 NOW()
 )
