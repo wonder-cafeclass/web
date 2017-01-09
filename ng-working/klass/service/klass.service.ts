@@ -574,7 +574,7 @@ export class KlassService {
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassTime : ",klassTime);
 
     if("" === klassStatus) {
-      klassStatus = "O"; // Open - 개강
+      klassStatus = "E"; // Open - 개강
     }
 
     // POST

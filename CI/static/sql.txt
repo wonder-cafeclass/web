@@ -121,7 +121,7 @@ CREATE TABLE `klass` (
   `venue_road_address` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 도로명 주소 / 네이버 지역 검색 결과',
   `venue_latitude` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 경도 / 네이버 맵에 사용됨',
   `venue_longitude` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 위도 / 네이버 맵에 사용됨',
-  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/신규),O(Open/개강),S(Suspended/중단),C(Closed/종료)',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/등록),E(Enrollment/모집),B(Begin/시작),C(Closed/마감),F(Finished/종료),S(Suspended/정지)',
   `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
   `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 0 COMMENT '월별 - 4주단위 수강료. 최대 천만원 단위까지 표시.',
   `student_cnt` int(1) COLLATE utf8_bin NOT NULL DEFAULT 3 COMMENT '수업 참가 학생수. 기본값은 3명.',
