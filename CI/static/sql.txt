@@ -9,10 +9,12 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `user_validation`;
 DROP TABLE IF EXISTS `user_cookie`;
 
+DROP TABLE IF EXISTS `klass_n_student`;
 DROP TABLE IF EXISTS `teacher`;
 DROP TABLE IF EXISTS `review`;
 DROP TABLE IF EXISTS `question`;
 DROP TABLE IF EXISTS `attendance`;
+DROP TABLE IF EXISTS `payment_import`;
 
 DROP TABLE IF EXISTS `login_attempts`;
 DROP TABLE IF EXISTS `log_access`;
@@ -135,6 +137,17 @@ CREATE TABLE `klass` (
   KEY `date_begin` (`date_begin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class';
 
+CREATE TABLE `klass_n_student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';
+
 CREATE TABLE `review` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `klass_id` int(11) NOT NULL,
@@ -161,6 +174,46 @@ CREATE TABLE `question` (
   PRIMARY KEY (`id`),
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass question comment';
+
+# 결재 모듈 아임포트의 결재 내역 원본
+CREATE TABLE `payment_import` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `imp_uid` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '아임포트 결제 고유 UID',
+  `merchant_uid` char(64) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '가맹점(카페클래스)에서 전달한 거래 고유 UID',
+  `pay_method` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'samsung : 삼성페이 / card : 신용카드 / trans : 계좌이체 / vbank : 가상계좌',
+  `pg_provider` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'PG사 명칭. inicis(이니시스) / nice(나이스정보통신)',
+  `pg_tid` char(64) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'PG사 승인정보',
+  `escrow` int(1) NOT NULL DEFAULT 0 COMMENT '에스크로결제 여부',  
+  `apply_num` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '카드사 승인정보(계좌이체/가상계좌는 값 없음)',
+  `card_name` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '카드사 명칭',
+  `card_quota` int(2) NOT NULL DEFAULT 0 COMMENT '할부개월 수(0이면 일시불)',
+  `vbank_name` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '입금받을 가상계좌 은행명',
+  `vbank_num` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '입금받을 가상계좌 계좌번호',
+  `vbank_holder` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '입금받을 가상계좌 예금주 ',
+  `vbank_date` int(11) NOT NULL DEFAULT 0 COMMENT '입금받을 가상계좌 마감기한 UNIX timestamp - 1484063719',
+  `name` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문명칭',
+  `amount` int(8) NOT NULL DEFAULT 0 COMMENT '주문(결제)금액',  
+  `cancel_amount` int(8) NOT NULL DEFAULT 0 COMMENT '결제취소금액',
+  `currency` char(4) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '결제승인화폐단위(KRW:원, USD:미화달러, EUR:유로)',
+  `buyer_name` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자명',
+  `buyer_email` char(64) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자 Email주소',
+  `buyer_tel` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자 전화번호',
+  `buyer_addr` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자 주소',
+  `buyer_postcode` char(8) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자 우편번호 ',
+  `status` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT "결제상태. ready:미결제, paid:결제완료, cancelled:결제취소, failed:결제실패 = ['ready', 'paid', 'cancelled', 'failed']",
+  `paid_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제완료시점 UNIX timestamp. 결제완료가 아닐 경우 0',
+  `failed_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제실패시점 UNIX timestamp. 결제실패가 아닐 경우 0',  
+  `cancelled_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제취소시점 UNIX timestamp. 결제취소가 아닐 경우 0',  
+  `fail_reason` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '결제실패 사유',
+  `cancel_reason` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '결제취소 사유',
+  `receipt_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '신용카드 매출전표 확인 URL',
+  `cancel_receipt_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
 
 CREATE TABLE `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

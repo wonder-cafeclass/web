@@ -20,6 +20,10 @@ export class MyChecker {
 	// 이하
 	public lessThanEqualTo:number;
 
+	// 이하
+	public isBoolean:boolean=false;
+
+
 	// RegExp / 매칭 결과가 있어어야 함.
 	public regexInclude:RegExp;
 	public regexIncludeArr:RegExp[];

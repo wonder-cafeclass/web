@@ -27,6 +27,10 @@ class MY_ApiKey {
     public $Kakao_Javascript_Key="Kakao-Javascript-Key";
     public $Kakao_Admin_Key="Kakao-Admin-Key";
 
+    public $Payment_Import_App_Key="Payment-Import-App-Key";
+    public $Payment_Import_REST_API_Key="Payment-Import-REST-API-Key";
+    public $Payment_Import_REST_API_Secret_Key="Payment-Import-REST-API-Secret-Key";
+
     public function __construct($params=null)
     {
         // get singleton object.

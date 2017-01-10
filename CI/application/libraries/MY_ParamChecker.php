@@ -1206,6 +1206,14 @@ class MY_ParamChecker extends MY_Library
                     return $result;
                 }
             }
+            else if(strpos($filter, 'is_boolean') === 0) 
+            {   
+                if("true" != $value && "false" != $value && !is_bool($value))
+                {
+                    $result["message"]="!is_bool(\$value)";
+                    return $result;
+                } // end if
+            }
     		else
     		{
 	    		$result["message"]="no match filter!";

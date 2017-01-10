@@ -147,6 +147,32 @@
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
+		"payment_success":"is_boolean",
+		"payment_error_code":"is_str",
+		"payment_error_msg":"is_str",
+		"payment_imp_uid":"is_str",
+		"payment_merchant_uid":"is_str",
+		"payment_pay_method":"is_str",
+		"payment_paid_amount":"is_natural_no_zero",
+		"payment_status":"is_str",
+		"payment_name":"is_str",
+		"payment_pg_provider":"is_str",
+		"payment_pg_tid":"is_str",
+		"payment_buyer_name":"is_str",
+		"payment_buyer_email":"is_str",
+		"payment_buyer_tel":"is_str",
+		"payment_buyer_addr":"is_str",
+		"payment_buyer_postcode":"is_str",
+		"payment_custom_data":"is_str",
+		"payment_paid_at":"is_str",
+		"payment_receipt_url":"is_str",
+
+		"payment_apply_num":"is_str",
+		"payment_vbank_num":"is_str",
+		"payment_vbank_name":"is_str",
+		"payment_vbank_holder":"is_str",
+		"payment_vbank_date":"is_str",
+
 		"EOL":""
 	}
 	, "const":{

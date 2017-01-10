@@ -25,6 +25,7 @@ var default_service_1 = require('../widget/input/default/service/default.service
 var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
+var import_component_1 = require('../widget/payment/import.component');
 var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_price_calculator_component_1 = require('./widget/klass-price-calculator.component');
 var image_service_1 = require('../util/image.service');
@@ -36,10 +37,11 @@ var my_time_1 = require('../util/helper/my-time');
 var my_array_1 = require('../util/helper/my-array');
 var my_is_1 = require('../util/helper/my-is');
 var my_format_1 = require('../util/helper/my-format');
+var url_service_1 = require('../util/url.service');
 var teacher_service_1 = require('../teachers/service/teacher.service');
 var teacher_1 = require('../teachers/model/teacher');
 var KlassDetailComponent = (function () {
-    function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, myCheckerService) {
+    function KlassDetailComponent(route, router, klassService, imageService, dialogService, authService, myLoggerService, myEventService, watchTower, radiobtnService, checkboxService, teacherService, defaultService, urlService, myCheckerService) {
         this.route = route;
         this.router = router;
         this.klassService = klassService;
@@ -53,6 +55,7 @@ var KlassDetailComponent = (function () {
         this.checkboxService = checkboxService;
         this.teacherService = teacherService;
         this.defaultService = defaultService;
+        this.urlService = urlService;
         this.myCheckerService = myCheckerService;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
@@ -927,13 +930,55 @@ var KlassDetailComponent = (function () {
         } // end if
     }; // end method
     KlassDetailComponent.prototype.onClickEnrollment = function (event, klass) {
+        if (this.isDebug())
+            console.log("klass-detail / onClickEnrollment / 시작");
         event.stopPropagation();
+        event.preventDefault();
+        if (null == this.paymentImportComponent) {
+            if (this.isDebug())
+                console.log("klass-detail / onClickEnrollment / 중단 / null == this.paymentImportComponent");
+            return;
+        } // end if
+        if (null == this.loginUser) {
+            if (this.isDebug())
+                console.log("klass-detail / onClickEnrollment / 중단 / null == this.loginUser");
+            return;
+        }
+        this.paymentImportComponent.buyKlass(
+        // klassId:number, 
+        this.klass.id, 
+        // klassName:string, 
+        this.klass.title, 
+        // userId:number,
+        this.loginUser.id, 
+        // userEmail:string,
+        this.loginUser.email, 
+        // userName:string,
+        this.loginUser.name, 
+        // userMobile:string,
+        this.loginUser.mobile, 
+        // amount:number      
+        this.klass.price);
     };
+    // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
+    KlassDetailComponent.prototype.goLogin = function () {
+        if (this.isDebug())
+            console.log("import / goLogin / init");
+        var appViewUrl = this.urlService.getAppViewUrl();
+        if (this.isDebug())
+            console.log("import / goLogin / appViewUrl : ", appViewUrl);
+        var req_url = this.urlService.get("#/login?redirect=" + appViewUrl);
+        if (this.isDebug())
+            console.log("import / goLogin / req_url : ", req_url);
+        window.location.href = req_url;
+    }; // end method
     KlassDetailComponent.prototype.onClickWishList = function (event, klass) {
         event.stopPropagation();
+        event.preventDefault();
     };
     KlassDetailComponent.prototype.onClickYellowID = function (event, klass) {
         event.stopPropagation();
+        event.preventDefault();
     };
     KlassDetailComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
@@ -1058,6 +1103,11 @@ var KlassDetailComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.clockBoardComponent = myEvent.metaObj;
                     this.setKlassClock();
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {
+                if (null != myEvent.metaObj) {
+                    this.paymentImportComponent = myEvent.metaObj;
                 } // end if
             } // end if  
         }
@@ -1998,13 +2048,17 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(klass_price_calculator_component_1.KlassPriceCalculatorComponent), 
         __metadata('design:type', klass_price_calculator_component_1.KlassPriceCalculatorComponent)
     ], KlassDetailComponent.prototype, "priceCalculator", void 0);
+    __decorate([
+        core_1.ViewChild(import_component_1.ImportComponent), 
+        __metadata('design:type', import_component_1.ImportComponent)
+    ], KlassDetailComponent.prototype, "paymentImportComponent", void 0);
     KlassDetailComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             styleUrls: ['klass-detail.component.css'],
             templateUrl: 'klass-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, klass_service_1.KlassService, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, teacher_service_1.TeacherService, default_service_1.DefaultService, my_checker_service_1.MyCheckerService])
+        __metadata('design:paramtypes', [router_1.ActivatedRoute, router_1.Router, klass_service_1.KlassService, image_service_1.ImageService, dialog_service_1.DialogService, auth_service_1.AuthService, my_logger_service_1.MyLoggerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_radiobtn_service_1.KlassRadioBtnService, klass_checkbox_service_1.KlassCheckBoxService, teacher_service_1.TeacherService, default_service_1.DefaultService, url_service_1.UrlService, my_checker_service_1.MyCheckerService])
     ], KlassDetailComponent);
     return KlassDetailComponent;
 }());

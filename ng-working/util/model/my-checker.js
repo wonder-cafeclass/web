@@ -6,6 +6,8 @@ var MyChecker = (function () {
         this.min = min;
         this.max = max;
         this.regexExclude = regexExclude;
+        // 이하
+        this.isBoolean = false;
         // initialize
         this.regexIncludeArr = [];
         this.regexExcludeArr = [];

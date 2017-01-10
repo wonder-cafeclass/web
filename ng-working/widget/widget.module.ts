@@ -29,6 +29,8 @@ import { ImageGridV2Component }         from './image-grid/image-grid-v2.compone
 import { InputBtnsRowComponent }     	from './input-view/input-btns-row.component';
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
 import { DebugBtnComponent }      		from './debug/debug-btn.component';
+import { ImportComponent }      		from './payment/import.component';
+import { PaymentService }         		from './payment/service/payment.service';
 
 import { CheckBoxComponent }      		from './checkbox/checkbox.component';
 import { PaginationComponent }      	from './pagination/pagination.component';
@@ -54,6 +56,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
+		ImportComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
@@ -83,6 +86,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
+		ImportComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
@@ -100,7 +104,8 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		SafeHtmlPipe
 	],
 	providers: [
-		DefaultService
+		DefaultService,
+		PaymentService
 	]
 })
 export class WidgetModule {}

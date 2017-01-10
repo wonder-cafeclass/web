@@ -45,6 +45,7 @@ import { DefaultService }                from '../widget/input/default/service/d
 import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.component';
 import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
 import { ButterflyComponent }            from '../widget/butterfly/butterfly.component';
+import { ImportComponent }               from '../widget/payment/import.component';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 import { KlassPriceCalculatorComponent } from './widget/klass-price-calculator.component';
@@ -61,6 +62,7 @@ import { HelperMyArray }                 from '../util/helper/my-array';
 import { HelperMyIs }                    from '../util/helper/my-is';
 import { HelperMyFormat }                from '../util/helper/my-format';
 import { HelperMyConst }                 from '../util/helper/my-const';
+import { UrlService }                    from '../util/url.service';
 
 import { UserService }                   from '../users/service/user.service';
 import { User }                          from '../users/model/user';
@@ -179,6 +181,8 @@ export class KlassDetailComponent implements AfterViewInit {
   @ViewChild(KlassPriceCalculatorComponent)
   private priceCalculator: KlassPriceCalculatorComponent;
 
+  @ViewChild(ImportComponent)
+  private paymentImportComponent: ImportComponent;
 
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
@@ -215,6 +219,7 @@ export class KlassDetailComponent implements AfterViewInit {
     private checkboxService:KlassCheckBoxService,
     private teacherService:TeacherService,
     private defaultService:DefaultService,
+    private urlService:UrlService, 
     private myCheckerService:MyCheckerService
   ) {
 
@@ -1238,19 +1243,66 @@ export class KlassDetailComponent implements AfterViewInit {
 
   onClickEnrollment(event, klass:Klass) {
 
+    if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 시작");
+
     event.stopPropagation();
+    event.preventDefault();
+
+    if(null == this.paymentImportComponent) {
+      if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 중단 / null == this.paymentImportComponent");
+      return;
+    } // end if
+
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 중단 / null == this.loginUser");
+      return;
+    }
+
+    this.paymentImportComponent.buyKlass(
+      // klassId:number, 
+      this.klass.id,
+      // klassName:string, 
+      this.klass.title,
+      // userId:number,
+      this.loginUser.id,  
+      // userEmail:string,
+      this.loginUser.email,   
+      // userName:string,
+      this.loginUser.name,   
+      // userMobile:string,
+      this.loginUser.mobile,   
+      // amount:number      
+      this.klass.price
+    );
 
   }
+
+  // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
+  private goLogin():void {
+
+    if(this.isDebug()) console.log("import / goLogin / init");
+
+    let appViewUrl:string = this.urlService.getAppViewUrl();
+    if(this.isDebug()) console.log("import / goLogin / appViewUrl : ",appViewUrl);
+
+    let req_url = this.urlService.get(`#/login?redirect=${appViewUrl}`);
+    if(this.isDebug()) console.log("import / goLogin / req_url : ",req_url);
+
+    window.location.href = req_url;
+  } // end method
+
 
   onClickWishList(event, klass:Klass) {
 
     event.stopPropagation();
+    event.preventDefault();
 
   }
 
   onClickYellowID(event, klass:Klass) {
 
     event.stopPropagation();
+    event.preventDefault();
 
   }
 
@@ -1398,6 +1450,12 @@ export class KlassDetailComponent implements AfterViewInit {
         if( null != myEvent.metaObj ) { // wonder.jung
           this.clockBoardComponent = myEvent.metaObj;
           this.setKlassClock();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {  
+
+        if( null != myEvent.metaObj ) { // wonder.jung
+          this.paymentImportComponent = myEvent.metaObj;
         } // end if
 
       } // end if  

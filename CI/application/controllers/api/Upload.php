@@ -49,6 +49,9 @@ class Upload extends MY_REST_Controller {
         $this->load->library('MY_Thumbnail');
         // only for Upload api!
         $this->load->helper(array('form', 'url'));
+
+        // TODO - png 이미지를 jpeg로 압축 저장 
+        // http://stackoverflow.com/questions/1201798/use-php-to-convert-png-to-jpg-with-compression
     }
 
     /*
