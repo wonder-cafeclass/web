@@ -3,8 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once APPPATH . '/models/KlassCourse.php';
 require_once APPPATH . '/models/Teacher.php';
+require_once APPPATH . '/models/User.php';
 require_once APPPATH . '/models/KlassSubwayLine.php';
 require_once APPPATH . '/models/KlassSubwayStation.php';
+require_once APPPATH . '/models/PaymentImport.php';
 require_once APPPATH . '/libraries/MY_Library.php';
 
 class MY_Decorator extends MY_Library
@@ -790,6 +792,176 @@ class MY_Decorator extends MY_Library
         $klass->price_with_format = number_format($klass->price);
 
         return $klass;
-    } 	
+    } 
+
+    private function getStr($target=null, $key="")	
+    {
+        if(is_null($target))
+        {
+            return null;
+        }
+        if(empty($key))
+        {
+            return null;
+        }
+        if(is_null($this->CI->my_keyvalue))
+        {
+            return null;
+        }
+        if(!$this->CI->my_keyvalue->has($target, $key))
+        {
+            return null;
+        }
+
+        return $this->CI->my_keyvalue->get($target, $key);
+    }
+
+    private function getNumber($target=null, $key="")  
+    {
+        if(is_null($target))
+        {
+            return null;
+        }
+        if(empty($key))
+        {
+            return null;
+        }
+        if(is_null($this->CI->my_keyvalue))
+        {
+            return null;
+        }
+        if(!$this->CI->my_keyvalue->has($target, $key))
+        {
+            return null;
+        }
+
+        return $this->CI->my_keyvalue->get_number($target, $key);
+    }    
+
+    // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
+    public function deco_payment_import($pi_list=null) 
+    {
+        if(empty($pi_list)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$pi_list)");
+            return array();
+        } // end if
+
+        $pi_list_next = array();
+        foreach ($pi_list as $payment)
+        {
+            // join으로 가져온 PaymentImport와 User의 정보를 나눕니다.
+
+            $pi = new PaymentImport();
+
+            $pi->id = $this->getNumber($payment, "pi_id");
+            $pi->klass_id = $this->getNumber($payment, "pi_klass_id");
+            $pi->user_id = $this->getNumber($payment, "pi_user_id");
+            $pi->imp_uid = $this->getStr($payment, "pi_imp_uid");
+            $pi->merchant_uid = $this->getStr($payment, "pi_merchant_uid");
+
+            $pi->pay_method = $this->getStr($payment, "pi_pay_method");
+            $pi->pg_provider = $this->getStr($payment, "pi_pg_provider");
+            $pi->pg_tid = $this->getStr($payment, "pi_pg_tid");
+            $pi->escrow = (bool)$this->getNumber($payment, "pi_escrow");
+            $pi->apply_num = $this->getStr($payment, "pi_apply_num");
+
+            $pi->card_name = $this->getStr($payment, "pi_card_name");
+
+            $pi->card_quota = $this->getNumber($payment, "pi_card_quota");
+            $pi->vbank_name = $this->getStr($payment, "pi_vbank_name");
+            $pi->vbank_num = $this->getStr($payment, "pi_vbank_num");
+            $pi->vbank_holder = $this->getStr($payment, "pi_vbank_holder");
+
+            $pi->vbank_date = $this->getStr($payment, "pi_vbank_date");
+            $pi->my_date_vbank_date = $this->getStr($payment, "pi_my_date_vbank_date");
+            $pi->name = $this->getStr($payment, "pi_name");
+            $pi->amount = $this->getNumber($payment, "pi_amount");
+            $pi->cancel_amount = $this->getNumber($payment, "pi_cancel_amount");
+
+            $pi->currency = $this->getStr($payment, "pi_currency");
+            $pi->buyer_name = $this->getStr($payment, "pi_buyer_name");
+            $pi->buyer_email = $this->getStr($payment, "pi_buyer_email");
+            $pi->buyer_tel = $this->getStr($payment, "pi_buyer_tel");
+            $pi->buyer_addr = $this->getStr($payment, "pi_buyer_addr");
+
+            $pi->buyer_postcode = $this->getStr($payment, "pi_buyer_postcode");
+            $pi->status = $this->getStr($payment, "pi_status");
+            $pi->paid_at = $this->getNumber($payment, "pi_paid_at");
+            $pi->my_date_paid_at = $this->getStr($payment, "pi_my_date_paid_at");
+            $pi->failed_at = $this->getNumber($payment, "pi_failed_at");
+
+            $pi->my_date_failed_at = $this->getStr($payment, "pi_my_date_failed_at");
+            $pi->cancelled_at = $this->getNumber($payment, "pi_cancelled_at");
+            $pi->my_date_cancelled_at = $this->getStr($payment, "pi_my_date_cancelled_at");
+            $pi->fail_reason = $this->getStr($payment, "pi_fail_reason");
+            $pi->cancel_reason = $this->getStr($payment, "pi_cancel_reason");
+
+            $pi->receipt_url = $this->getStr($payment, "pi_receipt_url");
+            $pi->cancel_receipt_url = $this->getStr($payment, "pi_cancel_receipt_url");
+            $pi->date_created = $this->getStr($payment, "pi_date_created");
+
+            $klass = new KlassCourse();
+
+            $klass->id = $this->getNumber($payment, "klass_id");
+            $klass->title = $this->getStr($payment, "klass_title");
+            $klass->desc = $this->getStr($payment, "klass_desc");
+            $klass->feature = $this->getStr($payment, "klass_feature");
+            $klass->target = $this->getStr($payment, "klass_target");
+
+            $klass->schedule = $this->getStr($payment, "klass_schedule");
+            $klass->date_begin = $this->getStr($payment, "klass_date_begin");
+            $klass->time_begin = $this->getStr($payment, "klass_time_begin");
+            $klass->time_duration_minutes = $this->getStr($payment, "klass_time_duration_minutes");
+            $klass->time_end = $this->getStr($payment, "klass_time_end");
+
+            $klass->level = $this->getStr($payment, "klass_level");
+            $klass->week = $this->getStr($payment, "klass_week");
+            $klass->days = $this->getStr($payment, "klass_days");
+            $klass->subway_line = $this->getStr($payment, "klass_subway_line");
+            $klass->subway_station = $this->getStr($payment, "klass_subway_station");
+
+            $klass->venue_title = $this->getStr($payment, "klass_venue_title");
+            $klass->venue_telephone = $this->getStr($payment, "klass_venue_telephone");
+            $klass->venue_address = $this->getStr($payment, "klass_venue_address");
+            $klass->venue_road_address = $this->getStr($payment, "klass_venue_road_address");
+            $klass->venue_latitude = $this->getStr($payment, "klass_venue_latitude");
+
+            $klass->venue_longitude = $this->getStr($payment, "klass_venue_longitude");
+            $klass->status = $this->getStr($payment, "klass_status");
+            $klass->price = $this->getStr($payment, "klass_price");
+            $klass->student_cnt = $this->getStr($payment, "klass_student_cnt");
+            $klass->class_poster_url = $this->getStr($payment, "klass_class_poster_url");
+
+            $klass->class_poster_url_loadable = 
+            $this->CI->my_path->get_loadable_url_class_poster($klass->class_poster_url);
+
+            $klass->class_banner_url = $this->getStr($payment, "klass_class_banner_url");
+            $klass->date_created = $this->getStr($payment, "klass_date_created");
+            $klass->date_updated = $this->getStr($payment, "klass_date_updated");
+
+            $pi->klass = $klass;
+
+            $user = new User();
+
+            $user->id = $this->getNumber($payment, "user_id");
+            $user->nickname = $this->getStr($payment, "user_nickname");
+            $user->name = $this->getStr($payment, "user_name");
+            $user->gender = $this->getStr($payment, "user_gender");
+            $user->birthday = $this->getStr($payment, "user_birthday");
+
+            $user->thumbnail = $this->getStr($payment, "user_thumbnail");
+            $user->status = $this->getStr($payment, "user_status");
+            $user->permission = $this->getStr($payment, "user_permission");
+            $user->mobile = $this->getStr($payment, "user_mobile");
+            $user->email = $this->getStr($payment, "user_email");
+
+            $pi->user = $user;
+            
+            array_push($pi_list_next, $pi);
+        }
+
+        return $pi_list_next;
+        
+    } // end method    
 
 }

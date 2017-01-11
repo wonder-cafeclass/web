@@ -42,6 +42,7 @@
 			</th>
 			<th>ID</th>
 			<th>제목</th>
+			<th>구매자</th>
 			<th>카드이름</th>
 			<th>금액</th>
 			<th>결재일시</th>
@@ -66,9 +67,19 @@
 				</div>
 			</th> 
 			<td>{{payment.id}}</td>
-			<td>{{payment.name}}</td>
+			<td>
+				<img 
+				class="img-rounded my-style" 
+				src={{payment.klass.class_poster_url_loadable}}>
+				<div>{{payment.name}}</div>
+			</td>
+			<td>
+				<img class="img-rounded my-style" src={{payment.user.thumbnail}}>
+				<br/>
+				<div>{{payment.user.nickname}}</div>
+			</td>
 			<td>{{payment.card_name}}</td>
-			<td>{{payment.amount}}</td>
+			<td>{{payment.amountWithFormat}}</td>
 			<td>{{payment.my_date_paid_at}}</td>
 
 			

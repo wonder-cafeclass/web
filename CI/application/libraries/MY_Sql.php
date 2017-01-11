@@ -4060,7 +4060,6 @@ class MY_Sql extends MY_Library
 
     public function select_payment_import_cnt($klass_id=-1, $user_id=-1)
     {
-        // wonder.jung
         if($this->is_not_ready())
         {
             return;
@@ -4091,6 +4090,7 @@ class MY_Sql extends MY_Library
 
         // Logging
         $this->CI->db->select("*"); 
+        $this->CI->db->from("payment_import");
         if(0 < $klass_id) 
         {
             $this->CI->db->where('klass_id',$klass_id);
@@ -4099,12 +4099,113 @@ class MY_Sql extends MY_Library
         {
             $this->CI->db->where('user_id',$user_id);
         }
-        $sql = $this->CI->db->get_compiled_select('payment_import');
+        $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
     }
     // wonder.jung
+    private function get_query_payment_import_field() 
+    {
+        $select_query = 
+        'payment_import.id AS pi_id,' .
+        'payment_import.klass_id AS pi_klass_id,' .
+        'payment_import.user_id AS pi_user_id,' .
+        'payment_import.imp_uid AS pi_imp_uid,' .
+        'payment_import.merchant_uid AS pi_merchant_uid,' .
+
+        'payment_import.pay_method AS pi_pay_method,' .
+        'payment_import.pg_provider AS pi_pg_provider,' .
+        'payment_import.pg_tid AS pi_pg_tid,' .
+        'payment_import.escrow AS pi_escrow,' .
+        'payment_import.apply_num AS pi_apply_num,' .
+
+        'payment_import.card_name AS pi_card_name,' .
+        'payment_import.card_quota AS pi_card_quota,' .
+        'payment_import.vbank_name AS pi_vbank_name,' .
+        'payment_import.vbank_num AS pi_vbank_num,' .
+        'payment_import.vbank_holder AS pi_vbank_holder,' .
+
+        'payment_import.vbank_date AS pi_vbank_date,' .
+        'payment_import.my_date_vbank_date AS pi_my_date_vbank_date,' .
+        'payment_import.name AS pi_name,' .
+        'payment_import.amount AS pi_amount,' .
+        'payment_import.cancel_amount AS pi_cancel_amount,' .
+
+        'payment_import.currency AS pi_currency,' .
+        'payment_import.buyer_name AS pi_buyer_name,' .
+        'payment_import.buyer_email AS pi_buyer_email,' .
+        'payment_import.buyer_tel AS pi_buyer_tel,' .
+        'payment_import.buyer_addr AS pi_buyer_addr,' .
+
+        'payment_import.buyer_postcode AS pi_buyer_postcode,' .
+        'payment_import.status AS pi_status,' .
+        'payment_import.paid_at AS pi_paid_at,' .
+        'payment_import.my_date_paid_at AS pi_my_date_paid_at,' .
+        'payment_import.failed_at AS pi_failed_at,' .
+
+        'payment_import.my_date_failed_at AS pi_my_date_failed_at,' .
+        'payment_import.cancelled_at AS pi_cancelled_at,' .
+        'payment_import.my_date_cancelled_at AS pi_my_date_cancelled_at,' .
+        'payment_import.fail_reason AS pi_fail_reason,' .
+        'payment_import.cancel_reason AS pi_cancel_reason,' .
+
+        'payment_import.receipt_url AS pi_receipt_url,' .
+        'payment_import.cancel_receipt_url AS pi_cancel_receipt_url,' .
+        'payment_import.date_created AS pi_date_created,' .
+
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+
+        'klass.venue_longitude AS klass_venue_longitude,'.
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+
+        'klass.class_banner_url AS klass_class_banner_url,'.
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.        
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email' .
+
+        ''
+
+        ;
+
+        return $select_query;
+    }
+
     public function select_payment_import_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1)
     {
         if($this->is_not_ok("klass_id", $klass_id))
@@ -4127,36 +4228,42 @@ class MY_Sql extends MY_Library
             return;
         } // end if
 
-
         // Query Execution
-        $this->CI->db->select("*"); 
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
         if(0 < $klass_id) 
         {
-            $this->CI->db->where('klass_id',$klass_id);
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
         }
         if(0 < $user_id) 
         {
-            $this->CI->db->where('user_id',$user_id);
+            $this->CI->db->where('payment_import.user_id',$user_id);
         }
-        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->order_by('payment_import.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
-        $query = $this->CI->db->get('payment_import');
-
+        $query = $this->CI->db->get();
 
         // Logging
-        $this->CI->db->select("*"); 
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
         if(0 < $klass_id) 
         {
-            $this->CI->db->where('klass_id',$klass_id);
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
         }
         if(0 < $user_id) 
         {
-            $this->CI->db->where('user_id',$user_id);
+            $this->CI->db->where('payment_import.user_id',$user_id);
         }
-        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->order_by('payment_import.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
 
-        $sql = $this->CI->db->get_compiled_select('payment_import');
+        $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();

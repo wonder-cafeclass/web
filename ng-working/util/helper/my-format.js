@@ -5,6 +5,10 @@
 var HelperMyFormat = (function () {
     function HelperMyFormat() {
     }
+    HelperMyFormat.prototype.getKRWWithCommas = function (target) {
+        var numberWithCommas = this.numberWithCommas(target);
+        return "\u20A9" + numberWithCommas;
+    };
     HelperMyFormat.prototype.numberWithCommas = function (x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };

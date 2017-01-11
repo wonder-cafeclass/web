@@ -1,4 +1,6 @@
 import { HelperMyIs }	from '../../../util/helper/my-is';
+import { User }       from '../../../users/model/user';
+import { Klass }      from '../../../klass/model/klass';
 
 
 export class PaymentImport {
@@ -48,6 +50,9 @@ export class PaymentImport {
   	public name:string="";
   	// 주문(결제)금액
   	public amount:number=0;
+    // 주문(결제)금액 / ex) 65,000
+    public amountWithFormat:string="";
+
   	// 결제취소금액
   	public cancel_amount:number=0;
   	// 결제승인화폐단위(KRW:원, USD:미화달러, EUR:유로)
@@ -99,6 +104,9 @@ export class PaymentImport {
 
     private myIs:HelperMyIs=null;	
 
+    public user:User=null;
+    public klass:Klass=null;
+
 	constructor(
 	) {
 		this.myIs = new HelperMyIs();
@@ -117,6 +125,16 @@ export class PaymentImport {
         if(isDebug) console.log("paymentImport / setJSON / paymentImport : ",paymentImport);
 
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        if(null != paymentImport.user) {
+          let userJSON = paymentImport.user;
+          paymentImport.user = new User().setJSON(userJSON);
+        }
+
+        if(null != paymentImport.klass) {
+          let klassJSON = paymentImport.klass;
+          paymentImport.klass = new Klass().setJSON(klassJSON);
+        }
+
 
         return paymentImport;
 

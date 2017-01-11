@@ -963,8 +963,6 @@ class Admin extends MY_REST_Controller {
             return;
         } // end if
 
-        // $this->my_sql->();
-
         // 검색어에 해당하는 전체 결과수를 가져옵니다.
         // 이 데이터로 pagination을 새로 만듭니다.
         $total_cnt = 
@@ -987,8 +985,6 @@ class Admin extends MY_REST_Controller {
         $output["pagination"] = $pagination;
 
         // klass_id(@Optional)와 user_id(@Optional)로 등록한 수업 정보를 가져옵니다.
-
-        // public function select_payment_import_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1)
         $payment_list =
         $this->my_sql->select_payment_import_list(
             // $limit=-1, 
@@ -1000,7 +996,11 @@ class Admin extends MY_REST_Controller {
             // $user_id=-1
             $user_id
         );
-        $output["payment_list"] = $payment_list;
+
+        $payment_list_next = 
+        $this->my_decorator->deco_payment_import($payment_list);
+
+        $output["payment_list"] = $payment_list_next;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
     }    
 
