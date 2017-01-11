@@ -17,6 +17,7 @@ import { UrlService }               from '../../util/url.service';
 import { User }                     from '../../users/model/user';
 
 import { PaymentService }           from './service/payment.service';
+import { PaymentImport }            from './model/payment-import';
 
 
 
@@ -62,74 +63,45 @@ export class ImportComponent implements OnInit {
 
   private __test():void {
 
-        /*
-apply_num:"33163144"
-buyer_addr:""
-buyer_email:"wonder13662test3@gmail.com"
-buyer_name:"아놀드"
-buyer_postcode:""
-buyer_tel:"010-0000-0003"
-card_name:"신한카드"
-card_quota:0
-custom_data:null
-imp_uid:"imp_158869218800"
-merchant_uid:"merchant_6_4_1484053869624"
-name:"주문명:여행가서 현지인처럼 주문해보기"
-paid_amount:65000
-paid_at:1484054892
-pay_method:"card"
-pg_provider:"html5_inicis"
-pg_tid:"StdpayCARDINIpayTest20170110222811748230"
-receipt_url:"https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayCARDINIpayTest20170110222811748230&noMethod=1"
-request_id:"req_1484053869628"
-status:"paid"
-success:true
-        */ 
-
     this.paymentService
     .addImportHistory(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // paymentImpUid:string
-      "imp_158869218800"
+      "imp_158869218800",
+      // klassId:number,
+      6,
+      // userId:number
+      4,
+      // loginUserId:number
+      4
     )
     .then((myResponse:MyResponse) => {
 
       if(this.isDebug()) console.log("import / addImportHistory / myResponse : ",myResponse);
 
-      if( myResponse.isSuccess() ) {
+      if( myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext") ) {
 
-        /*
-        // 1. Pagination 재설정
-        let jsonPagination = myResponse.getDataProp("pagination");
-        if(this.isDebug()) console.log("manage-klasses / fetchKlassList / jsonPagination : ",jsonPagination);
-        this.updatePagination(jsonPagination);
+        let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+        let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
 
-        // 2. Klass List 재설정 
-        let klassJSONList:any[] = myResponse.getDataProp("klass_list");
-        if(this.isDebug()) console.log("manage-klasses / fetchKlassList / klassJSONList : ",klassJSONList);
-
-        this.updateKlassList(klassJSONList);
-        */
+        // 부모 객체에게 결재 완료를 알립니다.
+        this.emitEventOnChangePaymentImp(paymentImpNext);
         
       } else if(myResponse.isFailed()){
 
-        /*
-        if(this.isDebug()) console.log("manage-klasses / fetchKlassList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
+        if(this.isDebug()) console.log("import / addImportHistory / 결재 정보 등록에 실패했습니다.");
 
-        this.watchTower.logAPIError("fetchKlassList has been failed!");
+        this.watchTower.logAPIError("addImportHistory has been failed!");
         if(null != myResponse.error) {
           this.watchTower.announceErrorMsgArr([myResponse.error]);
         } // end if
-        */
         
       } // end if
 
-    }); // end service    
+    }); // end service
 
-
-
-  }
+  } // end method
 
   private subscribeLoginUser() :void {
 
@@ -183,6 +155,34 @@ success:true
     if(this.isDebug()) console.log("import / emitEventOnReady / Done!");
 
   }  
+
+  private emitEventOnChangePaymentImp(paymentImp:PaymentImport) :void {
+
+    if(this.isDebug()) console.log("import / emitEventOnChangePaymentImp / 시작");
+
+    if(null == paymentImp) {
+      if(this.isDebug()) console.log("import / emitEventOnChangePaymentImp / 중단 / null == paymentImp");
+      return;
+    }
+
+    let myEvent:MyEvent =
+    this.watchTower.getEventOnChangeMeta(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      "",
+      // myChecker:MyChecker, 
+      this.watchTower.getMyCheckerService().getFreePassChecker(),
+      // meta:any
+      paymentImp
+    );
+
+    this.emitter.emit(myEvent);
+
+    if(this.isDebug()) console.log("import / emitEventOnReady / Done!");
+
+  }  
+
 
   private getIMP() :void {
     if(null == this.IMP) {

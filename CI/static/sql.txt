@@ -145,6 +145,7 @@ CREATE TABLE `klass_n_student` (
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`),
   INDEX `search` (`klass_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';
 
@@ -193,6 +194,7 @@ CREATE TABLE `payment_import` (
   `vbank_num` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '입금받을 가상계좌 계좌번호',
   `vbank_holder` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '입금받을 가상계좌 예금주 ',
   `vbank_date` int(11) NOT NULL DEFAULT 0 COMMENT '입금받을 가상계좌 마감기한 UNIX timestamp - 1484063719',
+  `my_date_vbank_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `name` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문명칭',
   `amount` int(8) NOT NULL DEFAULT 0 COMMENT '주문(결제)금액',  
   `cancel_amount` int(8) NOT NULL DEFAULT 0 COMMENT '결제취소금액',
@@ -204,14 +206,18 @@ CREATE TABLE `payment_import` (
   `buyer_postcode` char(8) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '주문자 우편번호 ',
   `status` char(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT "결제상태. ready:미결제, paid:결제완료, cancelled:결제취소, failed:결제실패 = ['ready', 'paid', 'cancelled', 'failed']",
   `paid_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제완료시점 UNIX timestamp. 결제완료가 아닐 경우 0',
+  `my_date_paid_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `failed_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제실패시점 UNIX timestamp. 결제실패가 아닐 경우 0',  
+  `my_date_failed_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `cancelled_at` int(11) NOT NULL DEFAULT 0 COMMENT '결제취소시점 UNIX timestamp. 결제취소가 아닐 경우 0',  
+  `my_date_cancelled_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `fail_reason` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '결제실패 사유',
   `cancel_reason` char(32) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '결제취소 사유',
   `receipt_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '신용카드 매출전표 확인 URL',
   `cancel_receipt_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
+  INDEX `uid` (`imp_uid`),
   INDEX `search` (`klass_id`,`user_id`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
 

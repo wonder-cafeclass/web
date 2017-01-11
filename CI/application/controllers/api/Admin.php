@@ -140,27 +140,27 @@ class Admin extends MY_REST_Controller {
             "klass_status"=>$klass_status
         );
         $output["params"] = $params;
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
-        if($is_ok) 
+        if(!$is_ok)
         {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
+            return;
+        } // end if       
 
-            $is_ok = 
-            $this->my_sql->update_klass_on_admin(
-                // $user_id_admin=-1, 
-                $user_id_admin,
-                // $klass_id=-1, 
-                $klass_id,
-                // $klass_status="",
-                $klass_status
-            );
-            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
-        }
-
+        $is_ok = 
+        $this->my_sql->update_klass_on_admin(
+            // $user_id_admin=-1, 
+            $user_id_admin,
+            // $klass_id=-1, 
+            $klass_id,
+            // $klass_status="",
+            $klass_status
+        );
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
         if(!$is_ok)
         {
             $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");

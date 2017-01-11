@@ -1,63 +1,175 @@
 <?php
 
 class PaymentImport {
-	// 결제처리가 성공적이었는지 여부
-	// 실제 결제승인이 이뤄졌거나, 가상계좌 발급이 성공된 경우, true
-	public $success;
-	// 결제처리에 실패한 경우 단축메세지 / 현재 코드체계는 없음
-	public $error_code;
-	// 결제처리에 실패한 경우 상세메세지
-	public $error_msg;
-	// 아임포트 거래 고유 번호 / 아임포트에서 부여하는 거래건 당 고유한 번호
-	public $imp_uid;
-	// 가맹점에서 생성 / 관리하는 고유 주문번호
-	public $merchant_uid;
-	// 결제수단 / card(신용카드), trans(실시간계좌이체), vbank(가상계좌), phone(휴대폰소액결제)
-	public $pay_method;
-	// 결제금액 / 실제 결제승인된 금액이나 가상계좌 입금예정 금액
-	public $paid_amount;
-	// 결제상태 / ready(미결제), paid(결제완료), cancelled(결제취소, 부분취소포함), failed(결제실패)
-	public $status;
-	// 주문명
-	public $name;
-	// 결제승인/시도된 PG사
-	// html5_inicis(웹표준방식의 KG이니시스), 
-	// inicis(일반 KG이니시스), 
-	// kakao(카카오페이), 
-	// uplus(LGU+), 
-	// nice(나이스정보통신), 
-	// jtnet(JTNet), 
-	// danal(다날) 
-	public $pg_provider;
-	// PG사 거래고유번호
-	public $pg_tid;
-	// 주문자 이름
-	public $buyer_name;
-	// 주문자 Email
-	public $buyer_email;
-	// 주문자 연락처
-	public $buyer_tel;
-	// 주문자 주소
-	public $buyer_addr;
-	// 주문자 우편번호
-	public $buyer_postcode;
-	// 가맹점 임의 지정 데이터
-	public $custom_data;
-	// 결제승인시각 / UNIX timestamp
-	public $paid_at;
-	// PG사에서 발행되는 거래 매출전표 URL / 전달되는 URL을 그대로 open하면 매출전표 확인가능
-	public $receipt_url;
 
-	// EXTRA DATA
+  	public $id=-1;
+  	public $date_created="";
 
-	// 카드사 승인번호 / 신용카드결제에 한하여 제공
-	public $apply_num;
-	// 가상계좌 입금계좌번호 / PG사로부터 전달된 정보 그대로 제공하므로 숫자 외 dash(-)또는 기타 기호가 포함되어 있을 수 있음
-	public $vbank_num;
-	// 가상계좌 은행명
-	public $vbank_name;
-	// 가상계좌 예금주 / 계약된 사업자명으로 항상 일정함. 단, 일부 PG사의 경우 null반환하므로 자체 처리 필요
-	public $vbank_holder;
-	// 가상계좌 입금기한 / UNIX timestamp
-	public $vbank_date;
-}
+    public $klass_id=-1;
+    public $user_id=-1;
+  	// 아임포트 결제 고유 UID
+  	public $imp_uid="";
+  	// 가맹점(카페클래스)에서 전달한 거래 고유 UID
+  	public $merchant_uid="";
+  	// samsung : 삼성페이 / card : 신용카드 / trans : 계좌이체 / vbank : 가상계좌
+  	public $pay_method="";
+    // 5 - INSERT
+
+  	// PG사 명칭. inicis(이니시스) / nice(나이스정보통신)
+  	public $pg_provider="";
+  	// PG사 승인정보
+  	public $pg_tid="";
+  	// 에스크로결제 여부
+  	public $escrow=false;
+  	// 카드사 승인정보(계좌이체/가상계좌는 값 없음)
+  	public $apply_num="";
+  	// 카드사 명칭
+  	public $card_name="";
+    // 10 - INSERT
+
+  	// 할부개월 수(0이면 일시불)
+  	public $card_quota=0;
+  	// 입금받을 가상계좌 은행명
+  	public $vbank_name="";
+  	// 입금받을 가상계좌 계좌번호
+  	public $vbank_num="";
+  	// 입금받을 가상계좌 예금주
+  	public $vbank_holder="";
+  	// 입금받을 가상계좌 마감기한 UNIX timestamp - ex) 1484063719
+  	public $vbank_date=0;
+    // 15 - INSERT
+
+  	// 입금받을 가상계좌 마감기한 UNIX YYYY-MM-DD HH:mm:ss
+  	public $my_date_vbank_date="";
+  	// 주문명칭
+  	public $name="";
+  	// 주문(결제)금액
+  	public $amount=0;
+  	// 결제취소금액
+  	public $cancel_amount=0;
+  	// 결제승인화폐단위(KRW:원, USD:미화달러, EUR:유로)
+  	public $currency="";
+    // 20 - INSERT
+
+  	// 주문자명
+  	public $buyer_name="";
+  	// 주문자 Email주소
+  	public $buyer_email="";
+  	// 주문자 전화번호
+  	public $buyer_tel="";
+  	// 주문자 주소
+  	public $buyer_addr="";
+  	// 주문자 우편번호
+  	public $buyer_postcode="";
+    // 25 - INSERT
+
+  	// 결제상태. 
+  	// ready:미결제, 
+  	// paid:결제완료, 
+  	// cancelled:결제취소, 
+  	// failed:결제실패
+  	public $status="";
+  	// 결제완료시점 UNIX timestamp. 결제완료가 아닐 경우 0
+  	public $paid_at=0;
+  	// 결제완료시점 YYYY-MM-DD HH:mm:ss
+  	public $my_date_paid_at="";
+  	// 결제실패시점 UNIX timestamp. 결제실패가 아닐 경우 0
+  	public $failed_at=0;
+  	// 결제실패시점 YYYY-MM-DD HH:mm:ss
+  	public $my_date_failed_at="";
+    // 30 - INSERT
+
+  	// 결제취소시점 UNIX timestamp. 결제취소가 아닐 경우 0
+  	public $cancelled_at=0;
+  	// 결제취소시점 YYYY-MM-DD HH:mm:ss
+  	public $my_date_cancelled_at="";
+  	// 결제실패 사유
+  	public $fail_reason="";
+  	// 결제취소 사유
+  	public $cancel_reason="";
+  	// 신용카드 매출전표 확인 URL
+  	public $receipt_url="";
+    // 35 - INSERT
+
+    // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
+    public $cancel_receipt_url="";
+    // 36 - INSERT
+
+  	// 취소/부분취소 시 생성되는 취소 매출전표 확인 URL 배열. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
+  	public $cancel_receipt_urls=[];
+
+  	public function setJSON($json=null) 
+  	{
+  		if(is_null(json))
+  		{
+  			return;
+  		} // end if
+
+      foreach ($json as $key => $value) 
+      {
+        if(is_null($value))
+        {
+          // 공백 문자열 처리해야할 항목 모음.
+
+          if( "pay_method" === $key || 
+              "pg_provider" === $key || 
+              "pg_tid" === $key || 
+              "apply_num" === $key || 
+              "card_name" === $key || 
+              "vbank_name" === $key || 
+              "vbank_num" === $key || 
+              "vbank_holder" === $key || 
+              "currency" === $key || 
+              "buyer_tel" === $key || 
+              "buyer_addr" === $key || 
+              "buyer_postcode" === $key || 
+              "buyer_postcode" === $key || 
+              "fail_reason" === $key || 
+              "cancel_reason" === $key || 
+              "receipt_url" === $key  )
+          {
+            $this->{$key} = "";
+          } // end if
+        }
+        else
+        {
+
+          // 숫자값에 대한 처리
+          if( "id" === $key || 
+              "klass_id" === $key || 
+              "user_id" === $key || 
+              "card_quota" === $key || 
+              "vbank_date" === $key || 
+              "amount" === $key || 
+              "cancel_amount" === $key || 
+              "paid_at" === $key || 
+              "failed_at" === $key || 
+              "cancelled_at" === $key )
+          {
+            $this->{$key} = intval($value);
+          } 
+          else if( "escrow" === $key)
+          {
+            if(0 == intval($value)) {
+              $this->{$key} = false;
+            } else {
+              $this->{$key} = true;
+            } // end if
+          }
+          else 
+          {
+            $this->{$key} = $value;
+          } // end if
+
+        } // end if
+      	
+      } // end foreach
+
+      if(!empty($this->$cancel_receipt_urls))
+      {
+        $this->$cancel_receipt_url = $this->$cancel_receipt_urls[0];
+      } // end if
+
+  	} // end method
+
+} // end class

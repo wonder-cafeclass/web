@@ -38,18 +38,26 @@ export class PaymentService {
   } // end method  
 
   addImportHistory (  apiKey:string, 
-                      paymentImpUid:string): Promise<MyResponse> {
+                      paymentImpUid:string,
+                      klassId:number,
+                      userId:number,
+                      loginUserId:number): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("payment.service / test / 시작");
     if(this.isDebug()) console.log("payment.service / test / apiKey : ",apiKey);
     if(this.isDebug()) console.log("payment.service / test / paymentImpUid : ",paymentImpUid);
+    if(this.isDebug()) console.log("payment.service / test / klassId : ",klassId);
+    if(this.isDebug()) console.log("payment.service / test / userId : ",userId);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
     let req_url = this.urlService.get(this.addImportHistoryUrl);
 
     let params = {
-      payment_imp_uid:paymentImpUid
+      payment_imp_uid:paymentImpUid,
+      klass_id:klassId,
+      user_id:userId,
+      login_user_id:loginUserId,
     };
 
     return this.http.post(req_url, params, options)

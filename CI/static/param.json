@@ -101,6 +101,8 @@
 
 		"klass_student_number":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
 
+		"klass_n_student_status":"is_str|||matches[class_student_status_list]",
+
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
@@ -147,37 +149,49 @@
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
-		"payment_success":"is_boolean",
-		"payment_error_code":"is_str",
-		"payment_error_msg":"is_str",
 		"payment_imp_uid":"is_str",
-		"payment_merchant_uid":"is_str",
-		"payment_pay_method":"is_str",
-		"payment_paid_amount":"is_natural_no_zero",
-		"payment_status":"is_str",
-		"payment_name":"is_str",
-		"payment_pg_provider":"is_str",
-		"payment_pg_tid":"is_str",
-		"payment_buyer_name":"is_str",
-		"payment_buyer_email":"is_str",
-		"payment_buyer_tel":"is_str",
-		"payment_buyer_addr":"is_str",
-		"payment_buyer_postcode":"is_str",
-		"payment_custom_data":"is_str",
-		"payment_paid_at":"is_str",
-		"payment_receipt_url":"is_str",
-
-		"payment_apply_num":"is_str",
-		"payment_vbank_num":"is_str",
-		"payment_vbank_name":"is_str",
-		"payment_vbank_holder":"is_str",
-		"payment_vbank_date":"is_str",
+		"payment_imp_merchant_uid":"is_str",
+		"payment_imp_pay_method":"is_str",
+		"payment_imp_pg_provider":"is_str",
+		"payment_imp_pg_tid":"is_str",
+		"payment_imp_escrow":"is_boolean",
+		"payment_imp_apply_num":"is_str",
+		"payment_imp_card_name":"is_str",
+		"payment_imp_card_quota":"is_number",
+		"payment_imp_vbank_name":"is_str",
+		"payment_imp_vbank_num":"is_str",
+		"payment_imp_vbank_holder":"is_str",
+		"payment_imp_vbank_date":"is_str",
+		"payment_imp_my_date_vbank_date":"is_str",
+		"payment_imp_name":"is_str",
+		"payment_imp_amount":"is_number",
+		"payment_imp_cancel_amount":"is_number",
+		"payment_imp_currency":"is_str",
+		"payment_imp_buyer_name":"is_str",
+		"payment_imp_buyer_email":"is_str",
+		"payment_imp_buyer_tel":"is_str",
+		"payment_imp_buyer_addr":"is_str",
+		"payment_imp_buyer_postcode":"is_str",
+		"payment_imp_status":"is_str|||matches[payment_imp_status_list]",
+		"payment_imp_paid_at":"is_number",
+		"payment_imp_my_date_paid_at":"is_str",
+		"payment_imp_failed_at":"is_number",
+		"payment_imp_my_date_failed_at":"is_str",
+		"payment_imp_cancelled_at":"is_number",
+		"payment_imp_my_date_cancelled_at":"is_str",
+		"payment_imp_fail_reason":"is_str",
+		"payment_imp_cancel_reason":"is_str",
+		"payment_imp_receipt_url":"is_str",
+		"payment_imp_cancel_receipt_url":"is_str",
 
 		"EOL":""
 	}
 	, "const":{
 
 		"delimiter":"|||",
+
+		"payment_imp_status_list":["ready", "paid", "cancelled", "failed"],
+		"payment_imp_status_kor_list":["미결제", "결제완료", "결제취소", "결제실패"],
 
 		"user_gender_list":["M","F","U"],
 		"user_gender_kor_list":["남성","여성","모름"],
@@ -193,6 +207,9 @@
 		"teacher_status_list":["ALL", "A","B","F","N"],
 		"teacher_status_eng_list":["All", "Available","Block","Frozen","Not in action"],
 		"teacher_status_kor_list":["모든 상태", "정상","블럭","휴면","탈퇴"],
+
+		"class_student_status_list":["ALL", "A","N"],
+		"class_student_status_kor_list":["모든 상태", "등록", "취소"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],

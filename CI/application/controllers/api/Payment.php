@@ -14,7 +14,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 */
 
-require APPPATH . '/libraries/MY_REST_Controller.php';
+require_once APPPATH . '/libraries/MY_REST_Controller.php';
+require_once APPPATH . '/models/PaymentImport.php';
 
 /*
 *   @ Author : Wonder Jung
@@ -84,8 +85,35 @@ class Payment extends MY_REST_Controller {
             "payment_imp_uid"
         );
 
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
         $params = array(
-            "payment_imp_uid"=>$payment_imp_uid
+            "payment_imp_uid"=>$payment_imp_uid,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "login_user_id"=>$login_user_id
         );
         $output["params"] = $params;
 
@@ -117,61 +145,33 @@ class Payment extends MY_REST_Controller {
         } // end if
 
         // $access_token
-        $result = $this->getPayment($access_token, $payment_imp_uid);
-        if(empty($result)) 
+        $jsonPaymentImp = $this->getPayment($access_token, $payment_imp_uid);
+        if(empty($jsonPaymentImp)) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
             return;
-        }
+        } // end if
 
-        /*
-            // 다음 데이터를 DB에 저장. 
+        $paymentImp = new PaymentImport();
+        $paymentImp->setJSON($jsonPaymentImp);
+        $paymentImp->klass_id = $klass_id;
+        $paymentImp->user_id = $user_id;
+        // $output["paymentImp"] = $paymentImp;
 
-            // 1. import 결재 내역 원본 저장.
-            // 2. action log에 해당 유저 결재 / 결재 취소 액션 저장.
-            // 3. 결재 완료인 경우, 학생 - 수업 관계 테이블에 등록.
-            
-            // 아임포트 정보
-            amount:65000
-            apply_num:"33163144"
-            buyer_addr:""
-            buyer_email:"wonder13662test3@gmail.com"
-            buyer_name:"아놀드"
-            buyer_postcode:""
-            buyer_tel:"010-0000-0003"
-            cancel_amount:0
-            cancel_reason:null
-            cancel_receipt_urls:Array[0]
-            cancelled_at:0
-            card_name:"신한카드"
-            card_quota:0
-            currency:"KRW"
-            custom_data:null
-            escrow:false
-            fail_reason:null
-            failed_at:0
-            imp_uid:"imp_158869218800"
-            merchant_uid:"merchant_6_4_1484053869624"
-            name:"주문명:여행가서 현지인처럼 주문해보기"
-            paid_at:1484054892
-            pay_method:"card"
-            pg_provider:"html5_inicis"
-            pg_tid:"StdpayCARDINIpayTest20170110222811748230"
-            receipt_url:"https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayCARDINIpayTest20170110222811748230&noMethod=1"
-            status:"paid"
-            user_agent:"sorry_not_supported_anymore"
-            vbank_date:0
-            vbank_holder:null
-            vbank_name:null
-            vbank_num:null
-            
-            // 카페 클래스 수업 및 학생 정보
-            klass_id:-1
-            user_id:-1
-        */
+        // 결제 데이터를 DB에 저장. 
+        $this->my_sql->add_payment_import(
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $payment_imp=null
+            $paymentImp
+        );
 
-
-        // $output["result"] = $result;
+        // 저장한 데이터를 가져옴 
+        $paymentImpFromDB = 
+        $this->my_sql->select_payment_import($payment_imp_uid);
+        $paymentImpNext = new PaymentImport();
+        $paymentImpNext->setJSON($paymentImpFromDB);
+        $output["paymentImpNext"] = $paymentImpNext;
 
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
     }

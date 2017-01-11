@@ -26,6 +26,7 @@ var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
 var clock_board_component_1 = require('../widget/clock/clock-board.component');
 var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
 var import_component_1 = require('../widget/payment/import.component');
+var payment_import_1 = require('../widget/payment/model/payment-import');
 var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
 var klass_price_calculator_component_1 = require('./widget/klass-price-calculator.component');
 var image_service_1 = require('../util/image.service');
@@ -958,7 +959,9 @@ var KlassDetailComponent = (function () {
         // userMobile:string,
         this.loginUser.mobile, 
         // amount:number      
-        this.klass.price);
+        // this.klass.price
+        // TEST - 테스트 금액은 천원
+        1000);
     };
     // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
     KlassDetailComponent.prototype.goLogin = function () {
@@ -1159,6 +1162,9 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
                 this.updateKlassTeacherGreeting(myEvent.value);
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {
+                this.updateKlassNStudent(myEvent.metaObj);
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_SUBMIT)) {
@@ -1222,6 +1228,53 @@ var KlassDetailComponent = (function () {
         } // end if
         this.klassCopy.setTeacherResumeList(resumeList);
         this.updateSaveBtnStatus();
+    }; // end method
+    KlassDetailComponent.prototype.updateKlassNStudent = function (metaObj) {
+        var _this = this;
+        if (this.isDebug())
+            console.log("klass-detail / updateKlassNStudent / 시작");
+        if (null == metaObj) {
+            if (this.isDebug())
+                console.log("klass-detail / updateKlassNStudent / 중단 / null == metaObj");
+            return;
+        } // end if
+        var paymentImp = new payment_import_1.PaymentImport().setJSON(metaObj);
+        if (null == paymentImp) {
+            if (this.isDebug())
+                console.log("klass-detail / updateKlassNStudent / 중단 / null == paymentImp");
+            return;
+        } // end if
+        if (null == this.loginUser) {
+            if (this.isDebug())
+                console.log("klass-detail / updateKlassNStudent / 중단 / null == this.loginUser");
+            return;
+        } // end if
+        if (this.isDebug())
+            console.log("klass-detail / updateKlassNStudent / paymentImp : ", paymentImp);
+        // wonder.jung
+        this.klassService.addKlassStudent(
+        // apiKey:string,
+        this.watchTower.getApiKey(), 
+        // loginUserId:number,
+        this.loginUser.id, 
+        // klassId:number
+        paymentImp.klass_id, 
+        // userId:number,
+        paymentImp.user_id).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (_this.isDebug())
+                console.log("klass-detail / updateKlassNStudent / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("klass-detail / updateKlassNStudent / 수강 학생 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("updateKlassNStudent has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
     }; // end method
     KlassDetailComponent.prototype.updateKlassTeacherGreeting = function (greeting) {
         if (this.isDebug())

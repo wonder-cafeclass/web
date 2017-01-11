@@ -30,18 +30,25 @@ var PaymentService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method  
-    PaymentService.prototype.addImportHistory = function (apiKey, paymentImpUid) {
+    PaymentService.prototype.addImportHistory = function (apiKey, paymentImpUid, klassId, userId, loginUserId) {
         if (this.isDebug())
             console.log("payment.service / test / 시작");
         if (this.isDebug())
             console.log("payment.service / test / apiKey : ", apiKey);
         if (this.isDebug())
             console.log("payment.service / test / paymentImpUid : ", paymentImpUid);
+        if (this.isDebug())
+            console.log("payment.service / test / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("payment.service / test / userId : ", userId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.addImportHistoryUrl);
         var params = {
-            payment_imp_uid: paymentImpUid
+            payment_imp_uid: paymentImpUid,
+            klass_id: klassId,
+            user_id: userId,
+            login_user_id: loginUserId,
         };
         return this.http.post(req_url, params, options)
             .toPromise()

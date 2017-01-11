@@ -46,6 +46,7 @@ import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.com
 import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
 import { ButterflyComponent }            from '../widget/butterfly/butterfly.component';
 import { ImportComponent }               from '../widget/payment/import.component';
+import { PaymentImport }                 from '../widget/payment/model/payment-import';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 import { KlassPriceCalculatorComponent } from './widget/klass-price-calculator.component';
@@ -322,7 +323,8 @@ export class KlassDetailComponent implements AfterViewInit {
     this.setKlassBannerImageUploader(); 
     this.setKlassPosterImageUploader();  
     this.setDefaultComponents();
-    this.getParams(); 
+    this.getParams();
+
   } 
 
   private setUserInfo() :void {
@@ -1272,7 +1274,9 @@ export class KlassDetailComponent implements AfterViewInit {
       // userMobile:string,
       this.loginUser.mobile,   
       // amount:number      
-      this.klass.price
+      // this.klass.price
+      // TEST - 테스트 금액은 천원
+      1000
     );
 
   }
@@ -1447,14 +1451,14 @@ export class KlassDetailComponent implements AfterViewInit {
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_CLOCK_VIEW)) {  
 
-        if( null != myEvent.metaObj ) { // wonder.jung
+        if( null != myEvent.metaObj ) {
           this.clockBoardComponent = myEvent.metaObj;
           this.setKlassClock();
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {  
 
-        if( null != myEvent.metaObj ) { // wonder.jung
+        if( null != myEvent.metaObj ) {
           this.paymentImportComponent = myEvent.metaObj;
         } // end if
 
@@ -1525,6 +1529,10 @@ export class KlassDetailComponent implements AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         this.updateKlassTeacherGreeting(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {  
+
+        this.updateKlassNStudent(myEvent.metaObj);
 
       } // end if
 
@@ -1613,6 +1621,61 @@ export class KlassDetailComponent implements AfterViewInit {
 
     this.klassCopy.setTeacherResumeList(resumeList);
     this.updateSaveBtnStatus();
+
+  } // end method
+
+  private updateKlassNStudent(metaObj:any) :void {
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 시작");
+
+    if(null == metaObj) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == metaObj");
+      return;
+    } // end if
+
+    let paymentImp:PaymentImport = new PaymentImport().setJSON(metaObj);
+    if(null == paymentImp) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == paymentImp");
+      return;
+    } // end if
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == this.loginUser");
+      return;
+    } // end if
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / paymentImp : ",paymentImp);
+
+    // wonder.jung
+    this.klassService.addKlassStudent(
+      // apiKey:string,
+      this.watchTower.getApiKey(),
+      // loginUserId:number,
+      this.loginUser.id,
+      // klassId:number
+      paymentImp.klass_id,
+      // userId:number,
+      paymentImp.user_id
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+        // Do something... 
+
+      } else if(myResponse.isFailed()) {  
+
+        if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 수강 학생 정보 등록에 실패했습니다.");
+
+        this.watchTower.logAPIError("updateKlassNStudent has been failed!");
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+      } // end if
+
+    }) // end service
 
   } // end method
 

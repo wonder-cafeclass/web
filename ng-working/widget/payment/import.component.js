@@ -15,6 +15,7 @@ var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var url_service_1 = require('../../util/url.service');
 var payment_service_1 = require('./service/payment.service');
+var payment_import_1 = require('./model/payment-import');
 /*
 *
 *	@ Desc     : 결재 모듈 아임포트(I'mport)를 사용할 수 있게 도와주는 컴포넌트
@@ -40,45 +41,38 @@ var ImportComponent = (function () {
         // return this.watchTower.isDebug();
     };
     ImportComponent.prototype.__test = function () {
-        /*
-apply_num:"33163144"
-buyer_addr:""
-buyer_email:"wonder13662test3@gmail.com"
-buyer_name:"아놀드"
-buyer_postcode:""
-buyer_tel:"010-0000-0003"
-card_name:"신한카드"
-card_quota:0
-custom_data:null
-imp_uid:"imp_158869218800"
-merchant_uid:"merchant_6_4_1484053869624"
-name:"주문명:여행가서 현지인처럼 주문해보기"
-paid_amount:65000
-paid_at:1484054892
-pay_method:"card"
-pg_provider:"html5_inicis"
-pg_tid:"StdpayCARDINIpayTest20170110222811748230"
-receipt_url:"https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayCARDINIpayTest20170110222811748230&noMethod=1"
-request_id:"req_1484053869628"
-status:"paid"
-success:true
-        */
         var _this = this;
         this.paymentService
             .addImportHistory(
         // apiKey:string, 
         this.watchTower.getApiKey(), 
         // paymentImpUid:string
-        "imp_158869218800")
+        "imp_158869218800", 
+        // klassId:number,
+        6, 
+        // userId:number
+        4, 
+        // loginUserId:number
+        4)
             .then(function (myResponse) {
             if (_this.isDebug())
                 console.log("import / addImportHistory / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext")) {
+                var paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+                var paymentImpNext = new payment_import_1.PaymentImport().setJSON(paymentImpJSON);
+                // 부모 객체에게 결재 완료를 알립니다.
+                _this.emitEventOnChangePaymentImp(paymentImpNext);
             }
             else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("import / addImportHistory / 결재 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("addImportHistory has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
             } // end if
-        }); // end service    
-    };
+        }); // end service
+    }; // end method
     ImportComponent.prototype.subscribeLoginUser = function () {
         if (this.isDebug())
             console.log("import /  subscribeLoginUser / init");
@@ -118,6 +112,27 @@ success:true
         // public myChecker:MyChecker
         this.myCheckerService.getFreePassChecker());
         this.emitter.emit(myEventOnChange);
+        if (this.isDebug())
+            console.log("import / emitEventOnReady / Done!");
+    };
+    ImportComponent.prototype.emitEventOnChangePaymentImp = function (paymentImp) {
+        if (this.isDebug())
+            console.log("import / emitEventOnChangePaymentImp / 시작");
+        if (null == paymentImp) {
+            if (this.isDebug())
+                console.log("import / emitEventOnChangePaymentImp / 중단 / null == paymentImp");
+            return;
+        }
+        var myEvent = this.watchTower.getEventOnChangeMeta(
+        // eventKey:string, 
+        this.eventKey, 
+        // value:string, 
+        "", 
+        // myChecker:MyChecker, 
+        this.watchTower.getMyCheckerService().getFreePassChecker(), 
+        // meta:any
+        paymentImp);
+        this.emitter.emit(myEvent);
         if (this.isDebug())
             console.log("import / emitEventOnReady / Done!");
     };

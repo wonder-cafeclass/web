@@ -27,16 +27,14 @@ import { MyEventWatchTowerService }  from '../../util/service/my-event-watchtowe
 @Injectable()
 export class KlassService {
 
-  // REMOVE ME
-  // private klassesUrl = '/CI/index.php/api/klass/list';
-  // private klassSearchUrl = '/CI/index.php/api/klass/search';
+  private addKlassNStudent = '/CI/index.php/api/klass/addstudent';
+
   private fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
   private klassUrl = '/CI/index.php/api/klass/course';
   
   private klassUpdateUrl = '/CI/index.php/api/klass/update';
   private klassNewUrl = '/CI/index.php/api/klass/coursenew';
   private klassSelectileUrl = '/CI/index.php/api/klass/selectile';
-
 
   private klassVenueSearchLocalUrl = '/CI/index.php/api/naver/searchlocal';
   private klassVenueSearchMapUrl = '/CI/index.php/api/naver/searchmap';
@@ -85,6 +83,34 @@ export class KlassService {
 
     return this.watchTower.isDebug();
   }
+
+  addKlassStudent(    
+    apiKey:string, 
+    loginUserId:number,
+    klassId:number,
+    userId:number
+  ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / 시작");
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / userId : ",userId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.addKlassNStudent);
+
+    let params = {
+      login_user_id:loginUserId,
+      klass_id:klassId,
+      user_id:userId
+    }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+  }   
 
   updateKlass(    
     apiKey:string, 
