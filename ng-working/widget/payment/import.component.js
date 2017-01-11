@@ -95,7 +95,6 @@ var ImportComponent = (function () {
     }; // end method
     ImportComponent.prototype.init = function () {
         this.emitEventOnReady();
-        this.__test(); // wonder.jung
     }; // end method
     ImportComponent.prototype.emitEventOnReady = function () {
         if (this.isDebug())
@@ -253,43 +252,62 @@ var ImportComponent = (function () {
             return;
         }
         imp['request_pay'](param, function (rsp) {
-            // 받은 결과를 바로 저장? 아니면 REST API로 정보 다시 가져옴?
-            /*
-    apply_num:"33163144"
-    buyer_addr:""
-    buyer_email:"wonder13662test3@gmail.com"
-    buyer_name:"아놀드"
-    buyer_postcode:""
-    buyer_tel:"010-0000-0003"
-    card_name:"신한카드"
-    card_quota:0
-    custom_data:null
-    imp_uid:"imp_158869218800"
-    merchant_uid:"merchant_6_4_1484053869624"
-    name:"주문명:여행가서 현지인처럼 주문해보기"
-    paid_amount:65000
-    paid_at:1484054892
-    pay_method:"card"
-    pg_provider:"html5_inicis"
-    pg_tid:"StdpayCARDINIpayTest20170110222811748230"
-    receipt_url:"https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayCARDINIpayTest20170110222811748230&noMethod=1"
-    request_id:"req_1484053869628"
-    status:"paid"
-    success:true
-            */
-            console.log("import / buyKlass / rsp : ", rsp);
             if (rsp.success) {
-                var msg = '결제가 완료되었습니다.';
-                msg += '고유ID : ' + rsp.imp_uid;
-                msg += '상점 거래ID : ' + rsp.merchant_uid;
-                msg += '결제 금액 : ' + rsp.paid_amount;
-                msg += '카드 승인번호 : ' + rsp.apply_num;
+                this.addImportHistory(
+                // paymentImpUid:string, 
+                rsp.imp_uid, 
+                // klassId:number, 
+                klassId, 
+                // userId:number
+                userId);
             }
             else {
-                var msg = '결제에 실패하였습니다.';
-                msg += '에러내용 : ' + rsp.error_msg;
+                // 에러. 로그 등록.
+                this.watchTower.logAPIError(rsp.error_msg);
+            } // end if
+        } // end callback
+         // end callback
+        ); // end payment process
+    }; // end method
+    ImportComponent.prototype.addImportHistory = function (paymentImpUid, klassId, userId) {
+        var _this = this;
+        if (this.isDebug())
+            console.log("import /  addImportHistory / 시작");
+        if (null == this.loginUser) {
+            if (this.isDebug())
+                console.log("import /  addImportHistory / 중단 / null == this.loginUser");
+            return;
+        }
+        this.paymentService
+            .addImportHistory(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // paymentImpUid:string
+        paymentImpUid, 
+        // klassId:number,
+        klassId, 
+        // userId:number
+        userId, 
+        // loginUserId:number
+        this.loginUser.id)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("import / addImportHistory / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext")) {
+                var paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+                var paymentImpNext = new payment_import_1.PaymentImport().setJSON(paymentImpJSON);
+                // 부모 객체에게 결재 완료를 알립니다.
+                _this.emitEventOnChangePaymentImp(paymentImpNext);
             }
-        });
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("import / addImportHistory / 결재 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("addImportHistory has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
     }; // end method
     __decorate([
         core_1.Input(), 
@@ -310,5 +328,5 @@ var ImportComponent = (function () {
     ], ImportComponent);
     return ImportComponent;
 }());
-exports.ImportComponent = ImportComponent;
+exports.ImportComponent = ImportComponent; // end class
 //# sourceMappingURL=import.component.js.map
