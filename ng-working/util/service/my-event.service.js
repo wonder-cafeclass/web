@@ -186,6 +186,8 @@ var MyEventService = (function () {
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";
         this.KEY_SEARCH_QUERY = "KEY_SEARCH_QUERY";
+        // 수업료 내기
+        this.KEY_PAYMENT_KLASS_ENROLLMENT = "KEY_PAYMENT_KLASS_ENROLLMENT";
         this.uniqueIdx = 0;
         this.myRegEx = new my_regex_1.MyRegEx();
         this.defaultType = new default_type_1.DefaultType();

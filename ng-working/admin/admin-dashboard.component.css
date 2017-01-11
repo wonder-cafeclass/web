@@ -1,0 +1,33 @@
+table.my-style {
+    margin: 0px;
+}
+td.my-style {
+	border: 0px;
+}
+td.my-width-class {
+	width: 33%;
+}
+td.my-width-student {
+	width: 33%;
+}
+li.my-style {
+	margin: 0px;	
+	padding: 0px;	
+	border-bottom: 0px;
+}
+li.my-padding {
+    padding: 10px;
+}
+ul.my-style-empty {
+	margin: 0px;	
+	padding: 0px;	
+	border: 0px;
+}
+li.my-style-empty {
+	margin: 0px;	
+	padding: 0px;	
+	border: 0px;
+}
+ul.my-inner-ul {
+	margin: 0px;
+}

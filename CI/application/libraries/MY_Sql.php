@@ -1397,8 +1397,6 @@ class MY_Sql extends MY_Library
             return;
         } // end if  
 
-        // wonder.jung      
-
         // Query Execution
         $query_field = $this->get_query_klass_field();
         $this->CI->db->select($query_field);
@@ -3829,6 +3827,362 @@ class MY_Sql extends MY_Library
 
         return $row;
     } // end method
+
+    // @ Desc : Unix 시간을 datetime 포맷으로 바꿉니다.(YYYY-MM-DD HH:mm:ss)
+    // @ Referer : http://stackoverflow.com/questions/6267564/convert-unix-timestamp-into-human-readable-date-using-mysql
+    // @ Referer : http://www.w3schools.com/sql/func_date_format.asp
+    private function convert_unixtime_to_datetime($unix_time=-1)
+    {
+        if(!(0 < $unix_time)) {
+            return "";
+        }
+
+        $sql = "SELECT from_unixtime($unix_time, '%Y-%m-%d %H:%i:%s') AS `my_datetime`";
+
+        $query = $this->CI->db->query($sql);
+
+        return $query->row()->my_datetime;
+    }
+
+    public function add_payment_import($login_user_id=-1, $payment_imp=null)
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if(is_null($payment_imp))
+        {
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("klass_id", $payment_imp->klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "klass_id is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("user_id", $payment_imp->user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "user_id is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("user_id", $login_user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "login_user_id is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_uid", $payment_imp->imp_uid))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "imp_uid is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_merchant_uid", $payment_imp->merchant_uid))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "merchant_uid is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_pay_method", $payment_imp->pay_method))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pay_method is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_pg_provider", $payment_imp->pg_provider))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_provider is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_pg_tid", $payment_imp->pg_tid))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_tid is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_escrow", $payment_imp->escrow))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "escrow is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_apply_num", $payment_imp->apply_num))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "apply_num is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_name", $payment_imp->name))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "name is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_buyer_name", $payment_imp->buyer_name))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_name is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_buyer_email", $payment_imp->buyer_email))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_email is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_buyer_tel", $payment_imp->buyer_tel))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_tel is not valid");
+            return;
+        }
+
+        // @ Required
+        if($this->is_not_ok("payment_imp_status", $payment_imp->status))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "status is not valid");
+            return;
+        }
+
+        // wonder.jung
+        // 결제 / 취소 / 환불 등의 UNIX TIME을 DATE TIME으로 바꾸어야 한다.
+        if(0 < $payment_imp->vbank_date) 
+        {
+            $payment_imp->my_date_vbank_date = 
+            $this->convert_unixtime_to_datetime($payment_imp->vbank_date);
+        } // end if
+        if(0 < $payment_imp->paid_at) 
+        {
+            $payment_imp->my_date_paid_at = 
+            $this->convert_unixtime_to_datetime($payment_imp->paid_at);
+        } // end if
+        if(0 < $payment_imp->failed_at) 
+        {
+            $payment_imp->my_date_failed_at = 
+            $this->convert_unixtime_to_datetime($payment_imp->failed_at);
+        } // end if
+        if(0 < $payment_imp->cancelled_at) 
+        {
+            $payment_imp->my_date_cancelled_at = 
+            $this->convert_unixtime_to_datetime($payment_imp->cancelled_at);
+        } // end if
+
+        $data = array(
+
+            'klass_id' => $payment_imp->klass_id,
+            'user_id' => $payment_imp->user_id,
+            'imp_uid' => $payment_imp->imp_uid,
+            'merchant_uid' => $payment_imp->merchant_uid,
+            'pay_method' => $payment_imp->pay_method,
+            // 5
+
+            'pg_provider' => $payment_imp->pg_provider,
+            'pg_tid' => $payment_imp->pg_tid,
+            'escrow' => $payment_imp->escrow,
+            'apply_num' => $payment_imp->apply_num,
+            'card_name' => $payment_imp->card_name,
+            // 10
+
+            'card_quota' => $payment_imp->card_quota,
+            'vbank_name' => $payment_imp->vbank_name,
+            'vbank_num' => $payment_imp->vbank_num,
+            'vbank_holder' => $payment_imp->vbank_holder,
+            'vbank_date' => $payment_imp->vbank_date,
+            // 15
+
+            'my_date_vbank_date' => $payment_imp->my_date_vbank_date,
+            'name' => $payment_imp->name,
+            'amount' => $payment_imp->amount,
+            'cancel_amount' => $payment_imp->cancel_amount,
+            'currency' => $payment_imp->currency,
+            // 20
+
+            'buyer_name' => $payment_imp->buyer_name,
+            'buyer_email' => $payment_imp->buyer_email,
+            'buyer_tel' => $payment_imp->buyer_tel,
+            'buyer_addr' => $payment_imp->buyer_addr,
+            'buyer_postcode' => $payment_imp->buyer_postcode,
+            // 25
+
+            'status' => $payment_imp->status,
+            'paid_at' => $payment_imp->paid_at,
+            'my_date_paid_at' => $payment_imp->my_date_paid_at,
+            'failed_at' => $payment_imp->failed_at,
+            'my_date_failed_at' => $payment_imp->my_date_failed_at,
+            // 30
+
+            'cancelled_at' => $payment_imp->cancelled_at,
+            'my_date_cancelled_at' => $payment_imp->my_date_cancelled_at,
+            'fail_reason' => $payment_imp->fail_reason,
+            'cancel_reason' => $payment_imp->cancel_reason,
+            'receipt_url' => $payment_imp->receipt_url,
+            // 35
+
+            'cancel_receipt_url' => $payment_imp->cancel_receipt_url
+            // 36
+        );
+
+        // Query Execution
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('payment_import', $data);
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('payment_import');
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+    } // end method 
+
+    public function select_payment_import($imp_uid="")
+    {
+        if(empty($imp_uid))
+        {
+            return null;
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->where('imp_uid', $imp_uid);
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('payment_import');
+
+        return $query->row();
+    }
+
+    public function add_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $login_user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id
+        );
+
+        // Query Execution
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('klass_n_student', $data);
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $sql = $this->CI->db->set($data)->get_compiled_insert('klass_n_student');
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+    } // end method
+
+    public function update_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1, $klass_n_student_status="")
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return false;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return false;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return false;
+        }
+        if($this->is_not_ok("klass_n_student_status", $klass_n_student_status))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
+            return false;
+        }
+        
+        $data = array(
+            'status' => $klass_n_student_status
+        );
+
+        // QUERY EXECUTION
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->update('klass_n_student', $data);        
+
+        // Logging - 짧은 쿼리들은 모두 등록한다.
+        $this->CI->db->where('id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('klass_n_student');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+    }
+
+    public function select_klass_student($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return null;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return null;
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get('klass_n_student');
+
+        return $query->row();
+    }         
 
 }
 

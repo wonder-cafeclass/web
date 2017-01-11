@@ -22,6 +22,7 @@ var MyCheckerService = (function () {
         this.TYPE_NONE = "TYPE_NONE";
         this.TYPE_STRING = "TYPE_STRING";
         this.TYPE_NUMBER = "TYPE_NUMBER";
+        this.TYPE_BOOLEAN = "TYPE_BOOLEAN";
         this.TYPE_ARRAY = "TYPE_ARRAY";
         // public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
         this.MIN_STR_SAFE_TITLE = 2;
@@ -30,6 +31,7 @@ var MyCheckerService = (function () {
         this.MAX_STR_SAFE_COMMENT = 120;
         this.regExpIsStr = /is_str/i;
         this.regExpIsNumber = /is_number/i;
+        this.regExpIsBoolean = /is_number/i;
         this.regExpExactLength = /exact_length\[([\d]+)\]/i;
         this.regExpMinLength = /min_length\[([\d]+)\]/i;
         this.regExpMaxLength = /max_length\[([\d]+)\]/i;
@@ -158,7 +160,13 @@ var MyCheckerService = (function () {
             if (isTypeNumber) {
                 type = this.TYPE_NUMBER;
                 continue;
-            }
+            } // end if
+            // 필터 - 숫자 타입?
+            var isTypeBoolean = this.isTypeBoolean(filter);
+            if (isTypeBoolean) {
+                type = this.TYPE_BOOLEAN;
+                continue;
+            } // end if
             // 필터 - 문자열 고정 문자수
             var exactLengthReceived = this.getExactLength(filter);
             if (-1 < exactLengthReceived) {
@@ -342,7 +350,11 @@ var MyCheckerService = (function () {
             }
             if (-1 < lessThanEqualTo) {
                 myChecker.lessThanEqualTo = lessThanEqualTo;
-            }
+            } // end if
+        }
+        else if (this.TYPE_BOOLEAN === type) {
+            // wonder.jung
+            myChecker.isBoolean = true;
         }
         return myChecker;
     };
@@ -361,6 +373,16 @@ var MyCheckerService = (function () {
             return false;
         }
         var matchArr = filter.match(this.regExpIsNumber);
+        if (null != matchArr) {
+            return true;
+        }
+        return false;
+    };
+    MyCheckerService.prototype.isTypeBoolean = function (filter) {
+        if (null == filter || 0 == filter.length) {
+            return false;
+        }
+        var matchArr = filter.match(this.regExpIsBoolean);
         if (null != matchArr) {
             return true;
         }
@@ -848,6 +870,15 @@ var MyCheckerService = (function () {
                 this.history.value = greaterThanEqualTo;
                 return false;
             } // end if
+        }
+        else if (this.TYPE_BOOLEAN === myChecker.type) {
+            var isBoolean = myChecker.isBoolean;
+            var inputBool = "" + input;
+            if (isBoolean) {
+                if ("true" !== inputBool && "false" !== inputBool) {
+                    return false;
+                }
+            }
         }
         else if (this.TYPE_ARRAY === myChecker.type) {
         }

@@ -35,6 +35,8 @@ var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var input_btns_row_component_1 = require('./input-view/input-btns-row.component');
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
 var debug_btn_component_1 = require('./debug/debug-btn.component');
+var import_component_1 = require('./payment/import.component');
+var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
 var pagination_component_1 = require('./pagination/pagination.component');
 var footer_component_1 = require('./footer/footer.component');
@@ -60,6 +62,7 @@ var WidgetModule = (function () {
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
+                import_component_1.ImportComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
@@ -89,6 +92,7 @@ var WidgetModule = (function () {
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
+                import_component_1.ImportComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
@@ -106,7 +110,8 @@ var WidgetModule = (function () {
                 safe_html_pipe_1.SafeHtmlPipe
             ],
             providers: [
-                default_service_1.DefaultService
+                default_service_1.DefaultService,
+                payment_service_1.PaymentService
             ]
         }), 
         __metadata('design:paramtypes', [])

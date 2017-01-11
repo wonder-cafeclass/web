@@ -209,6 +209,9 @@ export class MyEventService {
 
     KEY_SEARCH_QUERY:string="KEY_SEARCH_QUERY";
 
+    // 수업료 내기
+    KEY_PAYMENT_KLASS_ENROLLMENT:string="KEY_PAYMENT_KLASS_ENROLLMENT";
+
 
     private uniqueIdx:number=0;
     private myRegEx:MyRegEx;

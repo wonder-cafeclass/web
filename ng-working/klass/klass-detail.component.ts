@@ -45,6 +45,8 @@ import { DefaultService }                from '../widget/input/default/service/d
 import { PriceTagHComponent }            from '../widget/pricetag/pricetag-h.component';
 import { ClockBoardComponent }           from '../widget/clock/clock-board.component';
 import { ButterflyComponent }            from '../widget/butterfly/butterfly.component';
+import { ImportComponent }               from '../widget/payment/import.component';
+import { PaymentImport }                 from '../widget/payment/model/payment-import';
 
 import { KlassDetailNavListComponent }   from './klass-detail-nav-list.component';
 import { KlassPriceCalculatorComponent } from './widget/klass-price-calculator.component';
@@ -61,6 +63,7 @@ import { HelperMyArray }                 from '../util/helper/my-array';
 import { HelperMyIs }                    from '../util/helper/my-is';
 import { HelperMyFormat }                from '../util/helper/my-format';
 import { HelperMyConst }                 from '../util/helper/my-const';
+import { UrlService }                    from '../util/url.service';
 
 import { UserService }                   from '../users/service/user.service';
 import { User }                          from '../users/model/user';
@@ -179,6 +182,8 @@ export class KlassDetailComponent implements AfterViewInit {
   @ViewChild(KlassPriceCalculatorComponent)
   private priceCalculator: KlassPriceCalculatorComponent;
 
+  @ViewChild(ImportComponent)
+  private paymentImportComponent: ImportComponent;
 
   // 운영자가 보게되는 배너 이미지 템플릿 리스트
   imageTableBannerList:string[][] = 
@@ -215,6 +220,7 @@ export class KlassDetailComponent implements AfterViewInit {
     private checkboxService:KlassCheckBoxService,
     private teacherService:TeacherService,
     private defaultService:DefaultService,
+    private urlService:UrlService, 
     private myCheckerService:MyCheckerService
   ) {
 
@@ -317,7 +323,8 @@ export class KlassDetailComponent implements AfterViewInit {
     this.setKlassBannerImageUploader(); 
     this.setKlassPosterImageUploader();  
     this.setDefaultComponents();
-    this.getParams(); 
+    this.getParams();
+
   } 
 
   private setUserInfo() :void {
@@ -1238,19 +1245,68 @@ export class KlassDetailComponent implements AfterViewInit {
 
   onClickEnrollment(event, klass:Klass) {
 
+    if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 시작");
+
     event.stopPropagation();
+    event.preventDefault();
+
+    if(null == this.paymentImportComponent) {
+      if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 중단 / null == this.paymentImportComponent");
+      return;
+    } // end if
+
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / onClickEnrollment / 중단 / null == this.loginUser");
+      return;
+    }
+
+    this.paymentImportComponent.buyKlass(
+      // klassId:number, 
+      this.klass.id,
+      // klassName:string, 
+      this.klass.title,
+      // userId:number,
+      this.loginUser.id,  
+      // userEmail:string,
+      this.loginUser.email,   
+      // userName:string,
+      this.loginUser.name,   
+      // userMobile:string,
+      this.loginUser.mobile,   
+      // amount:number      
+      // this.klass.price
+      // TEST - 테스트 금액은 천원
+      1000
+    );
 
   }
+
+  // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
+  private goLogin():void {
+
+    if(this.isDebug()) console.log("import / goLogin / init");
+
+    let appViewUrl:string = this.urlService.getAppViewUrl();
+    if(this.isDebug()) console.log("import / goLogin / appViewUrl : ",appViewUrl);
+
+    let req_url = this.urlService.get(`#/login?redirect=${appViewUrl}`);
+    if(this.isDebug()) console.log("import / goLogin / req_url : ",req_url);
+
+    window.location.href = req_url;
+  } // end method
+
 
   onClickWishList(event, klass:Klass) {
 
     event.stopPropagation();
+    event.preventDefault();
 
   }
 
   onClickYellowID(event, klass:Klass) {
 
     event.stopPropagation();
+    event.preventDefault();
 
   }
 
@@ -1395,9 +1451,15 @@ export class KlassDetailComponent implements AfterViewInit {
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_CLOCK_VIEW)) {  
 
-        if( null != myEvent.metaObj ) { // wonder.jung
+        if( null != myEvent.metaObj ) {
           this.clockBoardComponent = myEvent.metaObj;
           this.setKlassClock();
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {  
+
+        if( null != myEvent.metaObj ) {
+          this.paymentImportComponent = myEvent.metaObj;
         } // end if
 
       } // end if  
@@ -1467,6 +1529,10 @@ export class KlassDetailComponent implements AfterViewInit {
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_GREETING)) {
 
         this.updateKlassTeacherGreeting(myEvent.value);
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_PAYMENT_KLASS_ENROLLMENT)) {  
+
+        this.updateKlassNStudent(myEvent.metaObj);
 
       } // end if
 
@@ -1555,6 +1621,61 @@ export class KlassDetailComponent implements AfterViewInit {
 
     this.klassCopy.setTeacherResumeList(resumeList);
     this.updateSaveBtnStatus();
+
+  } // end method
+
+  private updateKlassNStudent(metaObj:any) :void {
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 시작");
+
+    if(null == metaObj) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == metaObj");
+      return;
+    } // end if
+
+    let paymentImp:PaymentImport = new PaymentImport().setJSON(metaObj);
+    if(null == paymentImp) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == paymentImp");
+      return;
+    } // end if
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 중단 / null == this.loginUser");
+      return;
+    } // end if
+
+    if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / paymentImp : ",paymentImp);
+
+    // wonder.jung
+    this.klassService.addKlassStudent(
+      // apiKey:string,
+      this.watchTower.getApiKey(),
+      // loginUserId:number,
+      this.loginUser.id,
+      // klassId:number
+      paymentImp.klass_id,
+      // userId:number,
+      paymentImp.user_id
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess()) {
+
+        // Do something... 
+
+      } else if(myResponse.isFailed()) {  
+
+        if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / 수강 학생 정보 등록에 실패했습니다.");
+
+        this.watchTower.logAPIError("updateKlassNStudent has been failed!");
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+      } // end if
+
+    }) // end service
 
   } // end method
 

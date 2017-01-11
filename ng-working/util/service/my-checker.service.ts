@@ -27,6 +27,7 @@ export class MyCheckerService {
     public TYPE_NONE:string="TYPE_NONE";
     public TYPE_STRING:string="TYPE_STRING";
     public TYPE_NUMBER:string="TYPE_NUMBER";
+    public TYPE_BOOLEAN:string="TYPE_BOOLEAN";
     public TYPE_ARRAY:string="TYPE_ARRAY";
 
     // public REGEX_SAFE_STR:RegExp=/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\x20\s\(\)\.\:\;?\!\=\'\"`\^\(\)\&\~]/g;
@@ -173,7 +174,14 @@ export class MyCheckerService {
             if(isTypeNumber) {
                 type = this.TYPE_NUMBER;
                 continue;
-            }
+            } // end if
+
+            // 필터 - 숫자 타입?
+            let isTypeBoolean:boolean = this.isTypeBoolean(filter);
+            if(isTypeBoolean) {
+                type = this.TYPE_BOOLEAN;
+                continue;
+            } // end if
 
             // 필터 - 문자열 고정 문자수
             let exactLengthReceived:number = this.getExactLength(filter);
@@ -389,7 +397,13 @@ export class MyCheckerService {
             }
             if(-1 < lessThanEqualTo) {
                 myChecker.lessThanEqualTo = lessThanEqualTo;
-            }
+            } // end if
+
+        } else if(this.TYPE_BOOLEAN === type) {
+
+            // wonder.jung
+            myChecker.isBoolean = true;
+
         }
 
         return myChecker;
@@ -424,6 +438,22 @@ export class MyCheckerService {
 
         return false;
     }
+
+    private regExpIsBoolean:RegExp=/is_number/i;
+    private isTypeBoolean(filter:string) : boolean {
+
+        if(null == filter || 0 == filter.length) {
+            return false;
+        }
+
+        let matchArr:RegExpMatchArray = filter.match(this.regExpIsBoolean);
+        if(null != matchArr) {
+            return true;
+        }
+
+        return false;
+    }
+
 
     private regExpExactLength:RegExp=/exact_length\[([\d]+)\]/i;
     private getExactLength(filter:string) : number {
@@ -1057,6 +1087,16 @@ export class MyCheckerService {
 
                 return false;
             } // end if
+
+        } else if(this.TYPE_BOOLEAN === myChecker.type) {
+
+            let isBoolean:boolean = myChecker.isBoolean;
+            let inputBool:string = ""+input;
+            if(isBoolean) {
+                if("true" !== inputBool && "false" !== inputBool) {
+                    return false;
+                }
+            }
 
         } else if(this.TYPE_ARRAY === myChecker.type) {
 

@@ -21,9 +21,7 @@ var KlassService = (function () {
     function KlassService(http, urlService) {
         this.http = http;
         this.urlService = urlService;
-        // REMOVE ME
-        // private klassesUrl = '/CI/index.php/api/klass/list';
-        // private klassSearchUrl = '/CI/index.php/api/klass/search';
+        this.addKlassNStudent = '/CI/index.php/api/klass/addstudent';
         this.fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassUpdateUrl = '/CI/index.php/api/klass/update';
@@ -56,6 +54,30 @@ var KlassService = (function () {
             return false;
         }
         return this.watchTower.isDebug();
+    };
+    KlassService.prototype.addKlassStudent = function (apiKey, loginUserId, klassId, userId) {
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / 시작");
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / loginUserId : ", loginUserId);
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / userId : ", userId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.addKlassNStudent);
+        var params = {
+            login_user_id: loginUserId,
+            klass_id: klassId,
+            user_id: userId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
     };
     KlassService.prototype.updateKlass = function (apiKey, userId, teacherId, klass) {
         if (this.isDebug())
@@ -478,7 +500,7 @@ var KlassService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / klassTime : ", klassTime);
         if ("" === klassStatus) {
-            klassStatus = "O"; // Open - 개강
+            klassStatus = "E"; // Open - 개강
         }
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);

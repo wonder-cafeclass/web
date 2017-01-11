@@ -325,6 +325,10 @@
                       (click)="onClickEnrollment($event, klass)">
                       신청하기(결재)
             </button>
+            <payment-import
+            (emitter)="onChangedFromChild($event)"
+            [eventKey]="myEventService.KEY_PAYMENT_KLASS_ENROLLMENT">
+            </payment-import>
           </li>
         </ul>
         <div class="col-md-2" style="padding:0px;"></div>
