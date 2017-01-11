@@ -1,0 +1,121 @@
+<div>
+	<ul class="list-group">
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 -->
+		<li class="list-group-item">
+			<!-- 
+	        <div class="my-status-box">
+	            <widget-input-default
+	            [height]="50"
+	            [width]="100"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="selectOptionListUserStatus"
+	            [meta]="defaultMetaUserStatusForSearch"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>	        	
+	        </div>
+			-->
+		</li>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+		<li class="list-group-item my-style-table">
+<!--
+<div *ngIf="!paymentList" style="text-align:center;">
+	<h3 style="margin-bottom:20px;color: #999;">검색 결과가 없습니다.</h3>
+</div>
+-->
+
+<table *ngIf="paymentList" class="table table-bordered table-hover my-style"> 
+	<thead> 
+		<tr>
+			<th>
+				<checkbox-single 
+				[eventKey]="myEventService.KEY_CHECKBOX_ALL"
+				[metaObj]="paymentList"
+				(emitter)="onChangedFromChild($event)">
+				</checkbox-single>
+			</th>
+			<th>ID</th>
+			<th>제목</th>
+			<th>카드이름</th>
+			<th>금액</th>
+			<th>결재일시</th>
+			<!--
+			<th>섬네일</th> 
+			<th>이름 / 닉네임 / 성별</th> 
+			<th>이메일 / 연락처</th> 
+			<th>상태</th>
+			<th>권한</th>
+			-->
+		</tr> 
+	</thead> 
+	<tbody> 
+		<tr *ngFor="let payment of paymentList">
+			<th scope="row">
+				<div>
+					<checkbox-single 
+					[eventKey]="myEventService.KEY_CHECKBOX"
+					[metaObj]="user"
+					(emitter)="onChangedFromChild($event)">
+					</checkbox-single>
+				</div>
+			</th> 
+			<td>{{payment.id}}</td>
+			<td>{{payment.name}}</td>
+			<td>{{payment.card_name}}</td>
+			<td>{{payment.amount}}</td>
+			<td>{{payment.my_date_paid_at}}</td>
+
+			
+
+			
+
+			<!-- 
+			<td>
+				<img class="img-rounded my-style" src={{user.thumbnail}}>
+			</td> 
+			<td><small>{{user.name}}<br/>{{user.nickname}}<br/>{{user.gender_readable}}</small></td> 
+			<td><small>{{user.email}}<br/>{{user.mobile}}</small></td> 
+			<td>
+	            <widget-input-default
+	            [width]="60"
+	            [isDisabled]="user.isMe"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="user.selectOptionListStatus"
+	            [meta]="defaultMetaUserStatus"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+			</td>
+			<td>
+	            <widget-input-default
+	            [width]="70"
+	            [isDisabled]="user.isMe"
+	            [isNoSpace]="true"
+	            [isNoBorder]="true"
+	            [isShowTitle]="false"
+	            [selectOptionList]="user.selectOptionListPermission"
+	            [meta]="defaultMetaUserPermission"
+	            (emitter)="onChangedFromChild($event)">
+	            </widget-input-default>
+			</td>
+			-->
+		</tr> 
+	</tbody> 
+</table>			
+
+		</li>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+	</ul>
+</div>

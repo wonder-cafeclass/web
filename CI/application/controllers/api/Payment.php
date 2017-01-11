@@ -53,9 +53,8 @@ class Payment extends MY_REST_Controller {
         $this->load->library('MY_Pagination');
         */
 
-        // init Admin
+        // Additional Library
         $this->load->library('MY_Auth');
-        $this->load->library('MY_Decorator');
     }
 
     // @ Desc : Import의 특정 결재 내역을 업데이트합니다. 결재 이후에 호출됩니다.
@@ -290,115 +289,6 @@ class Payment extends MY_REST_Controller {
         }
 
         return "";
-
-    } // end method
-
-    // @ Desc : 수업 구매 기록을 추가합니다.
-    
-    public function addbuyklass_post() 
-    {
-        
-        $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
-
-        if($this->is_not_ok()) 
-        {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
-            return;
-        } // end if
-
-        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
-        if($is_not_allowed_api_call) 
-        {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
-            return;
-        }
-
-        
-        $user_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "user_id",
-            // $key_filter=""
-            "user_id"
-        );
-        $klass_id = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_id",
-            // $key_filter=""
-            "klass_id"
-        );
-        $klass_status = 
-        $this->my_paramchecker->post(
-            // $key=""
-            "klass_status",
-            // $key_filter=""
-            "klass_status"
-        );
-
-        $params = array(
-            "user_id_admin"=>$user_id_admin,
-            "klass_id"=>$klass_id,
-            "klass_status"=>$klass_status
-        );
-        $output["params"] = $params;
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");
-
-        // CHECK LIST
-        $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
-        $output["check_list"] = $this->get_check_list();
-        if($is_ok) 
-        {
-            /*
-            $is_ok = 
-            $this->my_sql->update_klass_on_admin(
-                // $user_id_admin=-1, 
-                $user_id_admin,
-                // $klass_id=-1, 
-                $klass_id,
-                // $klass_status="",
-                $klass_status
-            );
-            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "update_user_on_admin");
-            */
-
-            // Sudo code
-
-            /*
-            //post ajax request로부터 imp_uid확인
-            imp_uid = extract_POST_value_from_url('imp_uid') 
-    
-            //imp_uid로 아임포트로부터 결제정보 조회
-            payment_result = rest_api_to_find_payment(imp_uid) 
-
-            //결제되었어야 하는 금액 조회. 가맹점에서는 merchant_uid기준으로 관리
-            amount_to_be_paid = query_amount_to_be_paid(payment_result.merchant_uid) 
-    
-
-            IF payment_result.status == 'paid' AND payment_result.amount == amount_to_be_paid
-                //결제까지 성공적으로 완료
-                success_post_process(payment_result) 
-            ELSE IF payment_result.status == 'ready' AND payment.pay_method == 'vbank'
-                //가상계좌 발급성공
-                vbank_number_assigned(payment_result) 
-            ELSE
-                //결제실패 처리
-                fail_post_process(payment_result) 
-            */
-        }
-
-        if(!$is_ok)
-        {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addbuyklass_post Failed!");
-            return;
-        } // end if       
-
-        // 변경된 수업 정보를 가져옵니다.
-        $klass = $this->my_sql->select_klass($klass_id);
-        $output["klass"] = $klass;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     } // end method
  

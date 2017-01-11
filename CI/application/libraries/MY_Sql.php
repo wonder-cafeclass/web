@@ -3963,7 +3963,6 @@ class MY_Sql extends MY_Library
             return;
         }
 
-        // wonder.jung
         // 결제 / 취소 / 환불 등의 UNIX TIME을 DATE TIME으로 바꾸어야 한다.
         if(0 < $payment_imp->vbank_date) 
         {
@@ -4058,6 +4057,110 @@ class MY_Sql extends MY_Library
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
     } // end method 
+
+    public function select_payment_import_cnt($klass_id=-1, $user_id=-1)
+    {
+        // wonder.jung
+        if($this->is_not_ready())
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+
+
+        // Query Execution
+        $this->CI->db->select("*");
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('user_id',$klass_id);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+
+        // Logging
+        $this->CI->db->select("*"); 
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id',$user_id);
+        }
+        $sql = $this->CI->db->get_compiled_select('payment_import');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+    // wonder.jung
+    public function select_payment_import_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if
+
+
+        // Query Execution
+        $this->CI->db->select("*"); 
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id',$user_id);
+        }
+        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get('payment_import');
+
+
+        // Logging
+        $this->CI->db->select("*"); 
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id',$user_id);
+        }
+        $this->CI->db->order_by('id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+
+        $sql = $this->CI->db->get_compiled_select('payment_import');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }    
 
     public function select_payment_import($imp_uid="")
     {

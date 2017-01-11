@@ -15,6 +15,7 @@ var admin_dashboard_component_1 = require('./admin-dashboard.component');
 var manage_teachers_component_1 = require('./manage-teachers.component');
 var manage_users_component_1 = require('./manage-users.component');
 var manage_klasses_component_1 = require('./manage-klasses.component');
+var manage_payments_component_1 = require('./manage-payments.component');
 var admin_service_1 = require('./service/admin.service');
 var admin_routing_1 = require('./admin.routing');
 var widget_module_1 = require('../widget/widget.module');
@@ -33,7 +34,8 @@ var AdminModule = (function () {
                 admin_dashboard_component_1.AdminDashboardComponent,
                 manage_teachers_component_1.ManageTeachersComponent,
                 manage_users_component_1.ManageUsersComponent,
-                manage_klasses_component_1.ManageKlassesComponent
+                manage_klasses_component_1.ManageKlassesComponent,
+                manage_payments_component_1.ManagePaymentsComponent
             ],
             providers: [
                 admin_service_1.AdminService

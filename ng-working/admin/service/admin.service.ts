@@ -15,6 +15,8 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private fetchBuyKlassUrl = '/CI/index.php/api/admin/fetchbuyklass';
+
   private updateKlassUrl = '/CI/index.php/api/admin/updateklass';
   private fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
 
@@ -47,6 +49,38 @@ export class AdminService {
 
     return this.watchTower.isDebug();
   } // end method
+
+  fetchBuyKlass (  
+    apiKey:string, 
+    pageNum:number, 
+    pageSize:number, 
+    klassId:number, 
+    userId:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / klassId : ",klassId);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / userId : ",userId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchBuyKlassUrl);
+
+    let params = {
+      page_num:pageNum,
+      page_size:pageSize,
+      klass_id:klassId,
+      user_id:userId
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }   
 
 
   updateKlass ( apiKey:string, 
