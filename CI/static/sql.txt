@@ -233,7 +233,7 @@ CREATE TABLE `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `klass_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `checked` int(1) NOT NULL DEFAULT 0 COMMENT '수업 출석여부',
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "R" COMMENT 'R(ready/준비),P(presence/출석),A(absence/결석)',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
