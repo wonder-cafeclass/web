@@ -1,7 +1,10 @@
 "use strict";
 var my_is_1 = require('../../util/helper/my-is');
-var KlassStudent = (function () {
-    function KlassStudent() {
+var teacher_1 = require('../../teachers/model/teacher');
+var user_1 = require('../../users/model/user');
+var klass_1 = require('./klass');
+var KlassNStudent = (function () {
+    function KlassNStudent() {
         this.id = -1;
         this.klass_id = -1;
         this.user_id = -1;
@@ -10,13 +13,13 @@ var KlassStudent = (function () {
         this.date_updated = "";
         this.myIs = new my_is_1.HelperMyIs();
     }
-    KlassStudent.prototype.isSame = function (target) {
+    KlassNStudent.prototype.isSame = function (target) {
         return this.myIs.isSame(this, target);
     };
-    KlassStudent.prototype.isSharing = function (key, target) {
+    KlassNStudent.prototype.isSharing = function (key, target) {
         return this.myIs.isSharing(key, this, target);
     };
-    KlassStudent.prototype.setJSON = function (json) {
+    KlassNStudent.prototype.setJSON = function (json) {
         // let isDebug:boolean = true;
         var isDebug = false;
         if (isDebug)
@@ -27,16 +30,25 @@ var KlassStudent = (function () {
         if (isDebug)
             console.log("klassStudent / setJSON / klassStudent : ", klassStudent);
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        if (null != json.klass) {
+            klassStudent.klass = new klass_1.Klass().setJSON(json.klass);
+        }
+        if (null != json.teacher) {
+            klassStudent.teacher = new teacher_1.Teacher().setJSON(json.teacher);
+        }
+        if (null != json.user) {
+            klassStudent.user = new user_1.User().setJSON(json.user);
+        }
         return klassStudent;
     }; // end method
-    KlassStudent.prototype._setJSON = function (json) {
+    KlassNStudent.prototype._setJSON = function (json) {
         return this.myIs.copyFromJSON(
         // target:any,
         this, 
         // json
         json);
     }; // end method	
-    return KlassStudent;
+    return KlassNStudent;
 }());
-exports.KlassStudent = KlassStudent;
-//# sourceMappingURL=klass-student.js.map
+exports.KlassNStudent = KlassNStudent;
+//# sourceMappingURL=klass-n-student.js.map

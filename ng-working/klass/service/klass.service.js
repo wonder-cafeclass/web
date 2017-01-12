@@ -21,7 +21,7 @@ var KlassService = (function () {
     function KlassService(http, urlService) {
         this.http = http;
         this.urlService = urlService;
-        this.addKlassNStudent = '/CI/index.php/api/klass/addstudent';
+        this.addKlassNStudentUrl = '/CI/index.php/api/klass/addstudent';
         this.fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
         this.fetchKlassUrl = '/CI/index.php/api/klass/fetchklass';
         this.klassUrl = '/CI/index.php/api/klass/course';
@@ -56,7 +56,7 @@ var KlassService = (function () {
         }
         return this.watchTower.isDebug();
     };
-    KlassService.prototype.addKlassStudent = function (apiKey, loginUserId, klassId, userId) {
+    KlassService.prototype.addKlassNStudent = function (apiKey, loginUserId, klassId, userId) {
         if (this.isDebug())
             console.log("klass.service / addKlassStudent / 시작");
         if (this.isDebug())
@@ -69,7 +69,7 @@ var KlassService = (function () {
             console.log("klass.service / addKlassStudent / userId : ", userId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-        var req_url = this.urlService.get(this.addKlassNStudent);
+        var req_url = this.urlService.get(this.addKlassNStudentUrl);
         var params = {
             login_user_id: loginUserId,
             klass_id: klassId,

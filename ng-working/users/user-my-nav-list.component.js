@@ -33,6 +33,7 @@ var UserMyNavListComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
         this.radiobtnService.setWatchTower(this.watchTower);
+        this.watchTower.announceIsLockedBottomFooterFlexible(false);
     }
     UserMyNavListComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();

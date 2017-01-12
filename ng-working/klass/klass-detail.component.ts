@@ -23,7 +23,7 @@ import { KlassPrice }                    from './model/klass-price';
 import { KlassCalendar }                 from './model/klass-calendar';
 import { KlassCalendarDay }              from './model/klass-calendar-day';
 import { KlassVenue }                    from './model/klass-venue';
-import { KlassStudent }                  from './model/klass-student';
+import { KlassNStudent }                 from './model/klass-n-student';
 
 import { AuthService }                   from '../auth.service';
 import { KlassRadioBtnService }          from './service/klass-radiobtn.service';
@@ -100,7 +100,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
   editTitle: string; // Deprecated
 
-  klassStudent:KlassStudent;
+  klassStudent:KlassNStudent;
 
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
@@ -463,7 +463,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
         let klassStudentJSON = myResponse.getDataProp("klass_student");
         if(null != klassStudentJSON) {
-          this.klassStudent = new KlassStudent().setJSON(klassStudentJSON);
+          this.klassStudent = new KlassNStudent().setJSON(klassStudentJSON);
         } // end if
         
         if(klassId === -100) {
@@ -1730,7 +1730,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / paymentImp : ",paymentImp);
 
-    this.klassService.addKlassStudent(
+    this.klassService.addKlassNStudent(
       // apiKey:string,
       this.watchTower.getApiKey(),
       // loginUserId:number,
@@ -2156,12 +2156,12 @@ export class KlassDetailComponent implements AfterViewInit {
 
   }
 
-  private updateKlassStudentCnt(studentCnt:string) :void {  
+  private updateKlassNStudentCnt(studentCnt:string) :void {  
 
-    if(this.isDebug()) console.log("klass-detail / updateKlassStudentCnt / 시작");
+    if(this.isDebug()) console.log("klass-detail / updateKlassNStudentCnt / 시작");
 
     if(null == studentCnt || "" === studentCnt) {
-      if(this.isDebug()) console.log("klass-detail / updateKlassStudentCnt / 중단 / studentCnt is not valid!");
+      if(this.isDebug()) console.log("klass-detail / updateKlassNStudentCnt / 중단 / studentCnt is not valid!");
       return;
     }
 

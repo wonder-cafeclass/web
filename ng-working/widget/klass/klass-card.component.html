@@ -1,0 +1,97 @@
+<!--
+	<klass-card 
+	[isSmall]="true|false"
+	[klass]="klassNStudent.klass"
+	[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD">
+	</klass-card>
+-->
+
+<div 	class="cc-div-col col-md-4"
+		[ngClass]="{'my-small':isSmall}">
+	<ul class="list-group my-style">
+		<li class="list-group-item klass-row-image">
+
+			<img 	*ngIf="klass.teacher && klass.teacher.thumbnail" 
+					src="{{klass.teacher.thumbnail}}" 
+					alt="{{klass.teacher.name}}" 
+					[ngClass]="{'my-small':isSmall}"
+					class="img-circle img-teacher">
+
+			<img 	#classImage 
+					class="cc-img-class" 
+					width="100%;" 
+					src={{klass.class_poster_url_loadable}} 
+					[ngClass]="{'new-class':klass.isNewClassBtn()}"
+					alt={{klass.title}}>
+			<div 
+			*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+			[ngClass]="{'my-small':isSmall}"
+			class="klass-title-overlay text unselectable">
+				<strong>{{klass.title}}</strong>
+			</div>
+			<div 
+			*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+			[ngClass]="{'my-small':isSmall}"
+			class="klass-title-overlay-bg">
+			</div>
+		</li>
+		<li
+		*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+		class="list-group-item" 
+		style="padding:5px;text-align:left;">
+
+			<img 	
+			*ngIf="klass.level_img_url" 
+			[ngClass]="{'my-small':isSmall}"
+			src="{{klass.level_img_url}}" 
+			alt="{{klass.level_kor}}"
+			class="img-circle cc-img-filter">
+
+			<img 	
+			*ngIf="klass.subway_station_img" 
+			[ngClass]="{'my-small':isSmall}"
+			src="{{klass.subway_station_img}}" 
+			alt="{{klass.subway_station}}" 
+			class="img-circle cc-img-filter">
+
+			<img 	
+			*ngIf="klass.time_begin_img_url" 
+			[ngClass]="{'my-small':isSmall}"
+			src="{{klass.time_begin_img_url}}" 
+			alt="{{klass.time_begin_name}}" 
+			class="img-circle cc-img-filter">
+
+			<img 	
+			*ngFor="let days_img_url of klass.days_img_url_list" 
+			[ngClass]="{'my-small':isSmall}"
+			src="{{days_img_url}}"
+			alt="{{klass.days}}" 
+			class="img-circle cc-img-filter">
+
+		</li>
+
+		<!--
+		<li 
+		*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+		class="list-group-item my-style">
+			<h4 *ngIf="klass.price_with_format=='0'" class="pull-right cc-price unselectable">&nbsp;</h4>
+			<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price unselectable">&#8361;{{klass.price_with_format}}</h4>
+
+			<a 	*ngIf="klass.level_img_url" 
+				(click)="onSelectKlass($event, klass)"
+				href="#" 
+				class="btn cc-btn" 
+				role="button">자세히보기</a>
+
+			<a 	*ngIf="klass.level_img_url" 
+				(click)="onClickWishList($event, klass)" 
+				href="#" 
+				class="btn btn-default" 
+				role="button">
+				<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+			</a>
+		</li>
+		-->
+
+	</ul>
+</div>

@@ -228,10 +228,12 @@ CREATE TABLE `payment_import` (
   INDEX `search` (`klass_id`,`user_id`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
 
+# 수업 출석 여부 - 결재가 완료됨과 동시에 출석해야 할 날짜가 등록됨.
 CREATE TABLE `attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `klass_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `checked` int(1) NOT NULL DEFAULT 0 COMMENT '수업 출석여부',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

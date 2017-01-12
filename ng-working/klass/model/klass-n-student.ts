@@ -1,6 +1,9 @@
-import { HelperMyIs } from '../../util/helper/my-is';
+import { HelperMyIs }     from '../../util/helper/my-is';
+import { Teacher }        from '../../teachers/model/teacher';
+import { User }           from '../../users/model/user';
+import { Klass }          from './klass';
 
-export class KlassStudent {
+export class KlassNStudent {
 
 	private myIs:HelperMyIs;
 
@@ -11,20 +14,24 @@ export class KlassStudent {
 	public date_created:string="";
 	public date_updated:string="";
 
+    public klass:Klass;
+    public teacher:Teacher;
+    public user:User;
+
 	constructor(
 	) {
 		this.myIs = new HelperMyIs();
 	}
 
-	isSame(target:KlassStudent):boolean {
+	isSame(target:KlassNStudent):boolean {
 		return this.myIs.isSame(this, target);
 	}	
 
-	isSharing(key:string, target:KlassStudent):boolean {
+	isSharing(key:string, target:KlassNStudent):boolean {
 		return this.myIs.isSharing(key, this, target);
 	}
 
-    setJSON(json):KlassStudent {
+    setJSON(json):KlassNStudent {
 
         // let isDebug:boolean = true;
         let isDebug:boolean = false;
@@ -32,17 +39,26 @@ export class KlassStudent {
 
         if(isDebug) console.log("klassStudent / setJSON / json : ",json);
 
-        let klassStudent:KlassStudent = this._setJSON(json);
+        let klassStudent:KlassNStudent = this._setJSON(json);
 
         if(isDebug) console.log("klassStudent / setJSON / klassStudent : ",klassStudent);
 
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        if(null != json.klass) {
+            klassStudent.klass = new Klass().setJSON(json.klass);
+        }
+        if(null != json.teacher) {
+            klassStudent.teacher = new Teacher().setJSON(json.teacher);
+        }
+        if(null != json.user) {
+            klassStudent.user = new User().setJSON(json.user);
+        }
 
         return klassStudent;
 
     } // end method
 
-    private _setJSON(json):KlassStudent {
+    private _setJSON(json):KlassNStudent {
 
         return this.myIs.copyFromJSON(
             // target:any,

@@ -183,6 +183,8 @@ var MyEventService = (function () {
         this.KEY_KLASS_DAYS_FOR_SEARCH = "KEY_KLASS_DAYS_FOR_SEARCH";
         // 수업 시간 - 검색
         this.KEY_KLASS_TIME_FOR_SEARCH = "KEY_KLASS_TIME_FOR_SEARCH";
+        // 수업 카드 위젯 - 낱개의 수업을 표시하는 카드 형태의 위젯. 홈화면과 개인수업 신청 화면등에서 쓰임.
+        this.KEY_WIDGET_KLASS_CARD = "KEY_WIDGET_KLASS_CARD";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

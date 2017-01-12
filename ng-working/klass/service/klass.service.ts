@@ -27,7 +27,7 @@ import { MyEventWatchTowerService }  from '../../util/service/my-event-watchtowe
 @Injectable()
 export class KlassService {
 
-  private addKlassNStudent = '/CI/index.php/api/klass/addstudent';
+  private addKlassNStudentUrl = '/CI/index.php/api/klass/addstudent';
 
   private fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
   private fetchKlassUrl = '/CI/index.php/api/klass/fetchklass';
@@ -85,7 +85,7 @@ export class KlassService {
     return this.watchTower.isDebug();
   }
 
-  addKlassStudent(    
+  addKlassNStudent(    
     apiKey:string, 
     loginUserId:number,
     klassId:number,
@@ -100,7 +100,7 @@ export class KlassService {
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.urlService.get(this.addKlassNStudent);
+    let req_url = this.urlService.get(this.addKlassNStudentUrl);
 
     let params = {
       login_user_id:loginUserId,

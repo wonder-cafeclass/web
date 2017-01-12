@@ -1,3 +1,20 @@
-<div>수강중인 클래스 정보1</div>
-<div>수강중인 클래스 정보2</div>
-<div>관심 강의</div>
+<div class="my-title">지금 듣고 있는 수업입니다.</div>
+<div class="row my-style">
+	<div class="my-style"
+	*ngFor="let klassNStudent of klassNStudentList">
+		<klass-card 
+		[klass]="klassNStudent.klass"
+		[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD">
+		</klass-card>
+	</div>
+</div>
+<div class="my-title">이런 수업은 어떠세요?</div>
+<div class="row my-style">
+	<div class="my-style"
+	*ngFor="let klassNStudent of klassNStudentList">
+		<klass-card 
+		[klass]="klassNStudent.klass"
+		[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD">
+		</klass-card>
+	</div>
+</div>

@@ -7,16 +7,6 @@ import {  Component,
 
 import {  Router }                    from '@angular/router';
 
-import { ProfileImgUploadComponent }  from '../../../widget/input/profile-img-upload/profile-img-upload.component';
-import { PasswordComponent }          from '../../../widget/input/password/password.component';
-import { PasswordsTripletComponent }  from '../../../widget/input/password/passwords-triplet.component';
-import { MobileComponent }            from '../../../widget/input/mobile/mobile.component';
-import { GenderComponent }            from '../../../widget/input/gender/gender.component';
-import { BirthdayComponent }          from '../../../widget/input/birthday/birthday.component';
-
-import { DefaultComponent }           from '../../../widget/input/default/default.component';
-import { DefaultMeta }                from '../../../widget/input/default/model/default-meta';
-
 import { MyEventWatchTowerService }   from '../../../util/service/my-event-watchtower.service';          
 
 import { MyEventService }             from '../../../util/service/my-event.service';
@@ -31,6 +21,8 @@ import { UserService }                from '../../../users/service/user.service'
 
 import { User }                       from '../../../users/model/user';
 
+import { KlassNStudent }              from '../../../klass/model/klass-n-student';
+
 @Component({
   moduleId: module.id,
   selector: 'my-info-dashboard',
@@ -44,7 +36,10 @@ export class MyInfoDashboardComponent implements AfterViewInit {
 
   loginUser:User;
 
+  klassNStudentList:KlassNStudent[];
+
   constructor(private userService:UserService,
+              public myEventService:MyEventService,
               private watchTower:MyEventWatchTowerService,
               public router:Router) {
 
@@ -167,9 +162,20 @@ export class MyInfoDashboardComponent implements AfterViewInit {
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(this.isDebug()) console.log("my-info-dashboard / fetchUserInfoDashboard / myResponse : ",myResponse);
 
-      if(myResponse.isSuccess()) {
+      if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
 
         // Do something... 
+        let klassNStudentList:KlassNStudent[] = [];
+        let jsonList = myResponse.getDataProp("list");
+        for (var i = 0; i < jsonList.length; ++i) {
+          let json = jsonList[i];
+          let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
+          klassNStudentList.push(klassNStudent);
+        } // end for
+
+        this.klassNStudentList = klassNStudentList;
+
+        if(this.isDebug()) console.log("my-info-dashboard / fetchUserInfoDashboard / klassNStudentList : ",klassNStudentList);
 
       } else if(myResponse.isFailed()) {  
 

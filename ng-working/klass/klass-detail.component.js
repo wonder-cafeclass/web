@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var klass_1 = require('./model/klass');
-var klass_student_1 = require('./model/klass-student');
+var klass_n_student_1 = require('./model/klass-n-student');
 var auth_service_1 = require('../auth.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
@@ -273,7 +273,7 @@ var KlassDetailComponent = (function () {
                     console.log("klass-detail / getParams / subscribe / this.klass : ", _this.klass);
                 var klassStudentJSON = myResponse.getDataProp("klass_student");
                 if (null != klassStudentJSON) {
-                    _this.klassStudent = new klass_student_1.KlassStudent().setJSON(klassStudentJSON);
+                    _this.klassStudent = new klass_n_student_1.KlassNStudent().setJSON(klassStudentJSON);
                 } // end if
                 if (klassId === -100) {
                     // 새로 만든 수업이라면, 
@@ -1302,7 +1302,7 @@ var KlassDetailComponent = (function () {
         } // end if
         if (this.isDebug())
             console.log("klass-detail / updateKlassNStudent / paymentImp : ", paymentImp);
-        this.klassService.addKlassStudent(
+        this.klassService.addKlassNStudent(
         // apiKey:string,
         this.watchTower.getApiKey(), 
         // loginUserId:number,
@@ -1659,12 +1659,12 @@ var KlassDetailComponent = (function () {
         this.klassCopy.setSchedule(schedule);
         this.updateSaveBtnStatus();
     };
-    KlassDetailComponent.prototype.updateKlassStudentCnt = function (studentCnt) {
+    KlassDetailComponent.prototype.updateKlassNStudentCnt = function (studentCnt) {
         if (this.isDebug())
-            console.log("klass-detail / updateKlassStudentCnt / 시작");
+            console.log("klass-detail / updateKlassNStudentCnt / 시작");
         if (null == studentCnt || "" === studentCnt) {
             if (this.isDebug())
-                console.log("klass-detail / updateKlassStudentCnt / 중단 / studentCnt is not valid!");
+                console.log("klass-detail / updateKlassNStudentCnt / 중단 / studentCnt is not valid!");
             return;
         }
         this.klassCopy.student_cnt = +studentCnt;

@@ -202,6 +202,10 @@ export class MyEventService {
     // 수업 시간 - 검색
     KEY_KLASS_TIME_FOR_SEARCH:string="KEY_KLASS_TIME_FOR_SEARCH";
 
+    // 수업 카드 위젯 - 낱개의 수업을 표시하는 카드 형태의 위젯. 홈화면과 개인수업 신청 화면등에서 쓰임.
+    KEY_WIDGET_KLASS_CARD:string="KEY_WIDGET_KLASS_CARD";
+
+
 
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";
     KEY_CHECKBOX:string="KEY_CHECKBOX";

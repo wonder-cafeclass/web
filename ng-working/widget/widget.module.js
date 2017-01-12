@@ -36,6 +36,7 @@ var input_btns_row_component_1 = require('./input-view/input-btns-row.component'
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
 var debug_btn_component_1 = require('./debug/debug-btn.component');
 var import_component_1 = require('./payment/import.component');
+var klass_card_component_1 = require('./klass/klass-card.component');
 var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
 var pagination_component_1 = require('./pagination/pagination.component');
@@ -63,6 +64,7 @@ var WidgetModule = (function () {
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
                 import_component_1.ImportComponent,
+                klass_card_component_1.KlassCardComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
@@ -93,6 +95,7 @@ var WidgetModule = (function () {
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
                 import_component_1.ImportComponent,
+                klass_card_component_1.KlassCardComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,

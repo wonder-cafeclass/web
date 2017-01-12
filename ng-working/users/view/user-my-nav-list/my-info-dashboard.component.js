@@ -11,10 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
+var my_event_service_1 = require('../../../util/service/my-event.service');
 var user_service_1 = require('../../../users/service/user.service');
+var klass_n_student_1 = require('../../../klass/model/klass-n-student');
 var MyInfoDashboardComponent = (function () {
-    function MyInfoDashboardComponent(userService, watchTower, router) {
+    function MyInfoDashboardComponent(userService, myEventService, watchTower, router) {
         this.userService = userService;
+        this.myEventService = myEventService;
         this.watchTower = watchTower;
         this.router = router;
         this.eventKey = "";
@@ -110,7 +113,18 @@ var MyInfoDashboardComponent = (function () {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
                 console.log("my-info-dashboard / fetchUserInfoDashboard / myResponse : ", myResponse);
-            if (myResponse.isSuccess()) {
+            if (myResponse.isSuccess() && myResponse.hasDataProp("list")) {
+                // Do something... 
+                var klassNStudentList = [];
+                var jsonList = myResponse.getDataProp("list");
+                for (var i = 0; i < jsonList.length; ++i) {
+                    var json = jsonList[i];
+                    var klassNStudent = new klass_n_student_1.KlassNStudent().setJSON(json);
+                    klassNStudentList.push(klassNStudent);
+                } // end for
+                _this.klassNStudentList = klassNStudentList;
+                if (_this.isDebug())
+                    console.log("my-info-dashboard / fetchUserInfoDashboard / klassNStudentList : ", klassNStudentList);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -166,7 +180,7 @@ var MyInfoDashboardComponent = (function () {
             templateUrl: 'my-info-dashboard.component.html',
             styleUrls: ['my-info-dashboard.component.css']
         }), 
-        __metadata('design:paramtypes', [user_service_1.UserService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
+        __metadata('design:paramtypes', [user_service_1.UserService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], MyInfoDashboardComponent);
     return MyInfoDashboardComponent;
 }());

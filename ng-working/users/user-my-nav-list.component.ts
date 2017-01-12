@@ -63,6 +63,8 @@ export class UserMyNavListComponent implements AfterViewInit {
 
     this.radiobtnService.setWatchTower(this.watchTower);
 
+    this.watchTower.announceIsLockedBottomFooterFlexible(false);
+
   }
 
   private isDebug():boolean {

@@ -2130,7 +2130,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($offset, $limit);
+        $this->CI->db->limit($limit,$offset);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
@@ -2142,7 +2142,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($offset, $limit);
+        $this->CI->db->limit($limit,$offset);
         $query = $this->CI->db->get();
 
         return $query->result_object();
@@ -4472,7 +4472,6 @@ class MY_Sql extends MY_Library
         'teacher.greeting AS teacher_greeting' .
 
         ''
-
         ;
 
         return $select_query;
@@ -4501,14 +4500,15 @@ class MY_Sql extends MY_Library
             $status = "";
         } // end if
 
+        // Query Execution
         $query_klass_n_student_field = 
         $this->get_query_klass_n_student_field();
 
         $this->CI->db->select($query_klass_n_student_field);
         $this->CI->db->from('klass_n_student');
-        $this->CI->db->join('user', 'klass_n_student.user_id = user.id');
-        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id');
-        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id', 'left');
 
         $this->CI->db->where('klass_n_student.user_id', $user_id);
         if(!empty($status)) 
@@ -4516,8 +4516,27 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass_n_student.status', $status);
         }
 
-        $this->CI->db->limit($limit, $offset);
+        $this->CI->db->limit($limit,$offset);
         $query = $this->CI->db->get();
+
+
+        // Logging
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id', 'left');
+
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit,$offset);
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     } // end method

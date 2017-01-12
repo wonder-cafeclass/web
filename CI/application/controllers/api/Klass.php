@@ -305,9 +305,9 @@ class Klass extends MY_REST_Controller {
         $klass_n_student_list = 
         $this->my_sql->select_klass_n_student_list(
             // $limit=-1, 
-            $page_num,
+            $limit,
             // $offset=-1
-            $page_size,
+            $offset,
             // $user_id=-1, 
             $user_id
         );
@@ -315,10 +315,10 @@ class Klass extends MY_REST_Controller {
         $klass_n_student_list_next = [];
         foreach ($klass_n_student_list as $key => $klass_n_student) {
 
-            $klass_student =
-            $this->my_decorator->deco_klass_n_student($klass_student);
+            $klass_n_student =
+            $this->my_decorator->deco_klass_n_student($klass_n_student);
             
-            array_push($klass_n_student_list_next, $klass_student);
+            array_push($klass_n_student_list_next, $klass_n_student);
         }
         $output["list_src"] = $klass_n_student_list;
         $output["list"] = $klass_n_student_list_next;
@@ -547,7 +547,7 @@ class Klass extends MY_REST_Controller {
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
         $output["klass_list_src"] = $klass_list;
 
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         $output["klass_list"] = $klass_list;
 
         $new_klass = 
@@ -2062,7 +2062,7 @@ class Klass extends MY_REST_Controller {
         } // end if
 
         $klass_list = $this->my_sql->select_klass($klass_id);
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
 
         $klass = null;
         if(!empty($klass_list)) 
@@ -2296,7 +2296,7 @@ class Klass extends MY_REST_Controller {
             $klass_time
         );
 
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         // 비어있는 수업이라면 '수업 없음' 탭을 가져옵니다.
         if (empty($klass_list))
         {

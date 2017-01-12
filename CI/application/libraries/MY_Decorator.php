@@ -375,14 +375,100 @@ class MY_Decorator extends MY_Library
 
 
 
+    public function deco_klass($klass=null) 
+    {
+        if(is_null($klass)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            return null;
+        } // end if
 
+        $klassCourse = new KlassCourse();
+        $klassCourse->id = intval($klass->klass_id);
+        $klassCourse->title = $klass->klass_title;
+        $klassCourse->desc = $klass->klass_desc;
+        $klassCourse->feature = $klass->klass_feature;
+        $klassCourse->target = $klass->klass_target;
+        $klassCourse->schedule = $klass->klass_schedule;
+        $klassCourse->date_begin = $klass->klass_date_begin;
+        $klassCourse->time_begin = $klass->klass_time_begin;
+        $klassCourse->time_duration_minutes = intval($klass->klass_time_duration_minutes);
+        $klassCourse->time_end = $klass->klass_time_end;
+        $klassCourse->level = $klass->klass_level;
+        $klassCourse->week = intval($klass->klass_week);
+        $klassCourse->days = $klass->klass_days;
 
+        // $klassCourse->status = $klass->status;
+        $klassCourse->status = $klass->klass_status;
 
+        $klassCourse->subway_line = $klass->klass_subway_line;
+        $klassCourse->subway_station = $klass->klass_subway_station;
 
+        $klassCourse->venue_title = $klass->klass_venue_title;
+        $klassCourse->venue_telephone = $klass->klass_venue_telephone;
+        $klassCourse->venue_address = $klass->klass_venue_address;
+        $klassCourse->venue_road_address = $klass->klass_venue_road_address;
+        $klassCourse->venue_latitude = $klass->klass_venue_latitude;
+        $klassCourse->venue_longitude = $klass->klass_venue_longitude;
+        
+        $klassCourse->price = intval($klass->klass_price);
+        $klassCourse->student_cnt = intval($klass->klass_student_cnt);
+        $klassCourse->class_poster_url = $klass->klass_class_poster_url;
+        $klassCourse->class_banner_url = $klass->klass_class_banner_url;
 
+        $klassCourse->date_created = $klass->klass_date_created;
+        $klassCourse->date_updated = $klass->klass_date_updated;
+
+        $klassCourse->teacher_id = intval($klass->teacher_id);
+        $klassCourse->teacher_resume = $klass->teacher_resume;
+        $klassCourse->teacher_greeting = $klass->teacher_greeting;
+
+        $teacher = new Teacher();
+        $teacher->id = intval($klass->teacher_id);
+        $teacher->user_id = intval($klass->teacher_user_id);
+        $teacher->nickname = $klass->teacher_nickname;
+        $teacher->name = $klass->teacher_name;
+        $teacher->gender = $klass->teacher_gender;
+        $teacher->birthday = $klass->teacher_birthday;
+        $teacher->thumbnail = $klass->teacher_thumbnail;
+        $teacher->status = $klass->teacher_status;
+        $teacher->mobile = $klass->teacher_mobile;
+        $teacher->email = $klass->teacher_email;
+        $teacher->resume = $klass->teacher_resume;
+        $teacher->greeting = $klass->teacher_greeting;
+        $teacher->memo = $klass->teacher_memo;
+        $teacher->date_created = $klass->teacher_date_created;
+        $teacher->date_updated = $klass->teacher_date_updated;
+
+        $klassCourse->teacher = $teacher;
+
+        // 추가할 정보들을 넣는다.
+        $klassCourse = $this->deco_klass_extra($klassCourse);
+        
+        return $klassCourse;
+    }
+
+    // @ Desc : 수업 정보에 추가적인 데이터를 줍니다. ex) 이미지, 날짜 등
+    public function deco_klass_extra($klassCourse=null)
+    {
+        if(is_null($klassCourse)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klassCourse)");
+            return null;
+        } // end if
+
+        $klassCourse = $this->get_class_poster_img_url($klassCourse);
+        $klassCourse = $this->get_time_begin_img_url($klassCourse);
+        $klassCourse = $this->get_level_img_url($klassCourse);
+        $klassCourse = $this->get_days_list($klassCourse);
+        $klassCourse = $this->get_days_img_url($klassCourse);
+        $klassCourse = $this->get_subway_station_img_url($klassCourse);
+        $klassCourse = $this->get_price_with_format($klassCourse);  
+
+        return $klassCourse;
+
+    } // end method
 
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
-    public function deco_klass($klass_list=null) 
+    public function deco_klass_list($klass_list=null) 
     {
         if(empty($klass_list)) {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass_list)");
@@ -394,6 +480,10 @@ class MY_Decorator extends MY_Library
         {
             // join으로 가져온 klass와 teacher의 정보를 나눕니다.
 
+            $klassCourse = $this->deco_klass($klass);
+
+            // REMOVE ME
+            /*
             $klassCourse = new KlassCourse();
             $klassCourse->id = intval($klass->klass_id);
             $klassCourse->title = $klass->klass_title;
@@ -461,6 +551,7 @@ class MY_Decorator extends MY_Library
             $klassCourse = $this->get_days_img_url($klassCourse);
             $klassCourse = $this->get_subway_station_img_url($klassCourse);
             $klassCourse = $this->get_price_with_format($klassCourse);
+            */
             
             array_push($klass_list_next, $klassCourse);
         }
@@ -975,97 +1066,99 @@ class MY_Decorator extends MY_Library
 
         $ks = new KlassNStudent();
 
-        $ks->id = $this->getNumber($klass_student, "id");
-        $ks->klass_id = $this->getNumber($klass_student, "klass_id");
-        $ks->user_id = $this->getNumber($klass_student, "user_id");
-        $ks->status = $this->getStr($klass_student, "status");
-        $ks->date_created = $this->getStr($klass_student, "date_created");
+        $ks->id = $this->getNumber($klass_student, "ks_id");
+        $ks->klass_id = $this->getNumber($klass_student, "ks_klass_id");
+        $ks->user_id = $this->getNumber($klass_student, "ks_user_id");
+        $ks->status = $this->getStr($klass_student, "ks_status");
+        $ks->date_created = $this->getStr($klass_student, "ks_date_created");
 
-        $ks->date_updated = $this->getStr($klass_student, "date_updated");
+        $ks->date_updated = $this->getStr($klass_student, "ks_date_updated");
 
         $klass = new KlassCourse();
 
-        $klass->id = $this->getNumber($payment, "klass_id");
-        $klass->title = $this->getStr($payment, "klass_title");
-        $klass->desc = $this->getStr($payment, "klass_desc");
-        $klass->feature = $this->getStr($payment, "klass_feature");
-        $klass->target = $this->getStr($payment, "klass_target");
+        $klass->id = $this->getNumber($klass_student, "klass_id");
+        $klass->title = $this->getStr($klass_student, "klass_title");
+        $klass->desc = $this->getStr($klass_student, "klass_desc");
+        $klass->feature = $this->getStr($klass_student, "klass_feature");
+        $klass->target = $this->getStr($klass_student, "klass_target");
 
-        $klass->schedule = $this->getStr($payment, "klass_schedule");
-        $klass->date_begin = $this->getStr($payment, "klass_date_begin");
-        $klass->time_begin = $this->getStr($payment, "klass_time_begin");
-        $klass->time_duration_minutes = $this->getStr($payment, "klass_time_duration_minutes");
-        $klass->time_end = $this->getStr($payment, "klass_time_end");
+        $klass->schedule = $this->getStr($klass_student, "klass_schedule");
+        $klass->date_begin = $this->getStr($klass_student, "klass_date_begin");
+        $klass->time_begin = $this->getStr($klass_student, "klass_time_begin");
+        $klass->time_duration_minutes = $this->getStr($klass_student, "klass_time_duration_minutes");
+        $klass->time_end = $this->getStr($klass_student, "klass_time_end");
 
-        $klass->level = $this->getStr($payment, "klass_level");
-        $klass->week = $this->getStr($payment, "klass_week");
-        $klass->days = $this->getStr($payment, "klass_days");
-        $klass->subway_line = $this->getStr($payment, "klass_subway_line");
-        $klass->subway_station = $this->getStr($payment, "klass_subway_station");
+        $klass->level = $this->getStr($klass_student, "klass_level");
+        $klass->week = $this->getStr($klass_student, "klass_week");
+        $klass->days = $this->getStr($klass_student, "klass_days");
+        $klass->subway_line = $this->getStr($klass_student, "klass_subway_line");
+        $klass->subway_station = $this->getStr($klass_student, "klass_subway_station");
 
-        $klass->venue_title = $this->getStr($payment, "klass_venue_title");
-        $klass->venue_telephone = $this->getStr($payment, "klass_venue_telephone");
-        $klass->venue_address = $this->getStr($payment, "klass_venue_address");
-        $klass->venue_road_address = $this->getStr($payment, "klass_venue_road_address");
-        $klass->venue_latitude = $this->getStr($payment, "klass_venue_latitude");
+        $klass->venue_title = $this->getStr($klass_student, "klass_venue_title");
+        $klass->venue_telephone = $this->getStr($klass_student, "klass_venue_telephone");
+        $klass->venue_address = $this->getStr($klass_student, "klass_venue_address");
+        $klass->venue_road_address = $this->getStr($klass_student, "klass_venue_road_address");
+        $klass->venue_latitude = $this->getStr($klass_student, "klass_venue_latitude");
 
-        $klass->venue_longitude = $this->getStr($payment, "klass_venue_longitude");
-        $klass->status = $this->getStr($payment, "klass_status");
-        $klass->price = $this->getStr($payment, "klass_price");
-        $klass->student_cnt = $this->getStr($payment, "klass_student_cnt");
-        $klass->class_poster_url = $this->getStr($payment, "klass_class_poster_url");
+        $klass->venue_longitude = $this->getStr($klass_student, "klass_venue_longitude");
+        $klass->status = $this->getStr($klass_student, "klass_status");
+        $klass->price = $this->getStr($klass_student, "klass_price");
+        $klass->student_cnt = $this->getStr($klass_student, "klass_student_cnt");
+        $klass->class_poster_url = $this->getStr($klass_student, "klass_class_poster_url");
 
         $klass->class_poster_url_loadable = 
         $this->CI->my_path->get_loadable_url_class_poster($klass->class_poster_url);
 
-        $klass->class_banner_url = $this->getStr($payment, "klass_class_banner_url");
-        $klass->date_created = $this->getStr($payment, "klass_date_created");
-        $klass->date_updated = $this->getStr($payment, "klass_date_updated");
+        $klass->class_banner_url = $this->getStr($klass_student, "klass_class_banner_url");
+        $klass->date_created = $this->getStr($klass_student, "klass_date_created");
+        $klass->date_updated = $this->getStr($klass_student, "klass_date_updated");
 
-        if(!(0 < $klass->id))
+        $teacher = new Teacher();     
+
+        $teacher->id = $this->getNumber($klass_student, "teacher_id");
+        $teacher->nickname = $this->getStr($klass_student, "teacher_nickname");
+        $teacher->name = $this->getStr($klass_student, "teacher_name");
+        $teacher->gender = $this->getStr($klass_student, "teacher_gender");
+        $teacher->birthday = $this->getStr($klass_student, "teacher_birthday");
+
+        $teacher->thumbnail = $this->getStr($klass_student, "teacher_thumbnail");
+        $teacher->status = $this->getStr($klass_student, "teacher_status");
+        $teacher->permission = $this->getStr($klass_student, "teacher_permission");
+        $teacher->mobile = $this->getStr($klass_student, "teacher_mobile");
+        $teacher->email = $this->getStr($klass_student, "teacher_email");
+
+        $teacher->teacher_resume = $this->getStr($klass_student, "teacher_resume");
+        $teacher->teacher_greeting = $this->getStr($klass_student, "teacher_greeting");
+
+        if(0 < $teacher->id)
         {
+            $ks->teacher = $teacher; 
+        } // end if        
+
+        if(0 < $klass->id)
+        {
+            $klass = $this->deco_klass_extra($klass);
+            $klass->teacher = $teacher;
             $ks->klass = $klass;
         } // end if
 
         $user = new User();
 
-        $user->id = $this->getNumber($payment, "user_id");
-        $user->nickname = $this->getStr($payment, "user_nickname");
-        $user->name = $this->getStr($payment, "user_name");
-        $user->gender = $this->getStr($payment, "user_gender");
-        $user->birthday = $this->getStr($payment, "user_birthday");
+        $user->id = $this->getNumber($klass_student, "user_id");
+        $user->nickname = $this->getStr($klass_student, "user_nickname");
+        $user->name = $this->getStr($klass_student, "user_name");
+        $user->gender = $this->getStr($klass_student, "user_gender");
+        $user->birthday = $this->getStr($klass_student, "user_birthday");
 
-        $user->thumbnail = $this->getStr($payment, "user_thumbnail");
-        $user->status = $this->getStr($payment, "user_status");
-        $user->permission = $this->getStr($payment, "user_permission");
-        $user->mobile = $this->getStr($payment, "user_mobile");
-        $user->email = $this->getStr($payment, "user_email");
+        $user->thumbnail = $this->getStr($klass_student, "user_thumbnail");
+        $user->status = $this->getStr($klass_student, "user_status");
+        $user->permission = $this->getStr($klass_student, "user_permission");
+        $user->mobile = $this->getStr($klass_student, "user_mobile");
+        $user->email = $this->getStr($klass_student, "user_email");
 
-        if(!(0 < $user->id))
+        if(0 < $user->id)
         {
             $ks->user = $user;
-        } // end if
-        
-        $teacher = new Teacher();     
-
-        $teacher->id = $this->getNumber($payment, "teacher_id");
-        $teacher->nickname = $this->getStr($payment, "teacher_nickname");
-        $teacher->name = $this->getStr($payment, "teacher_name");
-        $teacher->gender = $this->getStr($payment, "teacher_gender");
-        $teacher->birthday = $this->getStr($payment, "teacher_birthday");
-
-        $teacher->thumbnail = $this->getStr($payment, "teacher_thumbnail");
-        $teacher->status = $this->getStr($payment, "teacher_status");
-        $teacher->permission = $this->getStr($payment, "teacher_permission");
-        $teacher->mobile = $this->getStr($payment, "teacher_mobile");
-        $teacher->email = $this->getStr($payment, "teacher_email");
-
-        $teacher->teacher_resume = $this->getStr($payment, "teacher_resume");
-        $teacher->teacher_greeting = $this->getStr($payment, "teacher_greeting");
-
-        if(!(0 < $teacher->id))
-        {
-            $ks->teacher = $teacher; 
         } // end if
 
         return $ks;
