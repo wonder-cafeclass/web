@@ -5,6 +5,7 @@ import { User }    				from '../../users/model/user';
 import { Teacher }    			from '../../teachers/model/teacher';
 
 import { HelperMyConst }		from '../../util/helper/my-const';
+import { MyResponse }           from '../../util/model/my-response';
 
 import { DefaultOption }        from '../../widget/input/default/model/default-option';
 
@@ -677,6 +678,89 @@ export class MyEventWatchTowerService {
 			// errorMsg:string
 			msg
 		); // end logger
+	}
+
+	logErrorBadValue(msg:string) :void	{
+
+		if(this._isDebug) console.log("m-e-w / logAPIError / 시작");
+
+		if(!this.getIsMyCheckerReady()) {
+			if(this._isDebug) console.log("m-e-w / logAPIError / 중단 / !this.getIsMyCheckerReady()");
+			return;
+		} // end if
+		if(!this.getIsEventPackReady()) {
+			if(this._isDebug) console.log("m-e-w / logAPIError / 중단 / !this.getIsEventPackReady()");
+			return;
+		} // end if
+		if(null == msg || "" === msg) {
+			if(this._isDebug) console.log("m-e-w / logAPIError / 중단 / msg is not valid!");
+			return;
+		} // end if
+
+
+		this.myLoggerService.logError(
+			// apiKey:string
+			this.getApiKey(),
+			// errorType:string
+			this.myLoggerService.errorTypeNotValidValue,
+			// errorMsg:string
+			msg
+		); // end logger
+	} // end method
+
+	logPageEnter(pageType:string):void {
+
+		if(this._isDebug) console.log("m-e-w / logPageEnter / 시작");
+
+		if(!this.getIsMyCheckerReady()) {
+			if(this._isDebug) console.log("m-e-w / logPageEnter / 중단 / !this.getIsMyCheckerReady()");
+			return;
+		} // end if
+		if(!this.getIsEventPackReady()) {
+			if(this._isDebug) console.log("m-e-w / logPageEnter / 중단 / !this.getIsEventPackReady()");
+			return;
+		} // end if
+		if(null == pageType || "" === pageType) {
+			if(this._isDebug) console.log("m-e-w / logPageEnter / 중단 / pageType is not valid!");
+		} // end if
+
+	    // 페이지 진입을 기록으로 남깁니다.
+	    this.myLoggerService.logActionPage(
+	      // apiKey:string
+	      this.getApiKey(),
+	      // pageType:string
+	      pageType
+	    ).then((myResponse:MyResponse) => {
+	      // 로그 등록 결과를 확인해볼 수 있습니다.
+	      if(this._isDebug) console.log("m-e-w / logPageEnter / myResponse : ",myResponse);
+	    }) // end service
+
+	}
+
+	isNotOK(myEvent:MyEvent):boolean {
+		return !this.isOK(myEvent);
+	}
+	isOK(myEvent:MyEvent):boolean {
+
+		if(this._isDebug) console.log("m-e-w / isOK / 시작");
+
+		if(!this.getIsMyCheckerReady()) {
+			if(this._isDebug) console.log("m-e-w / isOK / 중단 / !this.getIsMyCheckerReady()");
+			return false;
+		} // end if
+		if(!this.getIsEventPackReady()) {
+			if(this._isDebug) console.log("m-e-w / isOK / 중단 / !this.getIsEventPackReady()");
+			return false;
+		} // end if
+		if(null == myEvent) {
+			if(this._isDebug) console.log("m-e-w / isOK / 중단 / myEvent is not valid!");
+			return false;
+		} // end if
+
+		let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+
+		return isOK;
+
 	}
 
 }

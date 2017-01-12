@@ -15,6 +15,8 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class UserService {
 
+  private fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlist';
+
   private getUserListUrl = '/CI/index.php/api/users/list';
 
   private getUserByEmailUrl = '/CI/index.php/api/users/email';
@@ -51,6 +53,46 @@ export class UserService {
 
   }
 
+
+
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  } 
+
+  fetchKlassNStudentList (
+    apiKey:string,
+    pageNum:number,
+    pageSize:number,
+    userId:number ): Promise<MyResponse> {
+
+    // wonder.jung
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / 시작");
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / apiKey : ",apiKey);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchKlassNStudentListUrl);
+    let params = {
+      page_num:pageNum,
+      page_size:pageSize,
+      user_id:userId
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method
+
   getUserList (apiKey:string): Promise<MyResponse> {
 
     // wonder.jung
@@ -67,21 +109,7 @@ export class UserService {
                 .then(this.myExtractor.extractData)
                 .catch(this.myExtractor.handleError);    
 
-  }  
-
-  setWatchTower(watchTower:MyEventWatchTowerService):void {
-    this.watchTower = watchTower;
-  }
-
-  private isDebug():boolean {
-    if(null == this.watchTower) {
-      return false;
-    }
-
-    return this.watchTower.isDebug();
-  }  
-
-
+  } // end method
 
   getUserByEmail (email:string): Promise<MyResponse> {
 

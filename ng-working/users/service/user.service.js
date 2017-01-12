@@ -17,6 +17,7 @@ var UserService = (function () {
     function UserService(us, http) {
         this.us = us;
         this.http = http;
+        this.fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlist';
         this.getUserListUrl = '/CI/index.php/api/users/list';
         this.getUserByEmailUrl = '/CI/index.php/api/users/email';
         this.getUserByFacebookIdUrl = '/CI/index.php/api/users/facebook';
@@ -38,6 +39,34 @@ var UserService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    UserService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    UserService.prototype.isDebug = function () {
+        if (null == this.watchTower) {
+            return false;
+        }
+        return this.watchTower.isDebug();
+    };
+    UserService.prototype.fetchKlassNStudentList = function (apiKey, pageNum, pageSize, userId) {
+        // wonder.jung
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / 시작");
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / apiKey : ", apiKey);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.us.get(this.fetchKlassNStudentListUrl);
+        var params = {
+            page_num: pageNum,
+            page_size: pageSize,
+            user_id: userId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end method
     UserService.prototype.getUserList = function (apiKey) {
         // wonder.jung
         if (this.isDebug())
@@ -52,16 +81,7 @@ var UserService = (function () {
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
-    };
-    UserService.prototype.setWatchTower = function (watchTower) {
-        this.watchTower = watchTower;
-    };
-    UserService.prototype.isDebug = function () {
-        if (null == this.watchTower) {
-            return false;
-        }
-        return this.watchTower.isDebug();
-    };
+    }; // end method
     UserService.prototype.getUserByEmail = function (email) {
         // TODO 이메일로 사용자를 조회.
         // 개인 정보 유출 경로가 될 수 있으므로 POST 전송 및 API 키 사용 필요. 

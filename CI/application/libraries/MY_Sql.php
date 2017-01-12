@@ -4104,7 +4104,7 @@ class MY_Sql extends MY_Library
 
         return $cnt;
     }
-    // wonder.jung
+    
     private function get_query_payment_import_field() 
     {
         $select_query = 
@@ -4400,7 +4400,155 @@ class MY_Sql extends MY_Library
         $query = $this->CI->db->get('klass_n_student');
 
         return $query->row();
-    }         
+    } 
+
+    private function get_query_klass_n_student_field() 
+    {
+        $select_query = 
+        'klass_n_student.id AS ks_id,' .
+        'klass_n_student.klass_id AS ks_klass_id,' .
+        'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.status AS ks_status,' .
+        'klass_n_student.date_created AS ks_date_created,' .
+
+        'klass_n_student.date_updated AS ks_date_updated,' .
+
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.desc AS klass_desc,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+
+        'klass.venue_longitude AS klass_venue_longitude,'.
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+
+        'klass.class_banner_url AS klass_class_banner_url,'.
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.        
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email,' .
+
+        'teacher.id AS teacher_id,' .
+        'teacher.user_id AS teacher_user_id,' .
+        'teacher.nickname AS teacher_nickname,' .
+        'teacher.name AS teacher_name,' .
+        'teacher.gender AS teacher_gender,' .
+        'teacher.birthday AS teacher_birthday,' .
+        'teacher.thumbnail AS teacher_thumbnail,' .
+        'teacher.status AS teacher_status,' .
+        'teacher.mobile AS teacher_mobile,' .
+        'teacher.email AS teacher_email,' .
+        'teacher.resume AS teacher_resume,' .
+        'teacher.greeting AS teacher_greeting' .
+
+        ''
+
+        ;
+
+        return $select_query;
+    } // end method
+
+    // @ Desc : 특정 유저가 참여한 모든 수업을 가져옵니다.
+    public function select_klass_n_student_list($limit=-1, $offset=-1, $user_id=-1, $status="")
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if 
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        return $query->result_array();
+    } // end method
+
+    // @ Desc : 특정 유저가 참여한 모든 수업의 갯수를 가져옵니다.
+    public function select_klass_n_student_cnt($user_id=-1, $status="")
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+    } // end method    
 
 }
 

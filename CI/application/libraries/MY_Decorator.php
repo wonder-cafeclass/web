@@ -6,7 +6,7 @@ require_once APPPATH . '/models/Teacher.php';
 require_once APPPATH . '/models/User.php';
 require_once APPPATH . '/models/KlassSubwayLine.php';
 require_once APPPATH . '/models/KlassSubwayStation.php';
-require_once APPPATH . '/models/KlassStudent.php';
+require_once APPPATH . '/models/KlassNStudent.php';
 require_once APPPATH . '/models/PaymentImport.php';
 require_once APPPATH . '/libraries/MY_Library.php';
 
@@ -966,14 +966,14 @@ class MY_Decorator extends MY_Library
     } // end method 
 
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
-    public function deco_klass_student($klass_student=null) 
+    public function deco_klass_n_student($klass_student=null) 
     {
         if(is_null($klass_student)) {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass_student)");
             return null;
         } // end if
 
-        $ks = new KlassStudent();
+        $ks = new KlassNStudent();
 
         $ks->id = $this->getNumber($klass_student, "id");
         $ks->klass_id = $this->getNumber($klass_student, "klass_id");
@@ -982,6 +982,91 @@ class MY_Decorator extends MY_Library
         $ks->date_created = $this->getStr($klass_student, "date_created");
 
         $ks->date_updated = $this->getStr($klass_student, "date_updated");
+
+        $klass = new KlassCourse();
+
+        $klass->id = $this->getNumber($payment, "klass_id");
+        $klass->title = $this->getStr($payment, "klass_title");
+        $klass->desc = $this->getStr($payment, "klass_desc");
+        $klass->feature = $this->getStr($payment, "klass_feature");
+        $klass->target = $this->getStr($payment, "klass_target");
+
+        $klass->schedule = $this->getStr($payment, "klass_schedule");
+        $klass->date_begin = $this->getStr($payment, "klass_date_begin");
+        $klass->time_begin = $this->getStr($payment, "klass_time_begin");
+        $klass->time_duration_minutes = $this->getStr($payment, "klass_time_duration_minutes");
+        $klass->time_end = $this->getStr($payment, "klass_time_end");
+
+        $klass->level = $this->getStr($payment, "klass_level");
+        $klass->week = $this->getStr($payment, "klass_week");
+        $klass->days = $this->getStr($payment, "klass_days");
+        $klass->subway_line = $this->getStr($payment, "klass_subway_line");
+        $klass->subway_station = $this->getStr($payment, "klass_subway_station");
+
+        $klass->venue_title = $this->getStr($payment, "klass_venue_title");
+        $klass->venue_telephone = $this->getStr($payment, "klass_venue_telephone");
+        $klass->venue_address = $this->getStr($payment, "klass_venue_address");
+        $klass->venue_road_address = $this->getStr($payment, "klass_venue_road_address");
+        $klass->venue_latitude = $this->getStr($payment, "klass_venue_latitude");
+
+        $klass->venue_longitude = $this->getStr($payment, "klass_venue_longitude");
+        $klass->status = $this->getStr($payment, "klass_status");
+        $klass->price = $this->getStr($payment, "klass_price");
+        $klass->student_cnt = $this->getStr($payment, "klass_student_cnt");
+        $klass->class_poster_url = $this->getStr($payment, "klass_class_poster_url");
+
+        $klass->class_poster_url_loadable = 
+        $this->CI->my_path->get_loadable_url_class_poster($klass->class_poster_url);
+
+        $klass->class_banner_url = $this->getStr($payment, "klass_class_banner_url");
+        $klass->date_created = $this->getStr($payment, "klass_date_created");
+        $klass->date_updated = $this->getStr($payment, "klass_date_updated");
+
+        if(!(0 < $klass->id))
+        {
+            $ks->klass = $klass;
+        } // end if
+
+        $user = new User();
+
+        $user->id = $this->getNumber($payment, "user_id");
+        $user->nickname = $this->getStr($payment, "user_nickname");
+        $user->name = $this->getStr($payment, "user_name");
+        $user->gender = $this->getStr($payment, "user_gender");
+        $user->birthday = $this->getStr($payment, "user_birthday");
+
+        $user->thumbnail = $this->getStr($payment, "user_thumbnail");
+        $user->status = $this->getStr($payment, "user_status");
+        $user->permission = $this->getStr($payment, "user_permission");
+        $user->mobile = $this->getStr($payment, "user_mobile");
+        $user->email = $this->getStr($payment, "user_email");
+
+        if(!(0 < $user->id))
+        {
+            $ks->user = $user;
+        } // end if
+        
+        $teacher = new Teacher();     
+
+        $teacher->id = $this->getNumber($payment, "teacher_id");
+        $teacher->nickname = $this->getStr($payment, "teacher_nickname");
+        $teacher->name = $this->getStr($payment, "teacher_name");
+        $teacher->gender = $this->getStr($payment, "teacher_gender");
+        $teacher->birthday = $this->getStr($payment, "teacher_birthday");
+
+        $teacher->thumbnail = $this->getStr($payment, "teacher_thumbnail");
+        $teacher->status = $this->getStr($payment, "teacher_status");
+        $teacher->permission = $this->getStr($payment, "teacher_permission");
+        $teacher->mobile = $this->getStr($payment, "teacher_mobile");
+        $teacher->email = $this->getStr($payment, "teacher_email");
+
+        $teacher->teacher_resume = $this->getStr($payment, "teacher_resume");
+        $teacher->teacher_greeting = $this->getStr($payment, "teacher_greeting");
+
+        if(!(0 < $teacher->id))
+        {
+            $ks->teacher = $teacher; 
+        } // end if
 
         return $ks;
 

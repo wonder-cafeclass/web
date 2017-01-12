@@ -7,6 +7,7 @@ import { WidgetModule }              from '../widget/widget.module';
 import { UserMyComponent }           from './user-my.component';
 import { UserMyNavListComponent }    from './user-my-nav-list.component';
 import { MyInfoComponent }           from './view/user-my-nav-list/my-info.component';
+import { MyInfoDashboardComponent }  from './view/user-my-nav-list/my-info-dashboard.component';
 
 import { KlassRadioBtnService }      from '../klass/service/klass-radiobtn.service';
 
@@ -22,7 +23,8 @@ import { usersRouting }              from './users.routing';
   declarations: [
     UserMyComponent,
     UserMyNavListComponent,
-    MyInfoComponent
+    MyInfoComponent,
+    MyInfoDashboardComponent
   ],
   providers: [
     KlassRadioBtnService

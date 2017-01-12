@@ -30,6 +30,7 @@ var MyInfoComponent = (function () {
         this.userService = userService;
         this.watchTower = watchTower;
         this.router = router;
+        this.eventKey = "";
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
         // @ Desc : 사용자가 자신의 유저 정보를 변경했는지 확인하는 플래그
@@ -51,18 +52,6 @@ var MyInfoComponent = (function () {
         // this.setDefaultComponents();
         this.asyncViewPack();
     };
-    // REMOVE ME
-    /*
-    private setDefaultComponents() :void {
-  
-      if(this.isDebug()) console.log("my-info / setDefaultComponents / 시작");
-  
-      // DefaultComponent들을 세팅
-      this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
-      this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
-      this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
-    }
-    */
     MyInfoComponent.prototype.asyncViewPack = function () {
         var _this = this;
         if (this.isDebug())
@@ -112,31 +101,6 @@ var MyInfoComponent = (function () {
             this.router.navigate(['/login']);
         } // end if
     };
-    // REMOVE ME
-    // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
-    /*
-    private getInput(eventKey:string) :any {
-  
-      if(this.isDebug()) console.log("my-info / getInput / init");
-  
-      let target:DefaultComponent = null;
-  
-      this.inputComponentList.forEach(function(inputComponent) {
-  
-        if(this.isDebug()) console.log("my-info / getInput / eventKey : ",eventKey);
-        if(this.isDebug()) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
-  
-        if(inputComponent.hasEventKey(eventKey)) {
-          if(this.isDebug()) console.log("my-info / getInput / inputComponent : ",inputComponent);
-          target = inputComponent;
-          return;
-        }
-  
-      }); // end for-each
-  
-      return target;
-    }
-    */
     MyInfoComponent.prototype.logActionPage = function () {
         var _this = this;
         if (this.isDebug())
@@ -161,6 +125,18 @@ var MyInfoComponent = (function () {
         this.setLoginUser();
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
+        // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
+        this.emitEventOnReady();
+    };
+    MyInfoComponent.prototype.emitEventOnReady = function () {
+        if (this.isDebug())
+            console.log("default / emitEventOnReady / 시작");
+        var myEvent = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.eventKey, 
+        // component
+        this);
+        this.emitter.emit(myEvent);
     };
     MyInfoComponent.prototype.fillViewUserInfo = function () {
         if (this.isDebug())
@@ -722,6 +698,10 @@ var MyInfoComponent = (function () {
         } // end if
         return isReadyToSave;
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], MyInfoComponent.prototype, "eventKey", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)

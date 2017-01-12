@@ -96,6 +96,7 @@ var MyEventService = (function () {
         this.KEY_USER_BIRTH_YEAR = "KEY_USER_BIRTH_YEAR"; // 유저 - 생년
         this.KEY_USER_BIRTH_MONTH = "KEY_USER_BIRTH_MONTH"; // 유저 - 생월
         this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
+        this.KEY_USER_MY_INFO_DASHBOARD = "KEY_USER_MY_INFO_DASHBOARD"; // 유저 - 내정보 대시보드.
         this.KEY_USER_MY_INFO = "KEY_USER_MY_INFO"; // 유저 - 내정보 수정.
         this.KEY_USER_MY_HISTORY = "KEY_USER_MY_HISTORY"; // 유저 - 내 수강이력.
         this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결재정보.

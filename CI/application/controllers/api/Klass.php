@@ -194,6 +194,139 @@ class Klass extends MY_REST_Controller {
         } // end if
     }
 
+    public function fetchklassnstudentlist_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_size = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_size",
+            // $key_filter=""
+            "page_size",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_size)) {
+            $page_size = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_size=-1
+            $page_size
+        ); 
+
+        $params = array(
+            "user_id"=>$user_id,
+            "page_num"=>$page_num,
+            "page_size"=>$page_size,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            return;
+        } // end if 
+
+        // wonder.jung - pagination
+
+        // 해당 유저가 등록한 수업의 전체 갯수를 가져옵니다.
+        $total_cnt = 
+        $this->my_sql->select_klass_n_student_cnt(
+            // $user_id=-1,
+            $user_id 
+        );
+
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_size
+        );
+        $output["pagination"] = $pagination;
+
+        // 해당 유저가 등록한 수업을 가져옵니다.
+        $klass_n_student_list = 
+        $this->my_sql->select_klass_n_student_list(
+            // $limit=-1, 
+            $page_num,
+            // $offset=-1
+            $page_size,
+            // $user_id=-1, 
+            $user_id
+        );
+
+        $klass_n_student_list_next = [];
+        foreach ($klass_n_student_list as $key => $klass_n_student) {
+
+            $klass_student =
+            $this->my_decorator->deco_klass_n_student($klass_student);
+            
+            array_push($klass_n_student_list_next, $klass_student);
+        }
+        $output["list_src"] = $klass_n_student_list;
+        $output["list"] = $klass_n_student_list_next;
+
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+    }
+
     public function fetchklass_post()
     {
         $output = [];

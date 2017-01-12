@@ -43,6 +43,7 @@ import { User }                       from '../../../users/model/user';
 })
 export class MyInfoComponent implements OnInit, AfterViewInit {
 
+  @Input() eventKey:string = "";
   @Output() emitter = new EventEmitter<any>();
 
   loginUser:User;
@@ -114,18 +115,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.asyncViewPack();
   }
 
-  // REMOVE ME
-  /*
-  private setDefaultComponents() :void {
-
-    if(this.isDebug()) console.log("my-info / setDefaultComponents / 시작");
-
-    // DefaultComponent들을 세팅
-    this.emailComponent = this.getInput(this.myEventService.KEY_USER_EMAIL);
-    this.nameComponent = this.getInput(this.myEventService.KEY_USER_NAME);
-    this.nicknameComponent = this.getInput(this.myEventService.KEY_USER_NICKNAME);
-  }
-  */
   private asyncViewPack(): void {
     
     if(this.isDebug()) console.log("my-info / asyncViewPack / 시작");
@@ -179,32 +168,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
 
   }
 
-  // REMOVE ME
-  // @ Desc : DefaultComponent로 부터 원하는 input component를 가져옵니다.
-  /*
-  private getInput(eventKey:string) :any {
-
-    if(this.isDebug()) console.log("my-info / getInput / init");
-
-    let target:DefaultComponent = null;
-
-    this.inputComponentList.forEach(function(inputComponent) {
-
-      if(this.isDebug()) console.log("my-info / getInput / eventKey : ",eventKey);
-      if(this.isDebug()) console.log("my-info / getInput / inputComponent.getEventKey() : ",inputComponent.getEventKey());
-
-      if(inputComponent.hasEventKey(eventKey)) {
-        if(this.isDebug()) console.log("my-info / getInput / inputComponent : ",inputComponent);
-        target = inputComponent;
-        return;
-      }
-
-    }); // end for-each
-
-    return target;
-  } 
-  */ 
-
   private logActionPage() :void {
 
     if(this.isDebug()) console.log("my-info / logActionPage / 시작");
@@ -232,8 +195,26 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.setLoginUser();
     // 페이지 진입을 기록으로 남깁니다.
     this.logActionPage();
+    // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
+    this.emitEventOnReady();
 
-  }  
+  }
+
+  private emitEventOnReady() :void {
+
+    if(this.isDebug()) console.log("default / emitEventOnReady / 시작");
+
+    let myEvent:MyEvent =
+    this.watchTower.getEventOnReady(
+      // eventKey:string, 
+      this.eventKey,
+      // component
+      this
+    );
+
+    this.emitter.emit(myEvent);
+
+  }     
 
   fillViewUserInfo() :void {
 

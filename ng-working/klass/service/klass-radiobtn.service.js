@@ -16,6 +16,16 @@ var KlassRadioBtnService = (function () {
     function KlassRadioBtnService(myEventService) {
         this.myEventService = myEventService;
     }
+    KlassRadioBtnService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    // @ Desc : 검사하지 않는 checker를 가져옵니다.
+    KlassRadioBtnService.prototype.getFreePassChecker = function () {
+        if (null == this.watchTower) {
+            return null;
+        }
+        return this.watchTower.getMyCheckerService().getFreePassChecker();
+    };
     /*
     *    @ Desc : 유저가 몇주(weeks) 수강하려는 결정을 도와주는 체크박스 데이터
     */
@@ -39,7 +49,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null)),
+            this.getFreePassChecker())),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
             "8주", 
@@ -58,7 +68,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null)),
+            this.getFreePassChecker())),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
             "12주", 
@@ -77,7 +87,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null))
+            this.getFreePassChecker()))
         ];
         for (var i = 0; i < optionList.length; ++i) {
             var option = optionList[i];
@@ -112,7 +122,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null)),
+            this.getFreePassChecker())),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
             "2주", 
@@ -131,7 +141,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -151,7 +161,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             )
         ];
         if (null != valueFocus && "" != valueFocus) {
@@ -192,7 +202,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -212,7 +222,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -232,7 +242,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -252,7 +262,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -272,7 +282,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -292,7 +302,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             klass, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             )
         ]; // end array
         if (null != keyFocus && "" != keyFocus) {
@@ -314,6 +324,26 @@ var KlassRadioBtnService = (function () {
         var optionList = [
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
+            "대시보드", 
+            // public key:string,
+            this.myEventService.KEY_USER_MY_INFO_DASHBOARD, 
+            // public isFocus:boolean
+            false, 
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_USER_MY_INFO_DASHBOARD, 
+            // public value:string
+            "", 
+            // public metaObj:any
+            user, 
+            // public myChecker:MyChecker
+            this.getFreePassChecker()) // end MyEvent
+            ),
+            new radiobtn_option_1.RadioBtnOption(
+            // public title:string,
             "나의 정보 수정", 
             // public key:string,
             this.myEventService.KEY_USER_MY_INFO, 
@@ -330,7 +360,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             user, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -350,7 +380,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             user, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -370,7 +400,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             user, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -390,7 +420,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             user, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             )
         ]; // end array
         if (null != keyFocus && "" != keyFocus) {
@@ -428,7 +458,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             teacher, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -448,7 +478,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             teacher, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -468,7 +498,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             teacher, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
@@ -488,7 +518,7 @@ var KlassRadioBtnService = (function () {
             // public metaObj:any
             teacher, 
             // public myChecker:MyChecker
-            null) // end MyEvent
+            this.getFreePassChecker()) // end MyEvent
             )
         ]; // end array
         if (null != keyFocus && "" != keyFocus) {

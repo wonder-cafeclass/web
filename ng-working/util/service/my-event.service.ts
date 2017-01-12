@@ -107,10 +107,11 @@ export class MyEventService {
     KEY_USER_BIRTH_MONTH:string="KEY_USER_BIRTH_MONTH";   // 유저 - 생월
     KEY_USER_BIRTH_DAY:string="KEY_USER_BIRTH_DAY";       // 유저 - 생일
 
-    KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";           // 유저 - 내정보 수정.
-    KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";     // 유저 - 내 수강이력.
-    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
-    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";   // 유저 - 내 관심강의(찜).
+    KEY_USER_MY_INFO_DASHBOARD:string="KEY_USER_MY_INFO_DASHBOARD";   // 유저 - 내정보 대시보드.
+    KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";                       // 유저 - 내정보 수정.
+    KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";                 // 유저 - 내 수강이력.
+    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";                 // 유저 - 내 결재정보.
+    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";               // 유저 - 내 관심강의(찜).
 
     KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";           // 선생님 - 내정보 수정.
     KEY_TEACHER_MY_HISTORY:string="KEY_TEACHER_MY_HISTORY";     // 선생님 - 내 수강이력.
