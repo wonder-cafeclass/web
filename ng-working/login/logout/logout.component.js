@@ -25,11 +25,12 @@ var LogoutComponent = (function () {
     LogoutComponent.prototype.ngOnInit = function () {
         this.setMyCheckerReady();
     };
+    LogoutComponent.prototype.isDebug = function () {
+        return this.watchTower.isDebug();
+    };
     LogoutComponent.prototype.setMyCheckerReady = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("logout / setMyCheckerReady / 시작");
         // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
         if (this.watchTower.getIsMyCheckerReady()) {
@@ -38,7 +39,7 @@ var LogoutComponent = (function () {
         }
         // 직접 주소를 입력하여 이동한 경우.
         this.watchTower.myCheckerServicePackReady$.subscribe(function (isReady) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("logout / setMyCheckerReady / isReady : ", isReady);
             if (!isReady) {
                 return;
@@ -50,12 +51,9 @@ var LogoutComponent = (function () {
         this.setMyChecker();
         this.logActionPage();
         this.deleteLoginCookie();
-        this.goHome();
     };
     LogoutComponent.prototype.setMyChecker = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("logout / setMyChecker / 시작");
         if (this.watchTower.getIsMyCheckerReady()) {
             this.myCheckerService.setReady(
@@ -67,14 +65,13 @@ var LogoutComponent = (function () {
             this.watchTower.getDirtyWordList(), 
             // apiKey:string
             this.watchTower.getApiKey()); // end setReady
-            if (isDebug)
+            if (this.isDebug())
                 console.log("logout / setMyChecker / done!");
         } // end if
     };
     LogoutComponent.prototype.logActionPage = function () {
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        var _this = this;
+        if (this.isDebug())
             console.log("logout / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
@@ -83,28 +80,26 @@ var LogoutComponent = (function () {
         // pageType:string
         this.myLoggerService.pageTypeLogout).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("logout / logActionPage / myResponse : ", myResponse);
         });
     };
     LogoutComponent.prototype.deleteLoginCookie = function () {
         var _this = this;
-        // let isDebug:boolean = true;
-        var isDebug = false;
-        if (isDebug)
+        if (this.isDebug())
             console.log("logout / deleteLoginCookie / 시작");
         // 로그아웃시 해야할 일
         // 1. 로그인 쿠키를 지웁니다.
         this.userService
             .deleteUserCookie()
             .then(function (myResponse) {
-            if (isDebug)
+            if (_this.isDebug())
                 console.log("logout / deleteLoginCookie / myResponse : ", myResponse);
             // 1-1. 플랫폼 로그아웃 처리도 해줍니다.(나중에...)
             // 2. event-watch-tower를 통해서 로그아웃을 전파합니다. 
             // 해당 이벤트 스트림을 받는 엘리먼트들은 로그아웃 처리를 해줍니다.
-            _this.watchTower.announceLogin(null);
-            _this.watchTower.announceLoginTeacher(null);
+            _this.emitNoUser();
+            _this.goHome();
         });
     };
     LogoutComponent.prototype.emitNoUser = function () {

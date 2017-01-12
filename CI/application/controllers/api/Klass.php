@@ -2088,6 +2088,7 @@ class Klass extends MY_REST_Controller {
             "page_size"=>$page_size,
             "limit"=>$limit,
             "offset"=>$offset,
+            "login_user_id"=>$login_user_id,
             "search_query"=>$search_query,
             "klass_status"=>$klass_status,
             "klass_level"=>$klass_level,

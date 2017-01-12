@@ -131,10 +131,21 @@ var KlassListComponent = (function () {
         if (null != userJSON) {
             loginUser = new user_1.User().setJSON(userJSON);
         }
-        if (null != loginUser) {
-            this.loginUser = loginUser;
-        }
+        // 로그 아웃시 null 허용.
+        this.loginUser = loginUser;
         this.getKlassListOnInit();
+    };
+    KlassListComponent.prototype.getLoginUserId = function () {
+        if (this.isDebug())
+            console.log("klass-list / getLoginUserId / 시작");
+        var loginUser = this.watchTower.getLoginUser();
+        var loginUserId = -1;
+        if (null != loginUser) {
+            loginUserId = loginUser.id;
+        }
+        if (this.isDebug())
+            console.log("klass-list / getLoginUserId / loginUserId : ", loginUserId);
+        return loginUserId;
     };
     KlassListComponent.prototype.logActionPage = function () {
         var _this = this;
@@ -169,13 +180,9 @@ var KlassListComponent = (function () {
         }
         if (this.isDebug())
             console.log("klass-list / getKlassListOnInit / 시작");
-        var loginUserId = -1;
-        if (null != this.loginUser) {
-            loginUserId = this.loginUser.id;
-        }
         this.fetchKlassList(
         // userId:Number, 
-        loginUserId, 
+        this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
         // pageSize:number, 
@@ -259,8 +266,6 @@ var KlassListComponent = (function () {
         klassTime).then(function (myResponse) {
             if (_this.isDebug())
                 console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
-            if (_this.isDebug())
-                console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
             if (myResponse.isSuccess() &&
                 myResponse.hasDataProp("pagination") &&
                 myResponse.hasDataProp("klass_list")) {
@@ -315,16 +320,12 @@ var KlassListComponent = (function () {
         if (this.myArray.isOK(keywordList)) {
             searchQuerySafe = keywordList[0];
         } // end if
-        var loginUserId = -1;
-        if (null != this.loginUser) {
-            loginUserId = this.loginUser.id;
-        } // end if
         if (null == this.pagination) {
             this.pagination = new pagination_1.Pagination();
         }
         this.fetchKlassList(
         // userId:number, 
-        loginUserId, 
+        this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
         // pageSize:number, 

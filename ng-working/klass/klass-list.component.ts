@@ -177,13 +177,25 @@ export class KlassListComponent implements AfterViewInit {
     if(null != userJSON) {
       loginUser = new User().setJSON(userJSON);
     }
-    if(null != loginUser) {
-      this.loginUser = loginUser;
-    }
+    // 로그 아웃시 null 허용.
+    this.loginUser = loginUser;
 
     this.getKlassListOnInit();
 
   } 
+  private getLoginUserId() :number {
+
+    if(this.isDebug()) console.log("klass-list / getLoginUserId / 시작");
+    let loginUser:User = this.watchTower.getLoginUser();
+
+    let loginUserId:number = -1;
+    if(null != loginUser) {
+      loginUserId = loginUser.id;
+    }
+    if(this.isDebug()) console.log("klass-list / getLoginUserId / loginUserId : ",loginUserId);
+
+    return loginUserId;
+  }
   private logActionPage() :void {
 
     if(this.isDebug()) console.log("klass-list / logActionPage / 시작");
@@ -223,14 +235,9 @@ export class KlassListComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-list / getKlassListOnInit / 시작");
 
-    let loginUserId:number = -1;
-    if(null != this.loginUser) {
-      loginUserId = this.loginUser.id;
-    }
-
     this.fetchKlassList(
       // userId:Number, 
-      loginUserId,
+      this.getLoginUserId(),
       // pageNum:number, 
       this.pagination.pageNum,
       // pageSize:number, 
@@ -340,8 +347,6 @@ export class KlassListComponent implements AfterViewInit {
 
       if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
 
-      if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
-
       if( myResponse.isSuccess() && 
           myResponse.hasDataProp("pagination") &&
           myResponse.hasDataProp("klass_list")) {
@@ -408,18 +413,13 @@ export class KlassListComponent implements AfterViewInit {
       searchQuerySafe = keywordList[0];
     } // end if
 
-    let loginUserId:number = -1;
-    if(null != this.loginUser) {
-      loginUserId = this.loginUser.id;
-    } // end if
-
     if(null == this.pagination) {
       this.pagination = new Pagination();
     }
 
     this.fetchKlassList(
       // userId:number, 
-      loginUserId,
+      this.getLoginUserId(),
       // pageNum:number, 
       this.pagination.pageNum,
       // pageSize:number, 

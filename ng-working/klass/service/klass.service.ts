@@ -586,19 +586,19 @@ export class KlassService {
                     klassDays:string,
                     klassTime:string ): Promise<MyResponse> {
 
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / loginUserId : ",loginUserId);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / 시작");
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / searchQuery : ",searchQuery);
 
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassLevel : ",klassLevel);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayLine : ",klassSubwayLine);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassSubwayStation : ",klassSubwayStation);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassDays : ",klassDays);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / klassTime : ",klassTime);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassStatus : ",klassStatus);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassLevel : ",klassLevel);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassSubwayLine : ",klassSubwayLine);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassSubwayStation : ",klassSubwayStation);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassDays : ",klassDays);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / klassTime : ",klassTime);
 
     if("" === klassStatus) {
       klassStatus = "E"; // Open - 개강

@@ -43,7 +43,7 @@ var KlassDetailNavListComponent = (function () {
         this.myLoggerService = myLoggerService;
         this.urlService = urlService;
         this.imageService = imageService;
-        this.isAdmin = false;
+        this.isTeacher = false;
         this.cageWidth = -1;
         // Nav Focus
         this.isFocusKlassDesc = true;
@@ -1186,7 +1186,7 @@ var KlassDetailNavListComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], KlassDetailNavListComponent.prototype, "isAdmin", void 0);
+    ], KlassDetailNavListComponent.prototype, "isTeacher", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)

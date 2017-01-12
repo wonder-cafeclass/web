@@ -86,7 +86,7 @@ export class KlassDetailNavListComponent implements OnInit {
   @Input() klassSchedule:string;
   klassScheduleCopy:string;
 
-  @Input() isAdmin:boolean=false;
+  @Input() isTeacher:boolean=false;
   @Input() cageWidth:number=-1;
 
   cageWidthStr:string;

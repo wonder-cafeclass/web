@@ -477,29 +477,29 @@ var KlassService = (function () {
     };
     KlassService.prototype.fetchKlassList = function (apiKey, loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / 시작");
+            console.log("klass.service / fetchKlassList / 시작");
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / apiKey : ", apiKey);
+            console.log("klass.service / fetchKlassList / apiKey : ", apiKey);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / loginUserId : ", loginUserId);
+            console.log("klass.service / fetchKlassList / loginUserId : ", loginUserId);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / pageNum : ", pageNum);
+            console.log("klass.service / fetchKlassList / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / pageSize : ", pageSize);
+            console.log("klass.service / fetchKlassList / pageSize : ", pageSize);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / searchQuery : ", searchQuery);
+            console.log("klass.service / fetchKlassList / searchQuery : ", searchQuery);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassStatus : ", klassStatus);
+            console.log("klass.service / fetchKlassList / klassStatus : ", klassStatus);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassLevel : ", klassLevel);
+            console.log("klass.service / fetchKlassList / klassLevel : ", klassLevel);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassSubwayLine : ", klassSubwayLine);
+            console.log("klass.service / fetchKlassList / klassSubwayLine : ", klassSubwayLine);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassSubwayStation : ", klassSubwayStation);
+            console.log("klass.service / fetchKlassList / klassSubwayStation : ", klassSubwayStation);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassDays : ", klassDays);
+            console.log("klass.service / fetchKlassList / klassDays : ", klassDays);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / klassTime : ", klassTime);
+            console.log("klass.service / fetchKlassList / klassTime : ", klassTime);
         if ("" === klassStatus) {
             klassStatus = "E"; // Open - 개강
         }
