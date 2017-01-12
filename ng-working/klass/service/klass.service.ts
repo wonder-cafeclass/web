@@ -30,6 +30,7 @@ export class KlassService {
   private addKlassNStudent = '/CI/index.php/api/klass/addstudent';
 
   private fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
+  private fetchKlassUrl = '/CI/index.php/api/klass/fetchklass';
   private klassUrl = '/CI/index.php/api/klass/course';
   
   private klassUpdateUrl = '/CI/index.php/api/klass/update';
@@ -627,6 +628,7 @@ export class KlassService {
 
   }   
 
+  // @ Desc : 클래스 정보만 가져옵니다.
   getKlass (id: number | string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("klass.service / getKlass / 시작");
@@ -642,6 +644,29 @@ export class KlassService {
                   .catch(this.myExtractor.handleError);
   }
 
+  // @ Desc : 클래스 정보 및 로그인한 유저의 수강 기록을 함께 가져옵니다.
+  fetchKlass (  apiKey:string,
+                klassId:number, 
+                loginUserId:number): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("klass.service / fetchKlass / 시작");
+    if(this.isDebug()) console.log("klass.service / fetchKlass / klassId : ",klassId);
+    if(this.isDebug()) console.log("klass.service / fetchKlass / loginUserId : ",loginUserId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchKlassUrl);
+
+    let params = {
+      klass_id:klassId,
+      login_user_id:loginUserId
+    };
+
+    return this.http.post(req_url, params, options)
+                    .toPromise()
+                    .then(this.myExtractor.extractData)
+                    .catch(this.myExtractor.handleError);
+  }
   
   getKlassSelectile(): Promise<MyResponse> {
 

@@ -4372,7 +4372,7 @@ class MY_Sql extends MY_Library
         );
     }
 
-    public function select_klass_student($klass_id=-1, $user_id=-1)
+    public function select_klass_student($klass_id=-1, $user_id=-1, $status="")
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
@@ -4384,10 +4384,18 @@ class MY_Sql extends MY_Library
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return null;
         }
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        }
 
         $this->CI->db->select("*");
         $this->CI->db->where('klass_id', $klass_id);
         $this->CI->db->where('user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('status', $status);
+        }
         $this->CI->db->limit(1);
         $query = $this->CI->db->get('klass_n_student');
 

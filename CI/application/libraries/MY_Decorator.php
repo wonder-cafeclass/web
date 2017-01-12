@@ -6,6 +6,7 @@ require_once APPPATH . '/models/Teacher.php';
 require_once APPPATH . '/models/User.php';
 require_once APPPATH . '/models/KlassSubwayLine.php';
 require_once APPPATH . '/models/KlassSubwayStation.php';
+require_once APPPATH . '/models/KlassStudent.php';
 require_once APPPATH . '/models/PaymentImport.php';
 require_once APPPATH . '/libraries/MY_Library.php';
 
@@ -962,6 +963,28 @@ class MY_Decorator extends MY_Library
 
         return $pi_list_next;
         
-    } // end method    
+    } // end method 
+
+    // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
+    public function deco_klass_student($klass_student=null) 
+    {
+        if(is_null($klass_student)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass_student)");
+            return null;
+        } // end if
+
+        $ks = new KlassStudent();
+
+        $ks->id = $this->getNumber($klass_student, "id");
+        $ks->klass_id = $this->getNumber($klass_student, "klass_id");
+        $ks->user_id = $this->getNumber($klass_student, "user_id");
+        $ks->status = $this->getStr($klass_student, "status");
+        $ks->date_created = $this->getStr($klass_student, "date_created");
+
+        $ks->date_updated = $this->getStr($klass_student, "date_updated");
+
+        return $ks;
+
+    } // end method        
 
 }

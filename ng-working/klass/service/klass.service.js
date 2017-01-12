@@ -23,6 +23,7 @@ var KlassService = (function () {
         this.urlService = urlService;
         this.addKlassNStudent = '/CI/index.php/api/klass/addstudent';
         this.fetchKlassListUrl = '/CI/index.php/api/klass/fetchklasslist';
+        this.fetchKlassUrl = '/CI/index.php/api/klass/fetchklass';
         this.klassUrl = '/CI/index.php/api/klass/course';
         this.klassUpdateUrl = '/CI/index.php/api/klass/update';
         this.klassNewUrl = '/CI/index.php/api/klass/coursenew';
@@ -522,6 +523,7 @@ var KlassService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
+    // @ Desc : 클래스 정보만 가져옵니다.
     KlassService.prototype.getKlass = function (id) {
         if (this.isDebug())
             console.log("klass.service / getKlass / 시작");
@@ -532,6 +534,26 @@ var KlassService = (function () {
         if (this.isDebug())
             console.log("klass.service / getKlass / req_url : ", req_url);
         return this.http.get(req_url)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    // @ Desc : 클래스 정보 및 로그인한 유저의 수강 기록을 함께 가져옵니다.
+    KlassService.prototype.fetchKlass = function (apiKey, klassId, loginUserId) {
+        if (this.isDebug())
+            console.log("klass.service / fetchKlass / 시작");
+        if (this.isDebug())
+            console.log("klass.service / fetchKlass / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("klass.service / fetchKlass / loginUserId : ", loginUserId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.fetchKlassUrl);
+        var params = {
+            klass_id: klassId,
+            login_user_id: loginUserId
+        };
+        return this.http.post(req_url, params, options)
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);

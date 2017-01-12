@@ -1,22 +1,7 @@
 <div>
 	<ul class="list-group">
-		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 -->
-		<li class="list-group-item">
-			<!-- 
-	        <div class="my-status-box">
-	            <widget-input-default
-	            [height]="50"
-	            [width]="100"
-	            [isNoSpace]="true"
-	            [isNoBorder]="true"
-	            [isShowTitle]="false"
-	            [selectOptionList]="selectOptionListUserStatus"
-	            [meta]="defaultMetaUserStatusForSearch"
-	            (emitter)="onChangedFromChild($event)">
-	            </widget-input-default>	        	
-	        </div>
-			-->
-		</li>
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 / 현재 없음 -->
+
 		<li *ngIf="pagination" class="list-group-item">
 			<pagination 
 			(emitter)="onChangedFromChild($event)"
@@ -24,11 +9,10 @@
 			[pagination]="pagination"></pagination>
 		</li>
 		<li class="list-group-item my-style-table">
-<!--
+
 <div *ngIf="!paymentList" style="text-align:center;">
-	<h3 style="margin-bottom:20px;color: #999;">검색 결과가 없습니다.</h3>
+	<h3 style="margin-bottom:20px;color: #999;">결과가 없습니다.</h3>
 </div>
--->
 
 <table *ngIf="paymentList" class="table table-bordered table-hover my-style"> 
 	<thead> 

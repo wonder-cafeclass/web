@@ -23,6 +23,7 @@ import { KlassPrice }                    from './model/klass-price';
 import { KlassCalendar }                 from './model/klass-calendar';
 import { KlassCalendarDay }              from './model/klass-calendar-day';
 import { KlassVenue }                    from './model/klass-venue';
+import { KlassStudent }                  from './model/klass-student';
 
 import { AuthService }                   from '../auth.service';
 import { KlassRadioBtnService }          from './service/klass-radiobtn.service';
@@ -99,6 +100,8 @@ export class KlassDetailComponent implements AfterViewInit {
 
   editTitle: string; // Deprecated
 
+  klassStudent:KlassStudent;
+
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
   priceTagWidth:number=105;
@@ -143,6 +146,10 @@ export class KlassDetailComponent implements AfterViewInit {
 
   isAdmin:boolean=false;
   isTeacher:boolean=false;
+  // 수업 신청이 가능한지 여부 (기본값은 보임)
+  isValidEnrollment:boolean=true;
+  // 수업 취소가 가능한지 여부 (기본값은 숨김)
+  isValidCancelEnrollment:boolean=false;
 
   @ViewChildren(DefaultComponent) inputComponentList: QueryList<DefaultComponent>;
   defaultMetaList:DefaultMeta[];
@@ -399,6 +406,8 @@ export class KlassDetailComponent implements AfterViewInit {
         this.router.navigate(["/"]);
         return;
 
+      // @ Deprecated
+      /*
       } else if(klassId === -100) {
 
         // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
@@ -415,12 +424,27 @@ export class KlassDetailComponent implements AfterViewInit {
           // teacherGreeting:string
           this.loginTeacher.greeting
         );
+        */
 
       } else {
 
         // 기존 수업 가져오기
         if(this.isDebug()) console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ",klassId);
-        return this.klassService.getKlass(klassId);
+        // return this.klassService.getKlass(klassId);
+
+        let loginUserId:number = -1;
+        if(null != this.loginUser) {
+          loginUserId = this.loginUser.id;
+        } // end if
+
+        return this.klassService.fetchKlass(
+          // apiKey:string,
+          this.watchTower.getApiKey(),
+          // klassId:number, 
+          klassId,
+          // loginUserId:number
+          loginUserId
+        );
 
       } // end if
 
@@ -432,11 +456,15 @@ export class KlassDetailComponent implements AfterViewInit {
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
 
         let klassJSON = myResponse.getDataProp("klass");
-        if(this.isDebug()) console.log("klass-detail / getParams / subscribe / klassJSON : ",klassJSON);
         if(null != klassJSON) {
           this.klass = new Klass().setJSON(klassJSON);
         } // end if
         if(this.isDebug()) console.log("klass-detail / getParams / subscribe / this.klass : ",this.klass);
+
+        let klassStudentJSON = myResponse.getDataProp("klass_student");
+        if(null != klassStudentJSON) {
+          this.klassStudent = new KlassStudent().setJSON(klassStudentJSON);
+        } // end if
         
         if(klassId === -100) {
           // 새로 만든 수업이라면, 
@@ -452,6 +480,7 @@ export class KlassDetailComponent implements AfterViewInit {
           this.onAfterReceivingKlass();
 
         } // end if
+
 
       } else if(myResponse.isFailed()) {  
 
@@ -679,6 +708,23 @@ export class KlassDetailComponent implements AfterViewInit {
     this.klassDateEnrollmentComponent.setSelectOption(selectOptionList);
 
   } 
+
+  // @ Desc : 수업 등록/취소버튼들의 상태를 업데이트합니다.
+  private setKlassEnrollmentBtns() :void {
+
+    if(this.isDebug()) console.log("klass-detail / setKlassEnrollmentBtns / 시작");
+
+    if(null == this.klassStudent) {
+      // 1. 수업 등록 내역이 없습니다. 수업 등록 버튼을 활성화.
+      this.isValidEnrollment=true;
+      this.isValidCancelEnrollment=false;
+    } else {
+      // 2. 수업 등록 내역이 있습니다. 수업 취소 버튼을 활성화.
+      this.isValidEnrollment=false;
+      this.isValidCancelEnrollment=true;
+    } // end if
+
+  } // end method
 
   // @ 주당 수업 횟수 데이터를 준비합니다.
   // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
@@ -1176,6 +1222,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
     this.setKlassDateEnrollmentView();
     this.setKlassDateEnrollmentInput();
+    this.setKlassEnrollmentBtns();
 
     this.updateIsTeacher();
 
@@ -1280,6 +1327,44 @@ export class KlassDetailComponent implements AfterViewInit {
     );
 
   }
+
+  onClickCancelEnrollment(event, klass:Klass) {
+
+    if(this.isDebug()) console.log("klass-detail / onClickCancelEnrollment / 시작");
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    if(null == this.paymentImportComponent) {
+      if(this.isDebug()) console.log("klass-detail / onClickCancelEnrollment / 중단 / null == this.paymentImportComponent");
+      return;
+    } // end if
+
+    if(null == this.loginUser) {
+      if(this.isDebug()) console.log("klass-detail / onClickCancelEnrollment / 중단 / null == this.loginUser");
+      return;
+    }
+
+    this.paymentImportComponent.buyKlass(
+      // klassId:number, 
+      this.klass.id,
+      // klassName:string, 
+      this.klass.title,
+      // userId:number,
+      this.loginUser.id,  
+      // userEmail:string,
+      this.loginUser.email,   
+      // userName:string,
+      this.loginUser.name,   
+      // userMobile:string,
+      this.loginUser.mobile,   
+      // amount:number      
+      // this.klass.price
+      // TEST - 테스트 금액은 천원
+      1000
+    );
+
+  }  
 
   // @ 로그인 페이지로 이동합니다. 현재 페이지 주소를 리다이렉트 주소로 사용합니다.
   private goLogin():void {
@@ -1645,7 +1730,6 @@ export class KlassDetailComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-detail / updateKlassNStudent / paymentImp : ",paymentImp);
 
-    // wonder.jung
     this.klassService.addKlassStudent(
       // apiKey:string,
       this.watchTower.getApiKey(),

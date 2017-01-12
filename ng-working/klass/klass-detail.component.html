@@ -319,16 +319,30 @@
           <li 
           *ngIf="!isTeacher"
           class="list-group-item col-next">
-            <button   type="button"
+            <!-- 수강 신청이 가능한 경우 -->
+            <button   *ngIf="isValidEnrollment"
+                      type="button"
                       class="btn btn-lg btn-default klass-signup-v2" 
                       style="width:100%;"
                       (click)="onClickEnrollment($event, klass)">
                       신청하기(결재)
             </button>
+
+            <!-- 수강 취소가 가능한 경우 -->
+            <button   *ngIf="isValidCancelEnrollment"
+                      type="button"
+                      class="btn btn-lg btn-default klass-signup-v2" 
+                      style="width:100%;"
+                      (click)="onClickCancelEnrollment($event, klass)">
+                      수업 취소하기
+            </button>
+
             <payment-import
+            *ngIf="isValidEnrollment || isValidCancelEnrollment"
             (emitter)="onChangedFromChild($event)"
             [eventKey]="myEventService.KEY_PAYMENT_KLASS_ENROLLMENT">
             </payment-import>
+
           </li>
         </ul>
         <div class="col-md-2" style="padding:0px;"></div>

@@ -192,9 +192,112 @@ class Klass extends MY_REST_Controller {
                 $output
             );            
         } // end if
-
-
     }
+
+    public function fetchklass_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        // @ Optional
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id",
+            // $is_no_record=false
+            true
+        );
+
+        $params = array(
+            "user_id"=>$login_user_id,
+            "klass_id"=>$klass_id
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklass_post Failed!");
+            return;
+        } // end if 
+        
+        // 수업 - klass 정보를 가져옵니다.
+        $klass = $this->get_klass($klass_id);
+
+        // 수업의 리뷰를 가져옵니다.
+        if(0 < intval($klass->id))
+        {
+            $klass->review_list = 
+            $this->my_sql->select_klass_review_list(intval($klass->id));
+        }
+        if(empty($klass->review_list))
+        {
+            $klass->review_list = [];   
+        }
+
+        // 수업의 문의를 가져옵니다.
+        if(0 < intval($klass->id))
+        {
+            $klass->question_list = 
+            $this->my_sql->select_klass_question_list(intval($klass->id));
+        }
+        if(empty($klass->question_list))
+        {
+            $klass->question_list = [];   
+        }
+
+        // 해당 유저가 수업 등록을 했는지 여부를 가져옵니다.
+        $klass_student = 
+        $this->my_sql->select_klass_student(
+            // $klass_id=-1, 
+            $klass->id,
+            // $user_id=-1,
+            $login_user_id, 
+            // $status=""
+            "A"
+        );
+        $klass_student =
+        $this->my_decorator->deco_klass_student($klass_student);
+        $output["klass_student"] = $klass_student;
+
+        // 조회 결과를 가져옵니다.
+        if (!empty($klass))
+        {
+            $output["klass"] = $klass;
+            $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        }
+        else
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,'Klass could not be found');
+            return;
+        }
+    }     
 
     public function course_get()
     {
@@ -229,21 +332,6 @@ class Klass extends MY_REST_Controller {
         
         // 수업 - klass 정보를 가져옵니다.
         $klass = $this->get_klass($id);
-        $output["klass_src"] = $klass;
-
-        /*
-        // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
-        $teacher = null;
-        if(isset($klass) && isset($klass->teacher_id))
-        {
-            $teacher_id = intval($klass->teacher_id);
-            $teacher = $this->my_sql->select_teacher($teacher_id);
-        }
-        if(isset($teacher))
-        {
-            $klass->teacher = $teacher;
-        }
-        */
 
         // 수업의 리뷰를 가져옵니다.
         // $review_list = null;
