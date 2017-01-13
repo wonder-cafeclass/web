@@ -703,10 +703,10 @@ class Klass extends MY_REST_Controller {
             );
 
             $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
+            $klass = $this->my_decorator->deco_klass($klass);
             $output["klass"] = $klass;
 
             // 선생님이 수업을 추가한 것을 로그로 기록합니다.
-
             $this->respond_200($output);
         }
         else

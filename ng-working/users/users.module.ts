@@ -8,6 +8,7 @@ import { UserMyComponent }           from './user-my.component';
 import { UserMyNavListComponent }    from './user-my-nav-list.component';
 import { MyInfoComponent }           from './view/user-my-nav-list/my-info.component';
 import { MyInfoDashboardComponent }  from './view/user-my-nav-list/my-info-dashboard.component';
+import { MyInfoKlassComponent }      from './view/user-my-nav-list/my-info-klass.component';
 
 import { KlassRadioBtnService }      from '../klass/service/klass-radiobtn.service';
 
@@ -24,7 +25,8 @@ import { usersRouting }              from './users.routing';
     UserMyComponent,
     UserMyNavListComponent,
     MyInfoComponent,
-    MyInfoDashboardComponent
+    MyInfoDashboardComponent,
+    MyInfoKlassComponent
   ],
   providers: [
     KlassRadioBtnService

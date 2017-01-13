@@ -28,7 +28,10 @@
                         </my-info>
                   </div>
                   <div  [ngClass]="{'i-show':showMyHistory,'i-hide':!showMyHistory}">
-                        KEY_USER_MY_HISTORY
+                        <my-info-klass
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_USER_MY_HISTORY">
+                        </my-info-klass>
                   </div>
                   <div  [ngClass]="{'i-show':showMyPayment,'i-hide':!showMyPayment}">
                         KEY_USER_MY_PAYMENT

@@ -16,6 +16,7 @@ var user_my_component_1 = require('./user-my.component');
 var user_my_nav_list_component_1 = require('./user-my-nav-list.component');
 var my_info_component_1 = require('./view/user-my-nav-list/my-info.component');
 var my_info_dashboard_component_1 = require('./view/user-my-nav-list/my-info-dashboard.component');
+var my_info_klass_component_1 = require('./view/user-my-nav-list/my-info-klass.component');
 var klass_radiobtn_service_1 = require('../klass/service/klass-radiobtn.service');
 var users_routing_1 = require('./users.routing');
 var UsersModule = (function () {
@@ -33,7 +34,8 @@ var UsersModule = (function () {
                 user_my_component_1.UserMyComponent,
                 user_my_nav_list_component_1.UserMyNavListComponent,
                 my_info_component_1.MyInfoComponent,
-                my_info_dashboard_component_1.MyInfoDashboardComponent
+                my_info_dashboard_component_1.MyInfoDashboardComponent,
+                my_info_klass_component_1.MyInfoKlassComponent
             ],
             providers: [
                 klass_radiobtn_service_1.KlassRadioBtnService

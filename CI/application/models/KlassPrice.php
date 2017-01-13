@@ -1,7 +1,8 @@
 <?php
 
 class KlassPrice {
-
+// REMOVE ME
+/*
         public $weeks;
         public $price_per_week;
         public $price;
@@ -47,4 +48,5 @@ class KlassPrice {
                         $this->percentage = floor(($this->discounted_price/$this->price)*100)/10;
                 }
         }
+*/
 }

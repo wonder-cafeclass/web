@@ -20,7 +20,4 @@ class KlassNStudent {
 
         public $payment_import_cnt=-1;
 
-        // @ Deprecated - REMOVE ME
-        // public $attendance_list;
-        // public $payment_import_list;
 }

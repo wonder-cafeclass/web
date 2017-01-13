@@ -72,8 +72,6 @@
 		"klass_time_duration_minutes":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[360]",
 
 		"klass_week":"is_number|||is_natural_no_zero",
-		"klass_week_min":"is_number|||is_natural_no_zero",
-		"klass_week_max":"is_number|||is_natural_no_zero",
 		"klass_days":"is_str|||min_length[1]",
 		"klass_venue":"is_str|||min_length[3]|||max_length[255]",
 		"klass_venue_title":"is_str|||min_length[3]|||max_length[255]",
@@ -85,8 +83,6 @@
 
 		"klass_subway_line":"is_str|||matches[subway_line_list]",
 		"klass_subway_station":"is_str|||min_length[3]|||max_length[64]",
-
-		"klass_class_per_week":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[7]",
 
 		"klass_student_cnt":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[6]",
 

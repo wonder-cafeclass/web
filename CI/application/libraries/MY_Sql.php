@@ -2550,15 +2550,6 @@ class MY_Sql extends MY_Library
 
         return "";
     }
-    // @ Desc : '수업 최소 수강 week 수 ex) 2 - 2주'
-    private function get_klass_week_min_default()
-    {
-        return 2;
-    }    
-    private function get_klass_week_max_default()
-    {
-        return 4;
-    }    
     private function get_klass_days_default()
     {
         $class_level_list = $this->CI->my_paramchecker->get_const('class_days_list');
@@ -2567,10 +2558,6 @@ class MY_Sql extends MY_Library
         }
 
         return "";
-    }
-    private function get_klass_class_per_week_default()
-    {
-        return 1;
     }
     private function get_klass_price_default()
     {
@@ -2587,7 +2574,7 @@ class MY_Sql extends MY_Library
         return $subway_station_list[2][1]; // 잠실역
     }
 
-    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $week_min=-1, $week_max=-1, $days="", $class_per_week=-1)
+    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $days="")
     {
         if($this->is_not_ready())
         {
@@ -2647,22 +2634,9 @@ class MY_Sql extends MY_Library
         {
             $level = $this->get_klass_level_default();
         }
-
-        if($this->is_not_ok("klass_week_min", $week_min))
-        {
-            $week_min = $this->get_klass_week_min_default();
-        }
-        if($this->is_not_ok("klass_week_max", $week_max))
-        {
-            $week_max = $this->get_klass_week_max_default();
-        }
         if($this->is_not_ok("klass_days", $days))
         {
             $days = $this->get_klass_days_default();
-        }
-        if($this->is_not_ok("klass_class_per_week", $class_per_week))
-        {
-            $class_per_week = $this->get_klass_class_per_week_default();
         }
         if($this->is_not_ok("klass_price", $price))
         {
@@ -2695,10 +2669,7 @@ class MY_Sql extends MY_Library
             'time_duration_minutes' => $time_duration_minutes,
             'level' => $level,
             'week' => 4,
-            'week_min' => $week_min,
-            'week_max' => $week_max,
             'days' => $days,
-            'class_per_week' => $class_per_week,
             'price' => $price,
             'student_cnt' => 3,
             'venue_title' => $venue_title,
@@ -3522,58 +3493,8 @@ class MY_Sql extends MY_Library
         $this->CI->db->limit(1);
         $query = $this->CI->db->get('klass');
 
-        $klass_list = $this->decorate_klass($query);
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-        }
-
-        return $klass;
+        return $query->row();
     }    
-    private function decorate_klass($query=null) 
-    {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
-
-        if(is_null($query)) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$query)");
-            return;
-        } // end if
-        $const_map = $this->CI->my_paramchecker->get_const_map();
-        if(is_null($const_map)) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
-            return;
-        } // end if
-        $rows = $query->custom_result_object('KlassCourse');
-        $output = array();
-        foreach ($rows as $row)
-        {
-            // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($const_map, $this->CI->my_path);
-            $row->level_img_url($const_map, $this->CI->my_path);
-            $row->set_days_list($const_map);
-
-            $row->days_img_url($const_map, $this->CI->my_path);
-            
-            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
-
-            $row->price_with_format();
-            $row->weeks_to_months();
-
-            // Set number type
-            $row->id = intval($row->id);
-            $row->enrollment_interval_week = intval($row->enrollment_interval_week);
-            $row->student_cnt = intval($row->student_cnt);
-            $row->discount = intval($row->discount);
-            $row->teacher_id = intval($row->teacher_id);
-            $row->time_duration_minutes = intval($row->time_duration_minutes);
-            $row->week = intval($row->week);
-
-            array_push($output, $row);
-        }
-
-        return $output;
-    }     
 
 
     public function insert_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
