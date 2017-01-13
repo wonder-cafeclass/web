@@ -4,6 +4,7 @@
 	*ngFor="let klassNStudent of klassNStudentList">
 		<klass-card 
 		[klass]="klassNStudent.klass"
+		[klassNStudent]="klassNStudent"
 		[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD">
 		</klass-card>
 	</div>

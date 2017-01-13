@@ -413,6 +413,36 @@ var MyEventWatchTowerService = (function () {
         // meta:any
         meta);
     };
+    MyEventWatchTowerService.prototype.getEventOnClickMeta = function (eventKey, value, myChecker, meta) {
+        if (this._isDebug)
+            console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_CLICK, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        myChecker, 
+        // meta:any
+        meta);
+    };
+    MyEventWatchTowerService.prototype.getEventOnClickMetaFreePass = function (eventKey, value, meta) {
+        if (this._isDebug)
+            console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_CLICK, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        this.myCheckerService.getFreePassChecker(), 
+        // meta:any
+        meta);
+    };
     MyEventWatchTowerService.prototype.getEventOnAddCommentMeta = function (eventKey, value, myChecker, meta) {
         if (this._isDebug)
             console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");

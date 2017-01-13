@@ -998,7 +998,7 @@ class Admin extends MY_REST_Controller {
         );
 
         $payment_list_next = 
-        $this->my_decorator->deco_payment_import($payment_list);
+        $this->my_decorator->deco_payment_import_list($payment_list);
 
         $output["payment_list"] = $payment_list_next;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);

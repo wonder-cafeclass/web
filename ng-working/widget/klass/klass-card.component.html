@@ -2,20 +2,56 @@
 	<klass-card 
 	[isSmall]="true|false"
 	[klass]="klassNStudent.klass"
+	[klassNStudent]="klassNStudent"
 	[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD">
 	</klass-card>
 -->
 
 <div 	class="cc-div-col col-md-4"
+		(click)="onClickKlass($event)"
 		[ngClass]="{'my-small':isSmall}">
-	<ul class="list-group my-style">
+	<ul class="list-group my-style my-container">
 		<li class="list-group-item klass-row-image">
 
 			<img 	*ngIf="klass.teacher && klass.teacher.thumbnail" 
 					src="{{klass.teacher.thumbnail}}" 
 					alt="{{klass.teacher.name}}" 
 					[ngClass]="{'my-small':isSmall}"
-					class="img-circle img-teacher">
+					class="img-circle img-teacher"
+					(click)="onClickTeacher($event)">
+
+			<div 
+			*ngIf="klassNStudent && katStatus"
+			class="unselectable klass-info status"
+			(click)="onClickStatus($event)">
+			{{katStatus}}
+			</div>
+			<div 
+			*ngIf="klassNStudent && isValidPayment"
+			class="unselectable klass-info receipt"
+			(click)="onClickReceipt($event)">
+			영수증 출력
+			</div>
+			<!-- 수강증 출력 활성 -->
+			<div 
+			*ngIf="klassNStudent && isShowCertificate"
+			class="unselectable klass-info certificate"
+			(click)="onClickCertificate($event)">
+			수강증 출력
+			</div>
+			<!-- 수강증 출력 비활성 -->
+			<div 
+			*ngIf="klassNStudent && !isShowCertificate"
+			disabled="disabled"
+			class="unselectable klass-info certificate-disabled">
+			수강증 출력
+			</div>
+			<div 
+			*ngIf="klassNStudent && isValidPayment"
+			class="unselectable klass-info supplement"
+			(click)="onClickSupplement($event)">
+			자료실
+			</div>
 
 			<img 	#classImage 
 					class="cc-img-class" 

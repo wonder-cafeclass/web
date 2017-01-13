@@ -19,6 +19,7 @@ var MyEventService = (function () {
         // GENERAL PURPOSE
         this.ANY = "ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
         this.ON_READY = "ON_READY";
+        this.ON_CLICK = "ON_CLICK";
         this.ON_CHANGE = "ON_CHANGE";
         this.ON_CHANGE_NOT_VALID = "ON_CHANGE_NOT_VALID";
         this.ON_SUBMIT = "ON_SUBMIT";

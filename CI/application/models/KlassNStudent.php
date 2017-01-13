@@ -1,14 +1,26 @@
 <?php
 
 class KlassNStudent {
-        public $id;
-        public $klass_id;
-        public $user_id;
-        public $status;
-        public $date_created;
-        public $date_updated;
 
-        public $klass;
-        public $user;
-        public $teacher;
+        public $id=-1;
+        public $klass_id=-1;
+        public $user_id=-1;
+        public $status="";
+        public $date_created="";
+        public $date_updated="";
+
+        public $klass=null;
+        public $user=null;
+        public $teacher=null;
+
+        public $attendance_total_cnt=-1;
+        public $attendance_presence_cnt=-1;
+        public $attendance_ready_cnt=-1;
+        public $attendance_absence_cnt=-1;
+
+        public $payment_import_cnt=-1;
+
+        // @ Deprecated - REMOVE ME
+        // public $attendance_list;
+        // public $payment_import_list;
 }

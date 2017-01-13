@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once APPPATH . '/models/KlassAttendance.php';
 require_once APPPATH . '/models/KlassCourse.php';
 require_once APPPATH . '/models/Teacher.php';
 require_once APPPATH . '/models/User.php';
@@ -931,7 +932,7 @@ class MY_Decorator extends MY_Library
     }    
 
     // @ Desc : 수업 관련 추가 정보를 넣어줍니다.
-    public function deco_payment_import($pi_list=null) 
+    public function deco_payment_import_list($pi_list=null) 
     {
         if(empty($pi_list)) {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$pi_list)");
@@ -1163,6 +1164,45 @@ class MY_Decorator extends MY_Library
 
         return $ks;
 
-    } // end method        
+    } // end method
+
+    // @ Desc : 출석 데이터 관련 추가 정보를 넣어줍니다.
+    public function deco_attendance($src=null) 
+    {
+        if(is_null($src)) {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass_student)");
+            return null;
+        } // end if
+
+        $kat = new KlassAttendance();
+
+        $kat->id = $this->getNumber($src, "kat_id");
+        $kat->klass_id = $this->getNumber($src, "kat_klass_id");
+        $kat->user_id = $this->getNumber($src, "kat_user_id");
+        $kat->status = $this->getStr($src, "kat_status");
+        $kat->date_attend = $this->getStr($src, "kat_date_attend");
+
+        $kat->date_created = $this->getStr($src, "kat_date_created");
+        $kat->date_updated = $this->getStr($src, "kat_date_updated");
+
+        return $kat;
+
+    } // end method 
+
+    public function deco_attendance_list($src_list=null) 
+    {
+        if(empty($src_list))
+        {
+            return [];
+        }
+
+        $target_list = [];
+        foreach ($src_list as $key => $value) {
+            $target = $this->deco_attendance($value);
+            array_push($target_list, $target);
+        }
+
+        return $target_list;
+    } // end method
 
 }

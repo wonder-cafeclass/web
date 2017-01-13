@@ -103,6 +103,8 @@
 
 		"klass_n_student_status":"is_str|||matches[class_student_status_list]",
 
+		"klass_attendance_status":"is_str|||matches[class_attendance_status_list]",
+
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
 
@@ -128,6 +130,8 @@
 		"logger_page_uri":"is_str",
 		"logger_error_type":"is_str|||matches[logger_error_type]",
 		"logger_error_msg":"is_str",
+
+		"date_yyyymmddhhmmss":"is_str|||regex_match_include[/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
 
 		"offset":"is_number|||greater_than_equal_to[0]",
 		"limit":"is_natural_no_zero",
@@ -210,6 +214,10 @@
 
 		"class_student_status_list":["ALL", "A","N"],
 		"class_student_status_kor_list":["모든 상태", "등록", "취소"],
+
+		"class_attendance_status_list":["ALL", "R","P","A"],
+		"class_attendance_status_eng_list":["All", "Ready", "Presence", "Absence"],
+		"class_attendance_status_kor_list":["모든 상태", "준비", "출석", "결석"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],

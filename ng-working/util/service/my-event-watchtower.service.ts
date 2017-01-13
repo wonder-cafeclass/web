@@ -488,6 +488,40 @@ export class MyEventWatchTowerService {
 			meta
 		);
 	}
+	getEventOnClickMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
+
+	    if(this._isDebug) console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+
+		return this.getEventWithMeta(
+			// eventName:string, 
+			this.myEventService.ON_CLICK,
+			// eventKey:string, 
+			eventKey,
+			// value:string, 
+			value,
+			// myChecker:MyChecker, 
+			myChecker,
+			// meta:any
+			meta
+		);
+	}
+	getEventOnClickMetaFreePass(eventKey:string, value:string, meta:any) :MyEvent {
+
+	    if(this._isDebug) console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+
+		return this.getEventWithMeta(
+			// eventName:string, 
+			this.myEventService.ON_CLICK,
+			// eventKey:string, 
+			eventKey,
+			// value:string, 
+			value,
+			// myChecker:MyChecker, 
+			this.myCheckerService.getFreePassChecker(),
+			// meta:any
+			meta
+		);
+	}		
 	getEventOnAddCommentMeta(eventKey:string, value:string, myChecker:MyChecker, meta:any) :MyEvent {
 
 	    if(this._isDebug) console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");

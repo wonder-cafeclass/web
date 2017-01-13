@@ -10,17 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var my_array_1 = require('../../util/helper/my-array');
 var klass_1 = require('../../klass/model/klass');
+var klass_n_student_1 = require('../../klass/model/klass-n-student');
 var KlassCardComponent = (function () {
     function KlassCardComponent(watchTower) {
-        // Do something...
         this.watchTower = watchTower;
         // @ Common Props
         this.emitter = new core_1.EventEmitter();
-        this.size = "default";
         this.isSmall = false;
         this.width = -1;
         this.widthStr = "";
+        this.katStatus = "";
+        this.isValidPayment = false;
+        this.isShowCertificate = false;
+        // @ Deprecated
+        this.size = "default";
+        // Do something...
+        this.myArray = new my_array_1.HelperMyArray();
     } // end constructor
     KlassCardComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
@@ -60,7 +67,11 @@ var KlassCardComponent = (function () {
             console.log("klass-card / init / 시작");
         // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
         this.emitEventOnReady();
-    };
+        // 전달받은 katList 데이터로 '남은 수업 일수/전체 수업 일수'를 표시합니다.
+        this.updateKatProgressView();
+        // 영수증 및 수강증등 결제 관련 버튼 노출 여부 업데이트.
+        this.updatePaymentView();
+    }; // end method
     KlassCardComponent.prototype.emitEventOnReady = function () {
         if (this.isDebug())
             console.log("klass-card / emitEventOnReady / 시작");
@@ -72,6 +83,85 @@ var KlassCardComponent = (function () {
         this.emitter.emit(myEvent);
         if (this.isDebug())
             console.log("klass-card / emitEventOnReady / Done!");
+    };
+    KlassCardComponent.prototype.updateKatProgressView = function () {
+        if (this.isDebug())
+            console.log("klass-card / updateKatProgressView / 시작");
+        if (null == this.klassNStudent) {
+            if (this.isDebug())
+                console.log("klass-card / updateKatProgressView / 중단 / null == this.klassNStudent");
+            return;
+        }
+        var progress = this.klassNStudent.getProgress();
+        if (null != progress && "" != progress) {
+            this.katStatus = "\uC9C4\uD589\uC0C1\uD669 " + progress + "\uD68C";
+        }
+    }; // end method
+    KlassCardComponent.prototype.updatePaymentView = function () {
+        if (this.isDebug())
+            console.log("klass-card / updatePaymentView / 시작");
+        if (null == this.klassNStudent) {
+            if (this.isDebug())
+                console.log("klass-card / updatePaymentView / 중단 / null == this.klassNStudent");
+            return;
+        }
+        // 영수증 및 자료실 버튼 노출 여부
+        this.isValidPayment = (0 < this.klassNStudent.paymentTotalCnt) ? true : false;
+        // 수강증 노출 여부
+        this.isShowCertificate = this.klassNStudent.isFinished();
+    }; // end method
+    KlassCardComponent.prototype.onClickKlass = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickKlass / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+        // 부모 객체로 클래스를 선택한 것을 전달. 해당 수업 상세 페이지로 이동!
+        if (null == this.klass) {
+            if (this.isDebug())
+                console.log("klass-card / onClickKlass / 중단 / null == this.klass");
+            return;
+        } // end if
+        // this.emitOnClickMeta(value:string, meta:any);
+    }; // end method
+    KlassCardComponent.prototype.emitOnClickMeta = function (value, meta) {
+        var myEvent = this.watchTower.getEventOnClickMetaFreePass(
+        // eventKey:string, 
+        this.eventKey, 
+        // value:string, 
+        value, 
+        // meta:any
+        meta);
+        this.emitter.emit(myEvent);
+    }; // end method
+    KlassCardComponent.prototype.onClickTeacher = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickTeacher / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    }; // end method
+    KlassCardComponent.prototype.onClickStatus = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickStatus / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    };
+    KlassCardComponent.prototype.onClickReceipt = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickReceipt / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    };
+    KlassCardComponent.prototype.onClickCertificate = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickCertificate / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    };
+    KlassCardComponent.prototype.onClickSupplement = function (event) {
+        if (this.isDebug())
+            console.log("klass-card / onClickSupplement / 시작");
+        event.preventDefault();
+        event.stopPropagation();
     };
     __decorate([
         core_1.Output(), 
@@ -87,8 +177,8 @@ var KlassCardComponent = (function () {
     ], KlassCardComponent.prototype, "klass", void 0);
     __decorate([
         core_1.Input(), 
-        __metadata('design:type', String)
-    ], KlassCardComponent.prototype, "size", void 0);
+        __metadata('design:type', klass_n_student_1.KlassNStudent)
+    ], KlassCardComponent.prototype, "klassNStudent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
@@ -97,6 +187,10 @@ var KlassCardComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Number)
     ], KlassCardComponent.prototype, "width", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], KlassCardComponent.prototype, "size", void 0);
     KlassCardComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -109,5 +203,4 @@ var KlassCardComponent = (function () {
     return KlassCardComponent;
 }());
 exports.KlassCardComponent = KlassCardComponent; // end class
-// TODO - Dirty word list 검수 과정 필요! 
 //# sourceMappingURL=klass-card.component.js.map
