@@ -56,7 +56,6 @@ export class Klass {
     public days_img_url_list: string[]=[];
     public days_eng: string="";
     public days_kor: string="";
-    public class_day_per_week: number=-1; // 주 n회 수업
 
     public subway_line: string="";
     public subway_station: string="";
@@ -78,9 +77,6 @@ export class Klass {
 
     public status: string="";
 
-    // REMOVE ME
-    // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
-    
     public class_banner_url:string="";
     public class_banner_url_arr:string[]=[];
     public class_poster_url:string="";

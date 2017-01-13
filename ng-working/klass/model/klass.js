@@ -45,7 +45,6 @@ var Klass = (function () {
         this.days_img_url_list = [];
         this.days_eng = "";
         this.days_kor = "";
-        this.class_day_per_week = -1; // 주 n회 수업
         this.subway_line = "";
         this.subway_station = "";
         this.subway_station_img = "";
@@ -61,8 +60,6 @@ var Klass = (function () {
         // 수업 참여 학생수
         this.student_cnt = -1;
         this.status = "";
-        // REMOVE ME
-        // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
         this.class_banner_url = "";
         this.class_banner_url_arr = [];
         this.class_poster_url = "";

@@ -1,15 +1,144 @@
 <div class="my-title">지금 듣고 있는 수업입니다.</div>
-<div class="row my-style">
-	<div class="my-style"
-	*ngFor="let klassNStudent of klassNStudentList">
-		<klass-card 
-		[klass]="klassNStudent.klass"
-		[klassNStudent]="klassNStudent"
-		[eventKey]="myEventService.KEY_WIDGET_KLASS_CARD"
-		(emitter)="onChangedFromChild($event)">
-		</klass-card>
+<!-- <div *ngFor="let klassNStudent of klassNStudentList"> -->
+
+<div style="padding:10px;">
+	<table class="table my-style"> 
+		<tbody> 
+			<tr *ngFor="let klassNStudent of klassNStudentList">
+				<td class="my-style my-left">
+					<img
+					src="{{klassNStudent.klass.class_poster_url_loadable}}" 
+					alt="{{klassNStudent.klass.title}}"
+					class="my-style">
+				</td>
+				<td class="my-style">
+
+	<table class="table my-style"> 
+		<tbody> 
+			<tr>
+				<td class="my-style">
+
+	<table class="table my-style"> 
+		<tbody> 
+			<tr>
+				<td class="my-style my-klass-info">
+					<div class="my-klass-btn-box">
+						<div class="unselectable my-klass-btn gray" style="width:394px;">
+							<strong>수업명</strong> : {{klassNStudent.klass.title}}
+						</div>
+						<div>
+							<div class="unselectable my-klass-btn short gray float-l" style="width: 110px;">
+								<strong>가격</strong> : ₩{{klassNStudent.klass.price_with_format}}
+							</div>
+							<div class="unselectable my-klass-btn gray float-l" style="width: 130px;margin-right: 0px;">
+								<strong>시간</strong> : {{klassNStudent.klass.time_begin}} ~ {{klassNStudent.klass.time_end}}
+							</div>
+							<div class="unselectable my-klass-btn gray short float-l" style="width: 144px;">
+								<strong>선생님</strong> : {{klassNStudent.teacher.nickname}}
+							</div>
+						</div>
+						<div>
+							<div style="float:left;margin-left: 7px;margin-top: -2px;">
+								<img
+								src="{{klassNStudent.klass.level_img_url}}" 
+								alt="{{klassNStudent.klass.level}}"
+								class="img-circle cc-img-filter">
+								<img
+								src="{{klassNStudent.klass.subway_station_img}}" 
+								alt="{{klassNStudent.klass.subway_station}}"
+								class="img-circle cc-img-filter">
+								<img
+								src="{{klassNStudent.klass.time_begin_img_url}}" 
+								alt="{{klassNStudent.klass.time_begin}}"
+								class="img-circle cc-img-filter">					
+								<img *ngFor="let days_img_url of klassNStudent.klass.days_img_url_list"
+								src="{{days_img_url}}" 
+								alt="{{klassNStudent.klass.days}}"
+								class="img-circle cc-img-filter">						
+							</div>
+						</div>
+					</div>
+				</td>
+				<td class="my-style btn-box">
+					<div class="my-klass-btn-box">
+						<div class="unselectable my-klass-btn short gray"><strong>진행상황</strong></div>
+						<div class="unselectable my-klass-btn short enable">2/4회</div>
+					</div>
+				</td>
+				<td class="my-style btn-box">
+					
+					<div class="my-klass-btn-box my-left">
+						<div class="unselectable my-klass-btn short enable">영수증 출력</div>
+						<div class="unselectable my-klass-btn short enable">수강증 출력</div>
+						<div class="unselectable my-klass-btn short enable">자료실</div>
+					</div>
+
+				</td>
+			</tr>
+			<!--
+			<tr>
+				<td class="my-style my-klass-info my-title">
+				₩{{klassNStudent.klass.price_with_format}} / {{klassNStudent.klass.time_begin}} ~ {{klassNStudent.klass.time_end}} / {{klassNStudent.teacher.nickname}}
+				</td>
+			</tr>
+
+			<tr>
+				<td class="my-style my-klass-info my-selectile">
+					<img
+					src="{{klassNStudent.klass.level_img_url}}" 
+					alt="{{klassNStudent.klass.level}}"
+					class="img-circle cc-img-filter">
+					<img
+					src="{{klassNStudent.klass.subway_station_img}}" 
+					alt="{{klassNStudent.klass.subway_station}}"
+					class="img-circle cc-img-filter">
+					<img
+					src="{{klassNStudent.klass.time_begin_img_url}}" 
+					alt="{{klassNStudent.klass.time_begin}}"
+					class="img-circle cc-img-filter">					
+					<img *ngFor="let days_img_url of klassNStudent.klass.days_img_url_list"
+					src="{{days_img_url}}" 
+					alt="{{klassNStudent.klass.days}}"
+					class="img-circle cc-img-filter">
+				</td>
+			</tr>
+			-->
+		</tbody>
+	</table>
+
+				</td>
+
+
+<!-- 
+				<td class="my-style" style="width:120px;">
+
+	<div class="my-container">
+		<div class="unselectable my-klass-btn">진행상황</div>
+		<div class="unselectable my-klass-btn">2/4회</div>
 	</div>
+
+				</td>
+				<td class="my-style" style="width:120px;">
+
+	<div class="my-container">
+		<div class="unselectable my-klass-btn">영수증 출력</div>
+		<div class="unselectable my-klass-btn">수강증 출력</div>
+		<div class="unselectable my-klass-btn">자료실</div>
+	</div>
+
+				</td>
+-->				
+
+			</tr>
+		</tbody>
+	</table>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
+
 <div class="my-title">이런 수업은 어떠세요?</div>
 <div class="row my-style">
 	<div class="my-style"

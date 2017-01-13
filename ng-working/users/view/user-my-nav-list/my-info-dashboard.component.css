@@ -13,3 +13,128 @@ div.row.my-style {
     margin-left: -10px;
     margin-right: -10px;	
 }
+table.my-style {
+    margin: 0px;
+}
+table.my-style.my-klass-info {
+    border:1px solid #ddd;
+}
+td.my-style {
+	border: 0px;
+	padding: 0px;
+}
+td.my-style.my-left {
+	width:110px;
+}
+td.my-style.my-klass-info {
+	text-align:left;
+}
+td.my-style.my-klass-info.my-title {
+    padding: 5px;
+    padding-left: 10px;
+    font-size: 12px;
+    color: #999;
+}
+div.my-klass-btn-box {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    height: 110px;
+}
+div.my-klass-btn-box.my-left {
+	border-right: 1px solid #ddd;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;	
+}
+td.my-style.my-klass-info.my-selectile {
+    padding-left: 5px;
+    height: 64px;
+}
+td.btn-box {
+    border-left: 1px solid #eee;
+    width: 132px;	
+}
+img.my-style {
+    width:110px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;	
+}
+div.inner-border {
+    width: 120px;
+    height: 120px;
+    padding: 0px;
+    margin: 0px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;	
+}
+li.my-style {
+
+}
+img.cc-img-filter {
+  height:33px;
+  margin-left: -5px;
+}
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor:default;
+}
+div.my-klass-btn {
+	width:160px;
+	margin: 5px;
+    font-size: 12px;
+    color: #e85c41;
+    border: 1px solid #e85c41;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+div.my-klass-btn.long {
+	width:314px;
+}
+div.my-klass-btn.short {
+    width: 120px;
+    margin-right: 0px;
+}
+div.my-klass-btn.float-l {
+	float:left;
+    margin-top: 0px;
+}
+div.my-klass-btn.gray {
+    color: #999;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+div.my-klass-btn.enable {
+    color: #e85c41;
+    border: 1px solid #e85c41;
+    background-color: #fff;
+}
+div.my-klass-btn.enable:hover {
+    color: #fff;
+    border: 1px solid #e85c41;
+    background-color: #e85c41;
+}
+
+
+/*
+td.my-style.my-right {
+	width:120px;
+}
+div.my-klass-text {
+    padding: 5px;
+    padding-left: 10px;
+    font-size: 12px;
+    color: #999;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    height: 110px;
+}
+
+*/
