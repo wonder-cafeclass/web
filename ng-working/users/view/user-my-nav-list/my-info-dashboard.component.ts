@@ -194,6 +194,26 @@ export class MyInfoDashboardComponent implements AfterViewInit {
 
   }
 
+  onClickKlass(klass:Klass):void {
+
+    if(this.isDebug()) console.log("my-info-dashboard / onClickKlass / 시작");
+
+    if(null == klass) {
+      if(this.isDebug()) console.log("my-info-dashboard / onClickKlass / 중단 / null == klass");
+      return;
+    } // end if
+
+    if(!(0 < klass.id)) {
+      if(this.isDebug()) console.log("my-info-dashboard / onClickKlass / 중단 / klass.id is not valid!");
+      return;
+    } // end if
+
+
+    // 클래스 상세 페이지로 이동합니다.
+    this.router.navigate([`/class-center/${klass.id}`]);
+
+  }
+
   onChangedFromChild(myEvent:MyEvent) {
 
     if(this.isDebug()) console.log("my-info-dashboard / onChangedFromChild / init");
@@ -238,6 +258,14 @@ export class MyInfoDashboardComponent implements AfterViewInit {
 
       } // end if - ON CHANGE
       */
+
+    } else if(myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_CARD)) {
+
+        this.onClickKlass(myEvent.metaObj);
+
+      } // end if
     
     } // end if
 

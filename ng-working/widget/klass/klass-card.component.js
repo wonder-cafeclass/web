@@ -121,7 +121,7 @@ var KlassCardComponent = (function () {
                 console.log("klass-card / onClickKlass / 중단 / null == this.klass");
             return;
         } // end if
-        // this.emitOnClickMeta(value:string, meta:any);
+        this.emitOnClickMeta(this.klass.id, this.klass);
     }; // end method
     KlassCardComponent.prototype.emitOnClickMeta = function (value, meta) {
         var myEvent = this.watchTower.getEventOnClickMetaFreePass(

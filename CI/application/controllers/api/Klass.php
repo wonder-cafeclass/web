@@ -463,7 +463,7 @@ class Klass extends MY_REST_Controller {
             "A"
         );
         $klass_student =
-        $this->my_decorator->deco_klass_student($klass_student);
+        $this->my_decorator->deco_klass_n_student($klass_student);
         $output["klass_student"] = $klass_student;
 
         // 조회 결과를 가져옵니다.

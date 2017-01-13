@@ -161,7 +161,7 @@ export class KlassCardComponent implements OnInit {
       return;
     } // end if
 
-    // this.emitOnClickMeta(value:string, meta:any);
+    this.emitOnClickMeta(this.klass.id, this.klass);
 
   } // end method
 
