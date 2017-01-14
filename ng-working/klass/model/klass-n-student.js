@@ -4,8 +4,6 @@ var teacher_1 = require('../../teachers/model/teacher');
 var user_1 = require('../../users/model/user');
 var klass_1 = require('./klass');
 var KlassNStudent = (function () {
-    // public attendanceList:KlassAttendance[]; // @ Deprecated - 횟수만 노출하는 것으로 변경.
-    // public paymentIMPortList:PaymentImport[]; // @ Deprecated - 횟수만 노출하는 것으로 변경.
     function KlassNStudent() {
         this.id = -1;
         this.klass_id = -1;
@@ -62,6 +60,10 @@ var KlassNStudent = (function () {
         var totalCnt = this.attendanceTotalCnt;
         var doneCnt = totalCnt - this.attendanceReadyCnt;
         return (totalCnt === doneCnt) ? true : false;
+    };
+    // @ Desc : 자료실 자료가 있는지 여부.
+    KlassNStudent.prototype.hasSupplement = function () {
+        return false;
     };
     KlassNStudent.prototype.setJSON = function (json) {
         // let isDebug:boolean = true;

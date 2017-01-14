@@ -207,6 +207,9 @@ export class MyEventService {
     // 수업 카드 위젯 - 낱개의 수업을 표시하는 카드 형태의 위젯. 홈화면과 개인수업 신청 화면등에서 쓰임.
     KEY_WIDGET_KLASS_CARD:string="KEY_WIDGET_KLASS_CARD";
 
+    // 수업과 학생 리스트 위젯 - 학생이 신청한 수업 리스트를 보여주는 위젯. 대시보드와 개인 수업 리스트에서 쓰임.
+    KEY_WIDGET_KLASS_N_STUDENT_LIST:string="KEY_WIDGET_KLASS_N_STUDENT_LIST";
+
 
 
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";

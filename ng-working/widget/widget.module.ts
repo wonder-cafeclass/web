@@ -31,6 +31,7 @@ import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.comp
 import { DebugBtnComponent }      		from './debug/debug-btn.component';
 import { ImportComponent }      		from './payment/import.component';
 import { KlassCardComponent }        	from './klass/klass-card.component';
+import { KlassNStudentListComponent }	from './klass/klass-n-student-list.component';
 import { PaymentService }         		from './payment/service/payment.service';
 
 import { CheckBoxComponent }      		from './checkbox/checkbox.component';
@@ -59,6 +60,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
+		KlassNStudentListComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
@@ -90,6 +92,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
+		KlassNStudentListComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,

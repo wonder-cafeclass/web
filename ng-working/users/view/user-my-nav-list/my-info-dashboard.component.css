@@ -1,6 +1,3 @@
-div.my-style {
-    margin: 10px;
-}
 div.my-title {
     text-align: left;
     font-size: 14px;
@@ -9,10 +6,20 @@ div.my-title {
     color: #999;
     font-weight: bold;	
 }
+div.my-style {
+    margin: 10px;
+}
 div.row.my-style {
     margin-left: -10px;
     margin-right: -10px;	
 }
+
+
+
+
+
+
+/* REMOVE ME
 table.my-style {
     margin: 0px;
 }
@@ -121,9 +128,6 @@ div.my-klass-btn.enable:hover {
     border: 1px solid #e85c41;
     background-color: #e85c41;
 }
-
-
-/*
 td.my-style.my-right {
 	width:120px;
 }

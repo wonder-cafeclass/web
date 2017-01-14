@@ -29,9 +29,6 @@ export class KlassNStudent {
     // 결재 횟수
     public paymentTotalCnt:number=-1;    
 
-    // public attendanceList:KlassAttendance[]; // @ Deprecated - 횟수만 노출하는 것으로 변경.
-    // public paymentIMPortList:PaymentImport[]; // @ Deprecated - 횟수만 노출하는 것으로 변경.
-
 	constructor(
 	) {
 		this.myIs = new HelperMyIs();
@@ -86,6 +83,11 @@ export class KlassNStudent {
         let doneCnt:number = totalCnt - this.attendanceReadyCnt;
 
         return (totalCnt === doneCnt)?true:false;
+    }
+
+    // @ Desc : 자료실 자료가 있는지 여부.
+    hasSupplement():boolean {
+        return false;
     }
 
     setJSON(json):KlassNStudent {
