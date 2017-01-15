@@ -71,7 +71,7 @@ export class ManageKlassesComponent implements OnInit {
   // @ Immutable
   private pageNum:number = 1; 
   // @ Immutable
-  private pageRange:number = 5;
+  private pageRowCnt:number = 5;
 
   selectOptionListStatus:DefaultOption[];
 
@@ -565,17 +565,17 @@ export class ManageKlassesComponent implements OnInit {
   private doFetchKlassList():void {
 
     let pageNum:number = this.pageNum;
-    let pageRange:number = this.pageRange;
+    let pageRowCnt:number = this.pageRowCnt;
     if(null != this.pagination) {
       pageNum = this.pagination.pageNum;
-      pageRange = this.pagination.pageRange;
+      pageRowCnt = this.pagination.pageRowCnt;
     }
 
     this.fetchKlassList(
       // pageNum:number, 
       pageNum, 
-      // pageSize:number, 
-      pageRange,
+      // pageRowCnt:number, 
+      pageRowCnt,
       // searchQuery:string, 
       this.searchQuery,
       // klassStatus:string, 
@@ -596,7 +596,7 @@ export class ManageKlassesComponent implements OnInit {
 
   // @ Desc : 유저 리스트를 가져옵니다.
   private fetchKlassList( pageNum:number, 
-                          pageSize:number, 
+                          pageRowCnt:number, 
                           searchQuery:string, 
                           klassStatus:string,
                           klassLevel:string,
@@ -611,8 +611,8 @@ export class ManageKlassesComponent implements OnInit {
       this.watchTower.getApiKey(), 
       // pageNum:number, 
       pageNum, 
-      // pageSize:number, 
-      pageSize,
+      // pageRowCnt:number, 
+      pageRowCnt,
       // searchQuery:string, 
       searchQuery,
       // klassStatus:string, 

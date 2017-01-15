@@ -68,7 +68,7 @@ export class Klass {
     public venue_latitude: string="";
     public venue_longitude: string="";
 
-    public search_tag: string="";
+    public search_tag: string=""; // @ Deprecated - REMOVE ME
     public price: number=-1;
     public price_with_format: string="";
 

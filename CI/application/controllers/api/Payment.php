@@ -55,7 +55,173 @@ class Payment extends MY_REST_Controller {
 
         // Additional Library
         $this->load->library('MY_Auth');
+        $this->load->library('MY_Decorator');
     }
+
+    // @ Desc : Import의 특정 결재 내역 리스트를 가져옵니다.
+    public function fetchimporthistory_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } 
+
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );         
+
+        $payment_imp_uid = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_uid",
+            // $key_filter=""
+            "payment_imp_uid",
+            // $is_no_record=false
+            true
+        );
+        if(empty($payment_imp_uid)) 
+        {
+            $payment_imp_uid = "";
+        }
+
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id",
+            // $is_no_record=false
+            true
+        );
+        if(empty($klass_id)) 
+        {
+            $klass_id = -1;
+        }
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
+        $params = array(
+            "payment_imp_uid"=>$payment_imp_uid,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "login_user_id"=>$login_user_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params; 
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchimporthistory_post Failed!");
+            return;
+        } // end if
+
+        $total_cnt = 
+        $this->my_sql->select_payment_import_cnt(
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        $pi_list = 
+        $this->my_sql->select_payment_import_list(
+            // $limit=-1,
+            $limit,
+            // $offset=-1,
+            $offset,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+
+        $pi_list = 
+        $this->my_decorator->deco_payment_import_list($pi_list);
+        $output["list"] = $pi_list;
+
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+    } // end method
 
     // @ Desc : Import의 특정 결재 내역을 업데이트합니다. 결재 이후에 호출됩니다.
     public function addimporthistory_post()

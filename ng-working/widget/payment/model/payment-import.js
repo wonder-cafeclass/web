@@ -1,7 +1,9 @@
 "use strict";
 var my_is_1 = require('../../../util/helper/my-is');
+var my_format_1 = require('../../../util/helper/my-format');
 var user_1 = require('../../../users/model/user');
 var klass_1 = require('../../../klass/model/klass');
+var teacher_1 = require('../../../teachers/model/teacher');
 var PaymentImport = (function () {
     function PaymentImport() {
         this.id = -1;
@@ -91,9 +93,12 @@ var PaymentImport = (function () {
         // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
         this.cancel_receipt_url = "";
         this.myIs = null;
+        this.myFormat = null;
         this.user = null;
         this.klass = null;
+        this.teacher = null;
         this.myIs = new my_is_1.HelperMyIs();
+        this.myFormat = new my_format_1.HelperMyFormat();
     }
     PaymentImport.prototype.setJSON = function (json) {
         // let isDebug:boolean = true;
@@ -114,6 +119,12 @@ var PaymentImport = (function () {
             var klassJSON = paymentImport.klass;
             paymentImport.klass = new klass_1.Klass().setJSON(klassJSON);
         }
+        if (null != paymentImport.teacher) {
+            var teacherJSON = paymentImport.teacher;
+            paymentImport.teacher = new teacher_1.Teacher().setJSON(teacherJSON);
+        }
+        // 금액 포맷 추가.
+        paymentImport.amountWithFormat = this.myFormat.getKRWWithCommas(paymentImport.amount);
         return paymentImport;
     }; // end method
     PaymentImport.prototype._setJSON = function (json) {

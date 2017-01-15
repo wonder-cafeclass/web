@@ -106,7 +106,7 @@ var MyInfoDashboardComponent = (function () {
         this.watchTower.getApiKey(), 
         // pageNum:number,
         1, 
-        // pageSize:number,
+        // pageRowCnt:number,
         5, 
         // userId:number
         this.getLoginUserId()).then(function (myResponse) {

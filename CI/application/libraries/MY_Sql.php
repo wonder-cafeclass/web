@@ -4118,7 +4118,20 @@ class MY_Sql extends MY_Library
         'user.status AS user_status,' .
         'user.permission AS user_permission,' .
         'user.mobile AS user_mobile,' .
-        'user.email AS user_email' .
+        'user.email AS user_email,' .
+
+        'teacher.id AS teacher_id,' .
+        'teacher.user_id AS teacher_user_id,' .
+        'teacher.nickname AS teacher_nickname,' .
+        'teacher.name AS teacher_name,' .
+        'teacher.gender AS teacher_gender,' .
+        'teacher.birthday AS teacher_birthday,' .
+        'teacher.thumbnail AS teacher_thumbnail,' .
+        'teacher.status AS teacher_status,' .
+        'teacher.mobile AS teacher_mobile,' .
+        'teacher.email AS teacher_email,' .
+        'teacher.resume AS teacher_resume,' .
+        'teacher.greeting AS teacher_greeting' .        
 
         ''
 
@@ -4155,6 +4168,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->from('payment_import');
         $this->CI->db->join('user', 'payment_import.user_id = user.id');
         $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
         if(0 < $klass_id) 
         {
             $this->CI->db->where('payment_import.klass_id',$klass_id);
@@ -4173,6 +4187,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->from('payment_import');
         $this->CI->db->join('user', 'payment_import.user_id = user.id');
         $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
         if(0 < $klass_id) 
         {
             $this->CI->db->where('payment_import.klass_id',$klass_id);

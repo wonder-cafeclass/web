@@ -55,7 +55,7 @@ export class ManageTeachersComponent implements OnInit {
   private searchQuery:string="";
   private teacherStatus:string="";
   private pageNum:number = 1;
-  private pageRange:number = 5;
+  private pageRowCnt:number = 5;
 
   selectOptionListTeacherStatus:DefaultOption[];
 
@@ -183,8 +183,8 @@ export class ManageTeachersComponent implements OnInit {
     this.fetchTeacherList(
       // pageNum:number, 
       this.pageNum,
-      // pageSize:number, 
-      this.pageRange,
+      // pageRowCnt:number, 
+      this.pageRowCnt,
       // searchQuery:string, 
       this.searchQuery,
       // teacherStatus:string, 
@@ -313,8 +313,8 @@ export class ManageTeachersComponent implements OnInit {
       this.fetchTeacherList(
         // pageNum:number, 
         this.pageNum, 
-        // pageSize:number, 
-        this.pageRange,
+        // pageRowCnt:number, 
+        this.pageRowCnt,
         // searchQuery:string, 
         this.searchQuery,
         // teacherStatus:string, 
@@ -326,8 +326,8 @@ export class ManageTeachersComponent implements OnInit {
       this.fetchTeacherList(
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange,
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt,
         // searchQuery:string, 
         this.searchQuery,
         // teacherStatus:string, 
@@ -340,7 +340,7 @@ export class ManageTeachersComponent implements OnInit {
 
   // @ Desc : 유저 리스트를 가져옵니다.
   private fetchTeacherList( pageNum:number, 
-                            pageSize:number, 
+                            pageRowCnt:number, 
                             searchQuery:string, 
                             teacherStatus:string) :void {
 
@@ -350,8 +350,8 @@ export class ManageTeachersComponent implements OnInit {
       this.watchTower.getApiKey(), 
       // pageNum:number, 
       pageNum, 
-      // pageSize:number, 
-      pageSize,
+      // pageRowCnt:number, 
+      pageRowCnt,
       // searchQuery:string, 
       searchQuery,
       // teacherStatus:string, 
@@ -466,8 +466,8 @@ export class ManageTeachersComponent implements OnInit {
     this.fetchTeacherList(
       // pageNum:number,
       1,
-      // pageSize:number,
-      this.pagination.pageRange,
+      // pageRowCnt:number,
+      this.pagination.pageRowCnt,
       // searchQuery:string,
       this.searchQuery,
       // teacherStatus:string, 

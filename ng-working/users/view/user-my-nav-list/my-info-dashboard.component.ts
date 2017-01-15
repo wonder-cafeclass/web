@@ -154,7 +154,7 @@ export class MyInfoDashboardComponent implements AfterViewInit {
       this.watchTower.getApiKey(),
       // pageNum:number,
       1,
-      // pageSize:number,
+      // pageRowCnt:number,
       5,
       // userId:number
       this.getLoginUserId()

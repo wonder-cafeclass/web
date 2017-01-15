@@ -38,7 +38,7 @@ var ManageKlassesComponent = (function () {
         // @ Immutable
         this.pageNum = 1;
         // @ Immutable
-        this.pageRange = 5;
+        this.pageRowCnt = 5;
         this.adminService.setWatchTower(this.watchTower);
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
@@ -407,16 +407,16 @@ var ManageKlassesComponent = (function () {
     // @ Desc : 저장된 변수 값들로 유저 리스트를 가져옵니다.
     ManageKlassesComponent.prototype.doFetchKlassList = function () {
         var pageNum = this.pageNum;
-        var pageRange = this.pageRange;
+        var pageRowCnt = this.pageRowCnt;
         if (null != this.pagination) {
             pageNum = this.pagination.pageNum;
-            pageRange = this.pagination.pageRange;
+            pageRowCnt = this.pagination.pageRowCnt;
         }
         this.fetchKlassList(
         // pageNum:number, 
         pageNum, 
-        // pageSize:number, 
-        pageRange, 
+        // pageRowCnt:number, 
+        pageRowCnt, 
         // searchQuery:string, 
         this.searchQuery, 
         // klassStatus:string, 
@@ -433,7 +433,7 @@ var ManageKlassesComponent = (function () {
         this.klassTime);
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
+    ManageKlassesComponent.prototype.fetchKlassList = function (pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.adminService
             .fetchKlassList(
@@ -441,8 +441,8 @@ var ManageKlassesComponent = (function () {
         this.watchTower.getApiKey(), 
         // pageNum:number, 
         pageNum, 
-        // pageSize:number, 
-        pageSize, 
+        // pageRowCnt:number, 
+        pageRowCnt, 
         // searchQuery:string, 
         searchQuery, 
         // klassStatus:string, 

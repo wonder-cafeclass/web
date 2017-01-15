@@ -52,7 +52,7 @@ export class ManagePaymentsComponent implements OnInit {
   pagination:Pagination;
 
   private pageNum:number = 1;
-  private pageRange:number = 5;
+  private pageRowCnt:number = 5;
 
   private klassId:number = -1;
   private userId:number = -1;
@@ -162,8 +162,6 @@ export class ManagePaymentsComponent implements OnInit {
         let paymentJSON = jsonPaymentList[i];
         let payment:PaymentImport = new PaymentImport().setJSON(paymentJSON);
 
-        payment.amountWithFormat = this.myFormat.getKRWWithCommas(payment.amount);
-
         paymentList.push(payment);
 
       } // end for
@@ -185,8 +183,8 @@ export class ManagePaymentsComponent implements OnInit {
       this.fetchBuyKlass(
         // pageNum:number, 
         this.pageNum, 
-        // pageSize:number, 
-        this.pageRange,
+        // pageRowCnt:number, 
+        this.pageRowCnt,
         // klassId:number, 
         this.klassId,
         // userId:number
@@ -198,8 +196,8 @@ export class ManagePaymentsComponent implements OnInit {
       this.fetchBuyKlass(
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange,
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt,
         // klassId:number, 
         this.klassId,
         // userId:number
@@ -212,7 +210,7 @@ export class ManagePaymentsComponent implements OnInit {
 
   // @ Desc : 유저 리스트를 가져옵니다.
   private fetchBuyKlass(  pageNum:number, 
-                          pageSize:number, 
+                          pageRowCnt:number, 
                           klassId:number, 
                           userId:number ) :void {
 
@@ -220,7 +218,7 @@ export class ManagePaymentsComponent implements OnInit {
     .fetchBuyKlass(
       this.watchTower.getApiKey(), 
       pageNum, 
-      pageSize,
+      pageRowCnt,
       klassId,
       userId
     )

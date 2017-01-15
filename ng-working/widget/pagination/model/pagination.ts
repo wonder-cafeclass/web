@@ -5,7 +5,7 @@ export class Pagination {
 
 	pageNum:number=1; // 사용자가 선택한 페이지 번호
 	rowCnt:number=-1;
-	pageRange:number=5;
+	pageRowCnt:number=5; // 페이지 안에 표시되는 row의 갯수
 	totalRowCnt:number=-1;
 	cursorPageNum:number=-1;
 	rowCntPerPage:number=-1;
@@ -27,7 +27,7 @@ export class Pagination {
 
 		this.pageNum = +json["PAGE_NUM"];
 		this.rowCnt = +json["ROW_CNT"];
-		this.pageRange = +json["PAGE_RANGE"];
+		this.pageRowCnt = +json["PAGE_ROW_CNT"];
 		this.totalRowCnt = +json["TOTAL_ROW_CNT"];
 		this.cursorPageNum = +json["CURSOR_PAGE_NUM"];
 		this.rowCntPerPage = +json["ROW_CNT_PER_PAGE"];

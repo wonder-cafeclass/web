@@ -12,32 +12,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Pagination
 {
 
-	public function get_limit($page_num=-1, $page_size=-1) 
+	public function get_limit($page_num=-1, $page_row_cnt=-1) 
 	{
 		if(!(0 < $page_num))
 		{
 			return -1;
 		}
-		if(!(0 < $page_size))
+		if(!(0 < $page_row_cnt))
 		{
 			return -1;
 		}
 
-		return $page_size;
+		return $page_row_cnt;
 	}
 
-	public function get_offset($page_num=-1, $page_size=-1) 
+	public function get_offset($page_num=-1, $page_row_cnt=-1) 
 	{
 		if(!(0 < $page_num))
 		{
 			return -1;
 		}
-		if(!(0 < $page_size))
+		if(!(0 < $page_row_cnt))
 		{
 			return -1;
 		}
 
-		return ($page_num - 1) * $page_size;
+		return ($page_num - 1) * $page_row_cnt;
 	}
 
 
@@ -59,7 +59,7 @@ class MY_Pagination
 	}
 	
 	// @ Usage : PageManager::get($total_row_cnt, $cursor_page_num);
-	public function get($total_row_cnt=-1, $cursor_page_num=-1, $row_cnt_per_page=-1, $page_cnt_on_pagination=-1) 
+	public function get($total_row_cnt=-1, $cursor_page_num=-1, $row_cnt_per_page=-1, $page_row_cnt_on_pagination=-1) 
 	{
 		if(!(0 < $total_row_cnt)) 
 		{
@@ -73,9 +73,9 @@ class MY_Pagination
 		{
 			$row_cnt_per_page = $this->get_row_cnt_default();
 		}
-		if(!(0 < $page_cnt_on_pagination)) 
+		if(!(0 < $page_row_cnt_on_pagination)) 
 		{
-			$page_cnt_on_pagination = $this->get_page_range_default();
+			$page_row_cnt_on_pagination = $this->get_page_range_default();
 		}
 
 		// 전체 row는 100개
@@ -86,7 +86,7 @@ class MY_Pagination
 		// $total_page_cnt=10;
 
 		// 페이지네이션에서 보여주는 페이지 갯수는 10개
-		// $page_cnt_on_pagination=10;
+		// $page_row_cnt_on_pagination=10;
 		// 현재 보여주는 페이지의 번호
 		// $cursor_page_num=7;
 
@@ -105,8 +105,8 @@ class MY_Pagination
 		// 화면에서 보여주는 형태
 		// <<(0)prev | 1 | 2 | 3 | 4 | 5 | 6 | You're here - (7) | 8 | 9 | 10 | next(11)>>
 
-		$page_num_begin_on_view = $page_cnt_on_pagination * floor(($cursor_page_num - 1) / $page_cnt_on_pagination) + 1;
-		$page_num_end_on_view = $page_num_begin_on_view + $page_cnt_on_pagination;
+		$page_num_begin_on_view = $page_row_cnt_on_pagination * floor(($cursor_page_num - 1) / $page_row_cnt_on_pagination) + 1;
+		$page_num_end_on_view = $page_num_begin_on_view + $page_row_cnt_on_pagination;
 
 		$total_page_cnt = ceil($total_row_cnt/$row_cnt_per_page);
 		$page_num_jump_to_prev = $page_num_begin_on_view - 1;
@@ -122,11 +122,11 @@ class MY_Pagination
 		[
 			"PAGE_NUM"=>$cursor_page_num,
 			"ROW_CNT"=>$row_cnt_per_page,
-			"PAGE_RANGE"=>$page_cnt_on_pagination,
+			"PAGE_ROW_CNT"=>$page_row_cnt_on_pagination,
 			"TOTAL_ROW_CNT"=>$total_row_cnt,
 			"CURSOR_PAGE_NUM"=>$cursor_page_num,
 			"ROW_CNT_PER_PAGE"=>$row_cnt_per_page,
-			"PAGE_CNT_ON_PAGINATION"=>$page_cnt_on_pagination,
+			"PAGE_CNT_ON_PAGINATION"=>$page_row_cnt_on_pagination,
 			"TOTAL_PAGE_CNT"=>$total_page_cnt,
 			"PAGE_NUM_BEGIN_ON_VIEW"=>$page_num_begin_on_view,
 			"PAGE_NUM_END_ON_VIEW"=>$page_num_end_on_view,

@@ -54,7 +54,7 @@ var Klass = (function () {
         this.venue_road_address = "";
         this.venue_latitude = "";
         this.venue_longitude = "";
-        this.search_tag = "";
+        this.search_tag = ""; // @ Deprecated - REMOVE ME
         this.price = -1;
         this.price_with_format = "";
         // 수업 참여 학생수

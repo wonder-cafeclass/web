@@ -17,6 +17,7 @@ var PaymentService = (function () {
     function PaymentService(urlService, http) {
         this.urlService = urlService;
         this.http = http;
+        this.fetchImportHistoryUrl = '/CI/index.php/api/payment/fetchimporthistory';
         this.addImportHistoryUrl = '/CI/index.php/api/payment/addimporthistory';
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
@@ -30,17 +31,48 @@ var PaymentService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method  
+    PaymentService.prototype.fetchImportHistory = function (apiKey, pageNum, pageRowCnt, paymentImpUid, klassId, userId, loginUserId) {
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / 시작");
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / pageNum : ", pageNum);
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / pageRowCnt : ", pageRowCnt);
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / paymentImpUid : ", paymentImpUid);
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("payment.service / fetchImportHistory / userId : ", userId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.fetchImportHistoryUrl);
+        var params = {
+            payment_imp_uid: paymentImpUid,
+            page_num: pageNum,
+            pageRowCnt: pageRowCnt,
+            klass_id: klassId,
+            user_id: userId,
+            login_user_id: loginUserId,
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     PaymentService.prototype.addImportHistory = function (apiKey, paymentImpUid, klassId, userId, loginUserId) {
         if (this.isDebug())
-            console.log("payment.service / test / 시작");
+            console.log("payment.service / addImportHistory / 시작");
         if (this.isDebug())
-            console.log("payment.service / test / apiKey : ", apiKey);
+            console.log("payment.service / addImportHistory / apiKey : ", apiKey);
         if (this.isDebug())
-            console.log("payment.service / test / paymentImpUid : ", paymentImpUid);
+            console.log("payment.service / addImportHistory / paymentImpUid : ", paymentImpUid);
         if (this.isDebug())
-            console.log("payment.service / test / klassId : ", klassId);
+            console.log("payment.service / addImportHistory / klassId : ", klassId);
         if (this.isDebug())
-            console.log("payment.service / test / userId : ", userId);
+            console.log("payment.service / addImportHistory / userId : ", userId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.addImportHistoryUrl);

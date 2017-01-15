@@ -185,8 +185,8 @@ var KlassListComponent = (function () {
         this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         "", 
         // klassStatus:string, 
@@ -239,7 +239,7 @@ var KlassListComponent = (function () {
             this.klassList = klassList; // 리스트 교체.
         } // end if
     }; // end method    
-    KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
+    KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.klassService.fetchKlassList(
         // apiKey:string, 
@@ -248,8 +248,8 @@ var KlassListComponent = (function () {
         loginUserId, 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         searchQuery, 
         // klassStatus:string,
@@ -328,8 +328,8 @@ var KlassListComponent = (function () {
         this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         searchQuerySafe, 
         // klassStatus:string, 

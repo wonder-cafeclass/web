@@ -577,7 +577,7 @@ export class KlassService {
   fetchKlassList (  apiKey:string, 
                     loginUserId:number, 
                     pageNum:number, 
-                    pageSize:number, 
+                    pageRowCnt:number, 
                     searchQuery:string, 
                     klassStatus:string,
                     klassLevel:string,
@@ -590,7 +590,7 @@ export class KlassService {
     if(this.isDebug()) console.log("klass.service / fetchKlassList / apiKey : ",apiKey);
     if(this.isDebug()) console.log("klass.service / fetchKlassList / loginUserId : ",loginUserId);
     if(this.isDebug()) console.log("klass.service / fetchKlassList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("klass.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("klass.service / fetchKlassList / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("klass.service / fetchKlassList / searchQuery : ",searchQuery);
 
     if(this.isDebug()) console.log("klass.service / fetchKlassList / klassStatus : ",klassStatus);
@@ -611,7 +611,7 @@ export class KlassService {
     let params = {
       login_user_id:loginUserId,
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       klass_status:klassStatus,
       klass_level:klassLevel,

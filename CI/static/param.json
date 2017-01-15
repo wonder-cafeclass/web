@@ -133,7 +133,7 @@
 		"limit":"is_natural_no_zero",
 
 		"page_num":"is_natural_no_zero",
-		"page_size":"is_natural_no_zero",
+		"page_row_cnt":"is_natural_no_zero",
 
 		"search_query":"is_str|||min_length[1]|||regex_match_include[/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\\-_\\s|]+$/]",
 

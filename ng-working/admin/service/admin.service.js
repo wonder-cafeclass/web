@@ -36,7 +36,7 @@ var AdminService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method
-    AdminService.prototype.fetchBuyKlass = function (apiKey, pageNum, pageSize, klassId, userId) {
+    AdminService.prototype.fetchBuyKlass = function (apiKey, pageNum, pageRowCnt, klassId, userId) {
         if (this.isDebug())
             console.log("admin.service / fetchBuyKlass / 시작");
         if (this.isDebug())
@@ -44,7 +44,7 @@ var AdminService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchBuyKlass / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("admin.service / fetchBuyKlass / pageSize : ", pageSize);
+            console.log("admin.service / fetchBuyKlass / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
             console.log("admin.service / fetchBuyKlass / klassId : ", klassId);
         if (this.isDebug())
@@ -54,7 +54,7 @@ var AdminService = (function () {
         var req_url = this.us.get(this.fetchBuyKlassUrl);
         var params = {
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             klass_id: klassId,
             user_id: userId
         };
@@ -85,7 +85,7 @@ var AdminService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
+    AdminService.prototype.fetchKlassList = function (apiKey, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / 시작");
         if (this.isDebug())
@@ -93,7 +93,7 @@ var AdminService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("admin.service / fetchKlassList / pageSize : ", pageSize);
+            console.log("admin.service / fetchKlassList / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
             console.log("admin.service / fetchKlassList / searchQuery : ", searchQuery);
         if (this.isDebug())
@@ -113,7 +113,7 @@ var AdminService = (function () {
         var req_url = this.us.get(this.fetchKlassListUrl);
         var params = {
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             search_query: searchQuery,
             klass_status: klassStatus,
             klass_level: klassLevel,
@@ -149,7 +149,7 @@ var AdminService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    AdminService.prototype.fetchTeacherListV2 = function (apiKey, pageNum, pageSize, searchQuery, teacherStatus) {
+    AdminService.prototype.fetchTeacherListV2 = function (apiKey, pageNum, pageRowCnt, searchQuery, teacherStatus) {
         if (this.isDebug())
             console.log("admin.service / fetchTeacherListV2 / 시작");
         if (this.isDebug())
@@ -157,7 +157,7 @@ var AdminService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchTeacherListV2 / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("admin.service / fetchTeacherListV2 / pageSize : ", pageSize);
+            console.log("admin.service / fetchTeacherListV2 / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
             console.log("admin.service / fetchTeacherListV2 / searchQuery : ", searchQuery);
         if (this.isDebug())
@@ -167,7 +167,7 @@ var AdminService = (function () {
         var req_url = this.us.get(this.fetchTeacherListV2Url);
         var params = {
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             search_query: searchQuery,
             teacher_status: teacherStatus
         };
@@ -195,7 +195,7 @@ var AdminService = (function () {
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);
     };
-    AdminService.prototype.fetchUserListV2 = function (apiKey, pageNum, pageSize, searchQuery, userStatus, userPermission) {
+    AdminService.prototype.fetchUserListV2 = function (apiKey, pageNum, pageRowCnt, searchQuery, userStatus, userPermission) {
         if (this.isDebug())
             console.log("admin.service / fetchUserListV2 / 시작");
         if (this.isDebug())
@@ -203,7 +203,7 @@ var AdminService = (function () {
         if (this.isDebug())
             console.log("admin.service / fetchUserListV2 / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("admin.service / fetchUserListV2 / pageSize : ", pageSize);
+            console.log("admin.service / fetchUserListV2 / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
             console.log("admin.service / fetchUserListV2 / searchQuery : ", searchQuery);
         if (this.isDebug())
@@ -215,7 +215,7 @@ var AdminService = (function () {
         var req_url = this.us.get(this.fetchUserListV2Url);
         var params = {
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             search_query: searchQuery,
             user_status: userStatus,
             user_permission: userPermission

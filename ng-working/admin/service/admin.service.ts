@@ -53,14 +53,14 @@ export class AdminService {
   fetchBuyKlass (  
     apiKey:string, 
     pageNum:number, 
-    pageSize:number, 
+    pageRowCnt:number, 
     klassId:number, 
     userId:number ): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchBuyKlass / 시작");
     if(this.isDebug()) console.log("admin.service / fetchBuyKlass / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchBuyKlass / klassId : ",klassId);
     if(this.isDebug()) console.log("admin.service / fetchBuyKlass / userId : ",userId);
 
@@ -70,7 +70,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       klass_id:klassId,
       user_id:userId
     };
@@ -112,7 +112,7 @@ export class AdminService {
 
   fetchKlassList (  apiKey:string, 
                     pageNum:number, 
-                    pageSize:number, 
+                    pageRowCnt:number, 
                     searchQuery:string, 
                     klassStatus:string,
                     klassLevel:string,
@@ -124,7 +124,7 @@ export class AdminService {
     if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
     if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
 
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
@@ -140,7 +140,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       klass_status:klassStatus,
       klass_level:klassLevel,
@@ -185,12 +185,12 @@ export class AdminService {
 
   }
 
-  fetchTeacherListV2 (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, teacherStatus:string): Promise<MyResponse> {
+  fetchTeacherListV2 (apiKey:string, pageNum:number, pageRowCnt:number, searchQuery:string, teacherStatus:string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / 시작");
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / searchQuery : ",searchQuery);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / teacherStatus : ",teacherStatus);
 
@@ -200,7 +200,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       teacher_status:teacherStatus
     };
@@ -239,12 +239,12 @@ export class AdminService {
 
   }
 
-  fetchUserListV2 (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, userStatus:string, userPermission:string): Promise<MyResponse> {
+  fetchUserListV2 (apiKey:string, pageNum:number, pageRowCnt:number, searchQuery:string, userStatus:string, userPermission:string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / 시작");
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / searchQuery : ",searchQuery);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / userStatus : ",userStatus);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / userPermission : ",userPermission);
@@ -255,7 +255,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       user_status:userStatus,
       user_permission:userPermission

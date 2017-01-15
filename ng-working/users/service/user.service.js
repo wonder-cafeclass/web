@@ -48,7 +48,7 @@ var UserService = (function () {
         }
         return this.watchTower.isDebug();
     };
-    UserService.prototype.fetchKlassNStudentList = function (apiKey, pageNum, pageSize, userId) {
+    UserService.prototype.fetchKlassNStudentList = function (apiKey, pageNum, pageRowCnt, userId) {
         // wonder.jung
         if (this.isDebug())
             console.log("user.service / fetchKlassNStudentList / 시작");
@@ -59,7 +59,7 @@ var UserService = (function () {
         var req_url = this.us.get(this.fetchKlassNStudentListUrl);
         var params = {
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             user_id: userId
         };
         return this.http.post(req_url, params, options)

@@ -208,32 +208,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -310,7 +310,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -361,7 +361,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -507,32 +507,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -559,7 +559,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -595,7 +595,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -737,32 +737,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -799,7 +799,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -838,7 +838,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -893,32 +893,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         $user_id = 
@@ -944,7 +944,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "user_id"=>$user_id,
@@ -980,7 +980,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 

@@ -32,7 +32,7 @@ var ManageUsersComponent = (function () {
         this.userStatus = "";
         this.userPermission = "";
         this.pageNum = 1;
-        this.pageRange = 5;
+        this.pageRowCnt = 5;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
@@ -157,8 +157,8 @@ var ManageUsersComponent = (function () {
         this.fetchUserList(
         // pageNum:number, 
         this.pageNum, 
-        // pageSize:number, 
-        this.pageRange, 
+        // pageRowCnt:number, 
+        this.pageRowCnt, 
         // searchQuery:string, 
         this.searchQuery, 
         // userStatus:string, 
@@ -293,8 +293,8 @@ var ManageUsersComponent = (function () {
             this.fetchUserList(
             // pageNum:number, 
             this.pageNum, 
-            // pageSize:number, 
-            this.pageRange, 
+            // pageRowCnt:number, 
+            this.pageRowCnt, 
             // searchQuery:string, 
             this.searchQuery, 
             // userStatus:string, 
@@ -306,8 +306,8 @@ var ManageUsersComponent = (function () {
             this.fetchUserList(
             // pageNum:number, 
             this.pagination.pageNum, 
-            // pageSize:number, 
-            this.pagination.pageRange, 
+            // pageRowCnt:number, 
+            this.pagination.pageRowCnt, 
             // searchQuery:string, 
             this.searchQuery, 
             // userStatus:string, 
@@ -317,7 +317,7 @@ var ManageUsersComponent = (function () {
         }
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManageUsersComponent.prototype.fetchUserList = function (pageNum, pageSize, searchQuery, userStatus, userPermission) {
+    ManageUsersComponent.prototype.fetchUserList = function (pageNum, pageRowCnt, searchQuery, userStatus, userPermission) {
         var _this = this;
         this.adminService
             .fetchUserListV2(
@@ -325,8 +325,8 @@ var ManageUsersComponent = (function () {
         this.watchTower.getApiKey(), 
         // pageNum:number, 
         pageNum, 
-        // pageSize:number, 
-        pageSize, 
+        // pageRowCnt:number, 
+        pageRowCnt, 
         // searchQuery:string, 
         searchQuery, 
         // userStatus:string, 
@@ -472,13 +472,13 @@ var ManageUsersComponent = (function () {
         event.stopPropagation();
         event.preventDefault();
         // 새로운 검색어라면 첫 검색 결과 페이지 노출
-        // pagination 내의 이동이라면, 검색어와 pageNum, pageRange를 모두 사용한다.
-        // this.searchUser(this.searchQuery, 1, this.pagination.pageRange);
+        // pagination 내의 이동이라면, 검색어와 pageNum, pageRowCnt를 모두 사용한다.
+        // this.searchUser(this.searchQuery, 1, this.pagination.pageRowCnt);
         this.fetchUserList(
         // pageNum:number,
         1, 
-        // pageSize:number,
-        this.pagination.pageRange, 
+        // pageRowCnt:number,
+        this.pagination.pageRowCnt, 
         // searchQuery:string,
         this.searchQuery, 
         // userStatus:string, 

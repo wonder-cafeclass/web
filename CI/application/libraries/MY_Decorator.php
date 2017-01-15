@@ -961,8 +961,12 @@ class MY_Decorator extends MY_Library
             $klass->date_created = $this->getStr($payment, "klass_date_created");
             $klass->date_updated = $this->getStr($payment, "klass_date_updated");
 
+            // 수업 이미지 정보 추가
+            $klass = $this->deco_klass_extra($klass);
+
             $pi->klass = $klass;
 
+            // 수업을 듣는 유저 정보 추가
             $user = new User();
 
             $user->id = $this->getNumber($payment, "user_id");
@@ -978,7 +982,26 @@ class MY_Decorator extends MY_Library
             $user->email = $this->getStr($payment, "user_email");
 
             $pi->user = $user;
-            
+
+            // 수업 담당 선생님 정보 추가
+            $teacher = new Teacher();
+
+            $teacher->id = $this->getNumber($payment, "teacher_id");
+            $teacher->user_id = $this->getNumber($payment, "teacher_user_id");
+            $teacher->nickname = $this->getStr($payment, "teacher_nickname");
+            $teacher->name = $this->getStr($payment, "teacher_name");
+            $teacher->gender = $this->getStr($payment, "teacher_gender");
+            $teacher->birthday = $this->getStr($payment, "teacher_birthday");
+
+            $teacher->thumbnail = $this->getStr($payment, "teacher_thumbnail");
+            $teacher->status = $this->getStr($payment, "teacher_status");
+            $teacher->mobile = $this->getStr($payment, "teacher_mobile");
+            $teacher->email = $this->getStr($payment, "teacher_email");
+            $teacher->resume = $this->getStr($payment, "teacher_resume");
+            $teacher->greeting = $this->getStr($payment, "teacher_greeting");
+
+            $pi->teacher = $teacher;
+
             array_push($pi_list_next, $pi);
         }
 

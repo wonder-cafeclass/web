@@ -25,6 +25,7 @@ export class MyLoggerService {
 	public pageTypeSignupSelect:string="SIGNUP_SELECT";
 	public pageTypeMyInfo:string="MY_INFO";
 	public pageTypeMyInfoDashBoard:string="MY_INFO_DASHBOARD";
+	public pageTypeMyInfoPayment:string="MY_INFO_PAYMENT";
 	public pageTypeMyInfoKlass:string="MY_INFO_KLASS";
 	public pageTypeTeacherInfo:string="TEACHER_INFO";
 	public pageTypeApplyTeacherTerm:string="APPLY_TEACHER_TERM";

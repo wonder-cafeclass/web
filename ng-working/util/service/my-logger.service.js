@@ -30,6 +30,7 @@ var MyLoggerService = (function () {
         this.pageTypeSignupSelect = "SIGNUP_SELECT";
         this.pageTypeMyInfo = "MY_INFO";
         this.pageTypeMyInfoDashBoard = "MY_INFO_DASHBOARD";
+        this.pageTypeMyInfoPayment = "MY_INFO_PAYMENT";
         this.pageTypeMyInfoKlass = "MY_INFO_KLASS";
         this.pageTypeTeacherInfo = "TEACHER_INFO";
         this.pageTypeApplyTeacherTerm = "APPLY_TEACHER_TERM";

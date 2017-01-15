@@ -28,7 +28,7 @@ var ManagePaymentsComponent = (function () {
         this.router = router;
         this.checkBoxList = [];
         this.pageNum = 1;
-        this.pageRange = 5;
+        this.pageRowCnt = 5;
         this.klassId = -1;
         this.userId = -1;
         this.myIs = new my_is_1.HelperMyIs();
@@ -107,7 +107,6 @@ var ManagePaymentsComponent = (function () {
             for (var i = 0; i < jsonPaymentList.length; ++i) {
                 var paymentJSON = jsonPaymentList[i];
                 var payment = new payment_import_1.PaymentImport().setJSON(paymentJSON);
-                payment.amountWithFormat = this.myFormat.getKRWWithCommas(payment.amount);
                 paymentList.push(payment);
             } // end for
             if (this.isDebug())
@@ -121,8 +120,8 @@ var ManagePaymentsComponent = (function () {
             this.fetchBuyKlass(
             // pageNum:number, 
             this.pageNum, 
-            // pageSize:number, 
-            this.pageRange, 
+            // pageRowCnt:number, 
+            this.pageRowCnt, 
             // klassId:number, 
             this.klassId, 
             // userId:number
@@ -132,8 +131,8 @@ var ManagePaymentsComponent = (function () {
             this.fetchBuyKlass(
             // pageNum:number, 
             this.pagination.pageNum, 
-            // pageSize:number, 
-            this.pagination.pageRange, 
+            // pageRowCnt:number, 
+            this.pagination.pageRowCnt, 
             // klassId:number, 
             this.klassId, 
             // userId:number
@@ -141,10 +140,10 @@ var ManagePaymentsComponent = (function () {
         }
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManagePaymentsComponent.prototype.fetchBuyKlass = function (pageNum, pageSize, klassId, userId) {
+    ManagePaymentsComponent.prototype.fetchBuyKlass = function (pageNum, pageRowCnt, klassId, userId) {
         var _this = this;
         this.adminService
-            .fetchBuyKlass(this.watchTower.getApiKey(), pageNum, pageSize, klassId, userId)
+            .fetchBuyKlass(this.watchTower.getApiKey(), pageNum, pageRowCnt, klassId, userId)
             .then(function (myResponse) {
             if (_this.isDebug())
                 console.log("manage-payments / fetchBuyKlass / myResponse : ", myResponse);

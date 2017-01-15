@@ -25,57 +25,61 @@ import { KlassNStudent }              from '../../../klass/model/klass-n-student
 
 import { Pagination }                 from '../../../widget/pagination/model/pagination';
 
+import { PaymentImport }              from '../../../widget/payment/model/payment-import';
+import { PaymentService }              from '../../../widget/payment/service/payment.service';
+
 @Component({
   moduleId: module.id,
-  selector: 'my-info-klass',
-  templateUrl: 'my-info-klass.component.html',
-  styleUrls: [ 'my-info-klass.component.css' ]
+  selector: 'my-info-payment',
+  templateUrl: 'my-info-payment.component.html',
+  styleUrls: [ 'my-info-payment.component.css' ]
 })
-export class MyInfoKlassComponent implements AfterViewInit {
+export class MyInfoPaymentComponent implements AfterViewInit {
 
   @Input() eventKey:string = "";
   @Output() emitter = new EventEmitter<any>();
 
   loginUser:User;
 
-  klassNStudentList:KlassNStudent[];
+  piList:PaymentImport[];
 
   pagination:Pagination;
 
-  constructor(private userService:UserService,
+  constructor(private paymentService:PaymentService,
               public myEventService:MyEventService,
               private watchTower:MyEventWatchTowerService,
               public router:Router) {
 
-    this.userService.setWatchTower(watchTower);
+    this.paymentService.setWatchTower(watchTower);
 
   }
 
   private isDebug():boolean {
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    if(this.isDebug()) console.log("my-info-klass / ngAfterViewInit");
+    if(this.isDebug()) console.log("my-info-payment / ngAfterViewInit");
     this.asyncViewPack();
   }
 
   private asyncViewPack(): void {
     
-    if(this.isDebug()) console.log("my-info-klass / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("my-info-payment / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(this.isDebug()) console.log("my-info-klass / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("my-info-payment / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(this.isDebug()) console.log("my-info-klass / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("my-info-payment / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -85,7 +89,7 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   private init() :void {
 
-    if(this.isDebug()) console.log("my-info-klass / init / 시작");
+    if(this.isDebug()) console.log("my-info-payment / init / 시작");
 
     // 로그인한 유저 정보를 가져옵니다.
     this.setLoginUser();
@@ -93,14 +97,16 @@ export class MyInfoKlassComponent implements AfterViewInit {
     this.logActionPage();
     // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
     this.emitEventOnReady();
+    // Pagination을 기본값으로 설정합니다.
+    this.updatePagination(null);
     // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-    this.fetchKlassNStudentList();
+    this.fetchPaymentList(-1);
 
   }
 
   private setLoginUser() :void {
 
-    if(this.isDebug()) console.log("my-info-klass / setLoginUser / 시작");
+    if(this.isDebug()) console.log("my-info-payment / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
     this.loginUser = this.watchTower.getLoginUser();
@@ -122,18 +128,18 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   private logActionPage() :void {
 
-    if(this.isDebug()) console.log("my-info-klass / logActionPage / 시작");
+    if(this.isDebug()) console.log("my-info-payment / logActionPage / 시작");
 
     this.watchTower.logPageEnter(
       // pageType:string
-      this.watchTower.getMyLoggerService().pageTypeMyInfoKlass
+      this.watchTower.getMyLoggerService().pageTypeMyInfoPayment
     );
 
-  } // end method  
+  } // end method
 
   private emitEventOnReady() :void {
 
-    if(this.isDebug()) console.log("my-info-klass / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("my-info-payment / emitEventOnReady / 시작");
 
     let myEvent:MyEvent =
     this.watchTower.getEventOnReady(
@@ -149,35 +155,49 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   private updatePagination(jsonPagination:any) :void {
 
-    if(this.isDebug()) console.log("my-info-klass / updatePagination / 시작");
+    if(this.isDebug()) console.log("my-info-payment / updatePagination / 시작");
 
-    if(this.isDebug()) console.log("my-info-klass / updatePagination / jsonPagination : ",jsonPagination);
+    if(this.isDebug()) console.log("my-info-payment / updatePagination / jsonPagination : ",jsonPagination);
 
     if(null == jsonPagination) {
-      this.pagination = null;
+      this.pagination = new Pagination();
     } else {
       this.pagination = new Pagination().setJSON(jsonPagination);
     }
   }
 
-  private fetchKlassNStudentList():void {
+  private fetchPaymentList(klassId:number):void {
 
-    if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / 시작");
+    if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / 시작");
+
+    if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / klassId : ",klassId);
+
+    if(!(0 < this.getLoginUserId())) {
+      if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / 중단 / loginUserId is not valid!");
+      return;
+    }
 
     // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
-    this.userService.fetchKlassNStudentList(
-      // apiKey:string,
+    this.paymentService.fetchImportHistory(
+      // apiKey:string, 
       this.watchTower.getApiKey(),
       // pageNum:number,
-      1,
+      this.pagination.pageNum,
       // pageRowCnt:number,
-      5,
-      // userId:number
+      this.pagination.pageRowCnt,
+      // paymentImpUid:string,
+      "",
+      // klassId:number,
+      klassId,
+      // userId:number,
+      this.getLoginUserId(),
+      // loginUserId:number
       this.getLoginUserId()
+      
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / myResponse : ",myResponse);
 
       if( myResponse.isSuccess() && 
           myResponse.hasDataProp("pagination") &&
@@ -185,26 +205,26 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
         // 1. Pagination 재설정
         let jsonPagination = myResponse.getDataProp("pagination");
-        if(this.isDebug()) console.log("my-info-klass / fetchKlassList / jsonPagination : ",jsonPagination);
+        if(this.isDebug()) console.log("my-info-payment / fetchKlassList / jsonPagination : ",jsonPagination);
         this.updatePagination(jsonPagination);
 
-        let klassNStudentList:KlassNStudent[] = [];
+        let piList:PaymentImport[] = [];
         let jsonList = myResponse.getDataProp("list");
         for (var i = 0; i < jsonList.length; ++i) {
           let json = jsonList[i];
-          let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
-          klassNStudentList.push(klassNStudent);
+          let pi:PaymentImport = new PaymentImport().setJSON(json);
+          piList.push(pi);
         } // end for
 
-        this.klassNStudentList = klassNStudentList;
+        this.piList = piList;
 
-        if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ",klassNStudentList);
+        if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / piList : ",piList);
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / 수강 학생 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / 수강 학생 정보 등록에 실패했습니다.");
 
-        this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
+        this.watchTower.logAPIError("fetchPaymentList has been failed!");
         if(null != myResponse.error) {
           this.watchTower.announceErrorMsgArr([myResponse.error]);
         } // end if
@@ -219,15 +239,15 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   onClickKlass(klass:Klass):void {
 
-    if(this.isDebug()) console.log("my-info-klass / onClickKlass / 시작");
+    if(this.isDebug()) console.log("my-info-payment / onClickKlass / 시작");
 
     if(null == klass) {
-      if(this.isDebug()) console.log("my-info-klass / onClickKlass / 중단 / null == klass");
+      if(this.isDebug()) console.log("my-info-payment / onClickKlass / 중단 / null == klass");
       return;
     } // end if
 
     if(!(0 < klass.id)) {
-      if(this.isDebug()) console.log("my-info-klass / onClickKlass / 중단 / klass.id is not valid!");
+      if(this.isDebug()) console.log("my-info-payment / onClickKlass / 중단 / klass.id is not valid!");
       return;
     } // end if
 
@@ -239,25 +259,25 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent) {
 
-    if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / init");
-    if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / myEvent : ",myEvent);
-    if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / myEvent.key : ",myEvent.key);
-    if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / myEvent.value : ",myEvent.value);
+    if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / init");
+    if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / myEvent.key : ",myEvent.key);
+    if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / myEvent.value : ",myEvent.value);
 
     if(myEvent.isNotValid()) {
-      if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+      if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
       // 에러 로그 등록
       this.watchTower.logErrorBadValue(
-        `my-info-klass / onChangedFromChild / myEvent.isNotValid()`
+        `my-info-payment / onChangedFromChild / myEvent.isNotValid()`
       );
       return;
     } // end if
 
     if(this.watchTower.isNotOK(myEvent)) {
-      if(this.isDebug()) console.log("my-info-klass / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      if(this.isDebug()) console.log("my-info-payment / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
       // 에러 로그 등록
       this.watchTower.logErrorBadValue(
-        `my-info-klass / onChangedFromChild / this.watchTower.isNotOK(myEvent)`
+        `my-info-payment / onChangedFromChild / this.watchTower.isNotOK(myEvent)`
       );
       return;
     } // end if
@@ -281,6 +301,14 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
       } // end if - ON CHANGE
       */
+
+      if(myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+
+        this.pagination.pageNum = +myEvent.value;
+        this.fetchPaymentList(null);
+
+      } // end if
+
 
     } else if(myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
 

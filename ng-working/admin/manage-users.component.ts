@@ -61,7 +61,7 @@ export class ManageUsersComponent implements OnInit {
   private userStatus:string="";
   private userPermission:string="";
   private pageNum:number = 1;
-  private pageRange:number = 5;
+  private pageRowCnt:number = 5;
   selectOptionListUserStatus:DefaultOption[];
   selectOptionListUserPermission:DefaultOption[];
 
@@ -221,8 +221,8 @@ export class ManageUsersComponent implements OnInit {
     this.fetchUserList(
       // pageNum:number, 
       this.pageNum,
-      // pageSize:number, 
-      this.pageRange,
+      // pageRowCnt:number, 
+      this.pageRowCnt,
       // searchQuery:string, 
       this.searchQuery,
       // userStatus:string, 
@@ -399,8 +399,8 @@ export class ManageUsersComponent implements OnInit {
       this.fetchUserList(
         // pageNum:number, 
         this.pageNum, 
-        // pageSize:number, 
-        this.pageRange,
+        // pageRowCnt:number, 
+        this.pageRowCnt,
         // searchQuery:string, 
         this.searchQuery,
         // userStatus:string, 
@@ -414,8 +414,8 @@ export class ManageUsersComponent implements OnInit {
       this.fetchUserList(
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange,
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt,
         // searchQuery:string, 
         this.searchQuery,
         // userStatus:string, 
@@ -430,7 +430,7 @@ export class ManageUsersComponent implements OnInit {
 
   // @ Desc : 유저 리스트를 가져옵니다.
   private fetchUserList(  pageNum:number, 
-                          pageSize:number, 
+                          pageRowCnt:number, 
                           searchQuery:string, 
                           userStatus:string, 
                           userPermission:string) :void {
@@ -441,8 +441,8 @@ export class ManageUsersComponent implements OnInit {
       this.watchTower.getApiKey(), 
       // pageNum:number, 
       pageNum, 
-      // pageSize:number, 
-      pageSize,
+      // pageRowCnt:number, 
+      pageRowCnt,
       // searchQuery:string, 
       searchQuery,
       // userStatus:string, 
@@ -608,14 +608,14 @@ export class ManageUsersComponent implements OnInit {
     event.preventDefault();
 
     // 새로운 검색어라면 첫 검색 결과 페이지 노출
-    // pagination 내의 이동이라면, 검색어와 pageNum, pageRange를 모두 사용한다.
-    // this.searchUser(this.searchQuery, 1, this.pagination.pageRange);
+    // pagination 내의 이동이라면, 검색어와 pageNum, pageRowCnt를 모두 사용한다.
+    // this.searchUser(this.searchQuery, 1, this.pagination.pageRowCnt);
 
     this.fetchUserList(
       // pageNum:number,
       1,
-      // pageSize:number,
-      this.pagination.pageRange,
+      // pageRowCnt:number,
+      this.pagination.pageRowCnt,
       // searchQuery:string,
       this.searchQuery,
       // userStatus:string, 

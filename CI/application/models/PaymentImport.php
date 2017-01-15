@@ -104,6 +104,9 @@ class PaymentImport {
     // Klass 객체
     public $klass;
 
+    // Teacher 객체
+    public $teacher;
+
   	public function setJSON($json=null) 
   	{
   		if(is_null(json))

@@ -70,7 +70,7 @@ export class UserService {
   fetchKlassNStudentList (
     apiKey:string,
     pageNum:number,
-    pageSize:number,
+    pageRowCnt:number,
     userId:number ): Promise<MyResponse> {
 
     // wonder.jung
@@ -82,7 +82,7 @@ export class UserService {
     let req_url = this.us.get(this.fetchKlassNStudentListUrl);
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       user_id:userId
     }
 

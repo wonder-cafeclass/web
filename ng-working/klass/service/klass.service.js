@@ -475,7 +475,7 @@ var KlassService = (function () {
         }
         return klassVenue;
     };
-    KlassService.prototype.fetchKlassList = function (apiKey, loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
+    KlassService.prototype.fetchKlassList = function (apiKey, loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         if (this.isDebug())
             console.log("klass.service / fetchKlassList / 시작");
         if (this.isDebug())
@@ -485,7 +485,7 @@ var KlassService = (function () {
         if (this.isDebug())
             console.log("klass.service / fetchKlassList / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("klass.service / fetchKlassList / pageSize : ", pageSize);
+            console.log("klass.service / fetchKlassList / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
             console.log("klass.service / fetchKlassList / searchQuery : ", searchQuery);
         if (this.isDebug())
@@ -509,7 +509,7 @@ var KlassService = (function () {
         var params = {
             login_user_id: loginUserId,
             page_num: pageNum,
-            page_size: pageSize,
+            pageRowCnt: pageRowCnt,
             search_query: searchQuery,
             klass_status: klassStatus,
             klass_level: klassLevel,

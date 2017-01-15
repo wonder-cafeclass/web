@@ -1,6 +1,8 @@
 import { HelperMyIs }	from '../../../util/helper/my-is';
+import { HelperMyFormat }  from '../../../util/helper/my-format';
 import { User }       from '../../../users/model/user';
 import { Klass }      from '../../../klass/model/klass';
+import { Teacher }    from '../../../teachers/model/teacher';
 
 
 export class PaymentImport {
@@ -103,13 +105,16 @@ export class PaymentImport {
     public cancel_receipt_url:string="";
 
     private myIs:HelperMyIs=null;	
+    private myFormat:HelperMyFormat=null;
 
     public user:User=null;
     public klass:Klass=null;
+    public teacher:Teacher=null;
 
 	constructor(
 	) {
 		this.myIs = new HelperMyIs();
+    this.myFormat = new HelperMyFormat();
 	}
 
     setJSON(json):PaymentImport {
@@ -135,6 +140,13 @@ export class PaymentImport {
           paymentImport.klass = new Klass().setJSON(klassJSON);
         }
 
+        if(null != paymentImport.teacher) {
+          let teacherJSON = paymentImport.teacher;
+          paymentImport.teacher = new Teacher().setJSON(teacherJSON);
+        }
+
+        // 금액 포맷 추가.
+        paymentImport.amountWithFormat = this.myFormat.getKRWWithCommas(paymentImport.amount);
 
         return paymentImport;
 
