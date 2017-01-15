@@ -20,4 +20,6 @@ class KlassNStudent {
 
         public $payment_import_cnt=-1;
 
+        public $receipt_url="";
+
 }

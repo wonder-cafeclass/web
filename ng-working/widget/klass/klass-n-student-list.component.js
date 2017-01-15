@@ -16,6 +16,7 @@ var KlassNStudentListComponent = (function () {
         this.watchTower = watchTower;
         // @ Common Props
         this.emitter = new core_1.EventEmitter();
+        this.isShowCancle = false;
         this.katStatus = "";
         this.isValidPayment = false;
         this.isShowCertificate = false;
@@ -52,11 +53,6 @@ var KlassNStudentListComponent = (function () {
             console.log("klass-n-student-list / init / 시작");
         // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
         this.emitEventOnReady();
-        // REMOVE ME
-        // 전달받은 katList 데이터로 '남은 수업 일수/전체 수업 일수'를 표시합니다.
-        // this.updateKatProgressView();
-        // 영수증 및 수강증등 결제 관련 버튼 노출 여부 업데이트.
-        // this.updatePaymentView();
     }; // end method
     KlassNStudentListComponent.prototype.emitEventOnReady = function () {
         if (this.isDebug())
@@ -70,20 +66,18 @@ var KlassNStudentListComponent = (function () {
         if (this.isDebug())
             console.log("klass-n-student-list / emitEventOnReady / Done!");
     };
-    KlassNStudentListComponent.prototype.onClickKlass = function (event) {
+    KlassNStudentListComponent.prototype.onClickKlass = function (event, klass) {
         if (this.isDebug())
             console.log("klass-n-student-list / onClickKlass / 시작");
         event.preventDefault();
         event.stopPropagation();
         // 부모 객체로 클래스를 선택한 것을 전달. 해당 수업 상세 페이지로 이동!
-        /*
-        if(null == this.klass) {
-          if(this.isDebug()) console.log("klass-n-student-list / onClickKlass / 중단 / null == this.klass");
-          return;
+        if (null == klass) {
+            if (this.isDebug())
+                console.log("klass-n-student-list / onClickKlass / 중단 / null == klass");
+            return;
         } // end if
-    
-        this.emitOnClickMeta(""+this.klass.id, this.klass);
-        */
+        this.emitOnClickMeta("" + klass.id, klass);
     }; // end method
     KlassNStudentListComponent.prototype.emitOnClickMeta = function (value, meta) {
         var myEvent = this.watchTower.getEventOnClickMetaFreePass(
@@ -95,6 +89,18 @@ var KlassNStudentListComponent = (function () {
         meta);
         this.emitter.emit(myEvent);
     }; // end method
+    KlassNStudentListComponent.prototype.onClickCancelKlass = function (event) {
+        if (this.isDebug())
+            console.log("klass-n-student-list / onClickCancelKlass / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    }; // end method
+    KlassNStudentListComponent.prototype.onClickRequestCancelKlass = function (event) {
+        if (this.isDebug())
+            console.log("klass-n-student-list / onClickRequestCancelKlass / 시작");
+        event.preventDefault();
+        event.stopPropagation();
+    }; // end method  
     KlassNStudentListComponent.prototype.onClickTeacher = function (event) {
         if (this.isDebug())
             console.log("klass-n-student-list / onClickTeacher / 시작");
@@ -107,15 +113,21 @@ var KlassNStudentListComponent = (function () {
         event.preventDefault();
         event.stopPropagation();
     };
-    KlassNStudentListComponent.prototype.onClickReceipt = function (event) {
+    KlassNStudentListComponent.prototype.onClickPrintReceipt = function (event, klassNStudent) {
         if (this.isDebug())
-            console.log("klass-n-student-list / onClickReceipt / 시작");
+            console.log("klass-n-student-list / onClickPrintReceipt / 시작");
         event.preventDefault();
         event.stopPropagation();
-    };
-    KlassNStudentListComponent.prototype.onClickCertificate = function (event) {
+        // 새로운 윈도우를 열어서 영수증 링크 열기.
+        if (null != klassNStudent &&
+            null != klassNStudent.receipt_url &&
+            "" != klassNStudent.receipt_url) {
+            window.open(klassNStudent.receipt_url);
+        } // end if
+    }; // end method
+    KlassNStudentListComponent.prototype.onClickPrintCertipicate = function (event) {
         if (this.isDebug())
-            console.log("klass-n-student-list / onClickCertificate / 시작");
+            console.log("klass-n-student-list / onClickPrintCertipicate / 시작");
         event.preventDefault();
         event.stopPropagation();
     };
@@ -137,6 +149,10 @@ var KlassNStudentListComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', Array)
     ], KlassNStudentListComponent.prototype, "klassNStudentList", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], KlassNStudentListComponent.prototype, "isShowCancle", void 0);
     KlassNStudentListComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

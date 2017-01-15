@@ -1,3 +1,12 @@
+<!-- 
+	<klass-n-student-list
+	[klassNStudentList]="klassNStudentList"
+	[isShowCancle]="true|false"
+	[eventKey]="myEventService.KEY_WIDGET_KLASS_N_STUDENT_LIST"
+	(emitter)="onChangedFromChild($event)">
+	</klass-n-student-list>
+-->
+
 <table class="table my-style"> 
 	<tbody> 
 		<tr *ngFor="let klassNStudent of klassNStudentList;let isLast = last;">
@@ -8,6 +17,7 @@
 				<img
 				src="{{klassNStudent.klass.class_poster_url_loadable}}" 
 				alt="{{klassNStudent.klass.title}}"
+				(click)="onClickKlass(event, klassNStudent.klass)"
 				class="my-style">
 			</td>
 			<td class="my-style">
@@ -62,13 +72,25 @@
 				<div class="my-klass-btn-box">
 					<div class="unselectable my-klass-btn short gray"><strong>진행상황</strong></div>
 					<div class="unselectable my-klass-btn short enable">{{klassNStudent.getProgress()}}회</div>
+					<div 
+					*ngIf="isShowCancle && klassNStudent.isEnableCancle()"
+					(click)="onClickCancelKlass($event)"
+					class="unselectable my-klass-btn short enable">수업취소하기</div>
+					<div 
+					*ngIf="isShowCancle && !klassNStudent.isEnableCancle()"
+					(click)="onClickRequestCancelKlass($event)"
+					class="unselectable my-klass-btn short enable">수업취소 요청하기</div>
+
 				</div>
 			</td>
 			<td class="my-style btn-box">
 				
 				<div class="my-klass-btn-box my-left">
-					<div class="unselectable my-klass-btn short enable">영수증 출력</div>
 					<div 
+					(click)="onClickPrintReceipt($event, klassNStudent)"
+					class="unselectable my-klass-btn short enable">영수증 출력</div>
+					<div 
+					(click)="onClickPrintCertipicate($event)"
 					[ngClass]="{'enable':klassNStudent.isFinished(),'disable':!klassNStudent.isFinished()}"
 					class="unselectable my-klass-btn short enable">수강증 출력</div>
 					<div 

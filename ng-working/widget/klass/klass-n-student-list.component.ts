@@ -31,6 +31,7 @@ export class KlassNStudentListComponent implements OnInit {
   // @ User Custom
   @Input() eventKey:string;
   @Input() klassNStudentList:KlassNStudent[];
+  @Input() isShowCancle:boolean=false;
 
   katStatus:string="";
   isValidPayment:boolean=false;
@@ -82,13 +83,6 @@ export class KlassNStudentListComponent implements OnInit {
     // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
     this.emitEventOnReady();
 
-    // REMOVE ME
-    // 전달받은 katList 데이터로 '남은 수업 일수/전체 수업 일수'를 표시합니다.
-    // this.updateKatProgressView();
-
-    // 영수증 및 수강증등 결제 관련 버튼 노출 여부 업데이트.
-    // this.updatePaymentView();
-
   } // end method
 
   private emitEventOnReady() :void {
@@ -109,7 +103,7 @@ export class KlassNStudentListComponent implements OnInit {
   }
 
 
-  onClickKlass(event):void {
+  onClickKlass(event, klass:Klass):void {
 
     if(this.isDebug()) console.log("klass-n-student-list / onClickKlass / 시작");
 
@@ -117,14 +111,12 @@ export class KlassNStudentListComponent implements OnInit {
     event.stopPropagation();
 
     // 부모 객체로 클래스를 선택한 것을 전달. 해당 수업 상세 페이지로 이동!
-    /*
-    if(null == this.klass) {
-      if(this.isDebug()) console.log("klass-n-student-list / onClickKlass / 중단 / null == this.klass");
+    if(null == klass) {
+      if(this.isDebug()) console.log("klass-n-student-list / onClickKlass / 중단 / null == klass");
       return;
     } // end if
 
-    this.emitOnClickMeta(""+this.klass.id, this.klass);
-    */
+    this.emitOnClickMeta(""+klass.id, klass);
 
   } // end method
 
@@ -140,6 +132,24 @@ export class KlassNStudentListComponent implements OnInit {
     );
     this.emitter.emit(myEvent);
   } // end method
+
+  onClickCancelKlass(event):void {
+
+    if(this.isDebug()) console.log("klass-n-student-list / onClickCancelKlass / 시작");
+
+    event.preventDefault();
+    event.stopPropagation();
+
+  } // end method
+
+  onClickRequestCancelKlass(event):void {
+
+    if(this.isDebug()) console.log("klass-n-student-list / onClickRequestCancelKlass / 시작");
+
+    event.preventDefault();
+    event.stopPropagation();
+
+  } // end method  
 
   onClickTeacher(event):void {
 
@@ -159,18 +169,25 @@ export class KlassNStudentListComponent implements OnInit {
 
   }
 
-  onClickReceipt(event):void {
+  onClickPrintReceipt(event, klassNStudent:KlassNStudent):void {
 
-    if(this.isDebug()) console.log("klass-n-student-list / onClickReceipt / 시작");
+    if(this.isDebug()) console.log("klass-n-student-list / onClickPrintReceipt / 시작");
 
     event.preventDefault();
     event.stopPropagation();
 
-  }
+    // 새로운 윈도우를 열어서 영수증 링크 열기.
+    if( null != klassNStudent && 
+        null != klassNStudent.receipt_url && 
+        "" != klassNStudent.receipt_url ) {
+      window.open(klassNStudent.receipt_url);
+    } // end if
+    
+  } // end method
 
-  onClickCertificate(event):void {
+  onClickPrintCertipicate(event):void {
 
-    if(this.isDebug()) console.log("klass-n-student-list / onClickCertificate / 시작");
+    if(this.isDebug()) console.log("klass-n-student-list / onClickPrintCertipicate / 시작");
 
     event.preventDefault();
     event.stopPropagation();
@@ -185,34 +202,5 @@ export class KlassNStudentListComponent implements OnInit {
     event.stopPropagation();
 
   }
-
-// REMOVE ME
-/*
-  private updateKatProgressView():void {
-
-    if(this.isDebug()) console.log("klass-n-student-list / updateKatProgressView / 시작");
-    if(null == this.klassNStudent) {
-      if(this.isDebug()) console.log("klass-n-student-list / updateKatProgressView / 중단 / null == this.klassNStudent");
-      return;
-    }
-
-    let progress:string = this.klassNStudent.getProgress();
-    if(null != progress && "" != progress) {
-      this.katStatus = `진행상황 ${progress}회`;
-    }
-
-  } // end method
-  private updatePaymentView():void {
-
-    if(this.isDebug()) console.log("klass-n-student-list / updatePaymentView / 시작");
-
-    // 영수증 및 자료실 버튼 노출 여부
-    this.isValidPayment = (0 < this.klassNStudent.paymentTotalCnt)?true:false;  
-
-    // 수강증 노출 여부
-    this.isShowCertificate = this.klassNStudent.isFinished();
-
-  } // end method
-*/  
 
 } // end class

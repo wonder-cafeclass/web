@@ -93,6 +93,8 @@ export class MyInfoKlassComponent implements AfterViewInit {
     this.logActionPage();
     // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
     this.emitEventOnReady();
+    // Pagination 초기화
+    this.updatePagination(null);
     // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
     this.fetchKlassNStudentList();
 
@@ -154,7 +156,7 @@ export class MyInfoKlassComponent implements AfterViewInit {
     if(this.isDebug()) console.log("my-info-klass / updatePagination / jsonPagination : ",jsonPagination);
 
     if(null == jsonPagination) {
-      this.pagination = null;
+      this.pagination = new Pagination();
     } else {
       this.pagination = new Pagination().setJSON(jsonPagination);
     }
@@ -169,9 +171,9 @@ export class MyInfoKlassComponent implements AfterViewInit {
       // apiKey:string,
       this.watchTower.getApiKey(),
       // pageNum:number,
-      1,
+      this.pagination.pageNum,
       // pageRowCnt:number,
-      5,
+      this.pagination.pageRowCnt,
       // userId:number
       this.getLoginUserId()
     ).then((myResponse:MyResponse) => {

@@ -12,6 +12,7 @@
 		<div style="padding:10px;">
 
 			<klass-n-student-list
+			[isShowCancle]="true"
 			[klassNStudentList]="klassNStudentList"
 			[eventKey]="myEventService.KEY_WIDGET_KLASS_N_STUDENT_LIST"
 			(emitter)="onChangedFromChild($event)">

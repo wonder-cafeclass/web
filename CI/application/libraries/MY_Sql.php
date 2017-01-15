@@ -4025,6 +4025,74 @@ class MY_Sql extends MY_Library
 
         return $cnt;
     }
+ 
+
+    // @ Desc : 마지막 결재 영수증 링크 가져오기.(결재 or 결재 취소)
+    public function select_payment_import_receipt($klass_id=-1, $user_id=-1, $payment_imp_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+        if($this->is_not_ok("payment_imp_status", $payment_imp_status))
+        {
+            return;
+        } // end if
+
+        // Query Execution
+        $query_field = 
+        'IF(payment_import.status=\'paid\',payment_import.receipt_url,payment_import.cancel_receipt_url) AS receipt_url';
+        $this->CI->db->select($query_field);
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        if(!empty($payment_imp_status))
+        {
+            $this->CI->db->where('payment_import.status',$payment_imp_status);
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $result = $query->row();
+        $receipt_url = $result->receipt_url;
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$receipt_url : $receipt_url");
+
+        // Logging
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        if(!empty($payment_imp_status))
+        {
+            $this->CI->db->where('payment_import.status',$payment_imp_status);   
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit(1);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $receipt_url;
+    }    
     
     private function get_query_payment_import_field() 
     {

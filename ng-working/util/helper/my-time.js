@@ -66,6 +66,29 @@ var HelperMyTime = (function () {
         }
         return this.getDiffMinutes(headDate, tailDate);
     };
+    HelperMyTime.prototype.getDiffDaysYYYYMMDD_HHMMSS = function (headYYYYMMDD_HHMMSS, tailYYYYMMDD_HHMMSS) {
+        if (null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
+            return -1;
+        }
+        if (this.isNotYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS)) {
+            return -1;
+        }
+        if (null == tailYYYYMMDD_HHMMSS || "" === tailYYYYMMDD_HHMMSS) {
+            return -1;
+        }
+        if (this.isNotYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS)) {
+            return -1;
+        }
+        var headDate = this.getDateFromYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS);
+        if (null == headDate) {
+            return -1;
+        }
+        var tailDate = this.getDateFromYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS);
+        if (null == tailDate) {
+            return -1;
+        }
+        return this.getDiffDays(headDate, tailDate);
+    };
     HelperMyTime.prototype.getDiffMinutes = function (head, tail) {
         var minutes = 60 * 1000;
         return Math.abs((head.getTime() - tail.getTime()) / minutes);
@@ -73,6 +96,10 @@ var HelperMyTime = (function () {
     HelperMyTime.prototype.getDiffHours = function (head, tail) {
         var hour = 60 * 60 * 1000;
         return Math.abs((head.getTime() - tail.getTime()) / hour);
+    };
+    HelperMyTime.prototype.getDiffDays = function (head, tail) {
+        var day = 60 * 60 * 1000 * 24;
+        return Math.abs((head.getTime() - tail.getTime()) / day);
     };
     HelperMyTime.prototype.addHoursHHMM = function (hhmm, hours) {
         // let isDebug:boolean = true;
@@ -186,6 +213,12 @@ var HelperMyTime = (function () {
             return null;
         }
         return this.getDate(date_str, this.DATE_TYPE_HH_MM);
+    };
+    HelperMyTime.prototype.getDateFromYYYYMMDD_HHMMSS = function (date_str) {
+        if (null == date_str || "" == date_str) {
+            return null;
+        }
+        return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
     };
     HelperMyTime.prototype.getNow_YYYY_MM_DD_HH_MM_SS = function () {
         return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
@@ -362,6 +395,21 @@ var HelperMyTime = (function () {
             time_arr.length != 2 ||
             time_arr[0].length != 2 ||
             time_arr[1].length != 2) {
+            return false;
+        }
+        return true;
+    };
+    HelperMyTime.prototype.isNotYYYYMMDD_HHMMSS = function (date_str_yyyymmdd_hhmmss) {
+        return !this.isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss);
+    };
+    // @ Public
+    // @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13 22:12:11) 확인합니다.
+    HelperMyTime.prototype.isYYYYMMDD_HHMMSS = function (date_str_yyyymmdd_hhmmss) {
+        if (null == date_str_yyyymmdd_hhmmss || "" === date_str_yyyymmdd_hhmmss) {
+            return false;
+        }
+        var res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([0-9]|0[0-9]|1[0-9]|2[0-6]):([0-5]|[0-9])$/gi);
+        if (null === res || !(0 < res.length)) {
             return false;
         }
         return true;

@@ -82,6 +82,32 @@ export class HelperMyTime {
 		return this.getDiffMinutes(headDate, tailDate);
 	}
 
+	getDiffDaysYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS:string, tailYYYYMMDD_HHMMSS:string):number {
+		if(null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
+			return -1;
+		}
+		if(this.isNotYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS)) {
+			return -1;
+		}
+		if(null == tailYYYYMMDD_HHMMSS || "" === tailYYYYMMDD_HHMMSS) {
+			return -1;
+		}
+		if(this.isNotYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS)) {
+			return -1;
+		}
+
+		let headDate:Date = this.getDateFromYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS);
+		if(null == headDate) {
+			return -1;
+		}
+		let tailDate:Date = this.getDateFromYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS);
+		if(null == tailDate) {
+			return -1;
+		}
+
+		return this.getDiffDays(headDate, tailDate);
+	}
+
 	private getDiffMinutes(head:Date, tail:Date) :number{
 		let minutes = 60*1000;
 		return Math.abs((head.getTime() - tail.getTime()) / minutes);
@@ -90,6 +116,11 @@ export class HelperMyTime {
 	private getDiffHours(head:Date, tail:Date) :number{
 		let hour = 60*60*1000;
 		return Math.abs((head.getTime() - tail.getTime()) / hour);
+	}
+
+	private getDiffDays(head:Date, tail:Date) :number{
+		let day = 60*60*1000*24;
+		return Math.abs((head.getTime() - tail.getTime()) / day);
 	}
 
 	addHoursHHMM(hhmm:string, hours:number):string {
@@ -217,6 +248,17 @@ export class HelperMyTime {
 		return this.getDate(date_str, this.DATE_TYPE_HH_MM);
 
 	}
+
+	private getDateFromYYYYMMDD_HHMMSS(date_str:string):Date {
+
+		if(null == date_str || "" == date_str) {
+			return null;
+		}
+
+		return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+
+	}
+
 
 	public getNow_YYYY_MM_DD_HH_MM_SS():string {
 		return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
@@ -446,6 +488,26 @@ export class HelperMyTime {
 		}
 		return true;
 	}
+
+	public isNotYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss:string):boolean{
+		return !this.isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss);
+	}
+
+	// @ Public
+	// @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13 22:12:11) 확인합니다.
+	public isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss:string):boolean{
+
+		if(null == date_str_yyyymmdd_hhmmss || "" === date_str_yyyymmdd_hhmmss) {
+			return false;
+		}
+
+		let res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([0-9]|0[0-9]|1[0-9]|2[0-6]):([0-5]|[0-9])$/gi);
+		if(null === res || !(0 < res.length)) {
+		  return false;
+		}		
+
+		return true;
+	}	
 
 	public getDoubleDigit(target_number:number):string{
 		if(target_number < 10){

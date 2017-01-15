@@ -1,5 +1,6 @@
 "use strict";
 var my_is_1 = require('../../util/helper/my-is');
+var my_time_1 = require('../../util/helper/my-time');
 var teacher_1 = require('../../teachers/model/teacher');
 var user_1 = require('../../users/model/user');
 var klass_1 = require('./klass');
@@ -12,13 +13,15 @@ var KlassNStudent = (function () {
         this.date_created = "";
         this.date_updated = "";
         // 출,결석 횟수
-        this.attendanceTotalCnt = -1;
-        this.attendanceReadyCnt = -1;
-        this.attendancePresenceCnt = -1;
-        this.attendanceAbsenceCnt = -1;
+        this.attendance_total_cnt = -1;
+        this.attendance_ready_cnt = -1;
+        this.attendance_presence_cnt = -1;
+        this.attendance_absence_cnt = -1;
         // 결재 횟수
-        this.paymentTotalCnt = -1;
+        this.payment_import_cnt = -1;
+        this.receipt_url = "";
         this.myIs = new my_is_1.HelperMyIs();
+        this.myTime = new my_time_1.HelperMyTime();
     }
     KlassNStudent.prototype.isSame = function (target) {
         return this.myIs.isSame(this, target);
@@ -26,39 +29,57 @@ var KlassNStudent = (function () {
     KlassNStudent.prototype.isSharing = function (key, target) {
         return this.myIs.isSharing(key, this, target);
     };
+    KlassNStudent.prototype.isEnableCancle = function () {
+        // 취소 관련 정책 확인 필요.
+        // http://cafeclass.kr/%EC%95%BD%EA%B4%80-%EB%B0%8F-%EC%A0%95%EC%B1%85/%EA%B0%95%EC%9D%98-%EC%B0%B8%EA%B0%80%EC%9E%90-%EC%95%BD%EA%B4%80/
+        // 강의 개시 1일전 통보 취소는?
+        // 2. 강의 개시 당일 통보시 : 강의 참가비의 10% 배상        
+        // 강의 시작 며칠전인지 확인 필요.
+        var headYYYYMMDD_HHMMSS = this.klass.date_begin + " " + this.klass.time_begin + ":00";
+        var diffDays = this.myTime.getDiffDaysYYYYMMDD_HHMMSS(
+        // headYYYYMMDD_HHMMSS:string
+        headYYYYMMDD_HHMMSS, 
+        // tailYYYYMMDD_HHMMSS:string
+        this.myTime.getNow_YYYY_MM_DD_HH_MM_SS());
+        if (2 <= diffDays) {
+            // 1. 강의 개시 시점으로부터 2일 이전 통보 시 : 손해배상 없음
+            return true;
+        } // end if
+        return false;
+    };
     // @ Desc : '완료된 수업 수 / 전체 수업 수'
     KlassNStudent.prototype.getProgress = function () {
-        if (!(0 < this.attendanceTotalCnt)) {
+        if (!(0 < this.attendance_total_cnt)) {
             return "";
         }
-        if (!(-1 < this.attendanceReadyCnt)) {
+        if (!(-1 < this.attendance_ready_cnt)) {
             return "";
         }
-        if (!(-1 < this.attendancePresenceCnt)) {
+        if (!(-1 < this.attendance_presence_cnt)) {
             return "";
         }
-        if (!(-1 < this.attendanceAbsenceCnt)) {
+        if (!(-1 < this.attendance_absence_cnt)) {
             return "";
         }
-        var totalCnt = this.attendanceTotalCnt;
-        var doneCnt = totalCnt - this.attendanceReadyCnt;
+        var totalCnt = this.attendance_total_cnt;
+        var doneCnt = totalCnt - this.attendance_ready_cnt;
         return doneCnt + "/" + totalCnt;
     };
     KlassNStudent.prototype.isFinished = function () {
-        if (!(0 < this.attendanceTotalCnt)) {
+        if (!(0 < this.attendance_total_cnt)) {
             return false;
         }
-        if (!(-1 < this.attendanceReadyCnt)) {
+        if (!(-1 < this.attendance_ready_cnt)) {
             return false;
         }
-        if (!(-1 < this.attendancePresenceCnt)) {
+        if (!(-1 < this.attendance_presence_cnt)) {
             return false;
         }
-        if (!(-1 < this.attendanceAbsenceCnt)) {
+        if (!(-1 < this.attendance_absence_cnt)) {
             return false;
         }
-        var totalCnt = this.attendanceTotalCnt;
-        var doneCnt = totalCnt - this.attendanceReadyCnt;
+        var totalCnt = this.attendance_total_cnt;
+        var doneCnt = totalCnt - this.attendance_ready_cnt;
         return (totalCnt === doneCnt) ? true : false;
     };
     // @ Desc : 자료실 자료가 있는지 여부.
@@ -84,21 +105,6 @@ var KlassNStudent = (function () {
         }
         if (null != json.user) {
             klassStudent.user = new user_1.User().setJSON(json.user);
-        }
-        if (null != json.attendance_total_cnt && -1 < json.attendance_total_cnt) {
-            klassStudent.attendanceTotalCnt = json.attendance_total_cnt;
-        }
-        if (null != json.attendance_ready_cnt && -1 < json.attendance_ready_cnt) {
-            klassStudent.attendanceReadyCnt = json.attendance_ready_cnt;
-        }
-        if (null != json.attendance_presence_cnt && -1 < json.attendance_presence_cnt) {
-            klassStudent.attendancePresenceCnt = json.attendance_presence_cnt;
-        }
-        if (null != json.attendance_absence_cnt && -1 < json.attendance_absence_cnt) {
-            klassStudent.attendanceAbsenceCnt = json.attendance_absence_cnt;
-        }
-        if (null != json.payment_import_cnt && -1 < json.payment_import_cnt) {
-            klassStudent.paymentTotalCnt = json.payment_import_cnt;
         }
         return klassStudent;
     }; // end method

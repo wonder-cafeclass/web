@@ -365,6 +365,25 @@ class Klass extends MY_REST_Controller {
                 $klass_n_student->user_id
             );
 
+            // 해당 수업 결제 영수증 링크 가져오기
+
+            // select_payment_import_receipt($klass_id=-1, $user_id=-1, $payment_imp_status="")
+            // paid:결제완료, cancelled:결제취소
+            $payment_status = "paid";
+            if("N" == $klass_n_student->status) {
+                $payment_status = "cancelled";
+            }
+            
+            $klass_n_student->receipt_url = 
+            $this->my_sql->select_payment_import_receipt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $payment_imp_status=""  
+                $payment_status
+            );
+
             array_push($klass_n_student_list_next, $klass_n_student);
         }
         // $output["list_src"] = $klass_n_student_list;

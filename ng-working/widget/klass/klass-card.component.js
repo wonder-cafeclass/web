@@ -106,7 +106,7 @@ var KlassCardComponent = (function () {
             return;
         }
         // 영수증 및 자료실 버튼 노출 여부
-        this.isValidPayment = (0 < this.klassNStudent.paymentTotalCnt) ? true : false;
+        this.isValidPayment = (0 < this.klassNStudent.payment_import_cnt) ? true : false;
         // 수강증 노출 여부
         this.isShowCertificate = this.klassNStudent.isFinished();
     }; // end method

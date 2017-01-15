@@ -32,8 +32,8 @@ export class ProfileImgUploadComponent implements OnInit, AfterViewInit {
 
   private uploadUserProfileUrl:string = '/CI/index.php/api/upload/userprofile';
   public userProfilePath:string = "/assets/images/user/";
-  public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
-  public userProfileDefaultUrl:string = "/assets/images/user/user_anonymous_150x150_orange.png";
+  public userProfileUrl:string = "/assets/images/user/user_anonymous_150x150.jpg";
+  public userProfileDefaultUrl:string = "/assets/images/user/user_anonymous_150x150.jpg";
 
   public userProfileSampleArr:string[] = [
     "/assets/images/user/user_anonymous_150x150_cat.jpg",
