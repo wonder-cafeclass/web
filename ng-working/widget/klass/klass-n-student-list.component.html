@@ -1,7 +1,10 @@
 <table class="table my-style"> 
 	<tbody> 
-		<tr *ngFor="let klassNStudent of klassNStudentList">
-			<td class="my-style my-left">
+		<tr *ngFor="let klassNStudent of klassNStudentList;let isLast = last;">
+
+			<td 
+			[ngClass]="{'my-shim':!isLast}"
+			class="my-style my-left">
 				<img
 				src="{{klassNStudent.klass.class_poster_url_loadable}}" 
 				alt="{{klassNStudent.klass.title}}"

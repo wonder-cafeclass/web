@@ -23,6 +23,8 @@ import { User }                       from '../../../users/model/user';
 import { Klass }                      from '../../../klass/model/klass';
 import { KlassNStudent }              from '../../../klass/model/klass-n-student';
 
+import { Pagination }                 from '../../../widget/pagination/model/pagination';
+
 @Component({
   moduleId: module.id,
   selector: 'my-info-klass',
@@ -37,6 +39,8 @@ export class MyInfoKlassComponent implements AfterViewInit {
   loginUser:User;
 
   klassNStudentList:KlassNStudent[];
+
+  pagination:Pagination;
 
   constructor(private userService:UserService,
               public myEventService:MyEventService,
@@ -90,7 +94,7 @@ export class MyInfoKlassComponent implements AfterViewInit {
     // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
     this.emitEventOnReady();
     // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-    this.fetchUserKlassList();
+    this.fetchKlassNStudentList();
 
   }
 
@@ -122,7 +126,7 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
     this.watchTower.logPageEnter(
       // pageType:string
-      this.watchTower.getMyLoggerService().pageTypeMyInfoDashBoard
+      this.watchTower.getMyLoggerService().pageTypeMyInfoKlass
     );
 
   } // end method  
@@ -143,9 +147,22 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   }
 
-  private fetchUserKlassList():void {
+  private updatePagination(jsonPagination:any) :void {
 
-    if(this.isDebug()) console.log("my-info-klass / fetchUserKlassList / 시작");
+    if(this.isDebug()) console.log("my-info-klass / updatePagination / 시작");
+
+    if(this.isDebug()) console.log("my-info-klass / updatePagination / jsonPagination : ",jsonPagination);
+
+    if(null == jsonPagination) {
+      this.pagination = null;
+    } else {
+      this.pagination = new Pagination().setJSON(jsonPagination);
+    }
+  }
+
+  private fetchKlassNStudentList():void {
+
+    if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / 시작");
 
     // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
     this.userService.fetchKlassNStudentList(
@@ -160,12 +177,17 @@ export class MyInfoKlassComponent implements AfterViewInit {
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("my-info-klass / fetchUserKlassList / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / myResponse : ",myResponse);
 
-      if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
+      if( myResponse.isSuccess() && 
+          myResponse.hasDataProp("pagination") &&
+          myResponse.hasDataProp("list")) {
 
-        /*
-        // Do something... 
+        // 1. Pagination 재설정
+        let jsonPagination = myResponse.getDataProp("pagination");
+        if(this.isDebug()) console.log("my-info-klass / fetchKlassList / jsonPagination : ",jsonPagination);
+        this.updatePagination(jsonPagination);
+
         let klassNStudentList:KlassNStudent[] = [];
         let jsonList = myResponse.getDataProp("list");
         for (var i = 0; i < jsonList.length; ++i) {
@@ -176,12 +198,11 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
         this.klassNStudentList = klassNStudentList;
 
-        if(this.isDebug()) console.log("my-info-klass / fetchUserKlassList / klassNStudentList : ",klassNStudentList);
-        */
+        if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ",klassNStudentList);
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("my-info-klass / fetchUserKlassList / 수강 학생 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / 수강 학생 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
         if(null != myResponse.error) {

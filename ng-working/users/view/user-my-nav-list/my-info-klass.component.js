@@ -13,6 +13,8 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var user_service_1 = require('../../../users/service/user.service');
+var klass_n_student_1 = require('../../../klass/model/klass-n-student');
+var pagination_1 = require('../../../widget/pagination/model/pagination');
 var MyInfoKlassComponent = (function () {
     function MyInfoKlassComponent(userService, myEventService, watchTower, router) {
         this.userService = userService;
@@ -59,7 +61,7 @@ var MyInfoKlassComponent = (function () {
         // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
         this.emitEventOnReady();
         // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-        this.fetchUserKlassList();
+        this.fetchKlassNStudentList();
     };
     MyInfoKlassComponent.prototype.setLoginUser = function () {
         if (this.isDebug())
@@ -83,7 +85,7 @@ var MyInfoKlassComponent = (function () {
             console.log("my-info-klass / logActionPage / 시작");
         this.watchTower.logPageEnter(
         // pageType:string
-        this.watchTower.getMyLoggerService().pageTypeMyInfoDashBoard);
+        this.watchTower.getMyLoggerService().pageTypeMyInfoKlass);
     }; // end method  
     MyInfoKlassComponent.prototype.emitEventOnReady = function () {
         if (this.isDebug())
@@ -95,10 +97,22 @@ var MyInfoKlassComponent = (function () {
         this);
         this.emitter.emit(myEvent);
     };
-    MyInfoKlassComponent.prototype.fetchUserKlassList = function () {
+    MyInfoKlassComponent.prototype.updatePagination = function (jsonPagination) {
+        if (this.isDebug())
+            console.log("my-info-klass / updatePagination / 시작");
+        if (this.isDebug())
+            console.log("my-info-klass / updatePagination / jsonPagination : ", jsonPagination);
+        if (null == jsonPagination) {
+            this.pagination = null;
+        }
+        else {
+            this.pagination = new pagination_1.Pagination().setJSON(jsonPagination);
+        }
+    };
+    MyInfoKlassComponent.prototype.fetchKlassNStudentList = function () {
         var _this = this;
         if (this.isDebug())
-            console.log("my-info-klass / fetchUserKlassList / 시작");
+            console.log("my-info-klass / fetchKlassNStudentList / 시작");
         // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
         this.userService.fetchKlassNStudentList(
         // apiKey:string,
@@ -111,12 +125,29 @@ var MyInfoKlassComponent = (function () {
         this.getLoginUserId()).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
-                console.log("my-info-klass / fetchUserKlassList / myResponse : ", myResponse);
-            if (myResponse.isSuccess() && myResponse.hasDataProp("list")) {
+                console.log("my-info-klass / fetchKlassNStudentList / myResponse : ", myResponse);
+            if (myResponse.isSuccess() &&
+                myResponse.hasDataProp("pagination") &&
+                myResponse.hasDataProp("list")) {
+                // 1. Pagination 재설정
+                var jsonPagination = myResponse.getDataProp("pagination");
+                if (_this.isDebug())
+                    console.log("my-info-klass / fetchKlassList / jsonPagination : ", jsonPagination);
+                _this.updatePagination(jsonPagination);
+                var klassNStudentList = [];
+                var jsonList = myResponse.getDataProp("list");
+                for (var i = 0; i < jsonList.length; ++i) {
+                    var json = jsonList[i];
+                    var klassNStudent = new klass_n_student_1.KlassNStudent().setJSON(json);
+                    klassNStudentList.push(klassNStudent);
+                } // end for
+                _this.klassNStudentList = klassNStudentList;
+                if (_this.isDebug())
+                    console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ", klassNStudentList);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
-                    console.log("my-info-klass / fetchUserKlassList / 수강 학생 정보 등록에 실패했습니다.");
+                    console.log("my-info-klass / fetchKlassNStudentList / 수강 학생 정보 등록에 실패했습니다.");
                 _this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);

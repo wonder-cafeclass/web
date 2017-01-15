@@ -1,1 +1,32 @@
-<div *ngFor="let klassNStudent of klassNStudentList">{{klassNStudent.id}}</div>
+<ul class="list-group my-style">
+    <li *ngIf="pagination" class="list-group-item my-style my-first">
+    	<div style="padding-top: 10px;">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination">
+			</pagination>
+    	</div>
+	</li>
+    <li class="list-group-item my-style">
+		<div style="padding:10px;">
+
+			<klass-n-student-list
+			[klassNStudentList]="klassNStudentList"
+			[eventKey]="myEventService.KEY_WIDGET_KLASS_N_STUDENT_LIST"
+			(emitter)="onChangedFromChild($event)">
+			</klass-n-student-list>
+
+		</div>
+	</li>
+	<li *ngIf="pagination" class="list-group-item my-style my-first">
+    	<div style="padding-bottom: 5px;">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination">
+			</pagination>
+    	</div>
+	</li>
+</ul>
+

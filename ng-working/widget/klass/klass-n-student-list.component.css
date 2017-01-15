@@ -1,3 +1,6 @@
+div.my-shim {
+    
+}
 table.my-style {
     margin: 0px;
 }
@@ -68,6 +71,9 @@ td.my-style.my-klass-info {
 td.btn-box {
     border-left: 1px solid #eee;
     width: 132px;	
+}
+td.my-style.my-shim {
+    padding-bottom: 10px;    
 }
 img.cc-img-filter {
   height:33px;
