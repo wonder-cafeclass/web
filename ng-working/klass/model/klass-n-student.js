@@ -18,6 +18,8 @@ var KlassNStudent = (function () {
         this.attendance_ready_cnt = -1;
         this.attendance_presence_cnt = -1;
         this.attendance_absence_cnt = -1;
+        this.review_cnt = -1;
+        this.question_cnt = -1;
         // 결재 횟수
         this.payment_import_cnt = -1;
         this.receipt_url = "";

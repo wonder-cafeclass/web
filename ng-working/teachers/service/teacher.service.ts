@@ -13,8 +13,11 @@ import { User }                            from "../../users/model/user";
 
 @Injectable()
 export class TeacherService {
-
-  private fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlistbyteacher';
+  
+  // 활동중인 수업만 가져오기
+  private fetchActiveKlassListUrl = '/CI/index.php/api/klass/fetchactiveklasslistbyteacher';
+  // 모든 수업 가져오기
+  private fetchAllKlassListUrl = '/CI/index.php/api/klass/fetchallklassnlistbyteacher';
 
   private getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
   private getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
@@ -33,21 +36,49 @@ export class TeacherService {
     this.myRequest = new MyRequest();
   }
 
-  fetchKlassNStudentList (
+  fetchActiveKlassList (
     apiKey:string,
     pageNum:number,
     pageRowCnt:number,
     teacherId:number ): Promise<MyResponse> {
 
-    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / 시작");
-    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / pageRowCnt : ",pageRowCnt);
-    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / teacherId : ",teacherId);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / 시작");
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / teacherId : ",teacherId);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.urlService.get(this.fetchKlassNStudentListUrl);
+    let req_url = this.urlService.get(this.fetchActiveKlassListUrl);
+    let params = {
+      page_num:pageNum,
+      pageRowCnt:pageRowCnt,
+      teacher_id:teacherId
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method   
+
+  fetchAllKlassList (
+    apiKey:string,
+    pageNum:number,
+    pageRowCnt:number,
+    teacherId:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / 시작");
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / teacherId : ",teacherId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchAllKlassListUrl);
     let params = {
       page_num:pageNum,
       pageRowCnt:pageRowCnt,

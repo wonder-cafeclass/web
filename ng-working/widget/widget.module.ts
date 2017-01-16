@@ -30,6 +30,7 @@ import { DebugBtnComponent }      		from './debug/debug-btn.component';
 import { ImportComponent }      		from './payment/import.component';
 import { KlassCardComponent }        	from './klass/klass-card.component';
 import { KlassNStudentListComponent }	from './klass/klass-n-student-list.component';
+import { KlassListTeacherComponent }	from './klass/klass-list-teacher.component';
 
 import { DefaultService }         		from './input/default/service/default.service';
 import { PaymentService }         		from './payment/service/payment.service';
@@ -61,6 +62,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
+		KlassListTeacherComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
@@ -93,6 +95,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
+		KlassListTeacherComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,

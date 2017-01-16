@@ -29,6 +29,9 @@ export class KlassNStudent {
     public attendance_presence_cnt:number=-1;
     public attendance_absence_cnt:number=-1;
 
+    public review_cnt:number=-1;
+    public question_cnt:number=-1;
+
     // 결재 횟수
     public payment_import_cnt:number=-1;  
 

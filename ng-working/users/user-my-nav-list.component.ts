@@ -196,7 +196,7 @@ export class UserMyNavListComponent implements AfterViewInit {
         this.resetNavFlag();
         this.showMyInfo = true;
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_HISTORY)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_KLASS)) {
 
         this.resetNavFlag();
         this.showMyHistory = true;

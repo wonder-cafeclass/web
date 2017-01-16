@@ -47,22 +47,14 @@
                         [eventKey]="myEventService.KEY_TEACHER_MY_KLASS">
                         </teacher-info-klass>
                   </div>
-                  <!-- 4. 선생님의 수업 출석/결석 리스트(수정 가능) -->
-                  <div  [ngClass]="{'i-show':showMyKlassAttendance,'i-hide':!showMyKlassAttendance}">
-                        <teacher-info-klass-attendance
-                        (emitter)="onChangedFromChild($event)"
-                        [eventKey]="myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE">
-                        </teacher-info-klass-attendance>
-                  </div>
-                  <!-- 5. 선생님의 수익 -->
+                  <!-- 4. 선생님의 정산 -->
                   <div  [ngClass]="{'i-show':showMyIncome,'i-hide':!showMyIncome}">
                         <teacher-info-income
                         (emitter)="onChangedFromChild($event)"
                         [eventKey]="myEventService.KEY_TEACHER_MY_INCOME">
                         </teacher-info-income>
                   </div>
-                  <!-- 6. 선생님의 학생리스트? 수업을 들었던 모든 학생들의 리스트. 수업의 안내나 추가 인원 모집을 위해 필요할까? -->
-                  <!-- 7. 선생님의 수업별 문의 및 리뷰 리스트(New가 상위로 위치함.그 다음 영역은 시간순.) -->
+                  <!-- 5. 선생님의 수업별 문의 및 리뷰 리스트(New가 상위로 위치함.그 다음 영역은 시간순.) -->
                   <div  [ngClass]="{'i-show':showMyFeedback,'i-hide':!showMyFeedback}">
                         <teacher-info-feedback
                         (emitter)="onChangedFromChild($event)"

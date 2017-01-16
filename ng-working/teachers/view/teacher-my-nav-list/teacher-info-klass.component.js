@@ -12,11 +12,11 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_array_1 = require('../../../util/helper/my-array');
+var pagination_1 = require('../../../widget/pagination/model/pagination');
 var teacher_service_1 = require('../../../teachers/service/teacher.service');
-// import { UserService }                from '../../../users/service/user.service';
-// import { KlassNStudent }              from '../../../klass/model/klass-n-student';
+var klass_1 = require('../../../klass/model/klass');
 var TeacherInfoKlassComponent = (function () {
-    // klassNStudentList:KlassNStudent[];
     function TeacherInfoKlassComponent(teacherService, myEventService, watchTower, router) {
         this.teacherService = teacherService;
         this.myEventService = myEventService;
@@ -25,6 +25,7 @@ var TeacherInfoKlassComponent = (function () {
         this.eventKey = "";
         this.emitter = new core_1.EventEmitter();
         this.teacherService.setWatchTower(watchTower);
+        this.myArray = new my_array_1.HelperMyArray();
     }
     TeacherInfoKlassComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
@@ -61,9 +62,41 @@ var TeacherInfoKlassComponent = (function () {
         this.logActionPage();
         // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
         this.emitEventOnReady();
-        // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-        this.fetchTeacherInfoDashboard();
+        this.updatePagination(null);
+        // 선생님의 모든 수업을 DB로 부터 가져옵니다.
+        this.fetchAllKlassList();
     };
+    TeacherInfoKlassComponent.prototype.updatePagination = function (jsonPagination) {
+        if (this.isDebug())
+            console.log("teacher-info-klass / updatePagination / 시작");
+        if (this.isDebug())
+            console.log("teacher-info-klass / updatePagination / jsonPagination : ", jsonPagination);
+        if (null == jsonPagination) {
+            this.pagination = new pagination_1.Pagination();
+        }
+        else {
+            this.pagination = new pagination_1.Pagination().setJSON(jsonPagination);
+        }
+    };
+    TeacherInfoKlassComponent.prototype.updateKlassList = function (jsonKlassList) {
+        if (this.isDebug())
+            console.log("teacher-info-klass / updateKlassList / 시작");
+        if (this.myArray.isNotOK(jsonKlassList)) {
+            // 검색 결과가 없습니다.
+            this.klassList = null;
+        }
+        else {
+            var klassList = [];
+            for (var i = 0; i < jsonKlassList.length; ++i) {
+                var klassJSON = jsonKlassList[i];
+                var klass = new klass_1.Klass().setJSON(klassJSON);
+                klassList.push(klass);
+            } // end for
+            if (this.isDebug())
+                console.log("teacher-info-klass / updateKlassList / klassList : ", klassList);
+            this.klassList = klassList;
+        } // end if
+    }; // end method  
     TeacherInfoKlassComponent.prototype.setLoginUser = function () {
         if (this.isDebug())
             console.log("teacher-info-klass / setLoginUser / 시작");
@@ -81,12 +114,20 @@ var TeacherInfoKlassComponent = (function () {
         }
         return loginUser.id;
     };
+    TeacherInfoKlassComponent.prototype.getLoginTeacherId = function () {
+        this.watchTower.getLoginTeacher();
+        var loginTeacher = this.watchTower.getLoginTeacher();
+        if (null == loginTeacher) {
+            return -1;
+        }
+        return loginTeacher.id;
+    };
     TeacherInfoKlassComponent.prototype.logActionPage = function () {
         if (this.isDebug())
             console.log("teacher-info-klass / logActionPage / 시작");
         this.watchTower.logPageEnter(
         // pageType:string
-        this.watchTower.getMyLoggerService().pageTypeTeacherInfoDashBoard);
+        this.watchTower.getMyLoggerService().pageTypeTeacherInfoKlass);
     }; // end method  
     TeacherInfoKlassComponent.prototype.emitEventOnReady = function () {
         if (this.isDebug())
@@ -98,57 +139,45 @@ var TeacherInfoKlassComponent = (function () {
         this);
         this.emitter.emit(myEvent);
     };
-    TeacherInfoKlassComponent.prototype.fetchTeacherInfoDashboard = function () {
+    TeacherInfoKlassComponent.prototype.fetchAllKlassList = function () {
+        var _this = this;
         if (this.isDebug())
-            console.log("teacher-info-klass / fetchTeacherInfoDashboard / 시작");
-        // 선생님 대시보드에 필요한 정보는?
-        // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
-        /*
-        this.userService.fetchKlassNStudentList(
-          // apiKey:string,
-          this.watchTower.getApiKey(),
-          // pageNum:number,
-          1,
-          // pageRowCnt:number,
-          5,
-          // userId:number
-          this.getLoginUserId()
-        ).then((myResponse:MyResponse) => {
-    
-          // 로그 등록 결과를 확인해볼 수 있습니다.
-          if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / myResponse : ",myResponse);
-    
-          if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
-    
-            // Do something...
-            let klassNStudentList:KlassNStudent[] = [];
-            let jsonList = myResponse.getDataProp("list");
-            for (var i = 0; i < jsonList.length; ++i) {
-              let json = jsonList[i];
-              let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
-              klassNStudentList.push(klassNStudent);
-            } // end for
-    
-            this.klassNStudentList = klassNStudentList;
-    
-            if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / klassNStudentList : ",klassNStudentList);
-    
-          } else if(myResponse.isFailed()) {
-    
-            if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / 수강 학생 정보 등록에 실패했습니다.");
-    
-            this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
-            if(null != myResponse.error) {
-              this.watchTower.announceErrorMsgArr([myResponse.error]);
+            console.log("teacher-info-klass / fetchAllKlassList / 시작");
+        // 1. 수강중인 클래스 정보 가져오기
+        this.teacherService.fetchAllKlassList(
+        // apiKey:string,
+        this.watchTower.getApiKey(), 
+        // pageNum:number,
+        this.pagination.pageNum, 
+        // pageRowCnt:number,
+        this.pagination.pageRowCnt, 
+        // teacherId:number
+        this.getLoginTeacherId()).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (_this.isDebug())
+                console.log("teacher-info-klass / fetchAllKlassList / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("list")) {
+                // 1. Pagination 재설정
+                var jsonPagination = myResponse.getDataProp("pagination");
+                if (_this.isDebug())
+                    console.log("teacher-info-klass / fetchAllKlassList / jsonPagination : ", jsonPagination);
+                _this.updatePagination(jsonPagination);
+                // 2. Klass List 재설정 
+                var klassJSONList = myResponse.getDataProp("list");
+                if (_this.isDebug())
+                    console.log("teacher-info-klass / fetchAllKlassList / klassJSONList : ", klassJSONList);
+                _this.updateKlassList(klassJSONList);
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("teacher-info-klass / fetchAllKlassList / 수강 학생 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
             } // end if
-    
-          } // end if
-    
         }); // end service
-    
-        // 2. 관심 강의 리스트 가져오기(나중에...)
-        */
-    };
+    }; // end method
     TeacherInfoKlassComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
             console.log("teacher-info-klass / onClickKlass / 시작");
@@ -164,7 +193,7 @@ var TeacherInfoKlassComponent = (function () {
         } // end if
         // 클래스 상세 페이지로 이동합니다.
         this.router.navigate([("/class-center/" + klass.id)]);
-    };
+    }; // end method
     TeacherInfoKlassComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
             console.log("teacher-info-klass / onChangedFromChild / init");
@@ -191,9 +220,20 @@ var TeacherInfoKlassComponent = (function () {
         if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_READY)) {
         }
         else if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_CHANGE)) {
+            /*
+            if(myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
+      
+            } else if(myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
+      
+            } // end if - ON CHANGE
+            */
+            if (myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+                this.pagination.pageNum = +myEvent.value;
+                this.fetchAllKlassList();
+            } // end if
         }
         else if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
-            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_CARD)) {
+            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_LIST_TEACHER)) {
                 this.onClickKlass(myEvent.metaObj);
             } // end if
         } // end if

@@ -115,6 +115,9 @@ class KlassCourse {
         // 클래스 캘린더 리스트 (Monthly) - Calendar[][][]
         public $calendar_table_monthly=null;
 
+        // 수업 참여 학생 통계 리스트 
+        public $klass_n_student_list;
+
         public $delimiter="|||";
 
         // REFACTOR ME - 몇 군데에서 사용중.

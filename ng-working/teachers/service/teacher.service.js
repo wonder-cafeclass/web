@@ -18,7 +18,10 @@ var TeacherService = (function () {
     function TeacherService(urlService, http) {
         this.urlService = urlService;
         this.http = http;
-        this.fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlistbyteacher';
+        // 활동중인 수업만 가져오기
+        this.fetchActiveKlassListUrl = '/CI/index.php/api/klass/fetchactiveklasslistbyteacher';
+        // 모든 수업 가져오기
+        this.fetchAllKlassListUrl = '/CI/index.php/api/klass/fetchallklassnlistbyteacher';
         this.getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
         this.getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
         this.getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
@@ -27,20 +30,44 @@ var TeacherService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
-    TeacherService.prototype.fetchKlassNStudentList = function (apiKey, pageNum, pageRowCnt, teacherId) {
+    TeacherService.prototype.fetchActiveKlassList = function (apiKey, pageNum, pageRowCnt, teacherId) {
         if (this.isDebug())
-            console.log("user.service / fetchKlassNStudentList / 시작");
+            console.log("user.service / fetchActiveKlassListUrl / 시작");
         if (this.isDebug())
-            console.log("user.service / fetchKlassNStudentList / apiKey : ", apiKey);
+            console.log("user.service / fetchActiveKlassListUrl / apiKey : ", apiKey);
         if (this.isDebug())
-            console.log("user.service / fetchKlassNStudentList / pageNum : ", pageNum);
+            console.log("user.service / fetchActiveKlassListUrl / pageNum : ", pageNum);
         if (this.isDebug())
-            console.log("user.service / fetchKlassNStudentList / pageRowCnt : ", pageRowCnt);
+            console.log("user.service / fetchActiveKlassListUrl / pageRowCnt : ", pageRowCnt);
         if (this.isDebug())
-            console.log("user.service / fetchKlassNStudentList / teacherId : ", teacherId);
+            console.log("user.service / fetchActiveKlassListUrl / teacherId : ", teacherId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-        var req_url = this.urlService.get(this.fetchKlassNStudentListUrl);
+        var req_url = this.urlService.get(this.fetchActiveKlassListUrl);
+        var params = {
+            page_num: pageNum,
+            pageRowCnt: pageRowCnt,
+            teacher_id: teacherId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end method   
+    TeacherService.prototype.fetchAllKlassList = function (apiKey, pageNum, pageRowCnt, teacherId) {
+        if (this.isDebug())
+            console.log("user.service / fetchAllKlassList / 시작");
+        if (this.isDebug())
+            console.log("user.service / fetchAllKlassList / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("user.service / fetchAllKlassList / pageNum : ", pageNum);
+        if (this.isDebug())
+            console.log("user.service / fetchAllKlassList / pageRowCnt : ", pageRowCnt);
+        if (this.isDebug())
+            console.log("user.service / fetchAllKlassList / teacherId : ", teacherId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.fetchAllKlassListUrl);
         var params = {
             page_num: pageNum,
             pageRowCnt: pageRowCnt,

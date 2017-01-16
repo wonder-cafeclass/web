@@ -1,5 +1,23 @@
-<div>
-	teacher-info-klass
+<div style="padding-top:10px;">
+	<pagination 
+	(emitter)="onChangedFromChild($event)"
+	[eventKey]="myEventService.KEY_PAGE_NUM"
+	[pagination]="pagination">
+	</pagination>
+</div>
+<div style="padding:10px;">
+	<klass-list-teacher
+	[klassList]="klassList"
+	[eventKey]="myEventService.KEY_WIDGET_KLASS_LIST_TEACHER"
+	(emitter)="onChangedFromChild($event)">
+	</klass-list-teacher>
+</div>
+<div style="padding-bottom:5px;">
+	<pagination 
+	(emitter)="onChangedFromChild($event)"
+	[eventKey]="myEventService.KEY_PAGE_NUM"
+	[pagination]="pagination">
+	</pagination>
 </div>
 <!-- 
 
@@ -15,5 +33,7 @@
 - 리뷰 및 문의 요약 / 클릭시 리뷰 및 문의 리스트로 이동, 해당 수업 표시.
 
 - 수업 데이터를 수정하려면 수업 상세 페이지로 이동.
+
+- 출석 결석이 통합.
 
 -->

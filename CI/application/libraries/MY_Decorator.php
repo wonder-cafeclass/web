@@ -1158,4 +1158,73 @@ class MY_Decorator extends MY_Library
         return $target_list;
     } // end method
 
+    public function deco_klass_n_student_stat_list($target_list=null)
+    {
+
+        if(empty($target_list))
+        {
+            return [];
+        }
+
+        $list_next = [];
+        foreach($target_list as $target) 
+        {
+            $target_next = $this->deco_klass_n_student_stat($target);
+            array_push($list_next, $target_next);
+        }
+
+        return $list_next;
+
+    } // end method
+
+    public function deco_klass_n_student_stat($target=null)
+    {
+        
+        if(is_null($target)) 
+        {
+            return null;
+        }
+
+        $ks = new KlassNStudent();
+
+        $ks->id = $this->getNumber($target, "ks_id");
+        $ks->klass_id = $this->getNumber($target, "ks_klass_id");
+        $ks->teacher_id = $this->getNumber($target, "ks_teacher_id");
+        $ks->user_id = $this->getNumber($target, "ks_user_id");
+        $ks->status = $this->getStr($target, "ks_status");
+        $ks->date_created = $this->getStr($target, "ks_date_created");
+        $ks->date_updated = $this->getStr($target, "ks_date_updated");
+
+        $ks->attendance_total_cnt = $this->getNumber($target, "at_status_total_cnt");
+        $ks->attendance_presence_cnt = $this->getNumber($target, "at_status_presence_cnt");
+        $ks->attendance_ready_cnt = $this->getNumber($target, "at_status_ready_cnt");
+        $ks->attendance_absence_cnt = $this->getNumber($target, "at_status_absence_cnt");
+
+        $ks->review_cnt = $this->getNumber($target, "review_cnt");
+        $ks->question_cnt = $this->getNumber($target, "question_cnt");
+
+
+        $user = new User();
+
+        $user->id = $this->getNumber($target, "user_id");
+        $user->nickname = $this->getStr($target, "user_nickname");
+        $user->name = $this->getStr($target, "user_name");
+        $user->gender = $this->getStr($target, "user_gender");
+        $user->birthday = $this->getStr($target, "user_birthday");
+
+        $user->thumbnail = $this->getStr($target, "user_thumbnail");
+        $user->status = $this->getStr($target, "user_status");
+        $user->permission = $this->getStr($target, "user_permission");
+        $user->mobile = $this->getStr($target, "user_mobile");
+        $user->email = $this->getStr($target, "user_email");
+
+        if(0 < $user->id)
+        {
+            $ks->user = $user;
+        } // end if
+
+        return $ks;
+
+    } // end method
+
 }

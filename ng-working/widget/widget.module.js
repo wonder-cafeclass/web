@@ -37,6 +37,7 @@ var debug_btn_component_1 = require('./debug/debug-btn.component');
 var import_component_1 = require('./payment/import.component');
 var klass_card_component_1 = require('./klass/klass-card.component');
 var klass_n_student_list_component_1 = require('./klass/klass-n-student-list.component');
+var klass_list_teacher_component_1 = require('./klass/klass-list-teacher.component');
 var default_service_1 = require('./input/default/service/default.service');
 var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
@@ -67,6 +68,7 @@ var WidgetModule = (function () {
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
+                klass_list_teacher_component_1.KlassListTeacherComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
@@ -99,6 +101,7 @@ var WidgetModule = (function () {
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
+                klass_list_teacher_component_1.KlassListTeacherComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,

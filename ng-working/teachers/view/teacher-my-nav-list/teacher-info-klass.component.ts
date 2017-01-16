@@ -17,14 +17,14 @@ import { MyChecker }                  from '../../../util/model/my-checker';
 
 import { MyResponse }                 from '../../../util/model/my-response';
 
-import { TeacherService }             from '../../../teachers/service/teacher.service';
+import { HelperMyArray }              from '../../../util/helper/my-array';
 
+import { Pagination }                 from '../../../widget/pagination/model/pagination';
+
+import { TeacherService }             from '../../../teachers/service/teacher.service';
 import { Teacher }                    from '../../../teachers/model/teacher';
 import { User }                       from '../../../users/model/user';
-
 import { Klass }                      from '../../../klass/model/klass';
-// import { UserService }                from '../../../users/service/user.service';
-// import { KlassNStudent }              from '../../../klass/model/klass-n-student';
 
 @Component({
   moduleId: module.id,
@@ -40,6 +40,10 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
   loginUser:User;
 
   // klassNStudentList:KlassNStudent[];
+  klassList:Klass[];
+  pagination:Pagination;
+
+  private myArray:HelperMyArray;
 
   constructor(private teacherService:TeacherService,
               public myEventService:MyEventService,
@@ -47,6 +51,8 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
               public router:Router) {
 
     this.teacherService.setWatchTower(watchTower);
+
+    this.myArray = new HelperMyArray();
 
   }
 
@@ -92,10 +98,54 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
     this.logActionPage();
     // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
     this.emitEventOnReady();
-    // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-    this.fetchTeacherInfoDashboard();
+
+    this.updatePagination(null);
+    // 선생님의 모든 수업을 DB로 부터 가져옵니다.
+    this.fetchAllKlassList();
 
   }
+
+  private updatePagination(jsonPagination:any) :void {
+
+    if(this.isDebug()) console.log("teacher-info-klass / updatePagination / 시작");
+
+    if(this.isDebug()) console.log("teacher-info-klass / updatePagination / jsonPagination : ",jsonPagination);
+
+    if(null == jsonPagination) {
+      this.pagination = new Pagination();
+    } else {
+      this.pagination = new Pagination().setJSON(jsonPagination);
+    }
+  }
+
+  private updateKlassList(jsonKlassList:any[]) :void {
+
+    if(this.isDebug()) console.log("teacher-info-klass / updateKlassList / 시작");
+
+    if(this.myArray.isNotOK(jsonKlassList)) {
+
+      // 검색 결과가 없습니다.
+      this.klassList = null;
+
+    } else {
+
+      let klassList:Klass[] = [];
+      for (var i = 0; i < jsonKlassList.length; ++i) {
+        let klassJSON = jsonKlassList[i];
+        let klass:Klass = new Klass().setJSON(klassJSON);
+
+        klassList.push(klass);
+
+      } // end for
+
+      if(this.isDebug()) console.log("teacher-info-klass / updateKlassList / klassList : ",klassList);
+
+      this.klassList = klassList;
+      
+    } // end if
+
+  } // end method  
+
 
   private setLoginUser() :void {
 
@@ -119,13 +169,25 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
     return loginUser.id;
   }
 
+  private getLoginTeacherId():number {
+
+    this.watchTower.getLoginTeacher();
+
+    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
+    if(null == loginTeacher) {
+      return -1;
+    }
+
+    return loginTeacher.id;
+  }
+
   private logActionPage() :void {
 
     if(this.isDebug()) console.log("teacher-info-klass / logActionPage / 시작");
 
     this.watchTower.logPageEnter(
       // pageType:string
-      this.watchTower.getMyLoggerService().pageTypeTeacherInfoDashBoard
+      this.watchTower.getMyLoggerService().pageTypeTeacherInfoKlass
     );
 
   } // end method  
@@ -146,46 +208,41 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
   }
 
-  private fetchTeacherInfoDashboard():void {
+  private fetchAllKlassList():void {
 
-    if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / 시작");
+    if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / 시작");
 
-    // 선생님 대시보드에 필요한 정보는?
-
-    // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
-    /*
-    this.userService.fetchKlassNStudentList(
+    // 1. 수강중인 클래스 정보 가져오기
+    this.teacherService.fetchAllKlassList(
       // apiKey:string,
       this.watchTower.getApiKey(),
       // pageNum:number,
-      1,
+      this.pagination.pageNum,
       // pageRowCnt:number,
-      5,
-      // userId:number
-      this.getLoginUserId()
+      this.pagination.pageRowCnt,
+      // teacherId:number
+      this.getLoginTeacherId()
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
 
-        // Do something... 
-        let klassNStudentList:KlassNStudent[] = [];
-        let jsonList = myResponse.getDataProp("list");
-        for (var i = 0; i < jsonList.length; ++i) {
-          let json = jsonList[i];
-          let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
-          klassNStudentList.push(klassNStudent);
-        } // end for
+        // 1. Pagination 재설정
+        let jsonPagination = myResponse.getDataProp("pagination");
+        if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / jsonPagination : ",jsonPagination);
+        this.updatePagination(jsonPagination);
 
-        this.klassNStudentList = klassNStudentList;
+        // 2. Klass List 재설정 
+        let klassJSONList:any[] = myResponse.getDataProp("list");
+        if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / klassJSONList : ",klassJSONList);
 
-        if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / klassNStudentList : ",klassNStudentList);
+        this.updateKlassList(klassJSONList);
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("teacher-info-klass / fetchTeacherInfoDashboard / 수강 학생 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / 수강 학생 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
         if(null != myResponse.error) {
@@ -196,10 +253,7 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
     }); // end service
 
-    // 2. 관심 강의 리스트 가져오기(나중에...)
-    */
-
-  }
+  } // end method
 
   onClickKlass(klass:Klass):void {
 
@@ -215,11 +269,10 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
       return;
     } // end if
 
-
     // 클래스 상세 페이지로 이동합니다.
     this.router.navigate([`/class-center/${klass.id}`]);
 
-  }
+  } // end method
 
   onChangedFromChild(myEvent:MyEvent) {
 
@@ -266,9 +319,16 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
       } // end if - ON CHANGE
       */
 
+      if(myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
+
+        this.pagination.pageNum = +myEvent.value;
+        this.fetchAllKlassList();
+
+      } // end if
+
     } else if(myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_CARD)) {
+      if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_LIST_TEACHER)) {
 
         this.onClickKlass(myEvent.metaObj);
 

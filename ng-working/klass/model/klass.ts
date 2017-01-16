@@ -4,6 +4,7 @@ import { KlassQuestion }            from './klass-question';
 import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
 import { KlassVenue }               from './klass-venue';
+import { KlassNStudent }            from './klass-n-student';
 
 import { Calendar }                 from '../../widget/calendar/model/calendar';
 
@@ -86,6 +87,8 @@ export class Klass {
     public calendar_table_monthly: Calendar[][][]=null;
     public klass_calendar_list: KlassCalendar[]=null;
 
+    public klass_n_student_list:KlassNStudent[]=null;
+
     public date_created: string="";
     public date_updated: string="";
 
@@ -101,6 +104,77 @@ export class Klass {
         this.myTime = new HelperMyTime();
         this.myFormat = new HelperMyFormat();
     }
+
+    // @ Desc : 실제 등록 학생수를 가져옴.
+    getActualStudentCnt():number {
+
+        if(this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+
+        return this.klass_n_student_list.length;
+    }
+
+    // @ Desc : 수업 출석 관련 통계정보 가져옴.
+    getAttendancePercentage():string {
+
+        if(this.myArray.isNotOK(this.klass_n_student_list)) {
+            return `0%`;
+        }
+
+        let totalAttendance:number = 0;     // 총 수업 횟수
+        let totalReady:number = 0;          // 총 남은 수업 횟수
+        let totalPresence:number = 0;       // 총 출석 횟수
+        let totalAbsence:number = 0;        // 총 결석 횟수
+
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
+            totalAttendance += klass_n_student.attendance_total_cnt;
+            totalReady += klass_n_student.attendance_ready_cnt;
+            totalPresence += klass_n_student.attendance_presence_cnt;
+            totalAbsence += klass_n_student.attendance_absence_cnt;
+        }
+
+        // 출석률. 소수점 아래 2자리까지 계산
+        let percentage:number = Math.round(100 * 100 * (totalPresence/totalAttendance))/100;
+
+        return `${percentage}%`;
+    }
+
+    // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다.
+    getTotalReviewCnt():number {
+
+        if(this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+
+        let totalReviewCnt:number = 0;        // 총 결석 횟수
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
+            totalReviewCnt += klass_n_student.review_cnt;
+        } // end for
+
+        return totalReviewCnt;
+
+    } // end method
+
+    // @ Desc : 해당 수업의 문의 갯수를 가져옵니다.
+    getTotalQuestionCnt():number {
+
+        if(this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+
+        let totalQuestionCnt:number = 0;        // 총 결석 횟수
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
+            totalQuestionCnt += klass_n_student.question_cnt;
+        } // end for
+
+        return totalQuestionCnt;
+
+    } // end method
+
 
     // @ Desc : 수업없음 클래스인지 여부.
     isNoClassBtn() :boolean {
@@ -710,6 +784,19 @@ export class Klass {
 
         // calendar_table_monthly
         klass.setKlassCalendarList(klass.calendar_table_monthly);
+
+        // klass_n_student_list
+        if(this.myArray.isOK(klass.klass_n_student_list)) {
+
+            let list:KlassNStudent[] = [];
+            for (var i = 0; i < klass.klass_n_student_list.length; ++i) {
+                let json = klass.klass_n_student_list[i];
+                let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
+                list.push(klassNStudent);
+            } // end for
+
+            klass.klass_n_student_list = list;
+        }
 
         return klass;
 

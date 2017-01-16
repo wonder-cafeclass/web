@@ -19,6 +19,9 @@ class KlassNStudent {
         public $attendance_ready_cnt=-1;
         public $attendance_absence_cnt=-1;
 
+        public $review_cnt=-1;
+        public $question_cnt=-1;
+
         public $payment_import_cnt=-1;
 
         public $receipt_url="";

@@ -38,8 +38,9 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
   @Output() emitter = new EventEmitter<any>();
 
   loginUser:User;
+  loginTeacher:Teacher;
 
-  // klassNStudentList:KlassNStudent[];
+  klassList:Klass[];
 
   constructor(private teacherService:TeacherService,
               public myEventService:MyEventService,
@@ -93,7 +94,7 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
     // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
     this.emitEventOnReady();
     // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-    this.fetchKlassNStudentDashboard();
+    this.fetchActiveKlassList();
 
   }
 
@@ -117,6 +118,18 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
     }
 
     return loginUser.id;
+  }
+
+  private getLoginTeacherId():number {
+
+    this.watchTower.getLoginTeacher();
+
+    let loginTeacher:Teacher = this.watchTower.getLoginTeacher();
+    if(null == loginTeacher) {
+      return -1;
+    }
+
+    return loginTeacher.id;
   }
 
   private logActionPage() :void {
@@ -146,46 +159,45 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
 
   }
 
-  private fetchKlassNStudentDashboard():void {
+  private fetchActiveKlassList():void {
 
-    if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 시작");
+    if(this.isDebug()) console.log("teacher-info-dashboard / fetchActiveKlassList / 시작");
 
     // 선생님 대시보드에 필요한 정보는?
 
-    // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
-    /*
-    this.userService.fetchKlassNStudentList(
+    // 1. 수강중인 클래스 정보 가져오기
+    this.teacherService.fetchActiveKlassList(
       // apiKey:string,
       this.watchTower.getApiKey(),
       // pageNum:number,
       1,
       // pageRowCnt:number,
-      5,
-      // userId:number
-      this.getLoginUserId()
+      10,
+      // teacherId:number
+      this.getLoginTeacherId()
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("teacher-info-dashboard / fetchActiveKlassList / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
 
         // Do something... 
-        let klassNStudentList:KlassNStudent[] = [];
+        let klassList:Klass[] = [];
         let jsonList = myResponse.getDataProp("list");
         for (var i = 0; i < jsonList.length; ++i) {
           let json = jsonList[i];
-          let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
-          klassNStudentList.push(klassNStudent);
+          let klassNStudent:Klass = new Klass().setJSON(json);
+          klassList.push(klassNStudent);
         } // end for
 
-        this.klassNStudentList = klassNStudentList;
+        this.klassList = klassList;
 
-        if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / klassNStudentList : ",klassNStudentList);
+        if(this.isDebug()) console.log("teacher-info-dashboard / fetchActiveKlassList / klassList : ",this.klassList);
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 수강 학생 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("teacher-info-dashboard / fetchActiveKlassList / 수강 학생 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
         if(null != myResponse.error) {
@@ -196,8 +208,6 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
 
     }); // end service
 
-    // 2. 관심 강의 리스트 가져오기(나중에...)
-    */
 
   }
 
@@ -268,7 +278,7 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
 
     } else if(myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
 
-      if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_CARD)) {
+      if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_LIST_TEACHER)) {
 
         this.onClickKlass(myEvent.metaObj);
 

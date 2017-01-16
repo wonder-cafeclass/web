@@ -13,10 +13,10 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var teacher_service_1 = require('../../../teachers/service/teacher.service');
+var klass_1 = require('../../../klass/model/klass');
 // import { UserService }                from '../../../users/service/user.service';
 // import { KlassNStudent }              from '../../../klass/model/klass-n-student';
 var TeacherInfoDashboardComponent = (function () {
-    // klassNStudentList:KlassNStudent[];
     function TeacherInfoDashboardComponent(teacherService, myEventService, watchTower, router) {
         this.teacherService = teacherService;
         this.myEventService = myEventService;
@@ -62,7 +62,7 @@ var TeacherInfoDashboardComponent = (function () {
         // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
         this.emitEventOnReady();
         // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-        this.fetchKlassNStudentDashboard();
+        this.fetchActiveKlassList();
     };
     TeacherInfoDashboardComponent.prototype.setLoginUser = function () {
         if (this.isDebug())
@@ -81,6 +81,14 @@ var TeacherInfoDashboardComponent = (function () {
         }
         return loginUser.id;
     };
+    TeacherInfoDashboardComponent.prototype.getLoginTeacherId = function () {
+        this.watchTower.getLoginTeacher();
+        var loginTeacher = this.watchTower.getLoginTeacher();
+        if (null == loginTeacher) {
+            return -1;
+        }
+        return loginTeacher.id;
+    };
     TeacherInfoDashboardComponent.prototype.logActionPage = function () {
         if (this.isDebug())
             console.log("teacher-info-dashboard / logActionPage / 시작");
@@ -98,56 +106,46 @@ var TeacherInfoDashboardComponent = (function () {
         this);
         this.emitter.emit(myEvent);
     };
-    TeacherInfoDashboardComponent.prototype.fetchKlassNStudentDashboard = function () {
+    TeacherInfoDashboardComponent.prototype.fetchActiveKlassList = function () {
+        var _this = this;
         if (this.isDebug())
-            console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 시작");
+            console.log("teacher-info-dashboard / fetchActiveKlassList / 시작");
         // 선생님 대시보드에 필요한 정보는?
-        // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
-        /*
-        this.userService.fetchKlassNStudentList(
-          // apiKey:string,
-          this.watchTower.getApiKey(),
-          // pageNum:number,
-          1,
-          // pageRowCnt:number,
-          5,
-          // userId:number
-          this.getLoginUserId()
-        ).then((myResponse:MyResponse) => {
-    
-          // 로그 등록 결과를 확인해볼 수 있습니다.
-          if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / myResponse : ",myResponse);
-    
-          if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
-    
-            // Do something...
-            let klassNStudentList:KlassNStudent[] = [];
-            let jsonList = myResponse.getDataProp("list");
-            for (var i = 0; i < jsonList.length; ++i) {
-              let json = jsonList[i];
-              let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
-              klassNStudentList.push(klassNStudent);
-            } // end for
-    
-            this.klassNStudentList = klassNStudentList;
-    
-            if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / klassNStudentList : ",klassNStudentList);
-    
-          } else if(myResponse.isFailed()) {
-    
-            if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 수강 학생 정보 등록에 실패했습니다.");
-    
-            this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
-            if(null != myResponse.error) {
-              this.watchTower.announceErrorMsgArr([myResponse.error]);
+        // 1. 수강중인 클래스 정보 가져오기
+        this.teacherService.fetchActiveKlassList(
+        // apiKey:string,
+        this.watchTower.getApiKey(), 
+        // pageNum:number,
+        1, 
+        // pageRowCnt:number,
+        10, 
+        // teacherId:number
+        this.getLoginTeacherId()).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (_this.isDebug())
+                console.log("teacher-info-dashboard / fetchActiveKlassList / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("list")) {
+                // Do something... 
+                var klassList = [];
+                var jsonList = myResponse.getDataProp("list");
+                for (var i = 0; i < jsonList.length; ++i) {
+                    var json = jsonList[i];
+                    var klassNStudent = new klass_1.Klass().setJSON(json);
+                    klassList.push(klassNStudent);
+                } // end for
+                _this.klassList = klassList;
+                if (_this.isDebug())
+                    console.log("teacher-info-dashboard / fetchActiveKlassList / klassList : ", _this.klassList);
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("teacher-info-dashboard / fetchActiveKlassList / 수강 학생 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
             } // end if
-    
-          } // end if
-    
         }); // end service
-    
-        // 2. 관심 강의 리스트 가져오기(나중에...)
-        */
     };
     TeacherInfoDashboardComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
@@ -193,7 +191,7 @@ var TeacherInfoDashboardComponent = (function () {
         else if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_CHANGE)) {
         }
         else if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
-            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_CARD)) {
+            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_LIST_TEACHER)) {
                 this.onClickKlass(myEvent.metaObj);
             } // end if
         } // end if

@@ -1,5 +1,10 @@
-<div>
-	teacher-info-dashboard
+<div class="my-title">지금 진행중인 수업입니다.</div>
+<div style="padding:10px;">
+	<klass-list-teacher
+	[klassList]="klassList"
+	[eventKey]="myEventService.KEY_WIDGET_KLASS_LIST_TEACHER"
+	(emitter)="onChangedFromChild($event)">
+	</klass-list-teacher>
 </div>
 
 <!-- 

@@ -99,13 +99,12 @@ var MyEventService = (function () {
         this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
         this.KEY_USER_MY_INFO_DASHBOARD = "KEY_USER_MY_INFO_DASHBOARD"; // 유저 - 내정보 대시보드.
         this.KEY_USER_MY_INFO = "KEY_USER_MY_INFO"; // 유저 - 내정보 수정.
-        this.KEY_USER_MY_HISTORY = "KEY_USER_MY_HISTORY"; // 유저 - 내 수강이력.
+        this.KEY_USER_MY_KLASS = "KEY_USER_MY_KLASS"; // 유저 - 내 수강이력.
         this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결재정보.
         this.KEY_USER_MY_FAVORITE = "KEY_USER_MY_FAVORITE"; // 유저 - 내 관심강의(찜).
         this.KEY_TEACHER_MY_INFO_DASHBOARD = "KEY_TEACHER_MY_INFO_DASHBOARD"; // 선생님 - 대시보드.
         this.KEY_TEACHER_MY_INFO = "KEY_TEACHER_MY_INFO"; // 선생님 - 내정보 수정.
         this.KEY_TEACHER_MY_KLASS = "KEY_TEACHER_MY_KLASS"; // 선생님 - 내 수강이력.
-        this.KEY_TEACHER_MY_KLASS_ATTENDANCE = "KEY_TEACHER_MY_KLASS_ATTENDANCE"; // 선생님 - 수업 출결석 리스트.
         this.KEY_TEACHER_MY_INCOME = "KEY_TEACHER_MY_INCOME"; // 선생님 - 내 결재정보.
         this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
@@ -190,6 +189,8 @@ var MyEventService = (function () {
         this.KEY_WIDGET_KLASS_CARD = "KEY_WIDGET_KLASS_CARD";
         // 수업과 학생 리스트 위젯 - 학생이 신청한 수업 리스트를 보여주는 위젯. 대시보드와 개인 수업 리스트에서 쓰임.
         this.KEY_WIDGET_KLASS_N_STUDENT_LIST = "KEY_WIDGET_KLASS_N_STUDENT_LIST";
+        // 선생님용 수업과 학생 리스트 위젯.
+        this.KEY_WIDGET_KLASS_LIST_TEACHER = "KEY_WIDGET_KLASS_LIST_TEACHER";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

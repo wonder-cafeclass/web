@@ -4,6 +4,7 @@ var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
 var klass_calendar_1 = require('./klass-calendar');
 var klass_venue_1 = require('./klass-venue');
+var klass_n_student_1 = require('./klass-n-student');
 var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
@@ -68,6 +69,7 @@ var Klass = (function () {
         this.calendar_table_linear = null;
         this.calendar_table_monthly = null;
         this.klass_calendar_list = null;
+        this.klass_n_student_list = null;
         this.date_created = "";
         this.date_updated = "";
         this.delimiter = "|||";
@@ -80,6 +82,57 @@ var Klass = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myFormat = new my_format_1.HelperMyFormat();
     }
+    // @ Desc : 실제 등록 학생수를 가져옴.
+    Klass.prototype.getActualStudentCnt = function () {
+        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+        return this.klass_n_student_list.length;
+    };
+    // @ Desc : 수업 출석 관련 통계정보 가져옴.
+    Klass.prototype.getAttendancePercentage = function () {
+        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+            return "0%";
+        }
+        var totalAttendance = 0; // 총 수업 횟수
+        var totalReady = 0; // 총 남은 수업 횟수
+        var totalPresence = 0; // 총 출석 횟수
+        var totalAbsence = 0; // 총 결석 횟수
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            var klass_n_student = this.klass_n_student_list[i];
+            totalAttendance += klass_n_student.attendance_total_cnt;
+            totalReady += klass_n_student.attendance_ready_cnt;
+            totalPresence += klass_n_student.attendance_presence_cnt;
+            totalAbsence += klass_n_student.attendance_absence_cnt;
+        }
+        // 출석률. 소수점 아래 2자리까지 계산
+        var percentage = Math.round(100 * 100 * (totalPresence / totalAttendance)) / 100;
+        return percentage + "%";
+    };
+    // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다.
+    Klass.prototype.getTotalReviewCnt = function () {
+        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+        var totalReviewCnt = 0; // 총 결석 횟수
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            var klass_n_student = this.klass_n_student_list[i];
+            totalReviewCnt += klass_n_student.review_cnt;
+        } // end for
+        return totalReviewCnt;
+    }; // end method
+    // @ Desc : 해당 수업의 문의 갯수를 가져옵니다.
+    Klass.prototype.getTotalQuestionCnt = function () {
+        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+        var totalQuestionCnt = 0; // 총 결석 횟수
+        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
+            var klass_n_student = this.klass_n_student_list[i];
+            totalQuestionCnt += klass_n_student.question_cnt;
+        } // end for
+        return totalQuestionCnt;
+    }; // end method
     // @ Desc : 수업없음 클래스인지 여부.
     Klass.prototype.isNoClassBtn = function () {
         return (-1 === this.id) ? true : false;
@@ -575,6 +628,16 @@ var Klass = (function () {
         }
         // calendar_table_monthly
         klass.setKlassCalendarList(klass.calendar_table_monthly);
+        // klass_n_student_list
+        if (this.myArray.isOK(klass.klass_n_student_list)) {
+            var list = [];
+            for (var i = 0; i < klass.klass_n_student_list.length; ++i) {
+                var json_1 = klass.klass_n_student_list[i];
+                var klassNStudent = new klass_n_student_1.KlassNStudent().setJSON(json_1);
+                list.push(klassNStudent);
+            } // end for
+            klass.klass_n_student_list = list;
+        }
         return klass;
     }; // end method
     Klass.prototype._setJSON = function (json) {

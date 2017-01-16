@@ -366,7 +366,7 @@ var KlassRadioBtnService = (function () {
             // public title:string,
             "수강 이력", 
             // public key:string,
-            this.myEventService.KEY_USER_MY_HISTORY, 
+            this.myEventService.KEY_USER_MY_KLASS, 
             // public isFocus:boolean
             false, 
             // public myEvent:MyEvent
@@ -374,7 +374,7 @@ var KlassRadioBtnService = (function () {
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
-            this.myEventService.KEY_USER_MY_HISTORY, 
+            this.myEventService.KEY_USER_MY_KLASS, 
             // public value:string
             "", 
             // public metaObj:any
@@ -382,29 +382,32 @@ var KlassRadioBtnService = (function () {
             // public myChecker:MyChecker
             this.getFreePassChecker()) // end MyEvent
             ),
+            /* REMOVE ME
+                      new RadioBtnOption(
+                        // public title:string,
+                        "결재정보",
+                        // public key:string,
+                        this.myEventService.KEY_USER_MY_PAYMENT,
+                        // public isFocus:boolean
+                        false,
+                        // public myEvent:MyEvent
+                        this.myEventService.getMyEvent(
+                          // public eventName:string
+                          this.myEventService.ON_CHANGE,
+                          // public key:string
+                          this.myEventService.KEY_USER_MY_PAYMENT,
+                          // public value:string
+                          "",
+                          // public metaObj:any
+                          user,
+                          // public myChecker:MyChecker
+                          this.getFreePassChecker()
+                        ) // end MyEvent
+                      ),
+            */
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "결재정보", 
-            // public key:string,
-            this.myEventService.KEY_USER_MY_PAYMENT, 
-            // public isFocus:boolean
-            false, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_USER_MY_PAYMENT, 
-            // public value:string
-            "", 
-            // public metaObj:any
-            user, 
-            // public myChecker:MyChecker
-            this.getFreePassChecker()) // end MyEvent
-            ),
-            new radiobtn_option_1.RadioBtnOption(
-            // public title:string,
-            "관심강의", 
+            "찜한수업", 
             // public key:string,
             this.myEventService.KEY_USER_MY_FAVORITE, 
             // public isFocus:boolean
@@ -502,27 +505,7 @@ var KlassRadioBtnService = (function () {
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "출석리스트", 
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE, 
-            // public isFocus:boolean
-            false, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE, 
-            // public value:string
-            "", 
-            // public metaObj:any
-            teacher, 
-            // public myChecker:MyChecker
-            this.getFreePassChecker()) // end MyEvent
-            ),
-            new radiobtn_option_1.RadioBtnOption(
-            // public title:string,
-            "결재정보", 
+            "정산", 
             // public key:string,
             this.myEventService.KEY_TEACHER_MY_INCOME, 
             // public isFocus:boolean

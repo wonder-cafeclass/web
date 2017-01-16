@@ -2108,6 +2108,93 @@ class MY_Sql extends MY_Library
         return $row;
     } 
 
+    public function select_active_klass_cnt_by_teacher($teacher_id=-1)
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        /*
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->db->where_in('klass.status', $status_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        */
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+
+    } // end method 
+
+    public function select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
+    {
+        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if(!(0 < $offset)) 
+        {
+            $offset = 0;
+        } // end if
+        if(!(0 < $limit)) 
+        {
+            $limit = 20;
+        } // end if
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+
+        $select_query = $this->get_query_klass_field();
+
+        /*
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->db->where_in('klass.status', $status_list);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        */
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+        $query = $this->CI->db->get();
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_object();
+
+    } // end method        
+
     public function select_klass_cnt_by_teacher($teacher_id=-1, $klass_status="O")
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -2138,7 +2225,8 @@ class MY_Sql extends MY_Library
         {
             $this->CI->db->where('klass.status', $klass_status);
         }
-        $query = $this->CI->db->get();
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
 
@@ -4188,7 +4276,7 @@ class MY_Sql extends MY_Library
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $receipt_url;
-    }    
+    }        
     
     private function get_query_payment_import_field() 
     {
@@ -4517,6 +4605,89 @@ class MY_Sql extends MY_Library
         return $query->row();
     } 
 
+    private function get_query_field_klass_n_student_stat() 
+    {
+        $select_query = 
+        'klass_n_student.id AS ks_id,' .
+        'klass_n_student.klass_id AS ks_klass_id,' .
+        'klass_n_student.teacher_id AS ks_teacher_id,' .
+        'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.status AS ks_status,' .
+        'klass_n_student.date_created AS ks_date_created,' .
+
+        'klass_n_student.date_updated AS ks_date_updated,' .     
+
+        'COUNT(IF(attendance.status=\'R\',attendance.status,NULL)) AS at_status_ready_cnt,' .
+        'COUNT(IF(attendance.status=\'P\',attendance.status,NULL)) AS at_status_presence_cnt,' .
+        'COUNT(IF(attendance.status=\'A\',attendance.status,NULL)) AS at_status_absence_cnt,' .
+        'COUNT(attendance.status) AS at_status_total_cnt,' .
+
+        'COUNT(review.id) AS review_cnt,' .
+        'COUNT(question.id) AS question_cnt,' .
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email,' .
+
+        ''
+        ;
+
+        return $select_query;
+    } // end method  
+
+    private function set_klass_n_student_stat_condition($klass_id=-1, $klass_status="")
+    {
+        $query_field = 
+        $this->get_query_field_klass_n_student_stat();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('attendance', 'attendance.user_id = klass_n_student.user_id AND attendance.klass_id = klass_n_student.klass_id', 'left');
+        $this->CI->db->join('review', 'review.user_id = klass_n_student.user_id AND review.klass_id = klass_n_student.klass_id AND review.status=\'A\'', 'left');
+        $this->CI->db->join('question', 'question.user_id = klass_n_student.user_id AND question.klass_id = klass_n_student.klass_id AND question.status=\'A\'', 'left');
+        $this->CI->db->where('klass_n_student.klass_id', $klass_id);
+        if(!empty($klass_status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $klass_status);
+        }
+        $this->CI->db->group_by("klass_n_student.user_id");        
+    }  
+
+    // @ Desc : 특정 수업에 참여한 모든 유저의 데이터를 가져옵니다. 유저에게 출석 통계 정보를 추가합니다.
+    public function select_klass_n_student_stat_list($klass_id=-1, $klass_status="")
+    {
+        // wonder.jung
+
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        // Query Execution
+        $this->set_klass_n_student_stat_condition($klass_id, $klass_status);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $this->set_klass_n_student_stat_condition($klass_id, $klass_status);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    } // end method     
+
     private function get_query_klass_n_student_field() 
     {
         $select_query = 
@@ -4591,7 +4762,7 @@ class MY_Sql extends MY_Library
         ;
 
         return $select_query;
-    } // end method
+    } // end method   
 
     // @ Desc : 특정 유저가 참여한 모든 수업을 가져옵니다.
     public function select_klass_n_student_list($limit=-1, $offset=-1, $user_id=-1, $status="")
