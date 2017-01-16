@@ -22,8 +22,12 @@ import { RadioBtnOption }             from '../../widget/radiobtn/model/radiobtn
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../../util/model/my-response';
 
-import { TeacherInfoDashboardComponent }  from './teacher-my-nav-list/teacher-info-dashboard.component';
-import { TeacherInfoV2Component }  from './teacher-my-nav-list/teacher-info-v2.component';
+import { TeacherInfoDashboardComponent }        from './teacher-my-nav-list/teacher-info-dashboard.component';
+import { TeacherInfoV2Component }               from './teacher-my-nav-list/teacher-info-v2.component';
+import { TeacherInfoFeedbackComponent }         from './teacher-my-nav-list/teacher-info-feedback.component';
+import { TeacherInfoIncomeComponent }           from './teacher-my-nav-list/teacher-info-income.component';
+import { TeacherInfoKlassComponent }            from './teacher-my-nav-list/teacher-info-klass.component';
+import { TeacherInfoKlassAttendanceComponent }  from './teacher-my-nav-list/teacher-info-klass-attendance.component';
 
 
 @Component({
@@ -43,11 +47,16 @@ export class TeacherMyNavListComponent implements AfterViewInit {
   showDashboard:boolean=false;
   showMyInfo:boolean=false;
   showMyKlass:boolean=false;
+  showMyKlassAttendance:boolean=false;
   showMyIncome:boolean=false;
   showMyFeedback:boolean=false;
 
   dashboardComponent:TeacherInfoDashboardComponent;
   teacherInfoComponent:TeacherInfoV2Component;
+  feedbackComponent:TeacherInfoFeedbackComponent;
+  incomeComponent:TeacherInfoIncomeComponent;
+  klassComponent:TeacherInfoKlassComponent;
+  attendanceComponent:TeacherInfoKlassAttendanceComponent;
 
   @Output() emitter = new EventEmitter<any>();
 
@@ -145,6 +154,7 @@ export class TeacherMyNavListComponent implements AfterViewInit {
     this.showDashboard = false;
     this.showMyInfo = false;
     this.showMyKlass = false;
+    this.showMyKlassAttendance = false;
     this.showMyIncome = false;
     this.showMyFeedback = false;
   }
@@ -180,6 +190,30 @@ export class TeacherMyNavListComponent implements AfterViewInit {
           this.teacherInfoComponent = myEvent.metaObj;
         } // end if
 
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.klassComponent = myEvent.metaObj;
+        } // end if        
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.attendanceComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.incomeComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.feedbackComponent = myEvent.metaObj;
+        } // end if
+
       } // end if
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
@@ -198,6 +232,11 @@ export class TeacherMyNavListComponent implements AfterViewInit {
 
         this.resetNavFlag();
         this.showMyKlass = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE)) {
+
+        this.resetNavFlag();
+        this.showMyKlassAttendance = true;
 
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
 

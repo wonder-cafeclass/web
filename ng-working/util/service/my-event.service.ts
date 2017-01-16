@@ -114,11 +114,12 @@ export class MyEventService {
     KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";                 // 유저 - 내 결재정보.
     KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";               // 유저 - 내 관심강의(찜).
 
-    KEY_TEACHER_MY_INFO_DASHBOARD:string="KEY_TEACHER_MY_INFO_DASHBOARD";    // 선생님 - 대시보드.
-    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";                        // 선생님 - 내정보 수정.
-    KEY_TEACHER_MY_KLASS:string="KEY_TEACHER_MY_KLASS";                      // 선생님 - 내 수강이력.
-    KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                  // 선생님 - 내 결재정보.
-    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                // 선생님 - 학생에게준 피드백.
+    KEY_TEACHER_MY_INFO_DASHBOARD:string="KEY_TEACHER_MY_INFO_DASHBOARD";        // 선생님 - 대시보드.
+    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";                            // 선생님 - 내정보 수정.
+    KEY_TEACHER_MY_KLASS:string="KEY_TEACHER_MY_KLASS";                          // 선생님 - 내 수강이력.
+    KEY_TEACHER_MY_KLASS_ATTENDANCE:string="KEY_TEACHER_MY_KLASS_ATTENDANCE";    // 선생님 - 수업 출결석 리스트.
+    KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                        // 선생님 - 내 결재정보.
+    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                    // 선생님 - 학생에게준 피드백.
 
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말

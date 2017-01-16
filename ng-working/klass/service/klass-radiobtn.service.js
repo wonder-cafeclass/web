@@ -462,7 +462,7 @@ var KlassRadioBtnService = (function () {
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "선생님 정보 수정", 
+            "선생님정보", 
             // public key:string,
             this.myEventService.KEY_TEACHER_MY_INFO, 
             // public isFocus:boolean
@@ -482,7 +482,7 @@ var KlassRadioBtnService = (function () {
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "선생님 수업 이력", 
+            "수업리스트", 
             // public key:string,
             this.myEventService.KEY_TEACHER_MY_KLASS, 
             // public isFocus:boolean
@@ -502,7 +502,27 @@ var KlassRadioBtnService = (function () {
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "선생님 결재정보", 
+            "출석리스트", 
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE, 
+            // public isFocus:boolean
+            false, 
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE, 
+            // public value:string
+            "", 
+            // public metaObj:any
+            teacher, 
+            // public myChecker:MyChecker
+            this.getFreePassChecker()) // end MyEvent
+            ),
+            new radiobtn_option_1.RadioBtnOption(
+            // public title:string,
+            "결재정보", 
             // public key:string,
             this.myEventService.KEY_TEACHER_MY_INCOME, 
             // public isFocus:boolean

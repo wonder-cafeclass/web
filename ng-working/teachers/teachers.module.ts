@@ -15,6 +15,10 @@ import { TeacherMyNavListComponent }      from './view/teacher-my-nav-list.compo
 import { TeacherInfoComponent }           from './view/teacher-my-nav-list/teacher-info.component';
 import { TeacherInfoV2Component }         from './view/teacher-my-nav-list/teacher-info-v2.component';
 import { TeacherInfoDashboardComponent }  from './view/teacher-my-nav-list/teacher-info-dashboard.component';
+import { TeacherInfoFeedbackComponent }   from './view/teacher-my-nav-list/teacher-info-feedback.component';
+import { TeacherInfoIncomeComponent }     from './view/teacher-my-nav-list/teacher-info-income.component';
+import { TeacherInfoKlassAttendanceComponent }     from './view/teacher-my-nav-list/teacher-info-klass-attendance.component';
+import { TeacherInfoKlassComponent }      from './view/teacher-my-nav-list/teacher-info-klass.component';
 
 import { LoginService }                   from '../login/service/login.service';
 import { UserService }                    from '../users/service/user.service';
@@ -35,7 +39,11 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     TeacherMyNavListComponent,
     TeacherInfoComponent,
     TeacherInfoV2Component,
-    TeacherInfoDashboardComponent
+    TeacherInfoDashboardComponent,
+    TeacherInfoFeedbackComponent,
+    TeacherInfoIncomeComponent,
+    TeacherInfoKlassComponent,
+    TeacherInfoKlassAttendanceComponent
   ],
   providers: [
   	LoginService,

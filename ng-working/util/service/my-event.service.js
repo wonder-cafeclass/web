@@ -105,6 +105,7 @@ var MyEventService = (function () {
         this.KEY_TEACHER_MY_INFO_DASHBOARD = "KEY_TEACHER_MY_INFO_DASHBOARD"; // 선생님 - 대시보드.
         this.KEY_TEACHER_MY_INFO = "KEY_TEACHER_MY_INFO"; // 선생님 - 내정보 수정.
         this.KEY_TEACHER_MY_KLASS = "KEY_TEACHER_MY_KLASS"; // 선생님 - 내 수강이력.
+        this.KEY_TEACHER_MY_KLASS_ATTENDANCE = "KEY_TEACHER_MY_KLASS_ATTENDANCE"; // 선생님 - 수업 출결석 리스트.
         this.KEY_TEACHER_MY_INCOME = "KEY_TEACHER_MY_INCOME"; // 선생님 - 내 결재정보.
         this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력

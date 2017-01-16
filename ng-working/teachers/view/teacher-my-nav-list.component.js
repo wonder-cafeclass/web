@@ -26,6 +26,7 @@ var TeacherMyNavListComponent = (function () {
         this.showDashboard = false;
         this.showMyInfo = false;
         this.showMyKlass = false;
+        this.showMyKlassAttendance = false;
         this.showMyIncome = false;
         this.showMyFeedback = false;
         this.emitter = new core_1.EventEmitter();
@@ -98,6 +99,7 @@ var TeacherMyNavListComponent = (function () {
         this.showDashboard = false;
         this.showMyInfo = false;
         this.showMyKlass = false;
+        this.showMyKlassAttendance = false;
         this.showMyIncome = false;
         this.showMyFeedback = false;
     };
@@ -131,6 +133,26 @@ var TeacherMyNavListComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.teacherInfoComponent = myEvent.metaObj;
                 } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+                if (null != myEvent.metaObj) {
+                    this.klassComponent = myEvent.metaObj;
+                } // end if        
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE)) {
+                if (null != myEvent.metaObj) {
+                    this.attendanceComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+                if (null != myEvent.metaObj) {
+                    this.incomeComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+                if (null != myEvent.metaObj) {
+                    this.feedbackComponent = myEvent.metaObj;
+                } // end if
             } // end if
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
@@ -145,6 +167,10 @@ var TeacherMyNavListComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
                 this.resetNavFlag();
                 this.showMyKlass = true;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS_ATTENDANCE)) {
+                this.resetNavFlag();
+                this.showMyKlassAttendance = true;
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
                 this.resetNavFlag();
