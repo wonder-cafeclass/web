@@ -442,6 +442,26 @@ var KlassRadioBtnService = (function () {
         var optionList = [
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
+            "대시보드", 
+            // public key:string,
+            this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD, 
+            // public isFocus:boolean
+            false, 
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+            // public eventName:string
+            this.myEventService.ON_CHANGE, 
+            // public key:string
+            this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD, 
+            // public value:string
+            "", 
+            // public metaObj:any
+            teacher, 
+            // public myChecker:MyChecker
+            this.getFreePassChecker()) // end MyEvent
+            ),
+            new radiobtn_option_1.RadioBtnOption(
+            // public title:string,
             "선생님 정보 수정", 
             // public key:string,
             this.myEventService.KEY_TEACHER_MY_INFO, 
@@ -464,7 +484,7 @@ var KlassRadioBtnService = (function () {
             // public title:string,
             "선생님 수업 이력", 
             // public key:string,
-            this.myEventService.KEY_TEACHER_MY_HISTORY, 
+            this.myEventService.KEY_TEACHER_MY_KLASS, 
             // public isFocus:boolean
             false, 
             // public myEvent:MyEvent
@@ -472,7 +492,7 @@ var KlassRadioBtnService = (function () {
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
-            this.myEventService.KEY_TEACHER_MY_HISTORY, 
+            this.myEventService.KEY_TEACHER_MY_KLASS, 
             // public value:string
             "", 
             // public metaObj:any
@@ -484,7 +504,7 @@ var KlassRadioBtnService = (function () {
             // public title:string,
             "선생님 결재정보", 
             // public key:string,
-            this.myEventService.KEY_TEACHER_MY_PAYMENT, 
+            this.myEventService.KEY_TEACHER_MY_INCOME, 
             // public isFocus:boolean
             false, 
             // public myEvent:MyEvent
@@ -492,7 +512,7 @@ var KlassRadioBtnService = (function () {
             // public eventName:string
             this.myEventService.ON_CHANGE, 
             // public key:string
-            this.myEventService.KEY_TEACHER_MY_PAYMENT, 
+            this.myEventService.KEY_TEACHER_MY_INCOME, 
             // public value:string
             "", 
             // public metaObj:any

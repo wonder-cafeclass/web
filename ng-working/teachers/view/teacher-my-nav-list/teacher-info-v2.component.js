@@ -32,6 +32,8 @@ var TeacherInfoV2Component = (function () {
         this.myCheckerService = myCheckerService;
         this.urlService = urlService;
         this.router = router;
+        this.eventKey = "";
+        this.emitter = new core_1.EventEmitter();
         this.redirectUrl = "/class-center";
         this.isAdmin = false;
         // @ Desc : 사용자가 자신의 선생님 정보를 변경했는지 확인하는 플래그
@@ -110,6 +112,8 @@ var TeacherInfoV2Component = (function () {
         this.setLoginUser();
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
+        // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
+        this.emitEventOnReady();
     }; // end init
     TeacherInfoV2Component.prototype.fillViewTeacherInfo = function () {
         if (this.isDebug())
@@ -144,12 +148,22 @@ var TeacherInfoV2Component = (function () {
         // apiKey:string
         this.watchTower.getApiKey(), 
         // pageType:string
-        this.myLoggerService.pageTypeSignupTeacher).then(function (myResponse) {
+        this.myLoggerService.pageTypeTeacherInfo).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
                 console.log("teacher-info-v2 / logActionPage / myResponse : ", myResponse);
         });
-    };
+    }; // end method
+    TeacherInfoV2Component.prototype.emitEventOnReady = function () {
+        if (this.isDebug())
+            console.log("teacher-info-v2 / emitEventOnReady / 시작");
+        var myEvent = this.watchTower.getEventOnReady(
+        // eventKey:string, 
+        this.eventKey, 
+        // component
+        this);
+        this.emitter.emit(myEvent);
+    }; // end method
     TeacherInfoV2Component.prototype.logError = function (errorType, errMsg) {
         var _this = this;
         if (this.isDebug())
@@ -1032,6 +1046,14 @@ var TeacherInfoV2Component = (function () {
             } // end if
         }); // end service    
     }; // end method  
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], TeacherInfoV2Component.prototype, "eventKey", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], TeacherInfoV2Component.prototype, "emitter", void 0);
     __decorate([
         core_1.ViewChild(mobile_component_1.MobileComponent), 
         __metadata('design:type', mobile_component_1.MobileComponent)

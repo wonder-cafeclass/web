@@ -14,7 +14,7 @@
 
 	<nav-tabs 
       *ngIf="navTabsOptions"
-      (emitter)="onChangedFromChild($event, myinfo, myhistory, mypayment, myfavorite)"
+      (emitter)="onChangedFromChild($event)"
       [isScrollAttachEnabled]="false"
       [cellWidth]="120"
       [radiobtnList]="navTabsOptions"
@@ -27,20 +27,28 @@
       <ul class="list-group my-style">
             <li class="list-group-item my-style my-style-first">
 
-                  <div  #myinfo
-                        [ngClass]="{'i-show':showMyInfo,'i-hide':!showMyInfo}">
-                        <teacher-info-v2></teacher-info-v2>
+                  <div  [ngClass]="{'i-show':showDashboard,'i-hide':!showDashboard}">
+                        <teacher-info-dashboard
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_TEACHER_MY_INFO_DASHBOARD">
+                        </teacher-info-dashboard>
                   </div>
-                  <div  #myhistory
-                        [ngClass]="{'i-show':showMyHistory,'i-hide':!showMyHistory}">
-                        KEY_USER_MY_HISTORY
+                  <div  [ngClass]="{'i-show':showMyInfo,'i-hide':!showMyInfo}">
+                        <teacher-info-v2
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_TEACHER_MY_INFO">
+                        </teacher-info-v2>
                   </div>
-                  <div  #mypayment
-                        [ngClass]="{'i-show':showMyPayment,'i-hide':!showMyPayment}">KEY_USER_MY_PAYMENT
+                  <div  [ngClass]="{'i-show':showMyKlass,'i-hide':!showMyKlass}">
+                        KEY_TEACHER_MY_KLASS
+                  </div>
+                  <div  [ngClass]="{'i-show':showMyIncome,'i-hide':!showMyIncome}">
+                        KEY_TEACHER_MY_PAYMENT
+                        <!-- 수업의 수익 그래프? -->
                   </div>
                   <div  #myfavorite
-                        [ngClass]="{'i-show':showMyFavorite,'i-hide':!showMyFavorite}">
-                        KEY_USER_MY_FAVORITE
+                        [ngClass]="{'i-show':showMyFeedback,'i-hide':!showMyFeedback}">
+                        KEY_TEACHER_MY_FEEDBACK
                   </div>
             </li>
       </ul>

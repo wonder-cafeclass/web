@@ -28,6 +28,7 @@ export class MyLoggerService {
 	public pageTypeMyInfoPayment:string="MY_INFO_PAYMENT";
 	public pageTypeMyInfoKlass:string="MY_INFO_KLASS";
 	public pageTypeTeacherInfo:string="TEACHER_INFO";
+	public pageTypeTeacherInfoDashBoard:string="TEACHER_INFO_DASHBOARD";
 	public pageTypeApplyTeacherTerm:string="APPLY_TEACHER_TERM";
 
 	public errorTypeNotValidValue:string="NOT_VALID_VALUE";

@@ -26,6 +26,15 @@ var TeacherService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    TeacherService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    TeacherService.prototype.isDebug = function () {
+        if (null == this.watchTower) {
+            return false;
+        }
+        return this.watchTower.isDebug();
+    };
     TeacherService.prototype.insertTeacherByTeacher = function (apiKey, teacher) {
         return this.insertTeacher(
         // apiKey:string, 

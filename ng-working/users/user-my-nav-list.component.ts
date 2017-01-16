@@ -154,14 +154,14 @@ export class UserMyNavListComponent implements AfterViewInit {
     if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
     if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
 
-    if(this.isDebug()) console.log("klass-detail / onChangedFromChild / 시작");
-    if(this.isDebug()) console.log("klass-detail / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / 시작");
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
 
     let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
     if(!isOK) {
-      if(this.isDebug()) console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
       let lastHistory = this.myCheckerService.getLastHistory();
-      if(this.isDebug()) console.log("klass-detail / onChangedFromChild / lastHistory : ",lastHistory);
+      if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / lastHistory : ",lastHistory);
       return;
     } // end if
 

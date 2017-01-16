@@ -33,6 +33,7 @@ var MyLoggerService = (function () {
         this.pageTypeMyInfoPayment = "MY_INFO_PAYMENT";
         this.pageTypeMyInfoKlass = "MY_INFO_KLASS";
         this.pageTypeTeacherInfo = "TEACHER_INFO";
+        this.pageTypeTeacherInfoDashBoard = "TEACHER_INFO_DASHBOARD";
         this.pageTypeApplyTeacherTerm = "APPLY_TEACHER_TERM";
         this.errorTypeNotValidValue = "NOT_VALID_VALUE";
         this.errorTypeUnknownError = "UNKNOWN_ERROR";

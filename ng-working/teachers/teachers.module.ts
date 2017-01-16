@@ -14,6 +14,7 @@ import { ApplyTeacherTermComponent }      from './view/apply-teacher-term.compon
 import { TeacherMyNavListComponent }      from './view/teacher-my-nav-list.component';
 import { TeacherInfoComponent }           from './view/teacher-my-nav-list/teacher-info.component';
 import { TeacherInfoV2Component }         from './view/teacher-my-nav-list/teacher-info-v2.component';
+import { TeacherInfoDashboardComponent }  from './view/teacher-my-nav-list/teacher-info-dashboard.component';
 
 import { LoginService }                   from '../login/service/login.service';
 import { UserService }                    from '../users/service/user.service';
@@ -33,7 +34,8 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     ApplyTeacherTermComponent,
     TeacherMyNavListComponent,
     TeacherInfoComponent,
-    TeacherInfoV2Component
+    TeacherInfoV2Component,
+    TeacherInfoDashboardComponent
   ],
   providers: [
   	LoginService,

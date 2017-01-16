@@ -53,8 +53,6 @@ export class UserService {
 
   }
 
-
-
   setWatchTower(watchTower:MyEventWatchTowerService):void {
     this.watchTower = watchTower;
   }

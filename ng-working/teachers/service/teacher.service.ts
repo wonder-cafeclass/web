@@ -7,6 +7,7 @@ import { UrlService }                      from "../../util/url.service";
 import { MyExtractor }                     from '../../util/http/my-extractor';
 import { MyRequest }                       from '../../util/http/my-request';
 import { MyResponse }                      from '../../util/model/my-response';
+import { MyEventWatchTowerService }        from '../../util/service/my-event-watchtower.service';
 import { Teacher }                         from "../model/teacher";
 import { User }                            from "../../users/model/user";
 
@@ -22,12 +23,26 @@ export class TeacherService {
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
 
+  private watchTower:MyEventWatchTowerService;
+
   constructor(  private urlService:UrlService, 
                 private http: Http) {
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
   }
 
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  }
+  
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
 
     return this.insertTeacher(

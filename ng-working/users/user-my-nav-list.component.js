@@ -111,16 +111,16 @@ var UserMyNavListComponent = (function () {
         if (this.isDebug())
             console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ", myEvent.key);
         if (this.isDebug())
-            console.log("klass-detail / onChangedFromChild / 시작");
+            console.log("user-my-nav-list / onChangedFromChild / 시작");
         if (this.isDebug())
-            console.log("klass-detail / onChangedFromChild / myEvent : ", myEvent);
+            console.log("user-my-nav-list / onChangedFromChild / myEvent : ", myEvent);
         var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
         if (!isOK) {
             if (this.isDebug())
-                console.log("klass-detail / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+                console.log("user-my-nav-list / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
             var lastHistory = this.myCheckerService.getLastHistory();
             if (this.isDebug())
-                console.log("klass-detail / onChangedFromChild / lastHistory : ", lastHistory);
+                console.log("user-my-nav-list / onChangedFromChild / lastHistory : ", lastHistory);
             return;
         } // end if
         if (myEvent.hasEventName(this.myEventService.ON_READY)) {
