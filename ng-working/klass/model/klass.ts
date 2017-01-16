@@ -31,6 +31,7 @@ export class Klass {
 
     public title: string="";
     public desc: string="";
+    public type: string="";
     public feature: string="";
     public feature_list: string[]=[];
     public target: string="";

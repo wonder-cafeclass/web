@@ -40,8 +40,9 @@
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 
 		"klass_id":"is_number|||is_natural_no_zero",
+
 		"klass_title":"is_str|||min_length[5]|||max_length[128]",
-		"klass_desc":"is_str|||min_length[5]|||max_length[255]",
+		"klass_type":"is_str|||matches[class_type_list]",
 		"klass_question_id":"is_number|||is_natural_no_zero",
 		"klass_question_status":"is_str|||matches[class_question_status_list]",
 		"klass_question":"is_str|||min_length[3]|||max_length[255]",
@@ -220,6 +221,10 @@
 
 		"class_review_status_list":["A","N"],
 		"class_review_status_desc_list":["정상","삭제"],
+
+		"class_type_list":["ALL","F","C"],
+		"class_type_eng_list":["All","Free","CafeClassCare"],
+		"class_type_kor_list":["모든 타입","프리타입","카클케어타입"],
 
 		"class_question_status_list":["A","N"],
 		"class_question_status_desc_list":["정상","삭제"],		

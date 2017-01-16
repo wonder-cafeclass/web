@@ -22,6 +22,7 @@ var Klass = (function () {
         this.teacher_greeting = "";
         this.title = "";
         this.desc = "";
+        this.type = "";
         this.feature = "";
         this.feature_list = [];
         this.target = "";

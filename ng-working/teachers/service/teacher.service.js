@@ -18,6 +18,7 @@ var TeacherService = (function () {
     function TeacherService(urlService, http) {
         this.urlService = urlService;
         this.http = http;
+        this.fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlistbyteacher';
         this.getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
         this.getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
         this.getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
@@ -26,15 +27,30 @@ var TeacherService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
-    TeacherService.prototype.setWatchTower = function (watchTower) {
-        this.watchTower = watchTower;
-    };
-    TeacherService.prototype.isDebug = function () {
-        if (null == this.watchTower) {
-            return false;
-        }
-        return this.watchTower.isDebug();
-    };
+    TeacherService.prototype.fetchKlassNStudentList = function (apiKey, pageNum, pageRowCnt, teacherId) {
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / 시작");
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / pageNum : ", pageNum);
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / pageRowCnt : ", pageRowCnt);
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / teacherId : ", teacherId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.fetchKlassNStudentListUrl);
+        var params = {
+            page_num: pageNum,
+            pageRowCnt: pageRowCnt,
+            teacher_id: teacherId
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end method  
     TeacherService.prototype.insertTeacherByTeacher = function (apiKey, teacher) {
         return this.insertTeacher(
         // apiKey:string, 
@@ -323,6 +339,16 @@ var TeacherService = (function () {
             return null;
         }
         return new teacher_1.Teacher().setJSON(jsonObj);
+    };
+    // @ Common
+    TeacherService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    TeacherService.prototype.isDebug = function () {
+        if (null == this.watchTower) {
+            return false;
+        }
+        return this.watchTower.isDebug();
     };
     TeacherService = __decorate([
         core_1.Injectable(), 

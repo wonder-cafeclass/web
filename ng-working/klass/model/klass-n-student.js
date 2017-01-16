@@ -8,6 +8,7 @@ var KlassNStudent = (function () {
     function KlassNStudent() {
         this.id = -1;
         this.klass_id = -1;
+        this.teacher_id = -1;
         this.user_id = -1;
         this.status = "";
         this.date_created = "";

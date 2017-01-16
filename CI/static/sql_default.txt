@@ -427,6 +427,42 @@ NOW()
 )
 ;
 
+# 수업 등록 테스트 데이터 / 아놀드
+
+DROP TABLE IF EXISTS `klass_n_student`;
+
+CREATE TABLE `klass_n_student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`),
+  INDEX `search` (`klass_id`,`user_id`),
+  INDEX `teacher` (`teacher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';
+
+INSERT INTO `cafeclass`.`klass_n_student`
+(
+	`klass_id`,
+	`teacher_id`,
+	`user_id`,
+	`status`,
+	`date_created`
+)
+VALUES
+(
+	6,
+	1,
+	4,
+	"A",
+	NOW()
+)
+;
+
 # 출석 정보 테스트 데이터 / 아놀드
 
 DROP TABLE IF EXISTS `attendance`;

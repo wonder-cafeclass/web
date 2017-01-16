@@ -393,6 +393,269 @@ class Klass extends MY_REST_Controller {
 
     }
 
+    public function fetchklassnstudentlistbyteacher_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        // @ Optional
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status",
+            // $is_no_record=false
+            true
+        );
+        if(empty($klass_status)) 
+        {
+            $klass_status = "";
+        }
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        $params = array(
+            "teacher_id"=>$teacher_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            return;
+        } // end if 
+
+        // wonder.jung
+
+        // 0. 개강한 수업 갯수를 가져옴.
+        $total_cnt = 
+        $this->my_sql->select_klass_cnt_by_teacher(
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            $klass_status
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // 1. 수업 데이터를 먼저 가져옴
+        $list = 
+        $this->my_sql->select_klass_list_by_teacher(
+            // $offset=-1,
+            $offset,
+            // $limit=-1,
+            $limit,
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            ""
+        );
+
+        // 2. 수업 참여한 회원리스트를 가져옵니다.
+
+        // Deco klass
+
+        $output["list"] = $klass_n_student_list_next;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+
+
+        // 2. 수업 데이터에 해당하는 학생수 데이터를 가져옴. 출결 데이터 GROUP BY.
+
+
+        /*
+        // 선생님이 등록한 수업의 전체 갯수를 가져옵니다.
+        $total_cnt = 
+        $this->my_sql->select_klass_n_student_cnt_by_teacher(
+            // $teacher_id=-1,
+            $teacher_id 
+        );
+
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // 선생님이 등록한 수업을 가져옵니다.
+        $klass_n_student_list = 
+        $this->my_sql->select_klass_n_student_list_by_teacher(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1
+            $offset,
+            // $teacher_id=-1, 
+            $user_id
+            // $status=""
+        );
+
+        $klass_n_student_list_next = [];
+        foreach ($klass_n_student_list as $key => $klass_n_student) {
+
+            $klass_n_student =
+            $this->my_decorator->deco_klass_n_student($klass_n_student);
+
+            $klass_n_student->attendance_total_cnt =
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                ""
+            );
+
+            $klass_n_student->attendance_presence_cnt = 
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                "P"
+            );
+            $klass_n_student->attendance_ready_cnt = 
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                "R"
+            );
+            
+            $klass_n_student->attendance_absence_cnt = 
+            $klass_n_student->attendance_total_cnt
+            - $klass_n_student->attendance_ready_cnt
+            - $klass_n_student->attendance_presence_cnt
+            ;
+
+            $klass_n_student->payment_import_cnt = 
+            $this->my_sql->select_payment_import_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id
+            );
+
+            // 해당 수업 결제 영수증 링크 가져오기
+
+            // select_payment_import_receipt($klass_id=-1, $user_id=-1, $payment_imp_status="")
+            // paid:결제완료, cancelled:결제취소
+            $payment_status = "paid";
+            if("N" == $klass_n_student->status) {
+                $payment_status = "cancelled";
+            }
+            
+            $klass_n_student->receipt_url = 
+            $this->my_sql->select_payment_import_receipt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $payment_imp_status=""  
+                $payment_status
+            );
+
+            array_push($klass_n_student_list_next, $klass_n_student);
+        }
+        // $output["list_src"] = $klass_n_student_list;
+        $output["list"] = $klass_n_student_list_next;
+
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        */
+
+    }    
+
     public function fetchklass_post()
     {
         $output = [];
@@ -838,13 +1101,13 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "klass_title"
         ); 
-        $klass_desc = 
+        $klass_type =
         $this->my_paramchecker->post(
             // $key=""
-            "klass_desc",
+            "klass_type",
             // $key_filter=""
-            "klass_desc"
-        ); 
+            "klass_type"
+        );         
         $klass_feature = 
         $this->my_paramchecker->post(
             // $key=""
@@ -1015,6 +1278,7 @@ class Klass extends MY_REST_Controller {
             "teacher_resume"=>$teacher_resume,
             "teacher_greeting"=>$teacher_greeting,
             "klass_title"=>$klass_title,
+            "klass_type"=>$klass_type,
             "klass_feature"=>$klass_feature,
             "klass_target"=>$klass_target,
             "klass_schedule"=>$klass_schedule,
@@ -1064,6 +1328,8 @@ class Klass extends MY_REST_Controller {
                 $teacher_greeting,
                 // $title=""
                 $klass_title,
+                // $type=""
+                $klass_type,
                 // $feature=""
                 $klass_feature,
                 // $target=""

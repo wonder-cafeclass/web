@@ -99,7 +99,7 @@ var KlassService = (function () {
             teacher_resume: klass.teacher_resume,
             teacher_greeting: klass.teacher_greeting,
             klass_title: klass.title,
-            klass_desc: klass.desc,
+            klass_type: klass.type,
             klass_feature: klass.feature,
             klass_target: klass.target,
             klass_schedule: klass.schedule,

@@ -4,6 +4,7 @@ class KlassNStudent {
 
         public $id=-1;
         public $klass_id=-1;
+        public $teacher_id=-1;
         public $user_id=-1;
         public $status="";
         public $date_created="";

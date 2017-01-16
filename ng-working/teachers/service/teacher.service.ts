@@ -14,6 +14,8 @@ import { User }                            from "../../users/model/user";
 @Injectable()
 export class TeacherService {
 
+  private fetchKlassNStudentListUrl = '/CI/index.php/api/klass/fetchklassnstudentlistbyteacher';
+
   private getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
   private getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
   private getTeacherByUserIdUrl = '/CI/index.php/api/teachers/userid';
@@ -31,17 +33,33 @@ export class TeacherService {
     this.myRequest = new MyRequest();
   }
 
-  setWatchTower(watchTower:MyEventWatchTowerService):void {
-    this.watchTower = watchTower;
-  }
+  fetchKlassNStudentList (
+    apiKey:string,
+    pageNum:number,
+    pageRowCnt:number,
+    teacherId:number ): Promise<MyResponse> {
 
-  private isDebug():boolean {
-    if(null == this.watchTower) {
-      return false;
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / 시작");
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("user.service / fetchKlassNStudentList / teacherId : ",teacherId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchKlassNStudentListUrl);
+    let params = {
+      page_num:pageNum,
+      pageRowCnt:pageRowCnt,
+      teacher_id:teacherId
     }
 
-    return this.watchTower.isDebug();
-  }
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method  
   
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
 
@@ -371,5 +389,22 @@ export class TeacherService {
 
     return new Teacher().setJSON(jsonObj);
   }
+
+
+
+
+  // @ Common
+
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  }  
   
 }

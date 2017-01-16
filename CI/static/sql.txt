@@ -103,8 +103,8 @@ CREATE TABLE `klass` (
   `teacher_resume` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT 'Required 선생님 이력. 한글 124자까지 입력 가능. ex) "캐나다 10년 거주 & 토론토 대학교 졸업"',
   `teacher_greeting` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT "Required 선생님 인사말.",
 
+  `type` char(1) COLLATE utf8_bin NOT NULL DEFAULT "F" COMMENT "F(Free) 1. 프리타입: 강사님이 알아서 수업 진행 (수수료 없음, 출석부+결제 기능 등만 사용시) / C(CafeClassCare) 2. 카클케어 타입: 카클에서 수수료를 받고 중계해주는 수업 방식",
   `title` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '수업이름',
-  `desc` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '@ Deprecated - 수업설명',
   `feature` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업특징',
   `target` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업대상',
   `schedule` TEXT COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업일정',
@@ -124,7 +124,8 @@ CREATE TABLE `klass` (
   `venue_latitude` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 경도 / 네이버 맵에 사용됨',
   `venue_longitude` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업이 진행되는 장소 위도 / 네이버 맵에 사용됨',
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "N" COMMENT 'N(New/등록),E(Enrollment/모집),B(Begin/시작),C(Closed/마감),F(Finished/종료),S(Suspended/정지)',
-  `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
+  `tags` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '@ Deprecated 리스트 검색시 사용되는 태그 ex) 모집|영어|잠실|송파|수요일',
+
   `price` int(8) COLLATE utf8_bin NOT NULL DEFAULT 0 COMMENT '월별 - 4주단위 수강료. 최대 천만원 단위까지 표시.',
   `student_cnt` int(1) COLLATE utf8_bin NOT NULL DEFAULT 3 COMMENT '수업 참가 학생수. 기본값은 3명.',
   `class_poster_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT "" COMMENT '수업을 안내하는 이미지 - 페이스북 광고에 사용되는 메인 이미지.',
@@ -140,13 +141,15 @@ CREATE TABLE `klass` (
 CREATE TABLE `klass_n_student` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `klass_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`),
-  INDEX `search` (`klass_id`,`user_id`)
+  INDEX `search` (`klass_id`,`user_id`),
+  INDEX `teacher` (`teacher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';
 
 CREATE TABLE `review` (

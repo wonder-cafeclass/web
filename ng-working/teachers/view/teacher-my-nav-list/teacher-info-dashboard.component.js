@@ -62,7 +62,7 @@ var TeacherInfoDashboardComponent = (function () {
         // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
         this.emitEventOnReady();
         // 해당 유저에게 필요한 정보를 DB로 부터 가져옵니다.
-        this.fetchTeacherInfoDashboard();
+        this.fetchKlassNStudentDashboard();
     };
     TeacherInfoDashboardComponent.prototype.setLoginUser = function () {
         if (this.isDebug())
@@ -98,9 +98,9 @@ var TeacherInfoDashboardComponent = (function () {
         this);
         this.emitter.emit(myEvent);
     };
-    TeacherInfoDashboardComponent.prototype.fetchTeacherInfoDashboard = function () {
+    TeacherInfoDashboardComponent.prototype.fetchKlassNStudentDashboard = function () {
         if (this.isDebug())
-            console.log("teacher-info-dashboard / fetchTeacherInfoDashboard / 시작");
+            console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 시작");
         // 선생님 대시보드에 필요한 정보는?
         // 1. 수강중인 클래스 정보 가져오기 (최대 5개 노출)
         /*
@@ -116,7 +116,7 @@ var TeacherInfoDashboardComponent = (function () {
         ).then((myResponse:MyResponse) => {
     
           // 로그 등록 결과를 확인해볼 수 있습니다.
-          if(this.isDebug()) console.log("teacher-info-dashboard / fetchTeacherInfoDashboard / myResponse : ",myResponse);
+          if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / myResponse : ",myResponse);
     
           if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
     
@@ -131,11 +131,11 @@ var TeacherInfoDashboardComponent = (function () {
     
             this.klassNStudentList = klassNStudentList;
     
-            if(this.isDebug()) console.log("teacher-info-dashboard / fetchTeacherInfoDashboard / klassNStudentList : ",klassNStudentList);
+            if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / klassNStudentList : ",klassNStudentList);
     
           } else if(myResponse.isFailed()) {
     
-            if(this.isDebug()) console.log("teacher-info-dashboard / fetchTeacherInfoDashboard / 수강 학생 정보 등록에 실패했습니다.");
+            if(this.isDebug()) console.log("teacher-info-dashboard / fetchKlassNStudentDashboard / 수강 학생 정보 등록에 실패했습니다.");
     
             this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
             if(null != myResponse.error) {

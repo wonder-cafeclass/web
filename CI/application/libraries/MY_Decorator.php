@@ -386,7 +386,7 @@ class MY_Decorator extends MY_Library
         $klassCourse = new KlassCourse();
         $klassCourse->id = intval($klass->klass_id);
         $klassCourse->title = $klass->klass_title;
-        $klassCourse->desc = $klass->klass_desc;
+        $klassCourse->type = $klass->klass_type;
         $klassCourse->feature = $klass->klass_feature;
         $klassCourse->target = $klass->klass_target;
         $klassCourse->schedule = $klass->klass_schedule;
@@ -926,7 +926,7 @@ class MY_Decorator extends MY_Library
 
             $klass->id = $this->getNumber($payment, "klass_id");
             $klass->title = $this->getStr($payment, "klass_title");
-            $klass->desc = $this->getStr($payment, "klass_desc");
+            $klass->type = $this->getStr($payment, "klass_type");
             $klass->feature = $this->getStr($payment, "klass_feature");
             $klass->target = $this->getStr($payment, "klass_target");
 
@@ -1021,6 +1021,7 @@ class MY_Decorator extends MY_Library
 
         $ks->id = $this->getNumber($klass_student, "ks_id");
         $ks->klass_id = $this->getNumber($klass_student, "ks_klass_id");
+        $ks->teacher_id = $this->getNumber($klass_student, "ks_teacher_id");
         $ks->user_id = $this->getNumber($klass_student, "ks_user_id");
         $ks->status = $this->getStr($klass_student, "ks_status");
         $ks->date_created = $this->getStr($klass_student, "ks_date_created");
@@ -1031,7 +1032,7 @@ class MY_Decorator extends MY_Library
 
         $klass->id = $this->getNumber($klass_student, "klass_id");
         $klass->title = $this->getStr($klass_student, "klass_title");
-        $klass->desc = $this->getStr($klass_student, "klass_desc");
+        $klass->type = $this->getStr($klass_student, "klass_type");
         $klass->feature = $this->getStr($klass_student, "klass_feature");
         $klass->target = $this->getStr($klass_student, "klass_target");
 
