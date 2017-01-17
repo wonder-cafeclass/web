@@ -136,7 +136,7 @@ export class Klass {
         }
 
         // 출석률. 소수점 아래 2자리까지 계산
-        let percentage:number = Math.round(100 * 100 * (totalPresence/totalAttendance))/100;
+        let percentage:number = Math.round(100 * 100 * (totalPresence/(totalAttendance - totalReady)))/100;
 
         return `${percentage}%`;
     }

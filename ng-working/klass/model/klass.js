@@ -106,7 +106,7 @@ var Klass = (function () {
             totalAbsence += klass_n_student.attendance_absence_cnt;
         }
         // 출석률. 소수점 아래 2자리까지 계산
-        var percentage = Math.round(100 * 100 * (totalPresence / totalAttendance)) / 100;
+        var percentage = Math.round(100 * 100 * (totalPresence / (totalAttendance - totalReady))) / 100;
         return percentage + "%";
     };
     // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다.

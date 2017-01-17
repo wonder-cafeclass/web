@@ -185,7 +185,7 @@ var TeacherInfoDashboardComponent = (function () {
                 } // end if
             } // end if
         }); // end service    
-    };
+    }; // end method
     TeacherInfoDashboardComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
             console.log("teacher-info-dashboard / onClickKlass / 시작");

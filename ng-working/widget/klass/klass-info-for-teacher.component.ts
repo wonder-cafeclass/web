@@ -34,6 +34,7 @@ export class KlassInfoForTeacherComponent implements OnInit {
   @Input() isLast:boolean=false;
 
   isShowAttendance:boolean=false;
+  attendancePercentage:string="";
 
   private myArray:HelperMyArray;
 
@@ -76,6 +77,9 @@ export class KlassInfoForTeacherComponent implements OnInit {
   private init() :void {
 
     if(this.isDebug()) console.log("klass-info-for-teacher / init / 시작");
+
+    // 출석률을 업데이트합니다.
+    this.updateAttendancePercentage();
 
     // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
     this.emitEventOnReady();
@@ -222,7 +226,63 @@ export class KlassInfoForTeacherComponent implements OnInit {
     // 부모 객체에게 출석 데이터 업데이트 전달
     this.emitOnChangeMeta("", attendance);
 
+    // 화면에 표시된 출석률 업데이트
+    this.updateAttendancePercentage();
+
+
   } // end method
+
+  updateAttendancePercentage():void {
+
+    if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 시작");
+
+    if(null == this.klass) {
+      if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / null == klass");
+      return;
+    } // end if
+
+    if(this.myArray.isNotOK(this.klass.klass_n_student_list)) {
+      if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / klass_n_student_list is not valid!");
+      return;      
+    }
+
+    for (var i = 0; i < this.klass.klass_n_student_list.length; ++i) {
+      let klassNStudent:KlassNStudent = this.klass.klass_n_student_list[i];
+
+      if(this.myArray.isNotOK(klassNStudent.attendance_list)) {
+        continue;
+      }
+      let attendance_list:KlassAttendance[] = klassNStudent.attendance_list;
+      let attendance_total_cnt:number=0;
+      let attendance_ready_cnt:number=0;
+      let attendance_presence_cnt:number=0;
+      let attendance_absence_cnt:number=0;
+
+      for (var j = 0; j < attendance_list.length; ++j) {
+        let attendance:KlassAttendance = attendance_list[j];
+
+        attendance_total_cnt++;
+
+        if(attendance.isReady()) {
+          attendance_ready_cnt++;
+        } else if(attendance.isPresence()) {
+          attendance_presence_cnt++;
+        } else if(attendance.isAbsence()) {
+          attendance_absence_cnt++;
+        }
+
+      } // end for
+
+      klassNStudent.attendance_total_cnt = attendance_total_cnt;
+      klassNStudent.attendance_ready_cnt = attendance_ready_cnt;
+      klassNStudent.attendance_presence_cnt = attendance_presence_cnt;
+      klassNStudent.attendance_absence_cnt = attendance_absence_cnt;
+
+    } // end for
+
+    this.attendancePercentage = this.klass.getAttendancePercentage();
+
+  }
 
   onClickTeacher(event):void {
 

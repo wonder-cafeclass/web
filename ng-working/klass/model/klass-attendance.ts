@@ -31,7 +31,13 @@ export class KlassAttendance {
 		return !this.isReady();
 	}
 	isReady():boolean {
-		return ("R" === this.status)?true:false;
+		return (this.status_ready === this.status)?true:false;
+	}
+	isPresence():boolean {
+		return (this.status_presence === this.status)?true:false;
+	}
+	isAbsence():boolean {
+		return (this.status_absence === this.status)?true:false;
 	}
 
 	isSame(target:KlassAttendance):boolean {

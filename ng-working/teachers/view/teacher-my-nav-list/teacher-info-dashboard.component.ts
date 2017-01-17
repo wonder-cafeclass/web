@@ -271,7 +271,7 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
 
     }); // end service    
 
-  }
+  } // end method
 
   onClickKlass(klass:Klass):void {
 

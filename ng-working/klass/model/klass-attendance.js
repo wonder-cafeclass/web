@@ -20,7 +20,13 @@ var KlassAttendance = (function () {
         return !this.isReady();
     };
     KlassAttendance.prototype.isReady = function () {
-        return ("R" === this.status) ? true : false;
+        return (this.status_ready === this.status) ? true : false;
+    };
+    KlassAttendance.prototype.isPresence = function () {
+        return (this.status_presence === this.status) ? true : false;
+    };
+    KlassAttendance.prototype.isAbsence = function () {
+        return (this.status_absence === this.status) ? true : false;
     };
     KlassAttendance.prototype.isSame = function (target) {
         return this.myIs.isSame(this, target);

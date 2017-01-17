@@ -19,6 +19,7 @@ var KlassInfoForTeacherComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isLast = false;
         this.isShowAttendance = false;
+        this.attendancePercentage = "";
         // Do something...
         this.myArray = new my_array_1.HelperMyArray();
     } // end constructor
@@ -50,6 +51,8 @@ var KlassInfoForTeacherComponent = (function () {
     KlassInfoForTeacherComponent.prototype.init = function () {
         if (this.isDebug())
             console.log("klass-info-for-teacher / init / 시작");
+        // 출석률을 업데이트합니다.
+        this.updateAttendancePercentage();
         // 부모 객체에게 준비되었다는 이벤트를 보냅니다.
         this.emitEventOnReady();
     }; // end method
@@ -161,7 +164,52 @@ var KlassInfoForTeacherComponent = (function () {
         attendance.updateStatus();
         // 부모 객체에게 출석 데이터 업데이트 전달
         this.emitOnChangeMeta("", attendance);
+        // 화면에 표시된 출석률 업데이트
+        this.updateAttendancePercentage();
     }; // end method
+    KlassInfoForTeacherComponent.prototype.updateAttendancePercentage = function () {
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / updateAttendancePercentage / 시작");
+        if (null == this.klass) {
+            if (this.isDebug())
+                console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / null == klass");
+            return;
+        } // end if
+        if (this.myArray.isNotOK(this.klass.klass_n_student_list)) {
+            if (this.isDebug())
+                console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / klass_n_student_list is not valid!");
+            return;
+        }
+        for (var i = 0; i < this.klass.klass_n_student_list.length; ++i) {
+            var klassNStudent = this.klass.klass_n_student_list[i];
+            if (this.myArray.isNotOK(klassNStudent.attendance_list)) {
+                continue;
+            }
+            var attendance_list = klassNStudent.attendance_list;
+            var attendance_total_cnt = 0;
+            var attendance_ready_cnt = 0;
+            var attendance_presence_cnt = 0;
+            var attendance_absence_cnt = 0;
+            for (var j = 0; j < attendance_list.length; ++j) {
+                var attendance = attendance_list[j];
+                attendance_total_cnt++;
+                if (attendance.isReady()) {
+                    attendance_ready_cnt++;
+                }
+                else if (attendance.isPresence()) {
+                    attendance_presence_cnt++;
+                }
+                else if (attendance.isAbsence()) {
+                    attendance_absence_cnt++;
+                }
+            } // end for
+            klassNStudent.attendance_total_cnt = attendance_total_cnt;
+            klassNStudent.attendance_ready_cnt = attendance_ready_cnt;
+            klassNStudent.attendance_presence_cnt = attendance_presence_cnt;
+            klassNStudent.attendance_absence_cnt = attendance_absence_cnt;
+        } // end for
+        this.attendancePercentage = this.klass.getAttendancePercentage();
+    };
     KlassInfoForTeacherComponent.prototype.onClickTeacher = function (event) {
         if (this.isDebug())
             console.log("klass-info-for-teacher / onClickTeacher / 시작");

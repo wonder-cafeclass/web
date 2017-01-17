@@ -23,8 +23,11 @@ import { Pagination }                 from '../../../widget/pagination/model/pag
 
 import { TeacherService }             from '../../../teachers/service/teacher.service';
 import { Teacher }                    from '../../../teachers/model/teacher';
+
 import { User }                       from '../../../users/model/user';
+
 import { Klass }                      from '../../../klass/model/klass';
+import { KlassAttendance }            from '../../../klass/model/klass-attendance';
 
 @Component({
   moduleId: module.id,
@@ -255,6 +258,69 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
   } // end method
 
+  private updateKlassAttendance(klassAttendance:KlassAttendance):void {
+
+    if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / 시작");
+
+    if(null == klassAttendance) {
+      if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / 중단 / null == klassAttendance");
+      return;
+    }
+
+    if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / klassAttendance : ",klassAttendance);    
+
+    // updateAttendance
+
+    this.teacherService.updateAttendance(
+      // apiKey:string,
+      this.watchTower.getApiKey(),
+      // loginUserId:number,
+      this.getLoginUserId(),
+      // attedanceId:number,
+      klassAttendance.id,
+      // klassId:number,
+      klassAttendance.klass_id,
+      // userId:number,
+      klassAttendance.user_id,
+      // klassAttendanceStatus:number
+      klassAttendance.status,
+    ).then((myResponse:MyResponse) => {
+
+      // 로그 등록 결과를 확인해볼 수 있습니다.
+      if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / myResponse : ",myResponse);
+
+      if(myResponse.isSuccess() && myResponse.hasDataProp("row")) {
+
+        // Do something... 
+        /*
+        let klassList:Klass[] = [];
+        let jsonList = myResponse.getDataProp("list");
+        for (var i = 0; i < jsonList.length; ++i) {
+          let json = jsonList[i];
+          let klassNStudent:Klass = new Klass().setJSON(json);
+          klassList.push(klassNStudent);
+        } // end for
+
+        this.klassList = klassList;
+
+        if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / klassList : ",this.klassList);
+        */
+
+      } else if(myResponse.isFailed()) {  
+
+        if(this.isDebug()) console.log("teacher-info-klass / updateKlassAttendance / 수강 학생 정보 등록에 실패했습니다.");
+
+        this.watchTower.logAPIError("updateKlassAttendance has been failed!");
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+
+      } // end if
+
+    }); // end service    
+
+  } // end method  
+
   onClickKlass(klass:Klass):void {
 
     if(this.isDebug()) console.log("teacher-info-klass / onClickKlass / 시작");
@@ -311,18 +377,19 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
     } else if(myEvent.hasEventName(this.watchTower.getMyEventService().ON_CHANGE)) {
 
-      /*
-      if(myEvent.hasKey(this.myEventService.KEY_USER_CUR_PASSWORD)) {
-
-      } else if(myEvent.hasKey(this.myEventService.KEY_USER_NEW_PASSWORD)) {
-
-      } // end if - ON CHANGE
-      */
 
       if(myEvent.hasKey(this.myEventService.KEY_PAGE_NUM)) {
 
         this.pagination.pageNum = +myEvent.value;
         this.fetchAllKlassList();
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_TEACHER)) {
+
+        if(myEvent.metaObj instanceof KlassAttendance) {
+
+          this.updateKlassAttendance(myEvent.metaObj);
+
+        } // end if
 
       } // end if
 

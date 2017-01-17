@@ -68,7 +68,7 @@
 					<div  
 					[ngClass]="{'enable':isValidAttendance(),'gray':!isValidAttendance()}"
 					(click)="onClickAttendance($event, klass)"
-					class="unselectable my-klass-btn short">출석률 : {{klass.getAttendancePercentage()}}</div>
+					class="unselectable my-klass-btn short">출석률 : {{attendancePercentage}}</div>
 
 				</div>
 			</td>
