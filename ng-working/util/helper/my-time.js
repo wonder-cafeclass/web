@@ -19,6 +19,8 @@ var HelperMyTime = (function () {
         this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS = 6;
         /* 2012년 12월 11일 01:02:03 */
         this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS = 7;
+        /* 2012년 12월 11일*/
+        this.DATE_TYPE_H_YYYY_MM_DD = 8;
     }
     HelperMyTime.prototype.getUniqueId = function () {
         return Math.round(window.performance.now() * 100);
@@ -248,6 +250,9 @@ var HelperMyTime = (function () {
         if (this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
             return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
         }
+        else if (this.DATE_TYPE_H_YYYY_MM_DD === output_date_format_type) {
+            return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD);
+        }
         return "";
     };
     HelperMyTime.prototype.getDateFommattedStr = function (date, input_date_format_type) {
@@ -270,6 +275,13 @@ var HelperMyTime = (function () {
             var seconds = this.getDoubleDigit(date.getSeconds());
             // 2012년 12월 11일 01:02:03
             return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C " + hours + ":" + minutes + ":" + seconds;
+        }
+        else if (this.DATE_TYPE_H_YYYY_MM_DD === input_date_format_type) {
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var days = date.getDate();
+            // 2012년 12월 11일 01:02:03
+            return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C";
         } // end if
         return "";
     };

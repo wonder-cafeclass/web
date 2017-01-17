@@ -1,0 +1,148 @@
+<table class="table my-style" *ngIf="klass"> 
+	<tbody> 
+		<!-- 수업 요약 정보 row 시작 -->
+		<tr >
+			<td
+			class="my-style my-left">
+				<img
+				[ngClass]="{'first':isShowAttendance}"
+				src="{{klass.class_poster_url_loadable}}" 
+				alt="{{klass.title}}"
+				(click)="onClickKlass($event, klass)"
+				class="my-style">
+			</td>
+			<td class="my-style">
+<!-- 수업 요약 정보 우측 시작-->
+<table class="table my-style"> 
+	<tbody> 
+		<tr>
+			<td class="my-style">
+
+<table class="table my-style"> 
+	<tbody> 
+		<tr>
+			<td class="my-style my-klass-info">
+				<div 	[ngClass]="{'first':isShowAttendance}"
+						class="my-klass-btn-box">
+					<div class="unselectable my-klass-btn gray" style="width:394px;">
+						<strong>수업명</strong> : {{klass.title}}
+					</div>
+					<div>
+						<div class="unselectable my-klass-btn gray float-l" style="width: 110px;">
+							<strong>가격</strong> : ₩{{klass.price_with_format}}
+						</div>
+						<div class="unselectable my-klass-btn gray float-l" style="width: 130px;margin-right: 0px;">
+							<strong>시간</strong> : {{klass.time_begin}} ~ {{klass.time_end}}
+						</div>
+						<div class="unselectable my-klass-btn gray float-l" style="width: 139px;">
+							<strong>시작일</strong> : {{klass.date_begin}}
+						</div>
+					</div>
+					<div>
+						<div style="float:left;margin-left: 7px;margin-top: -2px;">
+							<img
+							src="{{klass.level_img_url}}" 
+							alt="{{klass.level}}"
+							class="img-circle cc-img-filter">
+							<img
+							src="{{klass.subway_station_img}}" 
+							alt="{{klass.subway_station}}"
+							class="img-circle cc-img-filter">
+							<img
+							src="{{klass.time_begin_img_url}}" 
+							alt="{{klass.time_begin}}"
+							class="img-circle cc-img-filter">					
+							<img *ngFor="let days_img_url of klass.days_img_url_list"
+							src="{{days_img_url}}" 
+							alt="{{klass.days}}"
+							class="img-circle cc-img-filter">						
+						</div>
+					</div>
+				</div>
+			</td>
+			<td class="my-style btn-box">
+				<div 	[ngClass]="{'first':isShowAttendance}"
+						class="my-klass-btn-box">
+					<div class="unselectable my-klass-btn short gray"><strong>상태 : </strong> {{getKlassStatusDesc(klass)}}</div>
+					<div class="unselectable my-klass-btn short gray">참여 : {{klass.getActualStudentCnt()}}명</div>
+					<div  
+					[ngClass]="{'enable':isValidAttendance(),'gray':!isValidAttendance()}"
+					(click)="onClickAttendance($event, klass)"
+					class="unselectable my-klass-btn short">출석률 : {{klass.getAttendancePercentage()}}</div>
+
+				</div>
+			</td>
+			<td class="my-style btn-box">
+				
+				<div 	[ngClass]="{'first':isShowAttendance}"
+						class="my-klass-btn-box my-left">
+					<div class="unselectable my-klass-btn short gray"><strong>피드백</strong></div>
+					<div class="unselectable my-klass-btn short enable">리뷰 : {{klass.getTotalReviewCnt()}}건</div>
+					<div class="unselectable my-klass-btn short enable">문의 : {{klass.getTotalQuestionCnt()}}건</div>
+				</div>
+
+			</td>
+		</tr>
+	</tbody>
+</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- 수업 요약 정보 우측 끝 -->
+
+			</td>
+		</tr>
+		<!-- 수업 요약 정보 row 끝 -->
+	
+		<!-- 출석리스트 시작 -->
+		<tr *ngIf="isShowAttendance && klass.klass_n_student_list">
+			<td class="my-style" colspan="2">
+
+<!-- 출석리스트 내부 테이블 시작 -->
+<div class="at-box">
+	<div class="at-cell" *ngFor="let klass_n_student of klass.klass_n_student_list;">
+		<table class="table my-style"> 
+			<tbody> 
+				<tr>
+					<td class="my-style my-at" style="padding:10px;">
+
+						<img
+						*ngIf="klass_n_student.user && klass_n_student.user.thumbnail"
+						src="{{klass_n_student.user.thumbnail}}" 
+						alt="{{klass_n_student.user.nickname}}"
+						class="img-circle my-img-student">
+
+					</td>
+				</tr>
+				<tr *ngFor="let attendance of klass_n_student.attendance_list">
+					<td class="my-style my-at">
+						<div 	
+						(click)="onClickAttendanceDate($event, attendance)"
+						[ngClass]="{'at-ready':attendance.status=='R','at-presence':attendance.status=='P','at-absence':attendance.status=='A'}"
+						class="unselectable my-klass-btn mini my-left">
+							<small>
+								<strong>({{attendance.getStatusKor()}})</strong>&nbsp;{{attendance.getYYYYMMDDKor()}}
+							</small>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!-- 출석리스트 내부 테이블 끝 -->
+
+			</td>
+		</tr>
+		<!-- 출석리스트 끝 -->
+		
+		<!-- padding-bottom 시작 -->
+		<tr *ngIf="!isLast">
+			<td [ngClass]="{'my-shim':!isLast}" class="my-style"></td>
+			<td [ngClass]="{'my-shim':!isLast}" class="my-style"></td>
+		</tr>
+		<!-- padding-bottom 끝 -->
+
+	</tbody>
+</table>

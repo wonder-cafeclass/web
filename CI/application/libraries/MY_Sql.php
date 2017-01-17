@@ -4664,8 +4664,6 @@ class MY_Sql extends MY_Library
     // @ Desc : 특정 수업에 참여한 모든 유저의 데이터를 가져옵니다. 유저에게 출석 통계 정보를 추가합니다.
     public function select_klass_n_student_stat_list($klass_id=-1, $klass_status="")
     {
-        // wonder.jung
-
         if($this->is_not_ok("klass_id", $klass_id))
         {
             $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
@@ -5004,6 +5002,65 @@ class MY_Sql extends MY_Library
 
     } // end method
 
+    public function update_attendance($login_user_id=-1, $attendance_id=-1, $klass_id=-1, $user_id=-1, $klass_attendance_status="")
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }        
+        if($this->is_not_ok("user_id", $login_user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_attendance_id", $attendance_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_attendance_status", $klass_attendance_status))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_attendance_status\", \$klass_attendance_status)");
+            return;
+        }
+
+        // Execute Query
+        $data = array(
+            'status' => $klass_attendance_status
+        );
+        $this->CI->db->where('id', $attendance_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->update('attendance', $data);
+
+        // Log Query
+        $this->CI->db->where('id', $attendance_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('klass_id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('attendance');
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+    } // end method    
+
     public function get_attendance_cnt($klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
     {
         if($this->is_not_ready())
@@ -5053,9 +5110,89 @@ class MY_Sql extends MY_Library
         $cnt = $this->CI->db->count_all_results();
 
         return $cnt;
-    }    
+    } 
 
-    public function get_attendance($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
+    private function set_where_attendance($attendance_id=-1, $klass_id=-1, $user_id=-1)
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        if(0 < $attendance_id) 
+        {
+            $this->CI->db->where('id', $attendance_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
+    }
+    public function get_attendance($attendance_id=-1, $klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if
+        if($this->is_not_ok("klass_attendance_id", $attendance_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            return;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            return;
+        } // end if
+
+        $this->set_where_attendance($attendance_id, $klass_id, $user_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance($attendance_id, $klass_id, $user_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->row();
+    }       
+
+    private function set_where_attendance_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
+        if(!empty($date_attend))
+        {
+            // 년, 월, 일이 동일한 결과만 검색하도록 합니다. 시간 범위로 검색.
+            $where = "DATE_FORMAT('$date_attend', '%Y-%m-%d 00:00:00') < attendance.date_attend";
+            $this->CI->db->where($where);
+            $where = "attendance.date_attend < DATE_FORMAT('$date_attend', '%Y-%m-%d 23:59:59')";
+            $this->CI->db->where($where);            
+        }  
+        if(!empty($attendance_status))
+        {
+            $this->CI->db->where('status', $attendance_status);
+        }
+        $this->CI->db->limit($limit,$offset);
+    }
+    public function get_attendance_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
     {
         if($this->is_not_ready())
         {
@@ -5089,32 +5226,12 @@ class MY_Sql extends MY_Library
             $attendance_status = "";
         }
 
-        $query_fields = $this->get_query_field_attendance();
-
-        $this->CI->db->select($query_fields);
-        $this->CI->db->from('attendance');
-        if(0 < $klass_id) 
-        {
-            $this->CI->db->where('klass_id', $klass_id);
-        }
-        if(0 < $user_id) 
-        {
-            $this->CI->db->where('user_id', $user_id);
-        }
-        if(!empty($date_attend))
-        {
-            // 년, 월, 일이 동일한 결과만 검색하도록 합니다. 시간 범위로 검색.
-            $where = "DATE_FORMAT('$date_attend', '%Y-%m-%d 00:00:00') < attendance.date_attend";
-            $this->CI->db->where($where);
-            $where = "attendance.date_attend < DATE_FORMAT('$date_attend', '%Y-%m-%d 23:59:59')";
-            $this->CI->db->where($where);            
-        }  
-        if(!empty($attendance_status))
-        {
-            $this->CI->db->where('status', $attendance_status);
-        }
-        $this->CI->db->limit($limit,$offset);
+        $this->set_where_attendance_list($limit, $offset, $klass_id, $user_id, $date_attend, $attendance_status);
         $query = $this->CI->db->get();
+
+        $this->set_where_attendance_list($limit, $offset, $klass_id, $user_id, $date_attend, $attendance_status);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     }

@@ -21,6 +21,8 @@ export class HelperMyTime {
 	public DATE_TYPE_YYYY_MM_DD_HH_MM_SS:number=6;
 	/* 2012년 12월 11일 01:02:03 */
 	public DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
+	/* 2012년 12월 11일*/
+	public DATE_TYPE_H_YYYY_MM_DD:number=8;
 
 	public getUniqueId():number {
 		return Math.round(window.performance.now() * 100);
@@ -297,7 +299,13 @@ export class HelperMyTime {
 		}
 
 		if(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
+
 			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);	
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD === output_date_format_type) {
+
+			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD);	
+
 		}
 
 		return "";
@@ -328,6 +336,15 @@ export class HelperMyTime {
 
 			// 2012년 12월 11일 01:02:03
 			return `${year}년 ${month}월 ${days}일 ${hours}:${minutes}:${seconds}`;
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD === input_date_format_type) {
+
+			let year = date.getFullYear();
+			let month = date.getMonth() + 1;
+			let days = date.getDate();
+
+			// 2012년 12월 11일 01:02:03
+			return `${year}년 ${month}월 ${days}일`;			
 
 		} // end if
 

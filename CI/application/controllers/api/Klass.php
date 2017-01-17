@@ -194,6 +194,109 @@ class Klass extends MY_REST_Controller {
         } // end if
     }
 
+    public function updateattendance_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_attendance_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_attendance_id",
+            // $key_filter=""
+            "klass_attendance_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_attendance_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_attendance_status",
+            // $key_filter=""
+            "klass_attendance_status"
+        );        
+
+        $params = array(
+            "login_user_id"=>$login_user_id,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "klass_attendance_status"=>$klass_attendance_status
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateattendance_post Failed!");
+            return;
+        } // end if
+
+        // wonder.jung
+        // 출석상태를 업데이트합니다.
+        $this->my_sql->update_attendance(
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $attendance_id=-1,
+            $klass_attendance_id,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1, 
+            $user_id,
+            // $klass_attendance_status=""
+            $klass_attendance_status            
+        );
+
+        // 업데이트 결과를 돌려줍니다.
+        $attendance = 
+        $this->my_sql->get_attendance(
+            // $attendance_id=-1, 
+            $klass_attendance_id,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+
+        $output["row"] = $attendance;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+    }    
+
     public function fetchklassnstudentlist_post()
     {
         $output = [];
@@ -522,6 +625,29 @@ class Klass extends MY_REST_Controller {
             $klass_n_student_stat_list = 
             $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
 
+            // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
+            foreach ($klass_n_student_stat_list as $klass_n_student) {
+
+                $klass_n_student->attendance_list = 
+                $this->my_sql->get_attendance_list(
+                    // $limit=-1, 
+                    100,
+                    // $offset=-1,
+                    0,
+                    // $klass_id=-1, 
+                    $klass_n_student->klass_id,
+                    // $user_id=-1
+                    $klass_n_student->user_id
+                );
+
+                $klass_n_student->attendance_list = 
+                $this->my_decorator->deco_attendance_list(
+                    $klass_n_student->attendance_list
+                );
+
+            } // end foreach
+
+
             $klass->klass_n_student_list = 
             $klass_n_student_stat_list;
             
@@ -677,6 +803,28 @@ class Klass extends MY_REST_Controller {
 
             $klass_n_student_stat_list = 
             $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
+
+            // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
+            foreach ($klass_n_student_stat_list as $klass_n_student) {
+
+                $klass_n_student->attendance_list = 
+                $this->my_sql->get_attendance_list(
+                    // $limit=-1, 
+                    100,
+                    // $offset=-1,
+                    0,
+                    // $klass_id=-1, 
+                    $klass_n_student->klass_id,
+                    // $user_id=-1
+                    $klass_n_student->user_id
+                );
+
+                $klass_n_student->attendance_list = 
+                $this->my_decorator->deco_attendance_list(
+                    $klass_n_student->attendance_list
+                );
+
+            } // end foreach            
 
             $klass->klass_n_student_list = 
             $klass_n_student_stat_list;
@@ -2923,7 +3071,7 @@ class Klass extends MY_REST_Controller {
         $output["pagination"] = $pagination;
 
         $list =
-        $this->my_sql->get_attendance(
+        $this->my_sql->get_attendance_list(
             // $limit=-1, 
             $limit,
             // $offset=-1, 

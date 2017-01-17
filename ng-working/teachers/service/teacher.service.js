@@ -18,6 +18,8 @@ var TeacherService = (function () {
     function TeacherService(urlService, http) {
         this.urlService = urlService;
         this.http = http;
+        // 학생 출석 상태 바꾸기
+        this.updateAttendanceUrl = '/CI/index.php/api/klass/updateattendance';
         // 활동중인 수업만 가져오기
         this.fetchActiveKlassListUrl = '/CI/index.php/api/klass/fetchactiveklasslistbyteacher';
         // 모든 수업 가져오기
@@ -30,6 +32,36 @@ var TeacherService = (function () {
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
+    TeacherService.prototype.updateAttendance = function (apiKey, loginUserId, attedanceId, klassId, userId, klassAttendanceStatus) {
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / 시작");
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / loginUserId : ", loginUserId);
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / attedanceId : ", attedanceId);
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / userId : ", userId);
+        if (this.isDebug())
+            console.log("user.service / updateAttendance / klassAttendanceStatus : ", klassAttendanceStatus);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.updateAttendanceUrl);
+        var params = {
+            login_user_id: loginUserId,
+            klass_attendance_id: attedanceId,
+            klass_id: klassId,
+            user_id: userId,
+            klass_attendance_status: klassAttendanceStatus
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    }; // end method    
     TeacherService.prototype.fetchActiveKlassList = function (apiKey, pageNum, pageRowCnt, teacherId) {
         if (this.isDebug())
             console.log("user.service / fetchActiveKlassListUrl / 시작");

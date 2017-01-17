@@ -233,7 +233,7 @@ var TeacherInfoKlassComponent = (function () {
             } // end if
         }
         else if (myEvent.hasEventName(this.watchTower.getMyEventService().ON_CLICK)) {
-            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_LIST_TEACHER)) {
+            if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_TEACHER)) {
                 this.onClickKlass(myEvent.metaObj);
             } // end if
         } // end if

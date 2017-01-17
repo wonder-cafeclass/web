@@ -14,6 +14,8 @@ class KlassNStudent {
         public $user=null;
         public $teacher=null;
 
+        public $attendance_list=[];
+
         public $attendance_total_cnt=-1;
         public $attendance_presence_cnt=-1;
         public $attendance_ready_cnt=-1;

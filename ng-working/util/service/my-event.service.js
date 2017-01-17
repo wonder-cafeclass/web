@@ -190,7 +190,7 @@ var MyEventService = (function () {
         // 수업과 학생 리스트 위젯 - 학생이 신청한 수업 리스트를 보여주는 위젯. 대시보드와 개인 수업 리스트에서 쓰임.
         this.KEY_WIDGET_KLASS_N_STUDENT_LIST = "KEY_WIDGET_KLASS_N_STUDENT_LIST";
         // 선생님용 수업과 학생 리스트 위젯.
-        this.KEY_WIDGET_KLASS_LIST_TEACHER = "KEY_WIDGET_KLASS_LIST_TEACHER";
+        this.KEY_WIDGET_KLASS_TEACHER = "KEY_WIDGET_KLASS_TEACHER";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

@@ -1,5 +1,6 @@
 import { HelperMyIs }         from '../../util/helper/my-is';
-import { HelperMyTime }         from '../../util/helper/my-time';
+import { HelperMyTime }       from '../../util/helper/my-time';
+import { HelperMyArray }      from '../../util/helper/my-array';
 import { Teacher }            from '../../teachers/model/teacher';
 import { PaymentImport }      from '../../widget/payment/model/payment-import';
 import { User }               from '../../users/model/user';
@@ -10,6 +11,7 @@ export class KlassNStudent {
 
 	private myIs:HelperMyIs;
     private myTime:HelperMyTime;
+    private myArray:HelperMyArray;
 
 	public id:number=-1;
 	public klass_id:number=-1;
@@ -22,6 +24,8 @@ export class KlassNStudent {
     public klass:Klass;
     public teacher:Teacher;
     public user:User;
+
+    public attendance_list:KlassAttendance[]=[];
 
     // 출,결석 횟수
     public attendance_total_cnt:number=-1;
@@ -41,6 +45,7 @@ export class KlassNStudent {
 	) {
 		this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
+        this.myArray = new HelperMyArray();
 	}
 
 	isSame(target:KlassNStudent):boolean {
@@ -147,6 +152,17 @@ export class KlassNStudent {
         if(null != json.user) {
             klassStudent.user = new User().setJSON(json.user);
         }
+
+        if(klassStudent.myArray.isOK(json.attendance_list)) {
+            let kaList:KlassAttendance[] = [];
+            for (var i = 0; i < json.attendance_list.length; ++i) {
+                let json_attendance = json.attendance_list[i];
+                let ka:KlassAttendance = new KlassAttendance().setJSON(json_attendance);
+
+                kaList.push(ka);
+            } // end for
+            klassStudent.attendance_list = kaList;
+        } // end if
 
         return klassStudent;
 

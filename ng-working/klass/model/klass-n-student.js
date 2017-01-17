@@ -1,9 +1,11 @@
 "use strict";
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
+var my_array_1 = require('../../util/helper/my-array');
 var teacher_1 = require('../../teachers/model/teacher');
 var user_1 = require('../../users/model/user');
 var klass_1 = require('./klass');
+var klass_attendance_1 = require('./klass-attendance');
 var KlassNStudent = (function () {
     function KlassNStudent() {
         this.id = -1;
@@ -13,6 +15,7 @@ var KlassNStudent = (function () {
         this.status = "";
         this.date_created = "";
         this.date_updated = "";
+        this.attendance_list = [];
         // 출,결석 횟수
         this.attendance_total_cnt = -1;
         this.attendance_ready_cnt = -1;
@@ -25,6 +28,7 @@ var KlassNStudent = (function () {
         this.receipt_url = "";
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
+        this.myArray = new my_array_1.HelperMyArray();
     }
     KlassNStudent.prototype.isSame = function (target) {
         return this.myIs.isSame(this, target);
@@ -109,6 +113,15 @@ var KlassNStudent = (function () {
         if (null != json.user) {
             klassStudent.user = new user_1.User().setJSON(json.user);
         }
+        if (klassStudent.myArray.isOK(json.attendance_list)) {
+            var kaList = [];
+            for (var i = 0; i < json.attendance_list.length; ++i) {
+                var json_attendance = json.attendance_list[i];
+                var ka = new klass_attendance_1.KlassAttendance().setJSON(json_attendance);
+                kaList.push(ka);
+            } // end for
+            klassStudent.attendance_list = kaList;
+        } // end if
         return klassStudent;
     }; // end method
     KlassNStudent.prototype._setJSON = function (json) {

@@ -1,6 +1,3 @@
-div.my-shim {
-    
-}
 table.my-style {
     margin: 0px;
 }
@@ -36,6 +33,9 @@ div.my-klass-btn.float-l {
 	float:left;
     margin-top: 0px;
 }
+div.my-klass-btn.my-left {
+    text-align: left;
+}
 div.my-klass-btn.gray {
     color: #999;
     border: 1px solid #eee;
@@ -56,10 +56,17 @@ div.my-klass-btn-box {
     border-bottom: 1px solid #ddd;
     height: 110px;
 }
+div.my-klass-btn-box.first {
+    border-bottom: 1px solid #eee;
+}
 div.my-klass-btn-box.my-left {
 	border-right: 1px solid #ddd;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;	
+}
+div.my-klass-btn-box.my-left.first {
+    border-bottom-right-radius: 0px;   
+    border-bottom: 1px solid #eee;
 }
 td.my-style {
 	border: 0px;
@@ -75,9 +82,52 @@ td.btn-box {
 td.my-style.my-shim {
     padding-bottom: 10px;    
 }
+td.my-at {
+
+}
 img.cc-img-filter {
   height:33px;
   margin-left: -5px;
+}
+div.my-klass-btn.mini {
+    color: #e85c41;
+    border: 1px solid #e85c41;
+    background-color: #fff;
+    font-size:12px;
+    width:130px;
+}
+div.my-klass-btn.text-left {
+    text-align: left;
+}
+div.my-klass-btn.at-ready {
+    color: #337ab7;
+    border: 1px solid #337ab7;
+    background-color: #fff;
+}
+div.my-klass-btn.at-ready:hover {
+    color: #fff;
+    border: 1px solid #337ab7;
+    background-color: #337ab7;
+}
+div.my-klass-btn.at-presence {
+    color: #5cb85c;
+    border: 1px solid #5cb85c;
+    background-color: #fff;
+}
+div.my-klass-btn.at-presence:hover {
+    color: #fff;
+    border: 1px solid #5cb85c;
+    background-color: #5cb85c;
+}
+div.my-klass-btn.at-absence {
+    color: #e85c41;
+    border: 1px solid #e85c41;
+    background-color: #fff;
+}
+div.my-klass-btn.at-absence:hover {
+    color: #fff;
+    border: 1px solid #e85c41;
+    background-color: #e85c41;
 }
 div.my-klass-btn.enable {
     color: #e85c41;
@@ -94,10 +144,35 @@ div.my-klass-btn.disable {
     border: 1px solid #ddd;
     background-color: #fff;
 }
-
+div.at-box {
+    width:100%;
+    border:1px solid #ddd;
+    border-top:0px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;    
+}
+div.at-cell {
+    width:150px;
+    border:0px;
+    border-right:1px solid #eee;
+    padding: 5px;
+}
 img.my-style {
     width:110px;
     border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;	
+    border-bottom-left-radius: 20px;
     cursor: pointer;
+}
+img.my-style.first {
+    border-bottom-left-radius: 0px;
+}
+img.my-style.between {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+img.my-style.last {
+    border-top-left-radius: 0px;
+}
+img.my-img-student {
+    width:80px;
 }

@@ -1203,7 +1203,6 @@ class MY_Decorator extends MY_Library
         $ks->review_cnt = $this->getNumber($target, "review_cnt");
         $ks->question_cnt = $this->getNumber($target, "question_cnt");
 
-
         $user = new User();
 
         $user->id = $this->getNumber($target, "user_id");

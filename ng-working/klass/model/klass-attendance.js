@@ -1,5 +1,6 @@
 "use strict";
 var my_is_1 = require('../../util/helper/my-is');
+var my_time_1 = require('../../util/helper/my-time');
 var KlassAttendance = (function () {
     function KlassAttendance() {
         this.id = -1;
@@ -9,7 +10,11 @@ var KlassAttendance = (function () {
         this.date_attend = "";
         this.date_created = "";
         this.date_updated = "";
+        this.status_ready = "R";
+        this.status_presence = "P";
+        this.status_absence = "A";
         this.myIs = new my_is_1.HelperMyIs();
+        this.myTime = new my_time_1.HelperMyTime();
     }
     KlassAttendance.prototype.isNotReady = function () {
         return !this.isReady();
@@ -23,6 +28,40 @@ var KlassAttendance = (function () {
     KlassAttendance.prototype.isSharing = function (key, target) {
         return this.myIs.isSharing(key, this, target);
     };
+    KlassAttendance.prototype.getYYYYMMDDKor = function () {
+        var yyyymmdd = this.myTime.convert(
+        // date_str:string, 
+        this.date_attend, 
+        // input_date_format_type:number, 
+        this.myTime.DATE_TYPE_YYYY_MM_DD_HH_MM_SS, 
+        // output_date_format_type:number
+        this.myTime.DATE_TYPE_H_YYYY_MM_DD);
+        return yyyymmdd;
+    };
+    KlassAttendance.prototype.getStatusKor = function () {
+        if (this.status_ready === this.status) {
+            return "준비";
+        }
+        else if (this.status_presence === this.status) {
+            return "출석";
+        }
+        else if (this.status_absence === this.status) {
+            return "결석";
+        }
+        return "";
+    };
+    // @ Desc : 출석 상태를 다음 단계로 업데이트 합니다. R(준비)-->P(출석)-->A(결석)-->R(준비)...
+    KlassAttendance.prototype.updateStatus = function () {
+        if (this.status_ready === this.status) {
+            this.status = this.status_presence;
+        }
+        else if (this.status_presence === this.status) {
+            this.status = this.status_absence;
+        }
+        else if (this.status_absence === this.status) {
+            this.status = this.status_ready;
+        } // end if
+    }; // end method
     KlassAttendance.prototype.setJSON = function (json) {
         // let isDebug:boolean = true;
         var isDebug = false;

@@ -14,6 +14,8 @@ import { User }                            from "../../users/model/user";
 @Injectable()
 export class TeacherService {
   
+  // 학생 출석 상태 바꾸기
+  private updateAttendanceUrl = '/CI/index.php/api/klass/updateattendance';
   // 활동중인 수업만 가져오기
   private fetchActiveKlassListUrl = '/CI/index.php/api/klass/fetchactiveklasslistbyteacher';
   // 모든 수업 가져오기
@@ -35,6 +37,40 @@ export class TeacherService {
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
   }
+
+  updateAttendance (
+    apiKey:string,
+    loginUserId:number,
+    attedanceId:number,
+    klassId:number,
+    userId:number,
+    klassAttendanceStatus:string ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / updateAttendance / 시작");
+    if(this.isDebug()) console.log("user.service / updateAttendance / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updateAttendance / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / attedanceId : ",attedanceId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / klassId : ",klassId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / userId : ",userId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / klassAttendanceStatus : ",klassAttendanceStatus);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.updateAttendanceUrl);
+    let params = {
+      login_user_id:loginUserId,
+      klass_attendance_id:attedanceId,
+      klass_id:klassId,
+      user_id:userId,
+      klass_attendance_status:klassAttendanceStatus
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method    
 
   fetchActiveKlassList (
     apiKey:string,
