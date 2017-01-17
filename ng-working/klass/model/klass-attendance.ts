@@ -17,9 +17,15 @@ export class KlassAttendance {
 	public date_created:string="";
 	public date_updated:string="";
 
-	private status_ready:string = "R";
-	private status_presence:string = "P";
-	private status_absence:string = "A";
+	public status_ready:string = "R";
+	public status_presence:string = "P";
+	public status_absence:string = "A";
+
+	public status_ready_kor:string = "준비";
+	public status_presence_kor:string = "출석";
+	public status_absence_kor:string = "결석";
+
+	public user:User;
 
 	constructor(
 	) {

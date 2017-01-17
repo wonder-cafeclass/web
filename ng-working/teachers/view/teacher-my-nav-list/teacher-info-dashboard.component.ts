@@ -158,6 +158,31 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
 
   }
 
+  private emitEventOnChangeMeta(value:string):void {
+
+    if(this.isDebug()) console.log("teacher-info-dashboard / emitEventOnChangeMeta / 시작");
+
+    let myEvent:MyEvent =
+    this.watchTower.getEventOnChangeMeta(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      value,
+      // myChecker:MyChecker,
+      this.watchTower.getMyCheckerService().getFreePassChecker(),
+      // meta:any
+      this
+    );
+
+    this.emitter.emit(myEvent);
+
+  }
+
+  public reload():void {
+    if(this.isDebug()) console.log("teacher-info-dashboard / reload / 시작");
+    this.fetchActiveKlassList();
+  }
+
   private fetchActiveKlassList():void {
 
     if(this.isDebug()) console.log("teacher-info-dashboard / fetchActiveKlassList / 시작");
@@ -335,6 +360,7 @@ export class TeacherInfoDashboardComponent implements AfterViewInit {
         if(myEvent.metaObj instanceof KlassAttendance) {
 
           this.updateKlassAttendance(myEvent.metaObj);
+          this.emitEventOnChangeMeta("");
 
         } // end if
 

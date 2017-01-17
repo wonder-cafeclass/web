@@ -211,6 +211,29 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
   }
 
+  private emitEventOnChange(value:string):void {
+
+    if(this.isDebug()) console.log("teacher-info-dashboard / emitEventOnChange / 시작");
+
+    let myEvent:MyEvent =
+    this.watchTower.getEventOnChange(
+      // eventKey:string, 
+      this.eventKey,
+      // value:string, 
+      value,
+      // myChecker:MyChecker
+      this.watchTower.getMyCheckerService().getFreePassChecker()
+    );
+
+    this.emitter.emit(myEvent);
+
+  } // end method
+
+  public reload():void {
+    if(this.isDebug()) console.log("teacher-info-klass / reload / 시작");
+    this.fetchAllKlassList();
+  }
+
   private fetchAllKlassList():void {
 
     if(this.isDebug()) console.log("teacher-info-klass / fetchAllKlassList / 시작");
@@ -388,6 +411,7 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
         if(myEvent.metaObj instanceof KlassAttendance) {
 
           this.updateKlassAttendance(myEvent.metaObj);
+          this.emitEventOnChange("");
 
         } // end if
 

@@ -15,6 +15,8 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var klass_color_service_1 = require('../../klass/service/klass-color.service');
 var klass_radiobtn_service_1 = require('../../klass/service/klass-radiobtn.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var teacher_info_dashboard_component_1 = require('./teacher-my-nav-list/teacher-info-dashboard.component');
+var teacher_info_klass_component_1 = require('./teacher-my-nav-list/teacher-info-klass.component');
 var TeacherMyNavListComponent = (function () {
     function TeacherMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, watchTower, myCheckerService) {
         this.klassColorService = klassColorService;
@@ -150,16 +152,32 @@ var TeacherMyNavListComponent = (function () {
         }
         else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
             if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
-                this.resetNavFlag();
-                this.showDashboard = true;
+                if (myEvent.metaObj instanceof teacher_info_dashboard_component_1.TeacherInfoDashboardComponent) {
+                    // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+                    if (null != this.klassComponent) {
+                        this.klassComponent.reload();
+                    }
+                }
+                else {
+                    this.resetNavFlag();
+                    this.showDashboard = true;
+                } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
                 this.resetNavFlag();
                 this.showMyInfo = true;
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
-                this.resetNavFlag();
-                this.showMyKlass = true;
+                if (myEvent.metaObj instanceof teacher_info_klass_component_1.TeacherInfoKlassComponent) {
+                    // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+                    if (null != this.dashboardComponent) {
+                        this.dashboardComponent.reload();
+                    }
+                }
+                else {
+                    this.resetNavFlag();
+                    this.showMyKlass = true;
+                } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
                 this.resetNavFlag();

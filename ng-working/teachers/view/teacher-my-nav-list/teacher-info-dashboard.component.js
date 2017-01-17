@@ -105,6 +105,25 @@ var TeacherInfoDashboardComponent = (function () {
         this);
         this.emitter.emit(myEvent);
     };
+    TeacherInfoDashboardComponent.prototype.emitEventOnChangeMeta = function (value) {
+        if (this.isDebug())
+            console.log("teacher-info-dashboard / emitEventOnChangeMeta / 시작");
+        var myEvent = this.watchTower.getEventOnChangeMeta(
+        // eventKey:string, 
+        this.eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker,
+        this.watchTower.getMyCheckerService().getFreePassChecker(), 
+        // meta:any
+        this);
+        this.emitter.emit(myEvent);
+    };
+    TeacherInfoDashboardComponent.prototype.reload = function () {
+        if (this.isDebug())
+            console.log("teacher-info-dashboard / reload / 시작");
+        this.fetchActiveKlassList();
+    };
     TeacherInfoDashboardComponent.prototype.fetchActiveKlassList = function () {
         var _this = this;
         if (this.isDebug())
@@ -231,6 +250,7 @@ var TeacherInfoDashboardComponent = (function () {
             if (myEvent.hasKey(this.myEventService.KEY_WIDGET_KLASS_TEACHER)) {
                 if (myEvent.metaObj instanceof klass_attendance_1.KlassAttendance) {
                     this.updateKlassAttendance(myEvent.metaObj);
+                    this.emitEventOnChangeMeta("");
                 } // end if
             } // end if
         }

@@ -118,6 +118,9 @@ class KlassCourse {
         // 수업 참여 학생 통계 리스트 
         public $klass_n_student_list;
 
+        // 수업 출석 테이블 / 날짜순 정렬 
+        public $klass_attendance_table;
+
         public $delimiter="|||";
 
         // REFACTOR ME - 몇 군데에서 사용중.

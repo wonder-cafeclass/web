@@ -210,8 +210,15 @@ export class TeacherMyNavListComponent implements AfterViewInit {
 
       if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
 
-        this.resetNavFlag();
-        this.showDashboard = true;
+        if(myEvent.metaObj instanceof TeacherInfoDashboardComponent) {
+          // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+          if(null != this.klassComponent) {
+            this.klassComponent.reload();
+          }
+        } else {
+          this.resetNavFlag();
+          this.showDashboard = true;
+        } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
 
@@ -220,8 +227,15 @@ export class TeacherMyNavListComponent implements AfterViewInit {
 
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
 
-        this.resetNavFlag();
-        this.showMyKlass = true;
+        if(myEvent.metaObj instanceof TeacherInfoKlassComponent) {
+          // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+          if(null != this.dashboardComponent) {
+            this.dashboardComponent.reload();
+          }
+        } else {
+          this.resetNavFlag();
+          this.showMyKlass = true;
+        } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
 

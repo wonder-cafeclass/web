@@ -5,6 +5,7 @@ import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
 import { KlassVenue }               from './klass-venue';
 import { KlassNStudent }            from './klass-n-student';
+import { KlassAttendance }          from './klass-attendance';
 
 import { Calendar }                 from '../../widget/calendar/model/calendar';
 
@@ -88,6 +89,10 @@ export class Klass {
     public klass_calendar_list: KlassCalendar[]=null;
 
     public klass_n_student_list:KlassNStudent[]=null;
+
+    // 수업 출석 테이블 / 날짜순 정렬 
+    public klass_attendance_table:KlassAttendance[][]=null;
+
 
     public date_created: string="";
     public date_updated: string="";
@@ -786,6 +791,7 @@ export class Klass {
         klass.setKlassCalendarList(klass.calendar_table_monthly);
 
         // klass_n_student_list
+        let userMap = {};
         if(this.myArray.isOK(klass.klass_n_student_list)) {
 
             let list:KlassNStudent[] = [];
@@ -793,11 +799,40 @@ export class Klass {
                 let json = klass.klass_n_student_list[i];
                 let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
                 list.push(klassNStudent);
+                userMap[klassNStudent.user_id] = klassNStudent.user;
             } // end for
 
             klass.klass_n_student_list = list;
         }
 
+
+
+        // klass_attendance_table
+        if(this.myArray.isOK(klass.klass_attendance_table)) {
+
+            let table:KlassAttendance[][] = [];
+            for (var i = 0; i < klass.klass_attendance_table.length; ++i) {
+                let json_list = klass.klass_attendance_table[i];
+                let list:KlassAttendance[] = [];
+                for (var j = 0; j < json_list.length; ++j) {
+                    let json = json_list[j];
+                    let kat:KlassAttendance = new KlassAttendance().setJSON(json);
+
+                    let userIdFromKat:number = kat.user_id;
+                    if(0 < userIdFromKat && userMap[userIdFromKat]) {
+                        // 출석에 맞는 유저 정보를 지정.
+                        kat.user = userMap[userIdFromKat];
+                    } // end if
+
+                    list.push(kat);
+                } // end inner for
+
+                table.push(list);
+            } // end for
+
+            klass.klass_attendance_table = table;
+        } // end if
+        
         return klass;
 
     } // end method

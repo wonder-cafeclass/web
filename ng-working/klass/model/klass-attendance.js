@@ -13,6 +13,9 @@ var KlassAttendance = (function () {
         this.status_ready = "R";
         this.status_presence = "P";
         this.status_absence = "A";
+        this.status_ready_kor = "준비";
+        this.status_presence_kor = "출석";
+        this.status_absence_kor = "결석";
         this.myIs = new my_is_1.HelperMyIs();
         this.myTime = new my_time_1.HelperMyTime();
     }

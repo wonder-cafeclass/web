@@ -101,6 +101,83 @@
 
 <!-- 출석리스트 내부 테이블 시작 -->
 <div class="at-box">
+	<table *ngIf="klass.klass_attendance_table" class="table table-bordered table-hover my-style"> 
+		<thead> 
+			<tr>
+				<th style="text-align:left;width:140px;">
+					<small>수업날짜</small>
+				</th>
+				<th *ngFor="let klass_attendance of klass.klass_attendance_table[0];">
+					<div *ngIf="klass_attendance.user">
+						<small>{{klass_attendance.user.nickname}}</small>
+					</div>
+				</th>
+			</tr> 
+		</thead> 
+		<tbody> 
+			<!-- <tr *ngFor="let klass of klassList"> -->
+			<tr *ngFor="let klass_attendance_list of klass.klass_attendance_table;">
+				<!-- 수업 참여 유저 닉네임 -->
+				<td class="my-at-text">
+					<small>{{klass_attendance_list[0].getYYYYMMDDKor()}}</small>
+				</td>
+				<td class="my-at-text" *ngFor="let klass_attendance of klass_attendance_list;">
+					<!-- 상태별 체크박스 -->
+					<div *ngIf="klass_attendance.user">
+
+						<!-- 체크박스 : 준비 -->
+						<div class="radio my-radio">
+							<label>
+								<input 
+								#radio_ready
+								[checked]="klass_attendance.isReady()"
+								(change)="onCheck($event, $event.target.value, radio_ready.checked, radio_ready, klass_attendance)"
+								class="my-radio"
+								type="radio" 
+								name={{klass_attendance.id}} 
+								value={{klass_attendance.status_ready}}>
+								<small>{{klass_attendance.status_ready_kor}}</small>
+							</label>
+						</div>
+
+						<!-- 체크박스 : 출석 -->
+						<div class="radio my-radio">
+							<label>
+								<input 
+								#radio_presence
+								[checked]="klass_attendance.isPresence()"
+								(change)="onCheck($event, $event.target.value, radio_presence.checked, radio_presence, klass_attendance)"
+								class="my-radio"
+								type="radio" 
+								name={{klass_attendance.id}} 
+								value={{klass_attendance.status_presence}}>
+								<small>{{klass_attendance.status_presence_kor}}</small>
+							</label>
+						</div>
+
+						<!-- 체크박스 : 결석 -->
+						<div class="radio my-radio">
+							<label>
+								<input 
+								#radio_absence
+								[checked]="klass_attendance.isAbsence()"
+								(change)="onCheck($event, $event.target.value, radio_absence.checked, radio_absence, klass_attendance)"
+								class="my-radio"
+								type="radio" 
+								name={{klass_attendance.id}} 
+								value={{klass_attendance.status_absence}}>
+								<small>{{klass_attendance.status_absence_kor}}</small>
+							</label>
+						</div>
+
+					</div>
+				</td>
+			</tr> 
+		</tbody> 
+	</table>
+</div>
+<!--
+<div class="at-box">
 	<div class="at-cell" *ngFor="let klass_n_student of klass.klass_n_student_list;">
 		<table class="table my-style"> 
 			<tbody> 
@@ -131,6 +208,7 @@
 		</table>
 	</div>
 </div>
+-->
 <!-- 출석리스트 내부 테이블 끝 -->
 
 			</td>

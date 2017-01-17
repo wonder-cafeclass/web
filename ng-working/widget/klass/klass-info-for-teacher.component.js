@@ -20,6 +20,8 @@ var KlassInfoForTeacherComponent = (function () {
         this.isLast = false;
         this.isShowAttendance = false;
         this.attendancePercentage = "";
+        // 날짜별로 유저 출석 테이블을 구성.
+        this.atTable = [];
         // Do something...
         this.myArray = new my_array_1.HelperMyArray();
     } // end constructor
@@ -209,6 +211,20 @@ var KlassInfoForTeacherComponent = (function () {
             klassNStudent.attendance_absence_cnt = attendance_absence_cnt;
         } // end for
         this.attendancePercentage = this.klass.getAttendancePercentage();
+    };
+    KlassInfoForTeacherComponent.prototype.onCheck = function (event, value, checked, radioBtn, ka) {
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / 시작");
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / event : ", event);
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / value : ", value);
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / checked : ", checked);
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / radioBtn : ", radioBtn);
+        if (this.isDebug())
+            console.log("klass-info-for-teacher / onCheck / ka : ", ka);
     };
     KlassInfoForTeacherComponent.prototype.onClickTeacher = function (event) {
         if (this.isDebug())

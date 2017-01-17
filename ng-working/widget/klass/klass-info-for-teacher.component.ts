@@ -36,6 +36,9 @@ export class KlassInfoForTeacherComponent implements OnInit {
   isShowAttendance:boolean=false;
   attendancePercentage:string="";
 
+  // 날짜별로 유저 출석 테이블을 구성.
+  atTable:KlassAttendance[][] = [];
+
   private myArray:HelperMyArray;
 
   constructor(private watchTower:MyEventWatchTowerService) {
@@ -229,7 +232,6 @@ export class KlassInfoForTeacherComponent implements OnInit {
     // 화면에 표시된 출석률 업데이트
     this.updateAttendancePercentage();
 
-
   } // end method
 
   updateAttendancePercentage():void {
@@ -281,6 +283,20 @@ export class KlassInfoForTeacherComponent implements OnInit {
     } // end for
 
     this.attendancePercentage = this.klass.getAttendancePercentage();
+
+  }
+
+  onCheck(event, value:string, checked:boolean, radioBtn, ka:KlassAttendance):void {
+
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / 시작");
+
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / event : ",event);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / value : ",value);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / checked : ",checked);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / radioBtn : ",radioBtn);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / ka : ",ka);
+
+
 
   }
 

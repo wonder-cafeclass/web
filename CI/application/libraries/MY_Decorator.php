@@ -1142,6 +1142,48 @@ class MY_Decorator extends MY_Library
 
     } // end method 
 
+    public function deco_attendance_table_by_attend_date($src_list=null) 
+    {
+        if(empty($src_list))
+        {
+            return [];
+        }
+
+        $target_list = 
+        $this->deco_attendance_list($src_list);
+
+        $date_attend_prev = "";
+        $target_table = [];
+        $target_list_date_attend = [];
+        for ($i=0; $i < count($target_list); $i++) 
+        { 
+            $attendance = $target_list[$i];
+
+            if(empty($date_attend_prev)) 
+            {
+                $date_attend_prev = $attendance->date_attend;
+            } // end if
+
+            if($attendance->date_attend != $date_attend_prev) 
+            {
+                // 새로운 날짜로 변경
+                array_push($target_table, $target_list_date_attend);
+                $target_list_date_attend = [];
+            }
+
+            array_push($target_list_date_attend, $attendance);
+
+            // 마지막 엘리먼트라면, 테이블에 리스트를 추가하고 종료
+            if($i == (count($target_list) - 1)) 
+            {
+                array_push($target_table, $target_list_date_attend);
+                $target_list_date_attend = [];
+            } // end if
+        } // end for
+
+        return $target_table;
+    } // end method    
+
     public function deco_attendance_list($src_list=null) 
     {
         if(empty($src_list))

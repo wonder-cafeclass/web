@@ -5164,6 +5164,42 @@ class MY_Sql extends MY_Library
         return $query->row();
     }       
 
+
+
+    private function set_where_attendance_table($klass_id=-1)
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->order_by('date_attend', 'ASC');
+        $this->CI->db->order_by('user_id', 'ASC');
+
+    }
+    public function get_attendance_table($klass_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        }
+
+        $this->set_where_attendance_table($klass_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance_table($klass_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
+
     private function set_where_attendance_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
     {
         $query_fields = $this->get_query_field_attendance();
