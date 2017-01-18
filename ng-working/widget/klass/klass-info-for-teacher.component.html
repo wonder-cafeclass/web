@@ -96,7 +96,7 @@
 		<!-- 수업 요약 정보 row 끝 -->
 	
 		<!-- 출석리스트 시작 -->
-		<tr *ngIf="isShowAttendance && klass.klass_n_student_list">
+		<tr *ngIf="isShowAttendance && klass.klass_attendance_table">
 			<td class="my-style" colspan="2">
 
 <!-- 출석리스트 내부 테이블 시작 -->
@@ -108,45 +108,36 @@
 					<small>수업날짜</small>
 				</th>
 				<th *ngFor="let klass_attendance of klass.klass_attendance_table[0];">
+					<!-- 학생 이름 -->
 					<div *ngIf="klass_attendance.user">
 						<small>{{klass_attendance.user.nickname}}</small>
 					</div>
 				</th>
+
 			</tr> 
 		</thead> 
 		<tbody> 
-			<!-- <tr *ngFor="let klass of klassList"> -->
+			
+			<!-- 학생별 출석부 시작 -->
 			<tr *ngFor="let klass_attendance_list of klass.klass_attendance_table;">
-				<!-- 수업 참여 유저 닉네임 -->
-				<td class="my-at-text">
+				<!-- 수업 참여 날짜 -->
+				<td [ngClass]="{'my-before':klass_attendance_list[0].hasNotStarted(),'my-after':klass_attendance_list[0].hasStarted()}"
+					class="my-at-text">
 					<small>{{klass_attendance_list[0].getYYYYMMDDKor()}}</small>
 				</td>
+				<!-- 학생별 수업 참여 여부 -->
 				<td class="my-at-text" *ngFor="let klass_attendance of klass_attendance_list;">
 					<!-- 상태별 체크박스 -->
 					<div *ngIf="klass_attendance.user">
 
-						<!-- 체크박스 : 준비 -->
-						<div class="radio my-radio">
-							<label>
-								<input 
-								#radio_ready
-								[checked]="klass_attendance.isReady()"
-								(change)="onCheck($event, $event.target.value, radio_ready.checked, radio_ready, klass_attendance)"
-								class="my-radio"
-								type="radio" 
-								name={{klass_attendance.id}} 
-								value={{klass_attendance.status_ready}}>
-								<small>{{klass_attendance.status_ready_kor}}</small>
-							</label>
-						</div>
-
 						<!-- 체크박스 : 출석 -->
-						<div class="radio my-radio">
+						<div class="radio my-radio my-presence">
 							<label>
 								<input 
 								#radio_presence
+								[disabled]="klass_attendance.hasNotStarted()"
 								[checked]="klass_attendance.isPresence()"
-								(change)="onCheck($event, $event.target.value, radio_presence.checked, radio_presence, klass_attendance)"
+								(change)="onCheck($event, $event.target.value, radio_presence, radio_absence, klass_attendance)"
 								class="my-radio"
 								type="radio" 
 								name={{klass_attendance.id}} 
@@ -156,12 +147,13 @@
 						</div>
 
 						<!-- 체크박스 : 결석 -->
-						<div class="radio my-radio">
+						<div class="radio my-radio my-absence">
 							<label>
 								<input 
 								#radio_absence
+								[disabled]="klass_attendance.hasNotStarted()"
 								[checked]="klass_attendance.isAbsence()"
-								(change)="onCheck($event, $event.target.value, radio_absence.checked, radio_absence, klass_attendance)"
+								(change)="onCheck($event, $event.target.value, radio_presence, radio_absence, klass_attendance)"
 								class="my-radio"
 								type="radio" 
 								name={{klass_attendance.id}} 
@@ -172,43 +164,15 @@
 
 					</div>
 				</td>
+
+
 			</tr> 
+			<!-- 학생별 출석부 끝 -->
+
+
 		</tbody> 
 	</table>
 </div>
-<!--
-<div class="at-box">
-	<div class="at-cell" *ngFor="let klass_n_student of klass.klass_n_student_list;">
-		<table class="table my-style"> 
-			<tbody> 
-				<tr>
-					<td class="my-style my-at" style="padding:10px;">
-
-						<img
-						*ngIf="klass_n_student.user && klass_n_student.user.thumbnail"
-						src="{{klass_n_student.user.thumbnail}}" 
-						alt="{{klass_n_student.user.nickname}}"
-						class="img-circle my-img-student">
-
-					</td>
-				</tr>
-				<tr *ngFor="let attendance of klass_n_student.attendance_list">
-					<td class="my-style my-at">
-						<div 	
-						(click)="onClickAttendanceDate($event, attendance)"
-						[ngClass]="{'at-ready':attendance.status=='R','at-presence':attendance.status=='P','at-absence':attendance.status=='A'}"
-						class="unselectable my-klass-btn mini my-left">
-							<small>
-								<strong>({{attendance.getStatusKor()}})</strong>&nbsp;{{attendance.getYYYYMMDDKor()}}
-							</small>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
--->
 <!-- 출석리스트 내부 테이블 끝 -->
 
 			</td>

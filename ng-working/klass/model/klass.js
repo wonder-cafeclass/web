@@ -70,7 +70,7 @@ var Klass = (function () {
         this.calendar_table_linear = null;
         this.calendar_table_monthly = null;
         this.klass_calendar_list = null;
-        this.klass_n_student_list = null;
+        this.klass_n_student_list = null; // @ Deprecated
         // 수업 출석 테이블 / 날짜순 정렬 
         this.klass_attendance_table = null;
         this.date_created = "";
@@ -94,22 +94,33 @@ var Klass = (function () {
     };
     // @ Desc : 수업 출석 관련 통계정보 가져옴.
     Klass.prototype.getAttendancePercentage = function () {
-        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+        if (this.myArray.isNotOK(this.klass_attendance_table)) {
             return "0%";
-        }
-        var totalAttendance = 0; // 총 수업 횟수
-        var totalReady = 0; // 총 남은 수업 횟수
-        var totalPresence = 0; // 총 출석 횟수
-        var totalAbsence = 0; // 총 결석 횟수
-        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
-            var klass_n_student = this.klass_n_student_list[i];
-            totalAttendance += klass_n_student.attendance_total_cnt;
-            totalReady += klass_n_student.attendance_ready_cnt;
-            totalPresence += klass_n_student.attendance_presence_cnt;
-            totalAbsence += klass_n_student.attendance_absence_cnt;
-        }
+            ;
+        } // end if
+        var klass_attendance_table = this.klass_attendance_table;
+        var attendance_total_cnt = 0;
+        var attendance_ready_cnt = 0;
+        var attendance_presence_cnt = 0;
+        var attendance_absence_cnt = 0;
+        for (var i = 0; i < klass_attendance_table.length; ++i) {
+            var klass_attendance_list = klass_attendance_table[i];
+            for (var j = 0; j < klass_attendance_list.length; ++j) {
+                var klass_attendance = klass_attendance_list[j];
+                attendance_total_cnt++;
+                if (klass_attendance.isReady()) {
+                    attendance_ready_cnt++;
+                }
+                else if (klass_attendance.isPresence()) {
+                    attendance_presence_cnt++;
+                }
+                else if (klass_attendance.isAbsence()) {
+                    attendance_absence_cnt++;
+                } // end if
+            } // end for inner
+        } // end for        
         // 출석률. 소수점 아래 2자리까지 계산
-        var percentage = Math.round(100 * 100 * (totalPresence / (totalAttendance - totalReady))) / 100;
+        var percentage = Math.round(100 * 100 * (attendance_presence_cnt / (attendance_total_cnt - attendance_ready_cnt))) / 100;
         return percentage + "%";
     };
     // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다.

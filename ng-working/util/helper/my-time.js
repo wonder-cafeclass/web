@@ -68,6 +68,16 @@ var HelperMyTime = (function () {
         }
         return this.getDiffMinutes(headDate, tailDate);
     };
+    // @ Desc : 지정된 날짜가 오늘을 포함 이전 날짜인지 확인.
+    HelperMyTime.prototype.isBeforeTomorrow = function (YYYYMMDD_HHMMSS) {
+        if (this.isNotYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS)) {
+            return false;
+        }
+        var headDate = this.getDateFromYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS);
+        var todayDate = new Date();
+        var diffDays = this.getDiffDays(headDate, todayDate);
+        return (diffDays < 1) ? true : false;
+    }; // end method
     HelperMyTime.prototype.getDiffDaysYYYYMMDD_HHMMSS = function (headYYYYMMDD_HHMMSS, tailYYYYMMDD_HHMMSS) {
         if (null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
             return -1;
@@ -93,15 +103,15 @@ var HelperMyTime = (function () {
     };
     HelperMyTime.prototype.getDiffMinutes = function (head, tail) {
         var minutes = 60 * 1000;
-        return Math.abs((head.getTime() - tail.getTime()) / minutes);
+        return Math.floor((head.getTime() - tail.getTime()) / minutes);
     };
     HelperMyTime.prototype.getDiffHours = function (head, tail) {
         var hour = 60 * 60 * 1000;
-        return Math.abs((head.getTime() - tail.getTime()) / hour);
+        return Math.floor((head.getTime() - tail.getTime()) / hour);
     };
     HelperMyTime.prototype.getDiffDays = function (head, tail) {
         var day = 60 * 60 * 1000 * 24;
-        return Math.abs((head.getTime() - tail.getTime()) / day);
+        return Math.floor((head.getTime() - tail.getTime()) / day);
     };
     HelperMyTime.prototype.addHoursHHMM = function (hhmm, hours) {
         // let isDebug:boolean = true;
@@ -420,7 +430,7 @@ var HelperMyTime = (function () {
         if (null == date_str_yyyymmdd_hhmmss || "" === date_str_yyyymmdd_hhmmss) {
             return false;
         }
-        var res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([0-9]|0[0-9]|1[0-9]|2[0-6]):([0-5]|[0-9])$/gi);
+        var res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) (0[0-9]|1[0-9]|2[0-4]):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/gi);
         if (null === res || !(0 < res.length)) {
             return false;
         }

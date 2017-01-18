@@ -21,7 +21,7 @@ export class KlassAttendance {
 	public status_presence:string = "P";
 	public status_absence:string = "A";
 
-	public status_ready_kor:string = "준비";
+	public status_ready_kor:string = "수업전";
 	public status_presence_kor:string = "출석";
 	public status_absence_kor:string = "결석";
 
@@ -69,39 +69,49 @@ export class KlassAttendance {
 		return yyyymmdd;
 	}
 
+	hasNotStarted():boolean {
+		return !this.hasStarted();
+	}
+
+	hasStarted():boolean {
+		return this.myTime.isBeforeTomorrow(this.date_attend);
+		// TEST
+		// return this.myTime.isBeforeTomorrow("2017-01-01 11:36:37");
+	}
+
 	getStatusKor():string {
 
 		if(this.status_ready === this.status) {
 
-			return "준비";
+			return this.status_ready_kor;
 
 		} else if(this.status_presence === this.status) {
 
-			return "출석";
+			return this.status_presence_kor;
 
 		} else if(this.status_absence === this.status) {
 
-			return "결석";
+			return this.status_absence_kor;
 
 		}
 
 		return "";
 	}
 
-	// @ Desc : 출석 상태를 다음 단계로 업데이트 합니다. R(준비)-->P(출석)-->A(결석)-->R(준비)...
-	updateStatus():void {
+	// @ Desc : 출석 상태를 업데이트 합니다.
+	updateStatus(status:string):void {
 
-		if(this.status_ready === this.status) {
+		if(this.status_ready === status) {
+
+			this.status = this.status_ready;
+
+		} else if(this.status_presence === status) {
 
 			this.status = this.status_presence;
 
-		} else if(this.status_presence === this.status) {
+		} else if(this.status_absence === status) {
 
 			this.status = this.status_absence;
-
-		} else if(this.status_absence === this.status) {
-
-			this.status = this.status_ready;
 
 		} // end if
 

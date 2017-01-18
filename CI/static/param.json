@@ -215,7 +215,7 @@
 
 		"class_attendance_status_list":["ALL", "R","P","A"],
 		"class_attendance_status_eng_list":["All", "Ready", "Presence", "Absence"],
-		"class_attendance_status_kor_list":["모든 상태", "준비", "출석", "결석"],
+		"class_attendance_status_kor_list":["모든 상태", "수업전", "출석", "결석"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],

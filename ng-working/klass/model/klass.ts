@@ -88,7 +88,7 @@ export class Klass {
     public calendar_table_monthly: Calendar[][][]=null;
     public klass_calendar_list: KlassCalendar[]=null;
 
-    public klass_n_student_list:KlassNStudent[]=null;
+    public klass_n_student_list:KlassNStudent[]=null; // @ Deprecated
 
     // 수업 출석 테이블 / 날짜순 정렬 
     public klass_attendance_table:KlassAttendance[][]=null;
@@ -123,25 +123,39 @@ export class Klass {
     // @ Desc : 수업 출석 관련 통계정보 가져옴.
     getAttendancePercentage():string {
 
-        if(this.myArray.isNotOK(this.klass_n_student_list)) {
-            return `0%`;
-        }
+        if(this.myArray.isNotOK(this.klass_attendance_table)) {
+            return `0%`;;
+        } // end if
 
-        let totalAttendance:number = 0;     // 총 수업 횟수
-        let totalReady:number = 0;          // 총 남은 수업 횟수
-        let totalPresence:number = 0;       // 총 출석 횟수
-        let totalAbsence:number = 0;        // 총 결석 횟수
+        let klass_attendance_table:KlassAttendance[][] = this.klass_attendance_table;
 
-        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
-            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
-            totalAttendance += klass_n_student.attendance_total_cnt;
-            totalReady += klass_n_student.attendance_ready_cnt;
-            totalPresence += klass_n_student.attendance_presence_cnt;
-            totalAbsence += klass_n_student.attendance_absence_cnt;
-        }
+        let attendance_total_cnt:number=0;
+        let attendance_ready_cnt:number=0;
+        let attendance_presence_cnt:number=0;
+        let attendance_absence_cnt:number=0;
+
+        for (var i = 0; i < klass_attendance_table.length; ++i) {
+          let klass_attendance_list:KlassAttendance[] = klass_attendance_table[i];
+
+          for (var j = 0; j < klass_attendance_list.length; ++j) {
+            let klass_attendance:KlassAttendance = klass_attendance_list[j];
+
+            attendance_total_cnt++;
+
+            if(klass_attendance.isReady()) {
+              attendance_ready_cnt++;
+            } else if(klass_attendance.isPresence()) {
+              attendance_presence_cnt++;
+            } else if(klass_attendance.isAbsence()) {
+              attendance_absence_cnt++;
+            } // end if
+
+          } // end for inner
+
+        } // end for        
 
         // 출석률. 소수점 아래 2자리까지 계산
-        let percentage:number = Math.round(100 * 100 * (totalPresence/(totalAttendance - totalReady)))/100;
+        let percentage:number = Math.round(100 * 100 * (attendance_presence_cnt/(attendance_total_cnt - attendance_ready_cnt)))/100;
 
         return `${percentage}%`;
     }

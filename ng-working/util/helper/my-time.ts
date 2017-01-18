@@ -84,6 +84,23 @@ export class HelperMyTime {
 		return this.getDiffMinutes(headDate, tailDate);
 	}
 
+	// @ Desc : 지정된 날짜가 오늘을 포함 이전 날짜인지 확인.
+	isBeforeTomorrow(YYYYMMDD_HHMMSS:string):boolean {
+
+		if(this.isNotYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS)) {
+			return false;
+		}
+
+		let headDate:Date = this.getDateFromYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS);
+
+		let todayDate:Date = new Date();
+
+		let diffDays:number = this.getDiffDays(headDate, todayDate);
+
+		return (diffDays < 1)?true:false;
+
+	} // end method
+
 	getDiffDaysYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS:string, tailYYYYMMDD_HHMMSS:string):number {
 		if(null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
 			return -1;
@@ -112,17 +129,17 @@ export class HelperMyTime {
 
 	private getDiffMinutes(head:Date, tail:Date) :number{
 		let minutes = 60*1000;
-		return Math.abs((head.getTime() - tail.getTime()) / minutes);
+		return Math.floor((head.getTime() - tail.getTime()) / minutes);
 	}
 
 	private getDiffHours(head:Date, tail:Date) :number{
 		let hour = 60*60*1000;
-		return Math.abs((head.getTime() - tail.getTime()) / hour);
+		return Math.floor((head.getTime() - tail.getTime()) / hour);
 	}
 
 	private getDiffDays(head:Date, tail:Date) :number{
 		let day = 60*60*1000*24;
-		return Math.abs((head.getTime() - tail.getTime()) / day);
+		return Math.floor((head.getTime() - tail.getTime()) / day);
 	}
 
 	addHoursHHMM(hhmm:string, hours:number):string {
@@ -518,7 +535,7 @@ export class HelperMyTime {
 			return false;
 		}
 
-		let res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([0-9]|0[0-9]|1[0-9]|2[0-6]):([0-5]|[0-9])$/gi);
+		let res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) (0[0-9]|1[0-9]|2[0-4]):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/gi);
 		if(null === res || !(0 < res.length)) {
 		  return false;
 		}		

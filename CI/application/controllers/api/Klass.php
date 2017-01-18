@@ -650,35 +650,30 @@ class Klass extends MY_REST_Controller {
             } // end foreach
             */
 
-            // 2. 수업 날짜별 출석부 가져오기
-            foreach ($list as $klass) {
+            // 2. 수업 학생 리스트 가져오기
+            $klass_n_student_stat_list = 
+            $this->my_sql->select_klass_n_student_stat_list($klass->id);
 
-                $klass_n_student_stat_list = 
-                $this->my_sql->select_klass_n_student_stat_list($klass->id);
-
-                $klass_n_student_stat_list = 
-                $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
-
-                // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
-                // 해당 수업에 날짜순서로 정렬된 2차배열 - 테이블 형태의 데이터를 받습니다.
-
-                $attendance_list = 
-                $this->my_sql->get_attendance_table(
-                    // $klass_id=-1, 
-                    $klass->id
-                );
-                $attendance_table = 
-                $this->my_decorator->deco_attendance_table_by_attend_date(
-                    $attendance_list
-                );
-
-                $klass->klass_attendance_table = $attendance_table;
-                
-            } // end foreach            
-
+            $klass_n_student_stat_list = 
+            $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
 
             $klass->klass_n_student_list = 
             $klass_n_student_stat_list;
+
+            // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
+            // 해당 수업에 날짜순서로 정렬된 2차배열 - 테이블 형태의 데이터를 받습니다.
+            $attendance_list = 
+            $this->my_sql->get_attendance_table(
+                // $klass_id=-1, 
+                $klass->id
+            );
+            $attendance_table = 
+            $this->my_decorator->deco_attendance_table_by_attend_date(
+                $attendance_list
+            );
+
+            $klass->klass_attendance_table = 
+            $attendance_table;
             
         } // end foreach
 
@@ -827,15 +822,18 @@ class Klass extends MY_REST_Controller {
         // 2. 수업 참여한 회원리스트를 가져옵니다.
         foreach ($list as $klass) {
 
+            // 2. 수업 학생 리스트 가져오기
             $klass_n_student_stat_list = 
             $this->my_sql->select_klass_n_student_stat_list($klass->id);
 
             $klass_n_student_stat_list = 
             $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
 
+            $klass->klass_n_student_list = 
+            $klass_n_student_stat_list;
+
             // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
             // 해당 수업에 날짜순서로 정렬된 2차배열 - 테이블 형태의 데이터를 받습니다.
-
             $attendance_list = 
             $this->my_sql->get_attendance_table(
                 // $klass_id=-1, 
@@ -846,7 +844,8 @@ class Klass extends MY_REST_Controller {
                 $attendance_list
             );
 
-            $klass->klass_attendance_table = $attendance_table;
+            $klass->klass_attendance_table = 
+            $attendance_table;
             
         } // end foreach
 

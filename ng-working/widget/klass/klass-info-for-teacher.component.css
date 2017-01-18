@@ -177,16 +177,28 @@ img.my-img-student {
     width:80px;
 }
 td.my-at-text {
+    vertical-align: middle;
     text-align:left;
     width:140px;
     color:#999;
 }
+td.my-at-text.my-before {
+    color:#9d9d9d;
+}
+td.my-at-text.my-after {
+    color:#555;
+}
 div.my-radio {
     width: 50px;
-    float: left;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
     margin-right: -10px;
+}
+div.my-radio.my-presence {
+    color: #5cb85c;
+}
+div.my-radio.my-absence {
+    color: #e85c41;    
 }
 input.my-radio {
     margin-left: -15px;

@@ -186,7 +186,7 @@ export class KlassInfoForTeacherComponent implements OnInit {
     if(null == this.klass) {
       return false;
     }
-    if(this.myArray.isNotOK(this.klass.klass_n_student_list)) {
+    if(this.myArray.isNotOK(this.klass.klass_attendance_table)) {
       return false;        
     }
 
@@ -203,8 +203,8 @@ export class KlassInfoForTeacherComponent implements OnInit {
     if(null == this.klass) {
       if(this.isDebug()) console.log("klass-info-for-teacher / onClickAttendance / 중단 / null == this.klass");
       return;
-    } else if(this.myArray.isNotOK(this.klass.klass_n_student_list)) {
-      if(this.isDebug()) console.log("klass-info-for-teacher / onClickAttendance / 중단 / this.klass.klass_n_student_list is not valid!");
+    } else if(this.myArray.isNotOK(this.klass.klass_attendance_table)) {
+      if(this.isDebug()) console.log("klass-info-for-teacher / onClickAttendance / 중단 / this.klass.klass_attendance_table is not valid!");
       return;
     }
 
@@ -212,92 +212,49 @@ export class KlassInfoForTeacherComponent implements OnInit {
 
   } // end method
 
-  onClickAttendanceDate(event, attendance:KlassAttendance):void {
-
-    if(this.isDebug()) console.log("klass-info-for-teacher / onClickAttendance / 시작");
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    if(null == attendance) {
-      if(this.isDebug()) console.log("klass-info-for-teacher / onClickAttendance / 중단 / null == attendance");
-      return;
-    }
-
-    attendance.updateStatus();
-
-    // 부모 객체에게 출석 데이터 업데이트 전달
-    this.emitOnChangeMeta("", attendance);
-
-    // 화면에 표시된 출석률 업데이트
-    this.updateAttendancePercentage();
-
-  } // end method
-
   updateAttendancePercentage():void {
 
     if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 시작");
 
-    if(null == this.klass) {
-      if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / null == klass");
-      return;
-    } // end if
-
-    if(this.myArray.isNotOK(this.klass.klass_n_student_list)) {
-      if(this.isDebug()) console.log("klass-info-for-teacher / updateAttendancePercentage / 중단 / klass_n_student_list is not valid!");
-      return;      
-    }
-
-    for (var i = 0; i < this.klass.klass_n_student_list.length; ++i) {
-      let klassNStudent:KlassNStudent = this.klass.klass_n_student_list[i];
-
-      if(this.myArray.isNotOK(klassNStudent.attendance_list)) {
-        continue;
-      }
-      let attendance_list:KlassAttendance[] = klassNStudent.attendance_list;
-      let attendance_total_cnt:number=0;
-      let attendance_ready_cnt:number=0;
-      let attendance_presence_cnt:number=0;
-      let attendance_absence_cnt:number=0;
-
-      for (var j = 0; j < attendance_list.length; ++j) {
-        let attendance:KlassAttendance = attendance_list[j];
-
-        attendance_total_cnt++;
-
-        if(attendance.isReady()) {
-          attendance_ready_cnt++;
-        } else if(attendance.isPresence()) {
-          attendance_presence_cnt++;
-        } else if(attendance.isAbsence()) {
-          attendance_absence_cnt++;
-        }
-
-      } // end for
-
-      klassNStudent.attendance_total_cnt = attendance_total_cnt;
-      klassNStudent.attendance_ready_cnt = attendance_ready_cnt;
-      klassNStudent.attendance_presence_cnt = attendance_presence_cnt;
-      klassNStudent.attendance_absence_cnt = attendance_absence_cnt;
-
-    } // end for
-
     this.attendancePercentage = this.klass.getAttendancePercentage();
 
-  }
+  } // end if
 
-  onCheck(event, value:string, checked:boolean, radioBtn, ka:KlassAttendance):void {
+  onCheck(event, value:string, radioBtnPresence, radioBtnAbsence, ka:KlassAttendance):void {
 
     if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / 시작");
 
     if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / event : ",event);
     if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / value : ",value);
-    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / checked : ",checked);
-    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / radioBtn : ",radioBtn);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / radioBtnPresence : ",radioBtnPresence);
+    if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / radioBtnAbsence : ",radioBtnAbsence);
     if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / ka : ",ka);
 
+    if(null == ka) {
+      if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / 중단 / null == ka");
+      return;
+    } // end if
 
+    if(ka.hasNotStarted()) {
+      if(this.isDebug()) console.log("klass-info-for-teacher / onCheck / 중단 / ka.hasNotStarted()");
 
+      // 시작되지 않은 수업의 출결 상태를 변경하는 것은 불가능합니다.
+      // 출석, 결석을 모두 선택하지 않은 상태로 되돌립니다.
+      radioBtnPresence.checked=false;
+      radioBtnAbsence.checked=false;
+      return;
+    } // end if
+
+    // 가지고 있는 출석 데이터 업데이트
+    ka.updateStatus(value);
+
+    // 화면에 표시된 출석률 업데이트
+    this.updateAttendancePercentage();
+
+    // 출석/결석 변경에 문제가 없습니다.
+    // 부모 객체에게 출석 데이터 업데이트 전달
+    this.emitOnChangeMeta("", ka);
+    
   }
 
   onClickTeacher(event):void {
