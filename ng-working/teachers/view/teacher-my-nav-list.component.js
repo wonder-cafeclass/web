@@ -29,7 +29,8 @@ var TeacherMyNavListComponent = (function () {
         this.showMyInfo = false;
         this.showMyKlass = false;
         this.showMyIncome = false;
-        this.showMyFeedback = false;
+        this.showMyReview = false;
+        this.showMyQuestion = false;
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
         this.radiobtnService.setWatchTower(this.watchTower);
@@ -101,7 +102,8 @@ var TeacherMyNavListComponent = (function () {
         this.showMyInfo = false;
         this.showMyKlass = false;
         this.showMyIncome = false;
-        this.showMyFeedback = false;
+        this.showMyReview = false;
+        this.showMyQuestion = false;
     };
     TeacherMyNavListComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
@@ -144,9 +146,14 @@ var TeacherMyNavListComponent = (function () {
                     this.incomeComponent = myEvent.metaObj;
                 } // end if
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
                 if (null != myEvent.metaObj) {
-                    this.feedbackComponent = myEvent.metaObj;
+                    this.reviewComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+                if (null != myEvent.metaObj) {
+                    this.questionComponent = myEvent.metaObj;
                 } // end if
             } // end if
         }
@@ -183,9 +190,13 @@ var TeacherMyNavListComponent = (function () {
                 this.resetNavFlag();
                 this.showMyIncome = true;
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
                 this.resetNavFlag();
-                this.showMyFeedback = true;
+                this.showMyReview = true;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+                this.resetNavFlag();
+                this.showMyQuestion = true;
             } // end if
         } // end if  
     }; // end method

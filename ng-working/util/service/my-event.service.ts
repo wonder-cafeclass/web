@@ -118,7 +118,10 @@ export class MyEventService {
     KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";                            // 선생님 - 내정보 수정.
     KEY_TEACHER_MY_KLASS:string="KEY_TEACHER_MY_KLASS";                          // 선생님 - 내 수강이력.
     KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                        // 선생님 - 내 결재정보.
-    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                    // 선생님 - 학생에게준 피드백.
+    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                    // 선생님 - 학생에게준 피드백. // @ Deprecated
+
+    KEY_TEACHER_MY_REVIEW:string="KEY_TEACHER_MY_REVIEW";                    // 선생님 - 리뷰.
+    KEY_TEACHER_MY_QUESTION:string="KEY_TEACHER_MY_QUESTION";                    // 선생님 - 문의.
 
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말

@@ -24,7 +24,8 @@ import { MyResponse }                 from '../../util/model/my-response';
 
 import { TeacherInfoDashboardComponent }        from './teacher-my-nav-list/teacher-info-dashboard.component';
 import { TeacherInfoV2Component }               from './teacher-my-nav-list/teacher-info-v2.component';
-import { TeacherInfoFeedbackComponent }         from './teacher-my-nav-list/teacher-info-feedback.component';
+import { TeacherInfoQuestionComponent }         from './teacher-my-nav-list/teacher-info-question.component';
+import { TeacherInfoReviewComponent }           from './teacher-my-nav-list/teacher-info-review.component';
 import { TeacherInfoIncomeComponent }           from './teacher-my-nav-list/teacher-info-income.component';
 import { TeacherInfoKlassComponent }            from './teacher-my-nav-list/teacher-info-klass.component';
 
@@ -47,13 +48,15 @@ export class TeacherMyNavListComponent implements AfterViewInit {
   showMyInfo:boolean=false;
   showMyKlass:boolean=false;
   showMyIncome:boolean=false;
-  showMyFeedback:boolean=false;
+  showMyReview:boolean=false;
+  showMyQuestion:boolean=false;
 
   dashboardComponent:TeacherInfoDashboardComponent;
   teacherInfoComponent:TeacherInfoV2Component;
-  feedbackComponent:TeacherInfoFeedbackComponent;
   incomeComponent:TeacherInfoIncomeComponent;
   klassComponent:TeacherInfoKlassComponent;
+  reviewComponent:TeacherInfoReviewComponent;
+  questionComponent:TeacherInfoQuestionComponent;
 
   @Output() emitter = new EventEmitter<any>();
 
@@ -152,7 +155,8 @@ export class TeacherMyNavListComponent implements AfterViewInit {
     this.showMyInfo = false;
     this.showMyKlass = false;
     this.showMyIncome = false;
-    this.showMyFeedback = false;
+    this.showMyReview = false;
+    this.showMyQuestion = false;
   }
 
   onChangedFromChild(myEvent:MyEvent) {
@@ -198,10 +202,16 @@ export class TeacherMyNavListComponent implements AfterViewInit {
           this.incomeComponent = myEvent.metaObj;
         } // end if
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
 
         if(  null != myEvent.metaObj ) {
-          this.feedbackComponent = myEvent.metaObj;
+          this.reviewComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.questionComponent = myEvent.metaObj;
         } // end if
 
       } // end if
@@ -242,10 +252,15 @@ export class TeacherMyNavListComponent implements AfterViewInit {
         this.resetNavFlag();
         this.showMyIncome = true;
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_FEEDBACK)) {
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
 
         this.resetNavFlag();
-        this.showMyFeedback = true;
+        this.showMyReview = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+
+        this.resetNavFlag();
+        this.showMyQuestion = true;
 
       } // end if
 

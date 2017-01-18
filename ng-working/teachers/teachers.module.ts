@@ -12,10 +12,10 @@ import { ApplyTeacherComponent }          from './apply-teacher.component';
 import { ApplyTeacherTermComponent }      from './view/apply-teacher-term.component';
 
 import { TeacherMyNavListComponent }      from './view/teacher-my-nav-list.component';
-import { TeacherInfoComponent }           from './view/teacher-my-nav-list/teacher-info.component';
 import { TeacherInfoV2Component }         from './view/teacher-my-nav-list/teacher-info-v2.component';
 import { TeacherInfoDashboardComponent }  from './view/teacher-my-nav-list/teacher-info-dashboard.component';
-import { TeacherInfoFeedbackComponent }   from './view/teacher-my-nav-list/teacher-info-feedback.component';
+import { TeacherInfoQuestionComponent }   from './view/teacher-my-nav-list/teacher-info-question.component';
+import { TeacherInfoReviewComponent }     from './view/teacher-my-nav-list/teacher-info-review.component';
 import { TeacherInfoIncomeComponent }     from './view/teacher-my-nav-list/teacher-info-income.component';
 import { TeacherInfoKlassComponent }      from './view/teacher-my-nav-list/teacher-info-klass.component';
 
@@ -36,10 +36,10 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
     ApplyTeacherComponent,
     ApplyTeacherTermComponent,
     TeacherMyNavListComponent,
-    TeacherInfoComponent,
     TeacherInfoV2Component,
     TeacherInfoDashboardComponent,
-    TeacherInfoFeedbackComponent,
+    TeacherInfoQuestionComponent,
+    TeacherInfoReviewComponent,
     TeacherInfoIncomeComponent,
     TeacherInfoKlassComponent
   ],

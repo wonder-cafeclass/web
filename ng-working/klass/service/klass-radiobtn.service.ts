@@ -598,13 +598,13 @@ export class KlassRadioBtnService {
           // public myChecker:MyChecker
           this.getFreePassChecker()
         ) // end MyEvent
-      ), 
-
+      ) 
+/*
       new RadioBtnOption(
         // public title:string,
-        "피드백",
+        "리뷰",
         // public key:string,
-        this.myEventService.KEY_TEACHER_MY_FEEDBACK,
+        this.myEventService.KEY_TEACHER_MY_REVIEW,
         // public isFocus:boolean
         false,
         // public myEvent:MyEvent
@@ -612,7 +612,29 @@ export class KlassRadioBtnService {
           // public eventName:string
           this.myEventService.ON_CHANGE,
           // public key:string
-          this.myEventService.KEY_TEACHER_MY_FEEDBACK,
+          this.myEventService.KEY_TEACHER_MY_REVIEW,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ),
+
+      new RadioBtnOption(
+        // public title:string,
+        "문의",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_QUESTION,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_QUESTION,
           // public value:string
           "",
           // public metaObj:any
@@ -621,8 +643,8 @@ export class KlassRadioBtnService {
           this.getFreePassChecker()
         ) // end MyEvent
       )
-
-    ]; // end array
+*/
+    ]; // end array    
 
 
     if(null != keyFocus && "" != keyFocus) {

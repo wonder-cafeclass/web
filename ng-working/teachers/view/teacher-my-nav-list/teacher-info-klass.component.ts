@@ -42,7 +42,6 @@ export class TeacherInfoKlassComponent implements AfterViewInit {
 
   loginUser:User;
 
-  // klassNStudentList:KlassNStudent[];
   klassList:Klass[];
   pagination:Pagination;
 

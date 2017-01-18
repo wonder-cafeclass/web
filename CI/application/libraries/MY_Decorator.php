@@ -8,6 +8,8 @@ require_once APPPATH . '/models/User.php';
 require_once APPPATH . '/models/KlassSubwayLine.php';
 require_once APPPATH . '/models/KlassSubwayStation.php';
 require_once APPPATH . '/models/KlassNStudent.php';
+require_once APPPATH . '/models/KlassReview.php';
+require_once APPPATH . '/models/KlassQuestion.php';
 require_once APPPATH . '/models/PaymentImport.php';
 require_once APPPATH . '/libraries/MY_Library.php';
 
@@ -1267,5 +1269,110 @@ class MY_Decorator extends MY_Library
         return $ks;
 
     } // end method
+
+    public function deco_klass_review_list($target_list=null)
+    {
+        
+        if(empty($target_list)) 
+        {
+            return [];
+        } // end if
+        
+        $child_review_list = [];
+        $parent_review_list = [];
+        $parent_review_id_prev = -1;
+        $parent_review = null;
+        for ($i=0; $i < count($target_list); $i++) { 
+            $target = $target_list[$i];
+
+            $parent_review_id = $this->getNumber($target, "parent_review_id");
+            $child_review_id = $this->getNumber($target, "child_review_id");
+            if($parent_review_id_prev < 0) 
+            {
+                // 처음 시작. 이전 부모 리뷰 아이디가 없는 경우.
+                $parent_review_id_prev = $parent_review_id;
+
+                // 부모 리뷰 데이터를 추가합니다.
+                $kr_parent = new KlassReview();
+
+                $kr_parent->id = $parent_review_id;
+                $kr_parent->parent_id = $this->getNumber($target, "parent_review_parent_id");
+                $kr_parent->klass_id = $this->getNumber($target, "parent_review_klass_id");
+                $kr_parent->user_id = $this->getNumber($target, "parent_review_user_id");
+                $kr_parent->star = $this->getNumber($target, "parent_review_star");
+
+                $kr_parent->name = $this->getStr($target, "parent_review_user_nickname");
+                $kr_parent->comment = $this->getStr($target, "parent_review_comment");
+                $kr_parent->thumbnail = $this->getStr($target, "parent_review_user_thumbnail");
+                $kr_parent->date_created = $this->getStr($target, "parent_review_date_created");
+                $kr_parent->date_updated = $this->getStr($target, "parent_review_date_updated");
+
+                $parent_review = $kr_parent;
+
+            } else if($parent_review_id_prev != $parent_review_id) {
+
+                // 부모 리뷰 아이디가 변경!
+                // 직전의 부모 리뷰와 자식 리뷰들을 업데이트합니다.
+                $parent_review->child_review_list = $child_review_list;
+                array_push($parent_review_list, $parent_review);
+
+                $parent_review = null;
+                $child_review_list = [];
+
+                // 부모 리뷰 아이디가 바뀌었습니다. 업데이트합니다.
+                $parent_review_id_prev = $parent_review_id;
+
+                // 부모 리뷰 데이터를 다음 것으로 변경합니다.
+                $kr_parent = new KlassReview();
+
+                $kr_parent->id = $parent_review_id;
+                $kr_parent->parent_id = $this->getNumber($target, "parent_review_parent_id");
+                $kr_parent->klass_id = $this->getNumber($target, "parent_review_klass_id");
+                $kr_parent->user_id = $this->getNumber($target, "parent_review_user_id");
+                $kr_parent->star = $this->getNumber($target, "parent_review_star");
+
+                $kr_parent->name = $this->getStr($target, "parent_review_user_nickname");
+                $kr_parent->comment = $this->getStr($target, "parent_review_comment");
+                $kr_parent->thumbnail = $this->getStr($target, "parent_review_user_thumbnail");
+                $kr_parent->date_created = $this->getStr($target, "parent_review_date_created");
+                $kr_parent->date_updated = $this->getStr($target, "parent_review_date_updated");
+
+                $parent_review = $kr_parent;
+            }
+
+            // 자식 리뷰 데이터가 있다면 추가합니다.
+            if(0 < $child_review_id)
+            {
+                $kr_child = new KlassReview();
+
+                $kr_child->id = $child_review_id;
+                $kr_child->parent_id = $this->getNumber($target, "child_review_parent_id");
+                $kr_child->klass_id = $this->getNumber($target, "child_review_klass_id");
+                $kr_child->user_id = $this->getNumber($target, "child_review_user_id");
+                $kr_child->star = $this->getNumber($target, "child_review_star");
+
+                $kr_child->name = $this->getStr($target, "child_review_user_nickname");
+                $kr_child->comment = $this->getStr($target, "child_review_comment");
+                $kr_child->thumbnail = $this->getStr($target, "child_review_user_thumbnail");
+                $kr_child->date_created = $this->getStr($target, "child_review_date_created");
+                $kr_child->date_updated = $this->getStr($target, "child_review_date_updated");
+
+                array_push($child_review_list, $kr_child);
+            } // end if
+
+            if($i == (count($target_list) - 1))
+            {
+                // 리스트의 마지막이라면, 현재의 부모 리뷰와 자식 리뷰를 돌려줄 리스트에 추가, 종료합니다.
+                $parent_review->child_review_list = $child_review_list;
+                array_push($parent_review_list, $parent_review);
+
+                $parent_review = null;
+                $child_review_list = [];
+            } // end if
+        }
+
+        return $parent_review_list;
+
+    } // end method    
 
 }

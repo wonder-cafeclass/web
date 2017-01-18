@@ -54,13 +54,23 @@
                         [eventKey]="myEventService.KEY_TEACHER_MY_INCOME">
                         </teacher-info-income>
                   </div>
-                  <!-- 5. 선생님의 수업별 문의 및 리뷰 리스트(New가 상위로 위치함.그 다음 영역은 시간순.) -->
-                  <div  [ngClass]="{'i-show':showMyFeedback,'i-hide':!showMyFeedback}">
-                        <teacher-info-feedback
+                  <!-- 5. 선생님 수업의 리뷰 -->
+                  <!--
+                  <div  [ngClass]="{'i-show':showMyReview,'i-hide':!showMyReview}">
+                        <teacher-info-review
                         (emitter)="onChangedFromChild($event)"
-                        [eventKey]="myEventService.KEY_TEACHER_MY_FEEDBACK">
-                        </teacher-info-feedback>
+                        [eventKey]="myEventService.KEY_TEACHER_MY_REVIEW">
+                        </teacher-info-review>
                   </div>
+                  <!-- 6. 선생님 수업의 문의 -->
+                  <!--
+                  <div  [ngClass]="{'i-show':showMyQuestion,'i-hide':!showMyQuestion}">
+                        <teacher-info-question
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_TEACHER_MY_QUESTION">
+                        </teacher-info-question>
+                  </div>                  
+                  <!-- -->
             </li>
       </ul>
       

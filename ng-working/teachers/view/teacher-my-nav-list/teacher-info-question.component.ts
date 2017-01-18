@@ -23,23 +23,19 @@ import { Teacher }                    from '../../../teachers/model/teacher';
 import { User }                       from '../../../users/model/user';
 
 import { Klass }                      from '../../../klass/model/klass';
-// import { UserService }                from '../../../users/service/user.service';
-// import { KlassNStudent }              from '../../../klass/model/klass-n-student';
 
 @Component({
   moduleId: module.id,
-  selector: 'teacher-info-feedback',
-  templateUrl: 'teacher-info-feedback.component.html',
-  styleUrls: [ 'teacher-info-feedback.component.css' ]
+  selector: 'teacher-info-question',
+  templateUrl: 'teacher-info-question.component.html',
+  styleUrls: [ 'teacher-info-question.component.css' ]
 })
-export class TeacherInfoFeedbackComponent implements AfterViewInit {
+export class TeacherInfoQuestionComponent implements AfterViewInit {
 
   @Input() eventKey:string = "";
   @Output() emitter = new EventEmitter<any>();
 
   loginUser:User;
-
-  // klassNStudentList:KlassNStudent[];
 
   constructor(private teacherService:TeacherService,
               public myEventService:MyEventService,
@@ -57,24 +53,24 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
   ngAfterViewInit(): void {
 
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-    if(this.isDebug()) console.log("teacher-info-feedback / ngAfterViewInit");
+    if(this.isDebug()) console.log("teacher-info-question / ngAfterViewInit");
     this.asyncViewPack();
   }
 
   private asyncViewPack(): void {
     
-    if(this.isDebug()) console.log("teacher-info-feedback / asyncViewPack / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / asyncViewPack / 시작");
 
     // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
     if(this.watchTower.getIsViewPackReady()) {
-      if(this.isDebug()) console.log("teacher-info-feedback / asyncViewPack / isViewPackReady : ",true);
+      if(this.isDebug()) console.log("teacher-info-question / asyncViewPack / isViewPackReady : ",true);
       this.init();
     } // end if
 
     // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
     this.watchTower.isViewPackReady$.subscribe(
       (isViewPackReady:boolean) => {
-      if(this.isDebug()) console.log("teacher-info-feedback / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
+      if(this.isDebug()) console.log("teacher-info-question / asyncViewPack / subscribe / isViewPackReady : ",isViewPackReady);
       this.init();
     }); // end subscribe
 
@@ -84,7 +80,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   private init() :void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / init / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / init / 시작");
 
     // 로그인한 유저 정보를 가져옵니다.
     this.setLoginUser();
@@ -99,7 +95,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   private setLoginUser() :void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / setLoginUser / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / setLoginUser / 시작");
 
     // 로그인 데이터를 가져옵니다.
     this.loginUser = this.watchTower.getLoginUser();
@@ -121,7 +117,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   private logActionPage() :void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / logActionPage / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / logActionPage / 시작");
 
     this.watchTower.logPageEnter(
       // pageType:string
@@ -132,7 +128,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   private emitEventOnReady() :void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / emitEventOnReady / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / emitEventOnReady / 시작");
 
     let myEvent:MyEvent =
     this.watchTower.getEventOnReady(
@@ -148,7 +144,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   private fetchTeacherInfoDashboard():void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / fetchTeacherInfoDashboard / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / fetchTeacherInfoDashboard / 시작");
 
     // 선생님 대시보드에 필요한 정보는?
 
@@ -166,7 +162,7 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("teacher-info-feedback / fetchTeacherInfoDashboard / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("teacher-info-question / fetchTeacherInfoDashboard / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("list")) {
 
@@ -181,11 +177,11 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
         this.klassNStudentList = klassNStudentList;
 
-        if(this.isDebug()) console.log("teacher-info-feedback / fetchTeacherInfoDashboard / klassNStudentList : ",klassNStudentList);
+        if(this.isDebug()) console.log("teacher-info-question / fetchTeacherInfoDashboard / klassNStudentList : ",klassNStudentList);
 
       } else if(myResponse.isFailed()) {  
 
-        if(this.isDebug()) console.log("teacher-info-feedback / fetchTeacherInfoDashboard / 수강 학생 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("teacher-info-question / fetchTeacherInfoDashboard / 수강 학생 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("fetchKlassNStudentList has been failed!");
         if(null != myResponse.error) {
@@ -203,15 +199,15 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   onClickKlass(klass:Klass):void {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / onClickKlass / 시작");
+    if(this.isDebug()) console.log("teacher-info-question / onClickKlass / 시작");
 
     if(null == klass) {
-      if(this.isDebug()) console.log("teacher-info-feedback / onClickKlass / 중단 / null == klass");
+      if(this.isDebug()) console.log("teacher-info-question / onClickKlass / 중단 / null == klass");
       return;
     } // end if
 
     if(!(0 < klass.id)) {
-      if(this.isDebug()) console.log("teacher-info-feedback / onClickKlass / 중단 / klass.id is not valid!");
+      if(this.isDebug()) console.log("teacher-info-question / onClickKlass / 중단 / klass.id is not valid!");
       return;
     } // end if
 
@@ -223,25 +219,25 @@ export class TeacherInfoFeedbackComponent implements AfterViewInit {
 
   onChangedFromChild(myEvent:MyEvent) {
 
-    if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / init");
-    if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / myEvent : ",myEvent);
-    if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / myEvent.key : ",myEvent.key);
-    if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / myEvent.value : ",myEvent.value);
+    if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / init");
+    if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / myEvent.key : ",myEvent.key);
+    if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / myEvent.value : ",myEvent.value);
 
     if(myEvent.isNotValid()) {
-      if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
+      if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / ON_CHANGE_NOT_VALID / 중단 / myEvent.isNotValid()");
       // 에러 로그 등록
       this.watchTower.logErrorBadValue(
-        `teacher-info-feedback / onChangedFromChild / myEvent.isNotValid()`
+        `teacher-info-question / onChangedFromChild / myEvent.isNotValid()`
       );
       return;
     } // end if
 
     if(this.watchTower.isNotOK(myEvent)) {
-      if(this.isDebug()) console.log("teacher-info-feedback / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      if(this.isDebug()) console.log("teacher-info-question / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
       // 에러 로그 등록
       this.watchTower.logErrorBadValue(
-        `teacher-info-feedback / onChangedFromChild / this.watchTower.isNotOK(myEvent)`
+        `teacher-info-question / onChangedFromChild / this.watchTower.isNotOK(myEvent)`
       );
       return;
     } // end if

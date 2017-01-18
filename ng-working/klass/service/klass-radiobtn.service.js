@@ -522,28 +522,8 @@ var KlassRadioBtnService = (function () {
             teacher, 
             // public myChecker:MyChecker
             this.getFreePassChecker()) // end MyEvent
-            ),
-            new radiobtn_option_1.RadioBtnOption(
-            // public title:string,
-            "피드백", 
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_FEEDBACK, 
-            // public isFocus:boolean
-            false, 
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-            // public eventName:string
-            this.myEventService.ON_CHANGE, 
-            // public key:string
-            this.myEventService.KEY_TEACHER_MY_FEEDBACK, 
-            // public value:string
-            "", 
-            // public metaObj:any
-            teacher, 
-            // public myChecker:MyChecker
-            this.getFreePassChecker()) // end MyEvent
             )
-        ]; // end array
+        ]; // end array    
         if (null != keyFocus && "" != keyFocus) {
             for (var i = 0; i < optionList.length; ++i) {
                 var option = optionList[i];

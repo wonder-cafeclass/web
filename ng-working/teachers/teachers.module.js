@@ -17,10 +17,10 @@ var teachers_routing_1 = require('./teachers.routing');
 var apply_teacher_component_1 = require('./apply-teacher.component');
 var apply_teacher_term_component_1 = require('./view/apply-teacher-term.component');
 var teacher_my_nav_list_component_1 = require('./view/teacher-my-nav-list.component');
-var teacher_info_component_1 = require('./view/teacher-my-nav-list/teacher-info.component');
 var teacher_info_v2_component_1 = require('./view/teacher-my-nav-list/teacher-info-v2.component');
 var teacher_info_dashboard_component_1 = require('./view/teacher-my-nav-list/teacher-info-dashboard.component');
-var teacher_info_feedback_component_1 = require('./view/teacher-my-nav-list/teacher-info-feedback.component');
+var teacher_info_question_component_1 = require('./view/teacher-my-nav-list/teacher-info-question.component');
+var teacher_info_review_component_1 = require('./view/teacher-my-nav-list/teacher-info-review.component');
 var teacher_info_income_component_1 = require('./view/teacher-my-nav-list/teacher-info-income.component');
 var teacher_info_klass_component_1 = require('./view/teacher-my-nav-list/teacher-info-klass.component');
 var login_service_1 = require('../login/service/login.service');
@@ -42,10 +42,10 @@ var TeachersModule = (function () {
                 apply_teacher_component_1.ApplyTeacherComponent,
                 apply_teacher_term_component_1.ApplyTeacherTermComponent,
                 teacher_my_nav_list_component_1.TeacherMyNavListComponent,
-                teacher_info_component_1.TeacherInfoComponent,
                 teacher_info_v2_component_1.TeacherInfoV2Component,
                 teacher_info_dashboard_component_1.TeacherInfoDashboardComponent,
-                teacher_info_feedback_component_1.TeacherInfoFeedbackComponent,
+                teacher_info_question_component_1.TeacherInfoQuestionComponent,
+                teacher_info_review_component_1.TeacherInfoReviewComponent,
                 teacher_info_income_component_1.TeacherInfoIncomeComponent,
                 teacher_info_klass_component_1.TeacherInfoKlassComponent
             ],

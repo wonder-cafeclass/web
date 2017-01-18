@@ -22,6 +22,11 @@ class KlassCourse {
         // 수업 문의
         public $question_list=[];
 
+        // 수업 리뷰 숫자
+        public $review_cnt=-1;
+        // 수업 문의 숫자
+        public $question_cnt=-1;
+
         // 수업이름
         public $title="";
         // 수업설명

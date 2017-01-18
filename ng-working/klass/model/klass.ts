@@ -26,6 +26,9 @@ export class Klass {
     public question_list:KlassQuestion[]=[];
     public klassVenue:KlassVenue=null;
 
+    public review_cnt:number=-1;
+    public question_cnt:number=-1;
+
     public teacher_id:number=-1;
     public teacher_resume:string="";
     public teacher_resume_list:string[]=[];
@@ -160,9 +163,10 @@ export class Klass {
         return `${percentage}%`;
     }
 
-    // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다.
+    // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다. / FIX ME
     getTotalReviewCnt():number {
 
+        /*
         if(this.myArray.isNotOK(this.klass_n_student_list)) {
             return 0;
         }
@@ -174,12 +178,16 @@ export class Klass {
         } // end for
 
         return totalReviewCnt;
+        */
+
+        return 0;
 
     } // end method
 
-    // @ Desc : 해당 수업의 문의 갯수를 가져옵니다.
+    // @ Desc : 해당 수업의 문의 갯수를 가져옵니다. / FIX ME
     getTotalQuestionCnt():number {
 
+        /*
         if(this.myArray.isNotOK(this.klass_n_student_list)) {
             return 0;
         }
@@ -191,6 +199,9 @@ export class Klass {
         } // end for
 
         return totalQuestionCnt;
+        */
+
+        return 0;
 
     } // end method
 

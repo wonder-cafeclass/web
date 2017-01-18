@@ -2146,6 +2146,19 @@ class MY_Sql extends MY_Library
 
     } // end method 
 
+    private function set_where_select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
+    {
+        $select_query = $this->get_query_klass_field();
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+    }
     public function select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
     {
         $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
@@ -2163,31 +2176,10 @@ class MY_Sql extends MY_Library
             return;
         } // end if
 
-        $select_query = $this->get_query_klass_field();
-
-        /*
-        $this->CI->db->select($select_query);
-        $this->CI->db->from('klass');
-        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
-        $this->CI->db->where('klass.teacher_id', $teacher_id);
-        $status_list = array('E', 'B', 'C');
-        $this->db->where_in('klass.status', $status_list);
-        $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($limit,$offset);
-        $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
-        */
-
-        $this->CI->db->select($select_query);
-        $this->CI->db->from('klass');
-        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
-        $this->CI->db->where('klass.teacher_id', $teacher_id);
-        $status_list = array('E', 'B', 'C');
-        $this->CI->db->where_in('klass.status', $status_list);
-        $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($limit,$offset);
+        $this->set_where_select_active_klass_list_by_teacher($offset, $limit, $teacher_id);
         $query = $this->CI->db->get();
 
+        $this->set_where_select_active_klass_list_by_teacher($offset, $limit, $teacher_id);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
@@ -2449,6 +2441,226 @@ class MY_Sql extends MY_Library
 
         return $review_list;
     }
+
+    // @ Desc : 선생님과 수업을 기준으로 전체 리뷰 갯수 - 부모글(parent_id=-1)를 알려줍니다.
+    private function set_where_select_klass_review_cnt_by_teacher($klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->from("review");
+        $this->CI->db->where_in('klass_id', $klass_id_list);
+        $this->CI->db->where('parent_id',-1);
+        $this->CI->db->where('status','A');
+    }
+    public function select_klass_review_cnt_by_teacher($teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // Query Execution
+        $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        // Logging
+        $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+    // @ Desc : 선생님과 수업을 기준으로 리뷰 리스트 - 부모글(parent_id=-1)를 가져옵니다. Pagination을 사용합니다.
+    private function set_where_select_klass_review_id_list_by_teacher($limit=-1, $offset=-1, $klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        } // end if
+
+        $query_select = 
+        '`review`.`id` AS review_id'
+        ;
+
+        $this->CI->db->select($query_select);
+        $this->CI->db->from("review");
+        $this->CI->db->join('user', '`review`.`user_id` = `user`.`id`','left');
+        if(!empty($klass_id_list))
+        {
+            $this->CI->db->where_in('`review`.`klass_id`', $klass_id_list);
+        }
+        $this->CI->db->where('`review`.`parent_id`',-1);
+        $this->CI->db->where('`review`.`status`','A');
+        $this->CI->db->where('`user`.`status`','A');
+        $this->CI->db->limit($limit, $offset);
+        $this->CI->db->order_by('`review`.`id`', 'DESC');
+
+    } 
+    private function select_klass_review_id_list_by_teacher($limit=-1, $offset=-1, $klass_id_list=null)
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return [];
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return [];
+        } // end if
+        if(empty($klass_id_list))
+        {
+            return [];
+        } // end if
+
+        // Query Execution
+        $this->set_where_select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $this->set_where_select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $review_id_list = [];
+        foreach ($query->result_array() as $row)
+        {
+            array_push($review_id_list, intval($row['review_id']));
+        } // end foreach
+
+        return $review_id_list;
+    }   
+    private function set_where_select_klass_review_list_by_teacher($limit=-1, $offset=-1, $review_id_list=null)
+    {
+        if(empty($review_id_list))
+        {
+            return "";
+        } // end if
+
+        $query_select = 
+        'review.id AS parent_review_id,'.
+        'review.parent_id AS parent_review_parent_id,'.
+        'review.klass_id AS parent_review_klass_id,'.
+        'review.user_id AS parent_review_user_id,'.
+        'review.parent_id AS parent_review_parent_id,'.
+        'review.comment AS parent_review_comment,'.
+        'review.star AS parent_review_star,'.
+        'review.date_created AS parent_review_date_created,'.
+        'review.date_updated AS parent_review_date_updated,'.
+
+        'user.id AS parent_review_user_id,'.
+        'user.name AS parent_review_user_name,'.
+        'user.nickname AS parent_review_user_nickname,'.
+        'user.thumbnail AS parent_review_user_thumbnail,'.
+
+        'IFNULL(child_review.id, -1) AS child_review_id,'.
+        'IFNULL(child_review.parent_id, -1) AS child_review_parent_id,'.
+        'IFNULL(child_review.klass_id, -1) AS child_review_klass_id,'.
+        'IFNULL(child_review.user_id, -1) AS child_review_user_id,'.
+        'IFNULL(child_review.parent_id, -1) AS child_review_parent_id,'.
+        'IFNULL(child_review.comment, "") AS child_review_comment,'.
+        'IFNULL(child_review.star, -1) AS child_review_star,'.
+        'IFNULL(child_review.date_created, "") AS child_review_date_created,'.
+        'IFNULL(child_review.date_updated, "") AS child_review_date_updated,'.
+
+        'IFNULL(child_review_user.id, -1) AS child_review_user_id,'.
+        'IFNULL(child_review_user.name, "") AS child_review_user_name,'.
+        'IFNULL(child_review_user.nickname, "") AS child_review_user_nickname,'.
+        'IFNULL(child_review_user.thumbnail, "") AS child_review_user_thumbnail,'
+        ;
+
+        $this->CI->db->select($query_select);
+        $this->CI->db->from("review");
+        $this->CI->db->join('user', 'review.user_id = user.id','left');
+        $this->CI->db->join('review AS child_review', 'child_review.parent_id = review.id AND `child_review`.`status` = "A"','left');
+        $this->CI->db->join('user AS child_review_user', 'child_review_user.id = child_review.user_id AND `child_review_user`.`status` = "A"','left');
+        $this->CI->db->where_in('review.id', $review_id_list);
+        $this->CI->db->where('review.parent_id',-1);
+        $this->CI->db->where('review.status','A');
+        $this->CI->db->where('user.status','A');
+        $this->CI->db->limit($limit, $offset);
+        $this->CI->db->order_by('review.id', 'DESC');
+        $this->CI->db->order_by('child_review.id', 'DESC');
+
+    }
+    public function select_klass_review_list_by_teacher($limit=-1, $offset=-1, $teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // 해당 수업의 모든 부모 리뷰의 id 리스트를 가져옵니다.
+        $review_id_list = 
+        $this->select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$review_id_list : " . join(',', $review_id_list));
+
+        // $limit과 $offset에 해당하는 부모 리뷰와 이에 속한 댓글 - 자식 리뷰 리스트 가져옵니다.
+        $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
     private function select_klass_parent_review_list($klass_id=-1)
     {
         if($this->is_not_ok("klass_id", $klass_id))
@@ -3678,7 +3890,42 @@ class MY_Sql extends MY_Library
         $query = $this->CI->db->get('klass');
 
         return $query->row();
-    }    
+    }
+    private function select_klass_id_list_by_teacher($teacher_id=-1) 
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        }
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+
+        // Query Execution
+        $this->CI->db->select('id');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select('id');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $klass_id_list = [];
+        foreach ($query->result_array() as $row)
+        {
+            array_push($klass_id_list, intval($row['id']));
+        }
+
+        return $klass_id_list;
+    }
 
 
     public function insert_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
