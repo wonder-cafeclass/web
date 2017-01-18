@@ -2423,7 +2423,71 @@ class MY_Sql extends MY_Library
         }
 
         return $rows;
-    }    
+    } 
+
+
+
+
+
+    // @ Desc : 선생님과 수업을 기준으로 전체 리뷰 갯수 - 부모글(parent_id=-1)를 알려줍니다.
+    private function set_where_select_klass_question_cnt_by_teacher($klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->from("question");
+        $this->CI->db->where_in('klass_id', $klass_id_list);
+        $this->CI->db->where('parent_id',-1);
+        $this->CI->db->where('status','A');
+    }
+    public function select_klass_question_cnt_by_teacher($teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // Query Execution
+        $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        // Logging
+        $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+
+
+
+    
+
+
 
 
     public function select_klass_review_list($klass_id=-1)

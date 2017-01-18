@@ -77,8 +77,13 @@
 				<div 	[ngClass]="{'first':isShowAttendance}"
 						class="my-klass-btn-box my-left">
 					<div class="unselectable my-klass-btn short gray"><strong>피드백</strong></div>
-					<div class="unselectable my-klass-btn short enable">리뷰 : {{klass.getTotalReviewCnt()}}건</div>
-					<div class="unselectable my-klass-btn short enable">문의 : {{klass.getTotalQuestionCnt()}}건</div>
+					<div 
+					(click)="onClickReview($event)"
+					class="unselectable my-klass-btn short enable">리뷰 : {{klass.review_cnt}}건</div>
+					<div 
+					(click)="onClickQuestion($event)"
+					class="unselectable my-klass-btn short enable">문의 : {{klass.question_cnt}}건</div>
+
 				</div>
 
 			</td>

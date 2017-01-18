@@ -213,6 +213,9 @@ export class KlassDetailComponent implements AfterViewInit {
 
   isSaveBtnDisabled:boolean = true;
 
+  // 특정 위치로 이동시 사용.
+  private moveto:string="";
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -398,6 +401,7 @@ export class KlassDetailComponent implements AfterViewInit {
     .switchMap((params: Params) => {
 
       klassId = +params['id'];
+      this.moveto = params['moveto'];
 
       if(klassId === -100 && null == this.loginTeacher) {
 
@@ -405,26 +409,6 @@ export class KlassDetailComponent implements AfterViewInit {
         if(this.isDebug()) console.log("klass-detail / getParams / 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.");
         this.router.navigate(["/"]);
         return;
-
-      // @ Deprecated
-      /*
-      } else if(klassId === -100) {
-
-        // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
-        if(this.isDebug()) console.log("klass-detail / getParams / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
-        return this.klassService.addKlassEmpty(
-          // apiKey:string, 
-          this.watchTower.getApiKey(),
-          // userId:number,
-          +this.loginUser.id,
-          // teacherId:number,
-          +this.loginTeacher.id,
-          // teacherResume:string,
-          this.loginTeacher.resume,
-          // teacherGreeting:string
-          this.loginTeacher.greeting
-        );
-        */
 
       } else {
 
@@ -1009,6 +993,9 @@ export class KlassDetailComponent implements AfterViewInit {
 
     this.klassDetailNavListComponent.setKlass(this.klassCopy);
 
+    // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+    this.moveTo();
+
   }
 
 
@@ -1234,6 +1221,41 @@ export class KlassDetailComponent implements AfterViewInit {
         classBannerUrl = this.klassService.getKlassBannerUrlLoadable(classBannerUrl);
         this.imageTableBannerListService.push([classBannerUrl]);    
       } // end for
+    } // end if
+
+    // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+    this.moveTo();
+
+  } // end method
+
+  private moveTo():void {
+
+    if(this.isDebug()) console.log("klass-detail / moveTo / 시작");
+
+    if(null == this.moveto || "" == this.moveto) {
+      return;
+    }
+
+    // wonder.jung
+    // 일반적인 해시태그 이동
+    // location.hash = "#" + this.moveto;
+
+    if("review" == this.moveto) {
+
+      // 리뷰 리스트로 이동
+      // 담당 컴포넌트에게 명령을 전달해야 합니다.
+      if(null != this.klassDetailNavListComponent) {
+        this.klassDetailNavListComponent.moveTo(this.moveto);
+      } // end if
+
+    } else if("question" == this.moveto) {
+
+      // 질문 리스트로 이동
+      // 담당 컴포넌트에게 명령을 전달해야 합니다.
+      if(null != this.klassDetailNavListComponent) {
+        this.klassDetailNavListComponent.moveTo(this.moveto);
+      } // end if
+
     } // end if
 
   } // end method

@@ -9,12 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_array_1 = require('../../util/helper/my-array');
 var klass_1 = require('../../klass/model/klass');
 var KlassInfoForTeacherComponent = (function () {
-    function KlassInfoForTeacherComponent(watchTower) {
+    function KlassInfoForTeacherComponent(watchTower, router) {
         this.watchTower = watchTower;
+        this.router = router;
         // @ Common Props
         this.emitter = new core_1.EventEmitter();
         this.isLast = false;
@@ -204,18 +206,22 @@ var KlassInfoForTeacherComponent = (function () {
             console.log("klass-info-for-teacher / onClickStatus / 시작");
         event.preventDefault();
         event.stopPropagation();
-    };
-    KlassInfoForTeacherComponent.prototype.onClickPrintCertipicate = function (event) {
+    }; // end method
+    KlassInfoForTeacherComponent.prototype.onClickReview = function (event) {
         if (this.isDebug())
-            console.log("klass-info-for-teacher / onClickPrintCertipicate / 시작");
+            console.log("klass-info-for-teacher / onClickReview / 시작");
         event.preventDefault();
         event.stopPropagation();
+        var newKlassId = this.klass.id;
+        this.router.navigate([("/class-center/" + newKlassId), { moveto: 'review' }]);
     };
-    KlassInfoForTeacherComponent.prototype.onClickSupplement = function (event) {
+    KlassInfoForTeacherComponent.prototype.onClickQuestion = function (event) {
         if (this.isDebug())
-            console.log("klass-info-for-teacher / onClickSupplement / 시작");
+            console.log("klass-info-for-teacher / onClickQuestion / 시작");
         event.preventDefault();
         event.stopPropagation();
+        var newKlassId = this.klass.id;
+        this.router.navigate([("/class-center/" + newKlassId), { moveto: 'question' }]);
     };
     __decorate([
         core_1.Output(), 
@@ -240,7 +246,7 @@ var KlassInfoForTeacherComponent = (function () {
             templateUrl: 'klass-info-for-teacher.component.html',
             styleUrls: ['klass-info-for-teacher.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService])
+        __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, router_1.Router])
     ], KlassInfoForTeacherComponent);
     return KlassInfoForTeacherComponent;
 }());

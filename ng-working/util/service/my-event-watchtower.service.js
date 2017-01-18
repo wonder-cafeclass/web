@@ -174,25 +174,8 @@ var MyEventWatchTowerService = (function () {
                 console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
             return;
         }
-        // @ Alternatives
-        // let offsetHeight:number = body.offsetHeight;
-        // let html = document.documentElement;
-        // let scrollHeight:number = body.scrollHeight;
         this.contentHeight = clientHeight;
         this.contentHeightSource.next(clientHeight);
-        /*
-        // 실제 보여지는 브라우저 내의 화면 높이를 의미합니다.
-        let contentHeight:number = window.innerHeight;
-        if(this._isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
-
-        // 위와 같습니다.
-        let clientHeight:number = document.documentElement.clientHeight;
-        if(this._isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
-
-        // 물리적인 디스플레이의 높이를 의미합니다.
-        let screenHeight:number = screen.height;
-        if(this._isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
-        */
     };
     // @ Desc : 강제로 푸터를 하단 고정 해제 합니다.
     MyEventWatchTowerService.prototype.announceFooterRelease = function () {

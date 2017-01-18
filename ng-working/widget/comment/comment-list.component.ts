@@ -1,6 +1,7 @@
 import {  Component, 
           OnInit,
           Output,
+          ElementRef,
           EventEmitter,
           Input }                      from '@angular/core';
 
@@ -68,6 +69,7 @@ export class CommentListComponent implements OnInit {
                 private myCheckerService:MyCheckerService,
                 private watchTower:MyEventWatchTowerService,
                 private commentService:CommentService,
+                private myElement:ElementRef,
                 private imageService:ImageService) {}
 
   ngOnInit(): void {
@@ -82,6 +84,10 @@ export class CommentListComponent implements OnInit {
 
     this.subscribeEventPack();
 
+  }
+
+  getElement():ElementRef {
+    return this.myElement;
   }
 
   setLoginUser(loginUser:User) :void {

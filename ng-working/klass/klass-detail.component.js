@@ -96,6 +96,8 @@ var KlassDetailComponent = (function () {
         this.klassTimeMinutesMin = 60;
         this.klassTimeMinutesMax = 180;
         this.isSaveBtnDisabled = true;
+        // 특정 위치로 이동시 사용.
+        this.moveto = "";
         if (this.isDebug())
             console.log("klass-detail / constructor / init");
         this.defaultMetaList = this.myEventService.getDefaultMetaListKlassDetail();
@@ -236,6 +238,7 @@ var KlassDetailComponent = (function () {
         this.route.params
             .switchMap(function (params) {
             klassId = +params['id'];
+            _this.moveto = params['moveto'];
             if (klassId === -100 && null == _this.loginTeacher) {
                 // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
                 if (_this.isDebug())
@@ -720,6 +723,8 @@ var KlassDetailComponent = (function () {
         if (this.isDebug())
             console.log("klass-detail / setKlassDays / this.klassDetailNavListComponent : ", this.klassDetailNavListComponent);
         this.klassDetailNavListComponent.setKlass(this.klassCopy);
+        // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+        this.moveTo();
     };
     // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
     KlassDetailComponent.prototype.setKlassDays = function () {
@@ -904,6 +909,32 @@ var KlassDetailComponent = (function () {
                 classBannerUrl = this.klassService.getKlassBannerUrlLoadable(classBannerUrl);
                 this.imageTableBannerListService.push([classBannerUrl]);
             } // end for
+        } // end if
+        // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+        this.moveTo();
+    }; // end method
+    KlassDetailComponent.prototype.moveTo = function () {
+        if (this.isDebug())
+            console.log("klass-detail / moveTo / 시작");
+        if (null == this.moveto || "" == this.moveto) {
+            return;
+        }
+        // wonder.jung
+        // 일반적인 해시태그 이동
+        // location.hash = "#" + this.moveto;
+        if ("review" == this.moveto) {
+            // 리뷰 리스트로 이동
+            // 담당 컴포넌트에게 명령을 전달해야 합니다.
+            if (null != this.klassDetailNavListComponent) {
+                this.klassDetailNavListComponent.moveTo(this.moveto);
+            } // end if
+        }
+        else if ("question" == this.moveto) {
+            // 질문 리스트로 이동
+            // 담당 컴포넌트에게 명령을 전달해야 합니다.
+            if (null != this.klassDetailNavListComponent) {
+                this.klassDetailNavListComponent.moveTo(this.moveto);
+            } // end if
         } // end if
     }; // end method
     KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {

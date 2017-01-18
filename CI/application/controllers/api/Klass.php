@@ -655,7 +655,6 @@ class Klass extends MY_REST_Controller {
             $klass->review_cnt = $review_cnt;
 
             // 2-4. 문의 갯수 가져오기.
-            /*
             $question_cnt = 
             $this->my_sql->select_klass_question_cnt_by_teacher(
                 // $teacher_id=-1, 
@@ -664,7 +663,6 @@ class Klass extends MY_REST_Controller {
                 $klass->id
             );
             $klass->question_cnt = $question_cnt;
-            */
             
         } // end foreach
 
@@ -834,6 +832,26 @@ class Klass extends MY_REST_Controller {
             $this->my_decorator->deco_attendance_table_by_attend_date(
                 $attendance_list
             );
+
+            // 2-3. 리뷰 갯수 가져오기.
+            $review_cnt = 
+            $this->my_sql->select_klass_review_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->review_cnt = $review_cnt;
+
+            // 2-4. 문의 갯수 가져오기.
+            $question_cnt = 
+            $this->my_sql->select_klass_question_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->question_cnt = $question_cnt;            
 
             $klass->klass_attendance_table = 
             $attendance_table;

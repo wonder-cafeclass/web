@@ -28,10 +28,8 @@ export class NavTabsComponent implements OnInit {
 
   @Input() colorTitleFocus:string;
   @Input() colorTitleBlur:string;
-
   @Input() colorBGFocus:string;
   @Input() colorBGBlur:string;
-
   @Input() colorBorder:string;
 
   @Input() isScrollAttachEnabled:boolean=true;
@@ -43,7 +41,7 @@ export class NavTabsComponent implements OnInit {
 
 
 
-  constructor(private el: ElementRef,private renderer: Renderer) {}
+  constructor(private el:ElementRef,private renderer: Renderer) {}
 
   ngOnInit(): void {
     if(0 < this.cageWidth) {
@@ -102,5 +100,20 @@ export class NavTabsComponent implements OnInit {
     // 부모 객체로 이벤트를 전파합니다.
     this.emitter.emit(radiobtnClicked.myEvent);
   }
+
+  // @ Desc : 특정 탭을 포커싱합니다.
+  setFocus(eventKey:string):void {
+
+    for (var i = 0; i < this.radiobtnList.length; ++i) {
+      let radiobtn = this.radiobtnList[i];
+
+      if(eventKey === radiobtn.myEvent.key) {
+        radiobtn.isFocus = true;
+      } else {
+        radiobtn.isFocus = false;
+      }
+    }
+
+  } // end method
 
 }

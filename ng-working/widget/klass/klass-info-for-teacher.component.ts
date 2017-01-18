@@ -3,6 +3,7 @@ import {  Component,
           Output,
           EventEmitter,          
           OnInit }                  from '@angular/core';
+import { Router }                   from '@angular/router';
 
 import { MyEvent }                  from '../../util/model/my-event';
 import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
@@ -41,7 +42,8 @@ export class KlassInfoForTeacherComponent implements OnInit {
 
   private myArray:HelperMyArray;
 
-  constructor(private watchTower:MyEventWatchTowerService) {
+  constructor(  private watchTower:MyEventWatchTowerService, 
+                private router:Router) {
 
     // Do something...
     this.myArray = new HelperMyArray();
@@ -273,24 +275,31 @@ export class KlassInfoForTeacherComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-  }
+  } // end method
 
-  onClickPrintCertipicate(event):void {
+  onClickReview(event):void {
 
-    if(this.isDebug()) console.log("klass-info-for-teacher / onClickPrintCertipicate / 시작");
-
-    event.preventDefault();
-    event.stopPropagation();
-
-  }
-
-  onClickSupplement(event):void {
-
-    if(this.isDebug()) console.log("klass-info-for-teacher / onClickSupplement / 시작");
+    if(this.isDebug()) console.log("klass-info-for-teacher / onClickReview / 시작");
 
     event.preventDefault();
     event.stopPropagation();
 
+    let newKlassId:number = this.klass.id;
+    this.router.navigate([`/class-center/${newKlassId}`,{moveto:'review'}]);
+
   }
+
+  onClickQuestion(event):void {
+
+    if(this.isDebug()) console.log("klass-info-for-teacher / onClickQuestion / 시작");
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let newKlassId:number = this.klass.id;
+    this.router.navigate([`/class-center/${newKlassId}`,{moveto:'question'}]);
+
+  }
+
 
 } // end class

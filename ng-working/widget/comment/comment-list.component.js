@@ -28,11 +28,12 @@ var comment_service_1 = require('./service/comment.service');
 *
 */
 var CommentListComponent = (function () {
-    function CommentListComponent(myEventService, myCheckerService, watchTower, commentService, imageService) {
+    function CommentListComponent(myEventService, myCheckerService, watchTower, commentService, myElement, imageService) {
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
         this.watchTower = watchTower;
         this.commentService = commentService;
+        this.myElement = myElement;
         this.imageService = imageService;
         this.isAdmin = false;
         this.isInputDisabled = false;
@@ -57,6 +58,9 @@ var CommentListComponent = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myArray = new my_array_1.HelperMyArray();
         this.subscribeEventPack();
+    };
+    CommentListComponent.prototype.getElement = function () {
+        return this.myElement;
     };
     CommentListComponent.prototype.setLoginUser = function (loginUser) {
         // let isDebug:boolean = true;
@@ -662,7 +666,7 @@ var CommentListComponent = (function () {
             templateUrl: 'comment-list.component.html',
             styleUrls: ['comment-list.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, comment_service_1.CommentService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_event_watchtower_service_1.MyEventWatchTowerService, comment_service_1.CommentService, core_1.ElementRef, image_service_1.ImageService])
     ], CommentListComponent);
     return CommentListComponent;
 }());

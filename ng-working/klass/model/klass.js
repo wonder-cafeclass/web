@@ -125,40 +125,6 @@ var Klass = (function () {
         var percentage = Math.round(100 * 100 * (attendance_presence_cnt / (attendance_total_cnt - attendance_ready_cnt))) / 100;
         return percentage + "%";
     };
-    // @ Desc : 해당 수업의 리뷰 갯수를 가져옵니다. / FIX ME
-    Klass.prototype.getTotalReviewCnt = function () {
-        /*
-        if(this.myArray.isNotOK(this.klass_n_student_list)) {
-            return 0;
-        }
-
-        let totalReviewCnt:number = 0;        // 총 결석 횟수
-        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
-            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
-            totalReviewCnt += klass_n_student.review_cnt;
-        } // end for
-
-        return totalReviewCnt;
-        */
-        return 0;
-    }; // end method
-    // @ Desc : 해당 수업의 문의 갯수를 가져옵니다. / FIX ME
-    Klass.prototype.getTotalQuestionCnt = function () {
-        /*
-        if(this.myArray.isNotOK(this.klass_n_student_list)) {
-            return 0;
-        }
-
-        let totalQuestionCnt:number = 0;        // 총 결석 횟수
-        for (var i = 0; i < this.klass_n_student_list.length; ++i) {
-            let klass_n_student:KlassNStudent = this.klass_n_student_list[i];
-            totalQuestionCnt += klass_n_student.question_cnt;
-        } // end for
-
-        return totalQuestionCnt;
-        */
-        return 0;
-    }; // end method
     // @ Desc : 수업없음 클래스인지 여부.
     Klass.prototype.isNoClassBtn = function () {
         return (-1 === this.id) ? true : false;

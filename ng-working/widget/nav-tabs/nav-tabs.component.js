@@ -69,6 +69,18 @@ var NavTabsComponent = (function () {
         // 부모 객체로 이벤트를 전파합니다.
         this.emitter.emit(radiobtnClicked.myEvent);
     };
+    // @ Desc : 특정 탭을 포커싱합니다.
+    NavTabsComponent.prototype.setFocus = function (eventKey) {
+        for (var i = 0; i < this.radiobtnList.length; ++i) {
+            var radiobtn = this.radiobtnList[i];
+            if (eventKey === radiobtn.myEvent.key) {
+                radiobtn.isFocus = true;
+            }
+            else {
+                radiobtn.isFocus = false;
+            }
+        }
+    }; // end method
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
