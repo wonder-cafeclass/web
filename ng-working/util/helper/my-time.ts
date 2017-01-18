@@ -97,7 +97,7 @@ export class HelperMyTime {
 
 		let diffDays:number = this.getDiffDays(headDate, todayDate);
 
-		return (diffDays < 1)?true:false;
+		return (-1 < diffDays)?true:false;
 
 	} // end method
 
@@ -129,17 +129,17 @@ export class HelperMyTime {
 
 	private getDiffMinutes(head:Date, tail:Date) :number{
 		let minutes = 60*1000;
-		return Math.floor((head.getTime() - tail.getTime()) / minutes);
+		return Math.floor((tail.getTime() - head.getTime()) / minutes);
 	}
 
 	private getDiffHours(head:Date, tail:Date) :number{
 		let hour = 60*60*1000;
-		return Math.floor((head.getTime() - tail.getTime()) / hour);
+		return Math.floor((tail.getTime() - head.getTime()) / hour);
 	}
 
 	private getDiffDays(head:Date, tail:Date) :number{
 		let day = 60*60*1000*24;
-		return Math.floor((head.getTime() - tail.getTime()) / day);
+		return Math.floor((tail.getTime() - head.getTime()) / day);
 	}
 
 	addHoursHHMM(hhmm:string, hours:number):string {

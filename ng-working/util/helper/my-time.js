@@ -76,7 +76,7 @@ var HelperMyTime = (function () {
         var headDate = this.getDateFromYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS);
         var todayDate = new Date();
         var diffDays = this.getDiffDays(headDate, todayDate);
-        return (diffDays < 1) ? true : false;
+        return (-1 < diffDays) ? true : false;
     }; // end method
     HelperMyTime.prototype.getDiffDaysYYYYMMDD_HHMMSS = function (headYYYYMMDD_HHMMSS, tailYYYYMMDD_HHMMSS) {
         if (null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
@@ -103,15 +103,15 @@ var HelperMyTime = (function () {
     };
     HelperMyTime.prototype.getDiffMinutes = function (head, tail) {
         var minutes = 60 * 1000;
-        return Math.floor((head.getTime() - tail.getTime()) / minutes);
+        return Math.floor((tail.getTime() - head.getTime()) / minutes);
     };
     HelperMyTime.prototype.getDiffHours = function (head, tail) {
         var hour = 60 * 60 * 1000;
-        return Math.floor((head.getTime() - tail.getTime()) / hour);
+        return Math.floor((tail.getTime() - head.getTime()) / hour);
     };
     HelperMyTime.prototype.getDiffDays = function (head, tail) {
         var day = 60 * 60 * 1000 * 24;
-        return Math.floor((head.getTime() - tail.getTime()) / day);
+        return Math.floor((tail.getTime() - head.getTime()) / day);
     };
     HelperMyTime.prototype.addHoursHHMM = function (hhmm, hours) {
         // let isDebug:boolean = true;
