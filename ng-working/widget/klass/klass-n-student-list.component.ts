@@ -7,8 +7,10 @@ import {  Component,
 import { MyEvent }                  from '../../util/model/my-event';
 import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
 import { HelperMyArray }            from '../../util/helper/my-array';
+import { MyResponse }               from '../../util/model/my-response';
 
 import { PaymentImport }            from '../../widget/payment/model/payment-import';
+import { PaymentService }           from '../../widget/payment/service/payment.service';
 
 import { Klass }                    from '../../klass/model/klass';
 import { KlassAttendance }          from '../../klass/model/klass-attendance';
@@ -16,6 +18,7 @@ import { KlassNStudent }            from '../../klass/model/klass-n-student';
 
 import { User }                     from '../../users/model/user';
 import { Teacher }                  from '../../teachers/model/teacher';
+
 
 @Component({
   moduleId: module.id,
@@ -39,7 +42,8 @@ export class KlassNStudentListComponent implements OnInit {
 
   private myArray:HelperMyArray;
 
-  constructor(private watchTower:MyEventWatchTowerService) {
+  constructor(  private watchTower:MyEventWatchTowerService, 
+                private paymentService:PaymentService) {
 
     // Do something...
     this.myArray = new HelperMyArray();
@@ -56,6 +60,20 @@ export class KlassNStudentListComponent implements OnInit {
 
     this.asyncViewPack();
 
+  }
+
+  private getLoginUserId() :number {
+
+    if(this.isDebug()) console.log("klass-n-student-list / getLoginUserId / 시작");
+    let loginUser:User = this.watchTower.getLoginUser();
+
+    let loginUserId:number = -1;
+    if(null != loginUser) {
+      loginUserId = loginUser.id;
+    }
+    if(this.isDebug()) console.log("klass-n-student-list / getLoginUserId / loginUserId : ",loginUserId);
+
+    return loginUserId;
   }
 
   private asyncViewPack(): void {
@@ -133,12 +151,77 @@ export class KlassNStudentListComponent implements OnInit {
     this.emitter.emit(myEvent);
   } // end method
 
+  private onAfterCancelKlass():void {
+
+    if(this.isDebug()) console.log("klass-n-student-list / onAfterCancelKlass / 시작");
+
+    // 메일 발송은 서버의 역할 아닌가?
+    // 취소 완료시점에 메일을 발송해야 합니다.
+
+    // TODO -  즉시 취소 
+
+    // # 이메일 - 취소 - 운영진 확인뒤 진행
+    // a. # 고객 메일 - 인사말과 영수증('영수증 출력하기 - 버튼')이 같이 나간다.
+    // c. # 운영자 메일 - 취소 고객.
+    // d. # 강사님에게도 노티 취소 메일.
+
+  }
+
   onClickCancelKlass(event):void {
 
     if(this.isDebug()) console.log("klass-n-student-list / onClickCancelKlass / 시작");
 
     event.preventDefault();
     event.stopPropagation();
+
+    let paymentImpUid:string = "";
+    let paymentImpMerchantUid:string = "";
+    let paymentImpCancelAmount:number = -1;
+    let paymentImpCancelReason:string = "고객 사정에 의한 환불";
+
+    // 아임포트 - 결재를 취소합니다.
+    this.paymentService
+    .cancelPaymentImport(
+      // apiKey:string, 
+      this.watchTower.getApiKey(),
+      // paymentImpUid:string,
+      paymentImpUid,
+      // paymentImpMerchantUid:string,
+      paymentImpMerchantUid,
+      // paymentImpCancelAmount:number,
+      paymentImpCancelAmount,
+      // paymentImpCancelReason:string,
+      paymentImpCancelReason,
+      // loginUserId:number
+      this.getLoginUserId()
+    )
+    .then((myResponse:MyResponse) => {
+
+      if(this.isDebug()) console.log("import / onClickCancelKlass / myResponse : ",myResponse);
+
+      // if( myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext") ) {
+      if( myResponse.isSuccess() ) {
+
+        /*
+        let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+        let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
+
+        // 부모 객체에게 결재 완료를 알립니다.
+        this.emitEventOnChangePaymentImp(paymentImpNext);
+        */
+        
+      } else if(myResponse.isFailed()){
+
+        if(this.isDebug()) console.log("import / onClickCancelKlass / 결재 정보 등록에 실패했습니다.");
+
+        this.watchTower.logAPIError("onClickCancelKlass has been failed!");
+        if(null != myResponse.error) {
+          this.watchTower.announceErrorMsgArr([myResponse.error]);
+        } // end if
+        
+      } // end if
+
+    }); // end service
 
   } // end method
 
@@ -148,6 +231,18 @@ export class KlassNStudentListComponent implements OnInit {
 
     event.preventDefault();
     event.stopPropagation();
+
+    // TODO - 첫 수업 2일 이내면 운영진의 확인 뒤 취소 가능.
+    // 메일로 받아서 확인할 수 있음.
+    // 어떤 테이블에서 이 정보를 확인할수 있을까? --> klass_n_student 에서 R 상태로 등록. 운영자는 이 데이터를 확인뒤, A --> R 상태로 변경.
+
+    // # 이메일 - 취소 요청 - 운영진 확인뒤 진행
+    // c. # 운영자 메일 - 취소 고객.
+    // d. # 강사님에게도 노티 취소 메일.
+
+    // 사용자가 자신이 신청한 수업을 R 상태로 변경.
+    // 운영자에게 노티 메일이 전달. 
+    // 운영자는 운영툴에서도 '취소 요청'을 확인할 수 있음.
 
   } // end method  
 

@@ -210,8 +210,8 @@
 		"teacher_status_eng_list":["All", "Available","Block","Frozen","Not in action"],
 		"teacher_status_kor_list":["모든 상태", "정상","블럭","휴면","탈퇴"],
 
-		"class_student_status_list":["ALL", "A","N"],
-		"class_student_status_kor_list":["모든 상태", "등록", "취소"],
+		"class_student_status_list":["ALL","A","N","R"],
+		"class_student_status_kor_list":["모든 상태","등록","취소","취소요청"],
 
 		"class_attendance_status_list":["ALL", "R","P","A"],
 		"class_attendance_status_eng_list":["All", "Ready", "Presence", "Absence"],

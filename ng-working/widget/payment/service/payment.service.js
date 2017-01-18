@@ -19,6 +19,7 @@ var PaymentService = (function () {
         this.http = http;
         this.fetchImportHistoryUrl = '/CI/index.php/api/payment/fetchimporthistory';
         this.addImportHistoryUrl = '/CI/index.php/api/payment/addimporthistory';
+        this.cancelPaymentImportUrl = '/CI/index.php/api/payment/cancelpaymentimport';
         this.myExtractor = new my_extractor_1.MyExtractor();
         this.myRequest = new my_request_1.MyRequest();
     }
@@ -30,7 +31,37 @@ var PaymentService = (function () {
             return false;
         }
         return this.watchTower.isDebug();
-    }; // end method  
+    }; // end method 
+    PaymentService.prototype.cancelPaymentImport = function (apiKey, paymentImpUid, paymentImpMerchantUid, paymentImpCancelAmount, paymentImpCancelReason, loginUserId) {
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / 시작");
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / paymentImpUid : ", paymentImpUid);
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / paymentImpMerchantUid : ", paymentImpMerchantUid);
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / paymentImpCancelAmount : ", paymentImpCancelAmount);
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / paymentImpCancelReason : ", paymentImpCancelReason);
+        if (this.isDebug())
+            console.log("payment.service / addImportHistory / loginUserId : ", loginUserId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.cancelPaymentImportUrl);
+        var params = {
+            payment_imp_uid: paymentImpUid,
+            payment_imp_merchant_uid: paymentImpMerchantUid,
+            payment_imp_cancel_amount: paymentImpCancelAmount,
+            payment_imp_cancel_reason: paymentImpCancelReason,
+            login_user_id: loginUserId,
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
     PaymentService.prototype.fetchImportHistory = function (apiKey, pageNum, pageRowCnt, paymentImpUid, klassId, userId, loginUserId) {
         if (this.isDebug())
             console.log("payment.service / fetchImportHistory / 시작");

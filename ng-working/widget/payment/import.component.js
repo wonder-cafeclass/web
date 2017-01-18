@@ -206,6 +206,13 @@ var ImportComponent = (function () {
         };
         return param;
     };
+    // TODO 
+    // @ Desc : 수업을 환불합니다.
+    ImportComponent.prototype.refundKlass = function () {
+        if (this.isDebug())
+            console.log("import /  refundKlass / 시작");
+    };
+    // @ Desc : 수업을 구매합니다.
     ImportComponent.prototype.buyKlass = function (klassId, klassName, userId, userEmail, userName, userMobile, amount) {
         if (this.isDebug())
             console.log("import /  buyKlass / 시작");

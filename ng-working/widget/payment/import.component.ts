@@ -274,6 +274,15 @@ export class ImportComponent implements OnInit {
     return param;
   }  
 
+  // TODO 
+  // @ Desc : 수업을 환불합니다.
+  public refundKlass():void {
+
+    if(this.isDebug()) console.log("import /  refundKlass / 시작");
+
+  }
+
+  // @ Desc : 수업을 구매합니다.
   public buyKlass(  klassId:number, 
                     klassName:string, 
                     userId:number,  

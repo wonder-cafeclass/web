@@ -14,6 +14,7 @@ export class PaymentService {
 
   private fetchImportHistoryUrl = '/CI/index.php/api/payment/fetchimporthistory';
   private addImportHistoryUrl = '/CI/index.php/api/payment/addimporthistory';
+  private cancelPaymentImportUrl = '/CI/index.php/api/payment/cancelpaymentimport';
 
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
@@ -36,7 +37,41 @@ export class PaymentService {
     }
 
     return this.watchTower.isDebug();
-  } // end method  
+  } // end method 
+
+  cancelPaymentImport ( apiKey:string, 
+                        paymentImpUid:string,
+                        paymentImpMerchantUid:string,
+                        paymentImpCancelAmount:number,
+                        paymentImpCancelReason:string,
+                        loginUserId:number): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("payment.service / addImportHistory / 시작");
+    if(this.isDebug()) console.log("payment.service / addImportHistory / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpUid : ",paymentImpUid);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpMerchantUid : ",paymentImpMerchantUid);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpCancelAmount : ",paymentImpCancelAmount);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpCancelReason : ",paymentImpCancelReason);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / loginUserId : ",loginUserId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.cancelPaymentImportUrl);
+
+    let params = {
+      payment_imp_uid:paymentImpUid,
+      payment_imp_merchant_uid:paymentImpMerchantUid,
+      payment_imp_cancel_amount:paymentImpCancelAmount,
+      payment_imp_cancel_reason:paymentImpCancelReason,
+      login_user_id:loginUserId,
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }    
 
   fetchImportHistory (  apiKey:string, 
                         pageNum:number,

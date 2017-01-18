@@ -26,6 +26,7 @@ class Payment extends MY_REST_Controller {
 
     private $api_post_access = "https://api.iamport.kr/users/getToken";
     private $api_get_payment = "https://api.iamport.kr/payments/{imp_uid}";
+    private $api_post_cancel_payment = "https://api.iamport.kr/payments/cancel";
 
 
 
@@ -340,6 +341,223 @@ class Payment extends MY_REST_Controller {
 
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
     }
+
+
+    // @ Desc : Import의 특정 결재 내역을 취소합니다.
+    public function cancelpaymentimport_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } 
+
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );        
+
+        $payment_imp_uid = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_uid",
+            // $key_filter=""
+            "payment_imp_uid"
+        );
+
+        $payment_imp_merchant_uid = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_merchant_uid",
+            // $key_filter=""
+            "payment_imp_merchant_uid"
+        );
+
+        $payment_imp_cancel_amount = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_cancel_amount",
+            // $key_filter=""
+            "payment_imp_cancel_amount"
+        );
+
+        $payment_imp_cancel_reason = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_cancel_reason",
+            // $key_filter=""
+            "payment_imp_cancel_reason"
+        );
+
+        $params = array(
+            "payment_imp_uid"=>$payment_imp_uid,
+            "payment_imp_merchant_uid"=>$payment_imp_merchant_uid,
+            "payment_imp_cancel_reason"=>$payment_imp_cancel_reason,
+            "login_user_id"=>$login_user_id
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            return;
+        } // end if
+
+
+        $access_token = "";
+        if($is_ok) 
+        {
+            // 1. Access Token 가져오기
+            $access_token = $this->getAccessToken();
+            if(empty($access_token)) 
+            {
+                $is_ok = false;
+            }
+        }
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            return;
+        } // end if
+
+        $jsonPaymentImp = 
+        $this->cancelPayment(
+            // $access_token="", 
+            $access_token, 
+            // $imp_uid="", 
+            $payment_imp_uid,
+            // $merchant_uid="", 
+            $payment_imp_merchant_uid,
+            // $cancel_amount=-1, 
+            $payment_imp_cancel_amount,
+            // $reason=""
+            $payment_imp_cancel_reason
+        );
+        if(empty($jsonPaymentImp)) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
+            return;
+        } // end if
+
+        $paymentImp = new PaymentImport();
+        $paymentImp->setJSON($jsonPaymentImp);
+        $paymentImp->klass_id = $klass_id;
+        $paymentImp->user_id = $user_id;
+        // $output["paymentImp"] = $paymentImp;
+
+        // 결제 데이터를 DB에 저장. 
+        $this->my_sql->add_payment_import(
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $payment_imp=null
+            $paymentImp
+        );
+
+        // 저장한 데이터를 가져옴 
+        $paymentImpFromDB = 
+        $this->my_sql->select_payment_import($payment_imp_uid);
+        $paymentImpNext = new PaymentImport();
+        $paymentImpNext->setJSON($paymentImpFromDB);
+        $output["paymentImpNext"] = $paymentImpNext;
+
+        // 메일 내용은 기존 카페 클래스에서 확인해볼것!
+        // 특정 조건에 의한 부분 취소등에 의해 원금과 차액이 발생할 경우의 안내 내용은 어떻게?
+
+        // # 이메일 - 취소 - 운영진 확인뒤 진행
+        // a. # 고객 메일 - 인사말과 영수증('영수증 출력하기 - 버튼')이 같이 나간다.
+        // c. # 운영자 메일 - 취소 고객. / info@cafeclass.kr
+        // d. # 강사님에게도 노티 취소 메일.
+
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+    }    
+
+    // @ Desc : Import의 결재내역을 취소합니다.
+    // @ Referer : https://api.iamport.kr/#!/authenticate/getToken
+    private function cancelPayment($access_token="", $imp_uid="", $merchant_uid="", $cancel_amount=-1, $reason="")
+    {
+        $output = [];
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        if(empty($access_token))
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$access_token)");
+            return;
+        } // end if
+
+        if(empty($imp_uid))
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$imp_uid)");
+            return;
+        } // end if
+
+        if(empty($merchant_uid))
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$merchant_uid)");
+            return;
+        } // end if
+
+        if(!(0 < $cancel_amount))
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"!(0 < \$cancel_amount)");
+            return;
+        } // end if
+
+        if(empty($reason))
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$reason)");
+            return;
+        } // end if
+
+
+        $url = $this->api_post_cancel_payment;
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$url : $url");
+
+        $result =
+        $this->my_curl->post_json(
+            // $url=""
+            $url,
+            // $header_arr=null
+            [
+                "Authorization"=>"$access_token"
+            ],
+            // $attr_arr=null
+            [],
+            // $post_params
+            [
+                "imp_uid"=>"$imp_uid",
+                "merchant_uid"=>"$merchant_uid",
+                "amount"=>"$cancel_amount",
+                "reason"=>"$reason"
+            ]
+        ); 
+
+        if(empty($result) || $result->code < 0) {
+            return null;
+        }
+
+        return $result->response;
+    }    
 
     // @ Desc : Import의 Payment를 가져옵니다.
     // @ Referer : https://api.iamport.kr/#!/authenticate/getToken
