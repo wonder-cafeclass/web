@@ -3103,7 +3103,7 @@ class MY_Sql extends MY_Library
         $venue_telephone = "02-758-8118";
         $venue_address = "서울특별시 송파구 잠실동 40";
         $venue_road_address = "서울특별시 송파구 올림픽로 212 갤러리아팰리스";
-        $venue_latitude = "37.5111896";
+        $venue_latitude = "127.0939713";
         $venue_longitude = "37.5111896";
 
         $subway_line = $this->get_subway_line_default();

@@ -100,7 +100,6 @@ export class KlassVenueSearchListComponent implements OnInit {
     // 맵 정보가 없는 경우, 기본 맵 정보를 만듭니다.
     if(null == this.klassVenue) {
       this.klassVenue = this.getDefaultVenue();
-
     }
 
     this.initVenueSearch();
@@ -226,24 +225,6 @@ export class KlassVenueSearchListComponent implements OnInit {
         this
       );
       this.emitter.emit(myEvent);
-
-      // REMOVE ME
-      /*
-      let myEventReady:MyEvent =
-      this.myEventService.getMyEvent(
-          // public eventName:string
-          this.myEventService.ON_READY,
-          // public key:string
-          this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP,
-          // public value:string
-          "",
-          // public metaObj:any
-          this,
-          // public myChecker:MyChecker
-          this.watchTower.getMyCheckerService().getFreePassChecker(),
-      );
-      this.emitter.emit(myEvent);
-      */
 
     } else if("update" === myEvent.key) {
 
