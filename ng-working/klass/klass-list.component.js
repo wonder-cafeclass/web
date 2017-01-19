@@ -47,7 +47,8 @@ var KlassListComponent = (function () {
         this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -575,8 +576,12 @@ var KlassListComponent = (function () {
         }); // end service
     }; // end method
     KlassListComponent.prototype.gotoClassDetail = function (klass) {
+        if (this.isDebug())
+            console.log("klass-list / gotoClassDetail / 시작");
         // 수업 상세 페이지로 이동
         this.router.navigate([klass.id], { relativeTo: this.route });
+        if (this.isDebug())
+            console.log("klass-list / gotoClassDetail / 끝");
     }; // end method
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
         if (null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {

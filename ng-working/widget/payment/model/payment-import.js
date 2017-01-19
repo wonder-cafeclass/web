@@ -90,7 +90,7 @@ var PaymentImport = (function () {
         // 신용카드 매출전표 확인 URL
         this.receipt_url = "";
         // 35 - INSERT
-        // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
+        // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결제 취소 영수증만 등록
         this.cancel_receipt_url = "";
         this.myIs = null;
         this.myFormat = null;

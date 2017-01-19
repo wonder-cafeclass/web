@@ -110,7 +110,8 @@ var KlassDetailComponent = (function () {
         this.klassService.setWatchTower(this.watchTower);
     }
     KlassDetailComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassDetailComponent.prototype.ngAfterViewInit = function () {
         if (this.isDebug())
@@ -1012,6 +1013,7 @@ var KlassDetailComponent = (function () {
         // TEST - 테스트 금액은 천원
         1000);
     };
+    // @ Deprecated - 수업 취소는 학생 정보 페이지에서만 제공합니다.
     KlassDetailComponent.prototype.onClickCancelEnrollment = function (event, klass) {
         if (this.isDebug())
             console.log("klass-detail / onClickCancelEnrollment / 시작");

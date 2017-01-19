@@ -250,7 +250,8 @@ export class KlassDetailComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   ngAfterViewInit():void {
@@ -1350,6 +1351,7 @@ export class KlassDetailComponent implements AfterViewInit {
 
   }
 
+  // @ Deprecated - 수업 취소는 학생 정보 페이지에서만 제공합니다.
   onClickCancelEnrollment(event, klass:Klass) {
 
     if(this.isDebug()) console.log("klass-detail / onClickCancelEnrollment / 시작");

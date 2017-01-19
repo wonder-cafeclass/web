@@ -1092,14 +1092,17 @@ class MY_Sql extends MY_Library
     {
         $select_query = 
         'klass.id AS klass_id,' .
+        'klass.teacher_id AS klass_teacher_id,' .
         'klass.title AS klass_title,'.
         'klass.type AS klass_type,'.
         'klass.feature AS klass_feature,'.
+
         'klass.target AS klass_target,'.
         'klass.schedule AS klass_schedule,'.
         'klass.date_begin AS klass_date_begin,'.
         'klass.time_begin AS klass_time_begin,'.
         'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+
         'klass.time_end AS klass_time_end,'.
         'klass.level AS klass_level,'.
         'klass.week AS klass_week,'.
@@ -3924,6 +3927,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         $this->CI->db->where('klass.id', $klass_id);
+        $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
@@ -3931,9 +3935,10 @@ class MY_Sql extends MY_Library
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         $this->CI->db->where('klass.id', $klass_id);
+        $this->CI->db->limit(1);
         $query = $this->CI->db->get();
 
-        return $query->result_object();        
+        return $query->row();        
 
     }
     public function select_klass_by_teacher($teacher_id=-1) 

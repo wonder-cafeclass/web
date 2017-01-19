@@ -2601,15 +2601,9 @@ class Klass extends MY_REST_Controller {
             return;
         } // end if
 
-        $klass_list = $this->my_sql->select_klass($klass_id);
-        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
-
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-        }
+        $klass = $this->my_sql->select_klass($klass_id);
+        $klass = $this->my_decorator->deco_klass($klass);
+        $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
 
         return $klass;
     }    

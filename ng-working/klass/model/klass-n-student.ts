@@ -36,7 +36,7 @@ export class KlassNStudent {
     public review_cnt:number=-1;
     public question_cnt:number=-1;
 
-    // 결재 횟수
+    // 결제 횟수
     public payment_import_cnt:number=-1;  
 
     public receipt_url:string="";  

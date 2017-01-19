@@ -111,13 +111,13 @@ export class MyEventService {
     KEY_USER_MY_INFO_DASHBOARD:string="KEY_USER_MY_INFO_DASHBOARD";   // 유저 - 내정보 대시보드.
     KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";                       // 유저 - 내정보 수정.
     KEY_USER_MY_KLASS:string="KEY_USER_MY_KLASS";                 // 유저 - 내 수강이력.
-    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";                 // 유저 - 내 결재정보.
+    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";                 // 유저 - 내 결제정보.
     KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";               // 유저 - 내 관심강의(찜).
 
     KEY_TEACHER_MY_INFO_DASHBOARD:string="KEY_TEACHER_MY_INFO_DASHBOARD";        // 선생님 - 대시보드.
     KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";                            // 선생님 - 내정보 수정.
     KEY_TEACHER_MY_KLASS:string="KEY_TEACHER_MY_KLASS";                          // 선생님 - 내 수강이력.
-    KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                        // 선생님 - 내 결재정보.
+    KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                        // 선생님 - 내 결제정보.
     KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                    // 선생님 - 학생에게준 피드백. // @ Deprecated
 
     KEY_TEACHER_MY_REVIEW:string="KEY_TEACHER_MY_REVIEW";                    // 선생님 - 리뷰.

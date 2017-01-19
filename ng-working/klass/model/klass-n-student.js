@@ -23,7 +23,7 @@ var KlassNStudent = (function () {
         this.attendance_absence_cnt = -1;
         this.review_cnt = -1;
         this.question_cnt = -1;
-        // 결재 횟수
+        // 결제 횟수
         this.payment_import_cnt = -1;
         this.receipt_url = "";
         this.myIs = new my_is_1.HelperMyIs();

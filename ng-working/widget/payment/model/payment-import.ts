@@ -101,7 +101,7 @@ export class PaymentImport {
   	public receipt_url:string="";
     // 35 - INSERT
 
-    // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
+    // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결제 취소 영수증만 등록
     public cancel_receipt_url:string="";
 
     private myIs:HelperMyIs=null;	

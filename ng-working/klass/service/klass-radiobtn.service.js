@@ -344,7 +344,7 @@ var KlassRadioBtnService = (function () {
             ),
             new radiobtn_option_1.RadioBtnOption(
             // public title:string,
-            "나의 정보 수정", 
+            "나의 정보", 
             // public key:string,
             this.myEventService.KEY_USER_MY_INFO, 
             // public isFocus:boolean
@@ -385,7 +385,7 @@ var KlassRadioBtnService = (function () {
             /* REMOVE ME
                       new RadioBtnOption(
                         // public title:string,
-                        "결재정보",
+                        "결제정보",
                         // public key:string,
                         this.myEventService.KEY_USER_MY_PAYMENT,
                         // public isFocus:boolean

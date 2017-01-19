@@ -179,7 +179,7 @@ export class KlassNStudentListComponent implements OnInit {
     let paymentImpCancelAmount:number = -1;
     let paymentImpCancelReason:string = "고객 사정에 의한 환불";
 
-    // 아임포트 - 결재를 취소합니다.
+    // 아임포트 - 결제를 취소합니다.
     this.paymentService
     .cancelPaymentImport(
       // apiKey:string, 
@@ -206,13 +206,13 @@ export class KlassNStudentListComponent implements OnInit {
         let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
         let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
 
-        // 부모 객체에게 결재 완료를 알립니다.
+        // 부모 객체에게 결제 완료를 알립니다.
         this.emitEventOnChangePaymentImp(paymentImpNext);
         */
         
       } else if(myResponse.isFailed()){
 
-        if(this.isDebug()) console.log("import / onClickCancelKlass / 결재 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("import / onClickCancelKlass / 결제 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("onClickCancelKlass has been failed!");
         if(null != myResponse.error) {

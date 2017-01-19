@@ -2,7 +2,7 @@
 var my_is_1 = require('../helper/my-is');
 var my_time_1 = require('../helper/my-time');
 var my_format_1 = require('../helper/my-format');
-// @ Desc : 결재 모듈 아임포트의 응답객체 (결재 이후)
+// @ Desc : 결제 모듈 아임포트의 응답객체 (결제 이후)
 // @ Referer : https://github.com/iamport/iamport-manual/blob/master/%EC%9D%B8%EC%A6%9D%EA%B2%B0%EC%A0%9C/README.md
 var MyResponseImport = (function () {
     function MyResponseImport() {

@@ -400,7 +400,7 @@ export class KlassRadioBtnService {
 
           new RadioBtnOption(
             // public title:string,
-            "나의 정보 수정",
+            "나의 정보",
             // public key:string,
             this.myEventService.KEY_USER_MY_INFO,
             // public isFocus:boolean
@@ -444,7 +444,7 @@ export class KlassRadioBtnService {
 /* REMOVE ME
           new RadioBtnOption(
             // public title:string,
-            "결재정보",
+            "결제정보",
             // public key:string,
             this.myEventService.KEY_USER_MY_PAYMENT,
             // public isFocus:boolean

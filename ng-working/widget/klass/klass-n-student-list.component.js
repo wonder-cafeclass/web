@@ -124,7 +124,7 @@ var KlassNStudentListComponent = (function () {
         var paymentImpMerchantUid = "";
         var paymentImpCancelAmount = -1;
         var paymentImpCancelReason = "고객 사정에 의한 환불";
-        // 아임포트 - 결재를 취소합니다.
+        // 아임포트 - 결제를 취소합니다.
         this.paymentService
             .cancelPaymentImport(
         // apiKey:string, 
@@ -147,7 +147,7 @@ var KlassNStudentListComponent = (function () {
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
-                    console.log("import / onClickCancelKlass / 결재 정보 등록에 실패했습니다.");
+                    console.log("import / onClickCancelKlass / 결제 정보 등록에 실패했습니다.");
                 _this.watchTower.logAPIError("onClickCancelKlass has been failed!");
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);

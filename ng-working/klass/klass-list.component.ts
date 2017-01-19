@@ -78,7 +78,8 @@ export class KlassListComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   isSelected(klass: Klass): boolean {
@@ -747,8 +748,14 @@ export class KlassListComponent implements AfterViewInit {
   } // end method
 
   gotoClassDetail(klass: Klass):void {
+
+    if(this.isDebug()) console.log("klass-list / gotoClassDetail / 시작");
+
     // 수업 상세 페이지로 이동
     this.router.navigate([klass.id], { relativeTo: this.route });
+
+
+    if(this.isDebug()) console.log("klass-list / gotoClassDetail / 끝");
   } // end method
 
   onLoadFailClassImage(classImage, klassObj) {

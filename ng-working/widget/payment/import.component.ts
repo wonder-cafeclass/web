@@ -23,7 +23,7 @@ import { PaymentImport }            from './model/payment-import';
 
 /*
 *
-*	@ Desc     : 결재 모듈 아임포트(I'mport)를 사용할 수 있게 도와주는 컴포넌트
+*	@ Desc     : 결제 모듈 아임포트(I'mport)를 사용할 수 있게 도와주는 컴포넌트
 *	@ Author   : Wonder Jung
 */
 
@@ -85,12 +85,12 @@ export class ImportComponent implements OnInit {
         let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
         let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
 
-        // 부모 객체에게 결재 완료를 알립니다.
+        // 부모 객체에게 결제 완료를 알립니다.
         this.emitEventOnChangePaymentImp(paymentImpNext);
         
       } else if(myResponse.isFailed()){
 
-        if(this.isDebug()) console.log("import / addImportHistory / 결재 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("import / addImportHistory / 결제 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("addImportHistory has been failed!");
         if(null != myResponse.error) {
@@ -239,7 +239,7 @@ export class ImportComponent implements OnInit {
     ;
     // 주문명 / (선택항목) 원활한 결제정보 확인을 위해 입력 권장 (PG사마다 차이가 있지만) 16자이내로 작성하시길 권장
     var name = 
-    "주문명:<KLASS_NAME>"
+    "<KLASS_NAME>"
     .replace(/\<KLASS_NAME\>/gi, klassName)
     ;
     // 결제할 금액 / (필수항목) / 고객으로부터 결제될 금액을 의미합니다.
@@ -335,11 +335,13 @@ export class ImportComponent implements OnInit {
       return;
     }
 
+    var _self = this;
+
     imp['request_pay'](
       param, 
       function(rsp) {
         if ( rsp.success ) {
-          this.addImportHistory(
+          _self.addImportHistory(
             // paymentImpUid:string, 
             rsp.imp_uid,
             // klassId:number, 
@@ -349,7 +351,7 @@ export class ImportComponent implements OnInit {
           );
         } else {
           // 에러. 로그 등록.
-          this.watchTower.logAPIError(rsp.error_msg);
+          _self.watchTower.logAPIError(rsp.error_msg);
         } // end if
       } // end callback
     ); // end payment process
@@ -386,12 +388,12 @@ export class ImportComponent implements OnInit {
         let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
         let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
 
-        // 부모 객체에게 결재 완료를 알립니다.
+        // 부모 객체에게 결제 완료를 알립니다.
         this.emitEventOnChangePaymentImp(paymentImpNext);
         
       } else if(myResponse.isFailed()){
 
-        if(this.isDebug()) console.log("import / addImportHistory / 결재 정보 등록에 실패했습니다.");
+        if(this.isDebug()) console.log("import / addImportHistory / 결제 정보 등록에 실패했습니다.");
 
         this.watchTower.logAPIError("addImportHistory has been failed!");
         if(null != myResponse.error) {
