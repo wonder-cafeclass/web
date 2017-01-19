@@ -18,6 +18,7 @@ var PaymentService = (function () {
         this.urlService = urlService;
         this.http = http;
         this.fetchImportHistoryUrl = '/CI/index.php/api/payment/fetchimporthistory';
+        this.afterbuyklassUrl = '/CI/index.php/api/payment/afterbuyklass';
         this.addImportHistoryUrl = '/CI/index.php/api/payment/addimporthistory';
         this.cancelPaymentImportUrl = '/CI/index.php/api/payment/cancelpaymentimport';
         this.myExtractor = new my_extractor_1.MyExtractor();
@@ -84,6 +85,31 @@ var PaymentService = (function () {
             payment_imp_uid: paymentImpUid,
             page_num: pageNum,
             pageRowCnt: pageRowCnt,
+            klass_id: klassId,
+            user_id: userId,
+            login_user_id: loginUserId,
+        };
+        return this.http.post(req_url, params, options)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    PaymentService.prototype.afterbuyklass = function (apiKey, paymentImpUid, klassId, userId, loginUserId) {
+        if (this.isDebug())
+            console.log("payment.service / afterbuyklass / 시작");
+        if (this.isDebug())
+            console.log("payment.service / afterbuyklass / apiKey : ", apiKey);
+        if (this.isDebug())
+            console.log("payment.service / afterbuyklass / paymentImpUid : ", paymentImpUid);
+        if (this.isDebug())
+            console.log("payment.service / afterbuyklass / klassId : ", klassId);
+        if (this.isDebug())
+            console.log("payment.service / afterbuyklass / userId : ", userId);
+        // POST
+        var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+        var req_url = this.urlService.get(this.afterbuyklassUrl);
+        var params = {
+            payment_imp_uid: paymentImpUid,
             klass_id: klassId,
             user_id: userId,
             login_user_id: loginUserId,

@@ -152,30 +152,37 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if(empty($agent))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$agent)");
             return;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\$agent_type)");
             return;
         }
         if(empty($ip))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$ip)");
             return;
         }
         if(empty($type))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$type)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\$user_id)");
             return;
         }
         if(empty($key))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$key)");
             return;
         }
 
@@ -334,17 +341,17 @@ class MY_Sql extends MY_Library
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $name="", $thumbnail_url="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }        
 
         if($this->is_not_ok("naver_id", $naver_id))
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"naver_id\", \$naver_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"naver_id\", \$naver_id)");
             return;   
         }
         if($this->is_not_ok("user_birth_range", $birth_year))
@@ -375,19 +382,19 @@ class MY_Sql extends MY_Library
         if(empty($nickname))
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$nickname)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$nickname)");
             return;   
         }
         if(empty($name)) 
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$name)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$name)");
             return;
         }
         if(empty($thumbnail_url)) 
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$thumbnail_url)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$thumbnail_url)");
             return;
         }
 
@@ -414,7 +421,7 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
@@ -422,11 +429,11 @@ class MY_Sql extends MY_Library
 
     public function get_user_naver($naver_id=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $naver_id)) 
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "(!(0 < \$naver_id))");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "(!(0 < \$naver_id))");
             return null;
         }
 
@@ -435,7 +442,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('naver_id', $naver_id);
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->where('naver_id', $naver_id);
         $this->CI->db->limit($limit, $offset);
@@ -722,30 +729,30 @@ class MY_Sql extends MY_Library
         // TODO - user id로 업데이트 되고 있음.
         // 숫자로 구성되어 있으므로 공격 확률이 있음. 
         // 문자열 조합키로 변경 필요 있음.
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
             return false;
         }
         if($this->is_not_ok("user_password_hashed", $password_hashed))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(password_hashed:$password_hashed)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(password_hashed:$password_hashed)");
             return false;
         }
         if($this->is_not_ok("user_email", $email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(email:$email)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(email:$email)");
             return false;
         }
         if($this->is_not_ok("user_name", $name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(name:$name)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(name:$name)");
             return false;
         }
         if($this->is_not_ok("user_nickname", $nickname))
@@ -754,48 +761,48 @@ class MY_Sql extends MY_Library
         }
         if($this->is_not_ok("user_gender", $gender))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(gender:$gender)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(gender:$gender)");
             return false;
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_year:$birth_year)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_year:$birth_year)");
             $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_month:$birth_month)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_month:$birth_month)");
             $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_day:$birth_day)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_day:$birth_day)");
             $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(thumbnail:$thumbnail)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(thumbnail:$thumbnail)");
             $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_head:$mobile_head)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_head:$mobile_head)");
             return false;
         }
         if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_body:$mobile_body)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_body:$mobile_body)");
             return false;
         }
         if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_tail:$mobile_tail)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_tail:$mobile_tail)");
             return false;
         }
 
         // 생일은 없는 경우, 공백 문자로 입력한다.
         $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
 
         $data = array(
             'nickname' => $nickname,
@@ -811,7 +818,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id),
@@ -830,25 +837,25 @@ class MY_Sql extends MY_Library
 
     public function update_klass_on_admin($user_id_admin=-1, $klass_id=-1, $klass_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return false;
         }
         if($this->is_not_ok("klass_status", $klass_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
             return false;
         }
         
@@ -863,7 +870,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $klass_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('klass');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -878,25 +885,25 @@ class MY_Sql extends MY_Library
 
     public function update_teacher_on_admin($user_id_admin=-1, $teacher_id=-1, $teacher_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
             return false;
         }
         if($this->is_not_ok("teacher_status", $teacher_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_status:$teacher_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_status:$teacher_status)");
             return false;
         }
         
@@ -907,7 +914,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $teacher_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -926,30 +933,30 @@ class MY_Sql extends MY_Library
 
     public function update_user_on_admin($user_id_admin=-1, $user_id=-1, $user_status="", $user_permission="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
             return false;
         }
         if($this->is_not_ok("user_status", $user_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_status:$user_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_status:$user_status)");
             return false;
         }
         if($this->is_not_ok("user_permission", $user_permission))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_permission:$user_permission)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_permission:$user_permission)");
             return false;
         }
         
@@ -961,7 +968,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -1149,11 +1156,11 @@ class MY_Sql extends MY_Library
 
     private function set_where_klass_search($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1166,11 +1173,11 @@ class MY_Sql extends MY_Library
     }
     private function get_where_klass_search($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1323,11 +1330,11 @@ class MY_Sql extends MY_Library
 
     public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1372,7 +1379,7 @@ class MY_Sql extends MY_Library
         );        
         $this->set_where_klass_search($search_query);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1380,11 +1387,11 @@ class MY_Sql extends MY_Library
 
     public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1393,12 +1400,12 @@ class MY_Sql extends MY_Library
         } // end if
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if  
 
@@ -1450,7 +1457,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->result_object();
 
@@ -1460,11 +1467,11 @@ class MY_Sql extends MY_Library
 
     private function get_query_search_like($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1489,11 +1496,11 @@ class MY_Sql extends MY_Library
 
     public function select_teacher_cnt_on_admin($search_query="", $teacher_status="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1528,7 +1535,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1536,11 +1543,11 @@ class MY_Sql extends MY_Library
 
     public function select_teacher_on_admin($search_query="", $teacher_status="", $limit=-1, $offset=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1553,12 +1560,12 @@ class MY_Sql extends MY_Library
         } // end if
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if        
 
@@ -1591,7 +1598,7 @@ class MY_Sql extends MY_Library
         }
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->custom_result_object('Teacher');
 
@@ -1599,11 +1606,11 @@ class MY_Sql extends MY_Library
 
     public function select_user_cnt_on_admin($search_query="", $user_status="", $user_permission="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1654,7 +1661,7 @@ class MY_Sql extends MY_Library
             // $this->CI->db->or_like('mobile', $search_query);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1662,11 +1669,11 @@ class MY_Sql extends MY_Library
 
     public function select_user_on_admin($search_query="", $user_status="", $user_permission="", $limit=-1, $offset=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1683,12 +1690,12 @@ class MY_Sql extends MY_Library
         } // end if        
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if        
 
@@ -1737,7 +1744,7 @@ class MY_Sql extends MY_Library
         }
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->custom_result_object('User');
 
@@ -1751,7 +1758,7 @@ class MY_Sql extends MY_Library
 
     public function get_user_list() 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         $limit = 100;
         $offset = 0;
@@ -1761,7 +1768,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('status', "A");
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $query = $this->CI->db->get('user', $limit, $offset);
 
@@ -1820,11 +1827,11 @@ class MY_Sql extends MY_Library
 
     public function get_user_password_by_email($email="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(empty($email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$email)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$email)");
             return "";
         }
 
@@ -1834,7 +1841,7 @@ class MY_Sql extends MY_Library
         }
 
         if(!$is_ok) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
             return "";
         }
 
@@ -1842,7 +1849,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('email', $email);
         $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $this->CI->db->select('password');
         $this->CI->db->where('email', $email);
@@ -1855,12 +1862,12 @@ class MY_Sql extends MY_Library
             $password_hashed = $row->password;
             break;
         }
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
 
         return $password_hashed;
     }    
 
-    public function get_user_by_id($user_id=-1) 
+    public function select_user_by_id($user_id=-1) 
     {
         if(!(0 < $user_id))
         {
@@ -2113,7 +2120,7 @@ class MY_Sql extends MY_Library
 
     public function select_active_klass_cnt_by_teacher($teacher_id=-1)
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
@@ -2130,7 +2137,7 @@ class MY_Sql extends MY_Library
         $status_list = array('E', 'B', 'C');
         $this->CI->db->where_in('klass.status', $status_list);
         $cnt = $this->CI->db->count_all_results();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
         /*
         $this->CI->db->select('*');
@@ -2139,11 +2146,11 @@ class MY_Sql extends MY_Library
         $status_list = array('E', 'B', 'C');
         $this->db->where_in('klass.status', $status_list);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         */
 
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
 
@@ -2164,7 +2171,7 @@ class MY_Sql extends MY_Library
     }
     public function select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $offset)) 
         {
@@ -2184,7 +2191,7 @@ class MY_Sql extends MY_Library
 
         $this->set_where_select_active_klass_list_by_teacher($offset, $limit, $teacher_id);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_object();
 
@@ -2192,7 +2199,7 @@ class MY_Sql extends MY_Library
 
     public function select_klass_cnt_by_teacher($teacher_id=-1, $klass_status="O")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
@@ -2211,7 +2218,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $cnt = $this->CI->db->count_all_results();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
         $this->CI->db->select('*');
         $this->CI->db->from('klass');
@@ -2221,7 +2228,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
 
@@ -2229,7 +2236,7 @@ class MY_Sql extends MY_Library
 
     public function select_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1, $klass_status="O")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $offset)) 
         {
@@ -2261,7 +2268,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit,$offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -2282,7 +2289,7 @@ class MY_Sql extends MY_Library
 
     public function select_klass_list($offset=-1, $limit=-1, $klass_status="O")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $offset)) 
         {
@@ -2305,7 +2312,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit,$offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -2476,12 +2483,12 @@ class MY_Sql extends MY_Library
         // Query Execution
         $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
         $cnt = $this->CI->db->count_all_results();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
         // Logging
         $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
     }
@@ -2553,12 +2560,12 @@ class MY_Sql extends MY_Library
         // Query Execution
         $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
         $cnt = $this->CI->db->count_all_results();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
         // Logging
         $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
     }
@@ -2592,12 +2599,12 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return [];
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return [];
         } // end if
         if(empty($klass_id_list))
@@ -2612,7 +2619,7 @@ class MY_Sql extends MY_Library
         // Logging
         $this->set_where_select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $review_id_list = [];
         foreach ($query->result_array() as $row)
@@ -2679,12 +2686,12 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if
         if($this->is_not_ok("teacher_id", $teacher_id))
@@ -2715,7 +2722,7 @@ class MY_Sql extends MY_Library
         // 해당 수업의 모든 부모 리뷰의 id 리스트를 가져옵니다.
         $review_id_list = 
         $this->select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$review_id_list : " . join(',', $review_id_list));
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$review_id_list : " . join(',', $review_id_list));
 
         // $limit과 $offset에 해당하는 부모 리뷰와 이에 속한 댓글 - 자식 리뷰 리스트 가져옵니다.
         $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
@@ -2723,7 +2730,7 @@ class MY_Sql extends MY_Library
 
         $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     }
@@ -3161,106 +3168,106 @@ class MY_Sql extends MY_Library
     public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $type="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
     {
 
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_id\", $klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_id\", $klass_id)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"user_id\", $user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"user_id\", $user_id)");
             return;
         }
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_id\", $teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_id\", $teacher_id)");
             return;
         }
         if($this->is_not_ok("teacher_resume", $teacher_resume))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_resume\", $teacher_resume)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_resume\", $teacher_resume)");
             return;
         }
         if($this->is_not_ok("teacher_greeting", $teacher_greeting))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_greeting\", $teacher_greeting)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_greeting\", $teacher_greeting)");
             return;
         }
         if($this->is_not_ok("klass_title", $title))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_title\", $title)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_title\", $title)");
             return;
         }
         if($this->is_not_ok("klass_type", $type))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
             return;
         }
         if($this->is_not_ok("klass_feature", $feature))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
             return;
         }
         if($this->is_not_ok("klass_target", $target))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_target\", $target)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_target\", $target)");
             return;
         }
         if($this->is_not_ok("klass_schedule", $schedule))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_schedule\", $schedule)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_schedule\", $schedule)");
             return;
         }
         if($this->is_not_ok("klass_date_begin", $date_begin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_date_begin\", $date_begin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_date_begin\", $date_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_begin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_begin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_end))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_end)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_end)");
             return;
         }
         if($this->is_not_ok("klass_level", $level))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_level\", $level)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_level\", $level)");
             return;
         }
         if($this->is_not_ok("klass_week", $week))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_week\", $week)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_week\", $week)");
             return;
         }
         if($this->is_not_ok("klass_days", $days))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_days\", $days)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_days\", $days)");
             return;
         }
         if($this->is_not_ok("klass_price", $price))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_price\", $price)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_price\", $price)");
             return;
         }
         if($this->is_not_ok("klass_student_cnt", $student_cnt))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_student_cnt\", $student_cnt)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_student_cnt\", $student_cnt)");
             return;
         }
 
         if($this->is_not_ok("klass_venue_title", $venue_title))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_title\", $venue_title)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_title\", $venue_title)");
             return;
         }
         if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
@@ -3269,32 +3276,32 @@ class MY_Sql extends MY_Library
         }
         if($this->is_not_ok("klass_venue_address", $venue_address))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_address\", $venue_address)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_address\", $venue_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_road_address", $venue_road_address))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_road_address\", $venue_road_address)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_road_address\", $venue_road_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_latitude", $venue_latitude))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_latitude\", $venue_latitude)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_latitude\", $venue_latitude)");
             return;
         }
         if($this->is_not_ok("klass_venue_longitude", $venue_longitude))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_longitude\", $venue_longitude)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_longitude\", $venue_longitude)");
             return;
         }
         if($this->is_not_ok("klass_subway_line", $subway_line))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_line\", $subway_line)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_line\", $subway_line)");
             return;
         }
         if($this->is_not_ok("klass_subway_station", $subway_station))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_station\", $subway_station)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_station\", $subway_station)");
             return;
         }        
         if($this->is_not_ok("klass_banner_url", $banner_url))
@@ -3349,7 +3356,7 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $this->CI->db->where('id', $klass_id);
         $this->CI->db->where('teacher_id', $teacher_id);
@@ -3929,7 +3936,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('klass.id', $klass_id);
         $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -3985,7 +3992,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('teacher_id', $teacher_id);
         $this->CI->db->order_by('id', 'DESC');
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $klass_id_list = [];
         foreach ($query->result_array() as $row)
@@ -4267,11 +4274,11 @@ class MY_Sql extends MY_Library
 
     public function add_payment_import($login_user_id=-1, $payment_imp=null)
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if(is_null($payment_imp))
@@ -4282,105 +4289,105 @@ class MY_Sql extends MY_Library
         // @ Required
         if($this->is_not_ok("klass_id", $payment_imp->klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "klass_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "klass_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("user_id", $payment_imp->user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "user_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "user_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("user_id", $login_user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "login_user_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "login_user_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_uid", $payment_imp->imp_uid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "imp_uid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "imp_uid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_merchant_uid", $payment_imp->merchant_uid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "merchant_uid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "merchant_uid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pay_method", $payment_imp->pay_method))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pay_method is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pay_method is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pg_provider", $payment_imp->pg_provider))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_provider is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pg_provider is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pg_tid", $payment_imp->pg_tid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_tid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pg_tid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_escrow", $payment_imp->escrow))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "escrow is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "escrow is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_apply_num", $payment_imp->apply_num))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "apply_num is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "apply_num is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_name", $payment_imp->name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "name is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "name is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_name", $payment_imp->buyer_name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_name is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_name is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_email", $payment_imp->buyer_email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_email is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_email is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_tel", $payment_imp->buyer_tel))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_tel is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_tel is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_status", $payment_imp->status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "status is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "status is not valid");
             return;
         }
 
@@ -4475,7 +4482,7 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
     } // end method 
 
@@ -4507,7 +4514,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('user_id',$user_id);
         }
         $cnt = $this->CI->db->count_all_results();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
         // Logging
         $this->CI->db->select("*"); 
@@ -4521,7 +4528,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('user_id',$user_id);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $cnt;
     }
@@ -4569,7 +4576,7 @@ class MY_Sql extends MY_Library
         $query = $this->CI->db->get();
         $result = $query->row();
         $receipt_url = $result->receipt_url;
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$receipt_url : $receipt_url");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$receipt_url : $receipt_url");
 
         // Logging
         $this->CI->db->select($query_field); 
@@ -4589,7 +4596,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->order_by('payment_import.id', 'DESC');
         $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $receipt_url;
     }        
@@ -4721,12 +4728,12 @@ class MY_Sql extends MY_Library
 
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if
 
@@ -4768,7 +4775,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->limit($limit, $offset);
 
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     }    
@@ -4811,13 +4818,13 @@ class MY_Sql extends MY_Library
         $klass = $this->select_klass($klass_id);
         if(is_null($klass))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "is_null(\$klass)");
             return;
         } // end if
         $teacher_id = intval($klass->teacher_id);
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$teacher_id is not valid!");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$teacher_id is not valid!");
             return;
         }
 
@@ -4846,25 +4853,25 @@ class MY_Sql extends MY_Library
 
     public function update_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1, $klass_n_student_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("klass_n_student_status", $klass_n_student_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
             return false;
         }
         
@@ -4880,7 +4887,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $klass_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('klass_n_student');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             $login_user_id,
@@ -4895,12 +4902,12 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return null;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return null;
         }
         if($this->is_not_ok("klass_n_student_status", $status))
@@ -4982,7 +4989,7 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return null;
         } // end if
         if($this->is_not_ok("klass_status", $klass_status))
@@ -4997,7 +5004,7 @@ class MY_Sql extends MY_Library
         // Logging
         $this->set_klass_n_student_stat_condition($klass_id, $klass_status);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     } // end method     
@@ -5083,17 +5090,17 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if 
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return null;
         } // end if
         if($this->is_not_ok("klass_n_student_status", $status))
@@ -5137,7 +5144,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->limit($limit,$offset);
 
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     } // end method
@@ -5147,7 +5154,7 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
             return null;
         } // end if
         if($this->is_not_ok("klass_n_student_status", $status))
@@ -5173,17 +5180,17 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if 
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
             return null;
         } // end if
         if($this->is_not_ok("klass_n_student_status", $status))
@@ -5227,7 +5234,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->limit($limit,$offset);
 
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     } // end method     
@@ -5239,7 +5246,7 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
             return null;
         } // end if
         if($this->is_not_ok("klass_n_student_status", $status))
@@ -5270,27 +5277,27 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("user_id", $login_user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
             return;
         }
         if($this->is_not_ok("date_yyyymmddhhmmss", $date_attend))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"date_attend\", \$date_attend)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"date_attend\", \$date_attend)");
             return;
         }
 
@@ -5306,7 +5313,7 @@ class MY_Sql extends MY_Library
         // Log Query
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $sql = $this->CI->db->set($data)->get_compiled_insert('attendance');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             $login_user_id,
@@ -5322,32 +5329,32 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }        
         if($this->is_not_ok("user_id", $login_user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
             return;
         }
         if($this->is_not_ok("klass_attendance_id", $attendance_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
             return;
         }
         if($this->is_not_ok("klass_attendance_status", $klass_attendance_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_attendance_status\", \$klass_attendance_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_attendance_status\", \$klass_attendance_status)");
             return;
         }
 
@@ -5365,7 +5372,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('user_id', $user_id);
         $this->CI->db->where('klass_id', $klass_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('attendance');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             $login_user_id,
@@ -5381,7 +5388,7 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
@@ -5451,22 +5458,22 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         } // end if
         if($this->is_not_ok("klass_attendance_id", $attendance_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
             return;
         } // end if
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
             return;
         } // end if
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
             return;
         } // end if
 
@@ -5475,7 +5482,7 @@ class MY_Sql extends MY_Library
 
         $this->set_where_attendance($attendance_id, $klass_id, $user_id);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->row();
     }       
@@ -5497,7 +5504,7 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
@@ -5510,7 +5517,7 @@ class MY_Sql extends MY_Library
 
         $this->set_where_attendance_table($klass_id);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     }
@@ -5548,17 +5555,17 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if
         if($this->is_not_ok("klass_id", $klass_id))
@@ -5583,7 +5590,7 @@ class MY_Sql extends MY_Library
 
         $this->set_where_attendance_list($limit, $offset, $klass_id, $user_id, $date_attend, $attendance_status);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->result_array();
     }

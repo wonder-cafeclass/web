@@ -109,7 +109,7 @@ class PaymentImport {
 
   	public function setJSON($json=null) 
   	{
-  		if(is_null(json))
+  		if(is_null($json))
   		{
   			return;
   		} // end if
@@ -174,9 +174,9 @@ class PaymentImport {
       	
       } // end foreach
 
-      if(!empty($this->$cancel_receipt_urls))
+      if(!empty($this->cancel_receipt_urls))
       {
-        $this->$cancel_receipt_url = $this->$cancel_receipt_urls[0];
+        $this->cancel_receipt_url = $this->cancel_receipt_urls[0];
       } // end if
 
   	} // end method

@@ -920,9 +920,6 @@ var KlassDetailComponent = (function () {
         if (null == this.moveto || "" == this.moveto) {
             return;
         }
-        // wonder.jung
-        // 일반적인 해시태그 이동
-        // location.hash = "#" + this.moveto;
         if ("review" == this.moveto) {
             // 리뷰 리스트로 이동
             // 담당 컴포넌트에게 명령을 전달해야 합니다.
@@ -1348,6 +1345,15 @@ var KlassDetailComponent = (function () {
             if (_this.isDebug())
                 console.log("klass-detail / updateKlassNStudent / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
+                // 사용자에게 안내 팝업을 띄웁니다. 
+                // 지금은 단순히 alert으로 안내. 
+                alert("수업에 참여해주셔서 감사합니다!");
+                // 3초 뒤에 홈으로 이동.
+                var _self = _this;
+                setTimeout(function () {
+                    // 메시지를 3초 뒤에 화면에서 지웁니다.
+                    _self.router.navigate(['/class-center']);
+                }, 3000);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -1941,7 +1947,6 @@ var KlassDetailComponent = (function () {
             return;
         }
         this.klassCopy.class_banner_url = classBannerUrlNext;
-        // wonder.jung
         this.updateSaveBtnStatus();
     }; // end method
     // @ Desc : 수업 저장 항목이 모두 이상이 없는지 확인합니다. 이상이 있다면 해당 컴포넌트에 메시지를 표시합니다.

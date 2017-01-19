@@ -1237,10 +1237,6 @@ export class KlassDetailComponent implements AfterViewInit {
       return;
     }
 
-    // wonder.jung
-    // 일반적인 해시태그 이동
-    // location.hash = "#" + this.moveto;
-
     if("review" == this.moveto) {
 
       // 리뷰 리스트로 이동
@@ -1770,7 +1766,15 @@ export class KlassDetailComponent implements AfterViewInit {
 
       if(myResponse.isSuccess()) {
 
-        // Do something... 
+        // 사용자에게 안내 팝업을 띄웁니다. 
+        // 지금은 단순히 alert으로 안내. 
+        alert("수업에 참여해주셔서 감사합니다!");
+        // 3초 뒤에 홈으로 이동.
+        var _self = this;
+        setTimeout(function () {
+            // 메시지를 3초 뒤에 화면에서 지웁니다.
+            _self.router.navigate(['/class-center']);
+        }, 3000);
 
       } else if(myResponse.isFailed()) {  
 
@@ -2470,7 +2474,6 @@ export class KlassDetailComponent implements AfterViewInit {
     }
 
     this.klassCopy.class_banner_url = classBannerUrlNext;
-    // wonder.jung
     this.updateSaveBtnStatus();
 
   } // end method

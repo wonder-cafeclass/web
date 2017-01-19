@@ -13,6 +13,7 @@ import { MyEventWatchTowerService } from '../../../util/service/my-event-watchto
 export class PaymentService {
 
   private fetchImportHistoryUrl = '/CI/index.php/api/payment/fetchimporthistory';
+  private afterbuyklassUrl = '/CI/index.php/api/payment/afterbuyklass';
   private addImportHistoryUrl = '/CI/index.php/api/payment/addimporthistory';
   private cancelPaymentImportUrl = '/CI/index.php/api/payment/cancelpaymentimport';
 
@@ -97,6 +98,36 @@ export class PaymentService {
       payment_imp_uid:paymentImpUid,
       page_num:pageNum,
       pageRowCnt:pageRowCnt,
+      klass_id:klassId,
+      user_id:userId,
+      login_user_id:loginUserId,
+    };
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }   
+
+  afterbuyklass ( apiKey:string, 
+                  paymentImpUid:string,
+                  klassId:number,
+                  userId:number,
+                  loginUserId:number): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("payment.service / afterbuyklass / 시작");
+    if(this.isDebug()) console.log("payment.service / afterbuyklass / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("payment.service / afterbuyklass / paymentImpUid : ",paymentImpUid);
+    if(this.isDebug()) console.log("payment.service / afterbuyklass / klassId : ",klassId);
+    if(this.isDebug()) console.log("payment.service / afterbuyklass / userId : ",userId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.afterbuyklassUrl);
+
+    let params = {
+      payment_imp_uid:paymentImpUid,
       klass_id:klassId,
       user_id:userId,
       login_user_id:loginUserId,

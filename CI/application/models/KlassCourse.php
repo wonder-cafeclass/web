@@ -133,6 +133,7 @@ class KlassCourse {
         // @ Desc : 수업 요일 검색을 위한 맵 객체를 만들어 반환합니다.
         public function get_days_map()
         {
+                $days_list = [];
                 if(empty($this->days_list)) 
                 {
                         $days_list = $this->days_list = explode($this->delimiter, $this->days);

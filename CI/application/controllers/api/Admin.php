@@ -698,7 +698,7 @@ class Admin extends MY_REST_Controller {
         } // end if       
 
         // 변경된 유저 정보를 가져옵니다.
-        $user = $this->my_sql->get_user_by_id($user_id);
+        $user = $this->my_sql->select_user_by_id($user_id);
         $output["user"] = $user;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 

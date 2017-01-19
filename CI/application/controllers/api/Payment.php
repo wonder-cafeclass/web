@@ -57,24 +57,25 @@ class Payment extends MY_REST_Controller {
         // Additional Library
         $this->load->library('MY_Auth');
         $this->load->library('MY_Decorator');
+        $this->load->library('MY_CC_Email');
     }
 
     // @ Desc : Import의 특정 결재 내역 리스트를 가져옵니다.
     public function fetchimporthistory_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
+        $this->my_tracker->add_init(__CLASS__,__FUNCTION__,__LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         } 
 
@@ -177,11 +178,11 @@ class Payment extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchimporthistory_post Failed!");
             return;
         } // end if
 
@@ -220,7 +221,222 @@ class Payment extends MY_REST_Controller {
         $this->my_decorator->deco_payment_import_list($pi_list);
         $output["list"] = $pi_list;
 
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
+
+    } // end method
+
+    private function add_import_history($payment_imp_uid="", $klass_id=-1, $user_id=-1, $login_user_id=-1, $output=null)
+    {
+        if(empty($payment_imp_uid)) 
+        {
+            return $output;
+        }
+        if(!(0 < $klass_id)) 
+        {
+            return $output;
+        }
+        if(!(0 < $user_id)) 
+        {
+            return $output;
+        }
+        if(!(0 < $login_user_id)) 
+        {
+            return $output;
+        }
+        if(is_null($output))
+        {
+            $output = [];   
+        }
+
+        $access_token = "";
+        $is_ok = true;
+        // 1. Access Token 가져오기
+        $access_token = $this->getAccessToken();
+        if(empty($access_token)) 
+        {
+            $is_ok = false;
+        }
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"add_import_history Failed!");
+            return;
+        } // end if
+
+        // $access_token
+        $jsonPaymentImp = $this->getPayment($access_token, $payment_imp_uid);
+        if(empty($jsonPaymentImp)) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
+            return;
+        } // end if
+
+        $paymentImp = new PaymentImport();
+        $paymentImp->setJSON($jsonPaymentImp);
+        $paymentImp->klass_id = $klass_id;
+        $paymentImp->user_id = $user_id;
+
+        // 결제 데이터를 DB에 저장. 
+        $this->my_sql->add_payment_import(
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $payment_imp=null
+            $paymentImp
+        );
+
+        // 저장한 데이터를 가져옴 
+        $paymentImpFromDB = 
+        $this->my_sql->select_payment_import($payment_imp_uid);
+        $paymentImpNext = new PaymentImport();
+        $paymentImpNext->setJSON($paymentImpFromDB);
+        $output["paymentImpNext"] = $paymentImpNext;
+
+        return $output;
+
+    }
+
+    public function test_get()
+    {
+        $this->my_cc_email->send_mail_to_user(
+            // $user_id=-1, 
+            1,
+            // $receiver_email="", 
+            "wonder13662@gmail.com",
+            // $subject="", 
+            '[카페클래스]안녕하세요, 카페클래스입니다. 수업 - TEST에 참여해주셔서 감사합니다.',
+            // $message=""
+            '[카페클래스]안녕하세요, 카페클래스입니다. 수업 - TEST에 참여해주셔서 감사합니다.'
+        );
+
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,[]);
+    }
+
+    // @ Desc : 결제가 완료된 수업에 대한 처리를 합니다. 1. 결제 정보 등록, 2. 이메일 발송 
+    public function afterbuyklass_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__CLASS__,__FUNCTION__,__LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } 
+
+        $payment_imp_uid = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_uid",
+            // $key_filter=""
+            "payment_imp_uid"
+        ); 
+
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );
+
+        $params = array(
+            "payment_imp_uid"=>$payment_imp_uid,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "login_user_id"=>$login_user_id
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            return;
+        } // end if   
+
+        // 결제 내역 등록
+        $output = 
+        $this->add_import_history(
+            // $payment_imp_uid="", 
+            $payment_imp_uid,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1, 
+            $user_id,
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $output=null
+            $output
+        );
+
+        // 결재가 완료되었음을 유저, 선생님, 운영자에게 알린다.
+        // 1. 유저 정보를 가져온다.
+        $user = $this->my_sql->select_user_by_id($user_id);
+        $user_nickname = $user->nickname;
+        $output["user"] = $user;
+        // 2. 수업 정보를 가져온다.
+        $klass = $this->my_sql->select_klass($klass_id);
+        $klass = $this->my_decorator->deco_klass($klass);
+        $output["klass"] = $klass;
+        // 2-1. 수업 이름
+        $klass_title = $klass->title;
+        // 3. 선생님 정보를 가져온다. 
+        $teacher = $this->my_sql->select_teacher(intval($klass->teacher_id));
+        $output["teacher"] = $teacher;
+
+        // 1. 유저에게 이메일 보내기
+        $this->my_cc_email->send_mail_to_user(
+            // $user_id=-1, 
+            $login_user_id,
+            // $receiver_email="", 
+            $user->email,
+            // $subject="", 
+            '[카페클래스]안녕하세요, 카페클래스입니다. 수업 - \''.$klass_title.'\'에 참여해주셔서 감사합니다.',
+            // $message=""
+            '[카페클래스]안녕하세요, 카페클래스입니다. 수업 - \''.$klass_title.'\'에 참여해주셔서 감사합니다.'
+        );
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, 'Email has been sent to \''.$user_nickname.'\' for joining \''.$klass_title.'\'');
+        // 2. 선생님에게 이메일 보내기
+        $this->my_cc_email->send_mail_to_user(
+            // $user_id=-1, 
+            $login_user_id,
+            // $receiver_email="",
+            $teacher->email,
+            // $subject="", 
+            '[카페클래스]안녕하세요, 카페클래스입니다. 축하합니다! 선생님의 수업 - \''.$klass_title.'\'에 새로운 학생 - \''.$user_nickname.'\'이 참여했습니다.',
+            // $message=""
+            '[카페클래스]안녕하세요, 카페클래스입니다. 축하합니다! 선생님의 수업 - \''.$klass_title.'\'에 새로운 학생 - \''.$user_nickname.'\'이 참여했습니다.'
+        );
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, 'Email has been sent to teacher for \''.$user_nickname.'\' is joining \''.$klass_title.'\'');
+
+        // 3. 운영자에게 이메일 보내기 - 피터님과 협의 필요.
+
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     } // end method
 
@@ -228,18 +444,18 @@ class Payment extends MY_REST_Controller {
     public function addimporthistory_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
+        $this->my_tracker->add_init(__CLASS__,__FUNCTION__,__LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         } 
 
@@ -285,11 +501,11 @@ class Payment extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
             return;
         } // end if
 
@@ -306,7 +522,7 @@ class Payment extends MY_REST_Controller {
         }
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
             return;
         } // end if
 
@@ -314,7 +530,7 @@ class Payment extends MY_REST_Controller {
         $jsonPaymentImp = $this->getPayment($access_token, $payment_imp_uid);
         if(empty($jsonPaymentImp)) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
             return;
         } // end if
 
@@ -339,7 +555,7 @@ class Payment extends MY_REST_Controller {
         $paymentImpNext->setJSON($paymentImpFromDB);
         $output["paymentImpNext"] = $paymentImpNext;
 
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
     }
 
 
@@ -347,18 +563,18 @@ class Payment extends MY_REST_Controller {
     public function cancelpaymentimport_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__,__FUNCTION__,__LINE__);
+        $this->my_tracker->add_init(__CLASS__,__FUNCTION__,__LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         } 
 
@@ -412,11 +628,11 @@ class Payment extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
             return;
         } // end if
 
@@ -433,7 +649,7 @@ class Payment extends MY_REST_Controller {
         }
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
             return;
         } // end if
 
@@ -452,7 +668,7 @@ class Payment extends MY_REST_Controller {
         );
         if(empty($jsonPaymentImp)) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$jsonPaymentImp is not valid!");
             return;
         } // end if
 
@@ -485,7 +701,7 @@ class Payment extends MY_REST_Controller {
         // c. # 운영자 메일 - 취소 고객. / info@cafeclass.kr
         // d. # 강사님에게도 노티 취소 메일.
 
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
     }    
 
     // @ Desc : Import의 결재내역을 취소합니다.
@@ -495,43 +711,43 @@ class Payment extends MY_REST_Controller {
         $output = [];
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         if(empty($access_token))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$access_token)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$access_token)");
             return;
         } // end if
 
         if(empty($imp_uid))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$imp_uid)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$imp_uid)");
             return;
         } // end if
 
         if(empty($merchant_uid))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$merchant_uid)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$merchant_uid)");
             return;
         } // end if
 
         if(!(0 < $cancel_amount))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"!(0 < \$cancel_amount)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"!(0 < \$cancel_amount)");
             return;
         } // end if
 
         if(empty($reason))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$reason)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$reason)");
             return;
         } // end if
 
 
         $url = $this->api_post_cancel_payment;
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$url : $url");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$url : $url");
 
         $result =
         $this->my_curl->post_json(
@@ -566,24 +782,24 @@ class Payment extends MY_REST_Controller {
         $output = [];
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         if(empty($access_token))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$access_token)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$access_token)");
             return;
         } // end if
 
         if(empty($imp_uid))
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"empty(\$imp_uid)");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"empty(\$imp_uid)");
             return;
         } // end if
 
         $url = str_replace("{imp_uid}",$imp_uid,$this->api_get_payment);
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$url : $url");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$url : $url");
 
         $result =
         $this->my_curl->get_json(
@@ -615,7 +831,7 @@ class Payment extends MY_REST_Controller {
         $output = [];
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         }
 

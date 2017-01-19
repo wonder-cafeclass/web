@@ -261,7 +261,7 @@ var ImportComponent = (function () {
         var _self = this;
         imp['request_pay'](param, function (rsp) {
             if (rsp.success) {
-                _self.addImportHistory(
+                _self.afterbuyklass(
                 // paymentImpUid:string, 
                 rsp.imp_uid, 
                 // klassId:number, 
@@ -277,6 +277,46 @@ var ImportComponent = (function () {
          // end callback
         ); // end payment process
     }; // end method
+    ImportComponent.prototype.afterbuyklass = function (paymentImpUid, klassId, userId) {
+        var _this = this;
+        if (this.isDebug())
+            console.log("import /  afterbuyklass / 시작");
+        if (null == this.loginUser) {
+            if (this.isDebug())
+                console.log("import /  afterbuyklass / 중단 / null == this.loginUser");
+            return;
+        }
+        this.paymentService
+            .afterbuyklass(
+        // apiKey:string, 
+        this.watchTower.getApiKey(), 
+        // paymentImpUid:string
+        paymentImpUid, 
+        // klassId:number,
+        klassId, 
+        // userId:number
+        userId, 
+        // loginUserId:number
+        this.loginUser.id)
+            .then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("import / afterbuyklass / myResponse : ", myResponse);
+            if (myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext")) {
+                var paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+                var paymentImpNext = new payment_import_1.PaymentImport().setJSON(paymentImpJSON);
+                // 부모 객체에게 결제 완료를 알립니다.
+                _this.emitEventOnChangePaymentImp(paymentImpNext);
+            }
+            else if (myResponse.isFailed()) {
+                if (_this.isDebug())
+                    console.log("import / afterbuyklass / 결제 정보 등록에 실패했습니다.");
+                _this.watchTower.logAPIError("afterbuyklass has been failed!");
+                if (null != myResponse.error) {
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
+    }; // end method  
     ImportComponent.prototype.addImportHistory = function (paymentImpUid, klassId, userId) {
         var _this = this;
         if (this.isDebug())
