@@ -12,6 +12,7 @@ var KlassNStudent = (function () {
         this.klass_id = -1;
         this.teacher_id = -1;
         this.user_id = -1;
+        this.payment_import_id = -1;
         this.status = "";
         this.date_created = "";
         this.date_updated = "";

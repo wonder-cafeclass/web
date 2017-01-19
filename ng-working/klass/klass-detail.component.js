@@ -1340,7 +1340,9 @@ var KlassDetailComponent = (function () {
         // klassId:number
         paymentImp.klass_id, 
         // userId:number,
-        paymentImp.user_id).then(function (myResponse) {
+        paymentImp.user_id, 
+        // paymentImportId:number
+        paymentImp.id).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
                 console.log("klass-detail / updateKlassNStudent / myResponse : ", myResponse);

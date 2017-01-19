@@ -74,11 +74,11 @@
 					<div class="unselectable my-klass-btn short enable">{{klassNStudent.getProgress()}}회</div>
 					<div 
 					*ngIf="isShowCancle && klassNStudent.isEnableCancle()"
-					(click)="onClickCancelKlass($event)"
+					(click)="onClickCancelKlass($event, klassNStudent)"
 					class="unselectable my-klass-btn short enable">수업취소하기</div>
 					<div 
 					*ngIf="isShowCancle && !klassNStudent.isEnableCancle()"
-					(click)="onClickRequestCancelKlass($event)"
+					(click)="onClickRequestCancelKlass($event, klassNStudent)"
 					class="unselectable my-klass-btn short enable">수업취소 요청하기</div>
 
 				</div>

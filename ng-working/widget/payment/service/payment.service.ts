@@ -41,18 +41,14 @@ export class PaymentService {
   } // end method 
 
   cancelPaymentImport ( apiKey:string, 
-                        paymentImpUid:string,
-                        paymentImpMerchantUid:string,
-                        paymentImpCancelAmount:number,
-                        paymentImpCancelReason:string,
+                        klassId:number,
+                        userId:number,
                         loginUserId:number): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("payment.service / addImportHistory / 시작");
     if(this.isDebug()) console.log("payment.service / addImportHistory / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpUid : ",paymentImpUid);
-    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpMerchantUid : ",paymentImpMerchantUid);
-    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpCancelAmount : ",paymentImpCancelAmount);
-    if(this.isDebug()) console.log("payment.service / addImportHistory / paymentImpCancelReason : ",paymentImpCancelReason);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / klassId : ",klassId);
+    if(this.isDebug()) console.log("payment.service / addImportHistory / userId : ",userId);
     if(this.isDebug()) console.log("payment.service / addImportHistory / loginUserId : ",loginUserId);
 
     // POST
@@ -60,10 +56,8 @@ export class PaymentService {
     let req_url = this.urlService.get(this.cancelPaymentImportUrl);
 
     let params = {
-      payment_imp_uid:paymentImpUid,
-      payment_imp_merchant_uid:paymentImpMerchantUid,
-      payment_imp_cancel_amount:paymentImpCancelAmount,
-      payment_imp_cancel_reason:paymentImpCancelReason,
+      klass_id:klassId,
+      user_id:userId,
       login_user_id:loginUserId,
     };
 

@@ -145,6 +145,7 @@ class PaymentImport {
 
           // 숫자값에 대한 처리
           if( "id" === $key || 
+              "pi_id" === $key || 
               "klass_id" === $key || 
               "user_id" === $key || 
               "card_quota" === $key || 

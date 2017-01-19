@@ -151,6 +151,7 @@
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
+		"payment_imp_id":"is_natural_no_zero",
 		"payment_imp_uid":"is_str",
 		"payment_imp_merchant_uid":"is_str",
 		"payment_imp_pay_method":"is_str",

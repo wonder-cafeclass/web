@@ -17,6 +17,7 @@ export class KlassNStudent {
 	public klass_id:number=-1;
     public teacher_id:number=-1;
 	public user_id:number=-1;
+    public payment_import_id:number=-1;
 	public status:string="";
 	public date_created:string="";
 	public date_updated:string="";

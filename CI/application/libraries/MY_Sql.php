@@ -4780,6 +4780,17 @@ class MY_Sql extends MY_Library
         return $query->result_array();
     }    
 
+    private function set_where_select_payment_import($imp_uid="")
+    {
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        $this->CI->db->where('imp_uid', $imp_uid);
+        $this->CI->db->limit(1);
+    }
     public function select_payment_import($imp_uid="")
     {
         if(empty($imp_uid))
@@ -4787,15 +4798,45 @@ class MY_Sql extends MY_Library
             return null;
         }
 
-        $this->CI->db->select("*");
-        $this->CI->db->where('imp_uid', $imp_uid);
-        $this->CI->db->limit(1);
-        $query = $this->CI->db->get('payment_import');
+        $this->set_where_select_payment_import($imp_uid);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_payment_import($imp_uid);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->row();
     }
 
-    public function add_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1)
+    private function set_where_select_payment_import_by_id($pi_id=-1)
+    {
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        $this->CI->db->where('payment_import.id', $pi_id);
+        $this->CI->db->limit(1);
+    }
+    public function select_payment_import_by_id($pi_id=-1)
+    {
+        if(!(0 < $pi_id))
+        {
+            return null;
+        }
+
+        $this->set_where_select_payment_import_by_id($pi_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_payment_import_by_id($pi_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->row();
+    }    
+
+    public function add_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1, $payment_imp_id=-1)
     {
         if($this->is_not_ready())
         {
@@ -4810,6 +4851,10 @@ class MY_Sql extends MY_Library
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
+        {
+            return;
+        }
+        if($this->is_not_ok("payment_imp_id", $payment_imp_id))
         {
             return;
         }
@@ -4831,7 +4876,8 @@ class MY_Sql extends MY_Library
         $data = array(
             'user_id' => $user_id,
             'klass_id' => $klass_id,
-            'teacher_id' => $teacher_id
+            'teacher_id' => $teacher_id,
+            'payment_import_id'=>$payment_imp_id
         );
 
         // Query Execution
@@ -4935,6 +4981,7 @@ class MY_Sql extends MY_Library
         'klass_n_student.klass_id AS ks_klass_id,' .
         'klass_n_student.teacher_id AS ks_teacher_id,' .
         'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.payment_import_id AS ks_payment_import_id,' .
         'klass_n_student.status AS ks_status,' .
         'klass_n_student.date_created AS ks_date_created,' .
 
@@ -5016,6 +5063,7 @@ class MY_Sql extends MY_Library
         'klass_n_student.klass_id AS ks_klass_id,' .
         'klass_n_student.teacher_id AS ks_teacher_id,' .
         'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.payment_import_id AS ks_payment_import_id,' .
         'klass_n_student.status AS ks_status,' .
         'klass_n_student.date_created AS ks_date_created,' .
 

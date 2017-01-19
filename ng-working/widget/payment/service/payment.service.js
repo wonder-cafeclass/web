@@ -33,29 +33,23 @@ var PaymentService = (function () {
         }
         return this.watchTower.isDebug();
     }; // end method 
-    PaymentService.prototype.cancelPaymentImport = function (apiKey, paymentImpUid, paymentImpMerchantUid, paymentImpCancelAmount, paymentImpCancelReason, loginUserId) {
+    PaymentService.prototype.cancelPaymentImport = function (apiKey, klassId, userId, loginUserId) {
         if (this.isDebug())
             console.log("payment.service / addImportHistory / 시작");
         if (this.isDebug())
             console.log("payment.service / addImportHistory / apiKey : ", apiKey);
         if (this.isDebug())
-            console.log("payment.service / addImportHistory / paymentImpUid : ", paymentImpUid);
+            console.log("payment.service / addImportHistory / klassId : ", klassId);
         if (this.isDebug())
-            console.log("payment.service / addImportHistory / paymentImpMerchantUid : ", paymentImpMerchantUid);
-        if (this.isDebug())
-            console.log("payment.service / addImportHistory / paymentImpCancelAmount : ", paymentImpCancelAmount);
-        if (this.isDebug())
-            console.log("payment.service / addImportHistory / paymentImpCancelReason : ", paymentImpCancelReason);
+            console.log("payment.service / addImportHistory / userId : ", userId);
         if (this.isDebug())
             console.log("payment.service / addImportHistory / loginUserId : ", loginUserId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.cancelPaymentImportUrl);
         var params = {
-            payment_imp_uid: paymentImpUid,
-            payment_imp_merchant_uid: paymentImpMerchantUid,
-            payment_imp_cancel_amount: paymentImpCancelAmount,
-            payment_imp_cancel_reason: paymentImpCancelReason,
+            klass_id: klassId,
+            user_id: userId,
             login_user_id: loginUserId,
         };
         return this.http.post(req_url, params, options)

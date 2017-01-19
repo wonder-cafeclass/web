@@ -2898,13 +2898,21 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "klass_id"
         );
+        $payment_imp_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_id",
+            // $key_filter=""
+            "payment_imp_id"
+        );
 
         $output = array();
         $output["params"] = 
         [
             "login_user_id"=>$login_user_id,
             "user_id"=>$user_id,
-            "klass_id"=>$klass_id
+            "klass_id"=>$klass_id,
+            "payment_imp_id"=>$payment_imp_id
         ];
 
         // CHECK LIST
@@ -2923,7 +2931,9 @@ class Klass extends MY_REST_Controller {
             // $klass_id=-1            
             $klass_id, 
             // $user_id=-1,
-            $user_id
+            $user_id,
+            // $payment_imp_id=-1
+            $payment_imp_id
         );
 
         $klass_student = 

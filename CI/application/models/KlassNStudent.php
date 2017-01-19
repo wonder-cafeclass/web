@@ -6,6 +6,7 @@ class KlassNStudent {
         public $klass_id=-1;
         public $teacher_id=-1;
         public $user_id=-1;
+        public $payment_import_id=-1;
         public $status="";
         public $date_created="";
         public $date_updated="";

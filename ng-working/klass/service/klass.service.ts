@@ -89,7 +89,8 @@ export class KlassService {
     apiKey:string, 
     loginUserId:number,
     klassId:number,
-    userId:number
+    userId:number,
+    paymentImportId:number
   ): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("klass.service / addKlassStudent / 시작");
@@ -97,6 +98,7 @@ export class KlassService {
     if(this.isDebug()) console.log("klass.service / addKlassStudent / loginUserId : ",loginUserId);
     if(this.isDebug()) console.log("klass.service / addKlassStudent / klassId : ",klassId);
     if(this.isDebug()) console.log("klass.service / addKlassStudent / userId : ",userId);
+    if(this.isDebug()) console.log("klass.service / addKlassStudent / paymentImportId : ",paymentImportId);
 
     // POST
     let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
@@ -105,7 +107,8 @@ export class KlassService {
     let params = {
       login_user_id:loginUserId,
       klass_id:klassId,
-      user_id:userId
+      user_id:userId,
+      payment_imp_id:paymentImportId
     }
     return this.http.post(req_url, params, options)
                 .toPromise()

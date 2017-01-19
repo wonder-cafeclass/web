@@ -56,7 +56,7 @@ var KlassService = (function () {
         }
         return this.watchTower.isDebug();
     };
-    KlassService.prototype.addKlassNStudent = function (apiKey, loginUserId, klassId, userId) {
+    KlassService.prototype.addKlassNStudent = function (apiKey, loginUserId, klassId, userId, paymentImportId) {
         if (this.isDebug())
             console.log("klass.service / addKlassStudent / 시작");
         if (this.isDebug())
@@ -67,13 +67,16 @@ var KlassService = (function () {
             console.log("klass.service / addKlassStudent / klassId : ", klassId);
         if (this.isDebug())
             console.log("klass.service / addKlassStudent / userId : ", userId);
+        if (this.isDebug())
+            console.log("klass.service / addKlassStudent / paymentImportId : ", paymentImportId);
         // POST
         var options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
         var req_url = this.urlService.get(this.addKlassNStudentUrl);
         var params = {
             login_user_id: loginUserId,
             klass_id: klassId,
-            user_id: userId
+            user_id: userId,
+            payment_imp_id: paymentImportId
         };
         return this.http.post(req_url, params, options)
             .toPromise()

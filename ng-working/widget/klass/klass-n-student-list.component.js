@@ -114,10 +114,12 @@ var KlassNStudentListComponent = (function () {
         // c. # 운영자 메일 - 취소 고객.
         // d. # 강사님에게도 노티 취소 메일.
     };
-    KlassNStudentListComponent.prototype.onClickCancelKlass = function (event) {
+    KlassNStudentListComponent.prototype.onClickCancelKlass = function (event, klassNStudent) {
         var _this = this;
         if (this.isDebug())
             console.log("klass-n-student-list / onClickCancelKlass / 시작");
+        if (this.isDebug())
+            console.log("klass-n-student-list / onClickCancelKlass / klassNStudent : ", klassNStudent);
         event.preventDefault();
         event.stopPropagation();
         var paymentImpUid = "";
@@ -129,14 +131,10 @@ var KlassNStudentListComponent = (function () {
             .cancelPaymentImport(
         // apiKey:string, 
         this.watchTower.getApiKey(), 
-        // paymentImpUid:string,
-        paymentImpUid, 
-        // paymentImpMerchantUid:string,
-        paymentImpMerchantUid, 
-        // paymentImpCancelAmount:number,
-        paymentImpCancelAmount, 
-        // paymentImpCancelReason:string,
-        paymentImpCancelReason, 
+        // klassId:number,
+        klassNStudent.klass_id, 
+        // userId:number,
+        klassNStudent.user_id, 
         // loginUserId:number
         this.getLoginUserId())
             .then(function (myResponse) {

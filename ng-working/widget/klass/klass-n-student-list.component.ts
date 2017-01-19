@@ -167,9 +167,10 @@ export class KlassNStudentListComponent implements OnInit {
 
   }
 
-  onClickCancelKlass(event):void {
+  onClickCancelKlass(event, klassNStudent:KlassNStudent):void {
 
     if(this.isDebug()) console.log("klass-n-student-list / onClickCancelKlass / 시작");
+    if(this.isDebug()) console.log("klass-n-student-list / onClickCancelKlass / klassNStudent : ",klassNStudent);
 
     event.preventDefault();
     event.stopPropagation();
@@ -184,14 +185,10 @@ export class KlassNStudentListComponent implements OnInit {
     .cancelPaymentImport(
       // apiKey:string, 
       this.watchTower.getApiKey(),
-      // paymentImpUid:string,
-      paymentImpUid,
-      // paymentImpMerchantUid:string,
-      paymentImpMerchantUid,
-      // paymentImpCancelAmount:number,
-      paymentImpCancelAmount,
-      // paymentImpCancelReason:string,
-      paymentImpCancelReason,
+      // klassId:number,
+      klassNStudent.klass_id,
+      // userId:number,
+      klassNStudent.user_id,
       // loginUserId:number
       this.getLoginUserId()
     )

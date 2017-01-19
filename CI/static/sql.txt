@@ -143,11 +143,12 @@ CREATE TABLE `klass_n_student` (
   `klass_id` int(11) NOT NULL,
   `teacher_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `payment_import_id` int(11) NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제),R(취소요청)',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`),
+  UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`,`payment_import_id`),
   INDEX `search` (`klass_id`,`user_id`),
   INDEX `teacher` (`teacher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';

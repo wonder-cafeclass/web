@@ -1758,7 +1758,9 @@ export class KlassDetailComponent implements AfterViewInit {
       // klassId:number
       paymentImp.klass_id,
       // userId:number,
-      paymentImp.user_id
+      paymentImp.user_id,
+      // paymentImportId:number
+      paymentImp.id
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
