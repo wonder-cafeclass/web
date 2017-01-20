@@ -410,16 +410,11 @@ var KlassListComponent = (function () {
             console.log("error report / null == selectile.klassLevels");
             return false;
         }
-        else if (null == selectile.klassStations) {
-            // error report
-            console.log("error report / null == selectile.klassStations");
-            return false;
-        }
         else if (null == selectile.klassTimes) {
             // error report
             console.log("error report / null == selectile.klassTimes");
             return false;
-        }
+        } // end if
         return true;
     };
     KlassListComponent.prototype.getKeywordSafe = function (keyword) {

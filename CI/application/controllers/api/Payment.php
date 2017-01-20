@@ -343,8 +343,6 @@ class Payment extends MY_REST_Controller {
             $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$date_begin is not valid!");
             return false;
         }
-        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$date_begin : $date_begin");
-
         // 2. 수업 요일
         $days_list = $klass->days_list;
         if(empty($days_list))
@@ -352,7 +350,6 @@ class Payment extends MY_REST_Controller {
             $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$days_list is not valid!");
             return false;
         }
-        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$days_list : " . count($days_list));
 
         // 3. 수업 주수
         $week = $klass->week;
@@ -361,10 +358,8 @@ class Payment extends MY_REST_Controller {
             $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$week is not valid!");
             return false;
         }
-        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$week : $week");
 
         // 수업 시작일이 지금부터 몇주 뒤인지 알아야 합니다.
-        // $klass_week_interval = -1;
         $klass_week_interval = $this->my_time->get_week_interval($date_begin);
         $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$klass_week_interval : $klass_week_interval");
 
@@ -382,9 +377,6 @@ class Payment extends MY_REST_Controller {
 
                 $date_attend_yyyymmdd_hhmmss = 
                 $date_attend . " " . $klass->time_begin . ":00";
-
-                $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$klass_week_interval_next : $klass_week_interval_next");
-                $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$date_attend_yyyymmdd_hhmmss : $date_attend_yyyymmdd_hhmmss");
 
                 $this->my_sql->insert_attendance(
                     // $login_user_id=-1, 
