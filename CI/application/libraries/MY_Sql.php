@@ -5662,5 +5662,95 @@ class MY_Sql extends MY_Library
         return $select_query;
     } // end method    
 
+    // @ Desc : 요일 구하기 함수들 
+    // @ Referer : http://stackoverflow.com/questions/16768702/how-to-get-friday-last-week-in-mysql
+    /*
+        # 2주전 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL -7 DAY);
+
+        # 지난주 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL 0 DAY);
+
+        # 이번주 일요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 8 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 화요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 6 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 수요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 5 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 목요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 4 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 금요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 3 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 토요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 2 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+
+    */
+    private function set_where_select_klass_date($klass_day="", $interval_week=-1)
+    {
+        $day_idx = -1;
+        // wonder.jung
+        $class_days_list = $this->get_const("class_days_list");
+        if(empty($class_days_list))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$class_days_list is not valid!");
+            return;
+        }
+
+        // 첫번째 기본값('All Days')을 제거한 배열
+        array_shift($class_days_list);
+        $klass_day_idx = -1;
+        for ($i=0; $i < count($class_days_list); $i++) 
+        { 
+            $class_day = $class_days_list[$i];
+            if($class_day === $klass_day) 
+            {
+                return $klass_day_idx = $i;
+            } // end if
+        } // end for
+
+        // SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 3 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+
+
+
+
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->order_by('date_attend', 'ASC');
+        $this->CI->db->order_by('user_id', 'ASC');
+
+    }
+    public function select_klass_date($klass_day="", $interval_week=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("klass_day", $klass_day))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_day : $klass_day)");
+            return;
+        }
+        if(is_null($interval_week))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$interval_week is not valid");
+            return;
+        }
+
+        $this->set_where_attendance_table($klass_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance_table($klass_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
 }
 

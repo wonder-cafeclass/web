@@ -13,6 +13,214 @@ class MY_Time{
         }
     }
 
+    public function test_weekdays()
+    {
+        $output = [];
+
+        $output["last_week_sunday"] = $this->get_sunday(-1);
+        $output["last_week_monday"] = $this->get_monday(-1);
+        $output["last_week_tuesday"] = $this->get_tuesday(-1);
+        $output["last_week_wednesday"] = $this->get_wednesday(-1);
+        $output["last_week_thursday"] = $this->get_thursday(-1);
+        $output["last_week_friday"] = $this->get_friday(-1);
+        $output["last_week_saturday"] = $this->get_saturday(-1);
+/*
+        $output["this_week_sunday"] = $this->get_sunday(0);
+        $output["this_week_monday"] = $this->get_monday(0);
+        $output["this_week_tuesday"] = $this->get_tuesday(0);
+        $output["this_week_wednesday"] = $this->get_wednesday(0);
+        $output["this_week_thursday"] = $this->get_thursday(0);
+        $output["this_week_friday"] = $this->get_friday(0);
+        $output["this_week_saturday"] = $this->get_saturday(0);
+
+        $output["next_week_sunday"] = $this->get_sunday(1);
+        $output["next_week_monday"] = $this->get_monday(1);
+        $output["next_week_tuesday"] = $this->get_tuesday(1);
+        $output["next_week_wednesday"] = $this->get_wednesday(1);
+        $output["next_week_thursday"] = $this->get_thursday(1);
+        $output["next_week_friday"] = $this->get_friday(1);
+        $output["next_week_saturday"] = $this->get_saturday(1);
+
+        $output["next_next_week_sunday"] = $this->get_sunday(2);
+        $output["next_next_week_monday"] = $this->get_monday(2);
+        $output["next_next_week_tuesday"] = $this->get_tuesday(2);
+        $output["next_next_week_wednesday"] = $this->get_wednesday(2);
+        $output["next_next_week_thursday"] = $this->get_thursday(2);
+        $output["next_next_week_friday"] = $this->get_friday(2);
+        $output["next_next_week_saturday"] = $this->get_saturday(2);
+*/
+
+        return $output;
+    }
+
+    public function get_sunday($interval_weeks=0)
+    {
+    	return $this->get_day(0,$interval_weeks);
+    }
+    public function get_monday($interval_weeks=0)
+    {
+    	return $this->get_day(1,$interval_weeks);
+    }
+    public function get_tuesday($interval_weeks=0)
+    {
+    	return $this->get_day(2,$interval_weeks);
+    }
+    public function get_wednesday($interval_weeks=0)
+    {
+    	return $this->get_day(3,$interval_weeks);
+    }
+    public function get_thursday($interval_weeks=0)
+    {
+    	return $this->get_day(4,$interval_weeks);
+    }
+    public function get_friday($interval_weeks=0)
+    {
+    	return $this->get_day(5,$interval_weeks);
+    }
+    public function get_saturday($interval_weeks=0)
+    {
+    	return $this->get_day(6,$interval_weeks);
+    }
+
+    public function get_day_with_day_name($day_name="", $interval_weeks=0)
+    {
+    	if(empty($day_name)) 
+    	{
+            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$day_name)");
+    	} // end if
+
+    	$day_idx = $this->get_day_idx($day_name);
+
+    	return $this->get_day($day_idx, $interval_weeks);
+    } // end method
+
+    private function get_day_idx($day_name="")
+    {
+    	$day_name_lower = strtolower($day_name);
+    	if(strpos(strtolower("Sunday"), $day_name_lower) !== false)
+    	{
+    		return 0;
+    	}
+    	else if(strpos(strtolower("Monday"), $day_name_lower) !== false)
+    	{
+    		return 1;
+    	}
+    	else if(strpos(strtolower("Tuesday"), $day_name_lower) !== false)
+    	{
+    		return 2;
+    	}
+    	else if(strpos(strtolower("Wednesday"), $day_name_lower) !== false)
+    	{
+    		return 3;
+    	}
+    	else if(strpos(strtolower("Thursday"), $day_name_lower) !== false)
+    	{
+    		return 4;
+    	}
+    	else if(strpos(strtolower("Friday"), $day_name_lower) !== false)
+    	{
+    		return 5;
+    	}
+    	else if(strpos(strtolower("Saturday"), $day_name_lower) !== false)
+    	{
+    		return 6;
+    	} // end if  
+
+        return -1;
+    } // end method
+
+    // @ Desc : 이번주 월요일, 지난주 월요일, 다음주 화요일등의 날짜를 YYYY-MM-DD 형식으로 돌려줍니다.
+    public function get_day($day_idx=-1, $interval_weeks=0)
+    {
+
+    	if(!(-1 < $day_idx || $day_idx < 7)) 
+    	{
+            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$day_idx is not valid!");
+            return null;
+    	} // end if
+
+    	$day = "";
+    	if($day_idx === 0)
+    	{
+    		$day = "Sunday";
+    	}
+    	else if($day_idx === 1)
+    	{
+    		$day = "Monday";
+    	}
+    	else if($day_idx === 2)
+    	{
+    		$day = "Tuesday";
+    	}
+    	else if($day_idx === 3)
+    	{
+    		$day = "Wednesday";	
+    	}
+    	else if($day_idx === 4)
+    	{
+    		$day = "Thursday";
+    	}
+    	else if($day_idx === 5)
+    	{	
+    		$day = "Friday";
+    	}
+    	else if($day_idx === 6)
+    	{
+    		$day = "Saturday";	
+    	} // end if
+
+    	$today = date('D',strtotime('now'));
+    	$today_idx = $this->get_day_idx($today);
+        if(!(0 < $today_idx))
+        {
+            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$day_idx is not valid!");
+            return null;
+        }
+
+    	// 지난주는 사용자 입력:-1 / 여기서는 : $interval_week=-2
+    	// 이번주는 사용자 입력:0 / 여기서는 : $interval_week=-1
+    	// 다음주는 사용자 입력:1 / $interval_week=1
+    	if($interval_weeks < 1) 
+    	{
+    		$interval_weeks -= 1;
+    	}
+    	// 오늘과 같거나 오늘보다 지난 요일이면 지난주의 날짜를 돌려주므로 $interval_week를 1개 늘려줍니다.
+    	if($today_idx <= $day_idx)
+    	{
+    		$interval_weeks += 1;
+    	}
+
+    	// Examples
+		// echo date('Y-m-d',strtotime('-1 Monday')); //last Monday
+		// echo date('Y-m-d',strtotime('-2 Monday')); //two Mondays ago
+		// echo date('Y-m-d',strtotime('+1 Monday')); //next Monday  
+
+		$strtotime = "";
+		if(0 == $interval_weeks) 
+		{	
+			$strtotime = "$day";
+		}
+		else if(0 < $interval_weeks) 
+		{	
+			$strtotime = "+$interval_weeks $day";
+		}
+		else if($interval_weeks < 0) 
+		{	
+			$strtotime = "$interval_weeks $day";
+		}
+
+    	if(empty($strtotime)) 
+    	{
+            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$strtotime)");
+            return null;
+    	} // end if
+
+
+		$date = date('Y-m-d',strtotime($strtotime)); 
+
+    	return $date;
+    }
+
 	// @ Desc : "2017-08-01" 형식의 시간:분 문자열인지 확인합니다. 12시간 단위
 	// @ Usage : $this->is_valid_time_format_yyyy_mm_dd($target);
 	public function is_valid_time_format_yyyy_mm_dd($target){
@@ -228,8 +436,7 @@ class MY_Time{
 	{
 		return date('Y');
 	}
-
-	// $this->get_days_ago(3);
+	
 	public function get_days_ago($day_cnt=-1, $target_YYYYMMDD="") {
 		if(empty($target_YYYYMMDD)) {
 			$target_YYYYMMDD = $this->get_now_YYYYMMDD();
@@ -241,9 +448,11 @@ class MY_Time{
 		return date('Y-m-d', strtotime($day_expression, strtotime($target_YYYYMMDD)));	
 	}
 
-	public function get_days_after($day_after=-1, $target_YYYYMMDD="") {
+	public function get_days_after($day_after=-1, $target_YYYYMMDD="") 
+    {
 
-		if(empty($target_YYYYMMDD)) {
+		if(empty($target_YYYYMMDD)) 
+        {
 			$target_YYYYMMDD = $this->get_now_YYYYMMDD();
 		}
 
@@ -251,5 +460,75 @@ class MY_Time{
 
 		return date('Y-m-d', strtotime($day_expression, strtotime($target_YYYYMMDD)));		
 	}
+
+    public function get_day_diff($head_YYYYMMDD="", $tail_YYYYMMDD="") {
+
+        if(empty($head_YYYYMMDD)) {
+            return null;
+        } // end if
+        if(empty($tail_YYYYMMDD)) {
+            return null;
+        } // end if
+
+        $date_head=date_create($head_YYYYMMDD);
+        $date_tail=date_create($tail_YYYYMMDD);
+        $diff=date_diff($date_head,$date_tail);
+
+        return intval($diff->format("%R%a"));
+    }
+
+    // @ Desc : 해당 날짜가 지금으로부터 몇주뒤인지를 구합니다.
+    public function get_week_interval($target_YYYYMMDD="")
+    {
+        if(empty($target_YYYYMMDD))
+        {
+            return null;
+        }
+
+        // 이번주의 경계가 되는 날짜들을 구합니다.
+        // 1. 일요일 - 이번주의 첫번째 요일
+        $this_week_sunday = $this->get_sunday(0);
+        $day_diff_this_week_sunday = 
+        $this->get_day_diff(
+            // $head_YYYYMMDD="", 
+            $this_week_sunday,
+            // $tail_YYYYMMDD=""
+            $target_YYYYMMDD
+        );
+
+        // 2. 토요일 - 이번주의 마지막 요일
+        $this_week_saturday = $this->get_saturday(0);
+        $day_diff_this_week_saturday = 
+        $this->get_day_diff(
+            // $head_YYYYMMDD="", 
+            $this_week_saturday,
+            // $tail_YYYYMMDD=""
+            $target_YYYYMMDD
+        );
+
+        if( 0 <= $day_diff_this_week_sunday &&  
+            $day_diff_this_week_saturday <= 0) 
+        {
+            // 이번주의 요일입니다.
+            return 0;
+        }
+
+        if($day_diff_this_week_sunday < 0)
+        {
+            // 과거
+            $outcome = floor($day_diff_this_week_sunday/7);
+        }
+        else if(0 < $day_diff_this_week_saturday)
+        {
+            // 미래
+            $outcome = ceil($day_diff_this_week_saturday/7);
+        }
+        // $this->CI->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$target_YYYYMMDD : $target_YYYYMMDD");
+        // $this->CI->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$outcome : $outcome");
+
+        return $outcome;
+
+
+    }
 
 }

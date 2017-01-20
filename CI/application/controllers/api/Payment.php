@@ -56,6 +56,8 @@ class Payment extends MY_REST_Controller {
 
         // Additional Library
         $this->load->library('MY_Auth');
+        $this->load->library('MY_Calendar');
+        $this->load->library('MY_KlassCalendar', ['my_calendar'=>$this->my_calendar]);
         $this->load->library('MY_Decorator');
         $this->load->library('MY_CC_Email');
     }
@@ -300,6 +302,107 @@ class Payment extends MY_REST_Controller {
 
     }
 
+    // @ TEST
+    public function test_get()
+    {
+        $output = [];
+
+        // $output = $this->my_time->test_weekdays();
+
+        $output = [];
+        $output["week_interval"] = 
+        $this->my_time->get_week_interval("2017-02-05");
+        // $this->my_time->get_week_interval("2017-01-18");
+
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
+    }
+
+    private function add_klass_attendance($login_user_id=-1, $klass=null, $user_id=-1)
+    {
+        if(is_null($klass))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"is_null(\$klass)");
+            return false;
+        } // end if
+        if(!(0 < $login_user_id))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$login_user_id is not valid!");
+            return false;
+        } // end if
+        if(!(0 < $user_id))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$user_id is not valid!");
+            return false;
+        } // end if
+
+
+        // 1. 수업 시작일
+        $date_begin = $klass->date_begin;
+        if(empty($date_begin))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$date_begin is not valid!");
+            return false;
+        }
+        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$date_begin : $date_begin");
+
+        // 2. 수업 요일
+        $days_list = $klass->days_list;
+        if(empty($days_list))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$days_list is not valid!");
+            return false;
+        }
+        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$days_list : " . count($days_list));
+
+        // 3. 수업 주수
+        $week = $klass->week;
+        if(!(0 < $week))
+        {
+            $this->my_tracker->add_stopped(__CLASS__,__FUNCTION__,__LINE__,"\$week is not valid!");
+            return false;
+        }
+        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$week : $week");
+
+        // 수업 시작일이 지금부터 몇주 뒤인지 알아야 합니다.
+        // $klass_week_interval = -1;
+        $klass_week_interval = $this->my_time->get_week_interval($date_begin);
+        $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$klass_week_interval : $klass_week_interval");
+
+        for ($i=0; $i < $week; $i++) { 
+            $klass_week_interval_next = $klass_week_interval + $i;
+            foreach ($days_list as $day) {
+
+                $date_attend = 
+                $this->my_time->get_day_with_day_name(
+                    // $day_name="", 
+                    $day,                    
+                    // $interval_weeks=0
+                    $klass_week_interval_next
+                );
+
+                $date_attend_yyyymmdd_hhmmss = 
+                $date_attend . " " . $klass->time_begin . ":00";
+
+                $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$klass_week_interval_next : $klass_week_interval_next");
+                $this->my_tracker->add(__CLASS__,__FUNCTION__,__LINE__,"\$date_attend_yyyymmdd_hhmmss : $date_attend_yyyymmdd_hhmmss");
+
+                $this->my_sql->insert_attendance(
+                    // $login_user_id=-1, 
+                    $login_user_id,
+                    // $klass_id=-1, 
+                    $klass->id,
+                    // $user_id=-1, 
+                    $user_id,
+                    // $date_attend=""
+                    $date_attend_yyyymmdd_hhmmss
+                );
+
+            } // end foreach
+        } // end for
+
+        return true;
+    } // end method
+
     // @ Desc : 결제가 완료된 수업에 대한 처리를 합니다. 1. 결제 정보 등록, 2. 이메일 발송 
     public function afterbuyklass_post()
     {
@@ -365,7 +468,7 @@ class Payment extends MY_REST_Controller {
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"addimporthistory_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"afterbuyklass_post Failed!");
             return;
         } // end if   
 
@@ -411,15 +514,50 @@ class Payment extends MY_REST_Controller {
             $this->my_logger->ACTION_KEY_PAYMENT_BUY_KLASS
         );
 
-        // 결재가 완료되었음을 유저, 선생님, 운영자에게 알린다.
+        // 결제된 수업 정보에 따라 유저의 출석부를 만들어 줍니다.
+        // wonder.jung
+        // 수업 정보를 가져온다.
+        $klass = $this->my_sql->select_klass($klass_id);
+        if(is_null($klass)) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$klass is not valid!");
+            return;
+        } // end if   
+
+        $klass = $this->my_decorator->deco_klass($klass);
+        $output["klass"] = $klass;
+        $is_ok = 
+        $this->add_klass_attendance(
+            // $login_user_id=-1
+            $login_user_id,
+            // $klass=null, 
+            $klass,
+            // $user_id=-1
+            $user_id
+        );
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"afterbuyklass_post Failed!");
+            return;
+        } // end if
+
+        // 수업일수만큼 반복해서 입력.
+        // 로그남기기 - 출석부 만들기 
+        $this->my_logger->add_action(
+            // $user_id=-1, 
+            $login_user_id,
+            // $action_type="",
+            $this->my_logger->ACTION_TYPE_PAYMENT,
+            // $action_key=""
+            $this->my_logger->ACTION_KEY_PAYMENT_SET_ATTENDANCE
+        );
+
+        // 이메일 발송
+        // 결재가 완료되었음을 이메일로 유저, 선생님, 운영자에게 알린다.
         // 1. 유저 정보를 가져온다.
         $user = $this->my_sql->select_user_by_id($user_id);
         $user_nickname = $user->nickname;
         $output["user"] = $user;
-        // 2. 수업 정보를 가져온다.
-        $klass = $this->my_sql->select_klass($klass_id);
-        $klass = $this->my_decorator->deco_klass($klass);
-        $output["klass"] = $klass;
         // 2-1. 수업 이름
         $klass_title = $klass->title;
         // 3. 선생님 정보를 가져온다. 
