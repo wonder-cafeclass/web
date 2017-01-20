@@ -50,6 +50,8 @@ class Users extends MY_REST_Controller {
         $this->load->library('MY_Cookie');
 
         $this->load->library('MY_Auth');
+
+        $this->load->library('MY_CC_Email');
     }
 
     public function email_get()
@@ -1144,7 +1146,7 @@ class Users extends MY_REST_Controller {
                 // 1-1. 이미 인증 프로세스를 마친 경우.
 
                 // 변경된 회원 정보를 가져옵니다.
-                $user = $this->my_sql->get_user_by_id($user_validation->user_id);
+                $user = $this->my_sql->select_user_by_id($user_validation->user_id);
                 $output["user"] = $user;
 
                 $output["user_validation"] = $user_validation;
@@ -1194,7 +1196,7 @@ class Users extends MY_REST_Controller {
             $output["user_validation"] = $user_validation;
 
             // 변경된 회원 정보를 가져옵니다.
-            $user = $this->my_sql->get_user_by_id($user_validation->user_id);
+            $user = $this->my_sql->select_user_by_id($user_validation->user_id);
             $output["user"] = $user;
 
             // 로그인 쿠키를 만듭니다.
@@ -1699,7 +1701,7 @@ class Users extends MY_REST_Controller {
         }
         if(0 < $user_id) 
         {
-            $user = $this->my_sql->get_user_by_id($user_id);
+            $user = $this->my_sql->select_user_by_id($user_id);
             $output["user"] = $user;
         }
 
@@ -1818,6 +1820,8 @@ class Users extends MY_REST_Controller {
         $output["path_user_validation"] = $path_user_validation;
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
+        // REMOVE ME
+        /*
         $this->email->from('info@cafeclass.kr', '카페클래스');
         $this->email->to($email);
         // $this->email->cc('another@another-example.com');
@@ -1827,7 +1831,18 @@ class Users extends MY_REST_Controller {
         $this->email->message($path_user_validation);
 
         $this->email->send();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
+        */
+        $this->my_email->send_mail(
+            // $user_id=-1, 
+            intval($user->id),
+            // $receiver_email="", 
+            $email,
+            // $subject="", 
+            '[카페클래스]안녕하세요, 카페클래스입니다. 회원가입을 위한 인증링크를 보내드립니다.',
+            // $message=""
+            $path_user_validation
+        );
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "Email has been sent to user as validation");
 
         // 메일 발송을 기록합니다. 로거에 기록합니다.
         $this->my_logger->add_action(

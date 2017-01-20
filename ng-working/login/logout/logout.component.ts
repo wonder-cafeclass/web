@@ -31,11 +31,13 @@ export class LogoutComponent implements OnInit {
     this.setMyCheckerReady();
   }
 
+  private isDebug():boolean {
+    return this.watchTower.isDebug();
+  }
+
   private setMyCheckerReady() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("logout / setMyCheckerReady / 시작");
+    if(this.isDebug()) console.log("logout / setMyCheckerReady / 시작");
 
     // 페이지 이동으로 진입한 경우, watch tower에 저장된 변수 값을 가져온다.
     if(this.watchTower.getIsMyCheckerReady()) {
@@ -47,7 +49,7 @@ export class LogoutComponent implements OnInit {
     this.watchTower.myCheckerServicePackReady$.subscribe(
       (isReady:boolean) => {
 
-      if(isDebug) console.log("logout / setMyCheckerReady / isReady : ",isReady);
+      if(this.isDebug()) console.log("logout / setMyCheckerReady / isReady : ",isReady);
 
       if(!isReady) {
         return;
@@ -63,14 +65,11 @@ export class LogoutComponent implements OnInit {
    this.setMyChecker();
    this.logActionPage();
    this.deleteLoginCookie();
-   this.goHome();
   } 
 
   private setMyChecker() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("logout / setMyChecker / 시작");
+    if(this.isDebug()) console.log("logout / setMyChecker / 시작");
 
     if(this.watchTower.getIsMyCheckerReady()) {
 
@@ -85,16 +84,14 @@ export class LogoutComponent implements OnInit {
         this.watchTower.getApiKey()
       ); // end setReady
 
-      if(isDebug) console.log("logout / setMyChecker / done!");
+      if(this.isDebug()) console.log("logout / setMyChecker / done!");
     } // end if
 
   } 
 
   private logActionPage() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("logout / logActionPage / 시작");
+    if(this.isDebug()) console.log("logout / logActionPage / 시작");
 
     // 페이지 진입을 기록으로 남깁니다.
     this.myLoggerService.logActionPage(
@@ -104,15 +101,13 @@ export class LogoutComponent implements OnInit {
       this.myLoggerService.pageTypeLogout
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(isDebug) console.log("logout / logActionPage / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("logout / logActionPage / myResponse : ",myResponse);
     })
   } 
 
   private deleteLoginCookie() :void {
 
-    // let isDebug:boolean = true;
-    let isDebug:boolean = false;
-    if(isDebug) console.log("logout / deleteLoginCookie / 시작");
+    if(this.isDebug()) console.log("logout / deleteLoginCookie / 시작");
 
     // 로그아웃시 해야할 일
     // 1. 로그인 쿠키를 지웁니다.
@@ -120,16 +115,13 @@ export class LogoutComponent implements OnInit {
     .deleteUserCookie()
     .then((myResponse:MyResponse) => {
 
-      if(isDebug) console.log("logout / deleteLoginCookie / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("logout / deleteLoginCookie / myResponse : ",myResponse);
       // 1-1. 플랫폼 로그아웃 처리도 해줍니다.(나중에...)
 
       // 2. event-watch-tower를 통해서 로그아웃을 전파합니다. 
       // 해당 이벤트 스트림을 받는 엘리먼트들은 로그아웃 처리를 해줍니다.
-      this.watchTower.announceLogin(null);
-
-      this.watchTower.announceLoginTeacher(null);
-
-
+      this.emitNoUser();
+      this.goHome();
     });     
   }  
 

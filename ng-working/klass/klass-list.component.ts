@@ -78,7 +78,8 @@ export class KlassListComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return this.watchTower.isDebug();
+    return true;
+    // return this.watchTower.isDebug();
   }
 
   isSelected(klass: Klass): boolean {
@@ -177,13 +178,25 @@ export class KlassListComponent implements AfterViewInit {
     if(null != userJSON) {
       loginUser = new User().setJSON(userJSON);
     }
-    if(null != loginUser) {
-      this.loginUser = loginUser;
-    }
+    // 로그 아웃시 null 허용.
+    this.loginUser = loginUser;
 
     this.getKlassListOnInit();
 
   } 
+  private getLoginUserId() :number {
+
+    if(this.isDebug()) console.log("klass-list / getLoginUserId / 시작");
+    let loginUser:User = this.watchTower.getLoginUser();
+
+    let loginUserId:number = -1;
+    if(null != loginUser) {
+      loginUserId = loginUser.id;
+    }
+    if(this.isDebug()) console.log("klass-list / getLoginUserId / loginUserId : ",loginUserId);
+
+    return loginUserId;
+  }
   private logActionPage() :void {
 
     if(this.isDebug()) console.log("klass-list / logActionPage / 시작");
@@ -223,18 +236,13 @@ export class KlassListComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-list / getKlassListOnInit / 시작");
 
-    let loginUserId:number = -1;
-    if(null != this.loginUser) {
-      loginUserId = this.loginUser.id;
-    }
-
     this.fetchKlassList(
       // userId:Number, 
-      loginUserId,
+      this.getLoginUserId(),
       // pageNum:number, 
       this.pagination.pageNum,
-      // pageSize:number, 
-      this.pagination.pageRange,
+      // pageRowCnt:number, 
+      this.pagination.pageRowCnt,
       // searchQuery:string, 
       "",
       // klassStatus:string, 
@@ -304,7 +312,7 @@ export class KlassListComponent implements AfterViewInit {
 
   private fetchKlassList( loginUserId:number,
                           pageNum:number, 
-                          pageSize:number, 
+                          pageRowCnt:number, 
                           searchQuery:string, 
                           klassStatus:string, 
                           klassLevel:string, 
@@ -320,8 +328,8 @@ export class KlassListComponent implements AfterViewInit {
       loginUserId,
       // pageNum:number, 
       this.pagination.pageNum,
-      // pageSize:number, 
-      this.pagination.pageRange,
+      // pageRowCnt:number, 
+      this.pagination.pageRowCnt,
       // searchQuery:string, 
       searchQuery,
       // klassStatus:string,
@@ -337,8 +345,6 @@ export class KlassListComponent implements AfterViewInit {
       // klassTime:string
       klassTime
     ).then((myResponse:MyResponse) => {
-
-      if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
 
       if(this.isDebug()) console.log("klass-list / fetchKlassList / myResponse : ",myResponse);
 
@@ -408,22 +414,17 @@ export class KlassListComponent implements AfterViewInit {
       searchQuerySafe = keywordList[0];
     } // end if
 
-    let loginUserId:number = -1;
-    if(null != this.loginUser) {
-      loginUserId = this.loginUser.id;
-    } // end if
-
     if(null == this.pagination) {
       this.pagination = new Pagination();
     }
 
     this.fetchKlassList(
       // userId:number, 
-      loginUserId,
+      this.getLoginUserId(),
       // pageNum:number, 
       this.pagination.pageNum,
-      // pageSize:number, 
-      this.pagination.pageRange,
+      // pageRowCnt:number, 
+      this.pagination.pageRowCnt,
       // searchQuery:string, 
       searchQuerySafe,
       // klassStatus:string, 
@@ -747,8 +748,14 @@ export class KlassListComponent implements AfterViewInit {
   } // end method
 
   gotoClassDetail(klass: Klass):void {
+
+    if(this.isDebug()) console.log("klass-list / gotoClassDetail / 시작");
+
     // 수업 상세 페이지로 이동
     this.router.navigate([klass.id], { relativeTo: this.route });
+
+
+    if(this.isDebug()) console.log("klass-list / gotoClassDetail / 끝");
   } // end method
 
   onLoadFailClassImage(classImage, klassObj) {

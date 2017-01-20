@@ -2,7 +2,7 @@ import { HelperMyIs }               from '../helper/my-is';
 import { HelperMyTime }             from '../helper/my-time';
 import { HelperMyFormat }           from '../helper/my-format';
 
-// @ Desc : 결재 모듈 아임포트의 응답객체 (결재 이후)
+// @ Desc : 결제 모듈 아임포트의 응답객체 (결제 이후)
 // @ Referer : https://github.com/iamport/iamport-manual/blob/master/%EC%9D%B8%EC%A6%9D%EA%B2%B0%EC%A0%9C/README.md
 export class MyResponseImport {
 

@@ -4,6 +4,8 @@ import { KlassQuestion }            from './klass-question';
 import { KlassCalendarDay }         from './klass-calendar-day';
 import { KlassCalendar }            from './klass-calendar';
 import { KlassVenue }               from './klass-venue';
+import { KlassNStudent }            from './klass-n-student';
+import { KlassAttendance }          from './klass-attendance';
 
 import { Calendar }                 from '../../widget/calendar/model/calendar';
 
@@ -24,6 +26,9 @@ export class Klass {
     public question_list:KlassQuestion[]=[];
     public klassVenue:KlassVenue=null;
 
+    public review_cnt:number=-1;
+    public question_cnt:number=-1;
+
     public teacher_id:number=-1;
     public teacher_resume:string="";
     public teacher_resume_list:string[]=[];
@@ -31,6 +36,7 @@ export class Klass {
 
     public title: string="";
     public desc: string="";
+    public type: string="";
     public feature: string="";
     public feature_list: string[]=[];
     public target: string="";
@@ -56,7 +62,6 @@ export class Klass {
     public days_img_url_list: string[]=[];
     public days_eng: string="";
     public days_kor: string="";
-    public class_day_per_week: number=-1; // 주 n회 수업
 
     public subway_line: string="";
     public subway_station: string="";
@@ -69,7 +74,7 @@ export class Klass {
     public venue_latitude: string="";
     public venue_longitude: string="";
 
-    public search_tag: string="";
+    public search_tag: string=""; // @ Deprecated - REMOVE ME
     public price: number=-1;
     public price_with_format: string="";
 
@@ -78,9 +83,6 @@ export class Klass {
 
     public status: string="";
 
-    // REMOVE ME
-    // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
-    
     public class_banner_url:string="";
     public class_banner_url_arr:string[]=[];
     public class_poster_url:string="";
@@ -88,6 +90,12 @@ export class Klass {
     public calendar_table_linear: Calendar[][]=null;
     public calendar_table_monthly: Calendar[][][]=null;
     public klass_calendar_list: KlassCalendar[]=null;
+
+    public klass_n_student_list:KlassNStudent[]=null; // @ Deprecated
+
+    // 수업 출석 테이블 / 날짜순 정렬 
+    public klass_attendance_table:KlassAttendance[][]=null;
+
 
     public date_created: string="";
     public date_updated: string="";
@@ -103,6 +111,56 @@ export class Klass {
         this.myIs = new HelperMyIs();
         this.myTime = new HelperMyTime();
         this.myFormat = new HelperMyFormat();
+    }
+
+    // @ Desc : 실제 등록 학생수를 가져옴.
+    getActualStudentCnt():number {
+
+        if(this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+
+        return this.klass_n_student_list.length;
+    }
+
+    // @ Desc : 수업 출석 관련 통계정보 가져옴.
+    getAttendancePercentage():string {
+
+        if(this.myArray.isNotOK(this.klass_attendance_table)) {
+            return `0%`;;
+        } // end if
+
+        let klass_attendance_table:KlassAttendance[][] = this.klass_attendance_table;
+
+        let attendance_total_cnt:number=0;
+        let attendance_ready_cnt:number=0;
+        let attendance_presence_cnt:number=0;
+        let attendance_absence_cnt:number=0;
+
+        for (var i = 0; i < klass_attendance_table.length; ++i) {
+          let klass_attendance_list:KlassAttendance[] = klass_attendance_table[i];
+
+          for (var j = 0; j < klass_attendance_list.length; ++j) {
+            let klass_attendance:KlassAttendance = klass_attendance_list[j];
+
+            attendance_total_cnt++;
+
+            if(klass_attendance.isReady()) {
+              attendance_ready_cnt++;
+            } else if(klass_attendance.isPresence()) {
+              attendance_presence_cnt++;
+            } else if(klass_attendance.isAbsence()) {
+              attendance_absence_cnt++;
+            } // end if
+
+          } // end for inner
+
+        } // end for        
+
+        // 출석률. 소수점 아래 2자리까지 계산
+        let percentage:number = Math.round(100 * 100 * (attendance_presence_cnt/(attendance_total_cnt - attendance_ready_cnt)))/100;
+
+        return `${percentage}%`;
     }
 
     // @ Desc : 수업없음 클래스인지 여부.
@@ -714,6 +772,49 @@ export class Klass {
         // calendar_table_monthly
         klass.setKlassCalendarList(klass.calendar_table_monthly);
 
+        // klass_n_student_list
+        let userMap = {};
+        if(this.myArray.isOK(klass.klass_n_student_list)) {
+
+            let list:KlassNStudent[] = [];
+            for (var i = 0; i < klass.klass_n_student_list.length; ++i) {
+                let json = klass.klass_n_student_list[i];
+                let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
+                list.push(klassNStudent);
+                userMap[klassNStudent.user_id] = klassNStudent.user;
+            } // end for
+
+            klass.klass_n_student_list = list;
+        }
+
+
+
+        // klass_attendance_table
+        if(this.myArray.isOK(klass.klass_attendance_table)) {
+
+            let table:KlassAttendance[][] = [];
+            for (var i = 0; i < klass.klass_attendance_table.length; ++i) {
+                let json_list = klass.klass_attendance_table[i];
+                let list:KlassAttendance[] = [];
+                for (var j = 0; j < json_list.length; ++j) {
+                    let json = json_list[j];
+                    let kat:KlassAttendance = new KlassAttendance().setJSON(json);
+
+                    let userIdFromKat:number = kat.user_id;
+                    if(0 < userIdFromKat && userMap[userIdFromKat]) {
+                        // 출석에 맞는 유저 정보를 지정.
+                        kat.user = userMap[userIdFromKat];
+                    } // end if
+
+                    list.push(kat);
+                } // end inner for
+
+                table.push(list);
+            } // end for
+
+            klass.klass_attendance_table = table;
+        } // end if
+        
         return klass;
 
     } // end method

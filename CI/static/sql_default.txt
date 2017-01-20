@@ -212,7 +212,6 @@ INSERT INTO `cafeclass`.`klass`
 `teacher_resume`,
 `teacher_greeting`,
 `title`,
-`desc`,
 `feature`,
 `target`,
 `schedule`,
@@ -244,7 +243,6 @@ VALUES
 "글로벌 기업에서 다년간 근무|||분당 토스트마스터즈에서 회장 2년 역임|||아동을 대상으로 한 교육 경험 있음",
 "아이들의 외국어 교육은 이제 저와 함께 해요.<br>어렵지 않게 즐거운 내용으로 잊지못할 경험을 만들어드리겠습니다. <br>제 아이를 가르친다는 마음으로 많은 학생들에게 힘이 되어 왔습니다.",
 "(실전) 영어 미팅에서 강해지기",
-"수업 설명을 입력해주세요",
 "시작부터 끝까지 모두 영어로 진행됩니다|||자신의 경험을 바탕으로 하나하나 최적의 솔루션을 제공|||어떤 상황에서도 당황하지 않게 도와드려요",
 "해외 바이어와 미팅이 잦은 직장인|||영어로 업무 성과를 내야하는 해외 영업맨|||외국인을 보스로 모시고 있는 분들",
 "<p>19:00 워밍업 - 지난주에 무엇을 했나요?</p><p>19:15 실전 회의</p><p>20:00 휴식 및 스몰 토크&nbsp;</p><p>20:40 과제 제출 및 리뷰</p>",
@@ -275,7 +273,6 @@ NOW()
 "글로벌 기업에서 다년간 근무|||분당 토스트마스터즈에서 회장 2년 역임|||아동을 대상으로 한 교육 경험 있음",
 "아이들의 외국어 교육은 이제 저와 함께 해요.<br>어렵지 않게 즐거운 내용으로 잊지못할 경험을 만들어드리겠습니다. <br>제 아이를 가르친다는 마음으로 많은 학생들에게 힘이 되어 왔습니다.",
 "SNS로 외국 친구만들기",
-"수업 설명을 입력해주세요",
 "페이스북으로 외국인 친구를 만날수 있다구요?|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요",
 "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요",
 "수업 일정을 입력해주세요",
@@ -306,7 +303,6 @@ NOW()
 "2016 토스트마스터즈 한국어 평가 연설대회 2위|||2014 토스트마스터즈 영어 연설대회 3위|||10년 이상 번역관련 업무 경험",
 "새로운 언어를 배우는 것은 연애를 시작하는 것과 같습니다. <br>떨리고 두렵지만 그 끝에는 무엇보다도 달콤한 매력이 있습니다.<br>저와 함께 하신다면 즐겁게 시작하실수 있을거에요!",
 "(제발) 여행가서 쫄지않기",
-"수업 설명을 입력해주세요",
 "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요",
 "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요",
 "수업 일정을 입력해주세요",
@@ -337,7 +333,6 @@ NOW()
 "2016 토스트마스터즈 한국어 평가 연설대회 2위|||2014 토스트마스터즈 영어 연설대회 3위|||10년 이상 번역관련 업무 경험",
 "새로운 언어를 배우는 것은 연애를 시작하는 것과 같습니다. <br>떨리고 두렵지만 그 끝에는 무엇보다도 달콤한 매력이 있습니다.<br>저와 함께 하신다면 즐겁게 시작하실수 있을거에요!",
 "(생존회화) 영어로 음식 주문하기",
-"수업 설명을 입력해주세요",
 "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요",
 "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요",
 "수업 일정을 입력해주세요",
@@ -355,7 +350,7 @@ NOW()
 "서울특별시 송파구 잠실동 40",
 "서울특별시 송파구 올림픽로 212 갤러리아팰리스",
 "37.5111896",
-"37.5111896",
+"127.0939713",
 "N",
 "65000",
 "3",
@@ -368,7 +363,6 @@ NOW()
 "2016 토스트마스터즈 한국어 평가 연설대회 2위|||2014 토스트마스터즈 영어 연설대회 3위|||10년 이상 번역관련 업무 경험",
 "새로운 언어를 배우는 것은 연애를 시작하는 것과 같습니다. <br>떨리고 두렵지만 그 끝에는 무엇보다도 달콤한 매력이 있습니다.<br>저와 함께 하신다면 즐겁게 시작하실수 있을거에요!",
 "여행가서 멋진 저녁 주문하기",
-"수업 설명을 입력해주세요",
 "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요",
 "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요",
 "수업 일정을 입력해주세요",
@@ -386,7 +380,7 @@ NOW()
 "서울특별시 송파구 잠실동 40",
 "서울특별시 송파구 올림픽로 212 갤러리아팰리스",
 "37.5111896",
-"37.5111896",
+"127.0939713",
 "N",
 "65000",
 "3",
@@ -399,7 +393,6 @@ NOW()
 "2016 토스트마스터즈 한국어 평가 연설대회 2위|||2014 토스트마스터즈 영어 연설대회 3위|||10년 이상 번역관련 업무 경험",
 "새로운 언어를 배우는 것은 연애를 시작하는 것과 같습니다. <br>떨리고 두렵지만 그 끝에는 무엇보다도 달콤한 매력이 있습니다.<br>저와 함께 하신다면 즐겁게 시작하실수 있을거에요!",
 "여행가서 현지인처럼 주문해보기",
-"수업 설명을 입력해주세요",
 "수업 특징을 입력해주세요|||수업 특징을 입력해주세요|||수업 특징을 입력해주세요",
 "수업 대상을 입력해주세요|||수업 대상을 입력해주세요|||수업 대상을 입력해주세요",
 "수업 일정을 입력해주세요",
@@ -417,12 +410,99 @@ NOW()
 "서울특별시 송파구 잠실동 40",
 "서울특별시 송파구 올림픽로 212 갤러리아팰리스",
 "37.5111896",
-"37.5111896",
+"127.0939713",
 "N",
 "65000",
 "3",
 "class_cafe_order_600x600.jpg",
 "",
 NOW()
+)
+;
+
+# 수업 등록 테스트 데이터 / 아놀드
+
+DROP TABLE IF EXISTS `klass_n_student`;
+
+CREATE TABLE `klass_n_student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "A" COMMENT 'A(정상),N(삭제)',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `klass_n_student` (`klass_id`,`user_id`),
+  INDEX `search` (`klass_id`,`user_id`),
+  INDEX `teacher` (`teacher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass klass n student relationship';
+
+INSERT INTO `cafeclass`.`klass_n_student`
+(
+	`klass_id`,
+	`teacher_id`,
+	`user_id`,
+	`status`,
+	`date_created`
+)
+VALUES
+(
+	6,
+	1,
+	4,
+	"A",
+	NOW()
+)
+;
+
+# 출석 정보 테스트 데이터 / 아놀드
+
+DROP TABLE IF EXISTS `attendance`;
+
+CREATE TABLE `attendance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `klass_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL DEFAULT "R" COMMENT 'R(ready/준비),P(presence/출석),A(absence/결석)',
+  `date_attend` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '출석 가능한 수업날짜',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `search` (`klass_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cafeclass class attendance';
+
+
+INSERT INTO `cafeclass`.`attendance`
+(
+	`klass_id`,
+	`user_id`,
+	`date_created`,
+	`date_attend`
+)
+VALUES
+(
+	6,
+	4,
+	NOW(),
+	(SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'))
+),
+(
+	6,
+	4,
+	NOW(),
+	(SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 14 DAY), '%Y-%m-%d %H:%i:%s'))
+),
+(
+	6,
+	4,
+	NOW(),
+	(SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 21 DAY), '%Y-%m-%d %H:%i:%s'))
+),
+(
+	6,
+	4,
+	NOW(),
+	(SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 28 DAY), '%Y-%m-%d %H:%i:%s'))
 )
 ;

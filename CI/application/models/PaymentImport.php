@@ -98,9 +98,18 @@ class PaymentImport {
   	// 취소/부분취소 시 생성되는 취소 매출전표 확인 URL 배열. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
   	public $cancel_receipt_urls=[];
 
+    // User 객체
+    public $user;
+
+    // Klass 객체
+    public $klass;
+
+    // Teacher 객체
+    public $teacher;
+
   	public function setJSON($json=null) 
   	{
-  		if(is_null(json))
+  		if(is_null($json))
   		{
   			return;
   		} // end if
@@ -136,6 +145,7 @@ class PaymentImport {
 
           // 숫자값에 대한 처리
           if( "id" === $key || 
+              "pi_id" === $key || 
               "klass_id" === $key || 
               "user_id" === $key || 
               "card_quota" === $key || 
@@ -165,9 +175,9 @@ class PaymentImport {
       	
       } // end foreach
 
-      if(!empty($this->$cancel_receipt_urls))
+      if(!empty($this->cancel_receipt_urls))
       {
-        $this->$cancel_receipt_url = $this->$cancel_receipt_urls[0];
+        $this->cancel_receipt_url = $this->cancel_receipt_urls[0];
       } // end if
 
   	} // end method

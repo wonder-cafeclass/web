@@ -1,4 +1,8 @@
 import { HelperMyIs }	from '../../../util/helper/my-is';
+import { HelperMyFormat }  from '../../../util/helper/my-format';
+import { User }       from '../../../users/model/user';
+import { Klass }      from '../../../klass/model/klass';
+import { Teacher }    from '../../../teachers/model/teacher';
 
 
 export class PaymentImport {
@@ -48,6 +52,9 @@ export class PaymentImport {
   	public name:string="";
   	// 주문(결제)금액
   	public amount:number=0;
+    // 주문(결제)금액 / ex) 65,000
+    public amountWithFormat:string="";
+
   	// 결제취소금액
   	public cancel_amount:number=0;
   	// 결제승인화폐단위(KRW:원, USD:미화달러, EUR:유로)
@@ -94,14 +101,20 @@ export class PaymentImport {
   	public receipt_url:string="";
     // 35 - INSERT
 
-    // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결재 취소 영수증만 등록
+    // 취소/부분취소 시 생성되는 취소 매출전표 확인 URL. 부분취소 횟수만큼 매출전표가 별도로 생성됨. 여기서는 마지막 등록된 결제 취소 영수증만 등록
     public cancel_receipt_url:string="";
 
     private myIs:HelperMyIs=null;	
+    private myFormat:HelperMyFormat=null;
+
+    public user:User=null;
+    public klass:Klass=null;
+    public teacher:Teacher=null;
 
 	constructor(
 	) {
 		this.myIs = new HelperMyIs();
+    this.myFormat = new HelperMyFormat();
 	}
 
     setJSON(json):PaymentImport {
@@ -117,6 +130,23 @@ export class PaymentImport {
         if(isDebug) console.log("paymentImport / setJSON / paymentImport : ",paymentImport);
 
         // json 자동 설정 이후의 추가 작업을 여기서 합니다.
+        if(null != paymentImport.user) {
+          let userJSON = paymentImport.user;
+          paymentImport.user = new User().setJSON(userJSON);
+        }
+
+        if(null != paymentImport.klass) {
+          let klassJSON = paymentImport.klass;
+          paymentImport.klass = new Klass().setJSON(klassJSON);
+        }
+
+        if(null != paymentImport.teacher) {
+          let teacherJSON = paymentImport.teacher;
+          paymentImport.teacher = new Teacher().setJSON(teacherJSON);
+        }
+
+        // 금액 포맷 추가.
+        paymentImport.amountWithFormat = this.myFormat.getKRWWithCommas(paymentImport.amount);
 
         return paymentImport;
 

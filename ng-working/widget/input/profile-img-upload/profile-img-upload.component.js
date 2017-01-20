@@ -26,8 +26,8 @@ var ProfileImgUploadComponent = (function () {
         this.urlService = urlService;
         this.uploadUserProfileUrl = '/CI/index.php/api/upload/userprofile';
         this.userProfilePath = "/assets/images/user/";
-        this.userProfileUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
-        this.userProfileDefaultUrl = "/assets/images/user/user_anonymous_150x150_orange.png";
+        this.userProfileUrl = "/assets/images/user/user_anonymous_150x150.jpg";
+        this.userProfileDefaultUrl = "/assets/images/user/user_anonymous_150x150.jpg";
         this.userProfileSampleArr = [
             "/assets/images/user/user_anonymous_150x150_cat.jpg",
             "/assets/images/user/user_anonymous_150x150_lion.jpg",

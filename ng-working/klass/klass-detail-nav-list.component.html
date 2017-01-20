@@ -14,6 +14,7 @@
 
             <li   
             #klassDesc
+            id="klassDesc"
             class="list-group-item klass-info first" 
             style="padding-bottom: 1px;"
             [ngClass]="{'focus':isFocusKlassDesc}">
@@ -31,7 +32,7 @@
                     <div  *ngFor="let myEvent of myEventListForKlassFeature"
                           class="klass-feature-text" 
                           [ngClass]="{'empty':klass.feature == ''}">{{myEvent.value}}</div>
-                    <div *ngIf="isAdmin" class="toggle-btn">
+                    <div *ngIf="isTeacher" class="toggle-btn">
                         <button   
                         (click)="onToggleKlassFeature($event)"
                         type="button" 
@@ -40,7 +41,7 @@
                     </div>
                 </li>
                 <!-- Admin Section -->
-                <li *ngIf="isAdmin && isShowKlassFeatureAdmin && myEventListForKlassFeature"
+                <li *ngIf="isTeacher && isShowKlassFeatureAdmin && myEventListForKlassFeature"
                     class="list-group-item admin">
                   <inputs-btns-rows   
                   [eventKey]="myEventService.KEY_KLASS_FEATURE_LIST"
@@ -65,7 +66,7 @@
                   <div  *ngFor="let myEvent of myEventListForKlassTarget"
                         class="klass-target-text" 
                         [ngClass]="{'empty':klass.target == ''}">{{myEvent.value}}</div>
-                  <div *ngIf="isAdmin" class="toggle-btn">
+                  <div *ngIf="isTeacher" class="toggle-btn">
                       <button   
                       (click)="onToggleKlassTarget($event)"
                       type="button" 
@@ -73,7 +74,7 @@
                       </button>
                   </div>
                 </li>
-                <li *ngIf="isAdmin && isShowKlassTargetAdmin && myEventListForKlassTarget" 
+                <li *ngIf="isTeacher && isShowKlassTargetAdmin && myEventListForKlassTarget" 
                     class="list-group-item admin">
                   <inputs-btns-rows 
                   [eventKey]="myEventService.KEY_KLASS_TARGET_LIST"
@@ -97,7 +98,7 @@
                     </div>
                     <div class="klass-target-schedule" [innerHTML]="klassSchedule | safeHtml"></div>
 
-                    <div *ngIf="isAdmin" class="toggle-btn">
+                    <div *ngIf="isTeacher" class="toggle-btn">
                         <button   
                         (click)="onToggleKlassSchedule($event)"
                         type="button" 
@@ -106,7 +107,7 @@
                     </div>
                 </li>
                 <li class="list-group-item admin">
-                  <input-row  *ngIf="isAdmin && isShowKlassScheduleAdmin"
+                  <input-row  *ngIf="isTeacher && isShowKlassScheduleAdmin"
                               [cageHeight]="350"
                               [cageWidth]="754"
                               [key]="myEventService.KEY_KLASS_SCHEDULE"
@@ -120,7 +121,7 @@
 
             <li #klassVenue
                 class="list-group-item klass-info iframe">
-              <klass-venue-search-list  [isAdmin]="isAdmin"
+              <klass-venue-search-list  [isAdmin]="isTeacher"
                                         [cageHeight]="350"
                                         [cageWidth]="778"
                                         (emitter)="onChangedFromInputRow($event)">
@@ -138,7 +139,7 @@
                   [ngClass]="{'focus':isFocusTutorDesc}">
               <div style="padding: 5px;">
                 <klass-teacher  
-                [isAdmin]="isAdmin"
+                [isAdmin]="isTeacher"
                 (emitter)="onChangedFromInputRow($event)">
                 </klass-teacher>
               </div>
@@ -146,7 +147,7 @@
             <li   #studentReview
                   class="list-group-item klass-info"
                   [ngClass]="{'focus':isFocusStudentReview}">
-              <comment-list [isAdmin]="isAdmin"
+              <comment-list [isAdmin]="isTeacher"
                             [msgNoComment]="'등록된 리뷰가 없습니다'"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [hasEvaluation]="true"
@@ -164,7 +165,7 @@
               <!-- 
               <div style="padding-left:10px;color:#777;"><h4>궁금해요</h4></div>    
               -->
-              <comment-list [isAdmin]="isAdmin"
+              <comment-list [isAdmin]="isTeacher"
                             [msgNoComment]="'등록된 문의가 없습니다'"
                             [isInputDisabled]="null != loginUser && loginUser.isTeacher()"
                             [myEvent]="myEventForQuestion"

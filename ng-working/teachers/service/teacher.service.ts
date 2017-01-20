@@ -7,11 +7,22 @@ import { UrlService }                      from "../../util/url.service";
 import { MyExtractor }                     from '../../util/http/my-extractor';
 import { MyRequest }                       from '../../util/http/my-request';
 import { MyResponse }                      from '../../util/model/my-response';
+import { MyEventWatchTowerService }        from '../../util/service/my-event-watchtower.service';
 import { Teacher }                         from "../model/teacher";
 import { User }                            from "../../users/model/user";
 
 @Injectable()
 export class TeacherService {
+
+  // 선생님의 수업 리뷰 가져오기
+  private fetchKlassReviewByTeacherUrl = '/CI/index.php/api/klass/fetchklassreviewbyteacher';
+  
+  // 학생 출석 상태 바꾸기
+  private updateAttendanceUrl = '/CI/index.php/api/klass/updateattendance';
+  // 활동중인 수업만 가져오기
+  private fetchActiveKlassListUrl = '/CI/index.php/api/klass/fetchactiveklasslistbyteacher';
+  // 모든 수업 가져오기
+  private fetchAllKlassListUrl = '/CI/index.php/api/klass/fetchallklassnlistbyteacher';
 
   private getTeacherByMobileUrl = '/CI/index.php/api/teachers/mobile';
   private getTeacherByEmailUrl = '/CI/index.php/api/teachers/email';
@@ -22,12 +33,138 @@ export class TeacherService {
   private myExtractor:MyExtractor;
   private myRequest:MyRequest;
 
+  private watchTower:MyEventWatchTowerService;
+
   constructor(  private urlService:UrlService, 
                 private http: Http) {
     this.myExtractor = new MyExtractor();
     this.myRequest = new MyRequest();
   }
 
+  fetchKlassReviewByTeacher (
+    apiKey:string,
+    loginUserId:number,
+    teacherId:number,
+    klassId:number,
+    pageNum:number,
+    pageRowCnt:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / updateAttendance / 시작");
+    if(this.isDebug()) console.log("user.service / updateAttendance / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updateAttendance / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / teacherId : ",teacherId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / klassId : ",klassId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / updateAttendance / pageRowCnt : ",pageRowCnt);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchKlassReviewByTeacherUrl);
+    let params = {
+      login_user_id:loginUserId,
+      teacher_id:teacherId,
+      klass_id:klassId,
+      page_num:pageNum,
+      page_row_cnt:pageRowCnt
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method  
+
+  updateAttendance (
+    apiKey:string,
+    loginUserId:number,
+    attedanceId:number,
+    klassId:number,
+    userId:number,
+    klassAttendanceStatus:string ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / updateAttendance / 시작");
+    if(this.isDebug()) console.log("user.service / updateAttendance / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / updateAttendance / loginUserId : ",loginUserId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / attedanceId : ",attedanceId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / klassId : ",klassId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / userId : ",userId);
+    if(this.isDebug()) console.log("user.service / updateAttendance / klassAttendanceStatus : ",klassAttendanceStatus);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.updateAttendanceUrl);
+    let params = {
+      login_user_id:loginUserId,
+      klass_attendance_id:attedanceId,
+      klass_id:klassId,
+      user_id:userId,
+      klass_attendance_status:klassAttendanceStatus
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method    
+
+  fetchActiveKlassList (
+    apiKey:string,
+    pageNum:number,
+    pageRowCnt:number,
+    teacherId:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / 시작");
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("user.service / fetchActiveKlassListUrl / teacherId : ",teacherId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchActiveKlassListUrl);
+    let params = {
+      page_num:pageNum,
+      pageRowCnt:pageRowCnt,
+      teacher_id:teacherId
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method   
+
+  fetchAllKlassList (
+    apiKey:string,
+    pageNum:number,
+    pageRowCnt:number,
+    teacherId:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / 시작");
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("user.service / fetchAllKlassList / teacherId : ",teacherId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.urlService.get(this.fetchAllKlassListUrl);
+    let params = {
+      page_num:pageNum,
+      pageRowCnt:pageRowCnt,
+      teacher_id:teacherId
+    }
+
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);    
+
+  } // end method  
+  
   insertTeacherByTeacher(apiKey:string, teacher:Teacher): Promise<MyResponse> {
 
     return this.insertTeacher(
@@ -356,5 +493,22 @@ export class TeacherService {
 
     return new Teacher().setJSON(jsonObj);
   }
+
+
+
+
+  // @ Common
+
+  setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  private isDebug():boolean {
+    if(null == this.watchTower) {
+      return false;
+    }
+
+    return this.watchTower.isDebug();
+  }  
   
 }

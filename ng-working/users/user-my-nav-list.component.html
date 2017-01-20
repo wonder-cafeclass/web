@@ -2,7 +2,7 @@
 
 	<nav-tabs 
       *ngIf="navTabsOptions"
-      (emitter)="onChangedFromChild($event, myinfo, myhistory, mypayment, myfavorite)"
+      (emitter)="onChangedFromChild($event)"
       [isScrollAttachEnabled]="false"
       [cellWidth]="120"
       [radiobtnList]="navTabsOptions"
@@ -12,23 +12,36 @@
       [colorBGBlur]="colorWhite"
       [colorBorder]="colorWhite"></nav-tabs>
       
-      
       <ul class="list-group my-style">
             <li class="list-group-item my-style my-style-first">
 
-                  <div  #myinfo
-                        [ngClass]="{'i-show':showMyInfo,'i-hide':!showMyInfo}">
-                        <my-info></my-info>
+                  <div  [ngClass]="{'i-show':showHome,'i-hide':!showHome}">
+                        <my-info-dashboard
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_USER_MY_INFO_DASHBOARD">
+                        </my-info-dashboard>
                   </div>
-                  <div  #myhistory
-                        [ngClass]="{'i-show':showMyHistory,'i-hide':!showMyHistory}">
-                        KEY_USER_MY_HISTORY
+                  <div  [ngClass]="{'i-show':showMyInfo,'i-hide':!showMyInfo}">
+                        <my-info
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_USER_MY_INFO">
+                        </my-info>
                   </div>
-                  <div  #mypayment
-                        [ngClass]="{'i-show':showMyPayment,'i-hide':!showMyPayment}">KEY_USER_MY_PAYMENT
+                  <div  [ngClass]="{'i-show':showMyHistory,'i-hide':!showMyHistory}">
+                        <my-info-klass
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_USER_MY_KLASS">
+                        </my-info-klass>
                   </div>
-                  <div  #myfavorite
-                        [ngClass]="{'i-show':showMyFavorite,'i-hide':!showMyFavorite}">
+                  <!--
+                  <div  [ngClass]="{'i-show':showMyPayment,'i-hide':!showMyPayment}">
+                        <my-info-payment
+                        (emitter)="onChangedFromChild($event)"
+                        [eventKey]="myEventService.KEY_USER_MY_PAYMENT">
+                        </my-info-payment>
+                  </div>
+                  -->
+                  <div  [ngClass]="{'i-show':showMyFavorite,'i-hide':!showMyFavorite}">
                         KEY_USER_MY_FAVORITE
                   </div>
             </li>

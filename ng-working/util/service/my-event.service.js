@@ -19,6 +19,7 @@ var MyEventService = (function () {
         // GENERAL PURPOSE
         this.ANY = "ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
         this.ON_READY = "ON_READY";
+        this.ON_CLICK = "ON_CLICK";
         this.ON_CHANGE = "ON_CHANGE";
         this.ON_CHANGE_NOT_VALID = "ON_CHANGE_NOT_VALID";
         this.ON_SUBMIT = "ON_SUBMIT";
@@ -96,14 +97,18 @@ var MyEventService = (function () {
         this.KEY_USER_BIRTH_YEAR = "KEY_USER_BIRTH_YEAR"; // 유저 - 생년
         this.KEY_USER_BIRTH_MONTH = "KEY_USER_BIRTH_MONTH"; // 유저 - 생월
         this.KEY_USER_BIRTH_DAY = "KEY_USER_BIRTH_DAY"; // 유저 - 생일
+        this.KEY_USER_MY_INFO_DASHBOARD = "KEY_USER_MY_INFO_DASHBOARD"; // 유저 - 내정보 대시보드.
         this.KEY_USER_MY_INFO = "KEY_USER_MY_INFO"; // 유저 - 내정보 수정.
-        this.KEY_USER_MY_HISTORY = "KEY_USER_MY_HISTORY"; // 유저 - 내 수강이력.
-        this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결재정보.
+        this.KEY_USER_MY_KLASS = "KEY_USER_MY_KLASS"; // 유저 - 내 수강이력.
+        this.KEY_USER_MY_PAYMENT = "KEY_USER_MY_PAYMENT"; // 유저 - 내 결제정보.
         this.KEY_USER_MY_FAVORITE = "KEY_USER_MY_FAVORITE"; // 유저 - 내 관심강의(찜).
+        this.KEY_TEACHER_MY_INFO_DASHBOARD = "KEY_TEACHER_MY_INFO_DASHBOARD"; // 선생님 - 대시보드.
         this.KEY_TEACHER_MY_INFO = "KEY_TEACHER_MY_INFO"; // 선생님 - 내정보 수정.
-        this.KEY_TEACHER_MY_HISTORY = "KEY_TEACHER_MY_HISTORY"; // 선생님 - 내 수강이력.
-        this.KEY_TEACHER_MY_PAYMENT = "KEY_TEACHER_MY_PAYMENT"; // 선생님 - 내 결재정보.
-        this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백.
+        this.KEY_TEACHER_MY_KLASS = "KEY_TEACHER_MY_KLASS"; // 선생님 - 내 수강이력.
+        this.KEY_TEACHER_MY_INCOME = "KEY_TEACHER_MY_INCOME"; // 선생님 - 내 결제정보.
+        this.KEY_TEACHER_MY_FEEDBACK = "KEY_TEACHER_MY_FEEDBACK"; // 선생님 - 학생에게준 피드백. // @ Deprecated
+        this.KEY_TEACHER_MY_REVIEW = "KEY_TEACHER_MY_REVIEW"; // 선생님 - 리뷰.
+        this.KEY_TEACHER_MY_QUESTION = "KEY_TEACHER_MY_QUESTION"; // 선생님 - 문의.
         this.KEY_TEACHER_RESUME = "KEY_TEACHER_RESUME"; // 선생님 - 경력
         this.KEY_TEACHER_GREETING = "KEY_TEACHER_GREETING"; // 선생님 - 인사말
         this.KEY_TEACHER_STATUS = "KEY_TEACHER_STATUS"; // 선생님 - 상태
@@ -182,6 +187,12 @@ var MyEventService = (function () {
         this.KEY_KLASS_DAYS_FOR_SEARCH = "KEY_KLASS_DAYS_FOR_SEARCH";
         // 수업 시간 - 검색
         this.KEY_KLASS_TIME_FOR_SEARCH = "KEY_KLASS_TIME_FOR_SEARCH";
+        // 수업 카드 위젯 - 낱개의 수업을 표시하는 카드 형태의 위젯. 홈화면과 개인수업 신청 화면등에서 쓰임.
+        this.KEY_WIDGET_KLASS_CARD = "KEY_WIDGET_KLASS_CARD";
+        // 수업과 학생 리스트 위젯 - 학생이 신청한 수업 리스트를 보여주는 위젯. 대시보드와 개인 수업 리스트에서 쓰임.
+        this.KEY_WIDGET_KLASS_N_STUDENT_LIST = "KEY_WIDGET_KLASS_N_STUDENT_LIST";
+        // 선생님용 수업과 학생 리스트 위젯.
+        this.KEY_WIDGET_KLASS_TEACHER = "KEY_WIDGET_KLASS_TEACHER";
         this.KEY_CHECKBOX_ALL = "KEY_CHECKBOX_ALL";
         this.KEY_CHECKBOX = "KEY_CHECKBOX";
         this.KEY_PAGE_NUM = "KEY_PAGE_NUM";

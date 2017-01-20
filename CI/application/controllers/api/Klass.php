@@ -192,9 +192,782 @@ class Klass extends MY_REST_Controller {
                 $output
             );            
         } // end if
+    }
 
+    public function updateattendance_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_attendance_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_attendance_id",
+            // $key_filter=""
+            "klass_attendance_id"
+        );
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        $klass_attendance_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_attendance_status",
+            // $key_filter=""
+            "klass_attendance_status"
+        );        
+
+        $params = array(
+            "login_user_id"=>$login_user_id,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "klass_attendance_status"=>$klass_attendance_status
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateattendance_post Failed!");
+            return;
+        } // end if
+
+        // wonder.jung
+        // 출석상태를 업데이트합니다.
+        $this->my_sql->update_attendance(
+            // $login_user_id=-1, 
+            $login_user_id,
+            // $attendance_id=-1,
+            $klass_attendance_id,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1, 
+            $user_id,
+            // $klass_attendance_status=""
+            $klass_attendance_status            
+        );
+
+        // 업데이트 결과를 돌려줍니다.
+        $attendance = 
+        $this->my_sql->get_attendance(
+            // $attendance_id=-1, 
+            $klass_attendance_id,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+
+        $output["row"] = $attendance;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+    }    
+
+    public function fetchklassnstudentlist_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id"
+        );
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        $params = array(
+            "user_id"=>$user_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            return;
+        } // end if 
+
+        // 해당 유저가 등록한 수업의 전체 갯수를 가져옵니다.
+        $total_cnt = 
+        $this->my_sql->select_klass_n_student_cnt(
+            // $user_id=-1,
+            $user_id 
+        );
+
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // 해당 유저가 등록한 수업을 가져옵니다.
+        $klass_n_student_list = 
+        $this->my_sql->select_klass_n_student_list(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1
+            $offset,
+            // $user_id=-1, 
+            $user_id
+        );
+
+        $klass_n_student_list_next = [];
+        foreach ($klass_n_student_list as $key => $klass_n_student) {
+
+            $klass_n_student =
+            $this->my_decorator->deco_klass_n_student($klass_n_student);
+
+            $klass_n_student->attendance_total_cnt =
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                ""
+            );
+
+            $klass_n_student->attendance_presence_cnt = 
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                "P"
+            );
+            $klass_n_student->attendance_ready_cnt = 
+            $this->my_sql->get_attendance_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $date_attend="", 
+                "",
+                // $attendance_status=""
+                "R"
+            );
+            
+            $klass_n_student->attendance_absence_cnt = 
+            $klass_n_student->attendance_total_cnt
+            - $klass_n_student->attendance_ready_cnt
+            - $klass_n_student->attendance_presence_cnt
+            ;
+
+            $klass_n_student->payment_import_cnt = 
+            $this->my_sql->select_payment_import_cnt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id
+            );
+
+            // 해당 수업 결제 영수증 링크 가져오기
+
+            $payment_status = "paid";
+            if("N" == $klass_n_student->status) {
+                $payment_status = "cancelled";
+            }
+            
+            $klass_n_student->receipt_url = 
+            $this->my_sql->select_payment_import_receipt(
+                // $klass_id=-1, 
+                $klass_n_student->klass_id,
+                // $user_id=-1, 
+                $klass_n_student->user_id,
+                // $payment_imp_status=""  
+                $payment_status
+            );
+
+            array_push($klass_n_student_list_next, $klass_n_student);
+        }
+        // $output["list_src"] = $klass_n_student_list;
+        $output["list"] = $klass_n_student_list_next;
+
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     }
+
+    public function fetchactiveklasslistbyteacher_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        $params = array(
+            "teacher_id"=>$teacher_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            return;
+        } // end if 
+
+        // 0. 개강한 수업 갯수를 가져옴.
+        $total_cnt = 
+        $this->my_sql->select_active_klass_cnt_by_teacher(
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            $klass_status
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1,
+            $total_cnt,
+            // $cursor_page_num=-1,
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // 1. 수업 데이터를 먼저 가져옴
+        $list = 
+        $this->my_sql->select_active_klass_list_by_teacher(
+            // $offset=-1,
+            $offset,
+            // $limit=-1,
+            $limit,
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            ""
+        );
+
+        $list = 
+        $this->my_decorator->deco_klass_list($list);
+
+        // 2. 수업 관련 데이터를 가져옵니다.
+        foreach ($list as $klass) {
+
+            // 2-1. 수업 학생 리스트 가져오기
+            $klass_n_student_stat_list = 
+            $this->my_sql->select_klass_n_student_stat_list($klass->id);
+
+            $klass_n_student_stat_list = 
+            $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
+
+            $klass->klass_n_student_list = 
+            $klass_n_student_stat_list;
+
+            // 2-2. 수업에 참여한 학생들의 출석부를 가져옵니다.
+            // 해당 수업에 날짜순서로 정렬된 2차배열 - 테이블 형태의 데이터를 받습니다.
+            $attendance_list = 
+            $this->my_sql->get_attendance_table(
+                // $klass_id=-1, 
+                $klass->id
+            );
+            $attendance_table = 
+            $this->my_decorator->deco_attendance_table_by_attend_date(
+                $attendance_list
+            );
+
+            $klass->klass_attendance_table = 
+            $attendance_table;
+
+            // 2-3. 리뷰 갯수 가져오기.
+            $review_cnt = 
+            $this->my_sql->select_klass_review_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->review_cnt = $review_cnt;
+
+            // 2-4. 문의 갯수 가져오기.
+            $question_cnt = 
+            $this->my_sql->select_klass_question_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->question_cnt = $question_cnt;
+            
+        } // end foreach
+
+        // Deco klass
+        $output["list"] = $list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+    }     
+
+    public function fetchallklassnlistbyteacher_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        // @ Optional
+        $klass_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_status",
+            // $key_filter=""
+            "klass_status",
+            // $is_no_record=false
+            true
+        );
+        if(empty($klass_status)) 
+        {
+            $klass_status = "";
+        }
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        $params = array(
+            "teacher_id"=>$teacher_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            return;
+        } // end if 
+
+        // 0. 개강한 수업 갯수를 가져옴.
+        $total_cnt = 
+        $this->my_sql->select_klass_cnt_by_teacher(
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            $klass_status
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1,
+            $total_cnt,
+            // $cursor_page_num=-1,
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // 1. 수업 데이터를 먼저 가져옴
+        $list = 
+        $this->my_sql->select_klass_list_by_teacher(
+            // $offset=-1,
+            $offset,
+            // $limit=-1,
+            $limit,
+            // $teacher_id=-1,
+            $teacher_id,
+            // $klass_status="O"
+            ""
+        );
+
+        $list = 
+        $this->my_decorator->deco_klass_list($list);
+
+        // 2. 수업 참여한 회원리스트를 가져옵니다.
+        foreach ($list as $klass) {
+
+            // 2. 수업 학생 리스트 가져오기
+            $klass_n_student_stat_list = 
+            $this->my_sql->select_klass_n_student_stat_list($klass->id);
+
+            $klass_n_student_stat_list = 
+            $this->my_decorator->deco_klass_n_student_stat_list($klass_n_student_stat_list);
+
+            $klass->klass_n_student_list = 
+            $klass_n_student_stat_list;
+
+            // 2-1. 수업에 참여한 학생들의 출석부를 가져옵니다.
+            // 해당 수업에 날짜순서로 정렬된 2차배열 - 테이블 형태의 데이터를 받습니다.
+            $attendance_list = 
+            $this->my_sql->get_attendance_table(
+                // $klass_id=-1, 
+                $klass->id
+            );
+            $attendance_table = 
+            $this->my_decorator->deco_attendance_table_by_attend_date(
+                $attendance_list
+            );
+
+            // 2-3. 리뷰 갯수 가져오기.
+            $review_cnt = 
+            $this->my_sql->select_klass_review_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->review_cnt = $review_cnt;
+
+            // 2-4. 문의 갯수 가져오기.
+            $question_cnt = 
+            $this->my_sql->select_klass_question_cnt_by_teacher(
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1                
+                $klass->id
+            );
+            $klass->question_cnt = $question_cnt;            
+
+            $klass->klass_attendance_table = 
+            $attendance_table;
+            
+        } // end foreach
+
+        // Deco klass
+        $output["list"] = $list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+    }    
+
+    public function fetchklass_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id"
+        );
+        // @ Optional
+        $login_user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "login_user_id",
+            // $key_filter=""
+            "user_id",
+            // $is_no_record=false
+            true
+        );
+
+        $params = array(
+            "user_id"=>$login_user_id,
+            "klass_id"=>$klass_id
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklass_post Failed!");
+            return;
+        } // end if 
+        
+        // 수업 - klass 정보를 가져옵니다.
+        $klass = $this->get_klass($klass_id);
+
+        // 수업의 리뷰를 가져옵니다.
+        if(0 < intval($klass->id))
+        {
+            $klass->review_list = 
+            $this->my_sql->select_klass_review_list(intval($klass->id));
+        }
+        if(empty($klass->review_list))
+        {
+            $klass->review_list = [];   
+        }
+
+        // 수업의 문의를 가져옵니다.
+        if(0 < intval($klass->id))
+        {
+            $klass->question_list = 
+            $this->my_sql->select_klass_question_list(intval($klass->id));
+        }
+        if(empty($klass->question_list))
+        {
+            $klass->question_list = [];   
+        }
+
+        // 해당 유저가 수업 등록을 했는지 여부를 가져옵니다.
+        $klass_student = 
+        $this->my_sql->select_klass_student(
+            // $klass_id=-1, 
+            $klass->id,
+            // $user_id=-1,
+            $login_user_id, 
+            // $status=""
+            "A"
+        );
+        $klass_student =
+        $this->my_decorator->deco_klass_n_student($klass_student);
+        $output["klass_student"] = $klass_student;
+
+        // 조회 결과를 가져옵니다.
+        if (!empty($klass))
+        {
+            $output["klass"] = $klass;
+            $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        }
+        else
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,'Klass could not be found');
+            return;
+        }
+    }     
 
     public function course_get()
     {
@@ -229,21 +1002,6 @@ class Klass extends MY_REST_Controller {
         
         // 수업 - klass 정보를 가져옵니다.
         $klass = $this->get_klass($id);
-        $output["klass_src"] = $klass;
-
-        /*
-        // 수업의 선생님 - klass_teacher 정보를 가져옵니다.
-        $teacher = null;
-        if(isset($klass) && isset($klass->teacher_id))
-        {
-            $teacher_id = intval($klass->teacher_id);
-            $teacher = $this->my_sql->select_teacher($teacher_id);
-        }
-        if(isset($teacher))
-        {
-            $klass->teacher = $teacher;
-        }
-        */
 
         // 수업의 리뷰를 가져옵니다.
         // $review_list = null;
@@ -326,7 +1084,7 @@ class Klass extends MY_REST_Controller {
         $klass_list = $this->my_sql->select_klass_list($offset, $limit);
         $output["klass_list_src"] = $klass_list;
 
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         $output["klass_list"] = $klass_list;
 
         $new_klass = 
@@ -435,10 +1193,10 @@ class Klass extends MY_REST_Controller {
             );
 
             $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
+            $klass = $this->my_decorator->deco_klass($klass);
             $output["klass"] = $klass;
 
             // 선생님이 수업을 추가한 것을 로그로 기록합니다.
-
             $this->respond_200($output);
         }
         else
@@ -551,13 +1309,13 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "klass_title"
         ); 
-        $klass_desc = 
+        $klass_type =
         $this->my_paramchecker->post(
             // $key=""
-            "klass_desc",
+            "klass_type",
             // $key_filter=""
-            "klass_desc"
-        ); 
+            "klass_type"
+        );         
         $klass_feature = 
         $this->my_paramchecker->post(
             // $key=""
@@ -728,6 +1486,7 @@ class Klass extends MY_REST_Controller {
             "teacher_resume"=>$teacher_resume,
             "teacher_greeting"=>$teacher_greeting,
             "klass_title"=>$klass_title,
+            "klass_type"=>$klass_type,
             "klass_feature"=>$klass_feature,
             "klass_target"=>$klass_target,
             "klass_schedule"=>$klass_schedule,
@@ -777,6 +1536,8 @@ class Klass extends MY_REST_Controller {
                 $teacher_greeting,
                 // $title=""
                 $klass_title,
+                // $type=""
+                $klass_type,
                 // $feature=""
                 $klass_feature,
                 // $target=""
@@ -1840,15 +2601,9 @@ class Klass extends MY_REST_Controller {
             return;
         } // end if
 
-        $klass_list = $this->my_sql->select_klass($klass_id);
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
-
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-            $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
-        }
+        $klass = $this->my_sql->select_klass($klass_id);
+        $klass = $this->my_decorator->deco_klass($klass);
+        $klass->calendar_table_monthly = $this->my_klasscalendar->getMonthly($klass);
 
         return $klass;
     }    
@@ -1895,32 +2650,32 @@ class Klass extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -1997,9 +2752,10 @@ class Klass extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
+            "login_user_id"=>$login_user_id,
             "search_query"=>$search_query,
             "klass_status"=>$klass_status,
             "klass_level"=>$klass_level,
@@ -2047,7 +2803,7 @@ class Klass extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -2074,7 +2830,7 @@ class Klass extends MY_REST_Controller {
             $klass_time
         );
 
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         // 비어있는 수업이라면 '수업 없음' 탭을 가져옵니다.
         if (empty($klass_list))
         {
@@ -2142,13 +2898,21 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "klass_id"
         );
+        $payment_imp_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "payment_imp_id",
+            // $key_filter=""
+            "payment_imp_id"
+        );
 
         $output = array();
         $output["params"] = 
         [
             "login_user_id"=>$login_user_id,
             "user_id"=>$user_id,
-            "klass_id"=>$klass_id
+            "klass_id"=>$klass_id,
+            "payment_imp_id"=>$payment_imp_id
         ];
 
         // CHECK LIST
@@ -2167,7 +2931,9 @@ class Klass extends MY_REST_Controller {
             // $klass_id=-1            
             $klass_id, 
             // $user_id=-1,
-            $user_id
+            $user_id,
+            // $payment_imp_id=-1
+            $payment_imp_id
         );
 
         $klass_student = 
@@ -2182,4 +2948,389 @@ class Klass extends MY_REST_Controller {
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
     }
+
+
+
+
+
+
+    // @ Desc : 수업 출석 리스트를 가져옵니다.
+    public function fetchklassattendlist_post() 
+    {
+        $output = [];
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // Pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if 
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        // Where condition
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id",
+            // $is_no_record=false
+            true
+        );     
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id",
+            // $is_no_record=false
+            true
+        ); 
+
+        $date_attend =        
+        $this->my_paramchecker->post(
+            // $key=""
+            "date_attend",
+            // $key_filter=""
+            "date_yyyymmddhhmmss",
+            // $is_no_record=false
+            true
+        );        
+
+        $attendance_status = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "attendance_status",
+            // $key_filter=""
+            "klass_attendance_status",
+            // $is_no_record=false
+            true
+        );        
+
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset,
+            "klass_id"=>$klass_id,
+            "user_id"=>$user_id,
+            "attendance_status"=>$attendance_status
+        ];
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassattendlist_post is failed!");
+            return;
+        } // end if
+
+        // 검색어에 해당하는 전체 결과수를 가져옵니다.
+        // 이 데이터로 pagination을 새로 만듭니다.
+        $total_cnt = 
+        $this->my_sql->get_attendance_cnt(
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1, 
+            $user_id,
+            // $date_attend=""
+            $date_attend,
+            // $attendance_status=""
+            $attendance_status
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $klass_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        $list =
+        $this->my_sql->get_attendance_list(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1, 
+            $offset,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1, 
+            $user_id,
+            // $date_attend="", 
+            $date_attend,
+            // $attendance_status=""
+            $attendance_status
+        );
+        $output["list_src"] = $list;
+
+        $list = $this->my_decorator->deco_attendance_list($list);
+        $output["list"] = $list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
+    } 
+
+    public function fetchklassreviewbyteacher_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        // @ Optional
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id",
+            // $is_no_record=false
+            true
+        );
+
+        // @ Required - pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+        // @ Required - pagination
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );        
+
+        $params = array(
+            "klass_id"=>$klass_id,
+            "teacher_id"=>$teacher_id,
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
+            return;
+        } // end if 
+
+        // 수업 리뷰의 갯수를 가져옵니다.
+        $total_cnt =
+        $this->my_sql->select_klass_review_cnt_by_teacher(
+            // $teacher_id=-1, 
+            $teacher_id,
+            // $klass_id=-1
+            $klass_id
+        );
+        $output["total_cnt"] = $total_cnt;
+
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        $review_list = [];
+        if(0 < $total_cnt)
+        {
+            // 수업의 리뷰를 가져옵니다.    
+            $review_list = 
+            $this->my_sql->select_klass_review_list_by_teacher(
+                // $limit=-1, 
+                $limit,
+                // $offset=-1, 
+                $offset,
+                // $teacher_id=-1, 
+                $teacher_id,
+                // $klass_id=-1
+                $klass_id
+            );
+
+            // TODO - 리뷰를 위한 데코레이터 필요.
+            $review_list = 
+            $this->my_decorator->deco_klass_review_list($review_list);
+
+            // TODO - 리뷰를 수업별로 구분해야 합니다!
+
+        } // end if
+
+        $output["list"] = $review_list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+    } 
+
+    public function fetchklassquestion_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        }
+
+        // @ Required
+        $teacher_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "teacher_id",
+            // $key_filter=""
+            "teacher_id"
+        );
+        // @ Optional
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id",
+            // $is_no_record=false
+            true
+        );
+
+        $params = array(
+            "klass_id"=>$klass_id,
+            "teacher_id"=>$teacher_id
+        );
+        $output["params"] = $params;
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+        if(!$is_ok)
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
+            return;
+        } // end if 
+    
+        // 수업의 문의를 가져옵니다.    
+        $question_list = 
+        $this->my_sql->select_klass_question_list(intval($klass->id));
+
+        // TODO - 문의를 수업별로 구분해야 합니다!
+        $output["table"] = $question_list;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+
+    }             
+
 }

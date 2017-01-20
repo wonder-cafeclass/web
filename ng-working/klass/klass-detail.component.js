@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var klass_1 = require('./model/klass');
+var klass_n_student_1 = require('./model/klass-n-student');
 var auth_service_1 = require('../auth.service');
 var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
@@ -80,6 +81,10 @@ var KlassDetailComponent = (function () {
         this.imgUploaderEventKeyKlassPoster = "";
         this.isAdmin = false;
         this.isTeacher = false;
+        // 수업 신청이 가능한지 여부 (기본값은 보임)
+        this.isValidEnrollment = true;
+        // 수업 취소가 가능한지 여부 (기본값은 숨김)
+        this.isValidCancelEnrollment = false;
         // 운영자가 보게되는 배너 이미지 템플릿 리스트
         this.imageTableBannerList = [
             ["assets/images/class/banner/drinks_x.png"],
@@ -91,6 +96,8 @@ var KlassDetailComponent = (function () {
         this.klassTimeMinutesMin = 60;
         this.klassTimeMinutesMax = 180;
         this.isSaveBtnDisabled = true;
+        // 특정 위치로 이동시 사용.
+        this.moveto = "";
         if (this.isDebug())
             console.log("klass-detail / constructor / init");
         this.defaultMetaList = this.myEventService.getDefaultMetaListKlassDetail();
@@ -103,7 +110,8 @@ var KlassDetailComponent = (function () {
         this.klassService.setWatchTower(this.watchTower);
     }
     KlassDetailComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassDetailComponent.prototype.ngAfterViewInit = function () {
         if (this.isDebug())
@@ -231,6 +239,7 @@ var KlassDetailComponent = (function () {
         this.route.params
             .switchMap(function (params) {
             klassId = +params['id'];
+            _this.moveto = params['moveto'];
             if (klassId === -100 && null == _this.loginTeacher) {
                 // 1-1. 일반 유저라면 빈 수업 화면으로 접근시, 홈으로 돌려보냅니다.
                 if (_this.isDebug())
@@ -238,27 +247,22 @@ var KlassDetailComponent = (function () {
                 _this.router.navigate(["/"]);
                 return;
             }
-            else if (klassId === -100) {
-                // 1-2. 선생님만이, 빈 수업 화면을 볼수 있습니다.
-                if (_this.isDebug())
-                    console.log("klass-detail / getParams / 1-2. 선생님입니다. 새로운 수업을 하나 만듭니다.");
-                return _this.klassService.addKlassEmpty(
-                // apiKey:string, 
-                _this.watchTower.getApiKey(), 
-                // userId:number,
-                +_this.loginUser.id, 
-                // teacherId:number,
-                +_this.loginTeacher.id, 
-                // teacherResume:string,
-                _this.loginTeacher.resume, 
-                // teacherGreeting:string
-                _this.loginTeacher.greeting);
-            }
             else {
                 // 기존 수업 가져오기
                 if (_this.isDebug())
                     console.log("klass-detail / getParams / 기존 수업 가져오기 / klassId : ", klassId);
-                return _this.klassService.getKlass(klassId);
+                // return this.klassService.getKlass(klassId);
+                var loginUserId = -1;
+                if (null != _this.loginUser) {
+                    loginUserId = _this.loginUser.id;
+                } // end if
+                return _this.klassService.fetchKlass(
+                // apiKey:string,
+                _this.watchTower.getApiKey(), 
+                // klassId:number, 
+                klassId, 
+                // loginUserId:number
+                loginUserId);
             } // end if
         })
             .subscribe(function (myResponse) {
@@ -266,13 +270,15 @@ var KlassDetailComponent = (function () {
                 console.log("klass-detail / getParams / subscribe / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
                 var klassJSON = myResponse.getDataProp("klass");
-                if (_this.isDebug())
-                    console.log("klass-detail / getParams / subscribe / klassJSON : ", klassJSON);
                 if (null != klassJSON) {
                     _this.klass = new klass_1.Klass().setJSON(klassJSON);
                 } // end if
                 if (_this.isDebug())
                     console.log("klass-detail / getParams / subscribe / this.klass : ", _this.klass);
+                var klassStudentJSON = myResponse.getDataProp("klass_student");
+                if (null != klassStudentJSON) {
+                    _this.klassStudent = new klass_n_student_1.KlassNStudent().setJSON(klassStudentJSON);
+                } // end if
                 if (klassId === -100) {
                     // 새로 만든 수업이라면, 
                     // 해당 url로 refresh를 하게되면 자동으로 수업이 생기므로 
@@ -466,6 +472,21 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / setKlassDateEnrollmentView / selectOptionList : ", selectOptionList);
         this.klassDateEnrollmentComponent.setSelectOption(selectOptionList);
     };
+    // @ Desc : 수업 등록/취소버튼들의 상태를 업데이트합니다.
+    KlassDetailComponent.prototype.setKlassEnrollmentBtns = function () {
+        if (this.isDebug())
+            console.log("klass-detail / setKlassEnrollmentBtns / 시작");
+        if (null == this.klassStudent) {
+            // 1. 수업 등록 내역이 없습니다. 수업 등록 버튼을 활성화.
+            this.isValidEnrollment = true;
+            this.isValidCancelEnrollment = false;
+        }
+        else {
+            // 2. 수업 등록 내역이 있습니다. 수업 취소 버튼을 활성화.
+            this.isValidEnrollment = false;
+            this.isValidCancelEnrollment = true;
+        } // end if
+    }; // end method
     // @ 주당 수업 횟수 데이터를 준비합니다.
     // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
     KlassDetailComponent.prototype.setKlassLevel = function () {
@@ -703,6 +724,8 @@ var KlassDetailComponent = (function () {
         if (this.isDebug())
             console.log("klass-detail / setKlassDays / this.klassDetailNavListComponent : ", this.klassDetailNavListComponent);
         this.klassDetailNavListComponent.setKlass(this.klassCopy);
+        // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+        this.moveTo();
     };
     // @ 주당 수업을 하는 요일을 선택하는 데이터를 준비합니다.
     KlassDetailComponent.prototype.setKlassDays = function () {
@@ -877,6 +900,7 @@ var KlassDetailComponent = (function () {
         this.setKlassDetailNavList();
         this.setKlassDateEnrollmentView();
         this.setKlassDateEnrollmentInput();
+        this.setKlassEnrollmentBtns();
         this.updateIsTeacher();
         // set image-grid service
         var classBannerUrlArr = this.klassCopy.class_banner_url_arr;
@@ -886,6 +910,29 @@ var KlassDetailComponent = (function () {
                 classBannerUrl = this.klassService.getKlassBannerUrlLoadable(classBannerUrl);
                 this.imageTableBannerListService.push([classBannerUrl]);
             } // end for
+        } // end if
+        // 이동해야할 특정 위치가 있다면 그곳으로 이동합니다.
+        this.moveTo();
+    }; // end method
+    KlassDetailComponent.prototype.moveTo = function () {
+        if (this.isDebug())
+            console.log("klass-detail / moveTo / 시작");
+        if (null == this.moveto || "" == this.moveto) {
+            return;
+        }
+        if ("review" == this.moveto) {
+            // 리뷰 리스트로 이동
+            // 담당 컴포넌트에게 명령을 전달해야 합니다.
+            if (null != this.klassDetailNavListComponent) {
+                this.klassDetailNavListComponent.moveTo(this.moveto);
+            } // end if
+        }
+        else if ("question" == this.moveto) {
+            // 질문 리스트로 이동
+            // 담당 컴포넌트에게 명령을 전달해야 합니다.
+            if (null != this.klassDetailNavListComponent) {
+                this.klassDetailNavListComponent.moveTo(this.moveto);
+            } // end if
         } // end if
     }; // end method
     KlassDetailComponent.prototype.setKlassBannerImageUploader = function () {
@@ -943,6 +990,40 @@ var KlassDetailComponent = (function () {
         if (null == this.loginUser) {
             if (this.isDebug())
                 console.log("klass-detail / onClickEnrollment / 중단 / null == this.loginUser");
+            return;
+        }
+        this.paymentImportComponent.buyKlass(
+        // klassId:number, 
+        this.klass.id, 
+        // klassName:string, 
+        this.klass.title, 
+        // userId:number,
+        this.loginUser.id, 
+        // userEmail:string,
+        this.loginUser.email, 
+        // userName:string,
+        this.loginUser.name, 
+        // userMobile:string,
+        this.loginUser.mobile, 
+        // amount:number      
+        // this.klass.price
+        // TEST - 테스트 금액은 천원
+        1000);
+    };
+    // @ Deprecated - 수업 취소는 학생 정보 페이지에서만 제공합니다.
+    KlassDetailComponent.prototype.onClickCancelEnrollment = function (event, klass) {
+        if (this.isDebug())
+            console.log("klass-detail / onClickCancelEnrollment / 시작");
+        event.stopPropagation();
+        event.preventDefault();
+        if (null == this.paymentImportComponent) {
+            if (this.isDebug())
+                console.log("klass-detail / onClickCancelEnrollment / 중단 / null == this.paymentImportComponent");
+            return;
+        } // end if
+        if (null == this.loginUser) {
+            if (this.isDebug())
+                console.log("klass-detail / onClickCancelEnrollment / 중단 / null == this.loginUser");
             return;
         }
         this.paymentImportComponent.buyKlass(
@@ -1251,8 +1332,7 @@ var KlassDetailComponent = (function () {
         } // end if
         if (this.isDebug())
             console.log("klass-detail / updateKlassNStudent / paymentImp : ", paymentImp);
-        // wonder.jung
-        this.klassService.addKlassStudent(
+        this.klassService.addKlassNStudent(
         // apiKey:string,
         this.watchTower.getApiKey(), 
         // loginUserId:number,
@@ -1260,11 +1340,22 @@ var KlassDetailComponent = (function () {
         // klassId:number
         paymentImp.klass_id, 
         // userId:number,
-        paymentImp.user_id).then(function (myResponse) {
+        paymentImp.user_id, 
+        // paymentImportId:number
+        paymentImp.id).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
                 console.log("klass-detail / updateKlassNStudent / myResponse : ", myResponse);
             if (myResponse.isSuccess()) {
+                // 사용자에게 안내 팝업을 띄웁니다. 
+                // 지금은 단순히 alert으로 안내. 
+                alert("수업에 참여해주셔서 감사합니다!");
+                // 3초 뒤에 홈으로 이동.
+                var _self = _this;
+                setTimeout(function () {
+                    // 메시지를 3초 뒤에 화면에서 지웁니다.
+                    _self.router.navigate(['/class-center']);
+                }, 3000);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -1609,12 +1700,12 @@ var KlassDetailComponent = (function () {
         this.klassCopy.setSchedule(schedule);
         this.updateSaveBtnStatus();
     };
-    KlassDetailComponent.prototype.updateKlassStudentCnt = function (studentCnt) {
+    KlassDetailComponent.prototype.updateKlassNStudentCnt = function (studentCnt) {
         if (this.isDebug())
-            console.log("klass-detail / updateKlassStudentCnt / 시작");
+            console.log("klass-detail / updateKlassNStudentCnt / 시작");
         if (null == studentCnt || "" === studentCnt) {
             if (this.isDebug())
-                console.log("klass-detail / updateKlassStudentCnt / 중단 / studentCnt is not valid!");
+                console.log("klass-detail / updateKlassNStudentCnt / 중단 / studentCnt is not valid!");
             return;
         }
         this.klassCopy.student_cnt = +studentCnt;
@@ -1858,7 +1949,6 @@ var KlassDetailComponent = (function () {
             return;
         }
         this.klassCopy.class_banner_url = classBannerUrlNext;
-        // wonder.jung
         this.updateSaveBtnStatus();
     }; // end method
     // @ Desc : 수업 저장 항목이 모두 이상이 없는지 확인합니다. 이상이 있다면 해당 컴포넌트에 메시지를 표시합니다.

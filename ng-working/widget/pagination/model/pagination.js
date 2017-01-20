@@ -6,7 +6,7 @@ var Pagination = (function () {
     function Pagination() {
         this.pageNum = 1; // 사용자가 선택한 페이지 번호
         this.rowCnt = -1;
-        this.pageRange = 5;
+        this.pageRowCnt = 5; // 페이지 안에 표시되는 row의 갯수
         this.totalRowCnt = -1;
         this.cursorPageNum = -1;
         this.rowCntPerPage = -1;
@@ -25,7 +25,7 @@ var Pagination = (function () {
         }
         this.pageNum = +json["PAGE_NUM"];
         this.rowCnt = +json["ROW_CNT"];
-        this.pageRange = +json["PAGE_RANGE"];
+        this.pageRowCnt = +json["PAGE_ROW_CNT"];
         this.totalRowCnt = +json["TOTAL_ROW_CNT"];
         this.cursorPageNum = +json["CURSOR_PAGE_NUM"];
         this.rowCntPerPage = +json["ROW_CNT_PER_PAGE"];

@@ -15,6 +15,8 @@ var my_logger_service_1 = require('../../util/service/my-logger.service');
 var klass_color_service_1 = require('../../klass/service/klass-color.service');
 var klass_radiobtn_service_1 = require('../../klass/service/klass-radiobtn.service');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
+var teacher_info_dashboard_component_1 = require('./teacher-my-nav-list/teacher-info-dashboard.component');
+var teacher_info_klass_component_1 = require('./teacher-my-nav-list/teacher-info-klass.component');
 var TeacherMyNavListComponent = (function () {
     function TeacherMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, watchTower, myCheckerService) {
         this.klassColorService = klassColorService;
@@ -23,12 +25,15 @@ var TeacherMyNavListComponent = (function () {
         this.radiobtnService = radiobtnService;
         this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
+        this.showDashboard = false;
         this.showMyInfo = false;
-        this.showMyHistory = false;
-        this.showMyPayment = false;
-        this.showMyFavorite = false;
+        this.showMyKlass = false;
+        this.showMyIncome = false;
+        this.showMyReview = false;
+        this.showMyQuestion = false;
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
+        this.radiobtnService.setWatchTower(this.watchTower);
     }
     TeacherMyNavListComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
@@ -86,38 +91,115 @@ var TeacherMyNavListComponent = (function () {
         this.navTabsOptions =
             this.radiobtnService.getNavTabsTeacherMyInfo(
             // user:User
-            null, 
-            // keyFocus:string
-            null);
-        this.showMyInfo = true;
+            null, this.watchTower.getMyEventService().KEY_TEACHER_MY_INFO_DASHBOARD);
+        // 대시보드 노출이 기본값
+        this.showDashboard = true;
         if (this.isDebug())
             console.log("teacher-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);
     };
-    TeacherMyNavListComponent.prototype.onChangedFromChild = function (myEvent, myinfo, myhistory, mypayment, myfavorite) {
+    TeacherMyNavListComponent.prototype.resetNavFlag = function () {
+        this.showDashboard = false;
+        this.showMyInfo = false;
+        this.showMyKlass = false;
+        this.showMyIncome = false;
+        this.showMyReview = false;
+        this.showMyQuestion = false;
+    };
+    TeacherMyNavListComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / init");
         if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / myEvent : ", myEvent);
         if (this.isDebug())
             console.log("teacher-my-nav-list / onChangedFromChild / myEvent.key : ", myEvent.key);
-        // 모든 플래그값을 초기화
-        this.showMyInfo = false;
-        this.showMyHistory = false;
-        this.showMyPayment = false;
-        this.showMyFavorite = false;
-        if (this.myEventService.KEY_USER_MY_INFO === myEvent.key) {
-            this.showMyInfo = true;
+        if (this.isDebug())
+            console.log("teacher-my-nav-list / onChangedFromChild / 시작");
+        if (this.isDebug())
+            console.log("teacher-my-nav-list / onChangedFromChild / myEvent : ", myEvent);
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        if (!isOK) {
+            if (this.isDebug())
+                console.log("teacher-my-nav-list / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+            var lastHistory = this.myCheckerService.getLastHistory();
+            if (this.isDebug())
+                console.log("teacher-my-nav-list / onChangedFromChild / lastHistory : ", lastHistory);
+            return;
+        } // end if
+        if (myEvent.hasEventName(this.myEventService.ON_READY)) {
+            if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
+                if (null != myEvent.metaObj) {
+                    this.dashboardComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
+                if (null != myEvent.metaObj) {
+                    this.teacherInfoComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+                if (null != myEvent.metaObj) {
+                    this.klassComponent = myEvent.metaObj;
+                } // end if        
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+                if (null != myEvent.metaObj) {
+                    this.incomeComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
+                if (null != myEvent.metaObj) {
+                    this.reviewComponent = myEvent.metaObj;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+                if (null != myEvent.metaObj) {
+                    this.questionComponent = myEvent.metaObj;
+                } // end if
+            } // end if
         }
-        else if (this.myEventService.KEY_USER_MY_HISTORY === myEvent.key) {
-            this.showMyHistory = true;
-        }
-        else if (this.myEventService.KEY_USER_MY_PAYMENT === myEvent.key) {
-            this.showMyPayment = true;
-        }
-        else if (this.myEventService.KEY_USER_MY_FAVORITE === myEvent.key) {
-            this.showMyFavorite = true;
-        }
-    };
+        else if (myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+            if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
+                if (myEvent.metaObj instanceof teacher_info_dashboard_component_1.TeacherInfoDashboardComponent) {
+                    // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+                    if (null != this.klassComponent) {
+                        this.klassComponent.reload();
+                    }
+                }
+                else {
+                    this.resetNavFlag();
+                    this.showDashboard = true;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
+                this.resetNavFlag();
+                this.showMyInfo = true;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+                if (myEvent.metaObj instanceof teacher_info_klass_component_1.TeacherInfoKlassComponent) {
+                    // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+                    if (null != this.dashboardComponent) {
+                        this.dashboardComponent.reload();
+                    }
+                }
+                else {
+                    this.resetNavFlag();
+                    this.showMyKlass = true;
+                } // end if
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+                this.resetNavFlag();
+                this.showMyIncome = true;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
+                this.resetNavFlag();
+                this.showMyReview = true;
+            }
+            else if (myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+                this.resetNavFlag();
+                this.showMyQuestion = true;
+            } // end if
+        } // end if  
+    }; // end method
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -133,5 +215,5 @@ var TeacherMyNavListComponent = (function () {
     ], TeacherMyNavListComponent);
     return TeacherMyNavListComponent;
 }());
-exports.TeacherMyNavListComponent = TeacherMyNavListComponent;
+exports.TeacherMyNavListComponent = TeacherMyNavListComponent; // end class
 //# sourceMappingURL=teacher-my-nav-list.component.js.map

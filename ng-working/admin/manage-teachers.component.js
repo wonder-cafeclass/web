@@ -31,7 +31,7 @@ var ManageTeachersComponent = (function () {
         this.searchQuery = "";
         this.teacherStatus = "";
         this.pageNum = 1;
-        this.pageRange = 5;
+        this.pageRowCnt = 5;
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
         this.myFormat = new my_format_1.HelperMyFormat();
@@ -127,8 +127,8 @@ var ManageTeachersComponent = (function () {
         this.fetchTeacherList(
         // pageNum:number, 
         this.pageNum, 
-        // pageSize:number, 
-        this.pageRange, 
+        // pageRowCnt:number, 
+        this.pageRowCnt, 
         // searchQuery:string, 
         this.searchQuery, 
         // teacherStatus:string, 
@@ -222,8 +222,8 @@ var ManageTeachersComponent = (function () {
             this.fetchTeacherList(
             // pageNum:number, 
             this.pageNum, 
-            // pageSize:number, 
-            this.pageRange, 
+            // pageRowCnt:number, 
+            this.pageRowCnt, 
             // searchQuery:string, 
             this.searchQuery, 
             // teacherStatus:string, 
@@ -233,8 +233,8 @@ var ManageTeachersComponent = (function () {
             this.fetchTeacherList(
             // pageNum:number, 
             this.pagination.pageNum, 
-            // pageSize:number, 
-            this.pagination.pageRange, 
+            // pageRowCnt:number, 
+            this.pagination.pageRowCnt, 
             // searchQuery:string, 
             this.searchQuery, 
             // teacherStatus:string, 
@@ -242,7 +242,7 @@ var ManageTeachersComponent = (function () {
         }
     }; // end method
     // @ Desc : 유저 리스트를 가져옵니다.
-    ManageTeachersComponent.prototype.fetchTeacherList = function (pageNum, pageSize, searchQuery, teacherStatus) {
+    ManageTeachersComponent.prototype.fetchTeacherList = function (pageNum, pageRowCnt, searchQuery, teacherStatus) {
         var _this = this;
         this.adminService
             .fetchTeacherListV2(
@@ -250,8 +250,8 @@ var ManageTeachersComponent = (function () {
         this.watchTower.getApiKey(), 
         // pageNum:number, 
         pageNum, 
-        // pageSize:number, 
-        pageSize, 
+        // pageRowCnt:number, 
+        pageRowCnt, 
         // searchQuery:string, 
         searchQuery, 
         // teacherStatus:string, 
@@ -348,8 +348,8 @@ var ManageTeachersComponent = (function () {
         this.fetchTeacherList(
         // pageNum:number,
         1, 
-        // pageSize:number,
-        this.pagination.pageRange, 
+        // pageRowCnt:number,
+        this.pagination.pageRowCnt, 
         // searchQuery:string,
         this.searchQuery, 
         // teacherStatus:string, 

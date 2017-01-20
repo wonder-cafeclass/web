@@ -15,6 +15,7 @@ export class MyEventService {
     // GENERAL PURPOSE
     ANY:string="ANY"; // 어떤 형태의 이벤트로도 변경 가능한 타입. 복제해서 사용하는 것을 권장.
     ON_READY:string="ON_READY";
+    ON_CLICK:string="ON_CLICK";
     ON_CHANGE:string="ON_CHANGE";
     ON_CHANGE_NOT_VALID:string="ON_CHANGE_NOT_VALID";
     ON_SUBMIT:string="ON_SUBMIT";
@@ -107,15 +108,20 @@ export class MyEventService {
     KEY_USER_BIRTH_MONTH:string="KEY_USER_BIRTH_MONTH";   // 유저 - 생월
     KEY_USER_BIRTH_DAY:string="KEY_USER_BIRTH_DAY";       // 유저 - 생일
 
-    KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";           // 유저 - 내정보 수정.
-    KEY_USER_MY_HISTORY:string="KEY_USER_MY_HISTORY";     // 유저 - 내 수강이력.
-    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";     // 유저 - 내 결재정보.
-    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";   // 유저 - 내 관심강의(찜).
+    KEY_USER_MY_INFO_DASHBOARD:string="KEY_USER_MY_INFO_DASHBOARD";   // 유저 - 내정보 대시보드.
+    KEY_USER_MY_INFO:string="KEY_USER_MY_INFO";                       // 유저 - 내정보 수정.
+    KEY_USER_MY_KLASS:string="KEY_USER_MY_KLASS";                 // 유저 - 내 수강이력.
+    KEY_USER_MY_PAYMENT:string="KEY_USER_MY_PAYMENT";                 // 유저 - 내 결제정보.
+    KEY_USER_MY_FAVORITE:string="KEY_USER_MY_FAVORITE";               // 유저 - 내 관심강의(찜).
 
-    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";           // 선생님 - 내정보 수정.
-    KEY_TEACHER_MY_HISTORY:string="KEY_TEACHER_MY_HISTORY";     // 선생님 - 내 수강이력.
-    KEY_TEACHER_MY_PAYMENT:string="KEY_TEACHER_MY_PAYMENT";     // 선생님 - 내 결재정보.
-    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";   // 선생님 - 학생에게준 피드백.
+    KEY_TEACHER_MY_INFO_DASHBOARD:string="KEY_TEACHER_MY_INFO_DASHBOARD";        // 선생님 - 대시보드.
+    KEY_TEACHER_MY_INFO:string="KEY_TEACHER_MY_INFO";                            // 선생님 - 내정보 수정.
+    KEY_TEACHER_MY_KLASS:string="KEY_TEACHER_MY_KLASS";                          // 선생님 - 내 수강이력.
+    KEY_TEACHER_MY_INCOME:string="KEY_TEACHER_MY_INCOME";                        // 선생님 - 내 결제정보.
+    KEY_TEACHER_MY_FEEDBACK:string="KEY_TEACHER_MY_FEEDBACK";                    // 선생님 - 학생에게준 피드백. // @ Deprecated
+
+    KEY_TEACHER_MY_REVIEW:string="KEY_TEACHER_MY_REVIEW";                    // 선생님 - 리뷰.
+    KEY_TEACHER_MY_QUESTION:string="KEY_TEACHER_MY_QUESTION";                    // 선생님 - 문의.
 
     KEY_TEACHER_RESUME:string="KEY_TEACHER_RESUME";             // 선생님 - 경력
     KEY_TEACHER_GREETING:string="KEY_TEACHER_GREETING";         // 선생님 - 인사말
@@ -200,6 +206,16 @@ export class MyEventService {
     KEY_KLASS_DAYS_FOR_SEARCH:string="KEY_KLASS_DAYS_FOR_SEARCH";
     // 수업 시간 - 검색
     KEY_KLASS_TIME_FOR_SEARCH:string="KEY_KLASS_TIME_FOR_SEARCH";
+
+    // 수업 카드 위젯 - 낱개의 수업을 표시하는 카드 형태의 위젯. 홈화면과 개인수업 신청 화면등에서 쓰임.
+    KEY_WIDGET_KLASS_CARD:string="KEY_WIDGET_KLASS_CARD";
+
+    // 수업과 학생 리스트 위젯 - 학생이 신청한 수업 리스트를 보여주는 위젯. 대시보드와 개인 수업 리스트에서 쓰임.
+    KEY_WIDGET_KLASS_N_STUDENT_LIST:string="KEY_WIDGET_KLASS_N_STUDENT_LIST";    
+
+    // 선생님용 수업과 학생 리스트 위젯.
+    KEY_WIDGET_KLASS_TEACHER:string="KEY_WIDGET_KLASS_TEACHER";
+
 
 
     KEY_CHECKBOX_ALL:string="KEY_CHECKBOX_ALL";

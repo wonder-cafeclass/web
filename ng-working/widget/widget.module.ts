@@ -7,8 +7,6 @@ import { FormsModule }              	from '@angular/forms';
 
 import { NavTabsComponent }         	from './nav-tabs/nav-tabs.component';
 
-import { DefaultService }         		from './input/default/service/default.service';
-
 import { DefaultComponent }         	from './input/default/default.component';
 import { EmailComponent }         		from './input/email/email.component';
 import { ProfileImgUploadComponent }	from './input/profile-img-upload/profile-img-upload.component';
@@ -30,6 +28,11 @@ import { InputBtnsRowComponent }     	from './input-view/input-btns-row.componen
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
 import { DebugBtnComponent }      		from './debug/debug-btn.component';
 import { ImportComponent }      		from './payment/import.component';
+import { KlassCardComponent }        	from './klass/klass-card.component';
+import { KlassNStudentListComponent }	from './klass/klass-n-student-list.component';
+import { KlassInfoForTeacherComponent }	from './klass/klass-info-for-teacher.component';
+
+import { DefaultService }         		from './input/default/service/default.service';
 import { PaymentService }         		from './payment/service/payment.service';
 
 import { CheckBoxComponent }      		from './checkbox/checkbox.component';
@@ -57,6 +60,9 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
 		ImportComponent,
+		KlassCardComponent,
+		KlassNStudentListComponent,
+		KlassInfoForTeacherComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
@@ -87,6 +93,9 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		InputsBtnsRowsComponent,
 		DebugBtnComponent,
 		ImportComponent,
+		KlassCardComponent,
+		KlassNStudentListComponent,
+		KlassInfoForTeacherComponent,
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,

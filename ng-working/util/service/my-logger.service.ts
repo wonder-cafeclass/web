@@ -24,7 +24,15 @@ export class MyLoggerService {
 	public pageTypeSignupTeacher:string="SIGNUP_TEACHER";
 	public pageTypeSignupSelect:string="SIGNUP_SELECT";
 	public pageTypeMyInfo:string="MY_INFO";
+	public pageTypeMyInfoDashBoard:string="MY_INFO_DASHBOARD";
+	public pageTypeMyInfoPayment:string="MY_INFO_PAYMENT";
+	public pageTypeMyInfoKlass:string="MY_INFO_KLASS";
+
 	public pageTypeTeacherInfo:string="TEACHER_INFO";
+	public pageTypeTeacherInfoDashBoard:string="TEACHER_INFO_DASHBOARD";
+	public pageTypeTeacherInfoKlass:string="TEACHER_INFO_KLASS";
+	public pageTypeTeacherInfoReview:string="TEACHER_INFO_REVIEW";
+	public pageTypeTeacherInfoQuestion:string="TEACHER_INFO_QUESTION";
 	public pageTypeApplyTeacherTerm:string="APPLY_TEACHER_TERM";
 
 	public errorTypeNotValidValue:string="NOT_VALID_VALUE";

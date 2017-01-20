@@ -1,6 +1,7 @@
 import {  Component, 
           Input, 
           Output,
+          EventEmitter,
           ViewChild,
           OnInit, 
           AfterViewInit }             from '@angular/core';
@@ -38,6 +39,9 @@ import { DefaultMeta }                from '../../../widget/input/default/model/
   styleUrls: [ 'teacher-info-v2.component.css' ]
 })
 export class TeacherInfoV2Component implements OnInit, AfterViewInit {
+
+  @Input() eventKey:string = "";
+  @Output() emitter = new EventEmitter<any>();
 
   private code:string;
   private redirectUrl:string="/class-center";
@@ -178,6 +182,9 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
     // 페이지 진입을 기록으로 남깁니다.
     this.logActionPage();
 
+    // 컴포넌트가 준비된 것을 부모 객체에게 전달합니다.
+    this.emitEventOnReady();
+
   } // end init
 
   private fillViewTeacherInfo() :void {
@@ -218,12 +225,28 @@ export class TeacherInfoV2Component implements OnInit, AfterViewInit {
       // apiKey:string
       this.watchTower.getApiKey(),
       // pageType:string
-      this.myLoggerService.pageTypeSignupTeacher
+      this.myLoggerService.pageTypeTeacherInfo
     ).then((myResponse:MyResponse) => {
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(this.isDebug()) console.log("teacher-info-v2 / logActionPage / myResponse : ",myResponse);
     })
-  }
+  } // end method
+
+  private emitEventOnReady() :void {
+
+    if(this.isDebug()) console.log("teacher-info-v2 / emitEventOnReady / 시작");
+
+    let myEvent:MyEvent =
+    this.watchTower.getEventOnReady(
+      // eventKey:string, 
+      this.eventKey,
+      // component
+      this
+    );
+
+    this.emitter.emit(myEvent);
+
+  } // end method
 
   private logError(errorType:string, errMsg:string) :void {
 

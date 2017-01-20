@@ -1,9 +1,11 @@
 import {  Component, 
           ViewChild,
           OnInit, 
+          AfterViewInit,
           SimpleChanges,
           Output, 
           EventEmitter,
+          ElementRef,
           Input }                     from '@angular/core';
 
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
@@ -24,11 +26,6 @@ import { HelperMyIs }                 from '../util/helper/my-is';
 import { HelperMyTime }               from '../util/helper/my-time';
 import { HelperMyArray }              from '../util/helper/my-array';
 
-import { SmartEditorComponent }       from '../widget/smart-editor/smart-editor.component';
-import { Comment }                    from '../widget/comment/model/comment';
-import { CommentListComponent }       from '../widget/comment/comment-list.component';
-
-import { InputsBtnsRowsComponent }    from '../widget/input-view/inputs-btns-rows.component';
 
 import { Klass }                      from './model/klass';
 import { KlassQuestion }              from './model/klass-question';
@@ -43,6 +40,13 @@ import { KlassService }               from './service/klass.service';
 import { KlassVenueSearchListComponent }  from './widget/klass-venue-search-list.component';
 import { KlassTeacherComponent }          from './widget/klass-teacher.component';
 
+import { SmartEditorComponent }           from '../widget/smart-editor/smart-editor.component';
+import { Comment }                        from '../widget/comment/model/comment';
+import { CommentListComponent }           from '../widget/comment/comment-list.component';
+
+import { InputsBtnsRowsComponent }        from '../widget/input-view/inputs-btns-rows.component';
+import { NavTabsComponent }               from '../widget/nav-tabs/nav-tabs.component';
+
 import { User }                           from '../users/model/user';
 import { Teacher }                        from '../teachers/model/teacher';
 
@@ -52,16 +56,13 @@ import { Teacher }                        from '../teachers/model/teacher';
   templateUrl: 'klass-detail-nav-list.component.html',
   styleUrls: [ 'klass-detail-nav-list.component.css' ]
 })
-export class KlassDetailNavListComponent implements OnInit {
+export class KlassDetailNavListComponent implements OnInit, AfterViewInit {
 
-  @ViewChild(SmartEditorComponent)
-  private seComponent: SmartEditorComponent;  
-
-  @ViewChild(CommentListComponent)
   private questionListComponent: CommentListComponent;  
-
-  @ViewChild(CommentListComponent)
   private reviewListComponent: CommentListComponent;  
+
+  private featureListComponent: InputsBtnsRowsComponent;
+  private targetListComponent: InputsBtnsRowsComponent;
 
   @ViewChild(KlassVenueSearchListComponent)
   private venueSearchComponent: KlassVenueSearchListComponent;
@@ -69,11 +70,8 @@ export class KlassDetailNavListComponent implements OnInit {
   @ViewChild(KlassTeacherComponent)
   private teacherComponent: KlassTeacherComponent;
 
-  @ViewChild(InputsBtnsRowsComponent)
-  private featureListComponent: InputsBtnsRowsComponent;
-
-  @ViewChild(InputsBtnsRowsComponent)
-  private targetListComponent: InputsBtnsRowsComponent;
+  @ViewChild(NavTabsComponent)
+  private navTabsComponent: NavTabsComponent;
 
   @Input() radiobtnOptionListNavTabs:RadioBtnOption[];
   @Input() klass:Klass;
@@ -86,7 +84,7 @@ export class KlassDetailNavListComponent implements OnInit {
   @Input() klassSchedule:string;
   klassScheduleCopy:string;
 
-  @Input() isAdmin:boolean=false;
+  @Input() isTeacher:boolean=false;
   @Input() cageWidth:number=-1;
 
   cageWidthStr:string;
@@ -140,6 +138,9 @@ export class KlassDetailNavListComponent implements OnInit {
   btnNameKlassTarget:string="수업 대상 수정하기";
   btnNameKlassSchedule:string="수업 일정 수정하기";
 
+  // 특정 위치로 이동.
+  private moveto:string="";
+
   @Output() emitter = new EventEmitter<any>();
 
   private myIs:HelperMyIs;
@@ -154,6 +155,7 @@ export class KlassDetailNavListComponent implements OnInit {
                 private radiobtnService:KlassRadioBtnService,
                 private myLoggerService:MyLoggerService,
                 private urlService:UrlService,
+                private myElement: ElementRef,
                 public imageService: ImageService) {
 
     this.myIs = new HelperMyIs();
@@ -180,6 +182,9 @@ export class KlassDetailNavListComponent implements OnInit {
 
     this.subscribeLoginUser();
     
+  }
+
+  ngAfterViewInit() :void {
   }
 
   private subscribeLoginUser() :void {
@@ -752,20 +757,6 @@ export class KlassDetailNavListComponent implements OnInit {
       // 로그 등록 결과를 확인해볼 수 있습니다.
       if(this.isDebug()) console.log("klass-detail / removeReview / myResponse : ",myResponse);
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass_review")) {
-        
-        /*
-        // 리뷰가 등록되었습니다.  
-        // 컴포넌트에게 등록된 데이터를 전달, id를 업데이트 합니다.
-        let klassReviewJSON:any = myResponse.getDataProp("klass_review");
-        let klassReview:KlassReview = null;
-        if(null != klassReviewJSON) {
-          klassReview = new KlassReview().setJSON(klassReviewJSON);
-        }
-        if(null != klassReview) {
-          newComment.id = klassReview.id;
-        }
-        this.reviewListComponent.updateComment(newComment);
-        */
 
       } else if(myResponse.isFailed() && null != myResponse.error) {  
 
@@ -1068,6 +1059,29 @@ export class KlassDetailNavListComponent implements OnInit {
     
   }
 
+  // @ Desc : 모든 자식뷰들이 완료된 상태 이후의 작업을 합니다.
+  onAfterChildrenReady():void {
+
+    if(null == this.questionListComponent) {
+      return;
+    }
+    if(null == this.reviewListComponent) {
+      return;
+    }
+    if(null == this.venueSearchComponent) {
+      return;
+    }
+    if(null == this.teacherComponent) {
+      return;
+    }
+    if(null == this.navTabsComponent) {
+      return; 
+    }
+
+    // 자식 객체들이 모두 완료되었습니다.
+    // 뷰가 모두 완료된 이후에 해야할 일들을 합니다.
+    this.moveToAfterInit();
+  }
 
   onChangedFromInputRow(myEvent:MyEvent) :void{
     // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
@@ -1086,6 +1100,7 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.questionListComponent = myEvent.metaObj; 
           this.setQuestionList();
+          this.onAfterChildrenReady();
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
@@ -1093,15 +1108,17 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.reviewListComponent = myEvent.metaObj; 
           this.setReviewList();
+          this.onAfterChildrenReady();
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
 
-        // wonder.jung
         if(  null != myEvent.metaObj ) {
           // 네이버 맵 장소 검색 컴포넌트가 준비됨.
           this.venueSearchComponent = myEvent.metaObj;
           this.setVenueSearch();
+          this.onAfterChildrenReady();
+
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
@@ -1109,6 +1126,7 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.teacherComponent = myEvent.metaObj;
           this.setTeacher();
+          this.onAfterChildrenReady();
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {
@@ -1116,6 +1134,7 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.featureListComponent = myEvent.metaObj;
           this.featureListComponent.setMyEventList(this.myEventListForKlassFeature);
+          this.onAfterChildrenReady();
         } // end if
 
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
@@ -1123,6 +1142,7 @@ export class KlassDetailNavListComponent implements OnInit {
         if(  null != myEvent.metaObj ) {
           this.targetListComponent = myEvent.metaObj;
           this.targetListComponent.setMyEventList(this.myEventListForKlassTarget);
+          this.onAfterChildrenReady();
         } // end if
 
       } // end if
@@ -1395,8 +1415,7 @@ export class KlassDetailNavListComponent implements OnInit {
     return false;
   }
 
-
-  onChangedFromChild(myEvent:MyEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) :void{
+  private resetElementFocus():void {
 
     this.isFocusKlassDesc=false;
     this.isFocusKlassVenue=false;
@@ -1404,6 +1423,96 @@ export class KlassDetailNavListComponent implements OnInit {
     this.isFocusStudentReview=false;
     this.isFocusStudentQuestion=false;
     this.isFocusCaution=false;
+
+  }
+
+  private getFirstBox():any {
+    return this.myElement.nativeElement.getBoundingClientRect();
+  } // end method
+
+  private getMyBox(targetElement:ElementRef):any {
+
+    if(null == targetElement) {
+      return null;
+    }
+
+    return targetElement.nativeElement.getBoundingClientRect();
+  } // end method
+
+  private moveToAfterInit():void {
+
+    if("review" === this.moveto) {
+      this.moveToReview();
+    } else if("question" === this.moveto) {
+      this.moveToQuestion();
+    } // end if
+
+  }
+
+  moveTo(moveto:string):void {
+
+    this.moveto = moveto;
+
+  } // end method  
+
+  private moveToReview() :void {
+
+    if(null == this.reviewListComponent) {
+      return;
+    } // end if
+
+    let element:ElementRef = this.reviewListComponent.getElement();
+    this.moveToSomewhere(element);
+    this.isFocusStudentReview=true;
+    this.navTabsComponent.setFocus(this.myEventService.STUDENT_REVIEW);
+
+  } // end method
+
+  private moveToQuestion() :void {
+
+    if(null == this.questionListComponent) {
+      return;
+    } // end if
+
+    let element:ElementRef = this.questionListComponent.getElement();
+    this.moveToSomewhere(element);
+    this.isFocusStudentQuestion=true;
+    this.navTabsComponent.setFocus(this.myEventService.STUDENT_QUESTION);
+
+  } // end method
+
+  private moveToSomewhere(element:ElementRef):void {
+
+    if(null == element) {
+      return;
+    }
+
+    this.resetElementFocus();
+    let nextYPos = 0;
+    let firstBox:any = this.getFirstBox();
+    let myBox:any = this.getMyBox(element);
+    let scrollY:number = window.scrollY;
+
+    if(null != myBox) {
+      if(0 < (firstBox.top - this.navHeight)) {
+        nextYPos = scrollY + myBox.top - (this.navHeight * 2 + this.borderTopBottomWidth);
+      } else {
+        nextYPos = scrollY + myBox.top - this.navHeight;
+      }
+
+      if(0 < nextYPos) {
+        window.scrollTo(0, nextYPos);      
+      } // end inner if
+    } // end if
+
+  } // end method
+
+
+
+
+  onChangedFromChild(myEvent:MyEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) :void{
+
+    this.resetElementFocus();
 
     let nextYPos = 0;
     let box = null;

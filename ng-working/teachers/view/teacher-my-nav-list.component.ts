@@ -22,6 +22,13 @@ import { RadioBtnOption }             from '../../widget/radiobtn/model/radiobtn
 import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../../util/model/my-response';
 
+import { TeacherInfoDashboardComponent }        from './teacher-my-nav-list/teacher-info-dashboard.component';
+import { TeacherInfoV2Component }               from './teacher-my-nav-list/teacher-info-v2.component';
+import { TeacherInfoQuestionComponent }         from './teacher-my-nav-list/teacher-info-question.component';
+import { TeacherInfoReviewComponent }           from './teacher-my-nav-list/teacher-info-review.component';
+import { TeacherInfoIncomeComponent }           from './teacher-my-nav-list/teacher-info-income.component';
+import { TeacherInfoKlassComponent }            from './teacher-my-nav-list/teacher-info-klass.component';
+
 
 @Component({
   moduleId: module.id,
@@ -37,10 +44,19 @@ export class TeacherMyNavListComponent implements AfterViewInit {
   colorOrange:string;
   colorGray:string;
 
+  showDashboard:boolean=false;
   showMyInfo:boolean=false;
-  showMyHistory:boolean=false;
-  showMyPayment:boolean=false;
-  showMyFavorite:boolean=false;
+  showMyKlass:boolean=false;
+  showMyIncome:boolean=false;
+  showMyReview:boolean=false;
+  showMyQuestion:boolean=false;
+
+  dashboardComponent:TeacherInfoDashboardComponent;
+  teacherInfoComponent:TeacherInfoV2Component;
+  incomeComponent:TeacherInfoIncomeComponent;
+  klassComponent:TeacherInfoKlassComponent;
+  reviewComponent:TeacherInfoReviewComponent;
+  questionComponent:TeacherInfoQuestionComponent;
 
   @Output() emitter = new EventEmitter<any>();
 
@@ -51,7 +67,11 @@ export class TeacherMyNavListComponent implements AfterViewInit {
                 public myLoggerService:MyLoggerService,
                 private radiobtnService:KlassRadioBtnService,
                 private watchTower:MyEventWatchTowerService, 
-                private myCheckerService:MyCheckerService) {}
+                private myCheckerService:MyCheckerService) {
+
+    this.radiobtnService.setWatchTower(this.watchTower);
+
+  }
 
 
   private isDebug():boolean {
@@ -118,38 +138,134 @@ export class TeacherMyNavListComponent implements AfterViewInit {
     this.navTabsOptions = 
     this.radiobtnService.getNavTabsTeacherMyInfo(
       // user:User
-      null,
-      // keyFocus:string
       null
+      // keyFocus:string
+      , this.watchTower.getMyEventService().KEY_TEACHER_MY_INFO_DASHBOARD
     );
-    this.showMyInfo = true;
+
+    // 대시보드 노출이 기본값
+    this.showDashboard = true;
 
     if(this.isDebug()) console.log("teacher-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);    
 
   }
 
-  onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
+  private resetNavFlag():void {
+    this.showDashboard = false;
+    this.showMyInfo = false;
+    this.showMyKlass = false;
+    this.showMyIncome = false;
+    this.showMyReview = false;
+    this.showMyQuestion = false;
+  }
+
+  onChangedFromChild(myEvent:MyEvent) {
 
     if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / init");
     if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
     if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
 
-    // 모든 플래그값을 초기화
-    this.showMyInfo = false;
-    this.showMyHistory = false;
-    this.showMyPayment = false;
-    this.showMyFavorite = false;
+    if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / 시작");
+    if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
 
-    if(this.myEventService.KEY_USER_MY_INFO === myEvent.key) {
-      this.showMyInfo = true;
-    } else if(this.myEventService.KEY_USER_MY_HISTORY === myEvent.key) {
-      this.showMyHistory = true;
-    } else if(this.myEventService.KEY_USER_MY_PAYMENT === myEvent.key) {
-      this.showMyPayment = true;
-    } else if(this.myEventService.KEY_USER_MY_FAVORITE === myEvent.key) {
-      this.showMyFavorite = true;
-    }
+    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+    if(!isOK) {
+      if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      let lastHistory = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("teacher-my-nav-list / onChangedFromChild / lastHistory : ",lastHistory);
+      return;
+    } // end if
 
-  }
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
 
-}
+      if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.dashboardComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.teacherInfoComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.klassComponent = myEvent.metaObj;
+        } // end if        
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.incomeComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.reviewComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.questionComponent = myEvent.metaObj;
+        } // end if
+
+      } // end if
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD)) {
+
+        if(myEvent.metaObj instanceof TeacherInfoDashboardComponent) {
+          // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+          if(null != this.klassComponent) {
+            this.klassComponent.reload();
+          }
+        } else {
+          this.resetNavFlag();
+          this.showDashboard = true;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INFO)) {
+
+        this.resetNavFlag();
+        this.showMyInfo = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_KLASS)) {
+
+        if(myEvent.metaObj instanceof TeacherInfoKlassComponent) {
+          // 다른 컴포넌트의 수업 리스트를 업데이트해줍니다.
+          if(null != this.dashboardComponent) {
+            this.dashboardComponent.reload();
+          }
+        } else {
+          this.resetNavFlag();
+          this.showMyKlass = true;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_INCOME)) {
+
+        this.resetNavFlag();
+        this.showMyIncome = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_REVIEW)) {
+
+        this.resetNavFlag();
+        this.showMyReview = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_TEACHER_MY_QUESTION)) {
+
+        this.resetNavFlag();
+        this.showMyQuestion = true;
+
+      } // end if
+
+    } // end if  
+
+  } // end method
+
+} // end class

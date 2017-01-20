@@ -1,0 +1,74 @@
+<div>
+	<ul class="list-group">
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 / 현재 없음 -->
+
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+		<li class="list-group-item my-style-table">
+
+<div *ngIf="!paymentList" style="text-align:center;">
+	<h3 style="margin-bottom:20px;color: #999;">결과가 없습니다.</h3>
+</div>
+
+<table *ngIf="paymentList" class="table table-bordered table-hover my-style"> 
+	<thead> 
+		<tr>
+			<th>
+				<checkbox-single 
+				[eventKey]="myEventService.KEY_CHECKBOX_ALL"
+				[metaObj]="paymentList"
+				(emitter)="onChangedFromChild($event)">
+				</checkbox-single>
+			</th>
+			<th>ID</th>
+			<th>제목</th>
+			<th>구매자</th>
+			<th>카드이름</th>
+			<th>금액</th>
+			<th>결제일시</th>
+		</tr> 
+	</thead> 
+	<tbody> 
+		<tr *ngFor="let payment of paymentList">
+			<th scope="row">
+				<div>
+					<checkbox-single 
+					[eventKey]="myEventService.KEY_CHECKBOX"
+					[metaObj]="user"
+					(emitter)="onChangedFromChild($event)">
+					</checkbox-single>
+				</div>
+			</th> 
+			<td>{{payment.id}}</td>
+			<td>
+				<img 
+				class="img-rounded my-style" 
+				src={{payment.klass.class_poster_url_loadable}}>
+				<div>{{payment.name}}</div>
+			</td>
+			<td>
+				<img class="img-rounded my-style" src={{payment.user.thumbnail}}>
+				<br/>
+				<div>{{payment.user.nickname}}</div>
+			</td>
+			<td>{{payment.card_name}}</td>
+			<td>{{payment.amountWithFormat}}</td>
+			<td>{{payment.my_date_paid_at}}</td>
+
+		</tr> 
+	</tbody> 
+</table>			
+
+		</li>
+		<li *ngIf="pagination" class="list-group-item">
+			<pagination
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+	</ul>
+</div>

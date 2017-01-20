@@ -19,6 +19,8 @@ var HelperMyTime = (function () {
         this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS = 6;
         /* 2012년 12월 11일 01:02:03 */
         this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS = 7;
+        /* 2012년 12월 11일*/
+        this.DATE_TYPE_H_YYYY_MM_DD = 8;
     }
     HelperMyTime.prototype.getUniqueId = function () {
         return Math.round(window.performance.now() * 100);
@@ -66,13 +68,50 @@ var HelperMyTime = (function () {
         }
         return this.getDiffMinutes(headDate, tailDate);
     };
+    // @ Desc : 지정된 날짜가 오늘을 포함 이전 날짜인지 확인.
+    HelperMyTime.prototype.isBeforeTomorrow = function (YYYYMMDD_HHMMSS) {
+        if (this.isNotYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS)) {
+            return false;
+        }
+        var headDate = this.getDateFromYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS);
+        var todayDate = new Date();
+        var diffDays = this.getDiffDays(headDate, todayDate);
+        return (-1 < diffDays) ? true : false;
+    }; // end method
+    HelperMyTime.prototype.getDiffDaysYYYYMMDD_HHMMSS = function (headYYYYMMDD_HHMMSS, tailYYYYMMDD_HHMMSS) {
+        if (null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
+            return -1;
+        }
+        if (this.isNotYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS)) {
+            return -1;
+        }
+        if (null == tailYYYYMMDD_HHMMSS || "" === tailYYYYMMDD_HHMMSS) {
+            return -1;
+        }
+        if (this.isNotYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS)) {
+            return -1;
+        }
+        var headDate = this.getDateFromYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS);
+        if (null == headDate) {
+            return -1;
+        }
+        var tailDate = this.getDateFromYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS);
+        if (null == tailDate) {
+            return -1;
+        }
+        return this.getDiffDays(headDate, tailDate);
+    };
     HelperMyTime.prototype.getDiffMinutes = function (head, tail) {
         var minutes = 60 * 1000;
-        return Math.abs((head.getTime() - tail.getTime()) / minutes);
+        return Math.floor((tail.getTime() - head.getTime()) / minutes);
     };
     HelperMyTime.prototype.getDiffHours = function (head, tail) {
         var hour = 60 * 60 * 1000;
-        return Math.abs((head.getTime() - tail.getTime()) / hour);
+        return Math.floor((tail.getTime() - head.getTime()) / hour);
+    };
+    HelperMyTime.prototype.getDiffDays = function (head, tail) {
+        var day = 60 * 60 * 1000 * 24;
+        return Math.floor((tail.getTime() - head.getTime()) / day);
     };
     HelperMyTime.prototype.addHoursHHMM = function (hhmm, hours) {
         // let isDebug:boolean = true;
@@ -187,6 +226,12 @@ var HelperMyTime = (function () {
         }
         return this.getDate(date_str, this.DATE_TYPE_HH_MM);
     };
+    HelperMyTime.prototype.getDateFromYYYYMMDD_HHMMSS = function (date_str) {
+        if (null == date_str || "" == date_str) {
+            return null;
+        }
+        return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+    };
     HelperMyTime.prototype.getNow_YYYY_MM_DD_HH_MM_SS = function () {
         return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
     };
@@ -215,6 +260,9 @@ var HelperMyTime = (function () {
         if (this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
             return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);
         }
+        else if (this.DATE_TYPE_H_YYYY_MM_DD === output_date_format_type) {
+            return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD);
+        }
         return "";
     };
     HelperMyTime.prototype.getDateFommattedStr = function (date, input_date_format_type) {
@@ -237,6 +285,13 @@ var HelperMyTime = (function () {
             var seconds = this.getDoubleDigit(date.getSeconds());
             // 2012년 12월 11일 01:02:03
             return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C " + hours + ":" + minutes + ":" + seconds;
+        }
+        else if (this.DATE_TYPE_H_YYYY_MM_DD === input_date_format_type) {
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var days = date.getDate();
+            // 2012년 12월 11일 01:02:03
+            return year + "\uB144 " + month + "\uC6D4 " + days + "\uC77C";
         } // end if
         return "";
     };
@@ -362,6 +417,21 @@ var HelperMyTime = (function () {
             time_arr.length != 2 ||
             time_arr[0].length != 2 ||
             time_arr[1].length != 2) {
+            return false;
+        }
+        return true;
+    };
+    HelperMyTime.prototype.isNotYYYYMMDD_HHMMSS = function (date_str_yyyymmdd_hhmmss) {
+        return !this.isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss);
+    };
+    // @ Public
+    // @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13 22:12:11) 확인합니다.
+    HelperMyTime.prototype.isYYYYMMDD_HHMMSS = function (date_str_yyyymmdd_hhmmss) {
+        if (null == date_str_yyyymmdd_hhmmss || "" === date_str_yyyymmdd_hhmmss) {
+            return false;
+        }
+        var res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) (0[0-9]|1[0-9]|2[0-4]):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/gi);
+        if (null === res || !(0 < res.length)) {
             return false;
         }
         return true;

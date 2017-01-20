@@ -47,7 +47,8 @@ var KlassListComponent = (function () {
         this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -131,10 +132,21 @@ var KlassListComponent = (function () {
         if (null != userJSON) {
             loginUser = new user_1.User().setJSON(userJSON);
         }
-        if (null != loginUser) {
-            this.loginUser = loginUser;
-        }
+        // 로그 아웃시 null 허용.
+        this.loginUser = loginUser;
         this.getKlassListOnInit();
+    };
+    KlassListComponent.prototype.getLoginUserId = function () {
+        if (this.isDebug())
+            console.log("klass-list / getLoginUserId / 시작");
+        var loginUser = this.watchTower.getLoginUser();
+        var loginUserId = -1;
+        if (null != loginUser) {
+            loginUserId = loginUser.id;
+        }
+        if (this.isDebug())
+            console.log("klass-list / getLoginUserId / loginUserId : ", loginUserId);
+        return loginUserId;
     };
     KlassListComponent.prototype.logActionPage = function () {
         var _this = this;
@@ -169,17 +181,13 @@ var KlassListComponent = (function () {
         }
         if (this.isDebug())
             console.log("klass-list / getKlassListOnInit / 시작");
-        var loginUserId = -1;
-        if (null != this.loginUser) {
-            loginUserId = this.loginUser.id;
-        }
         this.fetchKlassList(
         // userId:Number, 
-        loginUserId, 
+        this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         "", 
         // klassStatus:string, 
@@ -232,7 +240,7 @@ var KlassListComponent = (function () {
             this.klassList = klassList; // 리스트 교체.
         } // end if
     }; // end method    
-    KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageSize, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
+    KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.klassService.fetchKlassList(
         // apiKey:string, 
@@ -241,8 +249,8 @@ var KlassListComponent = (function () {
         loginUserId, 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         searchQuery, 
         // klassStatus:string,
@@ -257,8 +265,6 @@ var KlassListComponent = (function () {
         klassDays, 
         // klassTime:string
         klassTime).then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
             if (_this.isDebug())
                 console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
             if (myResponse.isSuccess() &&
@@ -315,20 +321,16 @@ var KlassListComponent = (function () {
         if (this.myArray.isOK(keywordList)) {
             searchQuerySafe = keywordList[0];
         } // end if
-        var loginUserId = -1;
-        if (null != this.loginUser) {
-            loginUserId = this.loginUser.id;
-        } // end if
         if (null == this.pagination) {
             this.pagination = new pagination_1.Pagination();
         }
         this.fetchKlassList(
         // userId:number, 
-        loginUserId, 
+        this.getLoginUserId(), 
         // pageNum:number, 
         this.pagination.pageNum, 
-        // pageSize:number, 
-        this.pagination.pageRange, 
+        // pageRowCnt:number, 
+        this.pagination.pageRowCnt, 
         // searchQuery:string, 
         searchQuerySafe, 
         // klassStatus:string, 
@@ -574,8 +576,12 @@ var KlassListComponent = (function () {
         }); // end service
     }; // end method
     KlassListComponent.prototype.gotoClassDetail = function (klass) {
+        if (this.isDebug())
+            console.log("klass-list / gotoClassDetail / 시작");
         // 수업 상세 페이지로 이동
         this.router.navigate([klass.id], { relativeTo: this.route });
+        if (this.isDebug())
+            console.log("klass-list / gotoClassDetail / 끝");
     }; // end method
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
         if (null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {

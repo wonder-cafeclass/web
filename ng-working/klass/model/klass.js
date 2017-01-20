@@ -4,6 +4,8 @@ var klass_question_1 = require('./klass-question');
 var klass_calendar_day_1 = require('./klass-calendar-day');
 var klass_calendar_1 = require('./klass-calendar');
 var klass_venue_1 = require('./klass-venue');
+var klass_n_student_1 = require('./klass-n-student');
+var klass_attendance_1 = require('./klass-attendance');
 var my_array_1 = require('../../util/helper/my-array');
 var my_is_1 = require('../../util/helper/my-is');
 var my_time_1 = require('../../util/helper/my-time');
@@ -16,12 +18,15 @@ var Klass = (function () {
         this.review_list = [];
         this.question_list = [];
         this.klassVenue = null;
+        this.review_cnt = -1;
+        this.question_cnt = -1;
         this.teacher_id = -1;
         this.teacher_resume = "";
         this.teacher_resume_list = [];
         this.teacher_greeting = "";
         this.title = "";
         this.desc = "";
+        this.type = "";
         this.feature = "";
         this.feature_list = [];
         this.target = "";
@@ -45,7 +50,6 @@ var Klass = (function () {
         this.days_img_url_list = [];
         this.days_eng = "";
         this.days_kor = "";
-        this.class_day_per_week = -1; // 주 n회 수업
         this.subway_line = "";
         this.subway_station = "";
         this.subway_station_img = "";
@@ -55,14 +59,12 @@ var Klass = (function () {
         this.venue_road_address = "";
         this.venue_latitude = "";
         this.venue_longitude = "";
-        this.search_tag = "";
+        this.search_tag = ""; // @ Deprecated - REMOVE ME
         this.price = -1;
         this.price_with_format = "";
         // 수업 참여 학생수
         this.student_cnt = -1;
         this.status = "";
-        // REMOVE ME
-        // public enrollment_interval_week:number=-1;         // @ Deprecated / REMOVE ME
         this.class_banner_url = "";
         this.class_banner_url_arr = [];
         this.class_poster_url = "";
@@ -70,6 +72,9 @@ var Klass = (function () {
         this.calendar_table_linear = null;
         this.calendar_table_monthly = null;
         this.klass_calendar_list = null;
+        this.klass_n_student_list = null; // @ Deprecated
+        // 수업 출석 테이블 / 날짜순 정렬 
+        this.klass_attendance_table = null;
         this.date_created = "";
         this.date_updated = "";
         this.delimiter = "|||";
@@ -82,6 +87,44 @@ var Klass = (function () {
         this.myTime = new my_time_1.HelperMyTime();
         this.myFormat = new my_format_1.HelperMyFormat();
     }
+    // @ Desc : 실제 등록 학생수를 가져옴.
+    Klass.prototype.getActualStudentCnt = function () {
+        if (this.myArray.isNotOK(this.klass_n_student_list)) {
+            return 0;
+        }
+        return this.klass_n_student_list.length;
+    };
+    // @ Desc : 수업 출석 관련 통계정보 가져옴.
+    Klass.prototype.getAttendancePercentage = function () {
+        if (this.myArray.isNotOK(this.klass_attendance_table)) {
+            return "0%";
+            ;
+        } // end if
+        var klass_attendance_table = this.klass_attendance_table;
+        var attendance_total_cnt = 0;
+        var attendance_ready_cnt = 0;
+        var attendance_presence_cnt = 0;
+        var attendance_absence_cnt = 0;
+        for (var i = 0; i < klass_attendance_table.length; ++i) {
+            var klass_attendance_list = klass_attendance_table[i];
+            for (var j = 0; j < klass_attendance_list.length; ++j) {
+                var klass_attendance = klass_attendance_list[j];
+                attendance_total_cnt++;
+                if (klass_attendance.isReady()) {
+                    attendance_ready_cnt++;
+                }
+                else if (klass_attendance.isPresence()) {
+                    attendance_presence_cnt++;
+                }
+                else if (klass_attendance.isAbsence()) {
+                    attendance_absence_cnt++;
+                } // end if
+            } // end for inner
+        } // end for        
+        // 출석률. 소수점 아래 2자리까지 계산
+        var percentage = Math.round(100 * 100 * (attendance_presence_cnt / (attendance_total_cnt - attendance_ready_cnt))) / 100;
+        return percentage + "%";
+    };
     // @ Desc : 수업없음 클래스인지 여부.
     Klass.prototype.isNoClassBtn = function () {
         return (-1 === this.id) ? true : false;
@@ -577,6 +620,38 @@ var Klass = (function () {
         }
         // calendar_table_monthly
         klass.setKlassCalendarList(klass.calendar_table_monthly);
+        // klass_n_student_list
+        var userMap = {};
+        if (this.myArray.isOK(klass.klass_n_student_list)) {
+            var list = [];
+            for (var i = 0; i < klass.klass_n_student_list.length; ++i) {
+                var json_1 = klass.klass_n_student_list[i];
+                var klassNStudent = new klass_n_student_1.KlassNStudent().setJSON(json_1);
+                list.push(klassNStudent);
+                userMap[klassNStudent.user_id] = klassNStudent.user;
+            } // end for
+            klass.klass_n_student_list = list;
+        }
+        // klass_attendance_table
+        if (this.myArray.isOK(klass.klass_attendance_table)) {
+            var table = [];
+            for (var i = 0; i < klass.klass_attendance_table.length; ++i) {
+                var json_list = klass.klass_attendance_table[i];
+                var list = [];
+                for (var j = 0; j < json_list.length; ++j) {
+                    var json_2 = json_list[j];
+                    var kat = new klass_attendance_1.KlassAttendance().setJSON(json_2);
+                    var userIdFromKat = kat.user_id;
+                    if (0 < userIdFromKat && userMap[userIdFromKat]) {
+                        // 출석에 맞는 유저 정보를 지정.
+                        kat.user = userMap[userIdFromKat];
+                    } // end if
+                    list.push(kat);
+                } // end inner for
+                table.push(list);
+            } // end for
+            klass.klass_attendance_table = table;
+        } // end if
         return klass;
     }; // end method
     Klass.prototype._setJSON = function (json) {

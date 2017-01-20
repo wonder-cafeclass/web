@@ -152,30 +152,37 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ready())
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if(empty($agent))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$agent)");
             return;
         }
         if($this->is_not_ok("agent_type", $agent_type))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\$agent_type)");
             return;
         }
         if(empty($ip))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$ip)");
             return;
         }
         if(empty($type))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$type)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\$user_id)");
             return;
         }
         if(empty($key))
         {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$key)");
             return;
         }
 
@@ -334,17 +341,17 @@ class MY_Sql extends MY_Library
 
     public function insert_user_naver($naver_id=-1, $birth_year=-1, $birthday="", $gender="",$email="", $nickname="", $name="", $thumbnail_url="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }        
 
         if($this->is_not_ok("naver_id", $naver_id))
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"naver_id\", \$naver_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"naver_id\", \$naver_id)");
             return;   
         }
         if($this->is_not_ok("user_birth_range", $birth_year))
@@ -375,19 +382,19 @@ class MY_Sql extends MY_Library
         if(empty($nickname))
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$nickname)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$nickname)");
             return;   
         }
         if(empty($name)) 
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$name)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$name)");
             return;
         }
         if(empty($thumbnail_url)) 
         {
             // @ Required / 필수
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$thumbnail_url)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$thumbnail_url)");
             return;
         }
 
@@ -414,7 +421,7 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->set('date_created', 'NOW()', FALSE);
         $this->CI->db->insert('user', $data);
@@ -422,11 +429,11 @@ class MY_Sql extends MY_Library
 
     public function get_user_naver($naver_id=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $naver_id)) 
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "(!(0 < \$naver_id))");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "(!(0 < \$naver_id))");
             return null;
         }
 
@@ -435,7 +442,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('naver_id', $naver_id);
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->where('naver_id', $naver_id);
         $this->CI->db->limit($limit, $offset);
@@ -722,30 +729,30 @@ class MY_Sql extends MY_Library
         // TODO - user id로 업데이트 되고 있음.
         // 숫자로 구성되어 있으므로 공격 확률이 있음. 
         // 문자열 조합키로 변경 필요 있음.
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
             return false;
         }
         if($this->is_not_ok("user_password_hashed", $password_hashed))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(password_hashed:$password_hashed)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(password_hashed:$password_hashed)");
             return false;
         }
         if($this->is_not_ok("user_email", $email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(email:$email)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(email:$email)");
             return false;
         }
         if($this->is_not_ok("user_name", $name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(name:$name)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(name:$name)");
             return false;
         }
         if($this->is_not_ok("user_nickname", $nickname))
@@ -754,48 +761,48 @@ class MY_Sql extends MY_Library
         }
         if($this->is_not_ok("user_gender", $gender))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(gender:$gender)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(gender:$gender)");
             return false;
         }
         if($this->is_not_ok("user_birth_year", $birth_year))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_year:$birth_year)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_year:$birth_year)");
             $birth_year = "";
         }
         if($this->is_not_ok("user_birth_month", $birth_month))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_month:$birth_month)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_month:$birth_month)");
             $birth_month = "";
         }
         if($this->is_not_ok("user_birth_day", $birth_day))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_day:$birth_day)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(birth_day:$birth_day)");
             $birth_day = "";
         }
         if($this->is_not_ok("user_thumbnail", $thumbnail))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(thumbnail:$thumbnail)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(thumbnail:$thumbnail)");
             $thumbnail = "";
         }
         if($this->is_not_ok("user_mobile_kor_head", $mobile_head))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_head:$mobile_head)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_head:$mobile_head)");
             return false;
         }
         if($this->is_not_ok("user_mobile_kor_body", $mobile_body))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_body:$mobile_body)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_body:$mobile_body)");
             return false;
         }
         if($this->is_not_ok("user_mobile_kor_tail", $mobile_tail))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_tail:$mobile_tail)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(mobile_tail:$mobile_tail)");
             return false;
         }
 
         // 생일은 없는 경우, 공백 문자로 입력한다.
         $birthday = $this->getBirthday($birth_year, $birth_month, $birth_day);
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$birthday : $birthday");
 
         $data = array(
             'nickname' => $nickname,
@@ -811,7 +818,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id),
@@ -830,25 +837,25 @@ class MY_Sql extends MY_Library
 
     public function update_klass_on_admin($user_id_admin=-1, $klass_id=-1, $klass_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return false;
         }
         if($this->is_not_ok("klass_status", $klass_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
             return false;
         }
         
@@ -863,7 +870,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $klass_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('klass');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -878,25 +885,25 @@ class MY_Sql extends MY_Library
 
     public function update_teacher_on_admin($user_id_admin=-1, $teacher_id=-1, $teacher_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
             return false;
         }
         if($this->is_not_ok("teacher_status", $teacher_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_status:$teacher_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_status:$teacher_status)");
             return false;
         }
         
@@ -907,7 +914,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $teacher_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('teacher');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -926,30 +933,30 @@ class MY_Sql extends MY_Library
 
     public function update_user_on_admin($user_id_admin=-1, $user_id=-1, $user_status="", $user_permission="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id_admin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
             return false;
         }
         if($this->is_not_ok("user_status", $user_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_status:$user_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_status:$user_status)");
             return false;
         }
         if($this->is_not_ok("user_permission", $user_permission))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_permission:$user_permission)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_permission:$user_permission)");
             return false;
         }
         
@@ -961,7 +968,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $user_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             intval($user_id_admin),
@@ -1086,18 +1093,23 @@ class MY_Sql extends MY_Library
         return $query_field;
     }  
 
+     
+
     private function get_query_klass_field() 
     {
         $select_query = 
         'klass.id AS klass_id,' .
+        'klass.teacher_id AS klass_teacher_id,' .
         'klass.title AS klass_title,'.
-        'klass.desc AS klass_desc,'.
+        'klass.type AS klass_type,'.
         'klass.feature AS klass_feature,'.
+
         'klass.target AS klass_target,'.
         'klass.schedule AS klass_schedule,'.
         'klass.date_begin AS klass_date_begin,'.
         'klass.time_begin AS klass_time_begin,'.
         'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+
         'klass.time_end AS klass_time_end,'.
         'klass.level AS klass_level,'.
         'klass.week AS klass_week,'.
@@ -1144,11 +1156,11 @@ class MY_Sql extends MY_Library
 
     private function set_where_klass_search($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1161,11 +1173,11 @@ class MY_Sql extends MY_Library
     }
     private function get_where_klass_search($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1318,11 +1330,11 @@ class MY_Sql extends MY_Library
 
     public function select_klass_cnt_on_admin($search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1367,7 +1379,7 @@ class MY_Sql extends MY_Library
         );        
         $this->set_where_klass_search($search_query);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1375,11 +1387,11 @@ class MY_Sql extends MY_Library
 
     public function select_klass_on_admin($limit=-1, $offset=-1, $search_query="", $klass_status="", $klass_level="", $klass_subway_line="", $klass_subway_station="", $klass_days="", $klass_time="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1388,12 +1400,12 @@ class MY_Sql extends MY_Library
         } // end if
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if  
 
@@ -1445,7 +1457,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->order_by('klass.id', 'DESC');
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->result_object();
 
@@ -1455,11 +1467,11 @@ class MY_Sql extends MY_Library
 
     private function get_query_search_like($search_query="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return "";
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1484,11 +1496,11 @@ class MY_Sql extends MY_Library
 
     public function select_teacher_cnt_on_admin($search_query="", $teacher_status="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1523,7 +1535,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where($this->get_query_search_like($search_query), NULL, FALSE);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1531,11 +1543,11 @@ class MY_Sql extends MY_Library
 
     public function select_teacher_on_admin($search_query="", $teacher_status="", $limit=-1, $offset=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1548,12 +1560,12 @@ class MY_Sql extends MY_Library
         } // end if
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if        
 
@@ -1586,7 +1598,7 @@ class MY_Sql extends MY_Library
         }
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->custom_result_object('Teacher');
 
@@ -1594,11 +1606,11 @@ class MY_Sql extends MY_Library
 
     public function select_user_cnt_on_admin($search_query="", $user_status="", $user_permission="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1649,7 +1661,7 @@ class MY_Sql extends MY_Library
             // $this->CI->db->or_like('mobile', $search_query);
         }
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         return $cnt;
 
@@ -1657,11 +1669,11 @@ class MY_Sql extends MY_Library
 
     public function select_user_on_admin($search_query="", $user_status="", $user_permission="", $limit=-1, $offset=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("search_query", $search_query))
@@ -1678,12 +1690,12 @@ class MY_Sql extends MY_Library
         } // end if        
         if($this->is_not_ok("limit", $limit))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
             return;
         } // end if        
         if($this->is_not_ok("offset", $offset))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
             return;
         } // end if        
 
@@ -1732,7 +1744,7 @@ class MY_Sql extends MY_Library
         }
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);    
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);    
 
         return $query->custom_result_object('User');
 
@@ -1746,7 +1758,7 @@ class MY_Sql extends MY_Library
 
     public function get_user_list() 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         $limit = 100;
         $offset = 0;
@@ -1756,7 +1768,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('status', "A");
         $this->CI->db->limit($limit, $offset);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $query = $this->CI->db->get('user', $limit, $offset);
 
@@ -1815,11 +1827,11 @@ class MY_Sql extends MY_Library
 
     public function get_user_password_by_email($email="") 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(empty($email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$email)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$email)");
             return "";
         }
 
@@ -1829,7 +1841,7 @@ class MY_Sql extends MY_Library
         }
 
         if(!$is_ok) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
             return "";
         }
 
@@ -1837,7 +1849,7 @@ class MY_Sql extends MY_Library
         $this->CI->db->where('email', $email);
         $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select('user');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $this->CI->db->select('password');
         $this->CI->db->where('email', $email);
@@ -1850,12 +1862,12 @@ class MY_Sql extends MY_Library
             $password_hashed = $row->password;
             break;
         }
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$password_hashed : $password_hashed");
 
         return $password_hashed;
     }    
 
-    public function get_user_by_id($user_id=-1) 
+    public function select_user_by_id($user_id=-1) 
     {
         if(!(0 < $user_id))
         {
@@ -2106,10 +2118,178 @@ class MY_Sql extends MY_Library
         return $row;
     } 
 
+    public function select_active_klass_cnt_by_teacher($teacher_id=-1)
+    {
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        /*
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->db->where_in('klass.status', $status_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        */
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+
+    } // end method 
+
+    private function set_where_select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
+    {
+        $select_query = $this->get_query_klass_field();
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+    }
+    public function select_active_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1)
+    {
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
+
+        if(!(0 < $offset)) 
+        {
+            $offset = 0;
+        } // end if
+        if(!(0 < $limit)) 
+        {
+            $limit = 20;
+        } // end if
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+
+        $this->set_where_select_active_klass_list_by_teacher($offset, $limit, $teacher_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_active_klass_list_by_teacher($offset, $limit, $teacher_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_object();
+
+    } // end method        
+
+    public function select_klass_cnt_by_teacher($teacher_id=-1, $klass_status="O")
+    {
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+
+    } // end method 
+
+    public function select_klass_list_by_teacher($offset=-1, $limit=-1, $teacher_id=-1, $klass_status="O")
+    {
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
+
+        if(!(0 < $offset)) 
+        {
+            $offset = 0;
+        } // end if
+        if(!(0 < $limit)) 
+        {
+            $limit = 20;
+        } // end if
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        $select_query = $this->get_query_klass_field();
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        if(!empty($klass_status))
+        {
+            $this->CI->db->where('klass.status', $klass_status);
+        }
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit($limit,$offset);
+        $query = $this->CI->db->get();
+
+        return $query->result_object();
+
+    } // end method    
+
 
     public function select_klass_list($offset=-1, $limit=-1, $klass_status="O")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $offset)) 
         {
@@ -2130,9 +2310,9 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($offset, $limit);
+        $this->CI->db->limit($limit,$offset);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
@@ -2142,7 +2322,7 @@ class MY_Sql extends MY_Library
             $this->CI->db->where('klass.status', $klass_status);
         }
         $this->CI->db->order_by('klass.id', 'DESC');
-        $this->CI->db->limit($offset, $limit);
+        $this->CI->db->limit($limit,$offset);
         $query = $this->CI->db->get();
 
         return $query->result_object();
@@ -2253,7 +2433,71 @@ class MY_Sql extends MY_Library
         }
 
         return $rows;
-    }    
+    } 
+
+
+
+
+
+    // @ Desc : 선생님과 수업을 기준으로 전체 리뷰 갯수 - 부모글(parent_id=-1)를 알려줍니다.
+    private function set_where_select_klass_question_cnt_by_teacher($klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->from("question");
+        $this->CI->db->where_in('klass_id', $klass_id_list);
+        $this->CI->db->where('parent_id',-1);
+        $this->CI->db->where('status','A');
+    }
+    public function select_klass_question_cnt_by_teacher($teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // Query Execution
+        $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        // Logging
+        $this->set_where_select_klass_question_cnt_by_teacher($klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+
+
+
+    
+
+
 
 
     public function select_klass_review_list($klass_id=-1)
@@ -2271,6 +2515,226 @@ class MY_Sql extends MY_Library
 
         return $review_list;
     }
+
+    // @ Desc : 선생님과 수업을 기준으로 전체 리뷰 갯수 - 부모글(parent_id=-1)를 알려줍니다.
+    private function set_where_select_klass_review_cnt_by_teacher($klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        }
+
+        $this->CI->db->select("*");
+        $this->CI->db->from("review");
+        $this->CI->db->where_in('klass_id', $klass_id_list);
+        $this->CI->db->where('parent_id',-1);
+        $this->CI->db->where('status','A');
+    }
+    public function select_klass_review_cnt_by_teacher($teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // Query Execution
+        $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        // Logging
+        $this->set_where_select_klass_review_cnt_by_teacher($klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+    // @ Desc : 선생님과 수업을 기준으로 리뷰 리스트 - 부모글(parent_id=-1)를 가져옵니다. Pagination을 사용합니다.
+    private function set_where_select_klass_review_id_list_by_teacher($limit=-1, $offset=-1, $klass_id_list=null)
+    {
+        if(empty($klass_id_list))
+        {
+            return "";
+        } // end if
+
+        $query_select = 
+        '`review`.`id` AS review_id'
+        ;
+
+        $this->CI->db->select($query_select);
+        $this->CI->db->from("review");
+        $this->CI->db->join('user', '`review`.`user_id` = `user`.`id`','left');
+        if(!empty($klass_id_list))
+        {
+            $this->CI->db->where_in('`review`.`klass_id`', $klass_id_list);
+        }
+        $this->CI->db->where('`review`.`parent_id`',-1);
+        $this->CI->db->where('`review`.`status`','A');
+        $this->CI->db->where('`user`.`status`','A');
+        $this->CI->db->limit($limit, $offset);
+        $this->CI->db->order_by('`review`.`id`', 'DESC');
+
+    } 
+    private function select_klass_review_id_list_by_teacher($limit=-1, $offset=-1, $klass_id_list=null)
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return [];
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return [];
+        } // end if
+        if(empty($klass_id_list))
+        {
+            return [];
+        } // end if
+
+        // Query Execution
+        $this->set_where_select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $this->set_where_select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $review_id_list = [];
+        foreach ($query->result_array() as $row)
+        {
+            array_push($review_id_list, intval($row['review_id']));
+        } // end foreach
+
+        return $review_id_list;
+    }   
+    private function set_where_select_klass_review_list_by_teacher($limit=-1, $offset=-1, $review_id_list=null)
+    {
+        if(empty($review_id_list))
+        {
+            return "";
+        } // end if
+
+        $query_select = 
+        'review.id AS parent_review_id,'.
+        'review.parent_id AS parent_review_parent_id,'.
+        'review.klass_id AS parent_review_klass_id,'.
+        'review.user_id AS parent_review_user_id,'.
+        'review.parent_id AS parent_review_parent_id,'.
+        'review.comment AS parent_review_comment,'.
+        'review.star AS parent_review_star,'.
+        'review.date_created AS parent_review_date_created,'.
+        'review.date_updated AS parent_review_date_updated,'.
+
+        'user.id AS parent_review_user_id,'.
+        'user.name AS parent_review_user_name,'.
+        'user.nickname AS parent_review_user_nickname,'.
+        'user.thumbnail AS parent_review_user_thumbnail,'.
+
+        'IFNULL(child_review.id, -1) AS child_review_id,'.
+        'IFNULL(child_review.parent_id, -1) AS child_review_parent_id,'.
+        'IFNULL(child_review.klass_id, -1) AS child_review_klass_id,'.
+        'IFNULL(child_review.user_id, -1) AS child_review_user_id,'.
+        'IFNULL(child_review.parent_id, -1) AS child_review_parent_id,'.
+        'IFNULL(child_review.comment, "") AS child_review_comment,'.
+        'IFNULL(child_review.star, -1) AS child_review_star,'.
+        'IFNULL(child_review.date_created, "") AS child_review_date_created,'.
+        'IFNULL(child_review.date_updated, "") AS child_review_date_updated,'.
+
+        'IFNULL(child_review_user.id, -1) AS child_review_user_id,'.
+        'IFNULL(child_review_user.name, "") AS child_review_user_name,'.
+        'IFNULL(child_review_user.nickname, "") AS child_review_user_nickname,'.
+        'IFNULL(child_review_user.thumbnail, "") AS child_review_user_thumbnail,'
+        ;
+
+        $this->CI->db->select($query_select);
+        $this->CI->db->from("review");
+        $this->CI->db->join('user', 'review.user_id = user.id','left');
+        $this->CI->db->join('review AS child_review', 'child_review.parent_id = review.id AND `child_review`.`status` = "A"','left');
+        $this->CI->db->join('user AS child_review_user', 'child_review_user.id = child_review.user_id AND `child_review_user`.`status` = "A"','left');
+        $this->CI->db->where_in('review.id', $review_id_list);
+        $this->CI->db->where('review.parent_id',-1);
+        $this->CI->db->where('review.status','A');
+        $this->CI->db->where('user.status','A');
+        $this->CI->db->limit($limit, $offset);
+        $this->CI->db->order_by('review.id', 'DESC');
+        $this->CI->db->order_by('child_review.id', 'DESC');
+
+    }
+    public function select_klass_review_list_by_teacher($limit=-1, $offset=-1, $teacher_id=-1, $klass_id=-1)
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return [];
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+
+        $klass_id_list = [];
+        if(0 < $klass_id)
+        {
+            array_push($klass_id_list, $klass_id);
+        }
+        else 
+        {
+            // 선생님이 진행중인 모든 수업 id 리스트를 가져와야 합니다.
+            $klass_id_list = $this->select_klass_id_list_by_teacher($teacher_id);
+        } // end if
+
+        if(empty($klass_id_list))
+        {
+            return [];
+        }
+
+        // 해당 수업의 모든 부모 리뷰의 id 리스트를 가져옵니다.
+        $review_id_list = 
+        $this->select_klass_review_id_list_by_teacher($limit, $offset, $klass_id_list);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$review_id_list : " . join(',', $review_id_list));
+
+        // $limit과 $offset에 해당하는 부모 리뷰와 이에 속한 댓글 - 자식 리뷰 리스트 가져옵니다.
+        $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_klass_review_list_by_teacher($limit, $offset, $review_id_list);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
     private function select_klass_parent_review_list($klass_id=-1)
     {
         if($this->is_not_ok("klass_id", $klass_id))
@@ -2550,15 +3014,6 @@ class MY_Sql extends MY_Library
 
         return "";
     }
-    // @ Desc : '수업 최소 수강 week 수 ex) 2 - 2주'
-    private function get_klass_week_min_default()
-    {
-        return 2;
-    }    
-    private function get_klass_week_max_default()
-    {
-        return 4;
-    }    
     private function get_klass_days_default()
     {
         $class_level_list = $this->CI->my_paramchecker->get_const('class_days_list');
@@ -2567,10 +3022,6 @@ class MY_Sql extends MY_Library
         }
 
         return "";
-    }
-    private function get_klass_class_per_week_default()
-    {
-        return 1;
     }
     private function get_klass_price_default()
     {
@@ -2587,7 +3038,7 @@ class MY_Sql extends MY_Library
         return $subway_station_list[2][1]; // 잠실역
     }
 
-    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $desc="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $week_min=-1, $week_max=-1, $days="", $class_per_week=-1)
+    public function add_klass($user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $type="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_duration_minutes=-1, $level="", $days="")
     {
         if($this->is_not_ready())
         {
@@ -2613,9 +3064,10 @@ class MY_Sql extends MY_Library
         {
             $title = "수업 제목을 입력해주세요";
         }
-        if($this->is_not_ok("klass_desc", $desc))
+        if($this->is_not_ok("klass_type", $type))
         {
-            $desc = "수업 설명을 입력해주세요";
+            $class_type_list = $this->get_const("class_type_list");
+            $type = $class_type_list[1]; // F : 과금 모델을 사용하지 않음.
         }
         if($this->is_not_ok("klass_feature", $feature))
         {
@@ -2647,22 +3099,9 @@ class MY_Sql extends MY_Library
         {
             $level = $this->get_klass_level_default();
         }
-
-        if($this->is_not_ok("klass_week_min", $week_min))
-        {
-            $week_min = $this->get_klass_week_min_default();
-        }
-        if($this->is_not_ok("klass_week_max", $week_max))
-        {
-            $week_max = $this->get_klass_week_max_default();
-        }
         if($this->is_not_ok("klass_days", $days))
         {
             $days = $this->get_klass_days_default();
-        }
-        if($this->is_not_ok("klass_class_per_week", $class_per_week))
-        {
-            $class_per_week = $this->get_klass_class_per_week_default();
         }
         if($this->is_not_ok("klass_price", $price))
         {
@@ -2674,7 +3113,7 @@ class MY_Sql extends MY_Library
         $venue_telephone = "02-758-8118";
         $venue_address = "서울특별시 송파구 잠실동 40";
         $venue_road_address = "서울특별시 송파구 올림픽로 212 갤러리아팰리스";
-        $venue_latitude = "37.5111896";
+        $venue_latitude = "127.0939713";
         $venue_longitude = "37.5111896";
 
         $subway_line = $this->get_subway_line_default();
@@ -2685,7 +3124,7 @@ class MY_Sql extends MY_Library
             'teacher_resume' => $teacher_resume,
             'teacher_greeting' => $teacher_greeting,
             'title' => $title,
-            'desc' => $desc,
+            'type' => $type,
             'feature' => $feature,
             'target' => $target,
             'schedule' => $schedule,
@@ -2695,10 +3134,7 @@ class MY_Sql extends MY_Library
             'time_duration_minutes' => $time_duration_minutes,
             'level' => $level,
             'week' => 4,
-            'week_min' => $week_min,
-            'week_max' => $week_max,
             'days' => $days,
-            'class_per_week' => $class_per_week,
             'price' => $price,
             'student_cnt' => 3,
             'venue_title' => $venue_title,
@@ -2729,104 +3165,109 @@ class MY_Sql extends MY_Library
 
     } // end method
 
-    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
+    public function update_klass($klass_id=-1,$user_id=-1, $teacher_id=-1, $teacher_resume="", $teacher_greeting="", $title="", $type="", $feature="", $target="", $schedule="", $date_begin="", $time_begin="", $time_end="", $time_duration_minutes=-1, $level="", $week=-1, $days="", $venue_title="", $venue_telephone="", $venue_address="", $venue_road_address="", $venue_latitude="", $venue_longitude="", $subway_line="", $subway_station="", $banner_url="", $poster_url="", $price=-1, $student_cnt=-1)
     {
 
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ready()");
             return;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_id\", $klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_id\", $klass_id)");
             return;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"user_id\", $user_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"user_id\", $user_id)");
             return;
         }
         if($this->is_not_ok("teacher_id", $teacher_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_id\", $teacher_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_id\", $teacher_id)");
             return;
         }
         if($this->is_not_ok("teacher_resume", $teacher_resume))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_resume\", $teacher_resume)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_resume\", $teacher_resume)");
             return;
         }
         if($this->is_not_ok("teacher_greeting", $teacher_greeting))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_greeting\", $teacher_greeting)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"teacher_greeting\", $teacher_greeting)");
             return;
         }
         if($this->is_not_ok("klass_title", $title))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_title\", $title)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_title\", $title)");
+            return;
+        }
+        if($this->is_not_ok("klass_type", $type))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
             return;
         }
         if($this->is_not_ok("klass_feature", $feature))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_feature\", $feature)");
             return;
         }
         if($this->is_not_ok("klass_target", $target))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_target\", $target)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_target\", $target)");
             return;
         }
         if($this->is_not_ok("klass_schedule", $schedule))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_schedule\", $schedule)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_schedule\", $schedule)");
             return;
         }
         if($this->is_not_ok("klass_date_begin", $date_begin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_date_begin\", $date_begin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_date_begin\", $date_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_begin))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_begin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_begin)");
             return;
         }
         if($this->is_not_ok("klass_time_hhmm", $time_end))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_end)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_time_hhmm\", $time_end)");
             return;
         }
         if($this->is_not_ok("klass_level", $level))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_level\", $level)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_level\", $level)");
             return;
         }
         if($this->is_not_ok("klass_week", $week))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_week\", $week)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_week\", $week)");
             return;
         }
         if($this->is_not_ok("klass_days", $days))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_days\", $days)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_days\", $days)");
             return;
         }
         if($this->is_not_ok("klass_price", $price))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_price\", $price)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_price\", $price)");
             return;
         }
         if($this->is_not_ok("klass_student_cnt", $student_cnt))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_student_cnt\", $student_cnt)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_student_cnt\", $student_cnt)");
             return;
         }
 
         if($this->is_not_ok("klass_venue_title", $venue_title))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_title\", $venue_title)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_title\", $venue_title)");
             return;
         }
         if($this->is_not_ok("klass_venue_telephone", $venue_telephone))
@@ -2835,32 +3276,32 @@ class MY_Sql extends MY_Library
         }
         if($this->is_not_ok("klass_venue_address", $venue_address))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_address\", $venue_address)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_address\", $venue_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_road_address", $venue_road_address))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_road_address\", $venue_road_address)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_road_address\", $venue_road_address)");
             return;
         }
         if($this->is_not_ok("klass_venue_latitude", $venue_latitude))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_latitude\", $venue_latitude)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_latitude\", $venue_latitude)");
             return;
         }
         if($this->is_not_ok("klass_venue_longitude", $venue_longitude))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_longitude\", $venue_longitude)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_venue_longitude\", $venue_longitude)");
             return;
         }
         if($this->is_not_ok("klass_subway_line", $subway_line))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_line\", $subway_line)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_line\", $subway_line)");
             return;
         }
         if($this->is_not_ok("klass_subway_station", $subway_station))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_station\", $subway_station)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "$this->is_not_ok(\"klass_subway_station\", $subway_station)");
             return;
         }        
         if($this->is_not_ok("klass_banner_url", $banner_url))
@@ -2915,7 +3356,7 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, $sql);
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, $sql);
 
         $this->CI->db->where('id', $klass_id);
         $this->CI->db->where('teacher_id', $teacher_id);
@@ -3493,16 +3934,18 @@ class MY_Sql extends MY_Library
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         $this->CI->db->where('klass.id', $klass_id);
+        $this->CI->db->limit(1);
         $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         $this->CI->db->select($select_query);
         $this->CI->db->from('klass');
         $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
         $this->CI->db->where('klass.id', $klass_id);
+        $this->CI->db->limit(1);
         $query = $this->CI->db->get();
 
-        return $query->result_object();        
+        return $query->row();        
 
     }
     public function select_klass_by_teacher($teacher_id=-1) 
@@ -3522,58 +3965,43 @@ class MY_Sql extends MY_Library
         $this->CI->db->limit(1);
         $query = $this->CI->db->get('klass');
 
-        $klass_list = $this->decorate_klass($query);
-        $klass = null;
-        if(!empty($klass_list)) 
-        {
-            $klass = $klass_list[0];
-        }
-
-        return $klass;
-    }    
-    private function decorate_klass($query=null) 
+        return $query->row();
+    }
+    private function select_klass_id_list_by_teacher($teacher_id=-1) 
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
-
-        if(is_null($query)) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$query)");
-            return;
-        } // end if
-        $const_map = $this->CI->my_paramchecker->get_const_map();
-        if(is_null($const_map)) {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "is_null(\$const_map)");
-            return;
-        } // end if
-        $rows = $query->custom_result_object('KlassCourse');
-        $output = array();
-        foreach ($rows as $row)
+        if($this->is_not_ready())
         {
-            // 추가할 정보들을 넣는다.
-            $row->time_begin_img_url($const_map, $this->CI->my_path);
-            $row->level_img_url($const_map, $this->CI->my_path);
-            $row->set_days_list($const_map);
-
-            $row->days_img_url($const_map, $this->CI->my_path);
-            
-            $row->venue_subway_station_img_url($const_map, $this->CI->my_path);
-
-            $row->price_with_format();
-            $row->weeks_to_months();
-
-            // Set number type
-            $row->id = intval($row->id);
-            $row->enrollment_interval_week = intval($row->enrollment_interval_week);
-            $row->student_cnt = intval($row->student_cnt);
-            $row->discount = intval($row->discount);
-            $row->teacher_id = intval($row->teacher_id);
-            $row->time_duration_minutes = intval($row->time_duration_minutes);
-            $row->week = intval($row->week);
-
-            array_push($output, $row);
+            return;
         }
 
-        return $output;
-    }     
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            return;
+        }
+
+        // Query Execution
+        $this->CI->db->select('id');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $query = $this->CI->db->get();
+
+        // Query Logging
+        $this->CI->db->select('id');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('teacher_id', $teacher_id);
+        $this->CI->db->order_by('id', 'DESC');
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $klass_id_list = [];
+        foreach ($query->result_array() as $row)
+        {
+            array_push($klass_id_list, intval($row['id']));
+        }
+
+        return $klass_id_list;
+    }
 
 
     public function insert_teacher($user_id=-1, $email="", $name="", $nickname="", $resume="", $greeting="", $gender="", $birth_year="", $birth_month="", $birth_day="", $thumbnail="", $mobile_head="", $mobile_body="", $mobile_tail="")
@@ -3846,11 +4274,11 @@ class MY_Sql extends MY_Library
 
     public function add_payment_import($login_user_id=-1, $payment_imp=null)
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return;
         }
         if(is_null($payment_imp))
@@ -3861,109 +4289,108 @@ class MY_Sql extends MY_Library
         // @ Required
         if($this->is_not_ok("klass_id", $payment_imp->klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "klass_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "klass_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("user_id", $payment_imp->user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "user_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "user_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("user_id", $login_user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "login_user_id is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "login_user_id is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_uid", $payment_imp->imp_uid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "imp_uid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "imp_uid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_merchant_uid", $payment_imp->merchant_uid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "merchant_uid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "merchant_uid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pay_method", $payment_imp->pay_method))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pay_method is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pay_method is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pg_provider", $payment_imp->pg_provider))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_provider is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pg_provider is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_pg_tid", $payment_imp->pg_tid))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "pg_tid is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "pg_tid is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_escrow", $payment_imp->escrow))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "escrow is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "escrow is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_apply_num", $payment_imp->apply_num))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "apply_num is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "apply_num is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_name", $payment_imp->name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "name is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "name is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_name", $payment_imp->buyer_name))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_name is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_name is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_email", $payment_imp->buyer_email))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_email is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_email is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_buyer_tel", $payment_imp->buyer_tel))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "buyer_tel is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "buyer_tel is not valid");
             return;
         }
 
         // @ Required
         if($this->is_not_ok("payment_imp_status", $payment_imp->status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "status is not valid");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "status is not valid");
             return;
         }
 
-        // wonder.jung
         // 결제 / 취소 / 환불 등의 UNIX TIME을 DATE TIME으로 바꾸어야 한다.
         if(0 < $payment_imp->vbank_date) 
         {
@@ -4055,10 +4482,315 @@ class MY_Sql extends MY_Library
             // $query=""
             $sql
         );
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
     } // end method 
 
+    public function select_payment_import_cnt($klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+
+
+        // Query Execution
+        $this->CI->db->select("*");
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('user_id',$user_id);
+        }
+        $cnt = $this->CI->db->count_all_results();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
+
+        // Logging
+        $this->CI->db->select("*"); 
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id',$user_id);
+        }
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $cnt;
+    }
+ 
+
+    // @ Desc : 마지막 결재 영수증 링크 가져오기.(결재 or 결재 취소)
+    public function select_payment_import_receipt($klass_id=-1, $user_id=-1, $payment_imp_status="")
+    {
+        if($this->is_not_ready())
+        {
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+        if($this->is_not_ok("payment_imp_status", $payment_imp_status))
+        {
+            return;
+        } // end if
+
+        // Query Execution
+        $query_field = 
+        'IF(payment_import.status=\'paid\',payment_import.receipt_url,payment_import.cancel_receipt_url) AS receipt_url';
+        $this->CI->db->select($query_field);
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        if(!empty($payment_imp_status))
+        {
+            $this->CI->db->where('payment_import.status',$payment_imp_status);
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get();
+        $result = $query->row();
+        $receipt_url = $result->receipt_url;
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$receipt_url : $receipt_url");
+
+        // Logging
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from("payment_import");
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        if(!empty($payment_imp_status))
+        {
+            $this->CI->db->where('payment_import.status',$payment_imp_status);   
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit(1);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $receipt_url;
+    }        
+    
+    private function get_query_payment_import_field() 
+    {
+        $select_query = 
+        'payment_import.id AS pi_id,' .
+        'payment_import.klass_id AS pi_klass_id,' .
+        'payment_import.user_id AS pi_user_id,' .
+        'payment_import.imp_uid AS pi_imp_uid,' .
+        'payment_import.merchant_uid AS pi_merchant_uid,' .
+
+        'payment_import.pay_method AS pi_pay_method,' .
+        'payment_import.pg_provider AS pi_pg_provider,' .
+        'payment_import.pg_tid AS pi_pg_tid,' .
+        'payment_import.escrow AS pi_escrow,' .
+        'payment_import.apply_num AS pi_apply_num,' .
+
+        'payment_import.card_name AS pi_card_name,' .
+        'payment_import.card_quota AS pi_card_quota,' .
+        'payment_import.vbank_name AS pi_vbank_name,' .
+        'payment_import.vbank_num AS pi_vbank_num,' .
+        'payment_import.vbank_holder AS pi_vbank_holder,' .
+
+        'payment_import.vbank_date AS pi_vbank_date,' .
+        'payment_import.my_date_vbank_date AS pi_my_date_vbank_date,' .
+        'payment_import.name AS pi_name,' .
+        'payment_import.amount AS pi_amount,' .
+        'payment_import.cancel_amount AS pi_cancel_amount,' .
+
+        'payment_import.currency AS pi_currency,' .
+        'payment_import.buyer_name AS pi_buyer_name,' .
+        'payment_import.buyer_email AS pi_buyer_email,' .
+        'payment_import.buyer_tel AS pi_buyer_tel,' .
+        'payment_import.buyer_addr AS pi_buyer_addr,' .
+
+        'payment_import.buyer_postcode AS pi_buyer_postcode,' .
+        'payment_import.status AS pi_status,' .
+        'payment_import.paid_at AS pi_paid_at,' .
+        'payment_import.my_date_paid_at AS pi_my_date_paid_at,' .
+        'payment_import.failed_at AS pi_failed_at,' .
+
+        'payment_import.my_date_failed_at AS pi_my_date_failed_at,' .
+        'payment_import.cancelled_at AS pi_cancelled_at,' .
+        'payment_import.my_date_cancelled_at AS pi_my_date_cancelled_at,' .
+        'payment_import.fail_reason AS pi_fail_reason,' .
+        'payment_import.cancel_reason AS pi_cancel_reason,' .
+
+        'payment_import.receipt_url AS pi_receipt_url,' .
+        'payment_import.cancel_receipt_url AS pi_cancel_receipt_url,' .
+        'payment_import.date_created AS pi_date_created,' .
+
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.type AS klass_type,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+
+        'klass.venue_longitude AS klass_venue_longitude,'.
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+
+        'klass.class_banner_url AS klass_class_banner_url,'.
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.        
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email,' .
+
+        'teacher.id AS teacher_id,' .
+        'teacher.user_id AS teacher_user_id,' .
+        'teacher.nickname AS teacher_nickname,' .
+        'teacher.name AS teacher_name,' .
+        'teacher.gender AS teacher_gender,' .
+        'teacher.birthday AS teacher_birthday,' .
+        'teacher.thumbnail AS teacher_thumbnail,' .
+        'teacher.status AS teacher_status,' .
+        'teacher.mobile AS teacher_mobile,' .
+        'teacher.email AS teacher_email,' .
+        'teacher.resume AS teacher_resume,' .
+        'teacher.greeting AS teacher_greeting' .        
+
+        ''
+
+        ;
+
+        return $select_query;
+    }
+
+    public function select_payment_import_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        } // end if
+
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if
+
+        // Query Execution
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('payment_import.klass_id',$klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('payment_import.user_id',$user_id);
+        }
+        $this->CI->db->order_by('payment_import.id', 'DESC');
+        $this->CI->db->limit($limit, $offset);
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }    
+
+    private function set_where_select_payment_import($imp_uid="")
+    {
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        $this->CI->db->where('imp_uid', $imp_uid);
+        $this->CI->db->limit(1);
+    }
     public function select_payment_import($imp_uid="")
     {
         if(empty($imp_uid))
@@ -4066,15 +4798,45 @@ class MY_Sql extends MY_Library
             return null;
         }
 
-        $this->CI->db->select("*");
-        $this->CI->db->where('imp_uid', $imp_uid);
-        $this->CI->db->limit(1);
-        $query = $this->CI->db->get('payment_import');
+        $this->set_where_select_payment_import($imp_uid);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_payment_import($imp_uid);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
         return $query->row();
     }
 
-    public function add_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1)
+    private function set_where_select_payment_import_by_id($pi_id=-1)
+    {
+        $query_field = $this->get_query_payment_import_field();
+        $this->CI->db->select($query_field); 
+        $this->CI->db->from('payment_import');
+        $this->CI->db->join('user', 'payment_import.user_id = user.id');
+        $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
+        $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
+        $this->CI->db->where('payment_import.id', $pi_id);
+        $this->CI->db->limit(1);
+    }
+    public function select_payment_import_by_id($pi_id=-1)
+    {
+        if(!(0 < $pi_id))
+        {
+            return null;
+        }
+
+        $this->set_where_select_payment_import_by_id($pi_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_select_payment_import_by_id($pi_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->row();
+    }    
+
+    public function add_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1, $payment_imp_id=-1)
     {
         if($this->is_not_ready())
         {
@@ -4092,10 +4854,30 @@ class MY_Sql extends MY_Library
         {
             return;
         }
+        if($this->is_not_ok("payment_imp_id", $payment_imp_id))
+        {
+            return;
+        }
+
+        // 수업을 가져와 선생님 아이디를 추가합니다.
+        $klass = $this->select_klass($klass_id);
+        if(is_null($klass))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "is_null(\$klass)");
+            return;
+        } // end if
+        $teacher_id = intval($klass->teacher_id);
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$teacher_id is not valid!");
+            return;
+        }
 
         $data = array(
             'user_id' => $user_id,
-            'klass_id' => $klass_id
+            'klass_id' => $klass_id,
+            'teacher_id' => $teacher_id,
+            'payment_import_id'=>$payment_imp_id
         );
 
         // Query Execution
@@ -4117,25 +4899,25 @@ class MY_Sql extends MY_Library
 
     public function update_klass_student($login_user_id=-1, $klass_id=-1, $user_id=-1, $klass_n_student_status="")
     {
-        $this->add_track_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
         if($this->is_not_ready())
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
             return false;
         }
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return false;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return false;
         }
         if($this->is_not_ok("klass_n_student_status", $klass_n_student_status))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_status:$klass_status)");
             return false;
         }
         
@@ -4151,7 +4933,7 @@ class MY_Sql extends MY_Library
         // Logging - 짧은 쿼리들은 모두 등록한다.
         $this->CI->db->where('id', $klass_id);
         $sql = $this->CI->db->set($data)->get_compiled_update('klass_n_student');
-        $this->add_track(__FILE__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
         $this->log_query(
             // $user_id=-1
             $login_user_id,
@@ -4162,27 +4944,723 @@ class MY_Sql extends MY_Library
         );
     }
 
-    public function select_klass_student($klass_id=-1, $user_id=-1)
+    public function select_klass_student($klass_id=-1, $user_id=-1, $status="")
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
             return null;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
             return null;
+        }
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
         }
 
         $this->CI->db->select("*");
         $this->CI->db->where('klass_id', $klass_id);
         $this->CI->db->where('user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('status', $status);
+        }
         $this->CI->db->limit(1);
         $query = $this->CI->db->get('klass_n_student');
 
         return $query->row();
-    }         
+    } 
+
+    private function get_query_field_klass_n_student_stat() 
+    {
+        $select_query = 
+        'klass_n_student.id AS ks_id,' .
+        'klass_n_student.klass_id AS ks_klass_id,' .
+        'klass_n_student.teacher_id AS ks_teacher_id,' .
+        'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.payment_import_id AS ks_payment_import_id,' .
+        'klass_n_student.status AS ks_status,' .
+        'klass_n_student.date_created AS ks_date_created,' .
+
+        'klass_n_student.date_updated AS ks_date_updated,' .     
+
+        'COUNT(IF(attendance.status=\'R\',attendance.status,NULL)) AS at_status_ready_cnt,' .
+        'COUNT(IF(attendance.status=\'P\',attendance.status,NULL)) AS at_status_presence_cnt,' .
+        'COUNT(IF(attendance.status=\'A\',attendance.status,NULL)) AS at_status_absence_cnt,' .
+        'COUNT(attendance.status) AS at_status_total_cnt,' .
+
+        'COUNT(review.id) AS review_cnt,' .
+        'COUNT(question.id) AS question_cnt,' .
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email,' .
+
+        ''
+        ;
+
+        return $select_query;
+    } // end method  
+
+    private function set_klass_n_student_stat_condition($klass_id=-1, $klass_status="")
+    {
+        $query_field = 
+        $this->get_query_field_klass_n_student_stat();
+
+        $this->CI->db->select($query_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('attendance', 'attendance.user_id = klass_n_student.user_id AND attendance.klass_id = klass_n_student.klass_id', 'left');
+        $this->CI->db->join('review', 'review.user_id = klass_n_student.user_id AND review.klass_id = klass_n_student.klass_id AND review.status=\'A\'', 'left');
+        $this->CI->db->join('question', 'question.user_id = klass_n_student.user_id AND question.klass_id = klass_n_student.klass_id AND question.status=\'A\'', 'left');
+        $this->CI->db->where('klass_n_student.klass_id', $klass_id);
+        if(!empty($klass_status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $klass_status);
+        }
+        $this->CI->db->group_by("klass_n_student.user_id");        
+    }  
+
+    // @ Desc : 특정 수업에 참여한 모든 유저의 데이터를 가져옵니다. 유저에게 출석 통계 정보를 추가합니다.
+    public function select_klass_n_student_stat_list($klass_id=-1, $klass_status="")
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_status", $klass_status))
+        {
+            $klass_status = "";
+        } // end if
+
+        // Query Execution
+        $this->set_klass_n_student_stat_condition($klass_id, $klass_status);
+        $query = $this->CI->db->get();
+
+        // Logging
+        $this->set_klass_n_student_stat_condition($klass_id, $klass_status);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    } // end method     
+
+    private function get_query_klass_n_student_field() 
+    {
+        $select_query = 
+        'klass_n_student.id AS ks_id,' .
+        'klass_n_student.klass_id AS ks_klass_id,' .
+        'klass_n_student.teacher_id AS ks_teacher_id,' .
+        'klass_n_student.user_id AS ks_user_id,' .
+        'klass_n_student.payment_import_id AS ks_payment_import_id,' .
+        'klass_n_student.status AS ks_status,' .
+        'klass_n_student.date_created AS ks_date_created,' .
+
+        'klass_n_student.date_updated AS ks_date_updated,' .
+
+        'klass.id AS klass_id,' .
+        'klass.title AS klass_title,'.
+        'klass.type AS klass_type,'.
+        'klass.feature AS klass_feature,'.
+        'klass.target AS klass_target,'.
+
+        'klass.schedule AS klass_schedule,'.
+        'klass.date_begin AS klass_date_begin,'.
+        'klass.time_begin AS klass_time_begin,'.
+        'klass.time_duration_minutes AS klass_time_duration_minutes,'.
+        'klass.time_end AS klass_time_end,'.
+
+        'klass.level AS klass_level,'.
+        'klass.week AS klass_week,'.
+        'klass.days AS klass_days,'.
+        'klass.subway_line AS klass_subway_line,'.
+        'klass.subway_station AS klass_subway_station,'.
+
+        'klass.venue_title AS klass_venue_title,'.
+        'klass.venue_telephone AS klass_venue_telephone,'.
+        'klass.venue_address AS klass_venue_address,'.
+        'klass.venue_road_address AS klass_venue_road_address,'.
+        'klass.venue_latitude AS klass_venue_latitude,'.
+
+        'klass.venue_longitude AS klass_venue_longitude,'.
+        'klass.status AS klass_status,'.
+        'klass.price AS klass_price,'.
+        'klass.student_cnt AS klass_student_cnt,'.
+        'klass.class_poster_url AS klass_class_poster_url,'.
+
+        'klass.class_banner_url AS klass_class_banner_url,'.
+        'klass.date_created AS klass_date_created,'.
+        'klass.date_updated AS klass_date_updated,'.        
+
+        'user.id AS user_id,' .
+        'user.nickname AS user_nickname,' .
+        'user.name AS user_name,' .
+        'user.gender AS user_gender,' .
+        'user.birthday AS user_birthday,' .
+        'user.thumbnail AS user_thumbnail,' .
+        'user.status AS user_status,' .
+        'user.permission AS user_permission,' .
+        'user.mobile AS user_mobile,' .
+        'user.email AS user_email,' .
+
+        'teacher.id AS teacher_id,' .
+        'teacher.user_id AS teacher_user_id,' .
+        'teacher.nickname AS teacher_nickname,' .
+        'teacher.name AS teacher_name,' .
+        'teacher.gender AS teacher_gender,' .
+        'teacher.birthday AS teacher_birthday,' .
+        'teacher.thumbnail AS teacher_thumbnail,' .
+        'teacher.status AS teacher_status,' .
+        'teacher.mobile AS teacher_mobile,' .
+        'teacher.email AS teacher_email,' .
+        'teacher.resume AS teacher_resume,' .
+        'teacher.greeting AS teacher_greeting' .
+
+        ''
+        ;
+
+        return $select_query;
+    } // end method   
+
+    // @ Desc : 특정 유저가 참여한 모든 수업을 가져옵니다.
+    public function select_klass_n_student_list($limit=-1, $offset=-1, $user_id=-1, $status="")
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if 
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        // Query Execution
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id', 'left');
+
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit,$offset);
+        $query = $this->CI->db->get();
+
+
+        // Logging
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id', 'left');
+
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit,$offset);
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    } // end method
+
+    // @ Desc : 특정 선생님이 참여한 모든 수업의 갯수를 가져옵니다.
+    public function select_klass_n_student_cnt_by_teacher($teacher_id=-1, $status="")
+    {
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->where('klass_n_student.teacher_id', $teacher_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+
+    } // end method 
+
+    // @ Desc : 특정 유저가 참여한 모든 수업을 가져옵니다.
+    public function select_klass_n_student_list_by_teacher($limit=-1, $offset=-1, $teacher_id=-1, $status="")
+    {
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if 
+        if($this->is_not_ok("teacher_id", $teacher_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(teacher_id:$teacher_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        // Query Execution
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass_n_student.teacher_id = teacher.id', 'left');
+
+        $this->CI->db->where('klass_n_student.teacher_id', $teacher_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit,$offset);
+        $query = $this->CI->db->get();
+
+
+        // Logging
+        $this->CI->db->select($query_klass_n_student_field);
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->join('user', 'klass_n_student.user_id = user.id', 'left');
+        $this->CI->db->join('klass', 'klass_n_student.klass_id = klass.id', 'left');
+        $this->CI->db->join('teacher', 'klass_n_student.teacher_id = teacher.id', 'left');
+
+        $this->CI->db->where('klass_n_student.teacher_id', $teacher_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+
+        $this->CI->db->limit($limit,$offset);
+
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    } // end method     
+
+
+
+    // @ Desc : 특정 유저가 참여한 모든 수업의 갯수를 가져옵니다.
+    public function select_klass_n_student_cnt($user_id=-1, $status="")
+    {
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id:$user_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->where('klass_n_student.user_id', $user_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+    } // end method  
+
+
+
+
+
+    public function insert_attendance($login_user_id=-1, $klass_id=-1, $user_id=-1, $date_attend="")
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("user_id", $login_user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            return;
+        }
+        if($this->is_not_ok("date_yyyymmddhhmmss", $date_attend))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"date_attend\", \$date_attend)");
+            return;
+        }
+
+        // Execute Query
+        $data = array(
+            'user_id' => $user_id,
+            'klass_id' => $klass_id,
+            'date_attend' => $date_attend
+        );
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $this->CI->db->insert('attendance', $data);
+
+        // Log Query
+        $this->CI->db->set('date_created', 'NOW()', FALSE);
+        $sql = $this->CI->db->set($data)->get_compiled_insert('attendance');
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_INSERT,
+            // $query=""
+            $sql
+        );
+
+    } // end method
+
+    public function update_attendance($login_user_id=-1, $attendance_id=-1, $klass_id=-1, $user_id=-1, $klass_attendance_status="")
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }        
+        if($this->is_not_ok("user_id", $login_user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"login_user_id\", \$login_user_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_attendance_id", $attendance_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            return;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            return;
+        }
+        if($this->is_not_ok("klass_attendance_status", $klass_attendance_status))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_attendance_status\", \$klass_attendance_status)");
+            return;
+        }
+
+        // Execute Query
+        $data = array(
+            'status' => $klass_attendance_status
+        );
+        $this->CI->db->where('id', $attendance_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->update('attendance', $data);
+
+        // Log Query
+        $this->CI->db->where('id', $attendance_id);
+        $this->CI->db->where('user_id', $user_id);
+        $this->CI->db->where('klass_id', $klass_id);
+        $sql = $this->CI->db->set($data)->get_compiled_update('attendance');
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+        $this->log_query(
+            // $user_id=-1
+            $login_user_id,
+            // $action_type=""
+            $this->CI->my_logger->QUERY_TYPE_UPDATE,
+            // $query=""
+            $sql
+        );
+
+    } // end method    
+
+    public function get_attendance_cnt($klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        }
+        if($this->is_not_ok("date_yyyymmddhhmmss", $date_attend))
+        {
+            $date_attend = "";
+        }
+        if($this->is_not_ok("klass_attendance_status", $attendance_status))
+        {
+            $attendance_status = "";
+        }
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('attendance');
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
+        if(!empty($date_attend))
+        {
+            // 년, 월, 일이 동일한 결과만 검색하도록 합니다. 시간 범위로 검색.
+            $where = "DATE_FORMAT('$date_attend', '%Y-%m-%d 00:00:00') < attendance.date_attend";
+            $this->CI->db->where($where);
+            $where = "attendance.date_attend < DATE_FORMAT('$date_attend', '%Y-%m-%d 23:59:59')";
+            $this->CI->db->where($where);            
+        }
+        if(!empty($attendance_status))
+        {
+            $this->CI->db->where('status', $attendance_status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+    } 
+
+    private function set_where_attendance($attendance_id=-1, $klass_id=-1, $user_id=-1)
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        if(0 < $attendance_id) 
+        {
+            $this->CI->db->where('id', $attendance_id);
+        }
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
+    }
+    public function get_attendance($attendance_id=-1, $klass_id=-1, $user_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        } // end if
+        if($this->is_not_ok("klass_attendance_id", $attendance_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"attendance_id\", \$attendance_id)");
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"klass_id\", \$klass_id)");
+            return;
+        } // end if
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"user_id\", \$user_id)");
+            return;
+        } // end if
+
+        $this->set_where_attendance($attendance_id, $klass_id, $user_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance($attendance_id, $klass_id, $user_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->row();
+    }       
+
+
+
+    private function set_where_attendance_table($klass_id=-1)
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->order_by('date_attend', 'ASC');
+        $this->CI->db->order_by('user_id', 'ASC');
+
+    }
+    public function get_attendance_table($klass_id=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        }
+
+        $this->set_where_attendance_table($klass_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance_table($klass_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
+
+    private function set_where_attendance_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
+    {
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        if(0 < $klass_id) 
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id) 
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
+        if(!empty($date_attend))
+        {
+            // 년, 월, 일이 동일한 결과만 검색하도록 합니다. 시간 범위로 검색.
+            $where = "DATE_FORMAT('$date_attend', '%Y-%m-%d 00:00:00') < attendance.date_attend";
+            $this->CI->db->where($where);
+            $where = "attendance.date_attend < DATE_FORMAT('$date_attend', '%Y-%m-%d 23:59:59')";
+            $this->CI->db->where($where);            
+        }  
+        if(!empty($attendance_status))
+        {
+            $this->CI->db->where('status', $attendance_status);
+        }
+        $this->CI->db->limit($limit,$offset);
+    }
+    public function get_attendance_list($limit=-1, $offset=-1, $klass_id=-1, $user_id=-1, $date_attend="", $attendance_status="")
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("limit", $limit))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"limit\", \$limit)");
+            return;
+        } // end if        
+        if($this->is_not_ok("offset", $offset))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(\"offset\", \$offset)");
+            return;
+        } // end if
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $klass_id = -1;
+        }
+        if($this->is_not_ok("user_id", $user_id))
+        {
+            $user_id = -1;
+        }
+        if($this->is_not_ok("date_yyyymmddhhmmss", $date_attend))
+        {
+            $date_attend = "";
+        }
+        if($this->is_not_ok("klass_attendance_status", $attendance_status))
+        {
+            $attendance_status = "";
+        }
+
+        $this->set_where_attendance_list($limit, $offset, $klass_id, $user_id, $date_attend, $attendance_status);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance_list($limit, $offset, $klass_id, $user_id, $date_attend, $attendance_status);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
+
+    private function get_query_field_attendance() 
+    {
+        // @ kat -> 'k'lass 'at'tendance
+
+        $select_query = 
+        'attendance.id AS kat_id,' .
+        'attendance.klass_id AS kat_klass_id,' .
+        'attendance.user_id AS kat_user_id,' .
+        'attendance.status AS kat_status,' .
+        'attendance.date_attend AS kat_date_attend,' .
+        'attendance.date_created AS kat_date_created,' .
+        'attendance.date_updated AS kat_date_updated,' .
+
+        ''
+        ;
+
+        return $select_query;
+    } // end method    
 
 }
 

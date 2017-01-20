@@ -15,6 +15,8 @@ import { MyEventWatchTowerService }        from '../../util/service/my-event-wat
 @Injectable()
 export class AdminService {
 
+  private fetchBuyKlassUrl = '/CI/index.php/api/admin/fetchbuyklass';
+
   private updateKlassUrl = '/CI/index.php/api/admin/updateklass';
   private fetchKlassListUrl = '/CI/index.php/api/admin/fetchklasslist';
 
@@ -48,6 +50,38 @@ export class AdminService {
     return this.watchTower.isDebug();
   } // end method
 
+  fetchBuyKlass (  
+    apiKey:string, 
+    pageNum:number, 
+    pageRowCnt:number, 
+    klassId:number, 
+    userId:number ): Promise<MyResponse> {
+
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / 시작");
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / apiKey : ",apiKey);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageNum : ",pageNum);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / pageRowCnt : ",pageRowCnt);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / klassId : ",klassId);
+    if(this.isDebug()) console.log("admin.service / fetchBuyKlass / userId : ",userId);
+
+    // POST
+    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
+    let req_url = this.us.get(this.fetchBuyKlassUrl);
+
+    let params = {
+      page_num:pageNum,
+      pageRowCnt:pageRowCnt,
+      klass_id:klassId,
+      user_id:userId
+    };
+    
+    return this.http.post(req_url, params, options)
+                .toPromise()
+                .then(this.myExtractor.extractData)
+                .catch(this.myExtractor.handleError);
+
+  }   
+
 
   updateKlass ( apiKey:string, 
                 userIdAdmin:number, 
@@ -78,7 +112,7 @@ export class AdminService {
 
   fetchKlassList (  apiKey:string, 
                     pageNum:number, 
-                    pageSize:number, 
+                    pageRowCnt:number, 
                     searchQuery:string, 
                     klassStatus:string,
                     klassLevel:string,
@@ -90,7 +124,7 @@ export class AdminService {
     if(this.isDebug()) console.log("admin.service / fetchKlassList / 시작");
     if(this.isDebug()) console.log("admin.service / fetchKlassList / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchKlassList / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchKlassList / searchQuery : ",searchQuery);
 
     if(this.isDebug()) console.log("admin.service / fetchKlassList / klassStatus : ",klassStatus);
@@ -106,7 +140,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       klass_status:klassStatus,
       klass_level:klassLevel,
@@ -151,12 +185,12 @@ export class AdminService {
 
   }
 
-  fetchTeacherListV2 (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, teacherStatus:string): Promise<MyResponse> {
+  fetchTeacherListV2 (apiKey:string, pageNum:number, pageRowCnt:number, searchQuery:string, teacherStatus:string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / 시작");
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / searchQuery : ",searchQuery);
     if(this.isDebug()) console.log("admin.service / fetchTeacherListV2 / teacherStatus : ",teacherStatus);
 
@@ -166,7 +200,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       teacher_status:teacherStatus
     };
@@ -205,12 +239,12 @@ export class AdminService {
 
   }
 
-  fetchUserListV2 (apiKey:string, pageNum:number, pageSize:number, searchQuery:string, userStatus:string, userPermission:string): Promise<MyResponse> {
+  fetchUserListV2 (apiKey:string, pageNum:number, pageRowCnt:number, searchQuery:string, userStatus:string, userPermission:string): Promise<MyResponse> {
 
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / 시작");
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / apiKey : ",apiKey);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageSize : ",pageSize);
+    if(this.isDebug()) console.log("admin.service / fetchUserListV2 / pageRowCnt : ",pageRowCnt);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / searchQuery : ",searchQuery);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / userStatus : ",userStatus);
     if(this.isDebug()) console.log("admin.service / fetchUserListV2 / userPermission : ",userPermission);
@@ -221,7 +255,7 @@ export class AdminService {
 
     let params = {
       page_num:pageNum,
-      page_size:pageSize,
+      pageRowCnt:pageRowCnt,
       search_query:searchQuery,
       user_status:userStatus,
       user_permission:userPermission
@@ -233,176 +267,6 @@ export class AdminService {
                 .catch(this.myExtractor.handleError);
 
   }  
-
-
-
-
-
-
-
-// REMOVE ME
-/*
-
-  // REMOVE ME
-  // private fetchUserListPaginationUrl = '/CI/index.php/api/admin/userlistpagination';
-  // private fetchUserListUrl = '/CI/index.php/api/admin/userlist';
-  // private searchUserUrl = '/CI/index.php/api/admin/searchuser';
-  // private fetchUserAdminTotalCntUrl = '/CI/index.php/api/admin/usersadminpagination';
-  // private fetchUserAdminListUrl = '/CI/index.php/api/admin/usersadmin';
-  // private searchUserAdminUrl = '/CI/index.php/api/admin/searchusersadmin';
-  // private fetchTeacherTotalCntUrl = '/CI/index.php/api/admin/teacherpagination';
-  // private fetchTeacherListUrl = '/CI/index.php/api/admin/teacherlist';
-
-  fetchUserListPagination (apiKey:string): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchUserListPagination / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchUserListPagination / apiKey : ",apiKey);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchUserListPaginationUrl);
-
-    let params = {};
-
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }   
-
-  fetchUserList (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchUserList / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchUserList / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("admin.service / fetchUserList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchUserList / pageSize : ",pageSize);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchUserListUrl);
-
-    let params = {
-      page_num:pageNum,
-      page_size:pageSize,
-    };
-    
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }  
-
-
-  searchUser (apiKey:string, searchQuery:string, pageNum:number, pageSize:number): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchUserList / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchUserList / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("admin.service / fetchUserList / searchQuery : ",searchQuery);
-    if(this.isDebug()) console.log("admin.service / fetchUserList / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchUserList / pageSize : ",pageSize);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.searchUserUrl);
-
-    let params = {
-      search_query:searchQuery,
-      page_num:pageNum,
-      page_size:pageSize,
-    };
-    
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }  
-
-  fetchUsersAdminPagination (apiKey:string): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdminPagination / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdminPagination / apiKey : ",apiKey);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchUserAdminTotalCntUrl);
-
-    let params = {};
-
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }  
-
-  fetchUsersAdmin (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdmin / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdmin / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdmin / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchUsersAdmin / pageSize : ",pageSize);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchUserAdminListUrl);
-
-    let params = {
-      page_num:pageNum,
-      page_size:pageSize,
-    };
-
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-  } // end method
-
-
-  fetchTeacherList (apiKey:string, pageNum:number, pageSize:number): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / apiKey : ",apiKey);
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / pageNum : ",pageNum);
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / pageSize : ",pageSize);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchTeacherListUrl);
-
-    let params = {
-      page_num:pageNum,
-      page_size:pageSize,
-    };
-    
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }
-
-  fetchTeachersPagination (apiKey:string): Promise<MyResponse> {
-
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / 시작");
-    if(this.isDebug()) console.log("admin.service / fetchTeachersPagination / apiKey : ",apiKey);
-
-    // POST
-    let options = this.myRequest.getReqOptionCafeclassAPI(apiKey);
-    let req_url = this.us.get(this.fetchTeacherTotalCntUrl);
-
-    let params = {};
-
-    return this.http.post(req_url, params, options)
-                .toPromise()
-                .then(this.myExtractor.extractData)
-                .catch(this.myExtractor.handleError);
-
-  }  
-
-*/
 
   
 } // end class

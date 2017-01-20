@@ -14,7 +14,6 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
 var nav_tabs_component_1 = require('./nav-tabs/nav-tabs.component');
-var default_service_1 = require('./input/default/service/default.service');
 var default_component_1 = require('./input/default/default.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
@@ -36,6 +35,10 @@ var input_btns_row_component_1 = require('./input-view/input-btns-row.component'
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
 var debug_btn_component_1 = require('./debug/debug-btn.component');
 var import_component_1 = require('./payment/import.component');
+var klass_card_component_1 = require('./klass/klass-card.component');
+var klass_n_student_list_component_1 = require('./klass/klass-n-student-list.component');
+var klass_info_for_teacher_component_1 = require('./klass/klass-info-for-teacher.component');
+var default_service_1 = require('./input/default/service/default.service');
 var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
 var pagination_component_1 = require('./pagination/pagination.component');
@@ -63,6 +66,9 @@ var WidgetModule = (function () {
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
                 import_component_1.ImportComponent,
+                klass_card_component_1.KlassCardComponent,
+                klass_n_student_list_component_1.KlassNStudentListComponent,
+                klass_info_for_teacher_component_1.KlassInfoForTeacherComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
@@ -93,6 +99,9 @@ var WidgetModule = (function () {
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
                 debug_btn_component_1.DebugBtnComponent,
                 import_component_1.ImportComponent,
+                klass_card_component_1.KlassCardComponent,
+                klass_n_student_list_component_1.KlassNStudentListComponent,
+                klass_info_for_teacher_component_1.KlassInfoForTeacherComponent,
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,

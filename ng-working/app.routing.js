@@ -3,14 +3,26 @@ var router_1 = require('@angular/router');
 var can_deactivate_guard_service_1 = require('./guard/can-deactivate-guard.service');
 var auth_guard_service_1 = require('./auth/auth-guard.service');
 var auth_service_1 = require('./auth/auth.service');
-var adminRoutes = [
+// REMOVE ME
+/*
+const adminRoutes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: 'app/admin/admin.module#AdminModule',
+    canLoad: [AuthGuard]
+  }
+];
+const appRoutes: Routes = [
+  ...adminRoutes
+];
+*/
+var appRoutes = [
     {
         path: 'admin',
         loadChildren: 'app/admin/admin.module#AdminModule',
         canLoad: [auth_guard_service_1.AuthGuard]
     }
 ];
-var appRoutes = adminRoutes.slice();
 exports.appRoutingProviders = [
     auth_guard_service_1.AuthGuard,
     auth_service_1.AuthService,

@@ -1,0 +1,137 @@
+<div>
+	<ul class="list-group my-style">
+		<!-- 검색 및 컨트롤 / 체크 박스 선택으로 일괄 선택, 변경 적용 / 현재 없음 -->
+
+		<li *ngIf="pagination" class="list-group-item my-style">
+			<pagination 
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+		<li class="list-group-item my-style-table my-style">
+
+<div *ngIf="!piList" style="text-align:center;">
+	<h3 style="margin-bottom:20px;color: #999;">잠시만 기다려주세요</h3>
+</div>
+
+<table *ngIf="piList" class="table table-bordered my-style"> 
+	<thead> 
+		<tr>
+			<th>수업커버</th>
+			<th>수업정보</th>
+			<th>결제정보</th>
+		</tr> 
+	</thead> 
+	<tbody> 
+		<tr *ngFor="let payment of piList">
+			<!--  구매한 수업 이미지 -->
+			<td style="width:160px;">
+
+				<div>
+					<div class="img-hover">
+						<img 
+						class="img-circle my-style-teacher" 
+						src={{payment.teacher.thumbnail}}>
+					</div>
+					<img 
+					class="img-rounded my-style-cover" 
+					src={{payment.klass.class_poster_url_loadable}}>
+				</div>
+
+			</td>
+			<!--  구매한 수업 정보 -->
+			<td class="my-style">
+
+				<table class="table my-style"> 
+					<tr>
+						<td class="my-key my-first">수업이름</td>
+						<td class="my-value my-first my-small">{{payment.klass.title}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">선생님</td>
+						<td class="my-value">{{payment.teacher.nickname}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">금액</td>
+						<td class="my-value">₩{{payment.klass.price_with_format}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">학생수</td>
+						<td class="my-value">{{payment.klass.student_cnt}}명</td>
+					</tr>
+					<tr>
+						<td class="my-key">수업시작일</td>
+						<td class="my-value my-small">{{payment.klass.date_begin}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">수업정보</td>
+						<td class="my-value my-no-padding">
+							<img 
+							class="img-circle my-img-filter" 
+							src={{payment.klass.level_img_url}}
+							alt={{payment.klass.level}}>
+							<img 
+							class="img-circle my-img-filter" 
+							src={{payment.klass.subway_station_img}}
+							alt={{payment.klass.subway_station}}>
+							<img 
+							class="img-circle my-img-filter" 
+							src={{payment.klass.time_begin_img_url}}
+							alt={{payment.klass.time_begin}}>
+							<img 
+							*ngFor="let days_img_url of payment.klass.days_img_url_list"
+							class="img-circle my-img-filter" 
+							src={{days_img_url}}
+							alt={{payment.klass.days}}>
+						</td>
+					</tr>
+
+				</table>
+
+			</td>			
+	
+			<!-- 결제 정보 -->
+			<td class="my-style">
+
+				<table class="table my-style"> 
+					<tr>
+						<td class="my-key my-first">주문번호</td>
+						<td class="my-value my-first">{{payment.imp_uid}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">결제타입</td>
+						<td class="my-value">결제</td>
+					</tr>
+					<tr>
+						<td class="my-key">금액</td>
+						<td class="my-value">{{payment.amountWithFormat}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">주문명</td>
+						<td class="my-value my-small">{{payment.name}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">카드이름</td>
+						<td class="my-value">{{payment.card_name}}</td>
+					</tr>
+					<tr>
+						<td class="my-key">일시</td>
+						<td class="my-value my-small">{{payment.my_date_paid_at}}</td>
+					</tr>
+				</table>
+
+			</td>
+
+		</tr> 
+	</tbody> 
+</table>			
+
+		</li>
+		<li *ngIf="pagination" class="list-group-item my-style my-last">
+			<pagination
+			(emitter)="onChangedFromChild($event)"
+			[eventKey]="myEventService.KEY_PAGE_NUM"
+			[pagination]="pagination"></pagination>
+		</li>
+	</ul>
+</div>

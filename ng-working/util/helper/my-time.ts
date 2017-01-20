@@ -21,6 +21,8 @@ export class HelperMyTime {
 	public DATE_TYPE_YYYY_MM_DD_HH_MM_SS:number=6;
 	/* 2012년 12월 11일 01:02:03 */
 	public DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
+	/* 2012년 12월 11일*/
+	public DATE_TYPE_H_YYYY_MM_DD:number=8;
 
 	public getUniqueId():number {
 		return Math.round(window.performance.now() * 100);
@@ -82,14 +84,62 @@ export class HelperMyTime {
 		return this.getDiffMinutes(headDate, tailDate);
 	}
 
+	// @ Desc : 지정된 날짜가 오늘을 포함 이전 날짜인지 확인.
+	isBeforeTomorrow(YYYYMMDD_HHMMSS:string):boolean {
+
+		if(this.isNotYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS)) {
+			return false;
+		}
+
+		let headDate:Date = this.getDateFromYYYYMMDD_HHMMSS(YYYYMMDD_HHMMSS);
+
+		let todayDate:Date = new Date();
+
+		let diffDays:number = this.getDiffDays(headDate, todayDate);
+
+		return (-1 < diffDays)?true:false;
+
+	} // end method
+
+	getDiffDaysYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS:string, tailYYYYMMDD_HHMMSS:string):number {
+		if(null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
+			return -1;
+		}
+		if(this.isNotYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS)) {
+			return -1;
+		}
+		if(null == tailYYYYMMDD_HHMMSS || "" === tailYYYYMMDD_HHMMSS) {
+			return -1;
+		}
+		if(this.isNotYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS)) {
+			return -1;
+		}
+
+		let headDate:Date = this.getDateFromYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS);
+		if(null == headDate) {
+			return -1;
+		}
+		let tailDate:Date = this.getDateFromYYYYMMDD_HHMMSS(tailYYYYMMDD_HHMMSS);
+		if(null == tailDate) {
+			return -1;
+		}
+
+		return this.getDiffDays(headDate, tailDate);
+	}
+
 	private getDiffMinutes(head:Date, tail:Date) :number{
 		let minutes = 60*1000;
-		return Math.abs((head.getTime() - tail.getTime()) / minutes);
+		return Math.floor((tail.getTime() - head.getTime()) / minutes);
 	}
 
 	private getDiffHours(head:Date, tail:Date) :number{
 		let hour = 60*60*1000;
-		return Math.abs((head.getTime() - tail.getTime()) / hour);
+		return Math.floor((tail.getTime() - head.getTime()) / hour);
+	}
+
+	private getDiffDays(head:Date, tail:Date) :number{
+		let day = 60*60*1000*24;
+		return Math.floor((tail.getTime() - head.getTime()) / day);
 	}
 
 	addHoursHHMM(hhmm:string, hours:number):string {
@@ -218,6 +268,17 @@ export class HelperMyTime {
 
 	}
 
+	private getDateFromYYYYMMDD_HHMMSS(date_str:string):Date {
+
+		if(null == date_str || "" == date_str) {
+			return null;
+		}
+
+		return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+
+	}
+
+
 	public getNow_YYYY_MM_DD_HH_MM_SS():string {
 		return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
 	}
@@ -255,7 +316,13 @@ export class HelperMyTime {
 		}
 
 		if(this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS === output_date_format_type) {
+
 			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS);	
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD === output_date_format_type) {
+
+			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD);	
+
 		}
 
 		return "";
@@ -286,6 +353,15 @@ export class HelperMyTime {
 
 			// 2012년 12월 11일 01:02:03
 			return `${year}년 ${month}월 ${days}일 ${hours}:${minutes}:${seconds}`;
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD === input_date_format_type) {
+
+			let year = date.getFullYear();
+			let month = date.getMonth() + 1;
+			let days = date.getDate();
+
+			// 2012년 12월 11일 01:02:03
+			return `${year}년 ${month}월 ${days}일`;			
 
 		} // end if
 
@@ -446,6 +522,26 @@ export class HelperMyTime {
 		}
 		return true;
 	}
+
+	public isNotYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss:string):boolean{
+		return !this.isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss);
+	}
+
+	// @ Public
+	// @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13 22:12:11) 확인합니다.
+	public isYYYYMMDD_HHMMSS(date_str_yyyymmdd_hhmmss:string):boolean{
+
+		if(null == date_str_yyyymmdd_hhmmss || "" === date_str_yyyymmdd_hhmmss) {
+			return false;
+		}
+
+		let res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) (0[0-9]|1[0-9]|2[0-4]):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/gi);
+		if(null === res || !(0 < res.length)) {
+		  return false;
+		}		
+
+		return true;
+	}	
 
 	public getDoubleDigit(target_number:number):string{
 		if(target_number < 10){

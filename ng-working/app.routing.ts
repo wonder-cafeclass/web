@@ -7,6 +7,8 @@ import { CanDeactivateGuard } from './guard/can-deactivate-guard.service';
 import { AuthGuard }          from './auth/auth-guard.service';
 import { AuthService }            from './auth/auth.service';
 
+// REMOVE ME
+/*
 const adminRoutes: Routes = [
   {
     path: 'admin',
@@ -14,10 +16,19 @@ const adminRoutes: Routes = [
     canLoad: [AuthGuard]
   }
 ];
-
 const appRoutes: Routes = [
   ...adminRoutes
 ];
+*/
+
+const appRoutes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: 'app/admin/admin.module#AdminModule',
+    canLoad: [AuthGuard]
+  }     
+];
+
 
 export const appRoutingProviders: any[] = [
   AuthGuard,

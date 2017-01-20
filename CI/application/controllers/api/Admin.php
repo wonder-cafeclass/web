@@ -208,32 +208,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -310,7 +310,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -361,7 +361,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -388,7 +388,7 @@ class Admin extends MY_REST_Controller {
             $klass_time
         );
 
-        $klass_list = $this->my_decorator->deco_klass($klass_list);
+        $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         
         $output["klass_list"] = $klass_list;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
@@ -507,32 +507,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -559,7 +559,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -595,7 +595,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -698,7 +698,7 @@ class Admin extends MY_REST_Controller {
         } // end if       
 
         // 변경된 유저 정보를 가져옵니다.
-        $user = $this->my_sql->get_user_by_id($user_id);
+        $user = $this->my_sql->select_user_by_id($user_id);
         $output["user"] = $user;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
 
@@ -737,32 +737,32 @@ class Admin extends MY_REST_Controller {
             $page_num = 1;
         }
 
-        $page_size = 
+        $page_row_cnt = 
         $this->my_paramchecker->post(
             // $key=""
-            "page_size",
+            "page_row_cnt",
             // $key_filter=""
-            "page_size",
+            "page_row_cnt",
             // $is_no_record=false
             true
         );
-        if(empty($page_size)) {
-            $page_size = 10;
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
         } // end if 
 
         $limit = 
         $this->my_pagination->get_limit(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         );
         $offset = 
         $this->my_pagination->get_offset(
             // $page_num=-1, 
             $page_num,
-            // $page_size=-1
-            $page_size
+            // $page_row_cnt=-1
+            $page_row_cnt
         ); 
 
         // Where condition
@@ -799,7 +799,7 @@ class Admin extends MY_REST_Controller {
         $output["params"] = 
         [
             "page_num"=>$page_num,
-            "page_size"=>$page_size,
+            "page_row_cnt"=>$page_row_cnt,
             "limit"=>$limit,
             "offset"=>$offset,
             "search_query"=>$search_query,
@@ -838,7 +838,7 @@ class Admin extends MY_REST_Controller {
             // $cursor_page_num=-1, 
             $page_num,
             // $row_cnt_per_page=-1
-            $page_size
+            $page_row_cnt
         );
         $output["pagination"] = $pagination;
 
@@ -859,5 +859,149 @@ class Admin extends MY_REST_Controller {
         $output["user_list"] = $user_list;
         $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);        
     }
+
+    // @ Desc : Import의 Payment 리스트를 가져옵니다.
+    public function fetchbuyklass_post()
+    {
+        $output = [];
+        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            return;
+        } // end if
+
+        $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
+        if($is_not_allowed_api_call) 
+        {  
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            return;
+        } // end if
+
+        // Pagination
+        $page_num = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_num",
+            // $key_filter=""
+            "page_num",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_num)) {
+            $page_num = 1;
+        }
+
+        $page_row_cnt = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "page_row_cnt",
+            // $key_filter=""
+            "page_row_cnt",
+            // $is_no_record=false
+            true
+        );
+        if(empty($page_row_cnt)) {
+            $page_row_cnt = 10;
+        } // end if 
+
+        $limit = 
+        $this->my_pagination->get_limit(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        );
+        $offset = 
+        $this->my_pagination->get_offset(
+            // $page_num=-1, 
+            $page_num,
+            // $page_row_cnt=-1
+            $page_row_cnt
+        ); 
+
+        $user_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "user_id",
+            // $key_filter=""
+            "user_id",
+            // $is_no_record=false
+            true
+        );        
+
+        $klass_id = 
+        $this->my_paramchecker->post(
+            // $key=""
+            "klass_id",
+            // $key_filter=""
+            "klass_id",
+            // $is_no_record=false
+            true
+        );
+
+        $output["params"] = 
+        [
+            "page_num"=>$page_num,
+            "page_row_cnt"=>$page_row_cnt,
+            "limit"=>$limit,
+            "offset"=>$offset,
+            "user_id"=>$user_id,
+            "klass_id"=>$klass_id
+        ];
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "param checked");        
+
+        // CHECK LIST
+        $is_ok = $this->has_check_list_success();
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $output["check_list"] = $this->get_check_list();
+
+        if(!$is_ok) 
+        {
+            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"paymentipmlist_post is failed!");
+            return;
+        } // end if
+
+        // 검색어에 해당하는 전체 결과수를 가져옵니다.
+        // 이 데이터로 pagination을 새로 만듭니다.
+        $total_cnt = 
+        $this->my_sql->select_payment_import_cnt(
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+        $output["total_cnt"] = $total_cnt;
+        $pagination = 
+        $this->my_pagination->get(
+            // $total_row_cnt=-1, 
+            $total_cnt,
+            // $cursor_page_num=-1, 
+            $page_num,
+            // $row_cnt_per_page=-1
+            $page_row_cnt
+        );
+        $output["pagination"] = $pagination;
+
+        // klass_id(@Optional)와 user_id(@Optional)로 등록한 수업 정보를 가져옵니다.
+        $payment_list =
+        $this->my_sql->select_payment_import_list(
+            // $limit=-1, 
+            $limit,
+            // $offset=-1, 
+            $offset,
+            // $klass_id=-1, 
+            $klass_id,
+            // $user_id=-1
+            $user_id
+        );
+
+        $payment_list_next = 
+        $this->my_decorator->deco_payment_import_list($payment_list);
+
+        $output["payment_list"] = $payment_list_next;
+        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+    }    
 
 }

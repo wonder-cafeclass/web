@@ -44,8 +44,7 @@ var LoginComponent = (function () {
         this.defaultMetaUserSelect = this.getMetaUserSelect();
     }
     LoginComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        return this.watchTower.isDebug();
     };
     LoginComponent.prototype.ngAfterViewInit = function () {
         // 자식 뷰가 모두 완료된 이후에 초기화를 진행.

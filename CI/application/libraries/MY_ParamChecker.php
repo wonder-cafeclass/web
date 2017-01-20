@@ -282,12 +282,6 @@ class MY_ParamChecker extends MY_Library
         return null;
     }
 
-    // REMOVE ME
-    public function get_json_obj() 
-    {
-    	return $this->json_obj;
-    }
-
     public function get_checker_map()
     {
         if(isset($this->json_obj) && isset($this->json_obj->checker)) {

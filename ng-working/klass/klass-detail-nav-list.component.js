@@ -18,10 +18,6 @@ var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_is_1 = require('../util/helper/my-is');
 var my_array_1 = require('../util/helper/my-array');
-var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
-var comment_1 = require('../widget/comment/model/comment');
-var comment_list_component_1 = require('../widget/comment/comment-list.component');
-var inputs_btns_rows_component_1 = require('../widget/input-view/inputs-btns-rows.component');
 var klass_1 = require('./model/klass');
 var klass_question_1 = require('./model/klass-question');
 var klass_review_1 = require('./model/klass-review');
@@ -31,8 +27,10 @@ var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
 var klass_service_1 = require('./service/klass.service');
 var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
 var klass_teacher_component_1 = require('./widget/klass-teacher.component');
+var comment_1 = require('../widget/comment/model/comment');
+var nav_tabs_component_1 = require('../widget/nav-tabs/nav-tabs.component');
 var KlassDetailNavListComponent = (function () {
-    function KlassDetailNavListComponent(klassColorService, klassCommentService, klassService, watchTower, myEventService, myCheckerService, radiobtnService, myLoggerService, urlService, imageService) {
+    function KlassDetailNavListComponent(klassColorService, klassCommentService, klassService, watchTower, myEventService, myCheckerService, radiobtnService, myLoggerService, urlService, myElement, imageService) {
         this.klassColorService = klassColorService;
         this.klassCommentService = klassCommentService;
         this.klassService = klassService;
@@ -42,8 +40,9 @@ var KlassDetailNavListComponent = (function () {
         this.radiobtnService = radiobtnService;
         this.myLoggerService = myLoggerService;
         this.urlService = urlService;
+        this.myElement = myElement;
         this.imageService = imageService;
-        this.isAdmin = false;
+        this.isTeacher = false;
         this.cageWidth = -1;
         // Nav Focus
         this.isFocusKlassDesc = true;
@@ -62,6 +61,8 @@ var KlassDetailNavListComponent = (function () {
         this.btnNameKlassFeature = "수업 특징 수정하기";
         this.btnNameKlassTarget = "수업 대상 수정하기";
         this.btnNameKlassSchedule = "수업 일정 수정하기";
+        // 특정 위치로 이동.
+        this.moveto = "";
         this.emitter = new core_1.EventEmitter();
         this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
@@ -81,6 +82,8 @@ var KlassDetailNavListComponent = (function () {
         } // end if
         this.subscribeEventPack();
         this.subscribeLoginUser();
+    };
+    KlassDetailNavListComponent.prototype.ngAfterViewInit = function () {
     };
     KlassDetailNavListComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
@@ -773,6 +776,27 @@ var KlassDetailNavListComponent = (function () {
             } // end if
         }); // end service     
     };
+    // @ Desc : 모든 자식뷰들이 완료된 상태 이후의 작업을 합니다.
+    KlassDetailNavListComponent.prototype.onAfterChildrenReady = function () {
+        if (null == this.questionListComponent) {
+            return;
+        }
+        if (null == this.reviewListComponent) {
+            return;
+        }
+        if (null == this.venueSearchComponent) {
+            return;
+        }
+        if (null == this.teacherComponent) {
+            return;
+        }
+        if (null == this.navTabsComponent) {
+            return;
+        }
+        // 자식 객체들이 모두 완료되었습니다.
+        // 뷰가 모두 완료된 이후에 해야할 일들을 합니다.
+        this.moveToAfterInit();
+    };
     KlassDetailNavListComponent.prototype.onChangedFromInputRow = function (myEvent) {
         // Smart Editor를 사용하는 Element에서 발생한 callback 처리.
         if (this.isDebug())
@@ -787,38 +811,43 @@ var KlassDetailNavListComponent = (function () {
                 if (null != myEvent.metaObj) {
                     this.questionListComponent = myEvent.metaObj;
                     this.setQuestionList();
+                    this.onAfterChildrenReady();
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_REVIEW_LIST)) {
                 if (null != myEvent.metaObj) {
                     this.reviewListComponent = myEvent.metaObj;
                     this.setReviewList();
+                    this.onAfterChildrenReady();
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_DETAIL_NAV_VENUE_MAP)) {
-                // wonder.jung
                 if (null != myEvent.metaObj) {
                     // 네이버 맵 장소 검색 컴포넌트가 준비됨.
                     this.venueSearchComponent = myEvent.metaObj;
                     this.setVenueSearch();
+                    this.onAfterChildrenReady();
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TEACHER_LIST)) {
                 if (null != myEvent.metaObj) {
                     this.teacherComponent = myEvent.metaObj;
                     this.setTeacher();
+                    this.onAfterChildrenReady();
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_FEATURE_LIST)) {
                 if (null != myEvent.metaObj) {
                     this.featureListComponent = myEvent.metaObj;
                     this.featureListComponent.setMyEventList(this.myEventListForKlassFeature);
+                    this.onAfterChildrenReady();
                 } // end if
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_TARGET_LIST)) {
                 if (null != myEvent.metaObj) {
                     this.targetListComponent = myEvent.metaObj;
                     this.targetListComponent.setMyEventList(this.myEventListForKlassTarget);
+                    this.onAfterChildrenReady();
                 } // end if
             } // end if
         }
@@ -1019,13 +1048,75 @@ var KlassDetailNavListComponent = (function () {
         }
         return false;
     };
-    KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
+    KlassDetailNavListComponent.prototype.resetElementFocus = function () {
         this.isFocusKlassDesc = false;
         this.isFocusKlassVenue = false;
         this.isFocusTutorDesc = false;
         this.isFocusStudentReview = false;
         this.isFocusStudentQuestion = false;
         this.isFocusCaution = false;
+    };
+    KlassDetailNavListComponent.prototype.getFirstBox = function () {
+        return this.myElement.nativeElement.getBoundingClientRect();
+    }; // end method
+    KlassDetailNavListComponent.prototype.getMyBox = function (targetElement) {
+        if (null == targetElement) {
+            return null;
+        }
+        return targetElement.nativeElement.getBoundingClientRect();
+    }; // end method
+    KlassDetailNavListComponent.prototype.moveToAfterInit = function () {
+        if ("review" === this.moveto) {
+            this.moveToReview();
+        }
+        else if ("question" === this.moveto) {
+            this.moveToQuestion();
+        } // end if
+    };
+    KlassDetailNavListComponent.prototype.moveTo = function (moveto) {
+        this.moveto = moveto;
+    }; // end method  
+    KlassDetailNavListComponent.prototype.moveToReview = function () {
+        if (null == this.reviewListComponent) {
+            return;
+        } // end if
+        var element = this.reviewListComponent.getElement();
+        this.moveToSomewhere(element);
+        this.isFocusStudentReview = true;
+        this.navTabsComponent.setFocus(this.myEventService.STUDENT_REVIEW);
+    }; // end method
+    KlassDetailNavListComponent.prototype.moveToQuestion = function () {
+        if (null == this.questionListComponent) {
+            return;
+        } // end if
+        var element = this.questionListComponent.getElement();
+        this.moveToSomewhere(element);
+        this.isFocusStudentQuestion = true;
+        this.navTabsComponent.setFocus(this.myEventService.STUDENT_QUESTION);
+    }; // end method
+    KlassDetailNavListComponent.prototype.moveToSomewhere = function (element) {
+        if (null == element) {
+            return;
+        }
+        this.resetElementFocus();
+        var nextYPos = 0;
+        var firstBox = this.getFirstBox();
+        var myBox = this.getMyBox(element);
+        var scrollY = window.scrollY;
+        if (null != myBox) {
+            if (0 < (firstBox.top - this.navHeight)) {
+                nextYPos = scrollY + myBox.top - (this.navHeight * 2 + this.borderTopBottomWidth);
+            }
+            else {
+                nextYPos = scrollY + myBox.top - this.navHeight;
+            }
+            if (0 < nextYPos) {
+                window.scrollTo(0, nextYPos);
+            } // end inner if
+        } // end if
+    }; // end method
+    KlassDetailNavListComponent.prototype.onChangedFromChild = function (myEvent, klassDesc, klassVenue, tutorDesc, studentReview, studentQuestion, caution) {
+        this.resetElementFocus();
         var nextYPos = 0;
         var box = null;
         var firstBox = klassDesc.getBoundingClientRect();
@@ -1127,18 +1218,6 @@ var KlassDetailNavListComponent = (function () {
         this.overwriteKlassCopies();
     };
     __decorate([
-        core_1.ViewChild(smart_editor_component_1.SmartEditorComponent), 
-        __metadata('design:type', smart_editor_component_1.SmartEditorComponent)
-    ], KlassDetailNavListComponent.prototype, "seComponent", void 0);
-    __decorate([
-        core_1.ViewChild(comment_list_component_1.CommentListComponent), 
-        __metadata('design:type', comment_list_component_1.CommentListComponent)
-    ], KlassDetailNavListComponent.prototype, "questionListComponent", void 0);
-    __decorate([
-        core_1.ViewChild(comment_list_component_1.CommentListComponent), 
-        __metadata('design:type', comment_list_component_1.CommentListComponent)
-    ], KlassDetailNavListComponent.prototype, "reviewListComponent", void 0);
-    __decorate([
         core_1.ViewChild(klass_venue_search_list_component_1.KlassVenueSearchListComponent), 
         __metadata('design:type', klass_venue_search_list_component_1.KlassVenueSearchListComponent)
     ], KlassDetailNavListComponent.prototype, "venueSearchComponent", void 0);
@@ -1147,13 +1226,9 @@ var KlassDetailNavListComponent = (function () {
         __metadata('design:type', klass_teacher_component_1.KlassTeacherComponent)
     ], KlassDetailNavListComponent.prototype, "teacherComponent", void 0);
     __decorate([
-        core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
-        __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
-    ], KlassDetailNavListComponent.prototype, "featureListComponent", void 0);
-    __decorate([
-        core_1.ViewChild(inputs_btns_rows_component_1.InputsBtnsRowsComponent), 
-        __metadata('design:type', inputs_btns_rows_component_1.InputsBtnsRowsComponent)
-    ], KlassDetailNavListComponent.prototype, "targetListComponent", void 0);
+        core_1.ViewChild(nav_tabs_component_1.NavTabsComponent), 
+        __metadata('design:type', nav_tabs_component_1.NavTabsComponent)
+    ], KlassDetailNavListComponent.prototype, "navTabsComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
@@ -1186,7 +1261,7 @@ var KlassDetailNavListComponent = (function () {
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], KlassDetailNavListComponent.prototype, "isAdmin", void 0);
+    ], KlassDetailNavListComponent.prototype, "isTeacher", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Number)
@@ -1202,7 +1277,7 @@ var KlassDetailNavListComponent = (function () {
             templateUrl: 'klass-detail-nav-list.component.html',
             styleUrls: ['klass-detail-nav-list.component.css']
         }), 
-        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, klass_service_1.KlassService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, my_logger_service_1.MyLoggerService, url_service_1.UrlService, image_service_1.ImageService])
+        __metadata('design:paramtypes', [klass_color_service_1.KlassColorService, klass_comment_service_1.KlassCommentService, klass_service_1.KlassService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, klass_radiobtn_service_1.KlassRadioBtnService, my_logger_service_1.MyLoggerService, url_service_1.UrlService, core_1.ElementRef, image_service_1.ImageService])
     ], KlassDetailNavListComponent);
     return KlassDetailNavListComponent;
 }());

@@ -4,7 +4,7 @@ class MY_Time{
 
 	private $CI=null;
 
-    public function __construct($params=null)
+    public function __construct()
     {
     	// Do something...
         $this->CI =& get_instance();

@@ -1,5 +1,6 @@
 import {  Component, 
           AfterViewInit,
+          ViewChild,
           Output, 
           EventEmitter }              from '@angular/core';
 
@@ -11,14 +12,16 @@ import { MyChecker }                  from '../util/model/my-checker';
 
 import { MyLoggerService }            from '../util/service/my-logger.service';
 
+import { MyEventWatchTowerService }   from '../util/service/my-event-watchtower.service';
+import { MyResponse }                 from '../util/model/my-response';
+
 import { KlassColorService }          from '../klass/service/klass-color.service';
 import { KlassRadioBtnService }       from '../klass/service/klass-radiobtn.service';
 
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
 
-import { MyEventWatchTowerService }   from '../util/service/my-event-watchtower.service';
-import { MyResponse }                 from '../util/model/my-response';
-
+import { MyInfoComponent }            from './view/user-my-nav-list/my-info.component';
+import { MyInfoDashboardComponent }   from './view/user-my-nav-list/my-info-dashboard.component';
 
 @Component({
   moduleId: module.id,
@@ -34,6 +37,7 @@ export class UserMyNavListComponent implements AfterViewInit {
   colorOrange:string;
   colorGray:string;
 
+  showHome:boolean=true;
   showMyInfo:boolean=false;
   showMyHistory:boolean=false;
   showMyPayment:boolean=false;
@@ -43,12 +47,25 @@ export class UserMyNavListComponent implements AfterViewInit {
 
   isAdmin:boolean=false;
 
+  @ViewChild(MyInfoComponent)
+  private myInfoComponent: MyInfoComponent;  
+
+  @ViewChild(MyInfoDashboardComponent)
+  private myInfoDashboardComponent: MyInfoDashboardComponent;  
+
+
   constructor(  private klassColorService:KlassColorService,
                 public myEventService:MyEventService, 
                 public myLoggerService:MyLoggerService,
                 private radiobtnService:KlassRadioBtnService,
                 private watchTower:MyEventWatchTowerService, 
-                private myCheckerService:MyCheckerService) {}
+                private myCheckerService:MyCheckerService) {
+
+    this.radiobtnService.setWatchTower(this.watchTower);
+
+    this.watchTower.announceIsLockedBottomFooterFlexible(false);
+
+  }
 
   private isDebug():boolean {
     return this.watchTower.isDebug();
@@ -114,38 +131,90 @@ export class UserMyNavListComponent implements AfterViewInit {
     this.navTabsOptions = 
     this.radiobtnService.getNavTabsUserMyInfo(
       // user:User
-      null
+      this.watchTower.getLoginUser()
       // keyFocus:string
-      , null
+      , this.watchTower.getMyEventService().KEY_USER_MY_INFO_DASHBOARD
     );
-    this.showMyInfo = true;
-
-    if(this.isDebug()) console.log("user-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);    
-
+    if(this.isDebug()) console.log("user-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);
   }
 
-  onChangedFromChild(myEvent:MyEvent, myinfo, myhistory, mypayment, myfavorite) {
-
-    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / init");
-    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
-    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
-
+  resetNavFlag():void {
     // 모든 플래그값을 초기화
+    this.showHome = false;
     this.showMyInfo = false;
     this.showMyHistory = false;
     this.showMyPayment = false;
     this.showMyFavorite = false;
 
-    if(this.myEventService.KEY_USER_MY_INFO === myEvent.key) {
-      this.showMyInfo = true;
-    } else if(this.myEventService.KEY_USER_MY_HISTORY === myEvent.key) {
-      this.showMyHistory = true;
-    } else if(this.myEventService.KEY_USER_MY_PAYMENT === myEvent.key) {
-      this.showMyPayment = true;
-    } else if(this.myEventService.KEY_USER_MY_FAVORITE === myEvent.key) {
-      this.showMyFavorite = true;
-    }
-
   }
+
+  onChangedFromChild(myEvent:MyEvent) {
+
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / init");
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent.key : ",myEvent.key);
+
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / 시작");
+    if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / myEvent : ",myEvent);
+
+    let isOK:boolean = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+    if(!isOK) {
+      if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / 중단 / 값이 유효하지 않습니다.");
+      let lastHistory = this.myCheckerService.getLastHistory();
+      if(this.isDebug()) console.log("user-my-nav-list / onChangedFromChild / lastHistory : ",lastHistory);
+      return;
+    } // end if
+
+    if(myEvent.hasEventName(this.myEventService.ON_READY)) {
+
+      if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO_DASHBOARD)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.myInfoDashboardComponent = myEvent.metaObj;
+        } // end if
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO)) {
+
+        if(  null != myEvent.metaObj ) {
+          this.myInfoComponent = myEvent.metaObj;
+        } // end if
+
+      } // end if
+
+      //KEY_USER_MY_INFO_DASHBOARD
+
+    } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
+
+
+      if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO_DASHBOARD)) {
+
+        this.resetNavFlag();
+        this.showHome = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO)) {
+
+        this.resetNavFlag();
+        this.showMyInfo = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_KLASS)) {
+
+        this.resetNavFlag();
+        this.showMyHistory = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_PAYMENT)) {
+
+        this.resetNavFlag();
+        this.showMyPayment = true;
+
+      } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_FAVORITE)) {
+
+        this.resetNavFlag();
+        this.showMyFavorite = true;
+
+      } // end if
+
+    } // end if
+
+  } // end method
 
 }

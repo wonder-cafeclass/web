@@ -1,16 +1,33 @@
 import { Injectable }        from '@angular/core';
 import { MyEventService }    from '../../util/service/my-event.service';
 import { MyEvent }           from '../../util/model/my-event';
+import { MyChecker }         from '../../util/model/my-checker';
 import { RadioBtnOption }    from '../../widget/radiobtn/model/radiobtn-option';
 import { Klass }             from '../model/klass';
 import { User }              from '../../users/model/user';
 import { Teacher }           from '../../teachers/model/teacher';
+import { MyEventWatchTowerService }   from '../../util/service/my-event-watchtower.service';
 
 @Injectable()
 export class KlassRadioBtnService {
 
-    // 카페 클래스에서 사용하는 대표적인 체크박스 설정값 - week_min,week_max,...
-    constructor(private myEventService:MyEventService) {}
+  private watchTower:MyEventWatchTowerService;
+
+  // 카페 클래스에서 사용하는 대표적인 체크박스 설정값 - week_min,week_max,...
+  constructor(private myEventService:MyEventService) {}
+
+  public setWatchTower(watchTower:MyEventWatchTowerService):void {
+    this.watchTower = watchTower;
+  }
+
+  // @ Desc : 검사하지 않는 checker를 가져옵니다.
+  private getFreePassChecker():MyChecker {
+    if(null == this.watchTower) {
+      return null;
+    }
+
+    return this.watchTower.getMyCheckerService().getFreePassChecker();
+  }
 
     /*
     *    @ Desc : 유저가 몇주(weeks) 수강하려는 결정을 도와주는 체크박스 데이터
@@ -36,7 +53,7 @@ export class KlassRadioBtnService {
                 // public metaObj:any
                 klass,
                 // public myChecker:MyChecker
-                null
+                this.getFreePassChecker()
               )
             ),
 
@@ -58,7 +75,7 @@ export class KlassRadioBtnService {
                   // public metaObj:any
                   klass,
                   // public myChecker:MyChecker
-                  null
+                  this.getFreePassChecker()
                 )
             ),
 
@@ -80,7 +97,7 @@ export class KlassRadioBtnService {
                   // public metaObj:any
                   klass,
                   // public myChecker:MyChecker
-                  null
+                  this.getFreePassChecker()
                 )
             )
         ];
@@ -122,7 +139,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             )
           ),
 
@@ -144,7 +161,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -166,7 +183,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           )      
         ];   
@@ -191,7 +208,7 @@ export class KlassRadioBtnService {
     /*
     *    @ Desc : 수업 상세 정보에 대한 Nav tabs에 들어갈 radiobtn 정보들
     */
-    getNavTabsKlassInfo(klass:Klass, keyFocus:string) :RadioBtnOption[] {
+    getNavTabsKlassInfo(klass:Klass, keyFocus:string) :RadioBtnOption[] { 
 
       if(null == klass) {
         return null;
@@ -218,7 +235,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -240,7 +257,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -262,7 +279,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -284,7 +301,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -306,7 +323,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -328,7 +345,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               klass,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           )
         ]; // end array
@@ -361,7 +378,29 @@ export class KlassRadioBtnService {
 
           new RadioBtnOption(
             // public title:string,
-            "나의 정보 수정",
+            "대시보드",
+            // public key:string,
+            this.myEventService.KEY_USER_MY_INFO_DASHBOARD,
+            // public isFocus:boolean
+            false,
+            // public myEvent:MyEvent
+            this.myEventService.getMyEvent(
+              // public eventName:string
+              this.myEventService.ON_CHANGE,
+              // public key:string
+              this.myEventService.KEY_USER_MY_INFO_DASHBOARD,
+              // public value:string
+              "",
+              // public metaObj:any
+              user,
+              // public myChecker:MyChecker
+              this.getFreePassChecker()
+            ) // end MyEvent
+          ),        
+
+          new RadioBtnOption(
+            // public title:string,
+            "나의 정보",
             // public key:string,
             this.myEventService.KEY_USER_MY_INFO,
             // public isFocus:boolean
@@ -377,7 +416,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               user,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ),
 
@@ -385,7 +424,7 @@ export class KlassRadioBtnService {
             // public title:string,
             "수강 이력",
             // public key:string,
-            this.myEventService.KEY_USER_MY_HISTORY,
+            this.myEventService.KEY_USER_MY_KLASS,
             // public isFocus:boolean
             false,
             // public myEvent:MyEvent
@@ -393,19 +432,19 @@ export class KlassRadioBtnService {
               // public eventName:string
               this.myEventService.ON_CHANGE,
               // public key:string
-              this.myEventService.KEY_USER_MY_HISTORY,
+              this.myEventService.KEY_USER_MY_KLASS,
               // public value:string
               "",
               // public metaObj:any
               user,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ), 
-
+/* REMOVE ME
           new RadioBtnOption(
             // public title:string,
-            "결재정보",
+            "결제정보",
             // public key:string,
             this.myEventService.KEY_USER_MY_PAYMENT,
             // public isFocus:boolean
@@ -421,13 +460,13 @@ export class KlassRadioBtnService {
               // public metaObj:any
               user,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           ), 
-
+*/
           new RadioBtnOption(
             // public title:string,
-            "관심강의",
+            "찜한수업",
             // public key:string,
             this.myEventService.KEY_USER_MY_FAVORITE,
             // public isFocus:boolean
@@ -443,7 +482,7 @@ export class KlassRadioBtnService {
               // public metaObj:any
               user,
               // public myChecker:MyChecker
-              null
+              this.getFreePassChecker()
             ) // end MyEvent
           )
 
@@ -465,118 +504,162 @@ export class KlassRadioBtnService {
         return optionList;
     }    
 
-    /*
-    *    @ Desc : 선생님의 내정보 페이지에 대한 Nav tabs에 들어갈 radiobtn 정보들
-    */
-    getNavTabsTeacherMyInfo(teacher:Teacher, keyFocus:string) :RadioBtnOption[] {
+  /*
+  *    @ Desc : 선생님의 내정보 페이지에 대한 Nav tabs에 들어갈 radiobtn 정보들
+  */
+  getNavTabsTeacherMyInfo(teacher:Teacher, keyFocus:string) :RadioBtnOption[] {
 
-        // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
-        let optionList:RadioBtnOption[] = [
+    // klass_desc / getNavTabsKlassInfo(this.klass, "klass_desc");
+    let optionList:RadioBtnOption[] = [
 
-          new RadioBtnOption(
-            // public title:string,
-            "선생님 정보 수정",
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_INFO,
-            // public isFocus:boolean
-            false,
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE,
-              // public key:string
-              this.myEventService.KEY_TEACHER_MY_INFO,
-              // public value:string
-              "",
-              // public metaObj:any
-              teacher,
-              // public myChecker:MyChecker
-              null
-            ) // end MyEvent
-          ),
+      new RadioBtnOption(
+        // public title:string,
+        "대시보드",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_INFO_DASHBOARD,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ),
 
-          new RadioBtnOption(
-            // public title:string,
-            "선생님 수업 이력",
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_HISTORY,
-            // public isFocus:boolean
-            false,
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE,
-              // public key:string
-              this.myEventService.KEY_TEACHER_MY_HISTORY,
-              // public value:string
-              "",
-              // public metaObj:any
-              teacher,
-              // public myChecker:MyChecker
-              null
-            ) // end MyEvent
-          ), 
+      new RadioBtnOption(
+        // public title:string,
+        "선생님정보",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_INFO,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_INFO,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ),
 
-          new RadioBtnOption(
-            // public title:string,
-            "선생님 결재정보",
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_PAYMENT,
-            // public isFocus:boolean
-            false,
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE,
-              // public key:string
-              this.myEventService.KEY_TEACHER_MY_PAYMENT,
-              // public value:string
-              "",
-              // public metaObj:any
-              teacher,
-              // public myChecker:MyChecker
-              null
-            ) // end MyEvent
-          ), 
+      new RadioBtnOption(
+        // public title:string,
+        "수업리스트",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_KLASS,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_KLASS,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ),
 
-          new RadioBtnOption(
-            // public title:string,
-            "피드백",
-            // public key:string,
-            this.myEventService.KEY_TEACHER_MY_FEEDBACK,
-            // public isFocus:boolean
-            false,
-            // public myEvent:MyEvent
-            this.myEventService.getMyEvent(
-              // public eventName:string
-              this.myEventService.ON_CHANGE,
-              // public key:string
-              this.myEventService.KEY_TEACHER_MY_FEEDBACK,
-              // public value:string
-              "",
-              // public metaObj:any
-              teacher,
-              // public myChecker:MyChecker
-              null
-            ) // end MyEvent
-          )
+      new RadioBtnOption(
+        // public title:string,
+        "정산",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_INCOME,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_INCOME,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ) 
+/*
+      new RadioBtnOption(
+        // public title:string,
+        "리뷰",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_REVIEW,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_REVIEW,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      ),
 
-        ]; // end array
+      new RadioBtnOption(
+        // public title:string,
+        "문의",
+        // public key:string,
+        this.myEventService.KEY_TEACHER_MY_QUESTION,
+        // public isFocus:boolean
+        false,
+        // public myEvent:MyEvent
+        this.myEventService.getMyEvent(
+          // public eventName:string
+          this.myEventService.ON_CHANGE,
+          // public key:string
+          this.myEventService.KEY_TEACHER_MY_QUESTION,
+          // public value:string
+          "",
+          // public metaObj:any
+          teacher,
+          // public myChecker:MyChecker
+          this.getFreePassChecker()
+        ) // end MyEvent
+      )
+*/
+    ]; // end array    
 
 
-        if(null != keyFocus && "" != keyFocus) {
-            for (var i = 0; i < optionList.length; ++i) {
-                let option:RadioBtnOption = optionList[i];
+    if(null != keyFocus && "" != keyFocus) {
+        for (var i = 0; i < optionList.length; ++i) {
+            let option:RadioBtnOption = optionList[i];
 
-                if(option.key === keyFocus) {
-                    option.isFocus = true;    
-                    optionList[i] = option;
-                }
+            if(option.key === keyFocus) {
+                option.isFocus = true;    
+                optionList[i] = option;
             }
-        } // end if
+        }
+    } // end if
 
 
-        return optionList;
-    }    
+    return optionList;
+  }    
 
 }

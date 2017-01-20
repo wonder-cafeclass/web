@@ -40,8 +40,9 @@
 		"rest_api_key":"is_str|||min_length[60]|||regex_match_include[/^[^ ]+$/]",
 
 		"klass_id":"is_number|||is_natural_no_zero",
+
 		"klass_title":"is_str|||min_length[5]|||max_length[128]",
-		"klass_desc":"is_str|||min_length[5]|||max_length[255]",
+		"klass_type":"is_str|||matches[class_type_list]",
 		"klass_question_id":"is_number|||is_natural_no_zero",
 		"klass_question_status":"is_str|||matches[class_question_status_list]",
 		"klass_question":"is_str|||min_length[3]|||max_length[255]",
@@ -72,8 +73,6 @@
 		"klass_time_duration_minutes":"is_number|||greater_than_equal_to[0]|||less_than_equal_to[360]",
 
 		"klass_week":"is_number|||is_natural_no_zero",
-		"klass_week_min":"is_number|||is_natural_no_zero",
-		"klass_week_max":"is_number|||is_natural_no_zero",
 		"klass_days":"is_str|||min_length[1]",
 		"klass_venue":"is_str|||min_length[3]|||max_length[255]",
 		"klass_venue_title":"is_str|||min_length[3]|||max_length[255]",
@@ -85,8 +84,6 @@
 
 		"klass_subway_line":"is_str|||matches[subway_line_list]",
 		"klass_subway_station":"is_str|||min_length[3]|||max_length[64]",
-
-		"klass_class_per_week":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[7]",
 
 		"klass_student_cnt":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[6]",
 
@@ -102,6 +99,9 @@
 		"klass_student_number":"is_number|||greater_than_equal_to[1]|||less_than_equal_to[10]",
 
 		"klass_n_student_status":"is_str|||matches[class_student_status_list]",
+
+		"klass_attendance_id":"is_natural_no_zero",
+		"klass_attendance_status":"is_str|||matches[class_attendance_status_list]",
 
 		"search_q_klass_venue":"is_str|||max_length[32]|||regex_match[/^[a-zA-Z가-힣0-9\\s|]+$/]",
 		"search_q_naver_map":"is_str|||max_length[64]|||regex_match[/^[a-zA-Z가-힣0-9\\-_\\s|]+$/]",
@@ -129,11 +129,13 @@
 		"logger_error_type":"is_str|||matches[logger_error_type]",
 		"logger_error_msg":"is_str",
 
+		"date_yyyymmddhhmmss":"is_str|||regex_match_include[/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
+
 		"offset":"is_number|||greater_than_equal_to[0]",
 		"limit":"is_natural_no_zero",
 
 		"page_num":"is_natural_no_zero",
-		"page_size":"is_natural_no_zero",
+		"page_row_cnt":"is_natural_no_zero",
 
 		"search_query":"is_str|||min_length[1]|||regex_match_include[/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9\\-_\\s|]+$/]",
 
@@ -149,6 +151,7 @@
 		"z_test_user_id":"is_natural_no_zero",
 		"z_test_user_name":"is_str|||min_length[4]|||max_length[32]|||is_unique[z_test_user.name]|||regex_match[/^[a-zA-Z가-힣0-9]+$/]",
 
+		"payment_imp_id":"is_natural_no_zero",
 		"payment_imp_uid":"is_str",
 		"payment_imp_merchant_uid":"is_str",
 		"payment_imp_pay_method":"is_str",
@@ -208,14 +211,22 @@
 		"teacher_status_eng_list":["All", "Available","Block","Frozen","Not in action"],
 		"teacher_status_kor_list":["모든 상태", "정상","블럭","휴면","탈퇴"],
 
-		"class_student_status_list":["ALL", "A","N"],
-		"class_student_status_kor_list":["모든 상태", "등록", "취소"],
+		"class_student_status_list":["ALL","A","N","R"],
+		"class_student_status_kor_list":["모든 상태","등록","취소","취소요청"],
+
+		"class_attendance_status_list":["ALL", "R","P","A"],
+		"class_attendance_status_eng_list":["All", "Ready", "Presence", "Absence"],
+		"class_attendance_status_kor_list":["모든 상태", "수업전", "출석", "결석"],
 
 		"class_weeks_list":["4","8","12"],
 		"class_weeks_kor_list":["4주","8주","12주"],
 
 		"class_review_status_list":["A","N"],
 		"class_review_status_desc_list":["정상","삭제"],
+
+		"class_type_list":["ALL","F","C"],
+		"class_type_eng_list":["All","Free","CafeClassCare"],
+		"class_type_kor_list":["모든 타입","프리타입","카클케어타입"],
 
 		"class_question_status_list":["A","N"],
 		"class_question_status_desc_list":["정상","삭제"],		
@@ -635,15 +646,21 @@
 		"agent_type_desc":["PC Browser","Mobile","Robot"],
 
 		"logger_page_type":[
+
 			"LOG_IN",
+			"LOG_OUT",
 			"LOG_IN_FACEBOOK",
 			"LOG_IN_KAKAO",
 			"LOG_IN_NAVER",
-			"LOG_OUT",
 			"CLASS_LIST",
 			"POLICY",
 			"SIGNUP",
+			"SIGNUP_TEACHER",
 			"SIGNUP_SELECT",
+			"MY_INFO",
+			"MY_INFO_DASHBOARD",
+			"TEACHER_INFO",
+			"APPLY_TEACHER_TERM",
 			
 			"EOL"
 		],

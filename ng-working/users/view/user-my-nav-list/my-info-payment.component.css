@@ -1,0 +1,81 @@
+table.my-style {
+	margin: 0px;
+	background-color: #fff;
+}
+ul.my-style {
+    margin:0px;
+}
+li.my-style-table {
+	padding: 5px;
+    padding-bottom: 7px;
+    padding-top: 7px;    
+    background-color: #eee;
+}
+li.my-style{
+    border:0px;
+}
+li.my-style.my-last {
+    padding-bottom: 5px;
+}
+img.my-style-cover {
+	width: 154px;
+}
+td.my-style {
+    padding:0px;
+    margin:0px;
+}
+td.my-first {
+    border-top:0px;
+}
+td.my-left {
+    border-left:1px solid #ddd;
+}
+td.my-no-border {
+    border:0px;   
+}
+td.my-key {
+    text-align:right;
+    width:40px;
+    font-size:12px;
+    font-weight:bold;
+    color:#999;
+    padding:5px;
+    border-top: 1px solid #eee;
+}
+td.my-key.my-first {
+    border-top:0px;
+}
+td.my-value {
+    text-align:left;
+    width:100px;
+    font-size:12px;
+    color:#9d9d9d;
+    padding:5px;
+    padding-top: 6px;
+    padding-bottom: 4px;    
+    border-top: 1px solid #eee;
+}
+td.my-value.my-first {
+    border-top:0px;
+}
+td.my-value.my-small {
+    font-size:10px;
+}
+td.my-no-padding {
+    padding:0px;
+}
+img.my-img-filter {
+    width:30px;
+    margin-left:-5px;
+}
+img.my-style-teacher {
+    width:50px;
+    opacity: .9;
+    border: 2px solid #f5f5f5;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.7);
+}
+div.img-hover{
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 5px;    
+}

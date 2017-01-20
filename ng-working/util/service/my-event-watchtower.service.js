@@ -174,25 +174,8 @@ var MyEventWatchTowerService = (function () {
                 console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
             return;
         }
-        // @ Alternatives
-        // let offsetHeight:number = body.offsetHeight;
-        // let html = document.documentElement;
-        // let scrollHeight:number = body.scrollHeight;
         this.contentHeight = clientHeight;
         this.contentHeightSource.next(clientHeight);
-        /*
-        // 실제 보여지는 브라우저 내의 화면 높이를 의미합니다.
-        let contentHeight:number = window.innerHeight;
-        if(this._isDebug) console.log("footer / announceContentHeight / contentHeight : ",contentHeight);
-
-        // 위와 같습니다.
-        let clientHeight:number = document.documentElement.clientHeight;
-        if(this._isDebug) console.log("footer / announceContentHeight / clientHeight : ",clientHeight);
-
-        // 물리적인 디스플레이의 높이를 의미합니다.
-        let screenHeight:number = screen.height;
-        if(this._isDebug) console.log("footer / announceContentHeight / screenHeight : ",screenHeight);
-        */
     };
     // @ Desc : 강제로 푸터를 하단 고정 해제 합니다.
     MyEventWatchTowerService.prototype.announceFooterRelease = function () {
@@ -413,6 +396,36 @@ var MyEventWatchTowerService = (function () {
         // meta:any
         meta);
     };
+    MyEventWatchTowerService.prototype.getEventOnClickMeta = function (eventKey, value, myChecker, meta) {
+        if (this._isDebug)
+            console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_CLICK, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        myChecker, 
+        // meta:any
+        meta);
+    };
+    MyEventWatchTowerService.prototype.getEventOnClickMetaFreePass = function (eventKey, value, meta) {
+        if (this._isDebug)
+            console.log("my-event-watchtower / getEventOnChangeMeta / 시작");
+        return this.getEventWithMeta(
+        // eventName:string, 
+        this.myEventService.ON_CLICK, 
+        // eventKey:string, 
+        eventKey, 
+        // value:string, 
+        value, 
+        // myChecker:MyChecker, 
+        this.myCheckerService.getFreePassChecker(), 
+        // meta:any
+        meta);
+    };
     MyEventWatchTowerService.prototype.getEventOnAddCommentMeta = function (eventKey, value, myChecker, meta) {
         if (this._isDebug)
             console.log("my-event-watchtower / getEventOnAddCommentMeta / 시작");
@@ -569,6 +582,85 @@ var MyEventWatchTowerService = (function () {
         this.myLoggerService.errorAPIFailed, 
         // errorMsg:string
         msg); // end logger
+    };
+    MyEventWatchTowerService.prototype.logErrorBadValue = function (msg) {
+        if (this._isDebug)
+            console.log("m-e-w / logAPIError / 시작");
+        if (!this.getIsMyCheckerReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / !this.getIsMyCheckerReady()");
+            return;
+        } // end if
+        if (!this.getIsEventPackReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / !this.getIsEventPackReady()");
+            return;
+        } // end if
+        if (null == msg || "" === msg) {
+            if (this._isDebug)
+                console.log("m-e-w / logAPIError / 중단 / msg is not valid!");
+            return;
+        } // end if
+        this.myLoggerService.logError(
+        // apiKey:string
+        this.getApiKey(), 
+        // errorType:string
+        this.myLoggerService.errorTypeNotValidValue, 
+        // errorMsg:string
+        msg); // end logger
+    }; // end method
+    MyEventWatchTowerService.prototype.logPageEnter = function (pageType) {
+        var _this = this;
+        if (this._isDebug)
+            console.log("m-e-w / logPageEnter / 시작");
+        if (!this.getIsMyCheckerReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logPageEnter / 중단 / !this.getIsMyCheckerReady()");
+            return;
+        } // end if
+        if (!this.getIsEventPackReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / logPageEnter / 중단 / !this.getIsEventPackReady()");
+            return;
+        } // end if
+        if (null == pageType || "" === pageType) {
+            if (this._isDebug)
+                console.log("m-e-w / logPageEnter / 중단 / pageType is not valid!");
+        } // end if
+        // 페이지 진입을 기록으로 남깁니다.
+        this.myLoggerService.logActionPage(
+        // apiKey:string
+        this.getApiKey(), 
+        // pageType:string
+        pageType).then(function (myResponse) {
+            // 로그 등록 결과를 확인해볼 수 있습니다.
+            if (_this._isDebug)
+                console.log("m-e-w / logPageEnter / myResponse : ", myResponse);
+        }); // end service
+    };
+    MyEventWatchTowerService.prototype.isNotOK = function (myEvent) {
+        return !this.isOK(myEvent);
+    };
+    MyEventWatchTowerService.prototype.isOK = function (myEvent) {
+        if (this._isDebug)
+            console.log("m-e-w / isOK / 시작");
+        if (!this.getIsMyCheckerReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / isOK / 중단 / !this.getIsMyCheckerReady()");
+            return false;
+        } // end if
+        if (!this.getIsEventPackReady()) {
+            if (this._isDebug)
+                console.log("m-e-w / isOK / 중단 / !this.getIsEventPackReady()");
+            return false;
+        } // end if
+        if (null == myEvent) {
+            if (this._isDebug)
+                console.log("m-e-w / isOK / 중단 / myEvent is not valid!");
+            return false;
+        } // end if
+        var isOK = this.myCheckerService.isOK(myEvent.myChecker, myEvent.value);
+        return isOK;
     };
     MyEventWatchTowerService = __decorate([
         core_1.Injectable(), 

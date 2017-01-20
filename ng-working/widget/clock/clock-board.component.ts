@@ -184,26 +184,37 @@ export class ClockBoardComponent implements OnInit {
 
   private isSafeTimeRange(hhmmBegin:string, hhmmEnd:string) :boolean {
 
+    if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 시작");
+
+    if(this.isDebug()) console.log("clock-board / isSafeTimeRange / hhmmBegin : ",hhmmBegin);
+    if(this.isDebug()) console.log("clock-board / isSafeTimeRange / hhmmEnd : ",hhmmEnd);
+
     if(this.myTime.isNotHHMM(hhmmBegin)) {
+      if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 중단 / this.myTime.isNotHHMM(hhmmBegin)");
       return false;
     }
     if(this.myTime.isNotHHMM(hhmmEnd)) {
+      if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 중단 / this.myTime.isNotHHMM(hhmmEnd)");
       return false;
     }
     let diffMinutes:number = this.myTime.getDiffMinutesHHMM(hhmmBegin, hhmmEnd);
+    if(this.isDebug()) console.log("clock-board / isSafeTimeRange / diffMinutes : ",diffMinutes);
 
     // 최대 표현할 수 있는 시간 범위인지 확인한다.
     // 1hr/1hr 30mins/2hr/2hr 30mins/3hr
     if(!(60 <= diffMinutes && diffMinutes <= 180)) {
+      if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 중단 / 최소,최대시간 범위 밖입니다.");
       return false;
     }
 
     let clockTimeBegin:MyClockTime = this.myTime.getClockTime(hhmmBegin);
     if(null == clockTimeBegin) {
+      if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 중단 / null == clockTimeBegin");
       return false;
     }
     let clockTimeEnd:MyClockTime = this.myTime.getClockTime(hhmmEnd);
     if(null == clockTimeEnd) {
+      if(this.isDebug()) console.log("clock-board / isSafeTimeRange / 중단 / null == clockTimeEnd");
       return false;
     }
 
