@@ -739,13 +739,16 @@ class Payment extends MY_REST_Controller {
         $output["paymentImpNext"] = $paymentImpNext;
 
         // 결제 취소 영수증 가져오기
-        $cancel_receipt_url = $paymentImpNext->cancel_receipt_url;
+        $cancel_receipt_url = "";
+        if(!empty($paymentImpNext->cancel_receipt_url))
+        {
+            $cancel_receipt_url = $paymentImpNext->cancel_receipt_url;
+        }
         if(empty($cancel_receipt_url)) 
         {
             $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$cancel_receipt_url is not valid!");
             return;
         } // end if
-
 
         // 결제 취소가 되었습니다. 
         // 수업을 등록한 학생 정보 상태도 "N"상태로 변경해줍니다.

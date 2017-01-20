@@ -38,6 +38,10 @@ var KlassNStudent = (function () {
         return this.myIs.isSharing(key, this, target);
     };
     KlassNStudent.prototype.isEnableCancle = function () {
+        // 피터님 피드백 
+        // https://cafeclass.agit.io/g/300013514/wall/303995541#comment_panel_303996351
+        // 2. 수업 3일전 취소라면 조건없이 취소 가능합니다.
+        // --> 그렇다면 2일전부터는 10% 제하고 취소. 이것은 운영자 쪽에서 진행.
         // 취소 관련 정책 확인 필요.
         // http://cafeclass.kr/%EC%95%BD%EA%B4%80-%EB%B0%8F-%EC%A0%95%EC%B1%85/%EA%B0%95%EC%9D%98-%EC%B0%B8%EA%B0%80%EC%9E%90-%EC%95%BD%EA%B4%80/
         // 강의 개시 1일전 통보 취소는?

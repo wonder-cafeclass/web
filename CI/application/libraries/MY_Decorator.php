@@ -1241,7 +1241,10 @@ class MY_Decorator extends MY_Library
         if(0 < $klass->id)
         {
             $klass = $this->deco_klass_extra($klass);
-            $klass->teacher = $teacher;
+            if(isset($teacher))
+            {
+                $klass->teacher = $teacher;
+            }
             $ks->klass = $klass;
         } // end if
 
