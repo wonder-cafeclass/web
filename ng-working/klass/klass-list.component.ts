@@ -29,7 +29,8 @@ import { HelperMyArray }                   from '../util/helper/my-array';
 
 import { UserService }                     from '../users/service/user.service';
 import { User }                            from '../users/model/user';
-import { TeacherService }                  from '../teachers/service/teacher.service';
+// REMOVE ME
+// import { TeacherService }                  from '../teachers/service/teacher.service';
 import { Teacher }                         from '../teachers/model/teacher';
 
 @Component({
@@ -60,7 +61,8 @@ export class KlassListComponent implements AfterViewInit {
     private klassService:KlassService,
     private urlService:UrlService,
     private userService:UserService,
-    private teacherService:TeacherService,
+    // REMOVE ME
+    // private teacherService:TeacherService, 
     private myLoggerService:MyLoggerService,
     private watchTower:MyEventWatchTowerService,
     private myCheckerService:MyCheckerService,
@@ -78,8 +80,8 @@ export class KlassListComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   isSelected(klass: Klass): boolean {

@@ -13,8 +13,6 @@ var router_1 = require('@angular/router');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var user_1 = require('../users/model/user');
-var email_component_1 = require('../widget/input/email/email.component');
-var password_component_1 = require('../widget/input/password/password.component');
 var default_meta_1 = require('../widget/input/default/model/default-meta');
 var default_type_1 = require('../widget/input/default/model/default-type');
 var my_logger_service_1 = require('../util/service/my-logger.service');
@@ -33,7 +31,6 @@ var LoginComponent = (function () {
         this.watchTower = watchTower;
         this.activatedRoute = activatedRoute;
         this.router = router;
-        this.cafeclassAuthUrl = "http://google.co.kr";
         this.redirectUrl = "/class-center";
         this.isAdmin = false;
         this.errorMsgArr = [];
@@ -520,14 +517,6 @@ var LoginComponent = (function () {
         // valueFocus:string
         valueFocus);
     }; // end method   
-    __decorate([
-        core_1.ViewChild(email_component_1.EmailComponent), 
-        __metadata('design:type', email_component_1.EmailComponent)
-    ], LoginComponent.prototype, "emailComponent", void 0);
-    __decorate([
-        core_1.ViewChild(password_component_1.PasswordComponent), 
-        __metadata('design:type', password_component_1.PasswordComponent)
-    ], LoginComponent.prototype, "passwordComponent", void 0);
     LoginComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

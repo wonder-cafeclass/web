@@ -15,17 +15,11 @@ var http_1 = require('@angular/http');
 var common_1 = require('@angular/common');
 var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
-var users_module_1 = require('./users/users.module');
-var teachers_module_1 = require('./teachers/teachers.module');
 var klass_center_module_1 = require('./klass/klass-center.module');
-var login_module_1 = require('./login/login.module');
-var policy_module_1 = require('./policy/policy.module');
 var widget_module_1 = require('./widget/widget.module');
 var dialog_service_1 = require('./widget/dialog.service');
 var auth_service_1 = require('./auth.service');
-var login_service_1 = require('./login/service/login.service');
 var url_service_1 = require('./util/url.service');
-var image_service_1 = require('./util/image.service');
 var my_event_service_1 = require('./util/service/my-event.service');
 var my_asset_service_1 = require('./util/my-asset.service');
 var my_logger_service_1 = require('./util/service/my-logger.service');
@@ -45,11 +39,7 @@ var AppModule = (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 app_routing_1.routing,
-                users_module_1.UsersModule,
-                teachers_module_1.TeachersModule,
                 klass_center_module_1.KlassCenterModule,
-                login_module_1.LoginModule,
-                policy_module_1.PolicyModule,
                 widget_module_1.WidgetModule,
                 http_1.HttpModule,
                 http_1.JsonpModule
@@ -59,9 +49,7 @@ var AppModule = (function () {
             ],
             providers: [
                 auth_service_1.AuthService,
-                login_service_1.LoginService,
                 url_service_1.UrlService,
-                image_service_1.ImageService,
                 my_event_service_1.MyEventService,
                 my_asset_service_1.MyAssetService,
                 my_logger_service_1.MyLoggerService,

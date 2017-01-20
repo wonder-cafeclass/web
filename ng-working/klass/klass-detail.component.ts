@@ -250,8 +250,8 @@ export class KlassDetailComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit():void {

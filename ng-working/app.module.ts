@@ -11,18 +11,11 @@ import { AppComponent }             from './app.component';
 import { routing,
          appRoutingProviders }      from './app.routing';
 
-import { UsersModule }              from './users/users.module';
-import { TeachersModule }           from './teachers/teachers.module';
 import { KlassCenterModule }        from './klass/klass-center.module';
-import { LoginModule }              from './login/login.module';
-import { PolicyModule }             from './policy/policy.module';
 import { WidgetModule }             from './widget/widget.module';
-
 import { DialogService }            from './widget/dialog.service';
 import { AuthService }              from './auth.service';
-import { LoginService }             from './login/service/login.service';
 import { UrlService }               from './util/url.service';
-import { ImageService }             from './util/image.service';
 import { MyEventService }           from './util/service/my-event.service';
 import { MyAssetService }           from './util/my-asset.service';
 import { MyLoggerService }          from './util/service/my-logger.service';
@@ -40,11 +33,7 @@ import './rxjs-operators';
     BrowserModule,
     FormsModule,
     routing,
-    UsersModule,
-    TeachersModule,
     KlassCenterModule,
-    LoginModule,
-    PolicyModule,
     WidgetModule,
     HttpModule,
     JsonpModule
@@ -54,9 +43,7 @@ import './rxjs-operators';
   ],
   providers: [
     AuthService,
-    LoginService,
     UrlService,
-    ImageService,
     MyEventService,
     MyAssetService,
     MyLoggerService,

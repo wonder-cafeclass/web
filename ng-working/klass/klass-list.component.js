@@ -21,15 +21,18 @@ var my_is_1 = require('../util/helper/my-is');
 var my_array_1 = require('../util/helper/my-array');
 var user_service_1 = require('../users/service/user.service');
 var user_1 = require('../users/model/user');
-var teacher_service_1 = require('../teachers/service/teacher.service');
+// REMOVE ME
+// import { TeacherService }                  from '../teachers/service/teacher.service';
 var teacher_1 = require('../teachers/model/teacher');
 var KlassListComponent = (function () {
     // private keywordMap;
-    function KlassListComponent(klassService, urlService, userService, teacherService, myLoggerService, watchTower, myCheckerService, route, router) {
+    function KlassListComponent(klassService, urlService, userService, 
+        // REMOVE ME
+        // private teacherService:TeacherService, 
+        myLoggerService, watchTower, myCheckerService, route, router) {
         this.klassService = klassService;
         this.urlService = urlService;
         this.userService = userService;
-        this.teacherService = teacherService;
         this.myLoggerService = myLoggerService;
         this.watchTower = watchTower;
         this.myCheckerService = myCheckerService;
@@ -47,8 +50,8 @@ var KlassListComponent = (function () {
         this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -589,7 +592,7 @@ var KlassListComponent = (function () {
             styleUrls: ['klass-list.component.css'],
             templateUrl: 'klass-list.component.html',
         }), 
-        __metadata('design:paramtypes', [klass_service_1.KlassService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [klass_service_1.KlassService, url_service_1.UrlService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
     ], KlassListComponent);
     return KlassListComponent;
 }());

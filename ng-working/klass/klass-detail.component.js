@@ -110,8 +110,8 @@ var KlassDetailComponent = (function () {
         this.klassService.setWatchTower(this.watchTower);
     }
     KlassDetailComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     KlassDetailComponent.prototype.ngAfterViewInit = function () {
         if (this.isDebug())

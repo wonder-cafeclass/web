@@ -12,9 +12,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var url_service_1 = require('./util/url.service');
 var auth_service_1 = require('./auth.service');
-var image_service_1 = require('./util/image.service');
 var user_service_1 = require('./users/service/user.service');
-var teacher_service_1 = require('./teachers/service/teacher.service');
 var my_event_watchtower_service_1 = require('./util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('./util/service/my-checker.service');
 var my_event_service_1 = require('./util/service/my-event.service');
@@ -23,12 +21,10 @@ var user_1 = require('./users/model/user');
 var teacher_1 = require('./teachers/model/teacher');
 var AppComponent = (function () {
     // admin server 여부를 판별합니다.
-    function AppComponent(authService, urlService, userService, teacherService, imageService, watchTower, myEventService, myCheckerService, myLoggerService, activatedRoute, router) {
+    function AppComponent(authService, urlService, userService, watchTower, myEventService, myCheckerService, myLoggerService, activatedRoute, router) {
         this.authService = authService;
         this.urlService = urlService;
         this.userService = userService;
-        this.teacherService = teacherService;
-        this.imageService = imageService;
         this.watchTower = watchTower;
         this.myEventService = myEventService;
         this.myCheckerService = myCheckerService;
@@ -262,23 +258,6 @@ var AppComponent = (function () {
         // 내정보로 이동합니다.
         this.router.navigate(['/user/my']);
     };
-    // REMOVE ME
-    // 디버깅 모드로 전환하는 방법은 2가지
-    // 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
-    /*
-    onClickToggleDebugging(event) :void {
-        event.stopPropagation();
-        event.preventDefault();
-
-        if(this.isDebug()) console.log(`app-root / onClickToggleDebugging / 시작`);
-
-        this.isDebugging = !this.watchTower.getIsDebugging();
-
-        if(this.isDebug()) console.log(`app-root / onClickToggleDebugging / this.isDebugging : ${this.isDebugging}`);
-
-        this.watchTower.announceIsDebugging(this.isDebugging);
-    }
-    */
     AppComponent.prototype.onClickLogo = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -292,7 +271,7 @@ var AppComponent = (function () {
             styleUrls: ['app.component.css'],
             templateUrl: 'app.component.html'
         }), 
-        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, teacher_service_1.TeacherService, image_service_1.ImageService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [auth_service_1.AuthService, url_service_1.UrlService, user_service_1.UserService, my_event_watchtower_service_1.MyEventWatchTowerService, my_event_service_1.MyEventService, my_checker_service_1.MyCheckerService, my_logger_service_1.MyLoggerService, router_1.ActivatedRoute, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());
