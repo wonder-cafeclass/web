@@ -117,7 +117,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -185,7 +185,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -197,18 +197,18 @@ class Klass extends MY_REST_Controller {
     public function updateattendance_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -259,11 +259,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateattendance_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"updateattendance_post Failed!");
             return;
         } // end if
 
@@ -294,24 +294,24 @@ class Klass extends MY_REST_Controller {
         );
 
         $output["row"] = $attendance;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
     }    
 
     public function fetchklassnstudentlist_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -375,11 +375,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
             return;
         } // end if 
 
@@ -490,25 +490,25 @@ class Klass extends MY_REST_Controller {
         // $output["list_src"] = $klass_n_student_list;
         $output["list"] = $klass_n_student_list_next;
 
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     }
 
     public function fetchactiveklasslistbyteacher_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -572,11 +572,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
             return;
         } // end if 
 
@@ -668,25 +668,25 @@ class Klass extends MY_REST_Controller {
 
         // Deco klass
         $output["list"] = $list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     }     
 
     public function fetchallklassnlistbyteacher_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -764,11 +764,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassnstudentlist_post Failed!");
             return;
         } // end if 
 
@@ -860,25 +860,25 @@ class Klass extends MY_REST_Controller {
 
         // Deco klass
         $output["list"] = $list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     }    
 
     public function fetchklass_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -909,11 +909,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklass_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklass_post Failed!");
             return;
         } // end if 
         
@@ -960,11 +960,11 @@ class Klass extends MY_REST_Controller {
         if (!empty($klass))
         {
             $output["klass"] = $klass;
-            $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+            $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
         }
         else
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,'Klass could not be found');
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,'Klass could not be found');
             return;
         }
     }     
@@ -972,11 +972,11 @@ class Klass extends MY_REST_Controller {
     public function course_get()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $this->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
             $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
@@ -984,7 +984,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1034,7 +1034,7 @@ class Klass extends MY_REST_Controller {
         }
         else
         {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "empty(\$klass)");
+            $this->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "empty(\$klass)");
             $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
@@ -1042,7 +1042,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1054,11 +1054,11 @@ class Klass extends MY_REST_Controller {
     public function list_get()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
@@ -1099,16 +1099,21 @@ class Klass extends MY_REST_Controller {
             $output["klass_list"] = [$no_klass];
         } // end if
 
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     } // end method
 
     // @ 새로운 빈 수업을 추가합니다.
     public function addklassempty_post()
     {
-        if($this->is_not_ok()) {
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
+
+        $output = [];
+        if($this->is_not_ok()) 
+        {
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
-        }
+        } // end if
 
         $output = array();
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
@@ -1120,7 +1125,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1157,8 +1162,6 @@ class Klass extends MY_REST_Controller {
             // $key_filter=""
             "teacher_greeting"
         );
-
-        $output = array();
         $output["params"] = 
         [
             "user_id"=>$user_id,
@@ -1167,62 +1170,55 @@ class Klass extends MY_REST_Controller {
             "teacher_greeting"=>$teacher_greeting
         ];
 
-        $is_ok = true;
         $check_list = 
         $this->my_paramchecker->get_check_list();
         $output["check_list"] = $check_list;
         if($this->my_paramchecker->has_check_list_failed())
         {
-            $is_ok = false;
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"has_check_list_failed");
+            return;
         }
 
         // TODO - 선생님이 수업을 연속으로 등록하는 것을 막기 위해서 가장 마지막으로 등록한 수업으로부터 3분이 지났는지 확인합니다.
         // TODO - 건네받은 userid가 선생님이 맞는지 확인합니다.
 
-        if($is_ok) 
-        {
-            $this->my_sql->add_klass(
-                // $user_id=-1, 
-                $user_id,
-                // $teacher_id=-1, 
-                $teacher_id,
-                // $teacher_resume="", 
-                $teacher_resume,
-                // $teacher_greeting=""
-                $teacher_greeting
-            );
+        $this->my_sql->add_klass(
+            // $user_id=-1, 
+            $user_id,
+            // $teacher_id=-1, 
+            $teacher_id,
+            // $teacher_resume="", 
+            $teacher_resume,
+            // $teacher_greeting=""
+            $teacher_greeting
+        );
 
-            $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
-            $klass = $this->my_decorator->deco_klass($klass);
-            $output["klass"] = $klass;
+        $klass = $this->my_sql->select_klass_by_teacher($teacher_id);
+        $klass = $this->my_decorator->deco_klass($klass);
+        $output["klass"] = $klass;
 
-            // 선생님이 수업을 추가한 것을 로그로 기록합니다.
-            $this->respond_200($output);
-        }
-        else
-        {
-            $this->respond_200_Failed(
-                // $msg=""
-                "addklassempty_post is failed!",
-                // $function=""
-                __FUNCTION__,
-                // $file="" 
-                __FILE__,
-                // $line=""
-                __LINE__,
-                // $data=null
-                $output
-            );             
-        }
+        // 선생님이 수업을 추가한 것을 로그로 기록합니다.
+        // 수업 결제가 완료되었습니다.
+        // 액션 로그를 남깁니다.
+        $this->my_logger->add_action(
+            // $user_id=-1, 
+            $user_id,
+            // $action_type="",
+            $this->my_logger->ACTION_TYPE_ADD_KLASS,
+            // $action_key=""
+            $this->my_logger->ACTION_KEY_ADD_EMPTY_KLASS
+        );
+                
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
     }
 
     // @ 수업을 업데이트합니다.
     public function update_post()
     {
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
+            $this->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok()");
             $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
@@ -1230,7 +1226,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1243,7 +1239,7 @@ class Klass extends MY_REST_Controller {
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {   
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$is_not_allowed_api_call");
+            $this->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$is_not_allowed_api_call");
             $output["track"] = $this->my_tracker->flush();
             $this->respond_200_Failed(
                 // $msg=""
@@ -1251,7 +1247,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1519,7 +1515,7 @@ class Klass extends MY_REST_Controller {
         {
             $is_ok = false;
         }
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok");
 
         if($is_ok) 
         {
@@ -1604,7 +1600,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1629,7 +1625,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1703,7 +1699,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1729,7 +1725,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1813,7 +1809,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1837,7 +1833,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1933,7 +1929,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -1957,7 +1953,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2053,7 +2049,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2081,7 +2077,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2165,7 +2161,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2189,7 +2185,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2270,7 +2266,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2295,7 +2291,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2386,7 +2382,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2411,7 +2407,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2490,7 +2486,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2515,7 +2511,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2582,7 +2578,7 @@ class Klass extends MY_REST_Controller {
                 // $function=""
                 __FUNCTION__,
                 // $file="" 
-                __FILE__,
+                __CLASS__,
                 // $line=""
                 __LINE__,
                 // $data=null
@@ -2594,10 +2590,10 @@ class Klass extends MY_REST_Controller {
     // @ Desc : 낱개의 수업을 가져옵니다.
     private function get_klass($klass_id=-1)
     {
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if(!(0 < $klass_id)) {
-            $this->my_tracker->add_stopped(__FILE__, __FUNCTION__, __LINE__, "\$klass_id is not valid!");
+            $this->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$klass_id is not valid!");
             return;
         } // end if
 
@@ -2614,14 +2610,14 @@ class Klass extends MY_REST_Controller {
         $output = [];
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {  
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -2767,12 +2763,12 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
 
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklasslist_post is failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklasslist_post is failed!");
             return;
         } // end if
 
@@ -2834,7 +2830,7 @@ class Klass extends MY_REST_Controller {
         // 비어있는 수업이라면 '수업 없음' 탭을 가져옵니다.
         if (empty($klass_list))
         {
-            $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "조회한 결과가 없는 경우, \"수업없음\" 클래스 정보를 내려준다.");
+            $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "조회한 결과가 없는 경우, \"수업없음\" 클래스 정보를 내려준다.");
             $no_klass = 
             $this->my_decorator->get_klass_course_no_class();
             $klass_list = array();
@@ -2857,23 +2853,23 @@ class Klass extends MY_REST_Controller {
         } // end if
         
         $output["klass_list"] = $klass_list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output); 
     }    
 
     public function addstudent_post() 
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         }
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -2917,11 +2913,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"updateuser_post Failed!");
             return;
         } // end if 
 
@@ -2945,7 +2941,7 @@ class Klass extends MY_REST_Controller {
         );
 
         $output["klass_student"] = $klass_student;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     }
 
@@ -2960,14 +2956,14 @@ class Klass extends MY_REST_Controller {
         $output = [];
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {  
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -3067,12 +3063,12 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
 
         if(!$is_ok) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassattendlist_post is failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassattendlist_post is failed!");
             return;
         } // end if
 
@@ -3120,24 +3116,24 @@ class Klass extends MY_REST_Controller {
 
         $list = $this->my_decorator->deco_attendance_list($list);
         $output["list"] = $list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output); 
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output); 
     } 
 
     public function fetchklassreviewbyteacher_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -3213,11 +3209,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
             return;
         } // end if 
 
@@ -3267,24 +3263,24 @@ class Klass extends MY_REST_Controller {
         } // end if
 
         $output["list"] = $review_list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
     } 
 
     public function fetchklassquestion_post()
     {
         $output = [];
-        $this->my_tracker->add_init(__FILE__, __FUNCTION__, __LINE__);
+        $this->my_tracker->add_init(__CLASS__, __FUNCTION__, __LINE__);
 
         if($this->is_not_ok()) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$this->is_not_ok()");
             return;
         } // end if
 
         $is_not_allowed_api_call = $this->my_paramchecker->is_not_allowed_api_call();
         if($is_not_allowed_api_call) 
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"\$is_not_allowed_api_call");
             return;
         }
 
@@ -3315,11 +3311,11 @@ class Klass extends MY_REST_Controller {
 
         // CHECK LIST
         $is_ok = $this->has_check_list_success();
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
+        $this->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$is_ok : $is_ok");
         $output["check_list"] = $this->get_check_list();
         if(!$is_ok)
         {
-            $this->respond_200_Failed_v2(__FILE__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
+            $this->respond_200_Failed_v2(__CLASS__,__FUNCTION__,__LINE__,$output,"fetchklassreview_post Failed!");
             return;
         } // end if 
     
@@ -3329,7 +3325,7 @@ class Klass extends MY_REST_Controller {
 
         // TODO - 문의를 수업별로 구분해야 합니다!
         $output["table"] = $question_list;
-        $this->respond_200_v2(__FILE__,__FUNCTION__,__LINE__,$output);
+        $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 
     }             
 

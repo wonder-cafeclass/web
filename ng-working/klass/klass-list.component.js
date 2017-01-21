@@ -556,7 +556,7 @@ var KlassListComponent = (function () {
         this.loginTeacher.greeting).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
             if (_this.isDebug())
-                console.log("klass-list / addReview / myResponse : ", myResponse);
+                console.log("klass-list / addNewKlass / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
                 var klass = new klass_1.Klass().setJSON(myResponse.getDataProp("klass"));
                 if (null != klass) {

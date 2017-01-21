@@ -4,6 +4,8 @@ import {  Component,
           EventEmitter,          
           OnInit }                  from '@angular/core';
 
+import {  Router }                    from '@angular/router';
+
 import { MyEvent }                  from '../../util/model/my-event';
 import { MyEventWatchTowerService } from '../../util/service/my-event-watchtower.service';
 import { HelperMyArray }            from '../../util/helper/my-array';
@@ -43,7 +45,8 @@ export class KlassNStudentListComponent implements OnInit {
   private myArray:HelperMyArray;
 
   constructor(  private watchTower:MyEventWatchTowerService, 
-                private paymentService:PaymentService) {
+                private paymentService:PaymentService,
+                private router:Router ) {
 
     // Do something...
     this.myArray = new HelperMyArray();
@@ -180,6 +183,7 @@ export class KlassNStudentListComponent implements OnInit {
     let paymentImpCancelAmount:number = -1;
     let paymentImpCancelReason:string = "고객 사정에 의한 환불";
 
+    // TODO - 결재 취소 페이지로 이동.
     // 아임포트 - 결제를 취소합니다.
     this.paymentService
     .cancelPaymentImport(
@@ -199,13 +203,14 @@ export class KlassNStudentListComponent implements OnInit {
       // if( myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext") ) {
       if( myResponse.isSuccess() ) {
 
-        /*
+
         let paymentImpJSON = myResponse.getDataProp("paymentImpNext");
         let paymentImpNext:PaymentImport = new PaymentImport().setJSON(paymentImpJSON);
 
-        // 부모 객체에게 결제 완료를 알립니다.
-        this.emitEventOnChangePaymentImp(paymentImpNext);
-        */
+        alert("결제가 취소되었습니다.");
+
+        // 홈으로 이동
+        this.router.navigate(['/']);
         
       } else if(myResponse.isFailed()){
 

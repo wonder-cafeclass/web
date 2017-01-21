@@ -171,6 +171,13 @@ export class MyInfoDashboardComponent implements AfterViewInit {
         for (var i = 0; i < jsonList.length; ++i) {
           let json = jsonList[i];
           let klassNStudent:KlassNStudent = new KlassNStudent().setJSON(json);
+
+          // 대시보드에서는 '결재 완료 및 수업 기간 중'인 수업만 노출됩니다.
+          // TODO - 이 조건이 백엔드 쪽에 전달될수 있어야 합니다.
+          if(klassNStudent.isCanceled()) {
+            continue;
+          }
+
           klassNStudentList.push(klassNStudent);
         } // end for
 

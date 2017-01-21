@@ -1820,19 +1820,7 @@ class Users extends MY_REST_Controller {
         $output["path_user_validation"] = $path_user_validation;
         $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__);
 
-        // REMOVE ME
-        /*
-        $this->email->from('info@cafeclass.kr', '카페클래스');
-        $this->email->to($email);
-        // $this->email->cc('another@another-example.com');
-        // $this->email->bcc('them@their-example.com');
-
-        $this->email->subject('Email Test');
-        $this->email->message($path_user_validation);
-
-        $this->email->send();
-        */
-        $this->my_email->send_mail(
+        $this->my_cc_email->send_mail_to_user(
             // $user_id=-1, 
             intval($user->id),
             // $receiver_email="", 
@@ -1842,7 +1830,7 @@ class Users extends MY_REST_Controller {
             // $message=""
             $path_user_validation
         );
-        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "Email has been sent to user as validation");
+        $this->my_tracker->add(__FILE__, __FUNCTION__, __LINE__, "Email has been sent to $email as validation");
 
         // 메일 발송을 기록합니다. 로거에 기록합니다.
         $this->my_logger->add_action(

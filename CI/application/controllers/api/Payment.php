@@ -307,14 +307,18 @@ class Payment extends MY_REST_Controller {
     {
         $output = [];
 
-        // $output = $this->my_time->test_weekdays();
+        $paymentImpFromDB = 
+        $this->my_sql->select_payment_import_canceled("imp_220309855714");
 
-        $output = [];
-        $output["week_interval"] = 
-        $this->my_time->get_week_interval("2017-02-05");
-        // $this->my_time->get_week_interval("2017-01-18");
+        $output["paymentImpFromDB"] = $paymentImpFromDB;
+
+        $paymentImpNext = 
+        $this->my_decorator->deco_payment_import($paymentImpFromDB, "canceled");
+
+        $output["paymentImpNext"] = $paymentImpNext;
 
         $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
+
     }
 
     private function add_klass_attendance($login_user_id=-1, $klass=null, $user_id=-1)
@@ -858,7 +862,7 @@ class Payment extends MY_REST_Controller {
         // 저장한 데이터를 가져옴 
         // imp_uid
         $paymentImpFromDB = 
-        $this->my_sql->select_payment_import($payment_imp_uid);
+        $this->my_sql->select_payment_import_canceled($payment_imp_uid);
         $paymentImpNext = 
         $this->my_decorator->deco_payment_import($paymentImpFromDB);
         if(is_null($paymentImpNext)) 

@@ -720,7 +720,7 @@ export class KlassListComponent implements AfterViewInit {
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("klass-list / addReview / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("klass-list / addNewKlass / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
 

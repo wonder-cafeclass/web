@@ -116,9 +116,13 @@
 					<a 	*ngIf="klass.level_img_url" 
 						(click)="onClickWishList($event, klass)" 
 						href="#" 
+
 						class="btn btn-default" 
 						role="button">
-						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	
+						<span class="favorite">&hearts;</span>
+						<span class="favorite-shim">&nbsp;</span>
+
+						<!-- <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>	 -->
 					</a>
 				</li>
 			</ul>
