@@ -2120,6 +2120,15 @@ class MY_Sql extends MY_Library
         return $row;
     } 
 
+    private function set_where_select_active_klass_cnt_by_teacher($teacher_id=-1)
+    {
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $status_list = array('E', 'B', 'C');
+        $this->CI->db->where_in('klass.status', $status_list);
+    }
+
     public function select_active_klass_cnt_by_teacher($teacher_id=-1)
     {
         $this->add_track_init(__CLASS__, __FUNCTION__, __LINE__);
@@ -2128,29 +2137,12 @@ class MY_Sql extends MY_Library
         {
             return;
         } // end if
-        if($this->is_not_ok("klass_status", $klass_status))
-        {
-            $klass_status = "";
-        } // end if
 
-        $this->CI->db->select('*');
-        $this->CI->db->from('klass');
-        $this->CI->db->where('klass.teacher_id', $teacher_id);
-        $status_list = array('E', 'B', 'C');
-        $this->CI->db->where_in('klass.status', $status_list);
+        $this->set_where_select_active_klass_cnt_by_teacher($teacher_id);
         $cnt = $this->CI->db->count_all_results();
         $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$cnt : $cnt");
 
-        /*
-        $this->CI->db->select('*');
-        $this->CI->db->from('klass');
-        $this->CI->db->where('klass.teacher_id', $teacher_id);
-        $status_list = array('E', 'B', 'C');
-        $this->db->where_in('klass.status', $status_list);
-        $sql = $this->CI->db->get_compiled_select();
-        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
-        */
-
+        $this->set_where_select_active_klass_cnt_by_teacher($teacher_id);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 

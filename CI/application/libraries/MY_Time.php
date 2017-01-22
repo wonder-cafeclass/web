@@ -91,6 +91,8 @@ class MY_Time{
 
     	$day_idx = $this->get_day_idx($day_name);
 
+        $this->CI->my_tracker->add(__CLASS__, __FUNCTION__, __LINE__, "\$day_idx : $day_idx");
+
     	return $this->get_day($day_idx, $interval_weeks);
     } // end method
 
@@ -171,9 +173,9 @@ class MY_Time{
 
     	$today = date('D',strtotime('now'));
     	$today_idx = $this->get_day_idx($today);
-        if(!(0 < $today_idx))
+        if(!(-1 < $today_idx))
         {
-            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$day_idx is not valid!");
+            $this->CI->my_tracker->add_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$today_idx is not valid!");
             return null;
         }
 
