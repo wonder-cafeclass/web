@@ -101,6 +101,7 @@ export class KlassDetailComponent implements AfterViewInit {
   editTitle: string; // Deprecated
 
   klassStudent:KlassNStudent;
+  klassStudentCnt:number=-1;
 
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
@@ -450,6 +451,9 @@ export class KlassDetailComponent implements AfterViewInit {
         if(null != klassStudentJSON) {
           this.klassStudent = new KlassNStudent().setJSON(klassStudentJSON);
         } // end if
+
+        // 이 수업을 등록한 학생수 정보.
+        this.klassStudentCnt = parseInt(myResponse.getDataProp("klass_student_cnt"));
         
         if(klassId === -100) {
           // 새로 만든 수업이라면, 
@@ -975,6 +979,11 @@ export class KlassDetailComponent implements AfterViewInit {
     );
 
     this.priceCalculator.setWeeks(this.klassCopy.week);
+
+    // 등록한 학생들이 있다면 수업료, 참여 학생수, 금액 변경이 불가하다.
+    if(null != this.priceCalculator && 0 < this.klassStudentCnt) {
+      this.priceCalculator.setDisable();
+    }
 
   } // end method
 

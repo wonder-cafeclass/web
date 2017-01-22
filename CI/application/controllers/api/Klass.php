@@ -267,7 +267,6 @@ class Klass extends MY_REST_Controller {
             return;
         } // end if
 
-        // wonder.jung
         // 출석상태를 업데이트합니다.
         $this->my_sql->update_attendance(
             // $login_user_id=-1, 
@@ -941,6 +940,17 @@ class Klass extends MY_REST_Controller {
         {
             $klass->question_list = [];   
         }
+
+        // 수업을 등록한 유저 리스트를 가져옵니다.
+        // 해당 유저가 등록한 수업의 전체 갯수를 가져옵니다.
+        $klass_student_cnt = 
+        $this->my_sql->select_klass_n_student_cnt_by_klass_id(
+            // $klass_id=-1, 
+            $klass->id,
+            // $status=""
+            "A"
+        );
+        $output["klass_student_cnt"] = $klass_student_cnt;
 
         // 해당 유저가 수업 등록을 했는지 여부를 가져옵니다.
         $klass_student = 

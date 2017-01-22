@@ -59,6 +59,7 @@ var KlassDetailComponent = (function () {
         this.defaultService = defaultService;
         this.urlService = urlService;
         this.myCheckerService = myCheckerService;
+        this.klassStudentCnt = -1;
         this.priceTagCurrency = "₩";
         this.priceTagColor = "#e85c41";
         this.priceTagWidth = 105;
@@ -279,6 +280,8 @@ var KlassDetailComponent = (function () {
                 if (null != klassStudentJSON) {
                     _this.klassStudent = new klass_n_student_1.KlassNStudent().setJSON(klassStudentJSON);
                 } // end if
+                // 이 수업을 등록한 학생수 정보.
+                _this.klassStudentCnt = parseInt(myResponse.getDataProp("klass_student_cnt"));
                 if (klassId === -100) {
                     // 새로 만든 수업이라면, 
                     // 해당 url로 refresh를 하게되면 자동으로 수업이 생기므로 
@@ -707,6 +710,10 @@ var KlassDetailComponent = (function () {
         // studentCnt:number
         this.klassCopy.student_cnt);
         this.priceCalculator.setWeeks(this.klassCopy.week);
+        // 등록한 학생들이 있다면 수업료, 참여 학생수, 금액 변경이 불가하다.
+        if (null != this.priceCalculator && 0 < this.klassStudentCnt) {
+            this.priceCalculator.setDisable();
+        }
     }; // end method
     KlassDetailComponent.prototype.setKlassDetailNavList = function () {
         if (this.isDebug())

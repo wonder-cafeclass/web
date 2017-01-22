@@ -4979,13 +4979,11 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
-            return null;
+            $klass_id=-1;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
-            return null;
+            $user_id=-1;
         }
         if($this->is_not_ok("klass_n_student_status", $status))
         {
@@ -4993,8 +4991,14 @@ class MY_Sql extends MY_Library
         }
 
         $this->CI->db->select("*");
-        $this->CI->db->where('klass_id', $klass_id);
-        $this->CI->db->where('user_id', $user_id);
+        if(0 < $klass_id)
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id)
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
         if(!empty($status)) 
         {
             $this->CI->db->where('status', $status);
@@ -5347,6 +5351,36 @@ class MY_Sql extends MY_Library
 
         return $cnt;
     } // end method  
+
+
+
+    // @ Desc : 특정 유저가 참여한 모든 수업의 갯수를 가져옵니다.
+    public function select_klass_n_student_cnt_by_klass_id($klass_id=-1, $status="")
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->where('klass_n_student.klass_id', $klass_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+    } // end method      
 
 
 
