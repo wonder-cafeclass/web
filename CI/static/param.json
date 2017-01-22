@@ -336,6 +336,35 @@
 		],
 
 
+		"class_days_a_week_list":[
+			"3days_a_week",
+			"4days_a_week",
+			"5days_a_week",
+			"6days_a_week",
+			"7days_a_week"
+		],
+		"class_days_a_week_eng_list":[
+			"3days a week",
+			"4days a week",
+			"5days a week",
+			"6days a week",
+			"7days a_week"
+		],
+		"class_days_a_week_kor_list":[
+			"주3회",
+			"주4회",
+			"주5회",
+			"주6회",
+			"주7회"
+		],
+		"class_days_a_week_img_url_list":[
+			"assets/images/day/3days_a_week.svg",
+			"assets/images/day/4days_a_week.svg",
+			"assets/images/day/5days_a_week.svg",
+			"assets/images/day/6days_a_week.svg",
+			"assets/images/day/7days_a_week.svg"
+		],
+
 
 		"deprecated_subways:":[],
 		"class_venue_subway_station_list":[

@@ -60,6 +60,7 @@ export class Klass {
     public days_list: string[]=[];
     public days_img_url: string="";
     public days_img_url_list: string[]=[];
+    public days_a_week_img_url: string="";
     public days_eng: string="";
     public days_kor: string="";
 

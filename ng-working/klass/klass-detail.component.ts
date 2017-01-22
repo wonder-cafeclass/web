@@ -2127,24 +2127,6 @@ export class KlassDetailComponent implements AfterViewInit {
     // 요일이 변경되면, 수업 시작 날짜도 기본값이 변경됩니다.
     this.setKlassDateEnrollmentInput();
 
-    // TEST
-    /*
-    let dateList:string[] = 
-    this.myTime.getDateListYYYYMMDDKD(
-      // dayIdx:number,
-      [2,5],
-      // weekIdxBegin:number,
-      2,
-      // weekIdxEnd:number
-      4
-    );
-
-    this.klassDateEnrollmentComponent;
-
-    console.log("TEST / dateList : ",dateList);
-    */
-
-
     this.updateSaveBtnStatus();
   }
 

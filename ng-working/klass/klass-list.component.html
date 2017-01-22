@@ -95,10 +95,17 @@
 							alt="{{klass.time_begin_name}}" 
 							class="img-circle cc-img-filter">
 
-					<img 	*ngFor="let days_img_url of klass.days_img_url_list" 
-							src="{{days_img_url}}"
+					<img 	*ngIf="klass.days_a_week_img_url" 
+							src="{{klass.days_a_week_img_url}}" 
 							alt="{{klass.days}}" 
 							class="img-circle cc-img-filter">
+							
+					<div *ngIf="!klass.days_a_week_img_url">
+						<img 	*ngFor="let days_img_url of klass.days_img_url_list" 
+								src="{{days_img_url}}"
+								alt="{{klass.days}}" 
+								class="img-circle cc-img-filter">
+					</div>
 
 				</li>
 				<li 

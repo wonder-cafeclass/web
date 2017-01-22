@@ -48,6 +48,7 @@ var Klass = (function () {
         this.days_list = [];
         this.days_img_url = "";
         this.days_img_url_list = [];
+        this.days_a_week_img_url = "";
         this.days_eng = "";
         this.days_kor = "";
         this.subway_line = "";
