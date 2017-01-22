@@ -654,20 +654,6 @@ export class MyEventWatchTowerService {
 		return defaultOptionList;
 	} // end method 
 
-	/*
-	getDelimiter():string {
-		return this.getSingleValue("delimiter");
-	}
-	private getSingleValue(key:string):string {
-
-		if(null == this.getMyConst()) {
-			return "";
-		}
-
-		return this.getMyConst().getSingleValue(key);
-	}
-	*/
-
 	logAPIError(msg:string) :void	{
 
 		if(this._isDebug) console.log("m-e-w / logAPIError / 시작");

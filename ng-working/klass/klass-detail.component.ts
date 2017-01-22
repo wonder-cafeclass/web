@@ -247,7 +247,6 @@ export class KlassDetailComponent implements AfterViewInit {
     this.myFormat = new HelperMyFormat();
 
     this.klassService.setWatchTower(this.watchTower);
-
   }
 
   private isDebug():boolean {
@@ -2073,6 +2072,25 @@ export class KlassDetailComponent implements AfterViewInit {
       this.klassCopy.removeDay(selectedValue, daysImgUrl);
 
     } // end if
+
+    // wonder.jung
+    // 요일이 변경되면, 수업 시작 날짜도 기본값이 변경됩니다.
+
+    // TEST
+    /*
+    let dateList:string[] = 
+    this.myTime.getDateListYYYYMMDDKD(
+      // dayIdx:number,
+      [2,5],
+      // weekIdxBegin:number,
+      2,
+      // weekIdxEnd:number
+      4
+    );
+
+    console.log("TEST / dateList : ",dateList);
+    */
+
 
     this.updateSaveBtnStatus();
   }

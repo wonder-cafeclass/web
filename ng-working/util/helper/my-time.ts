@@ -23,6 +23,8 @@ export class HelperMyTime {
 	public DATE_TYPE_H_YYYY_MM_DD_HH_MM_SS:number=7;
 	/* 2012년 12월 11일*/
 	public DATE_TYPE_H_YYYY_MM_DD:number=8;
+	/* 2012년 12월 11일 화요일*/
+	public DATE_TYPE_H_YYYY_MM_DD_K_D:number=9;
 
 	public getUniqueId():number {
 		return Math.round(window.performance.now() * 100);
@@ -218,6 +220,32 @@ export class HelperMyTime {
 
 	} // end method
 
+	private addWeeksToDate(target:Date, weeks:number):Date {
+
+		if(null == target) {
+			return target;
+		}
+		if(null == weeks) {
+			return target;
+		}
+
+		let days:number = weeks * 7;
+		return this.addDaysToDate(target, days);
+	}
+
+	private addDaysToDate(target:Date, days:number):Date {
+
+		if(null == target) {
+			return target;
+		}
+		if(null == days) {
+			return target;
+		}
+
+		let hours:number = days * 24;
+		return this.addHoursToDate(target, hours);
+	}
+
 	private addHoursToDate(target:Date, hours:number):Date {
 
 		if(null == target) {
@@ -227,10 +255,8 @@ export class HelperMyTime {
 			return target;
 		}
 
-		target.setTime(target.getTime() + (hours*60*60*1000));
-
-		return target;
-
+		let minutes:number = hours * 60;
+		return this.addMinutesToDate(target, minutes);
 	}
 
 	private addMinutesToDate(target:Date, minutes:number):Date {
@@ -242,10 +268,7 @@ export class HelperMyTime {
 			return target;
 		}
 
-		target.setTime(target.getTime() + (minutes*60*1000));
-
-		return target;
-
+		return new Date(target.getTime() + (minutes*60*1000));
 	}
 
 	public getHoursFromHHMM(date_str:string):number {
@@ -361,12 +384,158 @@ export class HelperMyTime {
 			let days = date.getDate();
 
 			// 2012년 12월 11일 01:02:03
-			return `${year}년 ${month}월 ${days}일`;			
+			return `${year}년 ${month}월 ${days}일`;	
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD_K_D === input_date_format_type) {
+
+			let year = date.getFullYear();
+			let month = date.getMonth() + 1;
+			let days = date.getDate();
+			let daysKorean = this.getDayKorean(date.getDay());
+
+			// 2012년 12월 11일 01:02:03
+			return `${year}년 ${month}월 ${days}일 ${daysKorean}`;	
 
 		} // end if
 
 		return "";
 	}
+
+	private getDayKorean(dayIdx:number):string {
+		if(!(0 <= dayIdx && dayIdx <= 6)) {
+			return "";
+		}
+
+		if(0 === dayIdx) {
+			return "일요일";
+		} else if(1 === dayIdx) {
+			return "월요일";
+		} else if(2 === dayIdx) {
+			return "화요일";
+		} else if(3 === dayIdx) {
+			return "수요일";
+		} else if(4 === dayIdx) {
+			return "목요일";
+		} else if(5 === dayIdx) {
+			return "금요일";
+		} else if(6 === dayIdx) {
+			return "토요일";
+		} // end if
+
+		return "";
+	}
+
+	/*
+	@ Return :
+	[
+		0:"2017년 2월 7일 화요일"
+		1:"2017년 2월 10일 금요일"
+		2:"2017년 2월 14일 화요일"
+		3:"2017년 2월 17일 금요일"
+		4:"2017년 2월 21일 화요일"
+		5:"2017년 2월 24일 금요일"
+	]
+	*/
+	public getDateListYYYYMMDDKD(
+		dayIdxList:number[], 
+		weekIdxBegin:number, 
+		weekIdxEnd:number):string[]{
+
+		return this.getDateListWithDayOnFormat(
+			dayIdxList, 
+			weekIdxBegin, 
+			weekIdxEnd,
+			this.DATE_TYPE_H_YYYY_MM_DD_K_D
+		);
+	} // end method
+
+	public getDateListWithDayOnFormat(
+		dayIdxList:number[], 
+		weekIdxBegin:number, 
+		weekIdxEnd:number,
+		inputDateFormatType:number):string[] {
+
+		let dateList:Date[] = 
+		this.getDateListWithDayList(dayIdxList, weekIdxBegin, weekIdxEnd);
+
+		let dateStrList:string[] = [];
+		for (var i = 0; i < dateList.length; ++i) {
+			let date:Date = dateList[i];
+			let dateStr:string = this.getDateFommattedStr(date, inputDateFormatType);
+
+			dateStrList.push(dateStr);
+		}
+
+		return dateStrList;
+
+	}	
+
+	// 원하는 기능 : 요일을 선택하면 사용자가 넣은 범위 안에서 해당 요일의 날짜를 구해준다. 
+	public getDateListWithDayList(
+		// 0 ~ 6 : Sunday ~ Saturday
+		dayIdxList:number[], 
+		// 검색을 시작하는 주의 인덱스. 현재를 기준으로 몇주 전인지를 결졍. -1: 1주전. -2: 2주전.
+		weekIdxBegin:number, 
+		// 검색을 끝내는 주의 인덱스. 현재를 기준으로 몇주 뒤인지를 결졍. 1: 1주뒤. 2: 2주뒤.
+		weekIdxEnd:number):Date[] {
+
+		if(null == dayIdxList || !(0 < dayIdxList.length)) {
+			return [];
+		}
+
+		for (var i = 0; i < dayIdxList.length; ++i) {
+			let dayIdx:number = dayIdxList[i];
+			if(!(0 <= dayIdx && dayIdx <= 6)) {
+				return [];
+			}
+		}
+
+		if(isNaN(weekIdxBegin)) {
+			return [];
+		}
+		if(isNaN(weekIdxEnd)) {
+			return [];
+		}
+		if(!(weekIdxBegin <= weekIdxEnd)) {
+			return [];
+		}
+
+		// 오늘의 요일을 가져온다. 
+		let today:Date = new Date();
+		let dayIdxToday:number = today.getDay();
+
+		// 한주의 시작. 경계값.
+		let sundayThisWeek:Date = this.addDaysToDate(today, -1 * dayIdxToday);
+		console.log("TEST / sundayThisWeek : ",sundayThisWeek);
+
+		// 검색을 하려는 요일 값들을 이번주 요일의 date 객체 리스트로 만듭니다.
+		let dayListThisWeek:Date[] = [];
+		for (var i = 0; i < dayIdxList.length; ++i) {
+			let dayIdx:number = dayIdxList[i];
+			console.log("TEST / dayIdx : ",dayIdx);
+			let date:Date = this.addDaysToDate(sundayThisWeek, dayIdx);
+			console.log("TEST / date : ",date);
+
+			dayListThisWeek.push(date);
+		} // end for
+		console.log("TEST / dayListThisWeek : ",dayListThisWeek);
+
+		let dayMilliSec:number = 60*60*1000*24;
+		let weekMilliSec:number = dayMilliSec*7;
+		let dateListNext:Date[] = [];
+		for (var i = weekIdxBegin; i < (weekIdxEnd + 1); ++i) {
+
+			for (var j = 0; j < dayListThisWeek.length; ++j) {
+				let date:Date = dayListThisWeek[j];
+				let dateNext:Date = this.addWeeksToDate(date, i);
+
+				dateListNext.push(dateNext);
+			} // end for
+
+		} // end for
+
+		return dateListNext;
+	}	
 
 	private getDate(date_str:string, input_date_format_type:number):Date{
 
