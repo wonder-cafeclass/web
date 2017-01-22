@@ -331,8 +331,14 @@ export class HelperMyTime {
 		let dateInput:Date = null;
 
 		if(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS === input_date_format_type) {
+
 			dateInput = this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
-		}
+
+		} else if(this.DATE_TYPE_YYYY_MM_DD === input_date_format_type) {
+
+			dateInput = this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD);
+			
+		} // end if // wonder.jung
 
 		if(null == dateInput) {
 			return "";			
@@ -345,6 +351,10 @@ export class HelperMyTime {
 		} else if(this.DATE_TYPE_H_YYYY_MM_DD === output_date_format_type) {
 
 			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD);	
+
+		} else if(this.DATE_TYPE_H_YYYY_MM_DD_K_D === output_date_format_type) {
+
+			return this.getDateFommattedStr(dateInput, this.DATE_TYPE_H_YYYY_MM_DD_K_D);
 
 		}
 
@@ -376,6 +386,15 @@ export class HelperMyTime {
 
 			// 2012년 12월 11일 01:02:03
 			return `${year}년 ${month}월 ${days}일 ${hours}:${minutes}:${seconds}`;
+
+		} else if(this.DATE_TYPE_YYYY_MM_DD === input_date_format_type) {
+
+			let year = date.getFullYear();
+			let month = this.getDoubleDigit(date.getMonth() + 1);
+			let days = this.getDoubleDigit(date.getDate());
+
+			// 2012년 12월 11일 01:02:03
+			return `${year}-${month}-${days}`;
 
 		} else if(this.DATE_TYPE_H_YYYY_MM_DD === input_date_format_type) {
 
@@ -425,7 +444,91 @@ export class HelperMyTime {
 		return "";
 	}
 
+	private getDayIdx(day:string):number {
+
+		if(null == day || "" === day) {
+			return -1;
+		}
+
+		let dayList:string[] = 
+		[
+			"sunday",
+			"monday",
+			"tuesday",
+			"wednesday",
+			"thursday",
+			"friday",
+			"saturday"
+		];
+
+		for (var i = 0; i < dayList.length; ++i) {
+			let dayFromList:string = dayList[i];
+			if(-1 < dayFromList.indexOf(day.toLowerCase())) {
+				return i;
+			}
+		}
+
+		return -1;
+	}	
+
+
 	/*
+	@ Input : 
+	["tue","fri"],0,3
+	@ Return :
+	[
+		0:"2017년 2월 7일 화요일"
+		1:"2017년 2월 10일 금요일"
+		2:"2017년 2월 14일 화요일"
+		3:"2017년 2월 17일 금요일"
+		4:"2017년 2월 21일 화요일"
+		5:"2017년 2월 24일 금요일"
+	]
+	*/
+	public getDateListYYYYMMDDKDWidthDayList(
+		dayList:string[], 
+		weekIdxBegin:number, 
+		weekIdxEnd:number):string[]{
+
+		let dayIdxList:number[] = [];
+		for (var i = 0; i < dayList.length; ++i) {
+			let day:string = dayList[i];
+			let dayIdx:number = this.getDayIdx(day);
+			dayIdxList.push(dayIdx);
+		}
+
+		return this.getDateListWithDayOnFormat(
+			dayIdxList, 
+			weekIdxBegin, 
+			weekIdxEnd,
+			this.DATE_TYPE_H_YYYY_MM_DD_K_D
+		);
+	} // end method
+
+	public getDateListYYYYMMDDWidthDayList(
+		dayList:string[], 
+		weekIdxBegin:number, 
+		weekIdxEnd:number):string[]{
+
+		let dayIdxList:number[] = [];
+		for (var i = 0; i < dayList.length; ++i) {
+			let day:string = dayList[i];
+			let dayIdx:number = this.getDayIdx(day);
+			dayIdxList.push(dayIdx);
+		}
+
+		return this.getDateListWithDayOnFormat(
+			dayIdxList, 
+			weekIdxBegin, 
+			weekIdxEnd,
+			this.DATE_TYPE_YYYY_MM_DD
+		);
+	} // end method	
+
+
+	/*
+	@ Input : 
+	[2,5],0,3
 	@ Return :
 	[
 		0:"2017년 2월 7일 화요일"
