@@ -37,6 +37,31 @@ var KlassNStudent = (function () {
     KlassNStudent.prototype.isSharing = function (key, target) {
         return this.myIs.isSharing(key, this, target);
     };
+    // @ Desc : 수업 취소 요청이 가능한지 확인. 수업 취소 가능 기간이 아니며, 수업이 취소 상태가 아니어야 합니다.
+    KlassNStudent.prototype.isEnableRequestCancle = function () {
+        if (this.isEnableCancle()) {
+            // '수업 취소 가능 기간'이라면 '수업 취소 요청'은 할 수 없습니다.
+            return false;
+        }
+        if (this.isCanceled()) {
+            // '결제 취소' 수업이라면 '수업 취소 요청'은 할 수 없습니다.
+            return false;
+        }
+        return true;
+    };
+    KlassNStudent.prototype.isAvailable = function () {
+        if ("A" === this.status) {
+            return true;
+        }
+        return false;
+    };
+    KlassNStudent.prototype.isCanceled = function () {
+        if ("N" === this.status) {
+            return true;
+        }
+        return false;
+    };
+    // @ Desc : 수업 취소가 가능한지 확인. 유저가 취소 가능 기간 및 수업이 취소 상태가 아닌지 확인.
     KlassNStudent.prototype.isEnableCancle = function () {
         // 피터님 피드백 
         // https://cafeclass.agit.io/g/300013514/wall/303995541#comment_panel_303996351
@@ -53,7 +78,11 @@ var KlassNStudent = (function () {
         headYYYYMMDD_HHMMSS, 
         // tailYYYYMMDD_HHMMSS:string
         this.myTime.getNow_YYYY_MM_DD_HH_MM_SS());
-        if (2 <= diffDays) {
+        // 수업이 결제 취소 상태라면 취소가 가능하지 않습니다.
+        if (this.isCanceled()) {
+            return false;
+        }
+        if (diffDays <= -2) {
             // 1. 강의 개시 시점으로부터 2일 이전 통보 시 : 손해배상 없음
             return true;
         } // end if

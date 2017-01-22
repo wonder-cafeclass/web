@@ -26,7 +26,39 @@ const appRoutes: Routes = [
     path: 'admin',
     loadChildren: 'app/admin/admin.module#AdminModule',
     canLoad: [AuthGuard]
-  }     
+  },
+  // {
+  //   path: 'applyteacher',
+  //   loadChildren: 'app/teachers/teachers.module#TeachersModule'
+  // },
+  // {
+  //   path: 'applyteacherterm',
+  //   loadChildren: 'app/teachers/teachers.module#TeachersModule'
+  // },  
+  // {
+  //   path: 'teacher/my',
+  //   loadChildren: 'app/teachers/teachers.module#TeachersModule'
+  // },  
+  // {
+  //   path: 'login',
+  //   loadChildren: 'app/login/login.module#LoginModule'
+  // },  
+  // {
+  //   path: 'logout',
+  //   loadChildren: 'app/login/login.module#LoginModule'
+  // },    
+  // {
+  //   path: 'policy',
+  //   loadChildren: 'app/policy/policy.module#PolicyModule'
+  // },    
+  // {
+  //   path: 'private-info',
+  //   loadChildren: 'app/policy/policy.module#PolicyModule'
+  // },      
+  // {
+  //   path: 'user',
+  //   loadChildren: 'app/users/users.module#UsersModule'
+  // },        
 ];
 
 

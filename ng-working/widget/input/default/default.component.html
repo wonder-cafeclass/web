@@ -89,7 +89,23 @@
 
 	<!-- Number:Up-down / Disabled -->
 	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_NUMBER">
-		Number Controller - Disabled
+        <button  
+        disabled="disabled" 
+        type="button"
+		class="btn btn-default btn-l btn-num my-disable">
+        	<span class="glyphicon glyphicon-triangle-top"></span>
+        </button>
+        <button   
+        disabled="disabled"
+        type="button"
+		class="btn btn-default btn-r btn-num my-disable">
+        	<span class="glyphicon glyphicon-triangle-bottom"></span>
+        </button>
+		<input 
+		disabled="disabled"
+		[(ngModel)]="ngModelInput"
+		class="form-control input-glass input-num my-disable" 
+		placeholder={{meta.placeholder}}>
 	</div>
 
 	<!-- HHMM:Up-down -->
@@ -128,7 +144,8 @@
 
 
 	<!-- SELECT BOX -->
-	<div *ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" [ngClass]="{'selectbox':!isNoBorder}">
+	<div 	*ngIf="!isDisabled && meta.type == defaultType.TYPE_SELECT" 
+			[ngClass]="{'selectbox':!isNoBorder}">
 		<select 
 		class="form-control" 
 		[style.height]="heightStr"
@@ -140,9 +157,10 @@
 		</select>
 	</div>
 	<!-- SELECT BOX / Disabled -->
-	<div *ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT">
+	<div 	*ngIf="isDisabled && meta.type == defaultType.TYPE_SELECT"
+			[ngClass]="{'selectbox':!isNoBorder}">
 		<select 
-		class="form-control" 
+		class="form-control my-disable" 
 		disabled>
 			<option 	
 			*ngFor="let option of selectOptionList" 

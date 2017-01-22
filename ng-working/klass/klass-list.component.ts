@@ -29,7 +29,8 @@ import { HelperMyArray }                   from '../util/helper/my-array';
 
 import { UserService }                     from '../users/service/user.service';
 import { User }                            from '../users/model/user';
-import { TeacherService }                  from '../teachers/service/teacher.service';
+// REMOVE ME
+// import { TeacherService }                  from '../teachers/service/teacher.service';
 import { Teacher }                         from '../teachers/model/teacher';
 
 @Component({
@@ -60,7 +61,8 @@ export class KlassListComponent implements AfterViewInit {
     private klassService:KlassService,
     private urlService:UrlService,
     private userService:UserService,
-    private teacherService:TeacherService,
+    // REMOVE ME
+    // private teacherService:TeacherService, 
     private myLoggerService:MyLoggerService,
     private watchTower:MyEventWatchTowerService,
     private myCheckerService:MyCheckerService,
@@ -78,8 +80,8 @@ export class KlassListComponent implements AfterViewInit {
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   isSelected(klass: Klass): boolean {
@@ -537,15 +539,11 @@ export class KlassListComponent implements AfterViewInit {
       // error report
       console.log("error report / null == selectile.klassLevels");
       return false;
-    } else if(null == selectile.klassStations) {
-      // error report
-      console.log("error report / null == selectile.klassStations");
-      return false;
     } else if(null == selectile.klassTimes) {
       // error report
       console.log("error report / null == selectile.klassTimes");
       return false;
-    } 
+    } // end if
 
     return true;
 
@@ -722,7 +720,7 @@ export class KlassListComponent implements AfterViewInit {
     ).then((myResponse:MyResponse) => {
 
       // 로그 등록 결과를 확인해볼 수 있습니다.
-      if(this.isDebug()) console.log("klass-list / addReview / myResponse : ",myResponse);
+      if(this.isDebug()) console.log("klass-list / addNewKlass / myResponse : ",myResponse);
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
 

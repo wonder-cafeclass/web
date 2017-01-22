@@ -135,7 +135,7 @@ class PaymentImport {
               "buyer_postcode" === $key || 
               "fail_reason" === $key || 
               "cancel_reason" === $key || 
-              "receipt_url" === $key  )
+              "cancel_receipt_url" === $key  )
           {
             $this->{$key} = "";
           } // end if

@@ -11,6 +11,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once APPPATH . '/libraries/MY_Library.php';
 require_once APPPATH . '/models/User.php';
+require_once APPPATH . '/models/UserValidation.php';
+require_once APPPATH . '/models/UserCookie.php';
 require_once APPPATH . '/models/Teacher.php';
 require_once APPPATH . '/models/KlassQuestion.php';
 require_once APPPATH . '/models/KlassReview.php';
@@ -3948,6 +3950,18 @@ class MY_Sql extends MY_Library
         return $query->row();        
 
     }
+
+    private function set_where_klass_by_teacher($teacher_id=-1) 
+    {
+        $select_query = $this->get_query_klass_field();
+
+        $this->CI->db->select($select_query);
+        $this->CI->db->from('klass');
+        $this->CI->db->join('teacher', 'klass.teacher_id = teacher.id');
+        $this->CI->db->where('klass.teacher_id', $teacher_id);
+        $this->CI->db->order_by('klass.id', 'DESC');
+        $this->CI->db->limit(1);
+    }
     public function select_klass_by_teacher($teacher_id=-1) 
     {
         if($this->is_not_ready())
@@ -3960,10 +3974,12 @@ class MY_Sql extends MY_Library
             return;
         }
 
-        $this->CI->db->where('teacher_id', $teacher_id);
-        $this->CI->db->order_by('id', 'DESC');
-        $this->CI->db->limit(1);
-        $query = $this->CI->db->get('klass');
+        $this->set_where_klass_by_teacher($teacher_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        $this->set_where_klass_by_teacher($teacher_id);
+        $query = $this->CI->db->get();
 
         return $query->row();
     }
@@ -4780,7 +4796,7 @@ class MY_Sql extends MY_Library
         return $query->result_array();
     }    
 
-    private function set_where_select_payment_import($imp_uid="")
+    private function set_where_select_payment_import($imp_uid="", $pi_status="")
     {
         $query_field = $this->get_query_payment_import_field();
         $this->CI->db->select($query_field); 
@@ -4788,20 +4804,35 @@ class MY_Sql extends MY_Library
         $this->CI->db->join('user', 'payment_import.user_id = user.id');
         $this->CI->db->join('klass', 'payment_import.klass_id = klass.id');
         $this->CI->db->join('teacher', 'teacher.id = klass.teacher_id');
-        $this->CI->db->where('imp_uid', $imp_uid);
+        $this->CI->db->where('payment_import.imp_uid', $imp_uid);
+
+        if(!empty($pi_status))
+        {
+            $this->CI->db->where('payment_import.status', $pi_status);
+        }
+
         $this->CI->db->limit(1);
     }
-    public function select_payment_import($imp_uid="")
+
+    public function select_payment_import_paid($imp_uid="")
+    {
+        return $this->select_payment_import($imp_uid,"paid");
+    }
+    public function select_payment_import_canceled($imp_uid="")
+    {
+        return $this->select_payment_import($imp_uid,"cancelled");
+    }
+    public function select_payment_import($imp_uid="", $pi_status="")
     {
         if(empty($imp_uid))
         {
             return null;
         }
 
-        $this->set_where_select_payment_import($imp_uid);
+        $this->set_where_select_payment_import($imp_uid, $pi_status);
         $query = $this->CI->db->get();
 
-        $this->set_where_select_payment_import($imp_uid);
+        $this->set_where_select_payment_import($imp_uid, $pi_status);
         $sql = $this->CI->db->get_compiled_select();
         $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
 
@@ -4948,13 +4979,11 @@ class MY_Sql extends MY_Library
     {
         if($this->is_not_ok("klass_id", $klass_id))
         {
-            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
-            return null;
+            $klass_id=-1;
         }
         if($this->is_not_ok("user_id", $user_id))
         {
-            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(user_id_admin:$user_id_admin)");
-            return null;
+            $user_id=-1;
         }
         if($this->is_not_ok("klass_n_student_status", $status))
         {
@@ -4962,8 +4991,14 @@ class MY_Sql extends MY_Library
         }
 
         $this->CI->db->select("*");
-        $this->CI->db->where('klass_id', $klass_id);
-        $this->CI->db->where('user_id', $user_id);
+        if(0 < $klass_id)
+        {
+            $this->CI->db->where('klass_id', $klass_id);
+        }
+        if(0 < $user_id)
+        {
+            $this->CI->db->where('user_id', $user_id);
+        }
         if(!empty($status)) 
         {
             $this->CI->db->where('status', $status);
@@ -5319,6 +5354,36 @@ class MY_Sql extends MY_Library
 
 
 
+    // @ Desc : 특정 유저가 참여한 모든 수업의 갯수를 가져옵니다.
+    public function select_klass_n_student_cnt_by_klass_id($klass_id=-1, $status="")
+    {
+        if($this->is_not_ok("klass_id", $klass_id))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_id:$klass_id)");
+            return null;
+        } // end if
+        if($this->is_not_ok("klass_n_student_status", $status))
+        {
+            $status = "";
+        } // end if
+
+        $query_klass_n_student_field = 
+        $this->get_query_klass_n_student_field();
+
+        $this->CI->db->select('*');
+        $this->CI->db->from('klass_n_student');
+        $this->CI->db->where('klass_n_student.klass_id', $klass_id);
+        if(!empty($status)) 
+        {
+            $this->CI->db->where('klass_n_student.status', $status);
+        }
+        $cnt = $this->CI->db->count_all_results();
+
+        return $cnt;
+    } // end method      
+
+
+
 
 
     public function insert_attendance($login_user_id=-1, $klass_id=-1, $user_id=-1, $date_attend="")
@@ -5661,6 +5726,96 @@ class MY_Sql extends MY_Library
 
         return $select_query;
     } // end method    
+
+    // @ Desc : 요일 구하기 함수들 
+    // @ Referer : http://stackoverflow.com/questions/16768702/how-to-get-friday-last-week-in-mysql
+    /*
+        # 2주전 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL -7 DAY);
+
+        # 지난주 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL 0 DAY);
+
+        # 이번주 일요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 8 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 월요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 7 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 화요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 6 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 수요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 5 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 목요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 4 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 금요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 3 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+        # 이번주 토요일
+        SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 2 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+
+    */
+    private function set_where_select_klass_date($klass_day="", $interval_week=-1)
+    {
+        $day_idx = -1;
+        // wonder.jung
+        $class_days_list = $this->get_const("class_days_list");
+        if(empty($class_days_list))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$class_days_list is not valid!");
+            return;
+        }
+
+        // 첫번째 기본값('All Days')을 제거한 배열
+        array_shift($class_days_list);
+        $klass_day_idx = -1;
+        for ($i=0; $i < count($class_days_list); $i++) 
+        { 
+            $class_day = $class_days_list[$i];
+            if($class_day === $klass_day) 
+            {
+                return $klass_day_idx = $i;
+            } // end if
+        } // end for
+
+        // SELECT DATE_ADD(DATE_FORMAT((NOW() - INTERVAL WEEKDAY(NOW()) + 3 DAY), '%Y-%m-%d'),INTERVAL 7 DAY);
+
+
+
+
+        $query_fields = $this->get_query_field_attendance();
+
+        $this->CI->db->select($query_fields);
+        $this->CI->db->from('attendance');
+        $this->CI->db->where('klass_id', $klass_id);
+        $this->CI->db->order_by('date_attend', 'ASC');
+        $this->CI->db->order_by('user_id', 'ASC');
+
+    }
+    public function select_klass_date($klass_day="", $interval_week=-1)
+    {
+        if($this->is_not_ready())
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ready()");
+            return;
+        }
+        if($this->is_not_ok("klass_day", $klass_day))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$this->is_not_ok(klass_day : $klass_day)");
+            return;
+        }
+        if(is_null($interval_week))
+        {
+            $this->add_track_stopped(__CLASS__, __FUNCTION__, __LINE__, "\$interval_week is not valid");
+            return;
+        }
+
+        $this->set_where_attendance_table($klass_id);
+        $query = $this->CI->db->get();
+
+        $this->set_where_attendance_table($klass_id);
+        $sql = $this->CI->db->get_compiled_select();
+        $this->add_track(__CLASS__, __FUNCTION__, __LINE__, "\$sql : $sql");
+
+        return $query->result_array();
+    }
 
 }
 

@@ -13,9 +13,6 @@ import { LoginService }             from './service/login.service';
 import { UserService }              from '../users/service/user.service';
 import { User }                     from '../users/model/user';
 
-import { EmailComponent }           from '../widget/input/email/email.component';
-import { PasswordComponent }        from '../widget/input/password/password.component';
-
 import { DefaultComponent }         from '../widget/input/default/default.component';
 import { DefaultMeta }              from '../widget/input/default/model/default-meta';
 import { DefaultOption }            from '../widget/input/default/model/default-option';
@@ -45,13 +42,6 @@ export class LoginComponent implements AfterViewInit {
   kakaoAuthUrl: string;
   naverAuthUrl: string;
   facebookAuthUrl: string;
-  cafeclassAuthUrl: string="http://google.co.kr";
-
-  @ViewChild(EmailComponent)
-  private emailComponent: EmailComponent;
-
-  @ViewChild(PasswordComponent)
-  private passwordComponent: PasswordComponent;
 
   private email:string;
   private password:string;

@@ -161,10 +161,22 @@ button.btn-num {
   height: 46px;
   width: 46px;
 }
+button.my-disable {
+  background-color: #eee;
+  color: #ddd;  
+}
 input.input-num {
   width: 70%;
   float: right;
   margin-top: 10px;  
+}
+input.my-disable {
+  background-color: #eee;  
+}
+select.my-disable {
+  border-color: #eee;
+  box-shadow: inset 0 1px 1px #eee;
+  -webkit-box-shadow: inset 0 1px 1px #eee;
 }
 table.my-ck-style {
   margin: 0px;

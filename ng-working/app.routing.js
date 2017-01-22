@@ -21,7 +21,7 @@ var appRoutes = [
         path: 'admin',
         loadChildren: 'app/admin/admin.module#AdminModule',
         canLoad: [auth_guard_service_1.AuthGuard]
-    }
+    },
 ];
 exports.appRoutingProviders = [
     auth_guard_service_1.AuthGuard,

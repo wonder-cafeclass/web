@@ -101,6 +101,7 @@ export class KlassDetailComponent implements AfterViewInit {
   editTitle: string; // Deprecated
 
   klassStudent:KlassNStudent;
+  klassStudentCnt:number=-1;
 
   priceTagCurrency:string="₩";
   priceTagColor:string="#e85c41";
@@ -246,12 +247,11 @@ export class KlassDetailComponent implements AfterViewInit {
     this.myFormat = new HelperMyFormat();
 
     this.klassService.setWatchTower(this.watchTower);
-
   }
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   ngAfterViewInit():void {
@@ -450,6 +450,9 @@ export class KlassDetailComponent implements AfterViewInit {
         if(null != klassStudentJSON) {
           this.klassStudent = new KlassNStudent().setJSON(klassStudentJSON);
         } // end if
+
+        // 이 수업을 등록한 학생수 정보.
+        this.klassStudentCnt = parseInt(myResponse.getDataProp("klass_student_cnt"));
         
         if(klassId === -100) {
           // 새로 만든 수업이라면, 
@@ -612,8 +615,6 @@ export class KlassDetailComponent implements AfterViewInit {
     }
 
     let enrollmentDateStr:string = this.klassCopy.getEnrollmentDate();
-    if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateStr : ",enrollmentDateStr);
-    if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / this.butterflyComponent : ",this.butterflyComponent);
 
     this.butterflyComponent.setText(enrollmentDateStr);
 
@@ -634,6 +635,57 @@ export class KlassDetailComponent implements AfterViewInit {
       return;
     }
 
+    // wonder.jung
+    // 수업 시작일을 지정합니다.
+    // 수업 요일 정보를 기준으로 이번주부터 최대 4주 이내의 날짜 중에서 선택할 수 있습니다.
+    let dateListKey:string[] = 
+    this.myTime.getDateListYYYYMMDDKDWidthDayList(
+      // dayIdx:number,
+      this.klassCopy.days_list,
+      // weekIdxBegin:number,
+      0,
+      // weekIdxEnd:number
+      4
+    );
+    console.log("TEST / dateListKey : ",dateListKey);
+    
+    let dateListValue:string[] = 
+    this.myTime.getDateListYYYYMMDDWidthDayList(
+      // dayIdx:number,
+      this.klassCopy.days_list,
+      // weekIdxBegin:number,
+      0,
+      // weekIdxEnd:number
+      4
+    );
+    console.log("TEST / dateListValue : ",dateListValue);
+
+    let selectOptionList:DefaultOption[] = [];
+    for (var i = 0; i < dateListKey.length; ++i) {
+
+      let key:string = dateListKey[i];
+      let value:string = dateListValue[i];
+      let isFocus:boolean = (this.klassCopy.date_begin === value)?true:false;
+
+      let defaultOption:DefaultOption = 
+      new DefaultOption(
+        // public key:string,
+        key,
+        // public value:string,
+        value,
+        // public isFocus:boolean
+        isFocus
+      );
+      if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / defaultOption : ",defaultOption);
+
+      selectOptionList.push(defaultOption);
+
+    }
+    if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / selectOptionList : ",selectOptionList);
+    this.klassDateEnrollmentComponent.setSelectOption(selectOptionList);
+
+
+    /*
     let enrollmentDateStr:string = this.klassCopy.getEnrollmentDate();
     if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / enrollmentDateStr : ",enrollmentDateStr);
     if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / this.butterflyComponent : ",this.butterflyComponent);
@@ -691,6 +743,7 @@ export class KlassDetailComponent implements AfterViewInit {
     }
     if(this.isDebug()) console.log("klass-detail / setKlassDateEnrollmentView / selectOptionList : ",selectOptionList);
     this.klassDateEnrollmentComponent.setSelectOption(selectOptionList);
+    */
 
   } 
 
@@ -975,6 +1028,11 @@ export class KlassDetailComponent implements AfterViewInit {
     );
 
     this.priceCalculator.setWeeks(this.klassCopy.week);
+
+    // 등록한 학생들이 있다면 수업료, 참여 학생수, 금액 변경이 불가하다.
+    if(null != this.priceCalculator && 0 < this.klassStudentCnt) {
+      this.priceCalculator.setDisable();
+    }
 
   } // end method
 
@@ -2064,6 +2122,28 @@ export class KlassDetailComponent implements AfterViewInit {
       this.klassCopy.removeDay(selectedValue, daysImgUrl);
 
     } // end if
+
+    // wonder.jung
+    // 요일이 변경되면, 수업 시작 날짜도 기본값이 변경됩니다.
+    this.setKlassDateEnrollmentInput();
+
+    // TEST
+    /*
+    let dateList:string[] = 
+    this.myTime.getDateListYYYYMMDDKD(
+      // dayIdx:number,
+      [2,5],
+      // weekIdxBegin:number,
+      2,
+      // weekIdxEnd:number
+      4
+    );
+
+    this.klassDateEnrollmentComponent;
+
+    console.log("TEST / dateList : ",dateList);
+    */
+
 
     this.updateSaveBtnStatus();
   }

@@ -10,9 +10,7 @@ import { Subscription }        		from 'rxjs';
 
 import { UrlService }          		from './util/url.service';
 import { AuthService }          	from './auth.service';
-import { ImageService }         	from './util/image.service';
 import { UserService }         		from './users/service/user.service';
-import { TeacherService }         	from './teachers/service/teacher.service';
 import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
 import { MyCheckerService }     	from './util/service/my-checker.service';
 import { MyEventService }     		from './util/service/my-event.service';
@@ -37,8 +35,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	constructor(	private authService:AuthService,
 					private urlService:UrlService,
 					private userService:UserService,
-					private teacherService:TeacherService,
-					public imageService:ImageService,
 					private watchTower:MyEventWatchTowerService,
 					private myEventService:MyEventService,
 					private myCheckerService:MyCheckerService,
@@ -312,8 +308,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 		// TODO - 이미지 없을 경우의 예비 이미지 로딩.
 	}
-
-
+	
 	onClickSignupBtn(event) :void{
 		event.stopPropagation();
 		event.preventDefault();
@@ -329,24 +324,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		// 내정보로 이동합니다.
 		this.router.navigate(['/user/my']);
 	}
-
-	// REMOVE ME
-	// 디버깅 모드로 전환하는 방법은 2가지
-	// 1. 주소에 파라미터로 ?hawkeye=true 로 작동 
-	/*
-	onClickToggleDebugging(event) :void {
-		event.stopPropagation();
-		event.preventDefault();
-
-	    if(this.isDebug()) console.log(`app-root / onClickToggleDebugging / 시작`);
-
-	    this.isDebugging = !this.watchTower.getIsDebugging();
-
-	    if(this.isDebug()) console.log(`app-root / onClickToggleDebugging / this.isDebugging : ${this.isDebugging}`);
-
-	    this.watchTower.announceIsDebugging(this.isDebugging);
-	}
-	*/
 
 	onClickLogo(event) :void {
 

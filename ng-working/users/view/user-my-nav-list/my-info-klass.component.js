@@ -172,7 +172,7 @@ var MyInfoKlassComponent = (function () {
             return;
         } // end if
         // 클래스 상세 페이지로 이동합니다.
-        // this.router.navigate([`/class-center/${klass.id}`]);
+        this.router.navigate([("/class-center/" + klass.id)]);
     };
     MyInfoKlassComponent.prototype.onChangedFromChild = function (myEvent) {
         if (this.isDebug())

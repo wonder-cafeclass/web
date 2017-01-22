@@ -23,6 +23,7 @@ class MY_Logger
     public $ACTION_TYPE_LOGIN_PASSED="LOGIN_PASSED";
     public $ACTION_TYPE_PAGE_ENTER="PAGE_ENTER";
     public $ACTION_TYPE_SIGN_UP="SIGN_UP";
+    public $ACTION_TYPE_ADD_KLASS="ADD_KLASS";
     public $ACTION_TYPE_PAYMENT="PAYMENT"; // 결제
     public $ACTION_TYPE_MY_SETTING="MY_SETTING"; // 개인 설정
 
@@ -32,10 +33,12 @@ class MY_Logger
     public $ACTION_KEY_LOGIN_KAKAO="LOGIN_KAKAO";
     public $ACTION_KEY_LOGIN_FACEBOOK="LOGIN_FACEBOOK";
     public $ACTION_KEY_LOGIN_NAVER="LOGIN_NAVER";
-    public $ACTION_KEY_SEND_MAIL="SEND_MAIL";                       // 유저에게 메일 발송 
+    public $ACTION_KEY_SEND_MAIL="SEND_MAIL";                           // 유저에게 메일 발송 
     public $ACTION_KEY_SEND_AUTH_MAIL="SEND_AUTH_MAIL";
-    public $ACTION_KEY_PAYMENT_BUY_KLASS="PAYMENT_BUY_KLASS";       // 구매
-    public $ACTION_KEY_PAYMENT_CANCEL="PAYMENT_CANCEL";             // 환불
+    public $ACTION_KEY_PAYMENT_BUY_KLASS="PAYMENT_BUY_KLASS";           // 구매
+    public $ACTION_KEY_PAYMENT_SET_ATTENDANCE="PAYMENT_SET_ATTENDANCE"; // 구매
+    public $ACTION_KEY_PAYMENT_CANCEL="PAYMENT_CANCEL";                 // 환불
+    public $ACTION_KEY_ADD_EMPTY_KLASS="ADD_EMPTY_KLASS";
     public $ACTION_KEY_UPDATE_PASSWORD="UPDATE_PASSWORD";
 
     public $ERROR_INTERNAL_SERVER_500="INTERNAL_SERVER_500";

@@ -9,13 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_array_1 = require('../../util/helper/my-array');
+var payment_import_1 = require('../../widget/payment/model/payment-import');
 var payment_service_1 = require('../../widget/payment/service/payment.service');
 var KlassNStudentListComponent = (function () {
-    function KlassNStudentListComponent(watchTower, paymentService) {
+    function KlassNStudentListComponent(watchTower, paymentService, router) {
         this.watchTower = watchTower;
         this.paymentService = paymentService;
+        this.router = router;
         // @ Common Props
         this.emitter = new core_1.EventEmitter();
         this.isShowCancle = false;
@@ -126,6 +129,7 @@ var KlassNStudentListComponent = (function () {
         var paymentImpMerchantUid = "";
         var paymentImpCancelAmount = -1;
         var paymentImpCancelReason = "고객 사정에 의한 환불";
+        // TODO - 결재 취소 페이지로 이동.
         // 아임포트 - 결제를 취소합니다.
         this.paymentService
             .cancelPaymentImport(
@@ -142,6 +146,11 @@ var KlassNStudentListComponent = (function () {
                 console.log("import / onClickCancelKlass / myResponse : ", myResponse);
             // if( myResponse.isSuccess() && myResponse.hasDataProp("paymentImpNext") ) {
             if (myResponse.isSuccess()) {
+                var paymentImpJSON = myResponse.getDataProp("paymentImpNext");
+                var paymentImpNext = new payment_import_1.PaymentImport().setJSON(paymentImpJSON);
+                alert("결제가 취소되었습니다.");
+                // 홈으로 이동
+                _this.router.navigate(['/']);
             }
             else if (myResponse.isFailed()) {
                 if (_this.isDebug())
@@ -227,7 +236,7 @@ var KlassNStudentListComponent = (function () {
             templateUrl: 'klass-n-student-list.component.html',
             styleUrls: ['klass-n-student-list.component.css']
         }), 
-        __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, payment_service_1.PaymentService])
+        __metadata('design:paramtypes', [my_event_watchtower_service_1.MyEventWatchTowerService, payment_service_1.PaymentService, router_1.Router])
     ], KlassNStudentListComponent);
     return KlassNStudentListComponent;
 }());

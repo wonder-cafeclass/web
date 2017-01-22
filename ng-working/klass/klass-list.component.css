@@ -98,3 +98,13 @@ li.my-style {
 img.new-class {
   border-radius: 4px;
 }
+span.favorite {
+  position: absolute;
+  margin-top: -8px;
+  margin-left: -2px;
+  font-size: 24px;
+  color: #e85c41;
+}
+span.favorite-shim {
+  padding-left: 6px;
+}

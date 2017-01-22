@@ -45,7 +45,7 @@ export class MyInfoKlassComponent implements AfterViewInit {
   constructor(private userService:UserService,
               public myEventService:MyEventService,
               private watchTower:MyEventWatchTowerService,
-              public router:Router) {
+              private router:Router) {
 
     this.userService.setWatchTower(watchTower);
 
@@ -233,9 +233,8 @@ export class MyInfoKlassComponent implements AfterViewInit {
       return;
     } // end if
 
-
     // 클래스 상세 페이지로 이동합니다.
-    // this.router.navigate([`/class-center/${klass.id}`]);
+    this.router.navigate([`/class-center/${klass.id}`]);
 
   }
 

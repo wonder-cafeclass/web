@@ -504,6 +504,22 @@ export class KlassPriceCalculatorComponent implements OnInit {
 
   } // end method
 
+  // @ Desc : 
+  setDisable():void {
+
+    if(this.isDebug()) console.log("klass-price-calculator / setDisable / 시작");
+    if(null != this.priceForStudentComponent){
+      this.priceForStudentComponent.isDisabled = true;
+    }
+    if(null != this.studentCntComponent){
+      this.studentCntComponent.isDisabled = true;
+    }
+    if(null != this.weeksComponent){
+      this.weeksComponent.isDisabled = true;
+    }
+
+  } // end method
+
 
   onChangedFromChild(myEvent:MyEvent) :void{
 
