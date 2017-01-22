@@ -80,6 +80,15 @@ var HelperMyTime = (function () {
         var diffDays = this.getDiffDays(headDate, todayDate);
         return (-1 < diffDays) ? true : false;
     }; // end method
+    // @ Desc : 오늘로부터 며칠전인지를 구함. / wonder.jung
+    HelperMyTime.prototype.getDaysAgo = function (YYYYMMDD) {
+        if (this.isNotYYYYMMDD(YYYYMMDD)) {
+            return null;
+        }
+        var headDate = this.getDateFromYYYYMMDD(YYYYMMDD);
+        var todayDate = new Date();
+        return this.getDiffDays(headDate, todayDate);
+    }; // end method
     HelperMyTime.prototype.getDiffDaysYYYYMMDD_HHMMSS = function (headYYYYMMDD_HHMMSS, tailYYYYMMDD_HHMMSS) {
         if (null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
             return -1;
@@ -252,6 +261,12 @@ var HelperMyTime = (function () {
             return null;
         }
         return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+    };
+    HelperMyTime.prototype.getDateFromYYYYMMDD = function (date_str) {
+        if (null == date_str || "" == date_str) {
+            return null;
+        }
+        return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD);
     };
     HelperMyTime.prototype.getNow_YYYY_MM_DD_HH_MM_SS = function () {
         return this.getNow(this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
@@ -632,6 +647,21 @@ var HelperMyTime = (function () {
             return false;
         }
         var res = date_str_yyyymmdd_hhmmss.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) (0[0-9]|1[0-9]|2[0-4]):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/gi);
+        if (null === res || !(0 < res.length)) {
+            return false;
+        }
+        return true;
+    };
+    HelperMyTime.prototype.isNotYYYYMMDD = function (date_str_yyyymmdd) {
+        return !this.isYYYYMMDD(date_str_yyyymmdd);
+    };
+    // @ Public
+    // @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13) 확인합니다.
+    HelperMyTime.prototype.isYYYYMMDD = function (date_str_yyyymmdd) {
+        if (null == date_str_yyyymmdd || "" === date_str_yyyymmdd) {
+            return false;
+        }
+        var res = date_str_yyyymmdd.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1})$/gi);
         if (null === res || !(0 < res.length)) {
             return false;
         }

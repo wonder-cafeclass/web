@@ -140,6 +140,31 @@ var Klass = (function () {
     Klass.prototype.isNotNewClassBtn = function () {
         return !this.isNewClassBtn();
     };
+    // @ Desc : 수업 시작일을 읽기 쉬운 포맷으로 돌려줍니다.
+    Klass.prototype.getDateBeginReadable = function () {
+        if (null == this.date_begin || "" === this.date_begin) {
+            return "";
+        }
+        var dateBeginReadable = this.myTime.convert(
+        // date_str:string, 
+        this.date_begin, 
+        // input_date_format_type:number, 
+        this.myTime.DATE_TYPE_YYYY_MM_DD, 
+        // output_date_format_type:number
+        this.myTime.DATE_TYPE_H_YYYY_MM_DD_K_D);
+        var daysAgo = this.myTime.getDaysAgo(this.date_begin);
+        if (0 < daysAgo) {
+            dateBeginReadable = daysAgo + "\uC77C\uC804 " + dateBeginReadable + "\uC2DC\uC791";
+        }
+        else if (0 == daysAgo) {
+            dateBeginReadable = "\uC624\uB298 " + dateBeginReadable + "\uC2DC\uC791";
+        }
+        else if (daysAgo < 0) {
+            daysAgo *= -1;
+            dateBeginReadable = daysAgo + "\uC77C\uB4A4 " + dateBeginReadable + "\uC2DC\uC791";
+        }
+        return dateBeginReadable;
+    };
     // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
     Klass.prototype.getCommision = function () {
         if (!(0 < this.price)) {

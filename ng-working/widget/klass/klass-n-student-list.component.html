@@ -33,7 +33,7 @@
 			<td class="my-style my-klass-info">
 				<div class="my-klass-btn-box">
 					<div class="unselectable my-klass-btn gray" style="width:394px;">
-						<strong>수업명</strong> : {{klassNStudent.klass.title}}
+						<strong>수업명</strong> : {{klassNStudent.klass.title}} <small>( {{klassNStudent.klass.getDateBeginReadable()}} )</small>
 					</div>
 					<div>
 						<div class="unselectable my-klass-btn short gray float-l" style="width: 110px;">
@@ -70,7 +70,9 @@
 			</td>
 			<td class="my-style btn-box">
 				<div class="my-klass-btn-box">
-					<div class="unselectable my-klass-btn short gray"><strong>진행상황</strong></div>
+					<div class="unselectable my-klass-btn short gray">
+						<strong>진행상황</strong>
+					</div>
 					<div 
 					[ngClass]="{'gray':klassNStudent.isCanceled(),'enable':klassNStudent.isAvailable()}"
 					class="unselectable my-klass-btn short">{{klassNStudent.getProgress()}}회</div>

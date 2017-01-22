@@ -180,6 +180,36 @@ export class Klass {
         return !this.isNewClassBtn();
     }
 
+    // @ Desc : 수업 시작일을 읽기 쉬운 포맷으로 돌려줍니다.
+    getDateBeginReadable():string {
+        if(null == this.date_begin || "" === this.date_begin) {
+            return "";
+        }
+
+        let dateBeginReadable:string = 
+        this.myTime.convert(
+            // date_str:string, 
+            this.date_begin,
+            // input_date_format_type:number, 
+            this.myTime.DATE_TYPE_YYYY_MM_DD,
+            // output_date_format_type:number
+            this.myTime.DATE_TYPE_H_YYYY_MM_DD_K_D
+        );
+
+        let daysAgo:number = this.myTime.getDaysAgo(this.date_begin);
+
+        if(0 < daysAgo) {
+            dateBeginReadable = `${daysAgo}일전 ${dateBeginReadable}시작`;
+        } else if(0 == daysAgo) {
+            dateBeginReadable = `오늘 ${dateBeginReadable}시작`;
+        } else if(daysAgo < 0) {
+            daysAgo *= -1;
+            dateBeginReadable = `${daysAgo}일뒤 ${dateBeginReadable}시작`;
+        }
+
+        return dateBeginReadable;
+    }
+
     // @ Desc : 가격별 수수료에 대해 계산, 반환해줍니다.
     getCommision() :number {
 
