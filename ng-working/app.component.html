@@ -46,11 +46,6 @@
 				<li *ngIf="loginTeacher">
 					<a routerLink="/teacher/my" routerLinkActive="active">선생님 정보</a>
 				</li>
-				<!--
-				<li *ngIf="loginUser">
-					<a routerLink="/user/my" routerLinkActive="active">내정보</a>
-				</li>
-				-->
 				<li>
 					<!-- 유저 섬네일만 노출 -->
 					<img 	#thumbnail
@@ -62,7 +57,7 @@
 							class="img-circle my-thumbnail">
 				</li>
 				<li>
-					<a routerLink="/logout" routerLinkActive="active">로그아웃</a>
+					<a routerLink="/login/logout" routerLinkActive="active">로그아웃</a>
 				</li>
 			</ul>
 

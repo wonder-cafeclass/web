@@ -14,9 +14,9 @@ import { MyResponse }               from '../../util/model/my-response';
 import { PaymentImport }            from '../../widget/payment/model/payment-import';
 import { PaymentService }           from '../../widget/payment/service/payment.service';
 
-import { Klass }                    from '../../klass/model/klass';
-import { KlassAttendance }          from '../../klass/model/klass-attendance';
-import { KlassNStudent }            from '../../klass/model/klass-n-student';
+import { Klass }                    from '../../widget/klass/model/klass';
+import { KlassAttendance }          from '../../widget/klass/model/klass-attendance';
+import { KlassNStudent }            from '../../widget/klass/model/klass-n-student';
 
 import { User }                     from '../../users/model/user';
 import { Teacher }                  from '../../teachers/model/teacher';

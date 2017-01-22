@@ -26,7 +26,7 @@ import { ImageEntryComponent }         	from './image-grid/image-entry.component
 import { ImageGridV2Component }         from './image-grid/image-grid-v2.component';
 import { InputBtnsRowComponent }     	from './input-view/input-btns-row.component';
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
-import { DebugBtnComponent }      		from './debug/debug-btn.component';
+// import { DebugBtnComponent }      		from './debug/debug-btn.component';
 import { ImportComponent }      		from './payment/import.component';
 import { KlassCardComponent }        	from './klass/klass-card.component';
 import { KlassNStudentListComponent }	from './klass/klass-n-student-list.component';
@@ -38,9 +38,9 @@ import { PaymentService }         		from './payment/service/payment.service';
 import { CheckBoxComponent }      		from './checkbox/checkbox.component';
 import { PaginationComponent }      	from './pagination/pagination.component';
 
-import { FooterComponent }         		from './footer/footer.component';
+// import { FooterComponent }         		from './footer/footer.component';
 
-import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
+// import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 
 // @ Desc : Shared module.
 @NgModule({
@@ -58,7 +58,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
-		DebugBtnComponent,
+		// DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
@@ -76,8 +76,8 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		BirthdayComponent,
 		NicknameComponent,
 		TooltipComponent,
-		FooterComponent,
-		SafeHtmlPipe
+		// FooterComponent,
+		// SafeHtmlPipe
 	],
 	exports: [ 
 		CommonModule, 
@@ -91,7 +91,7 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
-		DebugBtnComponent,
+		// DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
@@ -109,8 +109,8 @@ import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 		BirthdayComponent,
 		NicknameComponent,
 		TooltipComponent,
-		FooterComponent,
-		SafeHtmlPipe
+		// FooterComponent,
+		// SafeHtmlPipe
 	],
 	providers: [
 		DefaultService,

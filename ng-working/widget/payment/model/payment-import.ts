@@ -1,7 +1,7 @@
 import { HelperMyIs }	from '../../../util/helper/my-is';
 import { HelperMyFormat }  from '../../../util/helper/my-format';
 import { User }       from '../../../users/model/user';
-import { Klass }      from '../../../klass/model/klass';
+import { Klass }      from '../../../widget/klass/model/klass';
 import { Teacher }    from '../../../teachers/model/teacher';
 
 

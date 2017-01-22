@@ -14,7 +14,7 @@ import { SingleInputViewComponent }    from '../input-view/single-input-view.com
 import { RadioBtnHListComponent }      from '../radiobtn/radiobtn-h-list.component';
 import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.component';
 
-import { KlassColorService }           from '../../klass/service/klass-color.service';
+import { KlassColorService }           from '../../widget/klass/service/klass-color.service';
 import { MyRulerService }              from '../../util/service/my-ruler.service';
 import { MyEventService }              from '../../util/service/my-event.service';
 import { MyEvent }                     from '../../util/model/my-event';

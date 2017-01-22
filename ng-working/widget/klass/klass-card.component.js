@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var my_array_1 = require('../../util/helper/my-array');
-var klass_1 = require('../../klass/model/klass');
-var klass_n_student_1 = require('../../klass/model/klass-n-student');
+var klass_1 = require('../../widget/klass/model/klass');
+var klass_n_student_1 = require('../../widget/klass/model/klass-n-student');
 var KlassCardComponent = (function () {
     function KlassCardComponent(watchTower) {
         this.watchTower = watchTower;

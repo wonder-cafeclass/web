@@ -22,8 +22,8 @@ import { TeacherService }             from '../../../teachers/service/teacher.se
 import { Teacher }                    from '../../../teachers/model/teacher';
 import { User }                       from '../../../users/model/user';
 
-import { Klass }                      from '../../../klass/model/klass';
-import { KlassAttendance }            from '../../../klass/model/klass-attendance';
+import { Klass }                      from '../../../widget/klass/model/klass';
+import { KlassAttendance }            from '../../../widget/klass/model/klass-attendance';
 
 @Component({
   moduleId: module.id,

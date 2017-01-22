@@ -8,14 +8,14 @@ import { ActivatedRoute, Router, Params }  from '@angular/router';
 import { Observable }                      from 'rxjs/Observable';
 import { Subject }                         from 'rxjs/Subject';
 
-import { KlassService }                    from './service/klass.service';
+import { KlassSimpleService }              from '../widget/klass/service/klass-simple.service';
 
-import { Klass }                           from './model/klass';
-import { KlassLevel }                      from './model/klass-level';
-import { KlassSubwayLine }                 from './model/klass-subway-line';
-import { KlassSubwayStation }              from './model/klass-subway-station';
-import { KlassDay }                        from './model/klass-day';
-import { KlassTime }                       from './model/klass-time';
+import { KlassSimple }                     from '../widget/klass/model/klass-simple';
+import { KlassLevel }                      from '../widget/klass/model/klass-level';
+import { KlassSubwayLine }                 from '../widget/klass/model/klass-subway-line';
+import { KlassSubwayStation }              from '../widget/klass/model/klass-subway-station';
+import { KlassDay }                        from '../widget/klass/model/klass-day';
+import { KlassTime }                       from '../widget/klass/model/klass-time';
 
 import { Pagination }                      from '../widget/pagination/model/pagination';
 
@@ -24,13 +24,10 @@ import { MyLoggerService }                 from '../util/service/my-logger.servi
 import { MyEventWatchTowerService }        from '../util/service/my-event-watchtower.service';
 import { MyCheckerService }                from '../util/service/my-checker.service';
 import { MyResponse }                      from '../util/model/my-response';
-import { HelperMyIs }                      from '../util/helper/my-is';
 import { HelperMyArray }                   from '../util/helper/my-array';
 
 import { UserService }                     from '../users/service/user.service';
 import { User }                            from '../users/model/user';
-// REMOVE ME
-// import { TeacherService }                  from '../teachers/service/teacher.service';
 import { Teacher }                         from '../teachers/model/teacher';
 
 @Component({
@@ -40,7 +37,7 @@ import { Teacher }                         from '../teachers/model/teacher';
 })
 export class KlassListComponent implements AfterViewInit {
 
-  klassList: Klass[];
+  klassList: KlassSimple[];
   public selectedId: number;
 
   // 검색상태 관련
@@ -51,18 +48,15 @@ export class KlassListComponent implements AfterViewInit {
 
   isAdmin:boolean=false;
 
-  private myIs:HelperMyIs;
   private myArray:HelperMyArray;
 
   private pagination:Pagination;
   // private keywordMap;
 
   constructor(
-    private klassService:KlassService,
+    private ksService:KlassSimpleService,
     private urlService:UrlService,
     private userService:UserService,
-    // REMOVE ME
-    // private teacherService:TeacherService, 
     private myLoggerService:MyLoggerService,
     private watchTower:MyEventWatchTowerService,
     private myCheckerService:MyCheckerService,
@@ -70,10 +64,9 @@ export class KlassListComponent implements AfterViewInit {
     private router:Router
   ) { 
 
-    this.myIs = new HelperMyIs();
     this.myArray = new HelperMyArray();
 
-    this.klassService.setWatchTower(this.watchTower);
+    this.ksService.setWatchTower(this.watchTower);
 
     this.pagination = new Pagination();
 
@@ -84,7 +77,7 @@ export class KlassListComponent implements AfterViewInit {
     return this.watchTower.isDebug();
   }
 
-  isSelected(klass: Klass): boolean {
+  isSelected(klass: KlassSimple): boolean {
     return klass.id === this.selectedId;
   }
 
@@ -183,8 +176,6 @@ export class KlassListComponent implements AfterViewInit {
     // 로그 아웃시 null 허용.
     this.loginUser = loginUser;
 
-    this.getKlassListOnInit();
-
   } 
   private getLoginUserId() :number {
 
@@ -215,9 +206,15 @@ export class KlassListComponent implements AfterViewInit {
     }) // end service
 
   }
+  private hasInit:boolean=false;
   private init() :void {
 
     if(this.isDebug()) console.log("klass-list / init / 시작");
+
+    if(this.hasInit) {
+      return;
+    }
+    this.hasInit = true;
 
     // 뷰에 필요한 공통 정보를 설정합니다.
     this.setViewPack();
@@ -225,6 +222,8 @@ export class KlassListComponent implements AfterViewInit {
     this.setLoginUser();
     // 페이지 진입을 기록으로 남깁니다.
     this.logActionPage();
+    // 클래스 리스트 가져오기
+    this.getKlassListOnInit();
 
   } // end method
 
@@ -238,6 +237,7 @@ export class KlassListComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("klass-list / getKlassListOnInit / 시작");
 
+    // TODO - 선생님의 경우, 선생님 수업(오픈되지 않았더라도)이 처음 리스트에 위치해야 한다.
     this.fetchKlassList(
       // userId:Number, 
       this.getLoginUserId(),
@@ -247,7 +247,7 @@ export class KlassListComponent implements AfterViewInit {
       this.pagination.pageRowCnt,
       // searchQuery:string, 
       "",
-      // klassStatus:string, 
+      // klassStatus:string, /  E(Enrollment/모집),B(Begin/시작),C(Closed/마감),F(Finished/종료) - 4가지 상태의 수업을 가져와야 함.
       "E",
       // klassLevel:string, 
       "",
@@ -292,10 +292,10 @@ export class KlassListComponent implements AfterViewInit {
 
     } else {
 
-      let klassList:Klass[] = [];
+      let klassList:KlassSimple[] = [];
       for (var i = 0; i < jsonKlassList.length; ++i) {
         let klassJSON = jsonKlassList[i];
-        let klass:Klass = new Klass().setJSON(klassJSON);
+        let klass:KlassSimple = new KlassSimple().setJSON(klassJSON);
 
         klassList.push(klass);
 
@@ -323,7 +323,7 @@ export class KlassListComponent implements AfterViewInit {
                           klassDays:string, 
                           klassTime:string ) {
 
-    this.klassService.fetchKlassList(
+    this.ksService.fetchKlassList(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number, 
@@ -598,9 +598,6 @@ export class KlassListComponent implements AfterViewInit {
     // 다르다면 키워드를 등록.
     this.keywordsFromUserPrev = keywordsFromUser;
 
-    // REMOVE ME
-    // this.setKeywordMap(selectile);
-
     // 안전한 문자열만 받습니다. 
     // 허용 문자열은 알파벳,한글,숫자입니다. 
     // 특수문자는 검색어로 허용하지 않습니다.
@@ -621,28 +618,9 @@ export class KlassListComponent implements AfterViewInit {
       return;
     }
 
-
     // 유효한 검색 키워드를 찾았습니다.
     var selectileMatchList = [];
     var keywordFoundList:string[] = [];
-
-    // REMOVE ME
-    // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
-    /*
-    var keywordNotFoundList:string[] = [];
-    for (var i = 0; i < keywordListSafe.length; ++i) {
-      let keywordSafe = keywordListSafe[i];
-      let selectileObj:any = this.searchKeywordMap(keywordSafe);
-
-      if(null == selectileObj) {
-        keywordNotFoundList.push(keywordSafe);
-        continue;
-      }
-
-      selectileMatchList.push(selectileObj);
-      keywordFoundList.push(keywordSafe);
-    }
-    */
 
     // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
     // 사용자가 입력한 키워드는 검색창에서 제외합니다.
@@ -664,13 +642,13 @@ export class KlassListComponent implements AfterViewInit {
     }
   }
 
-  onClickWishList(event, klass: Klass) {
+  onClickWishList(event, klass:KlassSimple) {
 
     event.stopPropagation();
     event.preventDefault();
 
   }
-  onSelectKlass(event, klass: Klass) {
+  onSelectKlass(event, klass:KlassSimple) {
 
     event.stopPropagation();
     event.preventDefault();
@@ -706,7 +684,7 @@ export class KlassListComponent implements AfterViewInit {
       return;
     }
 
-    this.klassService.addKlassEmpty(
+    this.ksService.addKlassEmpty(
       // apiKey:string, 
       this.watchTower.getApiKey(),
       // userId:number,
@@ -724,7 +702,7 @@ export class KlassListComponent implements AfterViewInit {
 
       if(myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
 
-        let klass:Klass = new Klass().setJSON(myResponse.getDataProp("klass"));
+        let klass:KlassSimple = new KlassSimple().setJSON(myResponse.getDataProp("klass"));
         if(null != klass) {
           // 새로운 클래스가 등록되었습니다. 해당 수업 페이지로 이동합니다.
           this.gotoClassDetail(klass);
@@ -745,13 +723,12 @@ export class KlassListComponent implements AfterViewInit {
 
   } // end method
 
-  gotoClassDetail(klass: Klass):void {
+  gotoClassDetail(klass: KlassSimple):void {
 
     if(this.isDebug()) console.log("klass-list / gotoClassDetail / 시작");
 
     // 수업 상세 페이지로 이동
-    this.router.navigate([klass.id], { relativeTo: this.route });
-
+    this.router.navigate(['/klass-detail/' + klass.id]);
 
     if(this.isDebug()) console.log("klass-list / gotoClassDetail / 끝");
   } // end method

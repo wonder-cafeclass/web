@@ -56,9 +56,9 @@
 			<ul class="list-group">
 				<li class="list-group-item klass-row-image">
 
-					<img 	*ngIf="klass.teacher && klass.teacher.thumbnail" 
-							src="{{klass.teacher.thumbnail}}" 
-							alt="{{klass.teacher.name}}" 
+					<img 	*ngIf="klass.teacher_thumbnail" 
+							src="{{klass.teacher_thumbnail}}" 
+							alt="선생님이름" 
 							class="img-circle img-teacher">
 
 					<img 	#classImage 
@@ -100,12 +100,12 @@
 							alt="{{klass.days}}" 
 							class="img-circle cc-img-filter">
 							
-					<div *ngIf="!klass.days_a_week_img_url">
+					<span *ngIf="!klass.days_a_week_img_url">
 						<img 	*ngFor="let days_img_url of klass.days_img_url_list" 
 								src="{{days_img_url}}"
 								alt="{{klass.days}}" 
 								class="img-circle cc-img-filter">
-					</div>
+					</span>
 
 				</li>
 				<li 

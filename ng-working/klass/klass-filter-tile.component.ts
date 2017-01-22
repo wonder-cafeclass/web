@@ -7,17 +7,14 @@ import { Location }             from '@angular/common';
 
 import { Subject }              from 'rxjs/Subject';
 
-import { KlassService }         from './service/klass.service';
+import { KlassLevel }           from '../widget/klass/model/klass-level';
+import { KlassSubwayLine }      from '../widget/klass/model/klass-subway-line';
+import { KlassSubwayStation }   from '../widget/klass/model/klass-subway-station';
+import { KlassDay }             from '../widget/klass/model/klass-day';
+import { KlassTime }            from '../widget/klass/model/klass-time';
 
-import { KlassLevel }           from './model/klass-level';
-// import { KlassStation }         from './model/klass-station';
-import { KlassSubwayLine }      from './model/klass-subway-line';
-import { KlassSubwayStation }   from './model/klass-subway-station';
-import { KlassDay }             from './model/klass-day';
-import { KlassTime }            from './model/klass-time';
-
-import { KlassSelectile }       from './model/klass-selectile';
-import { KlassSelectileRow }    from './model/klass-selectile-row';
+import { KlassSelectile }       from '../widget/klass/model/klass-selectile';
+import { KlassSelectileRow }    from '../widget/klass/model/klass-selectile-row';
 
 import { MyResponse }           from '../util/model/my-response';
 
@@ -74,7 +71,6 @@ export class KlassFilterTileComponent implements OnInit {
   // 컴포넌트 로딩 완료 이벤트 발사!
   @Output() emitOnInitKlassList = new EventEmitter<void>();
 
-  // stColCntPerRow:number = 5; // selectile에 선택지를 열(Row)당 n개씩 노출
   selectileTable: KlassSelectileRow[];
   selectileShadowRows: KlassSelectileRow[];
 
@@ -89,7 +85,6 @@ export class KlassFilterTileComponent implements OnInit {
     private myCheckerService:MyCheckerService,
     private myEventService:MyEventService,
     private watchTower:MyEventWatchTowerService,    
-    private klassService: KlassService,
     private location: Location
   ) {
     this.myArray = new HelperMyArray();

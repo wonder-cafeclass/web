@@ -18,7 +18,7 @@ var my_info_component_1 = require('./view/user-my-nav-list/my-info.component');
 var my_info_dashboard_component_1 = require('./view/user-my-nav-list/my-info-dashboard.component');
 var my_info_klass_component_1 = require('./view/user-my-nav-list/my-info-klass.component');
 var my_info_payment_component_1 = require('./view/user-my-nav-list/my-info-payment.component');
-var klass_radiobtn_service_1 = require('../klass/service/klass-radiobtn.service');
+var klass_radiobtn_service_1 = require('../widget/klass/service/klass-radiobtn.service');
 var users_routing_1 = require('./users.routing');
 var UsersModule = (function () {
     function UsersModule() {

@@ -283,7 +283,7 @@ export class ApplyTeacherComponent implements OnInit, AfterViewInit {
 
       if(this.isDebug()) console.log("apply-teacher / setLoginUser / 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.");
 
-      let req_url = this.urlService.get('#/login?redirect=/applyteacher');
+      let req_url = this.urlService.get('#/login?redirect=/teacher/applyteacher');
       if(this.isDebug()) console.log("apply-teacher / setLoginUser / req_url : ",req_url);
 
       window.location.href = req_url;

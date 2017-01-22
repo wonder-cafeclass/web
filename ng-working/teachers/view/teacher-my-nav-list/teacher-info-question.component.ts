@@ -22,7 +22,7 @@ import { TeacherService }             from '../../../teachers/service/teacher.se
 import { Teacher }                    from '../../../teachers/model/teacher';
 import { User }                       from '../../../users/model/user';
 
-import { Klass }                      from '../../../klass/model/klass';
+import { Klass }                      from '../../../widget/klass/model/klass';
 
 @Component({
   moduleId: module.id,

@@ -9,22 +9,20 @@ import { FacebookCallbackComponent } 	from './facebook/facebook-callback.compone
 import { SignupComponent } 				from './signup/signup.component';
 import { SignupSelectComponent } 		from './signup/signup-select.component';
 import { ValidationComponent } 			from './validation/validation.component';
-import { HawkeyeComponent }             from './validation/hawkeye.component';
 
 export const loginRoutes: Routes = 
 [
-	{ path: 'login', component: LoginComponent },
+	{ path: '', component: LoginComponent },
 	{ path: 'logout', component: LogoutComponent },
-	{ path: 'login/hawkeye', component: HawkeyeComponent },
-	{ path: 'login/kakao', component: KakaoCallbackComponent },
-	{ path: 'login/naver', component: NaverCallbackComponent },
-	{ path: 'login/facebook', component: FacebookCallbackComponent },
-	{ path: 'login/signup', component: SignupComponent },
-	{ path: 'login/signup/select', component: SignupSelectComponent },
-	{ path: 'login/signup/facebook/:facebookId', component: SignupComponent },
-	{ path: 'login/signup/kakao/:kakaoId', component: SignupComponent },
-	{ path: 'login/signup/naver/:naverId', component: SignupComponent },
-	{ path: 'login/signup/validation', component: ValidationComponent }
+	{ path: 'kakao', component: KakaoCallbackComponent },
+	{ path: 'naver', component: NaverCallbackComponent },
+	{ path: 'facebook', component: FacebookCallbackComponent },
+	{ path: 'signup', component: SignupComponent },
+	{ path: 'signup/select', component: SignupSelectComponent },
+	{ path: 'signup/facebook/:facebookId', component: SignupComponent },
+	{ path: 'signup/kakao/:kakaoId', component: SignupComponent },
+	{ path: 'signup/naver/:naverId', component: SignupComponent },
+	{ path: 'signup/validation', component: ValidationComponent }	
 ];
 
 export const loginRouting: ModuleWithProviders = RouterModule.forChild(loginRoutes);

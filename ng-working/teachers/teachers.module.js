@@ -27,6 +27,7 @@ var login_service_1 = require('../login/service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var teacher_service_1 = require('./service/teacher.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var TeachersModule = (function () {
     function TeachersModule() {
     }
@@ -53,7 +54,8 @@ var TeachersModule = (function () {
                 login_service_1.LoginService,
                 user_service_1.UserService,
                 teacher_service_1.TeacherService,
-                my_checker_service_1.MyCheckerService
+                my_checker_service_1.MyCheckerService,
+                my_birthday_service_1.MyBirthdayService
             ]
         }), 
         __metadata('design:paramtypes', [])

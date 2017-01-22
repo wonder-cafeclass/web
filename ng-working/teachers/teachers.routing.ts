@@ -11,7 +11,7 @@ export const teachersRoutes: Routes =
 [
 	{ path: 'applyteacher', component: ApplyTeacherComponent, pathMatch: 'full' },
 	{ path: 'applyteacherterm', component: ApplyTeacherTermComponent, pathMatch: 'full' },
-	{ path: 'teacher/my', component: TeacherMyNavListComponent, pathMatch: 'full' }
+	{ path: 'my', component: TeacherMyNavListComponent, pathMatch: 'full' }
 ];
 
 export const teachersRouting: ModuleWithProviders = RouterModule.forChild(teachersRoutes);

@@ -144,7 +144,7 @@ var ApplyTeacherTermComponent = (function () {
             // 로그인이 되어 있지 않다면, 로그인 페이지로 이동합니다.
             if (isDebug)
                 console.log("apply-teacher-term / setLoginUser / 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.");
-            var req_url = this.urlService.get('#/login?redirect=/applyteacherterm');
+            var req_url = this.urlService.get('#/login?redirect=/teacher/applyteacherterm');
             if (isDebug)
                 console.log("apply-teacher-term / setLoginUser / req_url : ", req_url);
             window.location.href = req_url;
@@ -192,7 +192,7 @@ var ApplyTeacherTermComponent = (function () {
             this.isShowTooltip = false;
             if (isDebug)
                 console.log("signup / onClickSignup / 문제 없음. 선샌님 등록 페이지로 이동.");
-            this.router.navigate(['/applyteacher']);
+            this.router.navigate(['/teacher/applyteacher']);
         } // end if
     }; // end method  
     ApplyTeacherTermComponent.prototype.onClickLogo = function (event) {

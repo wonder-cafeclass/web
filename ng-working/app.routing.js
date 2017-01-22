@@ -22,6 +22,26 @@ var appRoutes = [
         loadChildren: 'app/admin/admin.module#AdminModule',
         canLoad: [auth_guard_service_1.AuthGuard]
     },
+    {
+        path: 'klass-detail',
+        loadChildren: 'app/klass-detail/klass-detail.module#KlassDetailModule'
+    },
+    {
+        path: 'teacher',
+        loadChildren: 'app/teachers/teachers.module#TeachersModule'
+    },
+    {
+        path: 'login',
+        loadChildren: 'app/login/login.module#LoginModule'
+    },
+    {
+        path: 'policy',
+        loadChildren: 'app/policy/policy.module#PolicyModule'
+    },
+    {
+        path: 'user',
+        loadChildren: 'app/users/users.module#UsersModule'
+    }
 ];
 exports.appRoutingProviders = [
     auth_guard_service_1.AuthGuard,

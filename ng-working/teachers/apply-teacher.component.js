@@ -196,7 +196,7 @@ var ApplyTeacherComponent = (function () {
             // 로그인 이후, 선생님 등록 페이지로 리다이렉트 데이터를 전달해야 합니다.
             if (this.isDebug())
                 console.log("apply-teacher / setLoginUser / 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.");
-            var req_url = this.urlService.get('#/login?redirect=/applyteacher');
+            var req_url = this.urlService.get('#/login?redirect=/teacher/applyteacher');
             if (this.isDebug())
                 console.log("apply-teacher / setLoginUser / req_url : ", req_url);
             window.location.href = req_url;

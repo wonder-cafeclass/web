@@ -13,8 +13,8 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var teacher_service_1 = require('../../../teachers/service/teacher.service');
-var klass_1 = require('../../../klass/model/klass');
-var klass_attendance_1 = require('../../../klass/model/klass-attendance');
+var klass_1 = require('../../../widget/klass/model/klass');
+var klass_attendance_1 = require('../../../widget/klass/model/klass-attendance');
 var TeacherInfoDashboardComponent = (function () {
     function TeacherInfoDashboardComponent(teacherService, myEventService, watchTower, router) {
         this.teacherService = teacherService;

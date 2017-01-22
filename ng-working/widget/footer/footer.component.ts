@@ -192,7 +192,7 @@ export class FooterComponent implements OnInit, OnChanges {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['/private-info']);
+    this.router.navigate(['/policy/private-info']);
 
   } 
 
@@ -208,7 +208,7 @@ export class FooterComponent implements OnInit, OnChanges {
     event.stopPropagation();
     event.preventDefault();
 
-    this.router.navigate(['/applyteacherterm']);
+    this.router.navigate(['/teacher/applyteacherterm']);
     
   } 
 

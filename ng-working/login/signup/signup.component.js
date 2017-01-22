@@ -678,7 +678,7 @@ var SignupComponent = (function () {
         if (this.isDebug())
             console.log("signup / onClickPrivatePolicy / 시작");
         // 개인정보 취급방침 페이지로 이동.
-        window.open("/#/private-info");
+        window.open("/#/policy/private-info");
     };
     // @ Desc : 페이스북, 네이버, 카카오 플랫폼 로그인이 아닌 카페 클래스로 직접 회원 가입을 진행할 경우, 
     // 플랫폼을 통한 유저 정보를 만들지 않았으므로 새로 만들어 줍니다.

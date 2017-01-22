@@ -10,27 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var klass_service_1 = require('./service/klass.service');
-var klass_1 = require('./model/klass');
+var klass_simple_service_1 = require('../widget/klass/service/klass-simple.service');
+var klass_simple_1 = require('../widget/klass/model/klass-simple');
 var pagination_1 = require('../widget/pagination/model/pagination');
 var url_service_1 = require('../util/url.service');
 var my_logger_service_1 = require('../util/service/my-logger.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
-var my_is_1 = require('../util/helper/my-is');
 var my_array_1 = require('../util/helper/my-array');
 var user_service_1 = require('../users/service/user.service');
 var user_1 = require('../users/model/user');
-// REMOVE ME
-// import { TeacherService }                  from '../teachers/service/teacher.service';
 var teacher_1 = require('../teachers/model/teacher');
 var KlassListComponent = (function () {
     // private keywordMap;
-    function KlassListComponent(klassService, urlService, userService, 
-        // REMOVE ME
-        // private teacherService:TeacherService, 
-        myLoggerService, watchTower, myCheckerService, route, router) {
-        this.klassService = klassService;
+    function KlassListComponent(ksService, urlService, userService, myLoggerService, watchTower, myCheckerService, route, router) {
+        this.ksService = ksService;
         this.urlService = urlService;
         this.userService = userService;
         this.myLoggerService = myLoggerService;
@@ -41,12 +35,12 @@ var KlassListComponent = (function () {
         // 검색상태 관련
         this.isSearchEnabled = false;
         this.isAdmin = false;
+        this.hasInit = false;
         // EVENT
         this.isOverMagnifier = false;
         this.prevSelectileMap = null;
-        this.myIs = new my_is_1.HelperMyIs();
         this.myArray = new my_array_1.HelperMyArray();
-        this.klassService.setWatchTower(this.watchTower);
+        this.ksService.setWatchTower(this.watchTower);
         this.pagination = new pagination_1.Pagination();
     }
     KlassListComponent.prototype.isDebug = function () {
@@ -137,7 +131,6 @@ var KlassListComponent = (function () {
         }
         // 로그 아웃시 null 허용.
         this.loginUser = loginUser;
-        this.getKlassListOnInit();
     };
     KlassListComponent.prototype.getLoginUserId = function () {
         if (this.isDebug())
@@ -169,12 +162,18 @@ var KlassListComponent = (function () {
     KlassListComponent.prototype.init = function () {
         if (this.isDebug())
             console.log("klass-list / init / 시작");
+        if (this.hasInit) {
+            return;
+        }
+        this.hasInit = true;
         // 뷰에 필요한 공통 정보를 설정합니다.
         this.setViewPack();
         // 로그인한 유저 정보를 가져옵니다.
         this.setLoginUser();
         // 페이지 진입을 기록으로 남깁니다.
         this.logActionPage();
+        // 클래스 리스트 가져오기
+        this.getKlassListOnInit();
     }; // end method
     // @ Desc : 초기화시 1번만 수업 리스트를 가져옴. 
     KlassListComponent.prototype.getKlassListOnInit = function () {
@@ -184,6 +183,7 @@ var KlassListComponent = (function () {
         }
         if (this.isDebug())
             console.log("klass-list / getKlassListOnInit / 시작");
+        // TODO - 선생님의 경우, 선생님 수업(오픈되지 않았더라도)이 처음 리스트에 위치해야 한다.
         this.fetchKlassList(
         // userId:Number, 
         this.getLoginUserId(), 
@@ -193,7 +193,7 @@ var KlassListComponent = (function () {
         this.pagination.pageRowCnt, 
         // searchQuery:string, 
         "", 
-        // klassStatus:string, 
+        // klassStatus:string, /  E(Enrollment/모집),B(Begin/시작),C(Closed/마감),F(Finished/종료) - 4가지 상태의 수업을 가져와야 함.
         "E", 
         // klassLevel:string, 
         "", 
@@ -232,7 +232,7 @@ var KlassListComponent = (function () {
             var klassList = [];
             for (var i = 0; i < jsonKlassList.length; ++i) {
                 var klassJSON = jsonKlassList[i];
-                var klass = new klass_1.Klass().setJSON(klassJSON);
+                var klass = new klass_simple_1.KlassSimple().setJSON(klassJSON);
                 klassList.push(klass);
             } // end for
             if (this.isDebug())
@@ -245,7 +245,7 @@ var KlassListComponent = (function () {
     }; // end method    
     KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
-        this.klassService.fetchKlassList(
+        this.ksService.fetchKlassList(
         // apiKey:string, 
         this.watchTower.getApiKey(), 
         // userId:number, 
@@ -452,8 +452,6 @@ var KlassListComponent = (function () {
         }
         // 다르다면 키워드를 등록.
         this.keywordsFromUserPrev = keywordsFromUser;
-        // REMOVE ME
-        // this.setKeywordMap(selectile);
         // 안전한 문자열만 받습니다. 
         // 허용 문자열은 알파벳,한글,숫자입니다. 
         // 특수문자는 검색어로 허용하지 않습니다.
@@ -473,23 +471,6 @@ var KlassListComponent = (function () {
         // 유효한 검색 키워드를 찾았습니다.
         var selectileMatchList = [];
         var keywordFoundList = [];
-        // REMOVE ME
-        // 검색 키워드인 selectile 데이터에서 사용자가 입력한 키워드가 있는지 찾아봅니다.
-        /*
-        var keywordNotFoundList:string[] = [];
-        for (var i = 0; i < keywordListSafe.length; ++i) {
-          let keywordSafe = keywordListSafe[i];
-          let selectileObj:any = this.searchKeywordMap(keywordSafe);
-    
-          if(null == selectileObj) {
-            keywordNotFoundList.push(keywordSafe);
-            continue;
-          }
-    
-          selectileMatchList.push(selectileObj);
-          keywordFoundList.push(keywordSafe);
-        }
-        */
         // 필터와 매칭된 키워드를 selectile 리스트에 노출합니다.
         // 사용자가 입력한 키워드는 검색창에서 제외합니다.
         for (var i = 0; i < selectileMatchList.length; ++i) {
@@ -543,7 +524,7 @@ var KlassListComponent = (function () {
                 console.log("klass-list / addNewKlass / 중단 / null == this.loginUser");
             return;
         }
-        this.klassService.addKlassEmpty(
+        this.ksService.addKlassEmpty(
         // apiKey:string, 
         this.watchTower.getApiKey(), 
         // userId:number,
@@ -558,7 +539,7 @@ var KlassListComponent = (function () {
             if (_this.isDebug())
                 console.log("klass-list / addNewKlass / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
-                var klass = new klass_1.Klass().setJSON(myResponse.getDataProp("klass"));
+                var klass = new klass_simple_1.KlassSimple().setJSON(myResponse.getDataProp("klass"));
                 if (null != klass) {
                     // 새로운 클래스가 등록되었습니다. 해당 수업 페이지로 이동합니다.
                     _this.gotoClassDetail(klass);
@@ -577,7 +558,7 @@ var KlassListComponent = (function () {
         if (this.isDebug())
             console.log("klass-list / gotoClassDetail / 시작");
         // 수업 상세 페이지로 이동
-        this.router.navigate([klass.id], { relativeTo: this.route });
+        this.router.navigate(['/klass-detail/' + klass.id]);
         if (this.isDebug())
             console.log("klass-list / gotoClassDetail / 끝");
     }; // end method
@@ -592,7 +573,7 @@ var KlassListComponent = (function () {
             styleUrls: ['klass-list.component.css'],
             templateUrl: 'klass-list.component.html',
         }), 
-        __metadata('design:paramtypes', [klass_service_1.KlassService, url_service_1.UrlService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [klass_simple_service_1.KlassSimpleService, url_service_1.UrlService, user_service_1.UserService, my_logger_service_1.MyLoggerService, my_event_watchtower_service_1.MyEventWatchTowerService, my_checker_service_1.MyCheckerService, router_1.ActivatedRoute, router_1.Router])
     ], KlassListComponent);
     return KlassListComponent;
 }());

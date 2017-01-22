@@ -33,7 +33,7 @@ var image_entry_component_1 = require('./image-grid/image-entry.component');
 var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var input_btns_row_component_1 = require('./input-view/input-btns-row.component');
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
-var debug_btn_component_1 = require('./debug/debug-btn.component');
+// import { DebugBtnComponent }      		from './debug/debug-btn.component';
 var import_component_1 = require('./payment/import.component');
 var klass_card_component_1 = require('./klass/klass-card.component');
 var klass_n_student_list_component_1 = require('./klass/klass-n-student-list.component');
@@ -42,8 +42,8 @@ var default_service_1 = require('./input/default/service/default.service');
 var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
 var pagination_component_1 = require('./pagination/pagination.component');
-var footer_component_1 = require('./footer/footer.component');
-var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
+// import { FooterComponent }         		from './footer/footer.component';
+// import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
 // @ Desc : Shared module.
 var WidgetModule = (function () {
     function WidgetModule() {
@@ -64,7 +64,7 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
-                debug_btn_component_1.DebugBtnComponent,
+                // DebugBtnComponent,
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
@@ -82,8 +82,6 @@ var WidgetModule = (function () {
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
                 tooltip_component_1.TooltipComponent,
-                footer_component_1.FooterComponent,
-                safe_html_pipe_1.SafeHtmlPipe
             ],
             exports: [
                 common_1.CommonModule,
@@ -97,7 +95,7 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
-                debug_btn_component_1.DebugBtnComponent,
+                // DebugBtnComponent,
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
@@ -115,8 +113,6 @@ var WidgetModule = (function () {
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
                 tooltip_component_1.TooltipComponent,
-                footer_component_1.FooterComponent,
-                safe_html_pipe_1.SafeHtmlPipe
             ],
             providers: [
                 default_service_1.DefaultService,

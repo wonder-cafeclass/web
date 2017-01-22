@@ -12,51 +12,49 @@ require('../rxjs-extensions');
 var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
 var common_1 = require('@angular/common');
-var widget_module_1 = require('../widget/widget.module');
-var klass_service_1 = require('./service/klass.service');
-var klass_radiobtn_service_1 = require('./service/klass-radiobtn.service');
-var klass_checkbox_service_1 = require('./service/klass-checkbox.service');
-var klass_color_service_1 = require('./service/klass-color.service');
-var klass_comment_service_1 = require('./service/klass-comment.service');
-var my_ruler_service_1 = require('../util/service/my-ruler.service');
-var my_checker_service_1 = require('../util/service/my-checker.service');
-var image_service_1 = require('../util/image.service');
-var comment_service_1 = require('../widget/comment/service/comment.service');
-var klass_detail_resolve_service_1 = require('./klass-detail-resolve.service');
-var klass_list_component_1 = require('./klass-list.component');
+var shared_module_1 = require('../shared/shared.module');
 var klass_center_routing_1 = require('./klass-center.routing');
 var klass_center_component_1 = require('./klass-center.component');
-var klass_detail_component_1 = require('./klass-detail.component');
+var klass_list_component_1 = require('./klass-list.component');
 var klass_filter_tile_component_1 = require('./klass-filter-tile.component');
-var klass_center_home_component_1 = require('./klass-center-home.component');
-var klass_detail_nav_list_component_1 = require('./klass-detail-nav-list.component');
-var klass_teacher_component_1 = require('./widget/klass-teacher.component');
-var klass_venue_search_list_component_1 = require('./widget/klass-venue-search-list.component');
-var klass_price_calculator_component_1 = require('./widget/klass-price-calculator.component');
-var clock_board_component_1 = require('../widget/clock/clock-board.component');
-var clock_digital_component_1 = require('../widget/clock/clock-digital.component');
-var clock_component_1 = require('../widget/clock/clock.component');
-var calendar_component_1 = require('../widget/calendar/calendar.component');
-var mini_calendar_component_1 = require('../widget/calendar/mini-calendar.component');
-var pricetag_component_1 = require('../widget/pricetag/pricetag.component');
-var pricetag_h_component_1 = require('../widget/pricetag/pricetag-h.component');
-var butterfly_component_1 = require('../widget/butterfly/butterfly.component');
-var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
-var radiobtn_linear_component_1 = require('../widget/radiobtn/radiobtn-linear.component');
-var input_view_component_1 = require('../widget/input-view/input-view.component');
-var input_view_h_list_component_1 = require('../widget/input-view/input-view-h-list.component');
-var input_view_updown_component_1 = require('../widget/input-view/input-view-updown.component');
-var input_view_table_component_1 = require('../widget/input-view-table/input-view-table.component');
-var single_input_view_component_1 = require('../widget/input-view/single-input-view.component');
-// import { InputBtnsRowComponent }     from '../widget/input-view/input-btns-row.component';
-// import { InputsBtnsRowsComponent }     from '../widget/input-view/inputs-btns-rows.component';
-var radiobtn_h_list_component_1 = require('../widget/radiobtn/radiobtn-h-list.component');
-var checkbox_h_list_component_1 = require('../widget/checkbox/checkbox-h-list.component');
-var smart_editor_component_1 = require('../widget/smart-editor/smart-editor.component');
-var comment_list_component_1 = require('../widget/comment/comment-list.component');
-// @ Deprecated
-var dron_list_component_1 = require('../widget/dron-list/dron-list.component');
-var input_row_component_1 = require('../widget/input-row/input-row.component');
+var klass_simple_service_1 = require('../widget/klass/service/klass-simple.service');
+// import { KlassService }              from './service/klass.service';
+// import { KlassRadioBtnService }      from './service/klass-radiobtn.service';
+// import { KlassCheckBoxService }      from './service/klass-checkbox.service';
+// import { KlassColorService }         from './service/klass-color.service';
+// import { KlassCommentService }       from './service/klass-comment.service';
+// import { KlassDetailResolve }        from './klass-detail-resolve.service';
+// import { KlassDetailComponent }              from './klass-detail.component';
+// import { KlassCenterHomeComponent }          from './klass-center-home.component';
+// import { KlassDetailNavListComponent }       from './klass-detail-nav-list.component';
+// import { KlassTeacherComponent }             from './widget/klass-teacher.component';
+// import { KlassVenueSearchListComponent }     from './widget/klass-venue-search-list.component';
+// import { KlassPriceCalculatorComponent }     from './widget/klass-price-calculator.component';
+// import { ClockBoardComponent }       from '../widget/clock/clock-board.component';
+// import { ClockDigitalComponent }     from '../widget/clock/clock-digital.component';
+// import { ClockComponent }            from '../widget/clock/clock.component';
+// import { CalendarComponent }         from '../widget/calendar/calendar.component';
+// import { MiniCalendarComponent }     from '../widget/calendar/mini-calendar.component';
+// import { PriceTagComponent }         from '../widget/pricetag/pricetag.component';
+// import { PriceTagHComponent }        from '../widget/pricetag/pricetag-h.component';
+// import { ButterflyComponent }        from '../widget/butterfly/butterfly.component';
+// import { ImageGridComponent }        from '../widget/image-grid/image-grid.component';
+// import { RadioBtnLinearComponent }   from '../widget/radiobtn/radiobtn-linear.component';
+// import { InputViewComponent }        from '../widget/input-view/input-view.component';
+// import { InputViewHListComponent }   from '../widget/input-view/input-view-h-list.component';
+// import { InputViewUpdownComponent }  from '../widget/input-view/input-view-updown.component';
+// import { InputViewTableComponent }   from '../widget/input-view-table/input-view-table.component';
+// import { SingleInputViewComponent }  from '../widget/input-view/single-input-view.component';
+// import { RadioBtnHListComponent }    from '../widget/radiobtn/radiobtn-h-list.component';
+// import { CheckBoxHListComponent }    from '../widget/checkbox/checkbox-h-list.component';
+// import { SmartEditorComponent }      from '../widget/smart-editor/smart-editor.component';
+// import { CommentListComponent }      from '../widget/comment/comment-list.component';
+// import { CommentService }            from '../widget/comment/service/comment.service';
+// import { InputRowComponent }         from '../widget/input-row/input-row.component';
+// import { MyRulerService }            from '../util/service/my-ruler.service';
+// import { MyCheckerService }          from '../util/service/my-checker.service';
+// import { ImageService }              from '../util/image.service';
+// import { TeacherService }            from '../teachers/service/teacher.service';
 var KlassCenterModule = (function () {
     function KlassCenterModule() {
     }
@@ -65,55 +63,16 @@ var KlassCenterModule = (function () {
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
-                widget_module_1.WidgetModule,
+                shared_module_1.SharedModule,
                 klass_center_routing_1.klassCenterRouting
             ],
             declarations: [
                 klass_center_component_1.KlassCenterComponent,
                 klass_list_component_1.KlassListComponent,
-                klass_center_home_component_1.KlassCenterHomeComponent,
-                klass_detail_component_1.KlassDetailComponent,
-                klass_detail_nav_list_component_1.KlassDetailNavListComponent,
                 klass_filter_tile_component_1.KlassFilterTileComponent,
-                klass_venue_search_list_component_1.KlassVenueSearchListComponent,
-                klass_teacher_component_1.KlassTeacherComponent,
-                klass_price_calculator_component_1.KlassPriceCalculatorComponent,
-                clock_board_component_1.ClockBoardComponent,
-                clock_digital_component_1.ClockDigitalComponent,
-                clock_component_1.ClockComponent,
-                calendar_component_1.CalendarComponent,
-                mini_calendar_component_1.MiniCalendarComponent,
-                pricetag_component_1.PriceTagComponent,
-                pricetag_h_component_1.PriceTagHComponent,
-                butterfly_component_1.ButterflyComponent,
-                image_grid_component_1.ImageGridComponent,
-                radiobtn_linear_component_1.RadioBtnLinearComponent,
-                input_view_component_1.InputViewComponent,
-                input_view_h_list_component_1.InputViewHListComponent,
-                input_view_table_component_1.InputViewTableComponent,
-                input_view_updown_component_1.InputViewUpdownComponent,
-                // InputBtnsRowComponent,
-                // InputsBtnsRowsComponent, // @ Deprecated
-                single_input_view_component_1.SingleInputViewComponent,
-                radiobtn_h_list_component_1.RadioBtnHListComponent,
-                checkbox_h_list_component_1.CheckBoxHListComponent,
-                // NavTabsComponent,
-                smart_editor_component_1.SmartEditorComponent,
-                comment_list_component_1.CommentListComponent,
-                dron_list_component_1.DronListComponent,
-                input_row_component_1.InputRowComponent
             ],
             providers: [
-                klass_service_1.KlassService,
-                klass_radiobtn_service_1.KlassRadioBtnService,
-                klass_checkbox_service_1.KlassCheckBoxService,
-                klass_detail_resolve_service_1.KlassDetailResolve,
-                klass_color_service_1.KlassColorService,
-                my_ruler_service_1.MyRulerService,
-                my_checker_service_1.MyCheckerService,
-                klass_comment_service_1.KlassCommentService,
-                comment_service_1.CommentService,
-                image_service_1.ImageService
+                klass_simple_service_1.KlassSimpleService,
             ]
         }), 
         __metadata('design:paramtypes', [])

@@ -13,7 +13,7 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var user_service_1 = require('../../../users/service/user.service');
-var klass_n_student_1 = require('../../../klass/model/klass-n-student');
+var klass_n_student_1 = require('../../../widget/klass/model/klass-n-student');
 var pagination_1 = require('../../../widget/pagination/model/pagination');
 var MyInfoKlassComponent = (function () {
     function MyInfoKlassComponent(userService, myEventService, watchTower, router) {

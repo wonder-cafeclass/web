@@ -13,8 +13,6 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
 var teacher_service_1 = require('../../../teachers/service/teacher.service');
-// import { UserService }                from '../../../users/service/user.service';
-// import { KlassNStudent }              from '../../../klass/model/klass-n-student';
 var TeacherInfoIncomeComponent = (function () {
     // klassNStudentList:KlassNStudent[];
     function TeacherInfoIncomeComponent(teacherService, myEventService, watchTower, router) {

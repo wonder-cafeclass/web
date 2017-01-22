@@ -24,6 +24,7 @@ import { UserService }                    from '../users/service/user.service';
 import { TeacherService }                 from './service/teacher.service';
 
 import { MyCheckerService }               from '../util/service/my-checker.service';
+import { MyBirthdayService }              from '../util/service/my-birthday.service';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
   	LoginService,
     UserService,
     TeacherService,
-    MyCheckerService
+    MyCheckerService,
+    MyBirthdayService
   ]
 })
 export class TeachersModule {}

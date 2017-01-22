@@ -6,7 +6,7 @@ import { PrivateInfoComponent } 	from './private-info.component';
 
 export const policyRoutes: Routes = 
 [
-	{ path: 'policy', component: PolicyComponent },
+	{ path: '', component: PolicyComponent },
 	{ path: 'private-info', component: PrivateInfoComponent }
 ];
 

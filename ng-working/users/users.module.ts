@@ -11,7 +11,7 @@ import { MyInfoDashboardComponent }  from './view/user-my-nav-list/my-info-dashb
 import { MyInfoKlassComponent }      from './view/user-my-nav-list/my-info-klass.component';
 import { MyInfoPaymentComponent }    from './view/user-my-nav-list/my-info-payment.component';
 
-import { KlassRadioBtnService }      from '../klass/service/klass-radiobtn.service';
+import { KlassRadioBtnService }      from '../widget/klass/service/klass-radiobtn.service';
 
 import { usersRouting }              from './users.routing';
 
