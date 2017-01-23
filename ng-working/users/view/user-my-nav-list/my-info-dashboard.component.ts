@@ -22,6 +22,7 @@ import { UserService }                from '../../../users/service/user.service'
 import { User }                       from '../../../users/model/user';
 
 import { Klass }                      from '../../../widget/klass/model/klass';
+import { KlassSimple }                from '../../../widget/klass/model/klass-simple';
 import { KlassNStudent }              from '../../../widget/klass/model/klass-n-student';
 
 @Component({
@@ -37,6 +38,7 @@ export class MyInfoDashboardComponent implements AfterViewInit {
 
   loginUser:User;
 
+  klassListFavorite:KlassSimple[];
   klassNStudentList:KlassNStudent[];
 
   constructor(private userService:UserService,
