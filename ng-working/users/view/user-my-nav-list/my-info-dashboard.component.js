@@ -128,6 +128,8 @@ var MyInfoDashboardComponent = (function () {
                     klassNStudentList.push(klassNStudent);
                 } // end for
                 _this.klassNStudentList = klassNStudentList;
+                // 푸터를 하단 고정에서 해제
+                _this.watchTower.announceIsLockedBottomFooterFlexible(false);
                 if (_this.isDebug())
                     console.log("my-info-dashboard / fetchUserInfoDashboard / klassNStudentList : ", klassNStudentList);
             }

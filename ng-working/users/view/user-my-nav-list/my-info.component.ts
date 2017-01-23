@@ -109,9 +109,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
     if(this.isDebug()) console.log("my-info / ngAfterViewInit");
 
-    // REMOVE ME
-    // this.setDefaultComponents();
-
     this.asyncViewPack();
   }
 
@@ -159,7 +156,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     if(null != loginUser) {
       this.loginUser = loginUser;
       this.loginUserCopy = this.loginUser.copy();
-      this.fillViewUserInfo();
+      this.fillViewUserInfo();      
     } else {
       // 로그인 데이터를 가져오지 못한다면, 로그인 페이지로 이동합니다.
       // TODO - 페이지 리다이렉트 데이터를 전달해야 합니다.
@@ -237,6 +234,20 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.birthdayComponent.setBirthMonth(this.loginUserCopy.getBirthMonth());
     this.birthdayComponent.setBirthDay(this.loginUserCopy.getBirthMonth(),this.loginUserCopy.getBirthDay());
 
+    this.unlockFooter();
+  }
+
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info / setReadyBeforeShow / 시작");
+    this.unlockFooter();
+  }
+
+  private unlockFooter():void {
+    if(null != this.watchTower) {
+      // 푸터를 하단 고정에서 해제
+      this.watchTower.announceIsLockedBottomFooterFlexible(false);
+    }
   }
 
   private setEmail():void {

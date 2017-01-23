@@ -200,6 +200,9 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
         this.klassNStudentList = klassNStudentList;
 
+        // 푸터를 하단 고정에서 해제
+        this.watchTower.announceIsLockedBottomFooterFlexible(false);        
+
         if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ",klassNStudentList);
 
       } else if(myResponse.isFailed()) {  

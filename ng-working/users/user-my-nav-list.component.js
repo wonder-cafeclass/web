@@ -143,6 +143,7 @@ var UserMyNavListComponent = (function () {
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO)) {
                 this.resetNavFlag();
                 this.showMyInfo = true;
+                this.myInfoComponent.setReadyBeforeShow();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_KLASS)) {
                 this.resetNavFlag();

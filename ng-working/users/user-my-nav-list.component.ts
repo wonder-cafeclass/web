@@ -48,7 +48,7 @@ export class UserMyNavListComponent implements AfterViewInit {
   isAdmin:boolean=false;
 
   @ViewChild(MyInfoComponent)
-  private myInfoComponent: MyInfoComponent;  
+  private myInfoComponent:MyInfoComponent;
 
   @ViewChild(MyInfoDashboardComponent)
   private myInfoDashboardComponent: MyInfoDashboardComponent;  
@@ -195,6 +195,7 @@ export class UserMyNavListComponent implements AfterViewInit {
 
         this.resetNavFlag();
         this.showMyInfo = true;
+        this.myInfoComponent.setReadyBeforeShow();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_KLASS)) {
 

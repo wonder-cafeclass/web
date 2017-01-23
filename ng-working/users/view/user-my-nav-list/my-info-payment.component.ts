@@ -218,6 +218,9 @@ export class MyInfoPaymentComponent implements AfterViewInit {
 
         this.piList = piList;
 
+        // 푸터를 하단 고정에서 해제
+        this.watchTower.announceIsLockedBottomFooterFlexible(false);        
+
         if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / piList : ",piList);
 
       } else if(myResponse.isFailed()) {  

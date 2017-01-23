@@ -158,6 +158,8 @@ var MyInfoPaymentComponent = (function () {
                     piList.push(pi);
                 } // end for
                 _this.piList = piList;
+                // 푸터를 하단 고정에서 해제
+                _this.watchTower.announceIsLockedBottomFooterFlexible(false);
                 if (_this.isDebug())
                     console.log("my-info-payment / fetchPaymentList / piList : ", piList);
             }
