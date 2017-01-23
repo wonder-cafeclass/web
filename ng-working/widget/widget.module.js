@@ -43,9 +43,9 @@ var pagination_component_1 = require('./pagination/pagination.component');
 var clock_board_component_1 = require('./clock/clock-board.component');
 var clock_digital_component_1 = require('./clock/clock-digital.component');
 var clock_component_1 = require('./clock/clock.component');
-var calendar_component_1 = require('./calendar/calendar.component');
-var mini_calendar_component_1 = require('./calendar/mini-calendar.component');
-var pricetag_component_1 = require('./pricetag/pricetag.component');
+// import { CalendarComponent }         	from './calendar/calendar.component';
+// import { MiniCalendarComponent }     	from './calendar/mini-calendar.component';
+// import { PriceTagComponent }         	from './pricetag/pricetag.component';
 var pricetag_h_component_1 = require('./pricetag/pricetag-h.component');
 var butterfly_component_1 = require('./butterfly/butterfly.component');
 var image_grid_component_1 = require('./image-grid/image-grid.component');
@@ -81,7 +81,6 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
-                // DebugBtnComponent,
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
@@ -101,9 +100,9 @@ var WidgetModule = (function () {
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,
-                calendar_component_1.CalendarComponent,
-                mini_calendar_component_1.MiniCalendarComponent,
-                pricetag_component_1.PriceTagComponent,
+                // CalendarComponent,
+                // MiniCalendarComponent,
+                // PriceTagComponent,
                 pricetag_h_component_1.PriceTagHComponent,
                 butterfly_component_1.ButterflyComponent,
                 image_grid_component_1.ImageGridComponent,
@@ -151,9 +150,9 @@ var WidgetModule = (function () {
                 clock_board_component_1.ClockBoardComponent,
                 clock_digital_component_1.ClockDigitalComponent,
                 clock_component_1.ClockComponent,
-                calendar_component_1.CalendarComponent,
-                mini_calendar_component_1.MiniCalendarComponent,
-                pricetag_component_1.PriceTagComponent,
+                // CalendarComponent,
+                // MiniCalendarComponent,
+                // PriceTagComponent,
                 pricetag_h_component_1.PriceTagHComponent,
                 butterfly_component_1.ButterflyComponent,
                 image_grid_component_1.ImageGridComponent,

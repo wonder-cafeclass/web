@@ -39,9 +39,11 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 import { ClockBoardComponent }       	from './clock/clock-board.component';
 import { ClockDigitalComponent }     	from './clock/clock-digital.component';
 import { ClockComponent }            	from './clock/clock.component';
-import { CalendarComponent }         	from './calendar/calendar.component';
-import { MiniCalendarComponent }     	from './calendar/mini-calendar.component';
-import { PriceTagComponent }         	from './pricetag/pricetag.component';
+
+// import { CalendarComponent }         	from './calendar/calendar.component';
+// import { MiniCalendarComponent }     	from './calendar/mini-calendar.component';
+// import { PriceTagComponent }         	from './pricetag/pricetag.component';
+
 import { PriceTagHComponent }        	from './pricetag/pricetag-h.component';
 import { ButterflyComponent }        	from './butterfly/butterfly.component';
 import { ImageGridComponent }        	from './image-grid/image-grid.component';
@@ -76,7 +78,6 @@ import { HiddenUploaderComponent }   from '../widget/input/img-uploader/hidden-u
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
-		// DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
@@ -96,9 +97,11 @@ import { HiddenUploaderComponent }   from '../widget/input/img-uploader/hidden-u
 		ClockBoardComponent,
 		ClockDigitalComponent,
 		ClockComponent,
-		CalendarComponent,
-		MiniCalendarComponent,
-		PriceTagComponent,
+
+		// CalendarComponent,
+		// MiniCalendarComponent,
+		// PriceTagComponent,
+
 		PriceTagHComponent,
 		ButterflyComponent,
 		ImageGridComponent,
@@ -146,9 +149,11 @@ import { HiddenUploaderComponent }   from '../widget/input/img-uploader/hidden-u
 		ClockBoardComponent,
 		ClockDigitalComponent,
 		ClockComponent,
-		CalendarComponent,
-		MiniCalendarComponent,
-		PriceTagComponent,
+
+		// CalendarComponent,
+		// MiniCalendarComponent,
+		// PriceTagComponent,
+		
 		PriceTagHComponent,
 		ButterflyComponent,
 		ImageGridComponent,

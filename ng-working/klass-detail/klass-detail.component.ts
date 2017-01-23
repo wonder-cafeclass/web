@@ -32,7 +32,7 @@ import { RadioBtnOption }                from '../widget/radiobtn/model/radiobtn
 import { CheckBoxOption }                from '../widget/checkbox/model/checkbox-option';
 import { InputViewUpdown }               from '../widget/input-view/model/input-view-updown';
 import { ImageGridV2Component }          from '../widget/image-grid/image-grid-v2.component';
-import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
+// import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
@@ -164,9 +164,6 @@ export class KlassDetailComponent implements AfterViewInit {
 
   @ViewChild(ImageGridV2Component)
   private bannerComponent: ImageGridV2Component;
-
-  @ViewChild(ImageGridComponent)
-  private selectTileViewComponent: ImageGridComponent;
 
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
@@ -1595,12 +1592,6 @@ export class KlassDetailComponent implements AfterViewInit {
 
         // Do something...
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE_VIEW)) {  
-
-        if( null != myEvent.metaObj ) {
-          this.selectTileViewComponent = myEvent.metaObj;
-        } // end if
-
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {  
 
         if( null != myEvent.metaObj ) {
@@ -2084,11 +2075,6 @@ export class KlassDetailComponent implements AfterViewInit {
       if(this.isDebug()) console.log("klass-detail / updateKlassDays / 중단 / this.klassCopy is not valid!");
       return;
     }
-    if(null == this.selectTileViewComponent) {
-      if(this.isDebug()) console.log("klass-detail / updateKlassDays / 중단 / this.selectTileViewComponent is not valid!");
-      return;
-    }    
-
 
     let selectedValue:string = metaObj.value;
     let constMap:any = this.watchTower.getConstMap();

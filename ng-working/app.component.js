@@ -69,6 +69,10 @@ var AppComponent = (function () {
         if (null != user) {
             // 운영자 유저인지 확인합니다.
             this.isAdminUser = user.isAdminUser();
+        }
+        else {
+            // 로그인 정보가 없다면 운영자 유저 취소.
+            this.isAdminUser = false;
         } // end if
         if (this.isDebug())
             console.log("app-root / updateLoginUser / this.isAdminUser : ", this.isAdminUser);
