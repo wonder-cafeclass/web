@@ -1,5 +1,7 @@
 import { Component, 
          AfterViewInit,
+         AfterViewChecked,
+         AfterContentChecked,
          HostBinding,
          trigger, 
          transition, 
@@ -73,7 +75,7 @@ import { Teacher }                       from '../teachers/model/teacher';
   styleUrls: ['klass-detail.component.css'],
   templateUrl: 'klass-detail.component.html'
 })
-export class KlassDetailComponent implements AfterViewInit {
+export class KlassDetailComponent implements AfterViewInit, AfterViewChecked, AfterContentChecked {
 
   klass: Klass;
   klassCopy: Klass;
@@ -252,9 +254,19 @@ export class KlassDetailComponent implements AfterViewInit {
     if(this.isDebug()) console.log("klass-detail / ngAfterViewInit / 시작");
     if(this.isDebug()) console.log("klass-detail / ngAfterViewInit / this.bannerComponent : ", this.bannerComponent);
 
-    this.watchTower.announceIsLockedBottomFooterFlexible(false);
-
     this.init();
+  }
+
+  ngAfterContentChecked():void {}
+
+  ngAfterViewChecked():void {
+    // 뷰 로딩이 완료된 이후에 높이 계산
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    // 푸터에게 업데이트 요청.
+    this.watchTower.announceFooterUpdate();
   }
 
   private subscribeLoginTeacher() :void {

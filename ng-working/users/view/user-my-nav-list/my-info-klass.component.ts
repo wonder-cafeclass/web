@@ -200,9 +200,6 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
         this.klassNStudentList = klassNStudentList;
 
-        // 푸터를 하단 고정에서 해제
-        this.watchTower.announceIsLockedBottomFooterFlexible(false);        
-
         if(this.isDebug()) console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ",klassNStudentList);
 
       } else if(myResponse.isFailed()) {  
@@ -221,6 +218,21 @@ export class MyInfoKlassComponent implements AfterViewInit {
     // 2. 관심 강의 리스트 가져오기(나중에...)
 
   }
+
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+    console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    if(null == this.watchTower) {
+      return;
+    }
+    this.watchTower.announceFooterUpdate();
+  }  
+
 
   onClickKlass(klass:Klass):void {
 

@@ -54,13 +54,8 @@ var AppComponent = (function () {
         this.subscribeToggleFooter();
         this.setIsAdmin();
         this.setMyChecker();
-        // this.checkExternalAdmin();
     };
-    AppComponent.prototype.ngAfterViewChecked = function () {
-        if (this.isDebug())
-            console.log("app-root / ngAfterViewChecked / 시작");
-        this.watchTower.announceContentHeight();
-    };
+    AppComponent.prototype.ngAfterViewChecked = function () { };
     AppComponent.prototype.updateLoginUser = function (user) {
         if (this.isDebug())
             console.log("app-root / updateLoginUser / 시작");

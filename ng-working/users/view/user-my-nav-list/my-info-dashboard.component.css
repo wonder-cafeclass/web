@@ -26,3 +26,6 @@ ul.my-style {
 li.my-style {
     border: 0px;
 }
+ul.my-empty-bottom {
+    margin-bottom: 150px;
+}

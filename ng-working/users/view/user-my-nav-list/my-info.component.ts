@@ -233,8 +233,6 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
     this.birthdayComponent.setBirthYear(this.loginUserCopy.getBirthYear());
     this.birthdayComponent.setBirthMonth(this.loginUserCopy.getBirthMonth());
     this.birthdayComponent.setBirthDay(this.loginUserCopy.getBirthMonth(),this.loginUserCopy.getBirthDay());
-
-    this.unlockFooter();
   }
 
   // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
@@ -246,7 +244,7 @@ export class MyInfoComponent implements OnInit, AfterViewInit {
   private unlockFooter():void {
     if(null != this.watchTower) {
       // 푸터를 하단 고정에서 해제
-      this.watchTower.announceIsLockedBottomFooterFlexible(false);
+      this.watchTower.announceFooterUpdate();
     }
   }
 

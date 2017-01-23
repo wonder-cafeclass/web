@@ -13,81 +13,119 @@ var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../util/service/my-event-watchtower.service');
 var FooterComponent = (function () {
     function FooterComponent(watchTower, elementRef, router) {
-        var _this = this;
         this.watchTower = watchTower;
         this.elementRef = elementRef;
         this.router = router;
-        this.isLocked = false;
+        // isLocked:boolean = false;
         this.isFixedBottom = false;
         this.isLoginTeacher = false;
+        this.scrollHeightPrev = -1;
         if (this.isDebug())
             console.log("footer / constructor / 시작");
-        this.watchTower.isLockedBottomFooterFlexible$.subscribe(function (isLockedBottomFooterFlexible) {
-            if (_this.isDebug())
-                console.log("footer / constructor / isLockedBottomFooterFlexible : ", isLockedBottomFooterFlexible);
-            _this.isLocked = isLockedBottomFooterFlexible;
-            _this.isFixedBottom = isLockedBottomFooterFlexible;
+        /*
+        this.watchTower.isLockedBottomFooterFlexible$.subscribe(
+          (isLockedBottomFooterFlexible:boolean) => {
+    
+          if(this.isDebug()) console.log("footer / constructor / isLockedBottomFooterFlexible : ",isLockedBottomFooterFlexible);
+          this.isLocked = isLockedBottomFooterFlexible;
+          this.isFixedBottom = isLockedBottomFooterFlexible;
+    
         }); // end if
+        */
     }
     FooterComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
     };
-    FooterComponent.prototype.getHeight = function () {
-        if (this.isDebug())
-            console.log("footer / getHeight / 시작");
+    FooterComponent.prototype.getFooterElement = function () {
         var nativeElement = this.elementRef.nativeElement;
-        if (this.isDebug())
-            console.log("footer / getHeight / this.elementRef : ", this.elementRef);
         var children = nativeElement.children;
-        if (this.isDebug())
-            console.log("footer / getHeight / children : ", children);
         var childNav = null;
         var childNavHeight = 0;
         if (null != children && 0 < children.length) {
             childNav = children[0];
-            if (this.isDebug())
-                console.log("footer / getHeight / childNav : ", childNav);
-            childNavHeight = childNav.offsetHeight;
-            if (this.isDebug())
-                console.log("footer / getHeight / childNavHeight : ", childNavHeight);
+            return childNav;
         }
-        return childNavHeight;
+        return null;
+    }; // end method
+    FooterComponent.prototype.getHeight = function () {
+        var footerElement = this.getFooterElement();
+        if (null != footerElement) {
+            return footerElement.offsetHeight;
+        }
+        return -1;
+    };
+    FooterComponent.prototype.getYPos = function () {
+        var footerElement = this.getFooterElement();
+        if (null != footerElement) {
+            return footerElement.offsetTop;
+        }
+        // return this.elementRef.nativeElement.offsetTop;
+        return -1;
     };
     FooterComponent.prototype.ngOnInit = function () {
-        var _this = this;
         if (this.isDebug())
             console.log("footer / ngOnInit / 시작");
-        this.watchTower.contentHeight$.subscribe(function (contentHeight) {
-            if (_this.isLocked) {
-                if (_this.isDebug())
-                    console.log("footer / contentHeight$.subscribe / 중단 / this.isLocked : ", _this.isLocked);
-                return;
-            }
-            var windowHeight = window.innerHeight;
-            // 푸터의 높이를 가져옵니다.
-            var footerHeight = _this.getHeight();
-            if (_this.isDebug())
-                console.log("footer / contentHeight$.subscribe / windowHeight : ", windowHeight);
-            if (_this.isDebug())
-                console.log("footer / contentHeight$.subscribe / contentHeight : ", contentHeight);
-            if (_this.isDebug())
-                console.log("footer / contentHeight$.subscribe / footerHeight : ", footerHeight);
-            if (windowHeight < (contentHeight + footerHeight)) {
-                // 1. 컨텐츠 높이가 화면 높이보다 깁니다.
-                // 스크롤이 가능하므로, footer를 하단 고정을 해제합니다.
-                if (_this.isDebug())
-                    console.log("footer / contentHeight$.subscribe / footer를 하단 고정을 해제");
-                _this.isFixedBottom = false;
-            }
-            else {
-                // 2. 컨텐츠 높이가 화면 높이보다 짧습니다.
-                // 스크롤이 안됩니다. footer를 하단 고정합니다.
-                if (_this.isDebug())
-                    console.log("footer / contentHeight$.subscribe / footer를 하단 고정");
-                _this.isFixedBottom = true;
-            } // end if
-        }); // end subscribe
+        console.log("footer / ngOnInit / TEST / 시작");
+        this.subscribeContentHeight();
         this.subscribeLoginTeacher();
+    };
+    FooterComponent.prototype.subscribeContentHeight = function () {
+        var _this = this;
+        this.watchTower.footerUpdate$.subscribe(function (contentHeight) {
+            // if(this.isLocked) {
+            //   if(this.isDebug()) console.log("footer / contentHeight$.subscribe / 중단 / this.isLocked : ",this.isLocked);
+            //   return;
+            // }
+            _this.updateBottomFixed();
+        }); // end subscribe
+    };
+    FooterComponent.prototype.updateBottomFixed = function () {
+        var windowHeight = window.innerHeight;
+        // 푸터의 높이를 가져옵니다.
+        var footerHeight = this.getHeight();
+        // wonder.jung
+        // 푸터의 Y 좌표를 가져옵니다.
+        var footerYPos = this.getYPos();
+        if (this.isDebug())
+            console.log("footer / updateBottomFixed / windowHeight : ", windowHeight);
+        if (this.isDebug())
+            console.log("footer / updateBottomFixed / footerHeight : ", footerHeight);
+        if (this.isDebug())
+            console.log("footer / updateBottomFixed / footerYPos : ", footerYPos);
+        var body = document.body;
+        var scrollHeight = body.scrollHeight;
+        var offsetHeight = body.offsetHeight;
+        if (this.scrollHeightPrev < 0) {
+            this.scrollHeightPrev = scrollHeight;
+        }
+        else if (this.scrollHeightPrev == scrollHeight) {
+            return;
+        }
+        this.scrollHeightPrev = scrollHeight;
+        // console.log("footer / updateBottomFixed / windowHeight : ",windowHeight);
+        // console.log("footer / updateBottomFixed / scrollHeight : ",scrollHeight);
+        // console.log("footer / updateBottomFixed / offsetHeight : ",offsetHeight);
+        // console.log("footer / updateBottomFixed / footerHeight : ",footerHeight);
+        // console.log("footer / updateBottomFixed / footerYPos : ",footerYPos);
+        // console.log("footer / updateBottomFixed / body : ",body);
+        if (windowHeight < scrollHeight) {
+            // 푸터가 화면 아래쪽
+            // 하단 고정 해제
+            console.log("footer / updateBottomFixed / 하단 고정 해제");
+            this.isFixedBottom = false;
+        }
+        else if ((footerYPos + footerHeight) <= windowHeight) {
+            // 푸터가 화면 안쪽에 위치, 아래쪽에 영역이 남음
+            // 하단 고정
+            console.log("footer / updateBottomFixed / 하단 고정");
+            this.isFixedBottom = true;
+        }
+        else {
+            // 푸터가 화면 아래쪽
+            // 하단 고정 해제
+            console.log("footer / updateBottomFixed / 하단 고정 해제");
+            this.isFixedBottom = false;
+        }
     };
     FooterComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;

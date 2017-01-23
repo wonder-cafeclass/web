@@ -186,8 +186,6 @@ var KlassListComponent = (function () {
         if (this.myArray.isNotOK(jsonKlassList)) {
             // 검색 결과가 없습니다.
             this.klassList = null;
-            // 푸터를 하단 고정.
-            this.watchTower.announceIsLockedBottomFooterFlexible(true);
         }
         else {
             var klassList = [];
@@ -200,10 +198,14 @@ var KlassListComponent = (function () {
             // 리스트 추가.
             // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
             this.klassList = klassList; // 리스트 교체.
-            // 푸터를 하단 고정에서 해제
-            this.watchTower.announceIsLockedBottomFooterFlexible(false);
         } // end if
+        this.updateFooter();
     }; // end method    
+    KlassListComponent.prototype.updateFooter = function () {
+        console.log("klass-list / TEST / updateFooter / this.watchTower : ", this.watchTower);
+        // 푸터에게 업데이트 요청.
+        this.watchTower.announceFooterUpdate();
+    };
     KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.ksService.fetchKlassList(

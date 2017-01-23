@@ -64,7 +64,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	errorMsgArr: string[]=[];
 
 	ngOnInit(): void {
-
 		this.subscribeAllErrors();
 		this.subscribeLoginUser();
 		this.subscribeLoginTeacher();
@@ -73,16 +72,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 		this.setIsAdmin();
 		this.setMyChecker();
-		// this.checkExternalAdmin();
-
 	}
 
-	ngAfterViewChecked() {
-
-		if(this.isDebug()) console.log("app-root / ngAfterViewChecked / 시작");
-		this.watchTower.announceContentHeight();
-		
-	}
+	ngAfterViewChecked() {}
 
 	private updateLoginUser(user:User) :void {
 

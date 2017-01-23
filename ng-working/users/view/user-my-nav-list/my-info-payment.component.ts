@@ -218,9 +218,6 @@ export class MyInfoPaymentComponent implements AfterViewInit {
 
         this.piList = piList;
 
-        // 푸터를 하단 고정에서 해제
-        this.watchTower.announceIsLockedBottomFooterFlexible(false);        
-
         if(this.isDebug()) console.log("my-info-payment / fetchPaymentList / piList : ",piList);
 
       } else if(myResponse.isFailed()) {  
@@ -239,6 +236,20 @@ export class MyInfoPaymentComponent implements AfterViewInit {
     // 2. 관심 강의 리스트 가져오기(나중에...)
 
   }
+
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info-payment / setReadyBeforeShow / 시작");
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    if(null == this.watchTower) {
+      return;
+    }
+    this.watchTower.announceFooterUpdate();
+  }  
+
 
   onClickKlass(klass:Klass):void {
 

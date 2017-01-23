@@ -22,6 +22,8 @@ import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-op
 
 import { MyInfoComponent }            from './view/user-my-nav-list/my-info.component';
 import { MyInfoDashboardComponent }   from './view/user-my-nav-list/my-info-dashboard.component';
+import { MyInfoKlassComponent }       from './view/user-my-nav-list/my-info-klass.component';
+import { MyInfoPaymentComponent }     from './view/user-my-nav-list/my-info-payment.component';
 
 @Component({
   moduleId: module.id,
@@ -53,6 +55,11 @@ export class UserMyNavListComponent implements AfterViewInit {
   @ViewChild(MyInfoDashboardComponent)
   private myInfoDashboardComponent: MyInfoDashboardComponent;  
 
+  @ViewChild(MyInfoKlassComponent)
+  private myInfoKlassComponent: MyInfoKlassComponent;  
+
+  @ViewChild(MyInfoPaymentComponent)
+  private myInfoPaymentComponent: MyInfoPaymentComponent;  
 
   constructor(  private klassColorService:KlassColorService,
                 public myEventService:MyEventService, 
@@ -62,8 +69,6 @@ export class UserMyNavListComponent implements AfterViewInit {
                 private myCheckerService:MyCheckerService) {
 
     this.radiobtnService.setWatchTower(this.watchTower);
-
-    this.watchTower.announceIsLockedBottomFooterFlexible(false);
 
   }
 
@@ -136,6 +141,9 @@ export class UserMyNavListComponent implements AfterViewInit {
       , this.watchTower.getMyEventService().KEY_USER_MY_INFO_DASHBOARD
     );
     if(this.isDebug()) console.log("user-my-nav-list / this.navTabsOptions : ",this.navTabsOptions);
+
+    // 대시보드 기준으로 Footer 설정.
+    this.myInfoDashboardComponent.setReadyBeforeShow();
   }
 
   resetNavFlag():void {
@@ -185,11 +193,11 @@ export class UserMyNavListComponent implements AfterViewInit {
 
     } else if(myEvent.hasEventName(this.myEventService.ON_CHANGE)) {
 
-
       if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO_DASHBOARD)) {
 
         this.resetNavFlag();
         this.showHome = true;
+        this.myInfoDashboardComponent.setReadyBeforeShow();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO)) {
 
@@ -201,11 +209,13 @@ export class UserMyNavListComponent implements AfterViewInit {
 
         this.resetNavFlag();
         this.showMyHistory = true;
+        this.myInfoKlassComponent.setReadyBeforeShow();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_PAYMENT)) {
 
         this.resetNavFlag();
         this.showMyPayment = true;
+        this.myInfoPaymentComponent.setReadyBeforeShow();
 
       } else if(myEvent.hasKey(this.myEventService.KEY_USER_MY_FAVORITE)) {
 

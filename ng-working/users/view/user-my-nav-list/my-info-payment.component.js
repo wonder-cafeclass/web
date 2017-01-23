@@ -158,8 +158,6 @@ var MyInfoPaymentComponent = (function () {
                     piList.push(pi);
                 } // end for
                 _this.piList = piList;
-                // 푸터를 하단 고정에서 해제
-                _this.watchTower.announceIsLockedBottomFooterFlexible(false);
                 if (_this.isDebug())
                     console.log("my-info-payment / fetchPaymentList / piList : ", piList);
             }
@@ -173,6 +171,18 @@ var MyInfoPaymentComponent = (function () {
             } // end if
         }); // end service
         // 2. 관심 강의 리스트 가져오기(나중에...)
+    };
+    // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+    MyInfoPaymentComponent.prototype.setReadyBeforeShow = function () {
+        if (this.isDebug())
+            console.log("my-info-payment / setReadyBeforeShow / 시작");
+        this.updateFooter();
+    };
+    MyInfoPaymentComponent.prototype.updateFooter = function () {
+        if (null == this.watchTower) {
+            return;
+        }
+        this.watchTower.announceFooterUpdate();
     };
     MyInfoPaymentComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())

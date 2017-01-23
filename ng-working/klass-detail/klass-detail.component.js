@@ -119,8 +119,16 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / ngAfterViewInit / 시작");
         if (this.isDebug())
             console.log("klass-detail / ngAfterViewInit / this.bannerComponent : ", this.bannerComponent);
-        this.watchTower.announceIsLockedBottomFooterFlexible(false);
         this.init();
+    };
+    KlassDetailComponent.prototype.ngAfterContentChecked = function () { };
+    KlassDetailComponent.prototype.ngAfterViewChecked = function () {
+        // 뷰 로딩이 완료된 이후에 높이 계산
+        this.updateFooter();
+    };
+    KlassDetailComponent.prototype.updateFooter = function () {
+        // 푸터에게 업데이트 요청.
+        this.watchTower.announceFooterUpdate();
     };
     KlassDetailComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;

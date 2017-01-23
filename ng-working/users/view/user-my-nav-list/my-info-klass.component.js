@@ -144,8 +144,6 @@ var MyInfoKlassComponent = (function () {
                     klassNStudentList.push(klassNStudent);
                 } // end for
                 _this.klassNStudentList = klassNStudentList;
-                // 푸터를 하단 고정에서 해제
-                _this.watchTower.announceIsLockedBottomFooterFlexible(false);
                 if (_this.isDebug())
                     console.log("my-info-klass / fetchKlassNStudentList / klassNStudentList : ", klassNStudentList);
             }
@@ -159,6 +157,19 @@ var MyInfoKlassComponent = (function () {
             } // end if
         }); // end service
         // 2. 관심 강의 리스트 가져오기(나중에...)
+    };
+    // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+    MyInfoKlassComponent.prototype.setReadyBeforeShow = function () {
+        if (this.isDebug())
+            console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+        console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+        this.updateFooter();
+    };
+    MyInfoKlassComponent.prototype.updateFooter = function () {
+        if (null == this.watchTower) {
+            return;
+        }
+        this.watchTower.announceFooterUpdate();
     };
     MyInfoKlassComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
