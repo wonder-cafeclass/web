@@ -8,13 +8,12 @@ import { LocationStrategy,
          PlatformLocation }         from '@angular/common';
 
 import { AppComponent }             from './app.component';
-import { DebugBtnComponent }        from './widget/debug/debug-btn.component';
+// import { DebugBtnComponent }        from './widget/debug/debug-btn.component';
 import { FooterComponent }          from './widget/footer/footer.component';
 import { routing,
          appRoutingProviders }      from './app.routing';
 
 import { KlassCenterModule }        from './klass/klass-center.module';
-// import { WidgetModule }             from './widget/widget.module';
 import { SharedModule }             from './shared/shared.module';
 
 import { AuthService }              from './auth.service';
@@ -27,7 +26,6 @@ import { MyLoggerService }          from './util/service/my-logger.service';
 import { MyEventWatchTowerService } from './util/service/my-event-watchtower.service';
 import { UserService }              from './users/service/user.service';
 import { MyCheckerService }         from './util/service/my-checker.service';
-// import { SafeHtmlPipe }             from './util/pipe/safe-html-pipe';
 
 import './rxjs-extensions';
 import './rxjs-operators';
@@ -45,7 +43,7 @@ import './rxjs-operators';
   ],
   declarations: [
     AppComponent,
-    DebugBtnComponent,
+    // DebugBtnComponent,
     FooterComponent
   ],
   providers: [

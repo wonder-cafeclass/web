@@ -23,6 +23,10 @@ import { LoginService }                   from '../login/service/login.service';
 import { UserService }                    from '../users/service/user.service';
 import { TeacherService }                 from './service/teacher.service';
 
+import { KlassRadioBtnService }           from '../widget/klass/service/klass-radiobtn.service';
+import { KlassColorService }              from '../widget/klass/service/klass-color.service';
+
+import { UploadService }                  from '../util/service/upload.service';
 import { MyCheckerService }               from '../util/service/my-checker.service';
 import { MyBirthdayService }              from '../util/service/my-birthday.service';
 
@@ -49,7 +53,10 @@ import { MyBirthdayService }              from '../util/service/my-birthday.serv
     UserService,
     TeacherService,
     MyCheckerService,
-    MyBirthdayService
+    MyBirthdayService,
+    KlassColorService,
+    KlassRadioBtnService,
+    UploadService
   ]
 })
 export class TeachersModule {}

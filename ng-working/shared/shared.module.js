@@ -13,6 +13,7 @@ require('../rxjs-operators');
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var forms_1 = require('@angular/forms');
+var debug_btn_component_1 = require('../widget/debug/debug-btn.component');
 var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
 // @ Desc : Shared module.
 var SharedModule = (function () {
@@ -25,9 +26,11 @@ var SharedModule = (function () {
                 forms_1.FormsModule
             ],
             declarations: [
+                debug_btn_component_1.DebugBtnComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ],
             exports: [
+                debug_btn_component_1.DebugBtnComponent,
                 safe_html_pipe_1.SafeHtmlPipe
             ],
             providers: []

@@ -461,7 +461,7 @@ export class KakaoCallbackComponent implements AfterViewInit, OnDestroy {
 
             // 로그인 직전 페이지로 리다이렉트. 
             // 돌아갈 주소가 없다면, 홈으로 이동.
-            let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+            let redirectUrl:string = this.myCookie.popCookie("redirectUrl");
             if(null == redirectUrl || "" == redirectUrl) {
               redirectUrl = '/class-center';
             }

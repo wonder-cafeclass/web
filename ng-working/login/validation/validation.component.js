@@ -150,12 +150,13 @@ var ValidationComponent = (function () {
                     setTimeout(function () {
                         // 로그인 직전 페이지로 리다이렉트. 
                         // 돌아갈 주소가 없다면, 홈으로 이동.
-                        var redirectUrl = _self.myCookie.getCookie("redirectUrl");
+                        var redirectUrl = _self.myCookie.popCookie("redirectUrl");
                         if (null == redirectUrl || "" == redirectUrl) {
                             redirectUrl = '/class-center';
-                        }
+                        } // end if
                         if (_self.isDebug())
                             console.log("validation / getUserValidation / subscribe / 3. 리다이렉트 : ", redirectUrl);
+                        console.log("validation / getUserValidation / subscribe / 3. 리다이렉트 : ", redirectUrl); // wonder.jung
                         // 메시지를 3초 뒤에 화면에서 지웁니다.
                         _self.router.navigate([redirectUrl]);
                     }, 3000);

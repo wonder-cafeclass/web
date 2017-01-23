@@ -504,7 +504,7 @@ export class LoginComponent implements AfterViewInit {
 
     if(this.isDebug()) console.log("login / goRedirect / 시작");
 
-    let redirectUrl:string = this.myCookie.getCookie("redirectUrl");
+    let redirectUrl:string = this.myCookie.popCookie("redirectUrl");
     if(null == redirectUrl || "" == redirectUrl) {
       redirectUrl = '/class-center';
     }

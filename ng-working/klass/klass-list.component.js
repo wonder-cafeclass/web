@@ -51,9 +51,6 @@ var KlassListComponent = (function () {
         return klass.id === this.selectedId;
     };
     KlassListComponent.prototype.ngAfterViewInit = function () {
-        // 자식 뷰가 모두 완료된 이후에 초기화를 진행.
-        if (this.isDebug())
-            console.log("klass-list / ngAfterViewInit");
         this.asyncViewPack();
         this.subscribeLoginUser();
         this.subscribeLoginTeacher();
@@ -63,46 +60,29 @@ var KlassListComponent = (function () {
     };
     KlassListComponent.prototype.asyncViewPack = function () {
         var _this = this;
-        if (this.isDebug())
-            console.log("klass-list / asyncViewPack / 시작");
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
-            if (this.isDebug())
-                console.log("klass-list / asyncViewPack / isViewPackReady : ", true);
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
-            if (_this.isDebug())
-                console.log("klass-list / asyncViewPack / subscribe / isViewPackReady : ", isViewPackReady);
             _this.init();
         }); // end subscribe    
     };
     KlassListComponent.prototype.subscribeLoginUser = function () {
         var _this = this;
-        if (this.isDebug())
-            console.log("klass-list / subscribeLoginUser / 시작");
         // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
-        // Subscribe login user
         this.watchTower.loginAnnounced$.subscribe(function (loginUser) {
-            if (_this.isDebug())
-                console.log("klass-list / subscribeLoginUser / loginUser : ", loginUser);
             _this.loginUser = loginUser;
         }); // end service
     }; // end method
     KlassListComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
-        if (this.isDebug())
-            console.log("klass-list / subscribeLoginTeacher / 시작");
         // 이미 들어온 선생님 정보가 있는지 확인합니다.
         this.loginTeacher = this.watchTower.getLoginTeacher();
-        if (this.isDebug())
-            console.log("klass-list / subscribeLoginTeacher / this.loginTeacher : ", this.loginTeacher);
         // 유저가 서비스 어느곳에서든 로그인을 하면 여기서도 로그인 정보를 받아 처리합니다.
         // Subscribe login user
         this.watchTower.loginTeacherAnnounced$.subscribe(function (loginTeacher) {
-            if (_this.isDebug())
-                console.log("klass-list / subscribeLoginTeacher / loginTeacher : ", loginTeacher);
             // 로그인한 선생님 정보가 들어왔습니다.
             _this.loginTeacher = new teacher_1.Teacher().setJSON(loginTeacher);
         });
@@ -120,8 +100,6 @@ var KlassListComponent = (function () {
         this.watchTower.getApiKey()); // end setReady
     };
     KlassListComponent.prototype.setLoginUser = function () {
-        if (this.isDebug())
-            console.log("klass-list / setLoginUser / 시작");
         // 1. watch tower에게 직접 요청
         // 로그인 학생 데이터를 가져옵니다.
         var userJSON = this.watchTower.getLoginUser();
@@ -133,21 +111,14 @@ var KlassListComponent = (function () {
         this.loginUser = loginUser;
     };
     KlassListComponent.prototype.getLoginUserId = function () {
-        if (this.isDebug())
-            console.log("klass-list / getLoginUserId / 시작");
         var loginUser = this.watchTower.getLoginUser();
         var loginUserId = -1;
         if (null != loginUser) {
             loginUserId = loginUser.id;
         }
-        if (this.isDebug())
-            console.log("klass-list / getLoginUserId / loginUserId : ", loginUserId);
         return loginUserId;
     };
     KlassListComponent.prototype.logActionPage = function () {
-        var _this = this;
-        if (this.isDebug())
-            console.log("klass-list / logActionPage / 시작");
         // 페이지 진입을 기록으로 남깁니다.
         this.myLoggerService.logActionPage(
         // apiKey:string
@@ -155,13 +126,9 @@ var KlassListComponent = (function () {
         // pageType:string
         this.myLoggerService.pageTypeKlassList).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (_this.isDebug())
-                console.log("klass-list / logActionPage / myResponse : ", myResponse);
         }); // end service
     };
     KlassListComponent.prototype.init = function () {
-        if (this.isDebug())
-            console.log("klass-list / init / 시작");
         if (this.hasInit) {
             return;
         }
@@ -181,8 +148,6 @@ var KlassListComponent = (function () {
             // 이미 리스트가 있다면 로딩하지 않습니다.
             return;
         }
-        if (this.isDebug())
-            console.log("klass-list / getKlassListOnInit / 시작");
         // TODO - 선생님의 경우, 선생님 수업(오픈되지 않았더라도)이 처음 리스트에 위치해야 한다.
         this.fetchKlassList(
         // userId:Number, 
@@ -210,10 +175,6 @@ var KlassListComponent = (function () {
         searchBox.focus();
     };
     KlassListComponent.prototype.updatePagination = function (jsonPagination) {
-        if (this.isDebug())
-            console.log("klass-list / updatePagination / 시작");
-        if (this.isDebug())
-            console.log("klass-list / updatePagination / jsonPagination : ", jsonPagination);
         if (null == jsonPagination) {
             this.pagination = new pagination_1.Pagination(); // 기본 값으로 설정
         }
@@ -222,8 +183,6 @@ var KlassListComponent = (function () {
         }
     };
     KlassListComponent.prototype.updateKlassList = function (jsonKlassList) {
-        if (this.isDebug())
-            console.log("klass-list / updateKlassList / 시작");
         if (this.myArray.isNotOK(jsonKlassList)) {
             // 검색 결과가 없습니다.
             this.klassList = null;
@@ -235,8 +194,6 @@ var KlassListComponent = (function () {
                 var klass = new klass_simple_1.KlassSimple().setJSON(klassJSON);
                 klassList.push(klass);
             } // end for
-            if (this.isDebug())
-                console.log("klass-list / updateKlassList / klassList : ", klassList);
             // 1. 스크롤로 추가적인 수업읇 보여준다면, 교체가 아닌 리스트에 덧붙이는 형식으로 표현.
             // 리스트 추가.
             // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
@@ -268,25 +225,17 @@ var KlassListComponent = (function () {
         klassDays, 
         // klassTime:string
         klassTime).then(function (myResponse) {
-            if (_this.isDebug())
-                console.log("klass-list / fetchKlassList / myResponse : ", myResponse);
             if (myResponse.isSuccess() &&
                 myResponse.hasDataProp("pagination") &&
                 myResponse.hasDataProp("klass_list")) {
                 // 1. Pagination 재설정
                 var jsonPagination = myResponse.getDataProp("pagination");
-                if (_this.isDebug())
-                    console.log("klass-list / fetchKlassList / jsonPagination : ", jsonPagination);
                 _this.updatePagination(jsonPagination);
                 // 2. Klass List 재설정 
                 var klassJSONList = myResponse.getDataProp("klass_list");
-                if (_this.isDebug())
-                    console.log("klass-list / fetchKlassList / klassJSONList : ", klassJSONList);
                 _this.updateKlassList(klassJSONList);
             }
             else if (myResponse.isFailed()) {
-                if (_this.isDebug())
-                    console.log("klass-list / fetchKlassList / 쿠키에 등록된 유저 정보가 없습니다. 초기화합니다.");
                 _this.watchTower.logAPIError("fetchKlassList has been failed!");
                 if (null != myResponse.error) {
                     _this.watchTower.announceErrorMsgArr([myResponse.error]);
@@ -295,8 +244,6 @@ var KlassListComponent = (function () {
         }); // end service    
     }; // end method
     KlassListComponent.prototype.search = function (level, subwayLine, subwayStation, day, time, searchQuery) {
-        if (this.isDebug())
-            console.log("klass-list / search / 시작");
         // 항목별 filter 만들기
         var levelKey = "";
         if (null != level && null != level.key) {
@@ -366,18 +313,12 @@ var KlassListComponent = (function () {
         }
     };
     KlassListComponent.prototype.onChangedSelectile = function (selectileMap, searchBox) {
-        if (this.isDebug())
-            console.log("klass-list / onChangedSelectile / 시작");
         // 유저가 검색 필드를 변경한 상태입니다. Search 돋보기 버튼이 활성화 되어야 합니다.
         this.isSearchEnabled = true;
         if (null == selectileMap) {
             // error report
-            if (this.isDebug())
-                console.log("klass-list / onChangedSelectile / 중단 / selectileMap is not valid!");
             return;
         }
-        if (this.isDebug())
-            console.log("klass-list / onChangedSelectile / selectileMap : ", selectileMap);
         this.search(selectileMap.level, selectileMap.subwayLine, selectileMap.subwayStation, selectileMap.day, selectileMap.time, searchBox.value);
     };
     KlassListComponent.prototype.onClickSearchInput = function (event, searchBox) {
@@ -494,34 +435,21 @@ var KlassListComponent = (function () {
     KlassListComponent.prototype.onSelectKlass = function (event, klass) {
         event.stopPropagation();
         event.preventDefault();
-        if (this.isDebug())
-            console.log("klass-list / onSelectKlass");
-        if (this.isDebug())
-            console.log("klass-list / onSelectKlass / klass : ", klass);
         var newClassId = -100;
         if (newClassId === +klass.id) {
-            if (this.isDebug())
-                console.log("klass-list / onSelectKlass / 새로운 클래스 만들기");
-            // this.gotoNewClassDetail(klass);
             if (confirm("수업을 새로 만드시겠어요?")) {
                 // 1. 새로운 클래스를 만든다.
                 this.addNewKlass();
             } // end if
         }
         else if (0 < +klass.id) {
-            if (this.isDebug())
-                console.log("klass-list / onSelectKlass / 수업 상세 화면으로 이동하기");
             this.gotoClassDetail(klass);
         } // end if
     }; // end method
     KlassListComponent.prototype.addNewKlass = function () {
         var _this = this;
-        if (this.isDebug())
-            console.log("klass-list / addNewKlass / init");
         // 선생님인 경우에만 수업을 추가할 수 있습니다.
         if (null == this.loginUser) {
-            if (this.isDebug())
-                console.log("klass-list / addNewKlass / 중단 / null == this.loginUser");
             return;
         }
         this.ksService.addKlassEmpty(
@@ -536,8 +464,6 @@ var KlassListComponent = (function () {
         // teacherGreeting:string
         this.loginTeacher.greeting).then(function (myResponse) {
             // 로그 등록 결과를 확인해볼 수 있습니다.
-            if (_this.isDebug())
-                console.log("klass-list / addNewKlass / myResponse : ", myResponse);
             if (myResponse.isSuccess() && myResponse.hasDataProp("klass")) {
                 var klass = new klass_simple_1.KlassSimple().setJSON(myResponse.getDataProp("klass"));
                 if (null != klass) {
@@ -555,12 +481,8 @@ var KlassListComponent = (function () {
         }); // end service
     }; // end method
     KlassListComponent.prototype.gotoClassDetail = function (klass) {
-        if (this.isDebug())
-            console.log("klass-list / gotoClassDetail / 시작");
         // 수업 상세 페이지로 이동
         this.router.navigate(['/klass-detail/' + klass.id]);
-        if (this.isDebug())
-            console.log("klass-list / gotoClassDetail / 끝");
     }; // end method
     KlassListComponent.prototype.onLoadFailClassImage = function (classImage, klassObj) {
         if (null != klassObj.class_img_err_url && "" != klassObj.class_img_err_url) {

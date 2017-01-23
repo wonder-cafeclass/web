@@ -37,8 +37,8 @@ var ImportComponent = (function () {
         this.subscribeLoginUser();
     }; // end method  
     ImportComponent.prototype.isDebug = function () {
-        return true;
-        // return this.watchTower.isDebug();
+        // return true;
+        return this.watchTower.isDebug();
     };
     ImportComponent.prototype.__test = function () {
         var _this = this;

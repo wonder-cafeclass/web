@@ -11,7 +11,8 @@ import { ManagePaymentsComponent }  from './manage-payments.component';
 import { AdminService }             from './service/admin.service';
 import { adminRouting }             from './admin.routing';
 
-import { WidgetModule }              from '../widget/widget.module';
+import { WidgetModule }             from '../widget/widget.module';
+import { DefaultComponent }         from '../widget/input/default/default.component';
 
 @NgModule({
   imports: [

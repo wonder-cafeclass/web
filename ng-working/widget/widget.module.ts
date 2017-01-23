@@ -11,7 +11,6 @@ import { DefaultComponent }         	from './input/default/default.component';
 import { EmailComponent }         		from './input/email/email.component';
 import { ProfileImgUploadComponent }	from './input/profile-img-upload/profile-img-upload.component';
 import { ImgUploaderComponent }			from './input/img-uploader/img-uploader.component';
-import { HiddenUploaderComponent }		from './input/img-uploader/hidden-uploader.component';
 import { PasswordComponent }         	from './input/password/password.component';
 import { PasswordSingleComponent }      from './input/password/password-single.component';
 import { PasswordsTripletComponent }    from './input/password/passwords-triplet.component';
@@ -26,7 +25,6 @@ import { ImageEntryComponent }         	from './image-grid/image-entry.component
 import { ImageGridV2Component }         from './image-grid/image-grid-v2.component';
 import { InputBtnsRowComponent }     	from './input-view/input-btns-row.component';
 import { InputsBtnsRowsComponent }      from './input-view/inputs-btns-rows.component';
-// import { DebugBtnComponent }      		from './debug/debug-btn.component';
 import { ImportComponent }      		from './payment/import.component';
 import { KlassCardComponent }        	from './klass/klass-card.component';
 import { KlassNStudentListComponent }	from './klass/klass-n-student-list.component';
@@ -38,11 +36,31 @@ import { PaymentService }         		from './payment/service/payment.service';
 import { CheckBoxComponent }      		from './checkbox/checkbox.component';
 import { PaginationComponent }      	from './pagination/pagination.component';
 
-// import { FooterComponent }         		from './footer/footer.component';
+import { ClockBoardComponent }       	from './clock/clock-board.component';
+import { ClockDigitalComponent }     	from './clock/clock-digital.component';
+import { ClockComponent }            	from './clock/clock.component';
+import { CalendarComponent }         	from './calendar/calendar.component';
+import { MiniCalendarComponent }     	from './calendar/mini-calendar.component';
+import { PriceTagComponent }         	from './pricetag/pricetag.component';
+import { PriceTagHComponent }        	from './pricetag/pricetag-h.component';
+import { ButterflyComponent }        	from './butterfly/butterfly.component';
+import { ImageGridComponent }        	from './image-grid/image-grid.component';
+import { RadioBtnLinearComponent }   	from './radiobtn/radiobtn-linear.component';
+import { InputViewComponent }        	from './input-view/input-view.component';
+import { InputViewHListComponent }   	from './input-view/input-view-h-list.component';
+import { InputViewUpdownComponent }  	from './input-view/input-view-updown.component';
+import { InputViewTableComponent }   	from './input-view-table/input-view-table.component';
+import { SingleInputViewComponent }  	from './input-view/single-input-view.component';
+import { RadioBtnHListComponent }    	from './radiobtn/radiobtn-h-list.component';
+import { CheckBoxHListComponent }    	from './checkbox/checkbox-h-list.component';
+import { SmartEditorComponent }      	from './smart-editor/smart-editor.component';
+import { CommentListComponent }      	from './comment/comment-list.component';
 
-// import { SafeHtmlPipe }                 from '../util/pipe/safe-html-pipe';
+import { CommentService }            from '../widget/comment/service/comment.service';
+import { InputRowComponent }         from '../widget/input-row/input-row.component';
+import { HiddenUploaderComponent }   from '../widget/input/img-uploader/hidden-uploader.component';
 
-// @ Desc : Shared module.
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -66,7 +84,6 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
-		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
 		PasswordsTripletComponent,
@@ -76,8 +93,27 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 		BirthdayComponent,
 		NicknameComponent,
 		TooltipComponent,
-		// FooterComponent,
-		// SafeHtmlPipe
+		ClockBoardComponent,
+		ClockDigitalComponent,
+		ClockComponent,
+		CalendarComponent,
+		MiniCalendarComponent,
+		PriceTagComponent,
+		PriceTagHComponent,
+		ButterflyComponent,
+		ImageGridComponent,
+		RadioBtnLinearComponent,
+		InputViewComponent,
+		InputViewHListComponent,
+		InputViewUpdownComponent,
+		InputViewTableComponent,
+		SingleInputViewComponent,
+		RadioBtnHListComponent,
+		CheckBoxHListComponent,
+		SmartEditorComponent,
+		CommentListComponent,
+		InputRowComponent,
+		HiddenUploaderComponent
 	],
 	exports: [ 
 		CommonModule, 
@@ -91,7 +127,6 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 		ImageGridV2Component,
 		InputBtnsRowComponent,
 		InputsBtnsRowsComponent,
-		// DebugBtnComponent,
 		ImportComponent,
 		KlassCardComponent,
 		KlassNStudentListComponent,
@@ -99,7 +134,6 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 		CheckBoxComponent,
 		PaginationComponent,
 		MyTitleComponent,
-		HiddenUploaderComponent,
 		PasswordComponent,
 		PasswordSingleComponent,
 		PasswordsTripletComponent,
@@ -109,12 +143,32 @@ import { PaginationComponent }      	from './pagination/pagination.component';
 		BirthdayComponent,
 		NicknameComponent,
 		TooltipComponent,
-		// FooterComponent,
-		// SafeHtmlPipe
+		ClockBoardComponent,
+		ClockDigitalComponent,
+		ClockComponent,
+		CalendarComponent,
+		MiniCalendarComponent,
+		PriceTagComponent,
+		PriceTagHComponent,
+		ButterflyComponent,
+		ImageGridComponent,
+		RadioBtnLinearComponent,
+		InputViewComponent,
+		InputViewHListComponent,
+		InputViewUpdownComponent,
+		InputViewTableComponent,
+		SingleInputViewComponent,
+		RadioBtnHListComponent,
+		CheckBoxHListComponent,
+		SmartEditorComponent,
+		CommentListComponent,
+		InputRowComponent,
+		HiddenUploaderComponent
 	],
 	providers: [
 		DefaultService,
-		PaymentService
+		PaymentService,
+		CommentService
 	]
 })
 export class WidgetModule {}

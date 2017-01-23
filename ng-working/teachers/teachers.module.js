@@ -26,6 +26,9 @@ var teacher_info_klass_component_1 = require('./view/teacher-my-nav-list/teacher
 var login_service_1 = require('../login/service/login.service');
 var user_service_1 = require('../users/service/user.service');
 var teacher_service_1 = require('./service/teacher.service');
+var klass_radiobtn_service_1 = require('../widget/klass/service/klass-radiobtn.service');
+var klass_color_service_1 = require('../widget/klass/service/klass-color.service');
+var upload_service_1 = require('../util/service/upload.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var TeachersModule = (function () {
@@ -55,7 +58,10 @@ var TeachersModule = (function () {
                 user_service_1.UserService,
                 teacher_service_1.TeacherService,
                 my_checker_service_1.MyCheckerService,
-                my_birthday_service_1.MyBirthdayService
+                my_birthday_service_1.MyBirthdayService,
+                klass_color_service_1.KlassColorService,
+                klass_radiobtn_service_1.KlassRadioBtnService,
+                upload_service_1.UploadService
             ]
         }), 
         __metadata('design:paramtypes', [])

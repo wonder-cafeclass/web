@@ -19,6 +19,9 @@ var my_info_dashboard_component_1 = require('./view/user-my-nav-list/my-info-das
 var my_info_klass_component_1 = require('./view/user-my-nav-list/my-info-klass.component');
 var my_info_payment_component_1 = require('./view/user-my-nav-list/my-info-payment.component');
 var klass_radiobtn_service_1 = require('../widget/klass/service/klass-radiobtn.service');
+var klass_color_service_1 = require('../widget/klass/service/klass-color.service');
+var upload_service_1 = require('../util/service/upload.service');
+var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var users_routing_1 = require('./users.routing');
 var UsersModule = (function () {
     function UsersModule() {
@@ -40,7 +43,10 @@ var UsersModule = (function () {
                 my_info_payment_component_1.MyInfoPaymentComponent
             ],
             providers: [
-                klass_radiobtn_service_1.KlassRadioBtnService
+                klass_radiobtn_service_1.KlassRadioBtnService,
+                klass_color_service_1.KlassColorService,
+                upload_service_1.UploadService,
+                my_birthday_service_1.MyBirthdayService
             ]
         }), 
         __metadata('design:paramtypes', [])

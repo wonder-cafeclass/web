@@ -5,6 +5,14 @@
 export class MyCookie {
 	constructor() {}
 
+	// @ Desc : 쿠키의 값을 가져온 뒤 삭제합니다.
+	public popCookie(cname) {
+		let value:string = this.getCookie(cname);
+		this.deleteCookie(cname);
+
+		return value;
+	}
+
 	public deleteCookie(cname) {
 	    var d = new Date();
 	    d.setTime(d.getTime() - (24*60*60*1000));

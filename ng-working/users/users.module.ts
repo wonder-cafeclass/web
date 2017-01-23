@@ -12,6 +12,10 @@ import { MyInfoKlassComponent }      from './view/user-my-nav-list/my-info-klass
 import { MyInfoPaymentComponent }    from './view/user-my-nav-list/my-info-payment.component';
 
 import { KlassRadioBtnService }      from '../widget/klass/service/klass-radiobtn.service';
+import { KlassColorService }         from '../widget/klass/service/klass-color.service';
+
+import { UploadService }             from '../util/service/upload.service';
+import { MyBirthdayService }         from '../util/service/my-birthday.service';
 
 import { usersRouting }              from './users.routing';
 
@@ -31,7 +35,10 @@ import { usersRouting }              from './users.routing';
     MyInfoPaymentComponent
   ],
   providers: [
-    KlassRadioBtnService
+    KlassRadioBtnService,
+    KlassColorService,
+    UploadService,
+    MyBirthdayService
   ]
 })
 export class UsersModule {}

@@ -19,15 +19,20 @@ import { ValidationComponent }            from './validation/validation.componen
 
 import { LoginService }                   from './service/login.service';
 import { UserService }                    from '../users/service/user.service';
+import { TeacherService }                 from '../teachers/service/teacher.service';
 
 import { MyBirthdayService }              from '../util/service/my-birthday.service';
 import { MyCheckerService }               from '../util/service/my-checker.service';
+import { UploadService }                  from '../util/service/upload.service';
+
+import { SharedModule }                   from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     WidgetModule,
+    SharedModule,
     loginRouting
   ],
   declarations: [
@@ -43,8 +48,10 @@ import { MyCheckerService }               from '../util/service/my-checker.servi
   providers: [
   	LoginService,
     UserService,
+    TeacherService,
     MyBirthdayService,
-    MyCheckerService
+    MyCheckerService,
+    UploadService
   ]
 })
 export class LoginModule {}
