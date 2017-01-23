@@ -10,9 +10,9 @@ import { HelperMyArray }            from '../../util/helper/my-array';
 
 import { PaymentImport }            from '../../widget/payment/model/payment-import';
 
-import { Klass }                    from '../../klass/model/klass';
-import { KlassAttendance }          from '../../klass/model/klass-attendance';
-import { KlassNStudent }            from '../../klass/model/klass-n-student';
+import { Klass }                    from '../../widget/klass/model/klass';
+import { KlassAttendance }          from '../../widget/klass/model/klass-attendance';
+import { KlassNStudent }            from '../../widget/klass/model/klass-n-student';
 
 @Component({
   moduleId: module.id,

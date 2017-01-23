@@ -395,7 +395,7 @@ var LoginComponent = (function () {
     LoginComponent.prototype.goRedirect = function () {
         if (this.isDebug())
             console.log("login / goRedirect / 시작");
-        var redirectUrl = this.myCookie.getCookie("redirectUrl");
+        var redirectUrl = this.myCookie.popCookie("redirectUrl");
         if (null == redirectUrl || "" == redirectUrl) {
             redirectUrl = '/class-center';
         }

@@ -303,19 +303,20 @@ class Payment extends MY_REST_Controller {
     }
 
     // @ TEST
+    // http://http://devcafeclass.com/CI/index.php/api/payment/test
     public function test_get()
     {
         $output = [];
 
-        $paymentImpFromDB = 
-        $this->my_sql->select_payment_import_canceled("imp_220309855714");
+        $date_attend = 
+        $this->my_time->get_day_with_day_name(
+            // $day_name="", 
+            "mon",                    
+            // $interval_weeks=0
+            0
+        );
 
-        $output["paymentImpFromDB"] = $paymentImpFromDB;
-
-        $paymentImpNext = 
-        $this->my_decorator->deco_payment_import($paymentImpFromDB, "canceled");
-
-        $output["paymentImpNext"] = $paymentImpNext;
+        $output["date_attend"] = $date_attend;
 
         $this->respond_200_v2(__CLASS__,__FUNCTION__,__LINE__,$output);
 

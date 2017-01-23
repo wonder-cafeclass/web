@@ -75,6 +75,8 @@ class KlassCourse {
         public $days_kor="";
         // 수업요일 이미지
         public $days_img_url="";
+        // 수업 주당 횟수 이미지
+        public $days_a_week_img_url="";
 
         // 수업장소 - 지하철 노선
         public $subway_line="";

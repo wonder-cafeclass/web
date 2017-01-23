@@ -124,9 +124,9 @@
 
 		"agent_type":"is_str|||matches[agent_type]",
 
-		"logger_page_type":"is_str|||matches[logger_page_type]",
+		"logger_page_type":"is_str",
 		"logger_page_uri":"is_str",
-		"logger_error_type":"is_str|||matches[logger_error_type]",
+		"logger_error_type":"is_str",
 		"logger_error_msg":"is_str",
 
 		"date_yyyymmddhhmmss":"is_str|||regex_match_include[/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1}) ([2]{1}[0-3]{1}|[0-1]{1}[0-9]{1}):([0-5]{1}[0-9]{1}):([0-5]{1}[0-9]{1})$/]",
@@ -335,6 +335,35 @@
 			"assets/images/day/sat.svg"
 		],
 
+
+		"class_days_a_week_list":[
+			"3days_a_week",
+			"4days_a_week",
+			"5days_a_week",
+			"6days_a_week",
+			"7days_a_week"
+		],
+		"class_days_a_week_eng_list":[
+			"3days a week",
+			"4days a week",
+			"5days a week",
+			"6days a week",
+			"7days a_week"
+		],
+		"class_days_a_week_kor_list":[
+			"주3회",
+			"주4회",
+			"주5회",
+			"주6회",
+			"주7회"
+		],
+		"class_days_a_week_img_url_list":[
+			"assets/images/day/3days_a_week.svg",
+			"assets/images/day/4days_a_week.svg",
+			"assets/images/day/5days_a_week.svg",
+			"assets/images/day/6days_a_week.svg",
+			"assets/images/day/7days_a_week.svg"
+		],
 
 
 		"deprecated_subways:":[],

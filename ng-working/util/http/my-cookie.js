@@ -6,6 +6,12 @@
 var MyCookie = (function () {
     function MyCookie() {
     }
+    // @ Desc : 쿠키의 값을 가져온 뒤 삭제합니다.
+    MyCookie.prototype.popCookie = function (cname) {
+        var value = this.getCookie(cname);
+        this.deleteCookie(cname);
+        return value;
+    };
     MyCookie.prototype.deleteCookie = function (cname) {
         var d = new Date();
         d.setTime(d.getTime() - (24 * 60 * 60 * 1000));

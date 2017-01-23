@@ -11,23 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var Subject_1 = require('rxjs/Subject');
-var klass_service_1 = require('./service/klass.service');
-var klass_level_1 = require('./model/klass-level');
-// import { KlassStation }         from './model/klass-station';
-var klass_subway_line_1 = require('./model/klass-subway-line');
-var klass_subway_station_1 = require('./model/klass-subway-station');
-var klass_day_1 = require('./model/klass-day');
-var klass_time_1 = require('./model/klass-time');
+var klass_level_1 = require('../widget/klass/model/klass-level');
+var klass_subway_line_1 = require('../widget/klass/model/klass-subway-line');
+var klass_subway_station_1 = require('../widget/klass/model/klass-subway-station');
+var klass_day_1 = require('../widget/klass/model/klass-day');
+var klass_time_1 = require('../widget/klass/model/klass-time');
 var my_checker_service_1 = require('../util/service/my-checker.service');
 var my_event_service_1 = require('../util/service/my-event.service');
 var my_event_watchtower_service_1 = require('../util/service/my-event-watchtower.service');
 var my_array_1 = require('../util/helper/my-array');
 var KlassFilterTileComponent = (function () {
-    function KlassFilterTileComponent(myCheckerService, myEventService, watchTower, klassService, location) {
+    function KlassFilterTileComponent(myCheckerService, myEventService, watchTower, location) {
         this.myCheckerService = myCheckerService;
         this.myEventService = myEventService;
         this.watchTower = watchTower;
-        this.klassService = klassService;
         this.location = location;
         // Observable Selectile 
         this.klassSelectileSubject = new Subject_1.Subject();
@@ -803,7 +800,7 @@ var KlassFilterTileComponent = (function () {
             templateUrl: 'klass-filter-tile.component.html',
             styleUrls: ['klass-filter-tile.component.css']
         }), 
-        __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, klass_service_1.KlassService, common_1.Location])
+        __metadata('design:paramtypes', [my_checker_service_1.MyCheckerService, my_event_service_1.MyEventService, my_event_watchtower_service_1.MyEventWatchTowerService, common_1.Location])
     ], KlassFilterTileComponent);
     return KlassFilterTileComponent;
 }());

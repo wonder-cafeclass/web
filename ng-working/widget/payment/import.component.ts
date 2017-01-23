@@ -57,8 +57,8 @@ export class ImportComponent implements OnInit {
   } // end method  
 
   private isDebug():boolean {
-    return true;
-    // return this.watchTower.isDebug();
+    // return true;
+    return this.watchTower.isDebug();
   }
 
   private __test():void {

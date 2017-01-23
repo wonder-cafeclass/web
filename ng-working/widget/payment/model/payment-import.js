@@ -2,7 +2,7 @@
 var my_is_1 = require('../../../util/helper/my-is');
 var my_format_1 = require('../../../util/helper/my-format');
 var user_1 = require('../../../users/model/user');
-var klass_1 = require('../../../klass/model/klass');
+var klass_1 = require('../../../widget/klass/model/klass');
 var teacher_1 = require('../../../teachers/model/teacher');
 var PaymentImport = (function () {
     function PaymentImport() {

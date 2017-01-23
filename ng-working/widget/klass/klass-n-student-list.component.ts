@@ -14,9 +14,9 @@ import { MyResponse }               from '../../util/model/my-response';
 import { PaymentImport }            from '../../widget/payment/model/payment-import';
 import { PaymentService }           from '../../widget/payment/service/payment.service';
 
-import { Klass }                    from '../../klass/model/klass';
-import { KlassAttendance }          from '../../klass/model/klass-attendance';
-import { KlassNStudent }            from '../../klass/model/klass-n-student';
+import { Klass }                    from '../../widget/klass/model/klass';
+import { KlassAttendance }          from '../../widget/klass/model/klass-attendance';
+import { KlassNStudent }            from '../../widget/klass/model/klass-n-student';
 
 import { User }                     from '../../users/model/user';
 import { Teacher }                  from '../../teachers/model/teacher';
@@ -157,16 +157,6 @@ export class KlassNStudentListComponent implements OnInit {
   private onAfterCancelKlass():void {
 
     if(this.isDebug()) console.log("klass-n-student-list / onAfterCancelKlass / 시작");
-
-    // 메일 발송은 서버의 역할 아닌가?
-    // 취소 완료시점에 메일을 발송해야 합니다.
-
-    // TODO -  즉시 취소 
-
-    // # 이메일 - 취소 - 운영진 확인뒤 진행
-    // a. # 고객 메일 - 인사말과 영수증('영수증 출력하기 - 버튼')이 같이 나간다.
-    // c. # 운영자 메일 - 취소 고객.
-    // d. # 강사님에게도 노티 취소 메일.
 
   }
 

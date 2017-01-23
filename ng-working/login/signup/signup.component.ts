@@ -786,7 +786,7 @@ export class SignupComponent implements AfterViewInit {
     if(this.isDebug()) console.log("signup / onClickPrivatePolicy / 시작");
 
     // 개인정보 취급방침 페이지로 이동.
-    window.open("/#/private-info");
+    window.open("/#/policy/private-info");
 
   }
 

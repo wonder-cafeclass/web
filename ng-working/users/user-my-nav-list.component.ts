@@ -15,8 +15,8 @@ import { MyLoggerService }            from '../util/service/my-logger.service';
 import { MyEventWatchTowerService }   from '../util/service/my-event-watchtower.service';
 import { MyResponse }                 from '../util/model/my-response';
 
-import { KlassColorService }          from '../klass/service/klass-color.service';
-import { KlassRadioBtnService }       from '../klass/service/klass-radiobtn.service';
+import { KlassColorService }          from '../widget/klass/service/klass-color.service';
+import { KlassRadioBtnService }       from '../widget/klass/service/klass-radiobtn.service';
 
 import { RadioBtnOption }             from '../widget/radiobtn/model/radiobtn-option';
 

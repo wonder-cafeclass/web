@@ -142,7 +142,7 @@ var FooterComponent = (function () {
             console.log("footer / onClickPrivateInfo / 시작");
         event.stopPropagation();
         event.preventDefault();
-        this.router.navigate(['/private-info']);
+        this.router.navigate(['/policy/private-info']);
     };
     FooterComponent.prototype.onClickApplyTeacher = function (event) {
         if (this.isDebug())
@@ -154,7 +154,7 @@ var FooterComponent = (function () {
         }
         event.stopPropagation();
         event.preventDefault();
-        this.router.navigate(['/applyteacherterm']);
+        this.router.navigate(['/teacher/applyteacherterm']);
     };
     FooterComponent = __decorate([
         core_1.Component({

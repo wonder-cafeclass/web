@@ -18,7 +18,6 @@ var default_component_1 = require('./input/default/default.component');
 var email_component_1 = require('./input/email/email.component');
 var profile_img_upload_component_1 = require('./input/profile-img-upload/profile-img-upload.component');
 var img_uploader_component_1 = require('./input/img-uploader/img-uploader.component');
-var hidden_uploader_component_1 = require('./input/img-uploader/hidden-uploader.component');
 var password_component_1 = require('./input/password/password.component');
 var password_single_component_1 = require('./input/password/password-single.component');
 var passwords_triplet_component_1 = require('./input/password/passwords-triplet.component');
@@ -33,7 +32,6 @@ var image_entry_component_1 = require('./image-grid/image-entry.component');
 var image_grid_v2_component_1 = require('./image-grid/image-grid-v2.component');
 var input_btns_row_component_1 = require('./input-view/input-btns-row.component');
 var inputs_btns_rows_component_1 = require('./input-view/inputs-btns-rows.component');
-var debug_btn_component_1 = require('./debug/debug-btn.component');
 var import_component_1 = require('./payment/import.component');
 var klass_card_component_1 = require('./klass/klass-card.component');
 var klass_n_student_list_component_1 = require('./klass/klass-n-student-list.component');
@@ -42,9 +40,28 @@ var default_service_1 = require('./input/default/service/default.service');
 var payment_service_1 = require('./payment/service/payment.service');
 var checkbox_component_1 = require('./checkbox/checkbox.component');
 var pagination_component_1 = require('./pagination/pagination.component');
-var footer_component_1 = require('./footer/footer.component');
-var safe_html_pipe_1 = require('../util/pipe/safe-html-pipe');
-// @ Desc : Shared module.
+var clock_board_component_1 = require('./clock/clock-board.component');
+var clock_digital_component_1 = require('./clock/clock-digital.component');
+var clock_component_1 = require('./clock/clock.component');
+var calendar_component_1 = require('./calendar/calendar.component');
+var mini_calendar_component_1 = require('./calendar/mini-calendar.component');
+var pricetag_component_1 = require('./pricetag/pricetag.component');
+var pricetag_h_component_1 = require('./pricetag/pricetag-h.component');
+var butterfly_component_1 = require('./butterfly/butterfly.component');
+var image_grid_component_1 = require('./image-grid/image-grid.component');
+var radiobtn_linear_component_1 = require('./radiobtn/radiobtn-linear.component');
+var input_view_component_1 = require('./input-view/input-view.component');
+var input_view_h_list_component_1 = require('./input-view/input-view-h-list.component');
+var input_view_updown_component_1 = require('./input-view/input-view-updown.component');
+var input_view_table_component_1 = require('./input-view-table/input-view-table.component');
+var single_input_view_component_1 = require('./input-view/single-input-view.component');
+var radiobtn_h_list_component_1 = require('./radiobtn/radiobtn-h-list.component');
+var checkbox_h_list_component_1 = require('./checkbox/checkbox-h-list.component');
+var smart_editor_component_1 = require('./smart-editor/smart-editor.component');
+var comment_list_component_1 = require('./comment/comment-list.component');
+var comment_service_1 = require('../widget/comment/service/comment.service');
+var input_row_component_1 = require('../widget/input-row/input-row.component');
+var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-uploader.component');
 var WidgetModule = (function () {
     function WidgetModule() {
     }
@@ -64,7 +81,7 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
-                debug_btn_component_1.DebugBtnComponent,
+                // DebugBtnComponent,
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
@@ -72,7 +89,6 @@ var WidgetModule = (function () {
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
-                hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
                 passwords_triplet_component_1.PasswordsTripletComponent,
@@ -82,8 +98,27 @@ var WidgetModule = (function () {
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
                 tooltip_component_1.TooltipComponent,
-                footer_component_1.FooterComponent,
-                safe_html_pipe_1.SafeHtmlPipe
+                clock_board_component_1.ClockBoardComponent,
+                clock_digital_component_1.ClockDigitalComponent,
+                clock_component_1.ClockComponent,
+                calendar_component_1.CalendarComponent,
+                mini_calendar_component_1.MiniCalendarComponent,
+                pricetag_component_1.PriceTagComponent,
+                pricetag_h_component_1.PriceTagHComponent,
+                butterfly_component_1.ButterflyComponent,
+                image_grid_component_1.ImageGridComponent,
+                radiobtn_linear_component_1.RadioBtnLinearComponent,
+                input_view_component_1.InputViewComponent,
+                input_view_h_list_component_1.InputViewHListComponent,
+                input_view_updown_component_1.InputViewUpdownComponent,
+                input_view_table_component_1.InputViewTableComponent,
+                single_input_view_component_1.SingleInputViewComponent,
+                radiobtn_h_list_component_1.RadioBtnHListComponent,
+                checkbox_h_list_component_1.CheckBoxHListComponent,
+                smart_editor_component_1.SmartEditorComponent,
+                comment_list_component_1.CommentListComponent,
+                input_row_component_1.InputRowComponent,
+                hidden_uploader_component_1.HiddenUploaderComponent
             ],
             exports: [
                 common_1.CommonModule,
@@ -97,7 +132,6 @@ var WidgetModule = (function () {
                 image_grid_v2_component_1.ImageGridV2Component,
                 input_btns_row_component_1.InputBtnsRowComponent,
                 inputs_btns_rows_component_1.InputsBtnsRowsComponent,
-                debug_btn_component_1.DebugBtnComponent,
                 import_component_1.ImportComponent,
                 klass_card_component_1.KlassCardComponent,
                 klass_n_student_list_component_1.KlassNStudentListComponent,
@@ -105,7 +139,6 @@ var WidgetModule = (function () {
                 checkbox_component_1.CheckBoxComponent,
                 pagination_component_1.PaginationComponent,
                 my_title_component_1.MyTitleComponent,
-                hidden_uploader_component_1.HiddenUploaderComponent,
                 password_component_1.PasswordComponent,
                 password_single_component_1.PasswordSingleComponent,
                 passwords_triplet_component_1.PasswordsTripletComponent,
@@ -115,12 +148,32 @@ var WidgetModule = (function () {
                 birthday_component_1.BirthdayComponent,
                 nickname_component_1.NicknameComponent,
                 tooltip_component_1.TooltipComponent,
-                footer_component_1.FooterComponent,
-                safe_html_pipe_1.SafeHtmlPipe
+                clock_board_component_1.ClockBoardComponent,
+                clock_digital_component_1.ClockDigitalComponent,
+                clock_component_1.ClockComponent,
+                calendar_component_1.CalendarComponent,
+                mini_calendar_component_1.MiniCalendarComponent,
+                pricetag_component_1.PriceTagComponent,
+                pricetag_h_component_1.PriceTagHComponent,
+                butterfly_component_1.ButterflyComponent,
+                image_grid_component_1.ImageGridComponent,
+                radiobtn_linear_component_1.RadioBtnLinearComponent,
+                input_view_component_1.InputViewComponent,
+                input_view_h_list_component_1.InputViewHListComponent,
+                input_view_updown_component_1.InputViewUpdownComponent,
+                input_view_table_component_1.InputViewTableComponent,
+                single_input_view_component_1.SingleInputViewComponent,
+                radiobtn_h_list_component_1.RadioBtnHListComponent,
+                checkbox_h_list_component_1.CheckBoxHListComponent,
+                smart_editor_component_1.SmartEditorComponent,
+                comment_list_component_1.CommentListComponent,
+                input_row_component_1.InputRowComponent,
+                hidden_uploader_component_1.HiddenUploaderComponent
             ],
             providers: [
                 default_service_1.DefaultService,
-                payment_service_1.PaymentService
+                payment_service_1.PaymentService,
+                comment_service_1.CommentService
             ]
         }), 
         __metadata('design:paramtypes', [])

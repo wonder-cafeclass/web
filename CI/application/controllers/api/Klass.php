@@ -2836,6 +2836,7 @@ class Klass extends MY_REST_Controller {
             $klass_time
         );
 
+
         $klass_list = $this->my_decorator->deco_klass_list($klass_list);
         // 비어있는 수업이라면 '수업 없음' 탭을 가져옵니다.
         if (empty($klass_list))

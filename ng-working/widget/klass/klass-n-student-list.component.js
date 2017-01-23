@@ -109,13 +109,6 @@ var KlassNStudentListComponent = (function () {
     KlassNStudentListComponent.prototype.onAfterCancelKlass = function () {
         if (this.isDebug())
             console.log("klass-n-student-list / onAfterCancelKlass / 시작");
-        // 메일 발송은 서버의 역할 아닌가?
-        // 취소 완료시점에 메일을 발송해야 합니다.
-        // TODO -  즉시 취소 
-        // # 이메일 - 취소 - 운영진 확인뒤 진행
-        // a. # 고객 메일 - 인사말과 영수증('영수증 출력하기 - 버튼')이 같이 나간다.
-        // c. # 운영자 메일 - 취소 고객.
-        // d. # 강사님에게도 노티 취소 메일.
     };
     KlassNStudentListComponent.prototype.onClickCancelKlass = function (event, klassNStudent) {
         var _this = this;

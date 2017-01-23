@@ -22,11 +22,13 @@ var naver_callback_component_1 = require('./naver/naver-callback.component');
 var signup_component_1 = require('./signup/signup.component');
 var signup_select_component_1 = require('./signup/signup-select.component');
 var validation_component_1 = require('./validation/validation.component');
-var hawkeye_component_1 = require('./validation/hawkeye.component');
 var login_service_1 = require('./service/login.service');
 var user_service_1 = require('../users/service/user.service');
+var teacher_service_1 = require('../teachers/service/teacher.service');
 var my_birthday_service_1 = require('../util/service/my-birthday.service');
 var my_checker_service_1 = require('../util/service/my-checker.service');
+var upload_service_1 = require('../util/service/upload.service');
+var shared_module_1 = require('../shared/shared.module');
 var LoginModule = (function () {
     function LoginModule() {
     }
@@ -36,6 +38,7 @@ var LoginModule = (function () {
                 common_1.CommonModule,
                 forms_1.FormsModule,
                 widget_module_1.WidgetModule,
+                shared_module_1.SharedModule,
                 login_routing_1.loginRouting
             ],
             declarations: [
@@ -46,14 +49,15 @@ var LoginModule = (function () {
                 naver_callback_component_1.NaverCallbackComponent,
                 signup_component_1.SignupComponent,
                 signup_select_component_1.SignupSelectComponent,
-                validation_component_1.ValidationComponent,
-                hawkeye_component_1.HawkeyeComponent
+                validation_component_1.ValidationComponent
             ],
             providers: [
                 login_service_1.LoginService,
                 user_service_1.UserService,
+                teacher_service_1.TeacherService,
                 my_birthday_service_1.MyBirthdayService,
-                my_checker_service_1.MyCheckerService
+                my_checker_service_1.MyCheckerService,
+                upload_service_1.UploadService
             ]
         }), 
         __metadata('design:paramtypes', [])

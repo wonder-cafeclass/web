@@ -15,8 +15,8 @@ var my_event_service_1 = require('../../../util/service/my-event.service');
 var my_array_1 = require('../../../util/helper/my-array');
 var pagination_1 = require('../../../widget/pagination/model/pagination');
 var teacher_service_1 = require('../../../teachers/service/teacher.service');
-var klass_1 = require('../../../klass/model/klass');
-var klass_attendance_1 = require('../../../klass/model/klass-attendance');
+var klass_1 = require('../../../widget/klass/model/klass');
+var klass_attendance_1 = require('../../../widget/klass/model/klass-attendance');
 var TeacherInfoKlassComponent = (function () {
     function TeacherInfoKlassComponent(teacherService, myEventService, watchTower, router) {
         this.teacherService = teacherService;

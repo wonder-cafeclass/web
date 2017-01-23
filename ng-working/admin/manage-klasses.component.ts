@@ -9,7 +9,7 @@ import { Router }                      from '@angular/router';
 
 import { AdminService }                from './service/admin.service';
 
-import { Klass }                       from '../klass/model/klass';
+import { Klass }                       from '../widget/klass/model/klass';
 import { Teacher }                     from '../teachers/model/teacher';
 import { User }                        from '../users/model/user';
 

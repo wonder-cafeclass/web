@@ -739,6 +739,18 @@ class MY_Decorator extends MY_Library
             }
         } // end for
 
+        // 수업 요일에 따라 '주3회','주4회',...,'주7회'등으로 노출하는 경우에 대해 처리.
+        $days_cnt = count($days_list);
+        $class_days_a_week_img_url_list = 
+        $const_map->{"class_days_a_week_img_url_list"};
+        if(3 <= $days_cnt) {
+            $class_days_a_week_img_url = 
+            $class_days_a_week_img_url_list[($days_cnt - 3)];
+
+            $klass->days_a_week_img_url = 
+            $class_days_a_week_img_url;
+        } // end if
+
         return $klass;
     }
     private function get_subway_station_img_url($klass=null)

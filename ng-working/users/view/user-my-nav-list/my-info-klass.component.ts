@@ -20,8 +20,8 @@ import { MyResponse }                 from '../../../util/model/my-response';
 import { UserService }                from '../../../users/service/user.service';
 
 import { User }                       from '../../../users/model/user';
-import { Klass }                      from '../../../klass/model/klass';
-import { KlassNStudent }              from '../../../klass/model/klass-n-student';
+import { Klass }                      from '../../../widget/klass/model/klass';
+import { KlassNStudent }              from '../../../widget/klass/model/klass-n-student';
 
 import { Pagination }                 from '../../../widget/pagination/model/pagination';
 

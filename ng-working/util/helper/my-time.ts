@@ -103,6 +103,21 @@ export class HelperMyTime {
 
 	} // end method
 
+	// @ Desc : 오늘로부터 며칠전인지를 구함. / wonder.jung
+	getDaysAgo(YYYYMMDD:string):number {
+
+		if(this.isNotYYYYMMDD(YYYYMMDD)) {
+			return null;
+		}
+
+		let headDate:Date = this.getDateFromYYYYMMDD(YYYYMMDD);
+		let todayDate:Date = new Date();
+
+		return this.getDiffDays(headDate, todayDate);
+
+	} // end method
+
+
 	getDiffDaysYYYYMMDD_HHMMSS(headYYYYMMDD_HHMMSS:string, tailYYYYMMDD_HHMMSS:string):number {
 		if(null == headYYYYMMDD_HHMMSS || "" === headYYYYMMDD_HHMMSS) {
 			return -1;
@@ -298,6 +313,16 @@ export class HelperMyTime {
 		}
 
 		return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD_HH_MM_SS);
+
+	}
+
+	private getDateFromYYYYMMDD(date_str:string):Date {
+
+		if(null == date_str || "" == date_str) {
+			return null;
+		}
+
+		return this.getDate(date_str, this.DATE_TYPE_YYYY_MM_DD);
 
 	}
 
@@ -814,6 +839,28 @@ export class HelperMyTime {
 
 		return true;
 	}	
+
+
+	public isNotYYYYMMDD(date_str_yyyymmdd:string):boolean{
+		return !this.isYYYYMMDD(date_str_yyyymmdd);
+	}
+
+	// @ Public
+	// @ Desc : 사용자가 입력한 시간이 다음과 같은 포맷인지 (ex : 2017-01-13) 확인합니다.
+	public isYYYYMMDD(date_str_yyyymmdd:string):boolean{
+
+		if(null == date_str_yyyymmdd || "" === date_str_yyyymmdd) {
+			return false;
+		}
+
+		let res = date_str_yyyymmdd.match(/^([2]{1}[0-9]{3})-([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-([0]{1}[1-9]{1}|[1]{1}[0-9]{1}|[2]{1}[0-9]{1}|[3]{1}[0-1]{1})$/gi);
+		if(null === res || !(0 < res.length)) {
+		  return false;
+		}		
+
+		return true;
+	}	
+
 
 	public getDoubleDigit(target_number:number):string{
 		if(target_number < 10){
