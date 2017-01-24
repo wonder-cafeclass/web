@@ -68,6 +68,29 @@ export class KlassSimple {
     isNotNewClassBtn() :boolean {
         return !this.isNewClassBtn();
     }
+    isDummyClass() :boolean {
+        return (-1000 === this.id) ? true:false;      
+    }
+    isNotDummyClass() :boolean {
+        return !this.isDummyClass();
+    }
+
+    setDummy():KlassSimple {
+
+        this.id = -1000;
+        this.title = " ";
+
+        this.days_img_url = "assets/images/day/all.svg";
+        this.time_begin_img_url = "assets/images/time/always.svg";
+        this.level_img_url = "assets/images/level/all.svg";
+        this.subway_station_img = "assets/images/subway/everywhere.svg";
+        
+        this.class_poster_url = this.class_poster_url_loadable =
+        "assets/images/class/poster/dummy_class.svg";
+
+        return this;
+    }
+
 
     setJSON(json):KlassSimple {
 

@@ -44,7 +44,8 @@ var AppComponent = (function () {
         this.watchTower.announceMyCheckerService(this.myCheckerService);
     }
     AppComponent.prototype.isDebug = function () {
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
     };
     AppComponent.prototype.ngOnInit = function () {
         this.subscribeAllErrors();
@@ -52,10 +53,60 @@ var AppComponent = (function () {
         this.subscribeLoginTeacher();
         this.subscribeToggleTopMenu();
         this.subscribeToggleFooter();
-        this.setIsAdmin();
-        this.setMyChecker();
+        this.fetchInfo();
+        // this.setIsAdmin();
+        // this.setMyChecker();
     };
     AppComponent.prototype.ngAfterViewChecked = function () { };
+    AppComponent.prototype.fetchInfo = function () {
+        // 첫화면에 필요한 정보를 한번에 가져옵니다.
+        // 1. 운영 서버 여부 
+        // 2. 로그인 쿠키 여부
+        // 3. 체크 설정 값 리스트들.
+        var _this = this;
+        this.authService.fetchInit().then(function (myResponse) {
+            if (_this.isDebug())
+                console.log("app-root / fetchInit / myResponse : ", myResponse);
+            if (myResponse.isSuccess()) {
+                // 1. 운영 서버 여부 설정.
+                _this.isAdminServer = myResponse.getDataProp("is_admin");
+                _this.watchTower.announceIsAdminServer(_this.isAdminServer);
+                // 2. 체커 정보들 설정 및 event-watchtower를 통해 전달
+                _this.watchTower.announceMyCheckerServiceReady(
+                // checkerMap: any
+                myResponse.getDataProp("checker_map"), 
+                // constMap: any
+                myResponse.getDataProp("const_map"), 
+                // dirtyWordList: any
+                myResponse.getDataProp("dirty_word_list"), 
+                // apiKey: string
+                myResponse.getDataProp("api_key"));
+                // 3. 유저 쿠키 정보 설정
+                var userFromDB = myResponse.getDataProp("user");
+                if (null != userFromDB) {
+                    var user = new user_1.User().setJSON(userFromDB);
+                    if (_this.isDebug())
+                        console.log("app-root / getLoginUserFromCookie / user : ", user);
+                    _this.loginUser = user;
+                    // 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+                    _this.watchTower.announceLogin(_this.loginUser);
+                    if (user.isTeacher()) {
+                        _this.loginTeacher = _this.loginUser.getTeacher();
+                        // 선생님 로그인 여부를 확인, 전파한다.
+                        _this.watchTower.announceLoginTeacher(_this.loginTeacher);
+                    } // end if
+                } // end if
+            }
+            else if (myResponse.isFailed()) {
+                _this.watchTower.logAPIError("app-root / fetchInit / Failed!");
+                if (null != myResponse.error) {
+                    _this.isAdminServer = true;
+                    _this.watchTower.announceErrorMsgArr([myResponse.error]);
+                } // end if
+            } // end if
+        }); // end service
+        // wonder.jung
+    };
     AppComponent.prototype.updateLoginUser = function (user) {
         if (this.isDebug())
             console.log("app-root / updateLoginUser / 시작");
@@ -186,6 +237,7 @@ var AppComponent = (function () {
             } // end if
         });
     };
+    // @ Deprecated
     AppComponent.prototype.setMyChecker = function () {
         var _this = this;
         if (this.isDebug())
@@ -210,6 +262,7 @@ var AppComponent = (function () {
             _this.getLoginUserFromCookie();
         });
     };
+    // @ Deprecated
     AppComponent.prototype.getLoginUserFromCookie = function () {
         // wonder.jung - 유저 정보를 가져올 때 선생님 정보도 함께 가져와야 한다. 
         // 선생님 정보를 분리해서 가져오면 시차 발생등의 문제에 대응하기 어렵다.

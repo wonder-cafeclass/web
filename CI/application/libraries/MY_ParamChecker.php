@@ -193,7 +193,7 @@ class MY_ParamChecker extends MY_Library
         $this->set_check_list($check_list);
     }
 
-    public function get($key="", $key_filter="")
+    public function get($key="", $key_filter="", $is_no_record=false)
     {
         if(empty($key)) {
             return null;
@@ -203,7 +203,17 @@ class MY_ParamChecker extends MY_Library
         }
 
         $value = $this->CI->get($key);
-        return $this->check($key_filter, $value);
+
+        if($is_no_record) 
+        {
+            $value = $this->check_no_record($key_filter, $value);
+        }
+        else 
+        {
+            $value = $this->check($key_filter, $value);
+        }
+        
+        return $value;
     }
     public function post($key="", $key_filter="", $is_no_record=false)
     {

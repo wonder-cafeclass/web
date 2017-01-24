@@ -39,8 +39,6 @@ var MyEventWatchTowerService = (function () {
         this.toggleFooterAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
         this.footerUpdateSource = new Subject_1.Subject();
-        // REMOVE ME
-        // private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
         this.myLoggerServiceSource = new Subject_1.Subject();
         this.myEventServiceSource = new Subject_1.Subject();
         this.myCheckerServiceSource = new Subject_1.Subject();
@@ -58,8 +56,6 @@ var MyEventWatchTowerService = (function () {
         this.toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
         this.footerUpdate$ = this.footerUpdateSource.asObservable();
-        // REMOVE ME
-        // isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
         this.myLoggerService$ = this.myLoggerServiceSource.asObservable();
         this.myEventService$ = this.myEventServiceSource.asObservable();
         this.myCheckerService$ = this.myCheckerServiceSource.asObservable();

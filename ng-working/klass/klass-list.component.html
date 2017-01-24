@@ -69,14 +69,26 @@
 							(click)="onSelectKlass($event, klass)"
 							(error)="onLoadFailClassImage(classImage, klass)" 
 							alt={{klass.title}}>
-					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" class="klass-title-overlay">
+					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn() && klass.isNotDummyClass()" class="klass-title-overlay">
 						<h5 style="text-align: center;" class="unselectable"><strong>{{klass.title}}</strong></h5>
 					</div>
-					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" class="klass-title-overlay-bg">
+					<div *ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn() && klass.isNotDummyClass()" class="klass-title-overlay-bg">
 					</div>
 				</li>
+				<!-- Dummy Klass인 경우의 여백 -->
 				<li
-				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+				*ngIf="klass.isDummyClass()"
+				class="list-group-item my-dummy-klass">
+				</li>
+				<!-- 검색 결과가 없는 경우의 여백 -->
+				<li
+				*ngIf="klass.isNoClassBtn()"
+				class="list-group-item my-dummy-klass">
+				</li>
+
+				<!-- 그 외의 수업 정보 표시 -->
+				<li
+				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn() && klass.isNotDummyClass()" 
 				class="list-group-item" 
 				style="padding:5px;">
 
@@ -109,7 +121,7 @@
 
 				</li>
 				<li 
-				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn()" 
+				*ngIf="klass.title && klass.isNotNewClassBtn() && klass.isNotNoClassBtn() && klass.isNotDummyClass()" 
 				class="list-group-item my-style">
 					<h4 *ngIf="klass.price_with_format=='0'" class="pull-right cc-price unselectable">&nbsp;</h4>
 					<h4 *ngIf="klass.price_with_format!='0'" class="pull-right cc-price unselectable">&#8361;{{klass.price_with_format}}</h4>

@@ -42,10 +42,27 @@ var KlassListComponent = (function () {
         this.myArray = new my_array_1.HelperMyArray();
         this.ksService.setWatchTower(this.watchTower);
         this.pagination = new pagination_1.Pagination();
+        // 화면에 바로 로딩된 것처럼 12개의 수업을 더미로 만들어 화면에 노출.
+        this.setDummyKlass();
     }
     KlassListComponent.prototype.isDebug = function () {
-        // return true;
-        return this.watchTower.isDebug();
+        return true;
+        // return this.watchTower.isDebug();
+    };
+    KlassListComponent.prototype.setDummyKlass = function () {
+        if (this.isDebug())
+            console.log("klass-list / setDummyKlass / 시작");
+        // 12개의 가짜 수업을 만들어 화면에 올립니다.
+        this.klassList = this.getDummyKlassList();
+    };
+    KlassListComponent.prototype.getDummyKlassList = function () {
+        var length = 12;
+        var dummyKlassList = [];
+        for (var i = 0; i < length; ++i) {
+            var dummyKlass = new klass_simple_1.KlassSimple().setDummy();
+            dummyKlassList.push(dummyKlass);
+        } // end for
+        return dummyKlassList;
     };
     KlassListComponent.prototype.isSelected = function (klass) {
         return klass.id === this.selectedId;
@@ -62,10 +79,14 @@ var KlassListComponent = (function () {
         var _this = this;
         // 이미 View 기본정보가 들어왔다면 바로 가져온다. 
         if (this.watchTower.getIsViewPackReady()) {
+            if (this.isDebug())
+                console.log("klass-list / asyncViewPack / 이미 View 기본정보가 들어왔다면 바로 가져온다.");
             this.init();
         } // end if
         // View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.
         this.watchTower.isViewPackReady$.subscribe(function (isViewPackReady) {
+            if (_this.isDebug())
+                console.log("klass-list / asyncViewPack / View에 필요한 기본 정보가 비동기로 들어올 경우, 처리.");
             _this.init();
         }); // end subscribe    
     };
@@ -129,6 +150,8 @@ var KlassListComponent = (function () {
         }); // end service
     };
     KlassListComponent.prototype.init = function () {
+        if (this.isDebug())
+            console.log("klass-list / init / 시작");
         if (this.hasInit) {
             return;
         }
@@ -142,12 +165,7 @@ var KlassListComponent = (function () {
         // 클래스 리스트 가져오기
         this.getKlassListOnInit();
     }; // end method
-    // @ Desc : 초기화시 1번만 수업 리스트를 가져옴. 
     KlassListComponent.prototype.getKlassListOnInit = function () {
-        if (this.myArray.isOK(this.klassList)) {
-            // 이미 리스트가 있다면 로딩하지 않습니다.
-            return;
-        }
         // TODO - 선생님의 경우, 선생님 수업(오픈되지 않았더라도)이 처음 리스트에 위치해야 한다.
         this.fetchKlassList(
         // userId:Number, 
@@ -183,6 +201,10 @@ var KlassListComponent = (function () {
         }
     };
     KlassListComponent.prototype.updateKlassList = function (jsonKlassList) {
+        if (this.isDebug())
+            console.log("klass-list / updateKlassList / 시작");
+        if (this.isDebug())
+            console.log("klass-list / updateKlassList / jsonKlassList : ", jsonKlassList);
         if (this.myArray.isNotOK(jsonKlassList)) {
             // 검색 결과가 없습니다.
             this.klassList = null;
@@ -194,20 +216,37 @@ var KlassListComponent = (function () {
                 var klass = new klass_simple_1.KlassSimple().setJSON(klassJSON);
                 klassList.push(klass);
             } // end for
+            // 클래스가 12개 미만이라면, Dummy Klass로 채워서 노출.
+            var dummyKlassList = this.getDummyKlassList();
+            var klassListMixed = [];
+            if (this.myArray.isNotOK(klassList) || klassList.length < dummyKlassList.length) {
+                for (var i = 0; i < dummyKlassList.length; ++i) {
+                    if (this.myArray.isOK(klassList) && i < klassList.length) {
+                        klassListMixed.push(klassList[i]);
+                    }
+                    else {
+                        klassListMixed.push(dummyKlassList[i]);
+                    }
+                }
+            }
+            // wonder.jung
+            if (this.isDebug())
+                console.log("klass-list / updateKlassList / klassListMixed : ", klassListMixed);
             // 1. 스크롤로 추가적인 수업읇 보여준다면, 교체가 아닌 리스트에 덧붙이는 형식으로 표현.
             // 리스트 추가.
             // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
-            this.klassList = klassList; // 리스트 교체.
+            this.klassList = klassListMixed; // 리스트 교체.
         } // end if
         this.updateFooter();
     }; // end method    
     KlassListComponent.prototype.updateFooter = function () {
-        console.log("klass-list / TEST / updateFooter / this.watchTower : ", this.watchTower);
         // 푸터에게 업데이트 요청.
         this.watchTower.announceFooterUpdate();
     };
     KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
+        if (this.isDebug())
+            console.log("klass-list / fetchKlassList / 시작");
         this.ksService.fetchKlassList(
         // apiKey:string, 
         this.watchTower.getApiKey(), 
