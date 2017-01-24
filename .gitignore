@@ -8,3 +8,5 @@ CI/static/admin.json
 CI/static/api.json
 
 phpinfo.php
+
+npm-debug.log
