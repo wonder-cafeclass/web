@@ -8,6 +8,7 @@ import { HelperMyConst }		from '../../util/helper/my-const';
 import { MyResponse }           from '../../util/model/my-response';
 
 import { DefaultOption }        from '../../widget/input/default/model/default-option';
+import { KlassSimple }        	from '../../widget/klass/model/klass-simple';
 
 import { MyLoggerService }		from './my-logger.service';
 import { MyEventService }		from './my-event.service';
@@ -37,8 +38,6 @@ export class MyEventWatchTowerService {
 	private loginTeacher:Teacher;
 	private errorMsgArr:string[];
 	private footerUpdate:number;
-	// REMOVE ME
-	// private isLockedBottomFooterFlexible:boolean = false;
 	private myLoggerService:MyLoggerService;
 	private myEventService:MyEventService;
 	private myCheckerService:MyCheckerService;
@@ -57,8 +56,6 @@ export class MyEventWatchTowerService {
 	private toggleFooterAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
 	private footerUpdateSource = new Subject<number>();
-	// REMOVE ME
-	// private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
 	private myLoggerServiceSource = new Subject<MyLoggerService>();
 	private myEventServiceSource = new Subject<MyEventService>();
 	private myCheckerServiceSource = new Subject<MyCheckerService>();
@@ -77,8 +74,6 @@ export class MyEventWatchTowerService {
 	toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
 	footerUpdate$ = this.footerUpdateSource.asObservable();
-	// REMOVE ME
-	// isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
 	myLoggerService$ = this.myLoggerServiceSource.asObservable();
 	myEventService$ = this.myEventServiceSource.asObservable();
 	myCheckerService$ = this.myCheckerServiceSource.asObservable();

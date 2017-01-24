@@ -12,13 +12,25 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var url_service_1 = require("./util/url.service");
 var my_extractor_1 = require('./util/http/my-extractor');
+var my_request_1 = require('./util/http/my-request');
 var AuthService = (function () {
     function AuthService(us, http) {
         this.us = us;
         this.http = http;
         this.adminAuthUrl = '/CI/index.php/api/admin/auth';
+        this.fetchInitUrl = '/CI/index.php/api/init/fetchInit';
         this.myExtractor = new my_extractor_1.MyExtractor();
+        this.myRequest = new my_request_1.MyRequest();
     }
+    AuthService.prototype.setWatchTower = function (watchTower) {
+        this.watchTower = watchTower;
+    };
+    AuthService.prototype.isDebug = function () {
+        if (null == this.watchTower) {
+            return false;
+        }
+        return this.watchTower.isDebug();
+    };
     AuthService.prototype.getAdminAuth = function () {
         var req_url = this.us.get(this.adminAuthUrl);
         // let isDebug:boolean = true;
@@ -28,6 +40,18 @@ var AuthService = (function () {
         if (isDebug)
             console.log("auth.service / getAdminAuth / req_url : ", req_url);
         return this.http.get(req_url)
+            .toPromise()
+            .then(this.myExtractor.extractData)
+            .catch(this.myExtractor.handleError);
+    };
+    AuthService.prototype.fetchInit = function () {
+        // wonder.jung
+        if (this.isDebug())
+            console.log("user.service / fetchKlassNStudentList / 시작");
+        // POST
+        var req_url = this.us.get(this.fetchInitUrl);
+        var params = {};
+        return this.http.post(req_url, params)
             .toPromise()
             .then(this.myExtractor.extractData)
             .catch(this.myExtractor.handleError);

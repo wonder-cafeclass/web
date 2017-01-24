@@ -50,7 +50,8 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	}
 
 	private isDebug():boolean {
-		return this.watchTower.isDebug();
+		return true;
+		// return this.watchTower.isDebug();
 	}
 
 	isAdminServer:boolean=false;
@@ -70,11 +71,75 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		this.subscribeToggleTopMenu();
 		this.subscribeToggleFooter();
 
-		this.setIsAdmin();
-		this.setMyChecker();
+		this.fetchInfo();
+
+		// this.setIsAdmin();
+		// this.setMyChecker();
 	}
 
 	ngAfterViewChecked() {}
+
+	private fetchInfo():void {
+		// 첫화면에 필요한 정보를 한번에 가져옵니다.
+		// 1. 운영 서버 여부 
+		// 2. 로그인 쿠키 여부
+		// 3. 체크 설정 값 리스트들.
+
+		this.authService.fetchInit().then((myResponse:MyResponse) => {
+
+			if(this.isDebug()) console.log(`app-root / fetchInit / myResponse : `,myResponse);
+
+			if(myResponse.isSuccess()) {
+
+				// 1. 운영 서버 여부 설정.
+				this.isAdminServer = myResponse.getDataProp("is_admin");
+				this.watchTower.announceIsAdminServer(this.isAdminServer);
+
+				// 2. 체커 정보들 설정 및 event-watchtower를 통해 전달
+				this.watchTower.announceMyCheckerServiceReady(
+					// checkerMap: any
+					myResponse.getDataProp("checker_map"),
+					// constMap: any
+					myResponse.getDataProp("const_map"),
+					// dirtyWordList: any
+					myResponse.getDataProp("dirty_word_list"),
+					// apiKey: string
+					myResponse.getDataProp("api_key")
+				);
+
+				// 3. 유저 쿠키 정보 설정
+				let userFromDB = myResponse.getDataProp("user");
+				if(null != userFromDB) {
+
+					let user:User = new User().setJSON(userFromDB);
+					if(this.isDebug()) console.log(`app-root / getLoginUserFromCookie / user : `,user);
+					this.loginUser = user;
+
+					// 회원 로그인 정보를 가져왔다면, 가져온 로그인 정보를 다른 컴포넌트들에게도 알려줍니다.
+					this.watchTower.announceLogin(this.loginUser);
+
+					if(user.isTeacher()) {
+						this.loginTeacher = this.loginUser.getTeacher();
+
+						// 선생님 로그인 여부를 확인, 전파한다.
+						this.watchTower.announceLoginTeacher(this.loginTeacher);
+					} // end if
+				} // end if
+
+			} else if(myResponse.isFailed()){
+
+				this.watchTower.logAPIError(`app-root / fetchInit / Failed!`);
+				if(null != myResponse.error) {
+					this.isAdminServer = true;
+					this.watchTower.announceErrorMsgArr([myResponse.error]);
+				} // end if
+
+			} // end if
+
+		}); // end service
+
+		// wonder.jung
+	}
 
 	private updateLoginUser(user:User) :void {
 
@@ -229,6 +294,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 		});		
 	}
+	// @ Deprecated
 	private setMyChecker() :void {
 
 	    if(this.isDebug()) console.log(`app-root / setMyChecker / 시작`);
@@ -256,8 +322,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
 			this.getLoginUserFromCookie();
 
 		});
-	}
-	private getLoginUserFromCookie() :void {
+	}	
+
+	// @ Deprecated
+	private getLoginUserFromCookie() :void { // wonder.jung
 
 		// wonder.jung - 유저 정보를 가져올 때 선생님 정보도 함께 가져와야 한다. 
 		// 선생님 정보를 분리해서 가져오면 시차 발생등의 문제에 대응하기 어렵다.
@@ -281,10 +349,12 @@ export class AppComponent implements OnInit, AfterViewChecked {
 				this.watchTower.announceLogin(this.loginUser);
 
 				if(user.isTeacher()) {
+
 					this.loginTeacher = this.loginUser.getTeacher();
 
 					// 선생님 로그인 여부를 확인, 전파한다.
 					this.watchTower.announceLoginTeacher(this.loginTeacher);
+
 				} // end if
 
 			} else if(myResponse.isFailed() && null != myResponse.error) {  

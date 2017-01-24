@@ -27,9 +27,6 @@
     "zone.js": "^0.6.25",
     "angular2-in-memory-web-api": "0.0.20"
   },
-  "dependencies_removed": {
-    "bootstrap": "^3.3.6"
-  },
   "devDependencies": {
     "@types/core-js": "^0.9.34",
     "canonical-path": "0.0.2",

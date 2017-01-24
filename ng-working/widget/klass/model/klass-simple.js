@@ -54,6 +54,23 @@ var KlassSimple = (function () {
     KlassSimple.prototype.isNotNewClassBtn = function () {
         return !this.isNewClassBtn();
     };
+    KlassSimple.prototype.isDummyClass = function () {
+        return (-1000 === this.id) ? true : false;
+    };
+    KlassSimple.prototype.isNotDummyClass = function () {
+        return !this.isDummyClass();
+    };
+    KlassSimple.prototype.setDummy = function () {
+        this.id = -1000;
+        this.title = " ";
+        this.days_img_url = "assets/images/day/all.svg";
+        this.time_begin_img_url = "assets/images/time/always.svg";
+        this.level_img_url = "assets/images/level/all.svg";
+        this.subway_station_img = "assets/images/subway/everywhere.svg";
+        this.class_poster_url = this.class_poster_url_loadable =
+            "assets/images/class/poster/dummy_class.svg";
+        return this;
+    };
     KlassSimple.prototype.setJSON = function (json) {
         var isDebug = true;
         // let isDebug:boolean = false;
