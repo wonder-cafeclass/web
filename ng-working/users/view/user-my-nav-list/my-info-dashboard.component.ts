@@ -17,11 +17,14 @@ import { MyChecker }                  from '../../../util/model/my-checker';
 
 import { MyResponse }                 from '../../../util/model/my-response';
 
+import { HelperMyArray }              from '../../../util/helper/my-array';
+
 import { UserService }                from '../../../users/service/user.service';
 
 import { User }                       from '../../../users/model/user';
 
 import { Klass }                      from '../../../widget/klass/model/klass';
+import { KlassSimple }                from '../../../widget/klass/model/klass-simple';
 import { KlassNStudent }              from '../../../widget/klass/model/klass-n-student';
 
 @Component({
@@ -37,7 +40,10 @@ export class MyInfoDashboardComponent implements AfterViewInit {
 
   loginUser:User;
 
+  klassListFavorite:KlassSimple[];
   klassNStudentList:KlassNStudent[];
+
+  private myArray:HelperMyArray;
 
   constructor(private userService:UserService,
               public myEventService:MyEventService,
@@ -45,6 +51,8 @@ export class MyInfoDashboardComponent implements AfterViewInit {
               public router:Router) {
 
     this.userService.setWatchTower(watchTower);
+
+    this.myArray = new HelperMyArray();
 
   }
 
@@ -201,6 +209,20 @@ export class MyInfoDashboardComponent implements AfterViewInit {
     // 2. 관심 강의 리스트 가져오기(나중에...)
 
   }
+
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+    console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    if(null == this.watchTower) {
+      return;
+    }
+    this.watchTower.announceFooterUpdate();
+  }  
 
   onClickKlass(klass:Klass):void {
 

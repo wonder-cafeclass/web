@@ -237,6 +237,20 @@ export class MyInfoPaymentComponent implements AfterViewInit {
 
   }
 
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info-payment / setReadyBeforeShow / 시작");
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    if(null == this.watchTower) {
+      return;
+    }
+    this.watchTower.announceFooterUpdate();
+  }  
+
+
   onClickKlass(klass:Klass):void {
 
     if(this.isDebug()) console.log("my-info-payment / onClickKlass / 시작");

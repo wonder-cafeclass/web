@@ -17,7 +17,7 @@ var klass_checkbox_service_1 = require('../widget/klass/service/klass-checkbox.s
 var klass_service_1 = require('../widget/klass/service/klass.service');
 var klass_price_calculator_component_1 = require('../widget/klass/klass-price-calculator.component');
 var image_grid_v2_component_1 = require('../widget/image-grid/image-grid-v2.component');
-var image_grid_component_1 = require('../widget/image-grid/image-grid.component');
+// import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 var hidden_uploader_component_1 = require('../widget/input/img-uploader/hidden-uploader.component');
 var default_component_1 = require('../widget/input/default/default.component');
 var default_option_1 = require('../widget/input/default/model/default-option');
@@ -119,8 +119,16 @@ var KlassDetailComponent = (function () {
             console.log("klass-detail / ngAfterViewInit / 시작");
         if (this.isDebug())
             console.log("klass-detail / ngAfterViewInit / this.bannerComponent : ", this.bannerComponent);
-        this.watchTower.announceIsLockedBottomFooterFlexible(false);
         this.init();
+    };
+    KlassDetailComponent.prototype.ngAfterContentChecked = function () { };
+    KlassDetailComponent.prototype.ngAfterViewChecked = function () {
+        // 뷰 로딩이 완료된 이후에 높이 계산
+        this.updateFooter();
+    };
+    KlassDetailComponent.prototype.updateFooter = function () {
+        // 푸터에게 업데이트 요청.
+        this.watchTower.announceFooterUpdate();
     };
     KlassDetailComponent.prototype.subscribeLoginTeacher = function () {
         var _this = this;
@@ -1225,11 +1233,6 @@ var KlassDetailComponent = (function () {
             }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_BANNER_VIEW)) {
             }
-            else if (myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE_VIEW)) {
-                if (null != myEvent.metaObj) {
-                    this.selectTileViewComponent = myEvent.metaObj;
-                } // end if
-            }
             else if (myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {
                 if (null != myEvent.metaObj) {
                     this.priceCalculator = myEvent.metaObj;
@@ -1628,11 +1631,6 @@ var KlassDetailComponent = (function () {
         if (null == this.klassCopy) {
             if (this.isDebug())
                 console.log("klass-detail / updateKlassDays / 중단 / this.klassCopy is not valid!");
-            return;
-        }
-        if (null == this.selectTileViewComponent) {
-            if (this.isDebug())
-                console.log("klass-detail / updateKlassDays / 중단 / this.selectTileViewComponent is not valid!");
             return;
         }
         var selectedValue = metaObj.value;
@@ -2219,10 +2217,6 @@ var KlassDetailComponent = (function () {
         core_1.ViewChild(image_grid_v2_component_1.ImageGridV2Component), 
         __metadata('design:type', image_grid_v2_component_1.ImageGridV2Component)
     ], KlassDetailComponent.prototype, "bannerComponent", void 0);
-    __decorate([
-        core_1.ViewChild(image_grid_component_1.ImageGridComponent), 
-        __metadata('design:type', image_grid_component_1.ImageGridComponent)
-    ], KlassDetailComponent.prototype, "selectTileViewComponent", void 0);
     __decorate([
         core_1.ViewChild(hidden_uploader_component_1.HiddenUploaderComponent), 
         __metadata('design:type', hidden_uploader_component_1.HiddenUploaderComponent)

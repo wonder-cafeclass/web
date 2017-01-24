@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var my_event_watchtower_service_1 = require('../../../util/service/my-event-watchtower.service');
 var my_event_service_1 = require('../../../util/service/my-event.service');
+var my_array_1 = require('../../../util/helper/my-array');
 var user_service_1 = require('../../../users/service/user.service');
 var klass_n_student_1 = require('../../../widget/klass/model/klass-n-student');
 var MyInfoDashboardComponent = (function () {
@@ -23,6 +24,7 @@ var MyInfoDashboardComponent = (function () {
         this.eventKey = "";
         this.emitter = new core_1.EventEmitter();
         this.userService.setWatchTower(watchTower);
+        this.myArray = new my_array_1.HelperMyArray();
     }
     MyInfoDashboardComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
@@ -141,6 +143,19 @@ var MyInfoDashboardComponent = (function () {
             } // end if
         }); // end service
         // 2. 관심 강의 리스트 가져오기(나중에...)
+    };
+    // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+    MyInfoDashboardComponent.prototype.setReadyBeforeShow = function () {
+        if (this.isDebug())
+            console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+        console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+        this.updateFooter();
+    };
+    MyInfoDashboardComponent.prototype.updateFooter = function () {
+        if (null == this.watchTower) {
+            return;
+        }
+        this.watchTower.announceFooterUpdate();
     };
     MyInfoDashboardComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())

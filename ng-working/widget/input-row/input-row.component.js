@@ -10,18 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var smart_editor_component_1 = require('../smart-editor/smart-editor.component');
-var checkbox_h_list_component_1 = require('../checkbox/checkbox-h-list.component');
-var mini_calendar_component_1 = require('../calendar/mini-calendar.component');
-var input_view_h_list_component_1 = require('../input-view/input-view-h-list.component');
-var input_view_updown_component_1 = require('../input-view/input-view-updown.component');
 var single_input_view_component_1 = require('../input-view/single-input-view.component');
-var radiobtn_h_list_component_1 = require('../radiobtn/radiobtn-h-list.component');
-var radiobtn_linear_component_1 = require('../radiobtn/radiobtn-linear.component');
 var klass_color_service_1 = require('../../widget/klass/service/klass-color.service');
 var my_ruler_service_1 = require('../../util/service/my-ruler.service');
 var my_event_service_1 = require('../../util/service/my-event.service');
 var my_checker_service_1 = require('../../util/service/my-checker.service');
 var my_event_1 = require('../../util/model/my-event');
+// import { CheckBoxHListComponent }      from '../checkbox/checkbox-h-list.component';
+// import { MiniCalendarComponent }       from '../calendar/mini-calendar.component';
+// import { InputViewHListComponent }     from '../input-view/input-view-h-list.component';
+// import { InputViewUpdownComponent }    from '../input-view/input-view-updown.component';
+// import { RadioBtnHListComponent }      from '../radiobtn/radiobtn-h-list.component';
+// import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.component';
 /*
 *
 * @ Desc   :
@@ -103,10 +103,8 @@ var InputRowComponent = (function () {
         } // end if
     }; // end if
     InputRowComponent.prototype.setOffset = function () {
-        // this.headerHeight = this.myRulerService.getHeight("dron-header");
         this.headerHeight = 42;
         this.contentHeight = this.myRulerService.getHeight("dron-content");
-        // this.tailHeight = this.myRulerService.getHeight("dron-tail");
         this.tailHeight = 42;
         this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 2);
     };
@@ -288,30 +286,6 @@ var InputRowComponent = (function () {
         core_1.ViewChild(single_input_view_component_1.SingleInputViewComponent), 
         __metadata('design:type', single_input_view_component_1.SingleInputViewComponent)
     ], InputRowComponent.prototype, "singleInputViewComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', checkbox_h_list_component_1.CheckBoxHListComponent)
-    ], InputRowComponent.prototype, "checkBoxHListComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', mini_calendar_component_1.MiniCalendarComponent)
-    ], InputRowComponent.prototype, "miniCalendarComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', input_view_h_list_component_1.InputViewHListComponent)
-    ], InputRowComponent.prototype, "inputViewHListComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', input_view_updown_component_1.InputViewUpdownComponent)
-    ], InputRowComponent.prototype, "inputViewUpdownComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', radiobtn_h_list_component_1.RadioBtnHListComponent)
-    ], InputRowComponent.prototype, "radioBtnHListComponent", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', radiobtn_linear_component_1.RadioBtnLinearComponent)
-    ], InputRowComponent.prototype, "radioBtnLinearComponent", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)

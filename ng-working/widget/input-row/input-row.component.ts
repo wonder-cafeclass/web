@@ -6,22 +6,23 @@ import {  Component,
           Output,
           Input }                       from '@angular/core';
 import { SmartEditorComponent }        from '../smart-editor/smart-editor.component';
-import { CheckBoxHListComponent }      from '../checkbox/checkbox-h-list.component';
-import { MiniCalendarComponent }       from '../calendar/mini-calendar.component';
-import { InputViewHListComponent }     from '../input-view/input-view-h-list.component';
-import { InputViewUpdownComponent }    from '../input-view/input-view-updown.component';
 import { SingleInputViewComponent }    from '../input-view/single-input-view.component';
-import { RadioBtnHListComponent }      from '../radiobtn/radiobtn-h-list.component';
-import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.component';
 
 import { KlassColorService }           from '../../widget/klass/service/klass-color.service';
 
 import { MyRulerService }              from '../../util/service/my-ruler.service';
 import { MyEventService }              from '../../util/service/my-event.service';
 import { MyCheckerService }            from '../../util/service/my-checker.service';
-
 import { MyEvent }                     from '../../util/model/my-event';
 import { MyChecker }                   from '../../util/model/my-checker';
+
+// import { CheckBoxHListComponent }      from '../checkbox/checkbox-h-list.component';
+// import { MiniCalendarComponent }       from '../calendar/mini-calendar.component';
+// import { InputViewHListComponent }     from '../input-view/input-view-h-list.component';
+// import { InputViewUpdownComponent }    from '../input-view/input-view-updown.component';
+// import { RadioBtnHListComponent }      from '../radiobtn/radiobtn-h-list.component';
+// import { RadioBtnLinearComponent }     from '../radiobtn/radiobtn-linear.component';
+
 
 /*
 *
@@ -62,12 +63,12 @@ export class InputRowComponent implements OnInit {
   @ViewChild(SingleInputViewComponent)
   private singleInputViewComponent: SingleInputViewComponent;
 
-  @Input() checkBoxHListComponent:CheckBoxHListComponent;
-  @Input() miniCalendarComponent:MiniCalendarComponent;
-  @Input() inputViewHListComponent:InputViewHListComponent;
-  @Input() inputViewUpdownComponent:InputViewUpdownComponent;
-  @Input() radioBtnHListComponent:RadioBtnHListComponent;
-  @Input() radioBtnLinearComponent:RadioBtnLinearComponent;
+  // @Input() checkBoxHListComponent:CheckBoxHListComponent;
+  // @Input() miniCalendarComponent:MiniCalendarComponent;
+  // @Input() inputViewHListComponent:InputViewHListComponent;
+  // @Input() inputViewUpdownComponent:InputViewUpdownComponent;
+  // @Input() radioBtnHListComponent:RadioBtnHListComponent;
+  // @Input() radioBtnLinearComponent:RadioBtnLinearComponent;
 
   // smart-editor params
   @Input() SEinnerHTML:string;
@@ -152,10 +153,8 @@ export class InputRowComponent implements OnInit {
   } // end if
 
   setOffset() :void {
-    // this.headerHeight = this.myRulerService.getHeight("dron-header");
     this.headerHeight = 42;
     this.contentHeight = this.myRulerService.getHeight("dron-content");
-    // this.tailHeight = this.myRulerService.getHeight("dron-tail");
     this.tailHeight = 42;
     this.offsetTop = -1 * (this.headerHeight + this.contentHeight + this.tailHeight - 2);
   }

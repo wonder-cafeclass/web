@@ -172,6 +172,18 @@ var MyInfoPaymentComponent = (function () {
         }); // end service
         // 2. 관심 강의 리스트 가져오기(나중에...)
     };
+    // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+    MyInfoPaymentComponent.prototype.setReadyBeforeShow = function () {
+        if (this.isDebug())
+            console.log("my-info-payment / setReadyBeforeShow / 시작");
+        this.updateFooter();
+    };
+    MyInfoPaymentComponent.prototype.updateFooter = function () {
+        if (null == this.watchTower) {
+            return;
+        }
+        this.watchTower.announceFooterUpdate();
+    };
     MyInfoPaymentComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
             console.log("my-info-payment / onClickKlass / 시작");

@@ -25,7 +25,6 @@ var MyEventWatchTowerService = (function () {
         this.isViewPackReady = false;
         // @ Optional for view
         this.isDebugging = false;
-        this.isLockedBottomFooterFlexible = false;
         this.isEventPackReady = false;
         // Observable sources
         // @ Required for view
@@ -39,8 +38,9 @@ var MyEventWatchTowerService = (function () {
         this.toggleTopMenuAnnouncedSource = new Subject_1.Subject();
         this.toggleFooterAnnouncedSource = new Subject_1.Subject();
         this.errorMsgArrSource = new Subject_1.Subject();
-        this.contentHeightSource = new Subject_1.Subject();
-        this.isLockedBottomFooterFlexibleSource = new Subject_1.Subject();
+        this.footerUpdateSource = new Subject_1.Subject();
+        // REMOVE ME
+        // private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
         this.myLoggerServiceSource = new Subject_1.Subject();
         this.myEventServiceSource = new Subject_1.Subject();
         this.myCheckerServiceSource = new Subject_1.Subject();
@@ -57,8 +57,9 @@ var MyEventWatchTowerService = (function () {
         this.toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
         this.toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
         this.errorMsgArr$ = this.errorMsgArrSource.asObservable();
-        this.contentHeight$ = this.contentHeightSource.asObservable();
-        this.isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
+        this.footerUpdate$ = this.footerUpdateSource.asObservable();
+        // REMOVE ME
+        // isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
         this.myLoggerService$ = this.myLoggerServiceSource.asObservable();
         this.myEventService$ = this.myEventServiceSource.asObservable();
         this.myCheckerService$ = this.myCheckerServiceSource.asObservable();
@@ -164,34 +165,29 @@ var MyEventWatchTowerService = (function () {
         this.toggleFooterAnnouncedSource.next(toggleFooter);
     };
     // @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
-    MyEventWatchTowerService.prototype.announceContentHeight = function () {
-        if (this._isDebug)
-            console.log("my-event-watchtower / announceContentHeight / 시작");
-        var body = document.body;
-        var clientHeight = body.clientHeight;
-        if (this.contentHeight === clientHeight) {
-            if (this._isDebug)
-                console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
-            return;
-        }
-        this.contentHeight = clientHeight;
-        this.contentHeightSource.next(clientHeight);
+    MyEventWatchTowerService.prototype.announceFooterUpdate = function () {
+        this.footerUpdateSource.next(0);
     };
     // @ Desc : 강제로 푸터를 하단 고정 해제 합니다.
-    MyEventWatchTowerService.prototype.announceFooterRelease = function () {
-        if (this._isDebug)
-            console.log("my-event-watchtower / announceFooterRelease / 시작");
-        this.contentHeightSource.next(3000);
-    };
+    // @ Deprecated
+    /*
+    announceFooterRelease() {
+        if(this._isDebug) console.log("my-event-watchtower / announceFooterRelease / 시작");
+        this.footerUpdateSource.next(3000);
+    }
+    */
     // @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
     MyEventWatchTowerService.prototype.announceErrorMsgArr = function (errorMsgArr) {
         this.errorMsgArr = errorMsgArr;
         this.errorMsgArrSource.next(errorMsgArr);
     };
-    MyEventWatchTowerService.prototype.announceIsLockedBottomFooterFlexible = function (isLockedBottomFooterFlexible) {
+    // @ Deprecated
+    /*
+    announceIsLockedBottomFooterFlexible(isLockedBottomFooterFlexible: boolean) {
         this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
         this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
-    };
+    }
+    */
     MyEventWatchTowerService.prototype.announceMyLoggerService = function (myLoggerService) {
         if (this._isDebug)
             console.log("m-e-w / announceMyLoggerService / init");

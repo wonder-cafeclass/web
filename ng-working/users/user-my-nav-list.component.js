@@ -17,6 +17,8 @@ var klass_color_service_1 = require('../widget/klass/service/klass-color.service
 var klass_radiobtn_service_1 = require('../widget/klass/service/klass-radiobtn.service');
 var my_info_component_1 = require('./view/user-my-nav-list/my-info.component');
 var my_info_dashboard_component_1 = require('./view/user-my-nav-list/my-info-dashboard.component');
+var my_info_klass_component_1 = require('./view/user-my-nav-list/my-info-klass.component');
+var my_info_payment_component_1 = require('./view/user-my-nav-list/my-info-payment.component');
 var UserMyNavListComponent = (function () {
     function UserMyNavListComponent(klassColorService, myEventService, myLoggerService, radiobtnService, watchTower, myCheckerService) {
         this.klassColorService = klassColorService;
@@ -33,7 +35,6 @@ var UserMyNavListComponent = (function () {
         this.emitter = new core_1.EventEmitter();
         this.isAdmin = false;
         this.radiobtnService.setWatchTower(this.watchTower);
-        this.watchTower.announceIsLockedBottomFooterFlexible(false);
     }
     UserMyNavListComponent.prototype.isDebug = function () {
         return this.watchTower.isDebug();
@@ -94,6 +95,8 @@ var UserMyNavListComponent = (function () {
             this.watchTower.getLoginUser(), this.watchTower.getMyEventService().KEY_USER_MY_INFO_DASHBOARD);
         if (this.isDebug())
             console.log("user-my-nav-list / this.navTabsOptions : ", this.navTabsOptions);
+        // 대시보드 기준으로 Footer 설정.
+        this.myInfoDashboardComponent.setReadyBeforeShow();
     };
     UserMyNavListComponent.prototype.resetNavFlag = function () {
         // 모든 플래그값을 초기화
@@ -139,18 +142,22 @@ var UserMyNavListComponent = (function () {
             if (myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO_DASHBOARD)) {
                 this.resetNavFlag();
                 this.showHome = true;
+                this.myInfoDashboardComponent.setReadyBeforeShow();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_INFO)) {
                 this.resetNavFlag();
                 this.showMyInfo = true;
+                this.myInfoComponent.setReadyBeforeShow();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_KLASS)) {
                 this.resetNavFlag();
                 this.showMyHistory = true;
+                this.myInfoKlassComponent.setReadyBeforeShow();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_PAYMENT)) {
                 this.resetNavFlag();
                 this.showMyPayment = true;
+                this.myInfoPaymentComponent.setReadyBeforeShow();
             }
             else if (myEvent.hasKey(this.myEventService.KEY_USER_MY_FAVORITE)) {
                 this.resetNavFlag();
@@ -170,6 +177,14 @@ var UserMyNavListComponent = (function () {
         core_1.ViewChild(my_info_dashboard_component_1.MyInfoDashboardComponent), 
         __metadata('design:type', my_info_dashboard_component_1.MyInfoDashboardComponent)
     ], UserMyNavListComponent.prototype, "myInfoDashboardComponent", void 0);
+    __decorate([
+        core_1.ViewChild(my_info_klass_component_1.MyInfoKlassComponent), 
+        __metadata('design:type', my_info_klass_component_1.MyInfoKlassComponent)
+    ], UserMyNavListComponent.prototype, "myInfoKlassComponent", void 0);
+    __decorate([
+        core_1.ViewChild(my_info_payment_component_1.MyInfoPaymentComponent), 
+        __metadata('design:type', my_info_payment_component_1.MyInfoPaymentComponent)
+    ], UserMyNavListComponent.prototype, "myInfoPaymentComponent", void 0);
     UserMyNavListComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

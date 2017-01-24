@@ -1,5 +1,7 @@
 import { Component, 
          AfterViewInit,
+         AfterViewChecked,
+         AfterContentChecked,
          HostBinding,
          trigger, 
          transition, 
@@ -32,7 +34,7 @@ import { RadioBtnOption }                from '../widget/radiobtn/model/radiobtn
 import { CheckBoxOption }                from '../widget/checkbox/model/checkbox-option';
 import { InputViewUpdown }               from '../widget/input-view/model/input-view-updown';
 import { ImageGridV2Component }          from '../widget/image-grid/image-grid-v2.component';
-import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
+// import { ImageGridComponent }            from '../widget/image-grid/image-grid.component';
 import { HiddenUploaderComponent }       from '../widget/input/img-uploader/hidden-uploader.component';
 import { DefaultComponent }              from '../widget/input/default/default.component';
 import { DefaultMeta }                   from '../widget/input/default/model/default-meta';
@@ -73,7 +75,7 @@ import { Teacher }                       from '../teachers/model/teacher';
   styleUrls: ['klass-detail.component.css'],
   templateUrl: 'klass-detail.component.html'
 })
-export class KlassDetailComponent implements AfterViewInit {
+export class KlassDetailComponent implements AfterViewInit, AfterViewChecked, AfterContentChecked {
 
   klass: Klass;
   klassCopy: Klass;
@@ -165,9 +167,6 @@ export class KlassDetailComponent implements AfterViewInit {
   @ViewChild(ImageGridV2Component)
   private bannerComponent: ImageGridV2Component;
 
-  @ViewChild(ImageGridComponent)
-  private selectTileViewComponent: ImageGridComponent;
-
   @ViewChild(HiddenUploaderComponent)
   private hiddenUploaderComponent: HiddenUploaderComponent;
 
@@ -255,9 +254,19 @@ export class KlassDetailComponent implements AfterViewInit {
     if(this.isDebug()) console.log("klass-detail / ngAfterViewInit / 시작");
     if(this.isDebug()) console.log("klass-detail / ngAfterViewInit / this.bannerComponent : ", this.bannerComponent);
 
-    this.watchTower.announceIsLockedBottomFooterFlexible(false);
-
     this.init();
+  }
+
+  ngAfterContentChecked():void {}
+
+  ngAfterViewChecked():void {
+    // 뷰 로딩이 완료된 이후에 높이 계산
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    // 푸터에게 업데이트 요청.
+    this.watchTower.announceFooterUpdate();
   }
 
   private subscribeLoginTeacher() :void {
@@ -1595,12 +1604,6 @@ export class KlassDetailComponent implements AfterViewInit {
 
         // Do something...
 
-      } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_SELECTILE_VIEW)) {  
-
-        if( null != myEvent.metaObj ) {
-          this.selectTileViewComponent = myEvent.metaObj;
-        } // end if
-
       } else if(myEvent.hasKey(this.myEventService.KEY_KLASS_PRICE_CALC)) {  
 
         if( null != myEvent.metaObj ) {
@@ -2084,11 +2087,6 @@ export class KlassDetailComponent implements AfterViewInit {
       if(this.isDebug()) console.log("klass-detail / updateKlassDays / 중단 / this.klassCopy is not valid!");
       return;
     }
-    if(null == this.selectTileViewComponent) {
-      if(this.isDebug()) console.log("klass-detail / updateKlassDays / 중단 / this.selectTileViewComponent is not valid!");
-      return;
-    }    
-
 
     let selectedValue:string = metaObj.value;
     let constMap:any = this.watchTower.getConstMap();

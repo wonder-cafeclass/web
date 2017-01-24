@@ -1,6 +1,6 @@
-<div class="my-title">지금 듣고 있는 수업입니다.</div>
-
-<div style="padding:10px;padding-bottom: 0px;">
+<!-- 수강중인 수업이 있는 경우 -->
+<div *ngIf="klassNStudentList && 0 < klassNStudentList.length" class="my-title">지금 듣고 있는 수업입니다.</div>
+<div *ngIf="klassNStudentList && 0 < klassNStudentList.length" style="padding:10px;padding-bottom: 0px;">
 
 	<klass-n-student-list
 	[klassNStudentList]="klassNStudentList"
@@ -9,9 +9,23 @@
 	</klass-n-student-list>
 
 </div>
+<!-- 수강중인 수업이 없는 경우 -->
+<ul *ngIf="!klassNStudentList || klassNStudentList.length == 0" class="list-group my-style">
+    <li class="list-group-item my-style my-first">
+		<div style="text-align:center;">
+			<h3 style="margin-bottom:20px;color: #999;">지금 듣고 있는 수업이 없습니다.</h3>
+		</div>
+	</li>
+</ul>
 
-<div class="my-title">이런 수업은 어떠세요?</div>
-<div class="row my-style">
+<!-- 찜한 수업이 있는 경우 klassListFavorite-->
+<!-- 찜한 수업이 없는 경우 : 추천수업이 있음 -->
+<div 
+*ngIf="klassListFavorite && 0 < klassListFavorite.length"
+class="my-title">이런 수업은 어떠세요?</div>
+<div 
+*ngIf="klassListFavorite && 0 < klassListFavorite.length"
+class="row my-style">
 	<div class="my-style"
 	*ngFor="let klassNStudent of klassNStudentList">
 
@@ -23,3 +37,14 @@
 		
 	</div>
 </div>
+
+<!-- 찜한 수업이 없는 경우 : 추천수업이 없음 -->
+<ul *ngIf="!klassListFavorite || klassListFavorite.length == 0" class="list-group my-style">
+    <li class="list-group-item my-style my-first">
+		<div style="text-align:center;">
+			<h3 style="margin-bottom:20px;color: #999;">찜한 수업이 없습니다.</h3>
+		</div>
+	</li>
+</ul>
+
+

@@ -64,7 +64,6 @@ export class AppComponent implements OnInit, AfterViewChecked {
 	errorMsgArr: string[]=[];
 
 	ngOnInit(): void {
-
 		this.subscribeAllErrors();
 		this.subscribeLoginUser();
 		this.subscribeLoginTeacher();
@@ -73,16 +72,9 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
 		this.setIsAdmin();
 		this.setMyChecker();
-		// this.checkExternalAdmin();
-
 	}
 
-	ngAfterViewChecked() {
-
-		if(this.isDebug()) console.log("app-root / ngAfterViewChecked / 시작");
-		this.watchTower.announceContentHeight();
-		
-	}
+	ngAfterViewChecked() {}
 
 	private updateLoginUser(user:User) :void {
 
@@ -93,7 +85,10 @@ export class AppComponent implements OnInit, AfterViewChecked {
 		if(null != user) {
 			// 운영자 유저인지 확인합니다.
 			this.isAdminUser = user.isAdminUser();
-		} // end if
+		} else {
+			// 로그인 정보가 없다면 운영자 유저 취소.
+			this.isAdminUser = false;
+		}// end if
 
 		if(this.isDebug()) console.log("app-root / updateLoginUser / this.isAdminUser : ",this.isAdminUser);
 

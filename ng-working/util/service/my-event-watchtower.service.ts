@@ -36,8 +36,9 @@ export class MyEventWatchTowerService {
 	private loginUser:User;
 	private loginTeacher:Teacher;
 	private errorMsgArr:string[];
-	private contentHeight:number;
-	private isLockedBottomFooterFlexible:boolean = false;
+	private footerUpdate:number;
+	// REMOVE ME
+	// private isLockedBottomFooterFlexible:boolean = false;
 	private myLoggerService:MyLoggerService;
 	private myEventService:MyEventService;
 	private myCheckerService:MyCheckerService;
@@ -55,8 +56,9 @@ export class MyEventWatchTowerService {
 	private toggleTopMenuAnnouncedSource = new Subject<boolean>();
 	private toggleFooterAnnouncedSource = new Subject<boolean>();
 	private errorMsgArrSource = new Subject<string[]>();
-	private contentHeightSource = new Subject<number>();
-	private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
+	private footerUpdateSource = new Subject<number>();
+	// REMOVE ME
+	// private isLockedBottomFooterFlexibleSource = new Subject<boolean>();
 	private myLoggerServiceSource = new Subject<MyLoggerService>();
 	private myEventServiceSource = new Subject<MyEventService>();
 	private myCheckerServiceSource = new Subject<MyCheckerService>();
@@ -74,8 +76,9 @@ export class MyEventWatchTowerService {
 	toggleTopMenuAnnounced$ = this.toggleTopMenuAnnouncedSource.asObservable();
 	toggleFooterAnnounced$ = this.toggleFooterAnnouncedSource.asObservable();
 	errorMsgArr$ = this.errorMsgArrSource.asObservable();
-	contentHeight$ = this.contentHeightSource.asObservable();
-	isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
+	footerUpdate$ = this.footerUpdateSource.asObservable();
+	// REMOVE ME
+	// isLockedBottomFooterFlexible$ = this.isLockedBottomFooterFlexibleSource.asObservable();
 	myLoggerService$ = this.myLoggerServiceSource.asObservable();
 	myEventService$ = this.myEventServiceSource.asObservable();
 	myCheckerService$ = this.myCheckerServiceSource.asObservable();
@@ -196,37 +199,30 @@ export class MyEventWatchTowerService {
 	}
 
 	// @ Desc : 콘텐츠 추가 등으로 화면의 높이가 변경되었을 경우, 호출됩니다.
-	announceContentHeight() {
-
-	    if(this._isDebug) console.log("my-event-watchtower / announceContentHeight / 시작");
-
-		let body = document.body;
-		let clientHeight:number = body.clientHeight;
-
-		if(this.contentHeight === clientHeight) {
-			if(this._isDebug) console.log("my-event-watchtower / announceContentHeight / 중단 / 같은 높이라면 업데이트하지 않습니다");
-			return;
-		}
-
-		this.contentHeight = clientHeight;
-		this.contentHeightSource.next(clientHeight);
-
+	announceFooterUpdate() {
+		this.footerUpdateSource.next(0);
 	}
 	// @ Desc : 강제로 푸터를 하단 고정 해제 합니다.
+	// @ Deprecated
+	/*
 	announceFooterRelease() {
 		if(this._isDebug) console.log("my-event-watchtower / announceFooterRelease / 시작");
-		this.contentHeightSource.next(3000);
+		this.footerUpdateSource.next(3000);
 	}
+	*/
 
 	// @ Desc : 화면에 출력해야 하는 Error message를 app.component에게 공유함.
 	announceErrorMsgArr(errorMsgArr: string[]) {
 		this.errorMsgArr = errorMsgArr;
 		this.errorMsgArrSource.next(errorMsgArr);
 	}
+	// @ Deprecated
+	/*
 	announceIsLockedBottomFooterFlexible(isLockedBottomFooterFlexible: boolean) {
 		this.isLockedBottomFooterFlexible = isLockedBottomFooterFlexible;
 		this.isLockedBottomFooterFlexibleSource.next(isLockedBottomFooterFlexible);
-	}	
+	}
+	*/	
 
 	announceMyLoggerService(myLoggerService: MyLoggerService) {
 

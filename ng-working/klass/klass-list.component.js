@@ -199,7 +199,13 @@ var KlassListComponent = (function () {
             // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
             this.klassList = klassList; // 리스트 교체.
         } // end if
+        this.updateFooter();
     }; // end method    
+    KlassListComponent.prototype.updateFooter = function () {
+        console.log("klass-list / TEST / updateFooter / this.watchTower : ", this.watchTower);
+        // 푸터에게 업데이트 요청.
+        this.watchTower.announceFooterUpdate();
+    };
     KlassListComponent.prototype.fetchKlassList = function (loginUserId, pageNum, pageRowCnt, searchQuery, klassStatus, klassLevel, klassSubwayLine, klassSubwayStation, klassDays, klassTime) {
         var _this = this;
         this.ksService.fetchKlassList(

@@ -219,6 +219,21 @@ export class MyInfoKlassComponent implements AfterViewInit {
 
   }
 
+  // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+  setReadyBeforeShow():void {
+    if(this.isDebug()) console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+    console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+    this.updateFooter();
+  }
+
+  private updateFooter():void {
+    if(null == this.watchTower) {
+      return;
+    }
+    this.watchTower.announceFooterUpdate();
+  }  
+
+
   onClickKlass(klass:Klass):void {
 
     if(this.isDebug()) console.log("my-info-klass / onClickKlass / 시작");

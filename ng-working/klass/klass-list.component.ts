@@ -265,10 +265,19 @@ export class KlassListComponent implements AfterViewInit {
       // 리스트 추가.
       // 2. 검색등으로 완전히 다른 리스트를 보여준다면, 교체.
       this.klassList = klassList; // 리스트 교체.
-      
     } // end if
 
+    this.updateFooter();
+
   } // end method    
+
+  private updateFooter():void {
+
+    console.log("klass-list / TEST / updateFooter / this.watchTower : ",this.watchTower);
+
+    // 푸터에게 업데이트 요청.
+    this.watchTower.announceFooterUpdate();
+  }
 
   private fetchKlassList( loginUserId:number,
                           pageNum:number, 

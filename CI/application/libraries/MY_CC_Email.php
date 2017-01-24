@@ -19,7 +19,8 @@ class MY_CC_Email
 	private $CI=null;
     private $isOK=true;
 
-    private $admin_email="info@cafeclass.kr";
+    private $admin_email="wonder13662test@gmail.com"; // @ Test : 운영자 프랭크
+    // private $admin_email="info@cafeclass.kr";
     private $admin_name="카페클래스";
 
     public function __construct()

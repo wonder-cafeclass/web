@@ -158,6 +158,19 @@ var MyInfoKlassComponent = (function () {
         }); // end service
         // 2. 관심 강의 리스트 가져오기(나중에...)
     };
+    // @ Desc : 외부에서 이 컴포넌트를 보여주기 전에 호출.
+    MyInfoKlassComponent.prototype.setReadyBeforeShow = function () {
+        if (this.isDebug())
+            console.log("my-info-dashboard / setReadyBeforeShow / 시작");
+        console.log("my-info-dashboard / setReadyBeforeShow / 시작 / TEST");
+        this.updateFooter();
+    };
+    MyInfoKlassComponent.prototype.updateFooter = function () {
+        if (null == this.watchTower) {
+            return;
+        }
+        this.watchTower.announceFooterUpdate();
+    };
     MyInfoKlassComponent.prototype.onClickKlass = function (klass) {
         if (this.isDebug())
             console.log("my-info-klass / onClickKlass / 시작");
